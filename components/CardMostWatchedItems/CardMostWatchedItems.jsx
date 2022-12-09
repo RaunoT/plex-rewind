@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import Card from '../Card/Card'
+import secondsToTime from '../../utils/secondsToTime.js'
 
 function CardMostWatchedTV({
   statTitle,
@@ -31,8 +32,7 @@ function CardMostWatchedTV({
                 <span className="text-teal-300">#{i + 1}</span> {item.title}
               </h3>
               <div className="text-slate-300">
-                {item.total_plays} plays (
-                {Math.floor(item.total_duration / 60 / 60)}h)
+                {item.total_plays} plays ({secondsToTime(item.total_duration)})
               </div>
             </li>
           )
