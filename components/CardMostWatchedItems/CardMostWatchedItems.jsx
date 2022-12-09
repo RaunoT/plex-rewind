@@ -13,7 +13,7 @@ function CardMostWatchedTV({
   items,
 }) {
   return (
-    <Card className={className}>
+    <Card className={`animate-bg-gradient--short ${className}`}>
       <h2 className="flex items-center mb-6 font-medium text-black uppercase">
         <span>{statTitle}</span>
         <div className="flex items-center px-2">
@@ -40,13 +40,13 @@ function CardMostWatchedTV({
       </ul>
 
       <div className="flex justify-between pt-4 mt-auto">
-        <Link href={prevCard} className="flex-1" disabled={prevCard}>
-          {prevCard && <span>Previous</span>}
-        </Link>
+        <div className="flex-1">
+          <Link href={prevCard}>{prevCard && <span>Previous</span>}</Link>
+        </div>
         <span className="flex-1 text-center">{page}</span>
-        <Link href={nextCard} className="flex-1 text-right">
-          {nextCard && <span>Next</span>}
-        </Link>
+        <div className="flex-1 text-right">
+          <Link href={nextCard}>{nextCard && <span>Next</span>}</Link>
+        </div>
       </div>
     </Card>
   )
