@@ -1,8 +1,18 @@
-import CardMostWatchedTV from '../../components/CardMostWatchedTv/CardMostWatchedTv'
+import CardMostWatchedItems from '../../components/CardMostWatchedItems/CardMostWatchedItems'
 import fetchStats from '../../utils/fetchStats'
 
 function MostWatchedTv({ shows }) {
-  return <CardMostWatchedTV shows={shows} />
+  return (
+    <CardMostWatchedItems
+      statTitle="Most watched"
+      statCategory="TV shows"
+      page="1/3"
+      items={shows}
+      period="2022"
+      nextCard="/rewind/top-movies"
+      className="bg-gradient-to-br from-teal-700 via-indigo-700 to-purple-800"
+    />
+  )
 }
 
 export async function getStaticProps() {

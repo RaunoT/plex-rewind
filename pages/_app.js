@@ -3,7 +3,7 @@ import '../styles/globals.css'
 
 function MyApp({ Component, pageProps }) {
   return (
-    <div className="min-h-screen text-white bg-black">
+    <div className="min-h-screen text-white bg-gradient-to-br from-indigo-900 via-neutral-800 to-neutral-900">
       <Head>
         <title>Plex Rewind</title>
         <meta name="description" content="Plex Rewind" />

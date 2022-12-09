@@ -1,6 +1,10 @@
 function Card({ children, className }) {
   return (
-    <article className={`p-8 rounded-3xl ${className}`}>{children}</article>
+    <article
+      className={`px-8 pt-8 pb-5 rounded-3xl w-3/4 h-[80vh] flex flex-col xl:w-5/12 ${className}`}
+    >
+      {children}
+    </article>
   )
 }
 
