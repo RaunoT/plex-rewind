@@ -1,20 +1,13 @@
-import Head from 'next/head'
-import CardMostWatchedTv from '../components/CardMostWatchedTv/CardMostWatchedTv'
+import Link from 'next/link'
 
 export default function Home() {
   return (
-    <div className="bg-black min-h-screen text-white">
-      <Head>
-        <title>Plex Rewind</title>
-        <meta name="description" content="Plex Rewind" />
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
+    <div className="text-center">
+      <h1 className="mb-5 text-4xl font-bold">Welcome!</h1>
 
-      <main>
-        <div className="container flex items-center justify-center min-h-screen">
-          <CardMostWatchedTv />
-        </div>
-      </main>
+      <Link href="/rewind/most-watched-tv" className="mx-auto button">
+        Get started
+      </Link>
     </div>
   )
 }

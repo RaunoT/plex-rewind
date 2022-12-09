@@ -1,3 +1,20 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer components {
+  .button {
+    @apply transition-colors;
+
+    display: block;
+    width: fit-content;
+    text-align: center;
+    background: theme('colors.indigo.700');
+    padding: theme('spacing.2') theme('spacing.6');
+    border-radius: theme('borderRadius.2xl');
+
+    &:hover {
+      opacity: 0.5;
+    }
+  }
+}
