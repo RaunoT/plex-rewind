@@ -10,7 +10,7 @@ export default function Home() {
       </Link>
 
       <Link href="/rewind/top-tv" className="text-slate-300 hover:opacity-75">
-        General statistics (past 30 days)
+        Past 30 days
       </Link>
     </div>
   )
