@@ -6,7 +6,7 @@ function MostPlayedArtists({ artists, totalDuration }) {
     <CardTop
       statTitle="Most played"
       statCategory="artists"
-      page="3/4"
+      page="3 / 4"
       items={artists}
       period="Last 30 days"
       prevCard="/rewind/top-movies"

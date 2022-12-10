@@ -6,7 +6,7 @@ function MostActiveUsers({ users, totalDuration }) {
     <CardTop
       statTitle="Most active"
       statCategory="Users"
-      page="4/4"
+      page="4 / 4"
       items={users}
       period="Last 30 days"
       prevCard="/rewind/top-artists"

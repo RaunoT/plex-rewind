@@ -7,7 +7,7 @@ function MostWatchedMovies({ movies, ratings, totalDuration }) {
     <CardTop
       statTitle="Most watched"
       statCategory="movies"
-      page="2/4"
+      page="2 / 4"
       items={movies}
       period="Last 30 days"
       prevCard="/rewind/top-tv"

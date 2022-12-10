@@ -1,6 +1,7 @@
 import fetchStats from './fetchStats'
 
 async function fetchRatings(ratingKeys) {
+  // TODO: Add try-catch
   let criticRatingsArray = []
   let audienceRatingsArray = []
   const ratingsPromises = ratingKeys.map((ratingKey) =>
