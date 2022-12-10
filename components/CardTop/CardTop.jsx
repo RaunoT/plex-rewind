@@ -12,12 +12,13 @@ function CardTop({
   className,
   items,
   users,
+  totalDuration,
 }) {
   return (
     <Card className={`animate-bg-gradient--short ${className}`}>
-      <h2 className="flex items-center mb-6 font-medium text-black uppercase">
+      <h2 className="flex items-center mb-1 font-medium text-black uppercase">
         <span>{statTitle}</span>
-        <div className="flex items-center px-2">
+        <div className="flex items-center mx-2">
           <span>-</span>
           <span className="px-2 font-bold text-center">{statCategory}</span>
           <span>-</span>
@@ -25,8 +26,16 @@ function CardTop({
         <span>{period}</span>
       </h2>
 
-      <ul>
-        {items.map((item, i) => {
+      {totalDuration && (
+        <div className="text-xs font-medium text-black uppercase">
+          All <span className="font-bold">{statCategory}</span>
+          <span className="mx-2">-</span>
+          {totalDuration}
+        </div>
+      )}
+
+      <ul className="mt-6">
+        {items.rows.map((item, i) => {
           return (
             <li key={i} className="mb-4 last:mb-0">
               <h3 className="text-2xl font-semibold">
@@ -34,7 +43,11 @@ function CardTop({
                 {users ? item.user : item.title}
               </h3>
               <div className="text-slate-300">
-                {item.total_plays} plays ({secondsToTime(item.total_duration)})
+                {item.total_plays} plays
+                <span className="mx-2">-</span>
+                <span className="text-sm font-medium text-black">
+                  {secondsToTime(item.total_duration)}
+                </span>
               </div>
             </li>
           )

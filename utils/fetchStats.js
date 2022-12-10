@@ -1,8 +1,9 @@
-async function fetchStats(query) {
-  const apiUrl = `${process.env.TAUTULLI_URL}${
-    process.env.TAUTULLI_PORT ? ':' + process.env.TAUTULLI_PORT : ''
-  }/api/v2?apikey=${process.env.TAUTULLI_API_KEY}`
-  const response = await fetch(`${apiUrl}&cmd=${query}`)
+async function fetchStats(query, params) {
+  const apiUrl = `${process.env.TAUTULLI_URL}/api/v2?apikey=${process.env.TAUTULLI_API_KEY}`
+  const paramsString = params
+    ? '&' + new URLSearchParams(params).toString()
+    : ''
+  const response = await fetch(`${apiUrl}&cmd=${query}${paramsString}`)
   const result = await response.json()
 
   return result
