@@ -4,6 +4,7 @@ import fetchTautulli from '../../utils/fetchTautulli'
 function MostPlayedArtists({ artists, totalDuration }) {
   return (
     <>
+      {/* TODO: Globalise */}
       <h1 className="mb-4 text-xl font-bold uppercase sm:text-2xl">
         Dashboard
       </h1>
