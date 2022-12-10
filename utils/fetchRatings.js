@@ -1,4 +1,4 @@
-import fetchStats from './fetchStats'
+import fetchStats from './fetchTautulli'
 
 async function fetchRatings(ratingKeys) {
   // TODO: Add try-catch

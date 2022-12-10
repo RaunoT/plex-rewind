@@ -1,6 +1,6 @@
 import CardTop from '../../components/CardTop/CardTop'
 import fetchRatings from '../../utils/fetchRatings'
-import fetchStats from '../../utils/fetchStats'
+import fetchTautulli from '../../utils/fetchTautulli'
 
 function MostWatchedMovies({ movies, ratings, totalDuration }) {
   return (
@@ -26,12 +26,12 @@ function MostWatchedMovies({ movies, ratings, totalDuration }) {
 }
 
 export async function getStaticProps() {
-  const movies = await fetchStats('get_home_stats', {
+  const movies = await fetchTautulli('get_home_stats', {
     stat_id: 'top_movies',
     stats_count: 5,
     stats_type: 'duration',
   })
-  const totalDuration = await fetchStats('get_history', {
+  const totalDuration = await fetchTautulli('get_history', {
     media_type: 'movie',
     length: 0,
   })
@@ -42,6 +42,7 @@ export async function getStaticProps() {
 
     ratingKeys.push(ratingKey)
   })
+
   const ratings = await fetchRatings(ratingKeys)
 
   return {

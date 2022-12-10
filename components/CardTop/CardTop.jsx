@@ -6,6 +6,7 @@ import {
   PlayCircleIcon,
   UsersIcon,
 } from '@heroicons/react/24/solid'
+import Image from 'next/image.js'
 import Link from 'next/link'
 import secondsToTime from '../../utils/secondsToTime.js'
 import Card from '../Card/Card'
@@ -22,6 +23,7 @@ function CardTop({
   users,
   totalDuration,
   ratings,
+  images,
 }) {
   return (
     <Card className={`animate-bg-gradient--short ${className}`}>
@@ -48,39 +50,51 @@ function CardTop({
       <ul className="mt-4 overflow-y-auto sm:mt-6">
         {items.rows.map((item, i) => {
           return (
-            <li key={i} className="mb-3 sm:mb-5 last:mb-0">
-              <h3 className="mb-2 text-lg font-semibold sm:text-2xl">
-                <span className="mr-2 text-teal-300">#{i + 1}</span>
-                {users ? item.user : item.title}
-              </h3>
-              <div className="flex flex-wrap items-center gap-3 text-xs italic sm:text-base">
-                {/* Plays */}
-                <div className="flex items-center gap-2">
-                  <PlayCircleIcon className="w-5 text-slate-900" />
-                  {item.total_plays}
+            <li
+              key={i}
+              className="flex items-center gap-3 mb-3 sm:mb-5 last:mb-0"
+            >
+              <Image
+                height={80}
+                width={80}
+                src={`${process.env.NEXT_PUBLIC_TAUTULLI_URL}/pms_image_proxy?img=${item.thumb}`}
+                className="object-cover object-top w-20 h-28"
+                alt={users ? item.user + ' avatar' : item.title + ' poster'}
+              />
+              <div>
+                <h3 className="mb-2 text-lg font-semibold sm:text-2xl">
+                  <span className="mr-2 text-teal-300">#{i + 1}</span>
+                  {users ? item.user : item.title}
+                </h3>
+                <div className="flex flex-wrap items-center gap-2 text-xs italic sm:gap-3 sm:text-base">
+                  {/* Plays */}
+                  <div className="flex items-center gap-2">
+                    <PlayCircleIcon className="w-5 text-slate-900" />
+                    {item.total_plays}
+                  </div>
+                  {/* Duration */}
+                  <div className="flex items-center gap-2 sm:text-sm">
+                    <BoltIcon className="w-5 text-slate-900" />
+                    {secondsToTime(item.total_duration)}
+                  </div>
+                  {/* Ratings */}
+                  {ratings && (
+                    <>
+                      {ratings[i].critic && (
+                        <div className="flex items-center gap-2">
+                          <AcademicCapIcon className="w-5 text-slate-900" />
+                          {ratings[i].critic}
+                        </div>
+                      )}
+                      {ratings[i].audience && (
+                        <div className="flex items-center gap-2">
+                          <UsersIcon className="w-5 text-slate-900" />
+                          {ratings[i].audience}
+                        </div>
+                      )}
+                    </>
+                  )}
                 </div>
-                {/* Duration */}
-                <div className="flex items-center gap-2 sm:text-sm">
-                  <BoltIcon className="w-5 text-slate-900" />
-                  {secondsToTime(item.total_duration)}
-                </div>
-                {/* Ratings */}
-                {ratings && (
-                  <>
-                    {ratings[i].critic && (
-                      <div className="flex items-center gap-2">
-                        <AcademicCapIcon className="w-5 text-slate-900" />
-                        {ratings[i].critic}
-                      </div>
-                    )}
-                    {ratings[i].audience && (
-                      <div className="flex items-center gap-2">
-                        <UsersIcon className="w-5 text-slate-900" />
-                        {ratings[i].audience}
-                      </div>
-                    )}
-                  </>
-                )}
               </div>
             </li>
           )
