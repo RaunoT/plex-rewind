@@ -1,15 +1,16 @@
-import CardMostWatchedItems from '../../components/CardMostWatchedItems/CardMostWatchedItems'
+import CardTop from '../../components/CardTop/CardTop'
 import fetchStats from '../../utils/fetchStats'
 
 function MostWatchedTv({ artists }) {
   return (
-    <CardMostWatchedItems
+    <CardTop
       statTitle="Most played"
       statCategory="artists"
-      page="3/3"
+      page="3/4"
       items={artists}
-      period="2022"
+      period="Last 30 days"
       prevCard="/rewind/top-movies"
+      nextCard="/rewind/top-users"
       className="bg-gradient-to-br from-teal-700 via-indigo-700 to-purple-800"
     />
   )

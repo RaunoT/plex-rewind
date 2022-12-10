@@ -2,7 +2,7 @@ import Link from 'next/link'
 import Card from '../Card/Card'
 import secondsToTime from '../../utils/secondsToTime.js'
 
-function CardMostWatchedTV({
+function CardTop({
   statTitle,
   statCategory,
   page,
@@ -11,6 +11,7 @@ function CardMostWatchedTV({
   nextCard = '',
   className,
   items,
+  users,
 }) {
   return (
     <Card className={`animate-bg-gradient--short ${className}`}>
@@ -28,8 +29,9 @@ function CardMostWatchedTV({
         {items.map((item, i) => {
           return (
             <li key={i} className="mb-4 last:mb-0">
-              <h3 className="text-3xl font-bold">
-                <span className="text-teal-300">#{i + 1}</span> {item.title}
+              <h3 className="text-2xl font-semibold">
+                <span className="text-teal-300">#{i + 1}</span>{' '}
+                {users ? item.user : item.title}
               </h3>
               <div className="text-slate-300">
                 {item.total_plays} plays ({secondsToTime(item.total_duration)})
@@ -52,4 +54,4 @@ function CardMostWatchedTV({
   )
 }
 
-export default CardMostWatchedTV
+export default CardTop

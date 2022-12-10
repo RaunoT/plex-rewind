@@ -1,14 +1,14 @@
-import CardMostWatchedItems from '../../components/CardMostWatchedItems/CardMostWatchedItems'
+import CardTop from '../../components/CardTop/CardTop'
 import fetchStats from '../../utils/fetchStats'
 
 function MostWatchedTv({ shows }) {
   return (
-    <CardMostWatchedItems
+    <CardTop
       statTitle="Most watched"
       statCategory="TV shows"
-      page="1/3"
+      page="1/4"
       items={shows}
-      period="2022"
+      period="Last 30 days"
       nextCard="/rewind/top-movies"
       className="bg-gradient-to-br from-teal-700 via-indigo-700 to-purple-800"
     />

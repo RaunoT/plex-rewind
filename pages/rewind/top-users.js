@@ -1,27 +1,27 @@
 import CardTop from '../../components/CardTop/CardTop'
 import fetchStats from '../../utils/fetchStats'
 
-function MostWatchedMovies({ movies }) {
+function MostWatchedTv({ users }) {
   return (
     <CardTop
-      statTitle="Most watched"
-      statCategory="movies"
-      page="2/4"
-      items={movies}
+      statTitle="Most active"
+      statCategory="Users"
+      page="4/4"
+      items={users}
       period="Last 30 days"
-      prevCard="/rewind/top-tv"
-      nextCard="/rewind/top-artists"
+      prevCard="/rewind/top-artists"
       className="bg-gradient-to-br from-teal-700 via-indigo-700 to-purple-800"
+      users
     />
   )
 }
 
 export async function getStaticProps() {
-  let movies = await fetchStats('get_home_stats')
+  let users = await fetchStats('get_home_stats')
 
-  movies = movies.response.data
-    // Get only movies
-    .filter((stat) => stat.stat_id === 'top_movies')[0]
+  users = users.response.data
+    // Get only users
+    .filter((stat) => stat.stat_id === 'top_users')[0]
     // Keep top 5
     .rows.slice(0, 5)
     // Sort by view duration (desc)
@@ -29,9 +29,9 @@ export async function getStaticProps() {
 
   return {
     props: {
-      movies,
+      users,
     },
   }
 }
 
-export default MostWatchedMovies
+export default MostWatchedTv
