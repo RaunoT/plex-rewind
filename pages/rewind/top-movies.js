@@ -1,7 +1,8 @@
 import CardTop from '../../components/CardTop/CardTop'
+import fetchRatings from '../../utils/fetchRatings'
 import fetchStats from '../../utils/fetchStats'
 
-function MostWatchedMovies({ movies, totalDuration }) {
+function MostWatchedMovies({ movies, ratings, totalDuration }) {
   return (
     <CardTop
       statTitle="Most watched"
@@ -13,6 +14,7 @@ function MostWatchedMovies({ movies, totalDuration }) {
       nextCard="/rewind/top-artists"
       className="bg-gradient-to-br from-teal-700 via-indigo-700 to-purple-800"
       totalDuration={totalDuration}
+      ratings={ratings}
     />
   )
 }
@@ -28,9 +30,18 @@ export async function getStaticProps() {
     length: 0,
   })
 
+  let ratingKeys = []
+  movies.response.data.rows.forEach((movie) => {
+    const ratingKey = movie.rating_key
+
+    ratingKeys.push(ratingKey)
+  })
+  const ratings = await fetchRatings(ratingKeys)
+
   return {
     props: {
       movies: movies.response.data,
+      ratings,
       totalDuration: totalDuration.response.data.total_duration,
     },
   }
