@@ -57,7 +57,11 @@ function CardTop({
               <Image
                 height={80}
                 width={80}
-                src={`${process.env.NEXT_PUBLIC_TAUTULLI_URL}/pms_image_proxy?img=${item.thumb}`}
+                src={`${
+                  process.env.NEXT_PUBLIC_TAUTULLI_URL
+                }/pms_image_proxy?img=${
+                  users ? item.user_thumb : item.thumb
+                }&width=300`}
                 className="object-cover object-top w-20 h-28"
                 alt={users ? item.user + ' avatar' : item.title + ' poster'}
               />
