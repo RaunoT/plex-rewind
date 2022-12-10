@@ -3,17 +3,23 @@ import fetchStats from '../../utils/fetchStats'
 
 function MostActiveUsers({ users, totalDuration }) {
   return (
-    <CardTop
-      statTitle="Most active"
-      statCategory="Users"
-      page="4 / 4"
-      items={users}
-      period="Last 30 days"
-      prevCard="/rewind/top-artists"
-      className="bg-gradient-to-br from-teal-700 via-indigo-700 to-purple-800"
-      totalDuration={totalDuration}
-      users
-    />
+    <>
+      <h1 className="mb-4 text-xl font-bold uppercase sm:text-2xl">
+        Dashboard
+      </h1>
+
+      <CardTop
+        statTitle="Most active"
+        statCategory="Users"
+        page="4 / 4"
+        items={users}
+        period="Last 30 days"
+        prevCard="/rewind/top-artists"
+        className="bg-gradient-to-br from-teal-700 via-indigo-700 to-purple-800"
+        totalDuration={totalDuration}
+        users
+      />
+    </>
   )
 }
 

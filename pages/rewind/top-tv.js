@@ -4,17 +4,23 @@ import fetchStats from '../../utils/fetchStats'
 
 function MostWatchedTv({ shows, ratings, totalDuration }) {
   return (
-    <CardTop
-      statTitle="Most watched"
-      statCategory="TV shows"
-      page="1 / 4"
-      items={shows}
-      period="Last 30 days"
-      nextCard="/rewind/top-movies"
-      className="bg-gradient-to-br from-teal-700 via-indigo-700 to-purple-800"
-      totalDuration={totalDuration}
-      ratings={ratings}
-    />
+    <>
+      <h1 className="mb-4 text-xl font-bold uppercase sm:text-2xl">
+        Dashboard
+      </h1>
+
+      <CardTop
+        statTitle="Most watched"
+        statCategory="TV shows"
+        page="1 / 4"
+        items={shows}
+        period="Last 30 days"
+        nextCard="/rewind/top-movies"
+        className="bg-gradient-to-br from-teal-700 via-indigo-700 to-purple-800"
+        totalDuration={totalDuration}
+        ratings={ratings}
+      />
+    </>
   )
 }
 

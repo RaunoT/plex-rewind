@@ -48,19 +48,19 @@ function CardTop({
       <ul className="mt-4 overflow-y-auto sm:mt-6">
         {items.rows.map((item, i) => {
           return (
-            <li key={i} className="mb-5 last:mb-0">
+            <li key={i} className="mb-3 sm:mb-5 last:mb-0">
               <h3 className="mb-2 text-lg font-semibold sm:text-2xl">
-                <span className="text-teal-300">#{i + 1}</span>{' '}
+                <span className="mr-2 text-teal-300">#{i + 1}</span>
                 {users ? item.user : item.title}
               </h3>
-              <div className="flex items-center gap-3">
+              <div className="flex flex-wrap items-center gap-3 text-xs italic sm:text-base">
                 {/* Plays */}
                 <div className="flex items-center gap-2">
                   <PlayCircleIcon className="w-5 text-slate-900" />
                   {item.total_plays}
                 </div>
                 {/* Duration */}
-                <div className="flex items-center gap-2 text-sm">
+                <div className="flex items-center gap-2 sm:text-sm">
                   <BoltIcon className="w-5 text-slate-900" />
                   {secondsToTime(item.total_duration)}
                 </div>

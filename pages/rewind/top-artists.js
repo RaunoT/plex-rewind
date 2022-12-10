@@ -3,17 +3,23 @@ import fetchStats from '../../utils/fetchStats'
 
 function MostPlayedArtists({ artists, totalDuration }) {
   return (
-    <CardTop
-      statTitle="Most played"
-      statCategory="artists"
-      page="3 / 4"
-      items={artists}
-      period="Last 30 days"
-      prevCard="/rewind/top-movies"
-      nextCard="/rewind/top-users"
-      className="bg-gradient-to-br from-teal-700 via-indigo-700 to-purple-800"
-      totalDuration={totalDuration}
-    />
+    <>
+      <h1 className="mb-4 text-xl font-bold uppercase sm:text-2xl">
+        Dashboard
+      </h1>
+
+      <CardTop
+        statTitle="Most played"
+        statCategory="artists"
+        page="3 / 4"
+        items={artists}
+        period="Last 30 days"
+        prevCard="/rewind/top-movies"
+        nextCard="/rewind/top-users"
+        className="bg-gradient-to-br from-teal-700 via-indigo-700 to-purple-800"
+        totalDuration={totalDuration}
+      />
+    </>
   )
 }
 
