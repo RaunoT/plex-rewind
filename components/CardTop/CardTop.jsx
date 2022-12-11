@@ -6,8 +6,10 @@ import {
   PlayCircleIcon,
   UsersIcon,
 } from '@heroicons/react/24/solid'
+import { motion } from 'framer-motion'
 import Image from 'next/image.js'
 import Link from 'next/link'
+import { animateSlideUp } from '../../styles/motion.js'
 import secondsToTime from '../../utils/secondsToTime.js'
 import Card from '../Card/Card'
 
@@ -15,6 +17,7 @@ function CardTop({
   children,
   statTitle,
   statCategory,
+  subtitle,
   page,
   prevCard = '',
   nextCard = '',
@@ -36,7 +39,13 @@ function CardTop({
         <div className="text-xs font-medium uppercase sm:text-sm text-slate-900">
           All <span className="font-bold">{statCategory}</span>
           <span className="mx-1 sm:mx-2">-</span>
-          {totalDuration}
+          <span className="normal-case">{totalDuration}</span>
+        </div>
+      )}
+
+      {subtitle && (
+        <div className="text-xs font-medium uppercase sm:text-sm text-slate-900">
+          {subtitle}
         </div>
       )}
 
@@ -46,9 +55,13 @@ function CardTop({
         <ul className="mt-4 overflow-y-auto sm:mt-6">
           {items.rows.map((item, i) => {
             return (
-              <li
+              <motion.li
                 key={i}
                 className="flex items-center gap-3 mb-3 sm:mb-5 last:mb-0"
+                variants={animateSlideUp}
+                initial="initial"
+                animate="animate"
+                transition={{ delay: i * 0.1 }}
               >
                 <Image
                   height={80}
@@ -96,7 +109,7 @@ function CardTop({
                     )}
                   </div>
                 </div>
-              </li>
+              </motion.li>
             )
           })}
         </ul>

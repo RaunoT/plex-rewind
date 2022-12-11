@@ -32,7 +32,10 @@ export async function getServerSideProps() {
   return {
     props: {
       users: users.response.data,
-      totalDuration: totalDuration.response.data.total_duration,
+      totalDuration: totalDuration.response.data.total_duration.replace(
+        /mins.*/,
+        'mins',
+      ),
     },
   }
 }

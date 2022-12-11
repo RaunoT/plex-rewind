@@ -47,7 +47,10 @@ export async function getServerSideProps() {
     props: {
       movies: movies.response.data,
       ratings,
-      totalDuration: totalDuration.response.data.total_duration,
+      totalDuration: totalDuration.response.data.total_duration.replace(
+        /mins.*/,
+        'mins',
+      ),
     },
   }
 }

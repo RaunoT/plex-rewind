@@ -35,7 +35,10 @@ export async function getServerSideProps() {
   return {
     props: {
       artists: artists.response.data,
-      totalDuration: totalDuration.response.data.total_duration,
+      totalDuration: totalDuration.response.data.total_duration.replace(
+        /mins.*/,
+        'mins',
+      ),
     },
   }
 }
