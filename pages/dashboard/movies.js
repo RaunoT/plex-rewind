@@ -3,7 +3,7 @@ import DashboardTitle from '../../components/DashboardTitle/DashboardTitle'
 import fetchRatings from '../../utils/fetchRatings'
 import fetchTautulli from '../../utils/fetchTautulli'
 
-function MostWatchedMovies({ movies, ratings, totalDuration }) {
+function DashboardMovies({ movies, ratings, totalDuration }) {
   return (
     <>
       <DashboardTitle />
@@ -13,8 +13,8 @@ function MostWatchedMovies({ movies, ratings, totalDuration }) {
         statCategory="movies"
         page="2 / 4"
         items={movies}
-        prevCard="/dashboard/top-tv"
-        nextCard="/dashboard/top-artists"
+        prevCard="/dashboard/tv"
+        nextCard="/dashboard/artists"
         className="bg-gradient-to-br from-teal-700 via-indigo-700 to-purple-800"
         totalDuration={totalDuration}
         ratings={ratings}
@@ -52,4 +52,4 @@ export async function getServerSideProps() {
   }
 }
 
-export default MostWatchedMovies
+export default DashboardMovies

@@ -1,43 +1,54 @@
 import CardTop from '../../components/CardTop/CardTop'
 import DashboardTitle from '../../components/DashboardTitle/DashboardTitle'
+import fetchRatings from '../../utils/fetchRatings'
 import fetchTautulli from '../../utils/fetchTautulli'
 
-function MostPlayedArtists({ artists, totalDuration }) {
+function DashboardTv({ shows, ratings, totalDuration }) {
   return (
     <>
       <DashboardTitle />
 
       <CardTop
-        statTitle="Most played"
-        statCategory="artists"
-        page="3 / 4"
-        items={artists}
-        prevCard="/dashboard/top-movies"
-        nextCard="/dashboard/top-users"
+        statTitle="Most watched"
+        statCategory="TV shows"
+        page="1 / 4"
+        items={shows}
+        nextCard="/dashboard/movies"
         className="bg-gradient-to-br from-teal-700 via-indigo-700 to-purple-800"
         totalDuration={totalDuration}
+        ratings={ratings}
       />
     </>
   )
 }
 
 export async function getServerSideProps() {
-  const artists = await fetchTautulli('get_home_stats', {
-    stat_id: 'top_music',
+  const shows = await fetchTautulli('get_home_stats', {
+    stat_id: 'top_tv',
     stats_count: 5,
     stats_type: 'duration',
   })
   const totalDuration = await fetchTautulli('get_history', {
-    media_type: 'track',
+    media_type: 'episode',
     length: 0,
   })
 
+  let ratingKeys = []
+  shows.response.data.rows.forEach((movie) => {
+    const ratingKey = movie.rating_key
+
+    ratingKeys.push(ratingKey)
+  })
+
+  const ratings = await fetchRatings(ratingKeys)
+
   return {
     props: {
-      artists: artists.response.data,
+      shows: shows.response.data,
+      ratings,
       totalDuration: totalDuration.response.data.total_duration,
     },
   }
 }
 
-export default MostPlayedArtists
+export default DashboardTv

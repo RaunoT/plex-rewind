@@ -2,7 +2,7 @@ import CardTop from '../../components/CardTop/CardTop'
 import DashboardTitle from '../../components/DashboardTitle/DashboardTitle'
 import fetchTautulli from '../../utils/fetchTautulli'
 
-function MostActiveUsers({ users, totalDuration }) {
+function DashboardUsers({ users, totalDuration }) {
   return (
     <>
       <DashboardTitle />
@@ -12,7 +12,7 @@ function MostActiveUsers({ users, totalDuration }) {
         statCategory="Users"
         page="4 / 4"
         items={users}
-        prevCard="/dashboard/top-artists"
+        prevCard="/dashboard/artists"
         className="bg-gradient-to-br from-teal-700 via-indigo-700 to-purple-800"
         totalDuration={totalDuration}
         users
@@ -37,4 +37,4 @@ export async function getServerSideProps() {
   }
 }
 
-export default MostActiveUsers
+export default DashboardUsers
