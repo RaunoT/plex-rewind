@@ -1,5 +1,6 @@
 import Head from 'next/head'
 import { useRouter } from 'next/router'
+import Favicon from '../components/Favicon/Favicon'
 import '../styles/globals.css'
 
 function MyApp({ Component, pageProps }) {
@@ -12,7 +13,7 @@ function MyApp({ Component, pageProps }) {
       <Head>
         <title>Plex Rewind</title>
         <meta name="description" content="Plex Rewind" />
-        <link rel="icon" href="/favicon.ico" />
+        <Favicon />
       </Head>
 
       <main
