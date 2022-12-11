@@ -17,7 +17,7 @@ function RewindTv({ totalTime }) {
         className="bg-gradient-to-br from-teal-700 via-indigo-700 to-purple-800"
         subtitle="Rauno T"
       >
-        <div className="flex flex-col justify-center h-full pb-12">
+        <div className="flex flex-col justify-center flex-1 pb-12">
           <CardHeading>
             And to top it all off, you listened to{' '}
             <span className="inline-block text-3xl font-semibold text-black">
