@@ -54,7 +54,7 @@ function CardTop({
                 }/pms_image_proxy?img=${
                   users ? item.user_thumb : item.thumb
                 }&width=300`}
-                className="object-cover object-top w-20 h-28"
+                className="flex-shrink-0 object-cover object-top w-20 h-28"
                 alt={users ? item.user + ' avatar' : item.title + ' poster'}
               />
               <div>
