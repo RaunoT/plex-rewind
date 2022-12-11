@@ -1,21 +1,18 @@
 import CardTop from '../../components/CardTop/CardTop'
+import DashboardTitle from '../../components/DashboardTitle/DashboardTitle'
 import fetchTautulli from '../../utils/fetchTautulli'
 
 function MostActiveUsers({ users, totalDuration }) {
   return (
     <>
-      {/* TODO: Globalise */}
-      <h1 className="mb-4 text-xl font-bold uppercase sm:text-2xl">
-        Dashboard
-      </h1>
+      <DashboardTitle />
 
       <CardTop
         statTitle="Most active"
         statCategory="Users"
         page="4 / 4"
         items={users}
-        period="Last 30 days"
-        prevCard="/rewind/top-artists"
+        prevCard="/dashboard/top-artists"
         className="bg-gradient-to-br from-teal-700 via-indigo-700 to-purple-800"
         totalDuration={totalDuration}
         users

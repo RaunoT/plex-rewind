@@ -15,7 +15,6 @@ function CardTop({
   statTitle,
   statCategory,
   page,
-  period,
   prevCard = '',
   nextCard = '',
   className,
@@ -23,24 +22,17 @@ function CardTop({
   users,
   totalDuration,
   ratings,
-  images,
 }) {
   return (
     <Card className={`animate-bg-gradient--short ${className}`}>
-      <h2 className="flex items-center mb-1 text-xs font-medium text-black uppercase sm:text-lg">
+      <h2 className="flex items-center mb-1 text-sm font-medium text-black uppercase sm:mb-2 sm:text-xl">
         <span>{statTitle}</span>
-        <div className="flex items-center mx-1 sm:mx-2">
-          <span>-</span>
-          <span className="mx-1 font-bold text-center sm:mx-2">
-            {statCategory}
-          </span>
-          <span>-</span>
-        </div>
-        <span>{period}</span>
+        <span className="mx-1 sm:mx-2">-</span>
+        <span className="font-bold text-center">{statCategory}</span>
       </h2>
 
       {totalDuration && (
-        <div className="text-xs font-medium uppercase text-slate-900">
+        <div className="text-xs font-medium uppercase sm:text-sm text-slate-900">
           All <span className="font-bold">{statCategory}</span>
           <span className="mx-1 sm:mx-2">-</span>
           {totalDuration}
@@ -66,7 +58,7 @@ function CardTop({
                 alt={users ? item.user + ' avatar' : item.title + ' poster'}
               />
               <div>
-                <h3 className="mb-2 text-lg font-semibold sm:text-2xl">
+                <h3 className="mb-2 font-semibold sm:text-2xl">
                   <span className="mr-2 text-teal-300">#{i + 1}</span>
                   {users ? item.user : item.title}
                 </h3>

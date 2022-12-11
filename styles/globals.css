@@ -16,6 +16,12 @@
     &:hover {
       opacity: 0.8;
     }
+
+    &[disabled] {
+      opacity: 0.25;
+      cursor: not-allowed;
+      user-select: none;
+    }
   }
 }
 

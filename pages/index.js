@@ -9,8 +9,11 @@ export default function Home() {
         Get started
       </Link>
 
-      <Link href="/rewind/top-tv" className="text-slate-300 hover:opacity-75">
-        Past 30 days
+      <Link
+        href="/dashboard/top-tv"
+        className="text-slate-300 hover:opacity-75"
+      >
+        Dashboard
       </Link>
     </div>
   )
