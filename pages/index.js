@@ -9,7 +9,7 @@ export default function Home() {
         <motion.img
           src="/plex.svg"
           alt="Plex logo"
-          className="h-14"
+          className="h-12"
           initial={{ opacity: 0, translateX: '-50px' }}
           animate={{ opacity: 1, translateX: 0 }}
           transition={{ duration: 0.8 }}

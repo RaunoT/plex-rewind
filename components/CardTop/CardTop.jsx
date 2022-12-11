@@ -115,7 +115,7 @@ function CardTop({
         </ul>
       )}
 
-      <div className="flex items-center justify-between pt-4 mt-auto text-sm">
+      <div className="flex items-center justify-between pt-5 mt-auto text-sm">
         <div className="flex-1">
           <Link href={prevCard} className="block w-5">
             {prevCard && <ArrowLongLeftIcon className="text-teal-300" />}
