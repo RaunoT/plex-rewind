@@ -26,7 +26,7 @@ function MostWatchedMovies({ movies, ratings, totalDuration }) {
   )
 }
 
-export async function getStaticProps() {
+export async function getServerSideProps() {
   const movies = await fetchTautulli('get_home_stats', {
     stat_id: 'top_movies',
     stats_count: 5,

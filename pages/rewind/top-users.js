@@ -24,7 +24,7 @@ function MostActiveUsers({ users, totalDuration }) {
   )
 }
 
-export async function getStaticProps() {
+export async function getServerSideProps() {
   const users = await fetchTautulli('get_home_stats', {
     stat_id: 'top_users',
     stats_count: 5,

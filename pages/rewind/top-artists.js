@@ -24,7 +24,7 @@ function MostPlayedArtists({ artists, totalDuration }) {
   )
 }
 
-export async function getStaticProps() {
+export async function getServerSideProps() {
   const artists = await fetchTautulli('get_home_stats', {
     stat_id: 'top_music',
     stats_count: 5,

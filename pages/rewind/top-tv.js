@@ -25,7 +25,7 @@ function MostWatchedTv({ shows, ratings, totalDuration }) {
   )
 }
 
-export async function getStaticProps() {
+export async function getServerSideProps() {
   const shows = await fetchTautulli('get_home_stats', {
     stat_id: 'top_tv',
     stats_count: 5,
