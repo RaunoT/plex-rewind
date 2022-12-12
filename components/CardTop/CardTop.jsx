@@ -28,7 +28,6 @@ function CardTop({
   ratings,
   type,
 }) {
-  console.log(items)
   return (
     <AnimatePresence key={page}>
       <Card>
