@@ -5,13 +5,14 @@ function RewindPage({ rewind }) {
   return <Rewind rewind={rewind} />
 }
 
-export async function getServerSideProps() {
+export async function getStaticProps() {
   const rewind = await fetchRewind(8898770)
 
   return {
     props: {
       rewind,
     },
+    revalidate: 3600,
   }
 }
 

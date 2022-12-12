@@ -5,13 +5,14 @@ function DashboardPage({ dashboard }) {
   return <Dashboard dashboard={dashboard} />
 }
 
-export async function getServerSideProps() {
+export async function getStaticProps() {
   const dashboard = await fetchDashboard()
 
   return {
     props: {
       dashboard,
     },
+    revalidate: 3600,
   }
 }
 
