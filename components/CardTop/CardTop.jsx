@@ -1,12 +1,11 @@
 import {
-  AcademicCapIcon,
   ArrowLongLeftIcon,
   ArrowLongRightIcon,
   BoltIcon,
   ClockIcon,
   MusicalNoteIcon,
   PlayCircleIcon,
-  UsersIcon,
+  StarIcon,
 } from '@heroicons/react/24/outline'
 import { AnimatePresence, motion } from 'framer-motion'
 import Image from 'next/image.js'
@@ -66,17 +65,22 @@ function CardTop({
                   transition={{ delay: i * 0.1 }}
                   exit={{ opacity: 0 }}
                 >
-                  <Image
-                    height={80}
-                    width={80}
-                    src={`${
-                      process.env.NEXT_PUBLIC_TAUTULLI_URL
-                    }/pms_image_proxy?img=${
-                      users ? item.user_thumb : item.thumb
-                    }&width=300`}
-                    className="flex-shrink-0 object-cover object-top w-20 h-28"
-                    alt={users ? item.user + ' avatar' : item.title + ' poster'}
-                  />
+                  <div className="relative flex-shrink-0 w-20 h-28">
+                    <Image
+                      fill
+                      className="object-cover object-top"
+                      alt={
+                        users ? item.user + ' avatar' : item.title + ' poster'
+                      }
+                      src={`${
+                        process.env.NEXT_PUBLIC_TAUTULLI_URL
+                      }/pms_image_proxy?img=${
+                        users ? item.user_thumb : item.thumb
+                      }&width=300`}
+                      sizes="7rem"
+                      priority
+                    />
+                  </div>
                   <div>
                     <h3 className="mb-2 font-semibold sm:text-2xl">
                       <span className="mr-2 text-teal-300">#{i + 1}</span>
@@ -84,39 +88,33 @@ function CardTop({
                     </h3>
                     <div className="flex flex-wrap items-center gap-2 text-xs italic sm:gap-3 sm:text-base">
                       {item.year && (type === 'movies' || type === 'tv') && (
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-1 sm:gap-2">
                           <ClockIcon className="w-5 text-slate-900" />
                           {item.year}
                         </div>
                       )}
                       {/* Plays */}
-                      <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-1 sm:gap-2">
                         {type === 'music' ? (
                           <MusicalNoteIcon className="w-5 text-slate-900" />
                         ) : (
                           <PlayCircleIcon className="w-5 text-slate-900" />
                         )}
-                        {item.total_plays}
+                        <span>{item.total_plays}</span>
                         <span>{item.total_plays === 1 ? 'play' : 'plays'}</span>
                       </div>
                       {/* Duration */}
-                      <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-1 sm:gap-2">
                         <BoltIcon className="w-5 text-slate-900" />
                         {secondsToTime(item.total_duration)}
                       </div>
                       {/* Ratings */}
                       {ratings && (
                         <>
-                          {ratings[i].critic && (
-                            <div className="flex items-center gap-2">
-                              <AcademicCapIcon className="w-5 text-slate-900" />
-                              {ratings[i].critic}
-                            </div>
-                          )}
-                          {ratings[i].audience && (
-                            <div className="flex items-center gap-2">
-                              <UsersIcon className="w-5 text-slate-900" />
-                              {ratings[i].audience}
+                          {ratings[i] && (
+                            <div className="flex items-center gap-1 sm:gap-2">
+                              <StarIcon className="w-5 text-slate-900" />
+                              {ratings[i]}
                             </div>
                           )}
                         </>
