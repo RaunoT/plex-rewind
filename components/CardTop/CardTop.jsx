@@ -3,6 +3,7 @@ import {
   ArrowLongLeftIcon,
   ArrowLongRightIcon,
   BoltIcon,
+  ClockIcon,
   PlayCircleIcon,
   UsersIcon,
 } from '@heroicons/react/24/solid'
@@ -24,7 +25,9 @@ function CardTop({
   users,
   totalDuration,
   ratings,
+  type,
 }) {
+  console.log(items)
   return (
     <AnimatePresence key={page}>
       <Card>
@@ -80,6 +83,12 @@ function CardTop({
                       {users ? item.user : item.title}
                     </h3>
                     <div className="flex flex-wrap items-center gap-2 text-xs italic sm:gap-3 sm:text-base">
+                      {item.year && (type === 'movies' || type === 'tv') && (
+                        <div className="flex items-center gap-2">
+                          <ClockIcon className="w-5 text-slate-900" />
+                          {item.year}
+                        </div>
+                      )}
                       {/* Plays */}
                       <div className="flex items-center gap-2">
                         <PlayCircleIcon className="w-5 text-slate-900" />

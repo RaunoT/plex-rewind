@@ -35,6 +35,7 @@ function Dashboard({ dashboard }) {
             setShowMusic(true)
           }}
           page="2 / 4"
+          type="movies"
         />
       ) : showMusic ? (
         <CardTop
@@ -77,6 +78,7 @@ function Dashboard({ dashboard }) {
             setShowMovies(true)
           }}
           page="1 / 4"
+          type="tv"
         />
       )}
     </div>
