@@ -32,11 +32,12 @@ function Rewind({ rewind, returnHome }) {
         >
           <div className="flex flex-col justify-center flex-1 pb-12">
             <CardHeading>
-              <span className="text-teal-300">TV Shows</span> took up{' '}
+              <span className="text-teal-300">TV Shows</span>
+              &nbsp;took up&nbsp;
               <span className="inline-block text-3xl font-semibold text-black">
                 {rewind.tv.duration}
-              </span>{' '}
-              of that time.
+              </span>
+              &nbsp;of that time.
             </CardHeading>
           </div>
         </CardTop>
@@ -60,10 +61,12 @@ function Rewind({ rewind, returnHome }) {
             <CardHeading>
               <span className="inline-block text-3xl font-semibold text-black">
                 {rewind.movies.duration}
-              </span>{' '}
-              of your time was spent watching{' '}
-              <span className="text-teal-300">Movies</span> on{' '}
-              <span className="text-yellow-500">Plex</span> this year.
+              </span>
+              &nbsp;of your time was spent watching&nbsp;
+              <span className="text-teal-300">Movies</span>
+              &nbsp;on&nbsp;
+              <span className="text-yellow-500">Plex</span>
+              &nbsp;this year.
             </CardHeading>
           </div>
         </CardTop>
@@ -81,11 +84,13 @@ function Rewind({ rewind, returnHome }) {
         >
           <div className="flex flex-col justify-center flex-1 pb-12">
             <CardHeading>
-              And to top it all off, you listened to{' '}
+              And to top it all off, you listened to&nbsp;
               <span className="inline-block text-3xl font-semibold text-black">
                 {rewind.music.duration}
-              </span>{' '}
-              of <span className="text-teal-300">Music</span> on{' '}
+              </span>
+              &nbsp;of&nbsp;
+              <span className="text-teal-300">Music</span>
+              &nbsp;on&nbsp;
               <span className="text-yellow-500">Plex</span>.
             </CardHeading>
           </div>
@@ -104,12 +109,14 @@ function Rewind({ rewind, returnHome }) {
         >
           <div className="flex flex-col justify-center flex-1 pb-12">
             <CardHeading>
-              You&apos;ve spent a <span className="text-teal-300">total</span>{' '}
-              of{' '}
+              You&apos;ve spent a <span className="text-teal-300">Total</span>
+              &nbsp;of&nbsp;
               <span className="inline-block text-3xl font-semibold text-black">
                 {rewind.totals.duration}
-              </span>{' '}
-              on <span className="text-yellow-500">Plex</span> this year!
+              </span>
+              &nbsp;on&nbsp;
+              <span className="text-yellow-500">Plex</span>
+              &nbsp;this year!
             </CardHeading>
           </div>
         </CardTop>
