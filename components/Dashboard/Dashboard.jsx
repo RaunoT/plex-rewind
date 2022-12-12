@@ -4,7 +4,7 @@ import CardTop from '../CardTop/CardTop'
 import DashboardTitle from '../DashboardTitle/DashboardTitle'
 
 function Dashboard({ dashboard, returnHome }) {
-  const [showShows, setShowShows] = useState(true)
+  const [showTv, setShowTv] = useState(true)
   const [showMovies, setShowMovies] = useState(false)
   const [showMusic, setShowMusic] = useState(false)
   const [showUsers, setShowUsers] = useState(false)
@@ -44,12 +44,13 @@ function Dashboard({ dashboard, returnHome }) {
           ratings={movieRatings}
           prevCard={() => {
             setShowMovies(false)
-            setShowShows(true)
+            setShowTv(true)
           }}
           nextCard={() => {
             setShowMovies(false)
             setShowMusic(true)
           }}
+          page="2 / 4"
         />
       ) : showMusic ? (
         <CardTop
@@ -60,12 +61,13 @@ function Dashboard({ dashboard, returnHome }) {
           totalDuration={musicTotal}
           prevCard={() => {
             setShowMusic(false)
-            setShowShows(true)
+            setShowTv(true)
           }}
           nextCard={() => {
             setShowMusic(false)
             setShowUsers(true)
           }}
+          page="3 / 4"
         />
       ) : showUsers ? (
         <CardTop
@@ -73,11 +75,12 @@ function Dashboard({ dashboard, returnHome }) {
           statTitle="Most active"
           statCategory="Users"
           items={users}
-          totalDuration={showsTotal}
+          totalDuration="coming soon"
           prevCard={() => {
             setShowUsers(false)
             setShowMusic(true)
           }}
+          page="4 / 4"
           users
         />
       ) : (
@@ -89,9 +92,10 @@ function Dashboard({ dashboard, returnHome }) {
           totalDuration={showsTotal}
           ratings={showRatings}
           nextCard={() => {
-            setShowShows(false)
+            setShowTv(false)
             setShowMovies(true)
           }}
+          page="1 / 4"
         />
       )}
     </>

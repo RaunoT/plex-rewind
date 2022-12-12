@@ -1,7 +1,8 @@
 import fetchRatings from './fetchRatings'
-import fetchTautulli from './fetchTautulli'
+import fetchFromTautulli from './fetchFromTautulli'
 
 async function fetchDashboard() {
+  // TODO: Catch errors
   const dataFiltersArr = [
     'top_movies',
     'top_tv',
@@ -12,15 +13,17 @@ async function fetchDashboard() {
   const ratingsFiltersArr = ['top_movies', 'top_tv']
   let ratingKeys = []
 
-  const promise = await fetchTautulli('get_home_stats', {
+  const promise = await fetchFromTautulli('get_home_stats', {
     stats_count: 5,
     stats_type: 'duration',
   })
+
   let data = promise.response.data
   data = data.filter((row) => {
     return dataFiltersArr.includes(row.stat_id)
   })
 
+  // Ratings
   data.forEach((stat) => {
     if (ratingsFiltersArr.includes(stat.stat_id)) {
       let keys = []
@@ -35,13 +38,13 @@ async function fetchDashboard() {
 
   const movieRatings = await fetchRatings(ratingKeys[0].top_movies)
   const tvRatings = await fetchRatings(ratingKeys[1].top_tv)
-
-  const ratingsObj = {
+  const ratings = {
     top_movies: movieRatings,
     top_tv: tvRatings,
   }
 
-  data.push({ ['stat_id']: 'ratings', ['ratings']: ratingsObj })
+  data.push({ ['stat_id']: 'ratings', ratings })
+
   return data
 }
 
