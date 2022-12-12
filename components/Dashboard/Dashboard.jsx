@@ -60,7 +60,7 @@ function Dashboard({ dashboard }) {
           statTitle="Most active"
           statCategory="Users"
           items={dashboard.users.top}
-          totalDuration="coming soon"
+          totalDuration={dashboard.users.duration}
           prevCard={() => {
             setShowUsers(false)
             setShowMusic(true)

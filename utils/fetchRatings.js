@@ -24,7 +24,6 @@ async function fetchRatings(ratingKeys) {
   })
 
   const combinedRatings = [...Array(ratingKeys.length)].map((_, i) => ({
-    ratingKey: ratingKeys[i],
     critic: criticRatingsArray[i],
     audience: audienceRatingsArray[i],
   }))

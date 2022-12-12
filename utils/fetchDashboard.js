@@ -24,6 +24,14 @@ async function fetchDashboard() {
     return dataFiltersArr.includes(row.stat_id)
   })
 
+  // Users
+  const usersTotalDuration = await fetchFromTautulli('get_history', {
+    length: 0,
+    after: new Date(new Date().setDate(new Date().getDate() - 30))
+      .toISOString()
+      .split('T')[0],
+  })
+
   // Ratings
   data.forEach((stat) => {
     if (ratingsFiltersArr.includes(stat.stat_id)) {
@@ -38,6 +46,7 @@ async function fetchDashboard() {
     }
   })
 
+  // TODO: Make into 1 fetch
   const movieRatings = await fetchRatings(ratingKeys[0].top_movies)
   const tvRatings = await fetchRatings(ratingKeys[1].top_tv)
   const ratings = {
@@ -76,6 +85,10 @@ async function fetchDashboard() {
       top: data.filter((stat) => stat.stat_id === 'top_music')[0].rows,
     },
     users: {
+      duration: usersTotalDuration.response.data.total_duration.replace(
+        /mins.*/,
+        'mins',
+      ),
       top: data.filter((stat) => stat.stat_id === 'top_users')[0].rows,
     },
   }
