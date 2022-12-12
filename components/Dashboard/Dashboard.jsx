@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import getStats from '../../utils/getStats'
 import CardTop from '../CardTop/CardTop'
 import DashboardTitle from '../DashboardTitle/DashboardTitle'
@@ -29,6 +29,13 @@ function Dashboard({ dashboard, returnHome }) {
     'top_users',
     'artist',
   )
+
+  useEffect(() => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'instant',
+    })
+  }, [showTv, showMovies, showMusic, showUsers])
 
   return (
     <>

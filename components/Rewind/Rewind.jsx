@@ -1,14 +1,20 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import CardHeading from '../CardHeading/CardHeading'
 import CardTop from '../CardTop/CardTop'
 import RewindTitle from '../RewindTitle/RewindTitle'
 
 function Rewind({ rewind, returnHome }) {
-  console.log(rewind)
   const [showTotals, setShowTotals] = useState(true)
   const [showTv, setShowTv] = useState(false)
   const [showMovies, setShowMovies] = useState(false)
   const [showMusic, setShowMusic] = useState(false)
+
+  useEffect(() => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'instant',
+    })
+  }, [showTotals, showTv, showMovies, showMusic])
 
   return (
     <>
