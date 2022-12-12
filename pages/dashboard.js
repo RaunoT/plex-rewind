@@ -12,7 +12,7 @@ export async function getStaticProps() {
     props: {
       dashboard,
     },
-    revalidate: 3600,
+    revalidate: 1800,
   }
 }
 
