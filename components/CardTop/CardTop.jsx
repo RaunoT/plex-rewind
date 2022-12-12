@@ -7,7 +7,7 @@ import {
   MusicalNoteIcon,
   PlayCircleIcon,
   UsersIcon,
-} from '@heroicons/react/24/solid'
+} from '@heroicons/react/24/outline'
 import { AnimatePresence, motion } from 'framer-motion'
 import Image from 'next/image.js'
 import { animateSlideUp } from '../../styles/motion.js'

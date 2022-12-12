@@ -1,3 +1,8 @@
+import {
+  BoltIcon,
+  MusicalNoteIcon,
+  PlayCircleIcon,
+} from '@heroicons/react/24/outline'
 import { useEffect, useState } from 'react'
 import CardHeading from '../CardHeading/CardHeading'
 import CardTop from '../CardTop/CardTop'
@@ -37,7 +42,10 @@ function Rewind({ rewind }) {
         >
           <div className="flex flex-col justify-center flex-1 pb-12">
             <CardHeading>
-              <span className="text-teal-300">TV Shows</span>
+              <span className="inline-flex items-center text-teal-300">
+                TV Shows
+                <PlayCircleIcon className="w-8 ml-1" />
+              </span>
               &nbsp;took up&nbsp;
               <span className="inline-block text-3xl font-semibold text-black">
                 {rewind.tv.duration}
@@ -68,7 +76,10 @@ function Rewind({ rewind }) {
                 {rewind.movies.duration}
               </span>
               &nbsp;of your time was spent watching&nbsp;
-              <span className="text-teal-300">Movies</span>
+              <span className="inline-flex text-teal-300">
+                Movies
+                <PlayCircleIcon className="w-8 ml-1" />
+              </span>
               &nbsp;on&nbsp;
               <span className="text-yellow-500">Plex</span>
               &nbsp;this year.
@@ -93,7 +104,10 @@ function Rewind({ rewind }) {
                 {rewind.music.duration}
               </span>
               &nbsp;of&nbsp;
-              <span className="text-teal-300">Music</span>
+              <span className="inline-flex items-center text-teal-300">
+                Music
+                <MusicalNoteIcon className="w-8 ml-1" />
+              </span>
               &nbsp;on&nbsp;
               <span className="text-yellow-500">Plex</span>.
             </CardHeading>
@@ -112,7 +126,11 @@ function Rewind({ rewind }) {
         >
           <div className="flex flex-col justify-center flex-1 pb-12">
             <CardHeading>
-              You&apos;ve spent a <span className="text-teal-300">Total</span>
+              You&apos;ve spent a&nbsp;
+              <span className="inline-flex items-center text-teal-300">
+                Total
+                <BoltIcon className="w-8 ml-1" />
+              </span>
               &nbsp;of&nbsp;
               <span className="inline-block text-3xl font-semibold text-black">
                 {rewind.totals.duration}
