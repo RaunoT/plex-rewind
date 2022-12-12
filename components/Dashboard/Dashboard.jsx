@@ -52,6 +52,7 @@ function Dashboard({ dashboard }) {
             setShowUsers(true)
           }}
           page="3 / 4"
+          type="music"
         />
       ) : showUsers ? (
         <CardTop

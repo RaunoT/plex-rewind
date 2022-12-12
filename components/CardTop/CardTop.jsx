@@ -4,6 +4,7 @@ import {
   ArrowLongRightIcon,
   BoltIcon,
   ClockIcon,
+  MusicalNoteIcon,
   PlayCircleIcon,
   UsersIcon,
 } from '@heroicons/react/24/solid'
@@ -91,7 +92,11 @@ function CardTop({
                       )}
                       {/* Plays */}
                       <div className="flex items-center gap-2">
-                        <PlayCircleIcon className="w-5 text-slate-900" />
+                        {type === 'music' ? (
+                          <MusicalNoteIcon className="w-5 text-slate-900" />
+                        ) : (
+                          <PlayCircleIcon className="w-5 text-slate-900" />
+                        )}
                         {item.total_plays}
                         <span>{item.total_plays === 1 ? 'play' : 'plays'}</span>
                       </div>
