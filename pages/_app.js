@@ -7,7 +7,10 @@ function MyApp({ Component, pageProps }) {
     <div className="min-h-screen text-white bg-gradient-to-br from-indigo-900 via-neutral-800 to-neutral-900">
       <Head>
         <title>Plex Rewind</title>
-        <meta name="description" content="Plex Rewind" />
+        <meta
+          name="description"
+          content="Present user statistics and habits in a beautiful and organized manner"
+        />
         <Favicon />
       </Head>
 

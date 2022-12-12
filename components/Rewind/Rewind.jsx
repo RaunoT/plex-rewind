@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import CardHeading from '../CardHeading/CardHeading'
 import CardTop from '../CardTop/CardTop'
-import RewindTitle from '../RewindTitle/RewindTitle'
+import PageTitle from '../PageTitle/PageTitle'
 
 function Rewind({ rewind }) {
   const [showTotals, setShowTotals] = useState(true)
@@ -18,7 +18,7 @@ function Rewind({ rewind }) {
 
   return (
     <div className="w-full max-w-2xl">
-      <RewindTitle />
+      <PageTitle />
 
       {showTv ? (
         <CardTop

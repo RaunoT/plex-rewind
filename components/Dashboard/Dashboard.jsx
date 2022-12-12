@@ -1,34 +1,12 @@
 import { useEffect, useState } from 'react'
-import getStats from '../../utils/getStats'
 import CardTop from '../CardTop/CardTop'
-import DashboardTitle from '../DashboardTitle/DashboardTitle'
+import PageTitle from '../PageTitle/PageTitle'
 
 function Dashboard({ dashboard }) {
   const [showTv, setShowTv] = useState(true)
   const [showMovies, setShowMovies] = useState(false)
   const [showMusic, setShowMusic] = useState(false)
   const [showUsers, setShowUsers] = useState(false)
-
-  const {
-    items: shows,
-    duration: showsTotal,
-    ratings: showRatings,
-  } = getStats(dashboard, 'top_tv', 'show')
-  const {
-    items: movies,
-    duration: moviesTotal,
-    ratings: movieRatings,
-  } = getStats(dashboard, 'top_movies', 'movie')
-  const { items: artists, duration: musicTotal } = getStats(
-    dashboard,
-    'top_music',
-    'artist',
-  )
-  const { items: users, duration: usersTotal } = getStats(
-    dashboard,
-    'top_users',
-    'artist',
-  )
 
   useEffect(() => {
     window.scrollTo({
@@ -39,16 +17,16 @@ function Dashboard({ dashboard }) {
 
   return (
     <div className="w-full max-w-2xl">
-      <DashboardTitle />
+      <PageTitle title="Dashboard" subtitle="last 30 days" />
 
       {showMovies ? (
         <CardTop
           className="bg-gradient-to-br from-teal-700 via-indigo-700 to-purple-800"
           statTitle="Most watched"
           statCategory="Movies"
-          items={movies}
-          totalDuration={moviesTotal}
-          ratings={movieRatings}
+          items={dashboard.movies.top}
+          totalDuration={dashboard.movies.duration}
+          ratings={dashboard.movies.ratings}
           prevCard={() => {
             setShowMovies(false)
             setShowTv(true)
@@ -64,8 +42,8 @@ function Dashboard({ dashboard }) {
           className="bg-gradient-to-br from-teal-700 via-indigo-700 to-purple-800"
           statTitle="Most played"
           statCategory="Artists"
-          items={artists}
-          totalDuration={musicTotal}
+          items={dashboard.music.top}
+          totalDuration={dashboard.music.duration}
           prevCard={() => {
             setShowMusic(false)
             setShowTv(true)
@@ -81,7 +59,7 @@ function Dashboard({ dashboard }) {
           className="bg-gradient-to-br from-teal-700 via-indigo-700 to-purple-800"
           statTitle="Most active"
           statCategory="Users"
-          items={users}
+          items={dashboard.users.top}
           totalDuration="coming soon"
           prevCard={() => {
             setShowUsers(false)
@@ -95,9 +73,9 @@ function Dashboard({ dashboard }) {
           className="bg-gradient-to-br from-teal-700 via-indigo-700 to-purple-800"
           statTitle="Most watched"
           statCategory="TV shows"
-          items={shows}
-          totalDuration={showsTotal}
-          ratings={showRatings}
+          items={dashboard.tv.top}
+          totalDuration={dashboard.tv.duration}
+          ratings={dashboard.tv.ratings}
           nextCard={() => {
             setShowTv(false)
             setShowMovies(true)

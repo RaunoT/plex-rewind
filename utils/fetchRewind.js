@@ -26,10 +26,12 @@ async function fetchRewind(userId) {
   )
 
   const rewind = {
+    period: 'lifetime',
+    user: userId,
     totals: { duration: secondsToTime(totalStats.response.data[0].total_time) },
-    music: { duration: secondsToTime(musicStatsFiltered[0].total_time) },
     tv: { duration: secondsToTime(tvStatsFiltered[0].total_time) },
     movies: { duration: secondsToTime(movieStatsFiltered[0].total_time) },
+    music: { duration: secondsToTime(musicStatsFiltered[0].total_time) },
   }
 
   return rewind
