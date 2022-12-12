@@ -85,6 +85,7 @@ function CardTop({
                       <div className="flex items-center gap-2">
                         <PlayCircleIcon className="w-5 text-slate-900" />
                         {item.total_plays}
+                        <span>{item.total_plays === 1 ? 'play' : 'plays'}</span>
                       </div>
                       {/* Duration */}
                       <div className="flex items-center gap-2 sm:text-sm">
