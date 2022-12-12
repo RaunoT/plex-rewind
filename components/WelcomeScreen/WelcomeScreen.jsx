@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion'
+import Link from 'next/link'
 import { animateFadeIn } from '../../styles/motion'
 
 function WelcomeScreen({ startDashboard, startRewind }) {
@@ -22,29 +23,29 @@ function WelcomeScreen({ startDashboard, startRewind }) {
         </motion.span>
       </h1>
 
-      {/* Get started */}
-      <motion.button
-        className="mx-auto mb-6 button"
-        onClick={startRewind}
+      {/* TODO: Maybe we can use <motion /> as <Link /> already */}
+      <motion.div
         variants={animateFadeIn}
         initial="initial"
         animate="animate"
         transition={{ duration: 0.8 }}
       >
-        Get started
-      </motion.button>
+        <Link href="/rewind" className="mx-auto mb-6 button">
+          Get started
+        </Link>
+      </motion.div>
 
-      {/* Dashboard */}
-      <motion.button
-        className="text-slate-300 hover:opacity-75"
-        onClick={startDashboard}
+      {/* TODO: Maybe we can use <motion /> as <Link /> already */}
+      <motion.div
         variants={animateFadeIn}
         initial="initial"
         animate="animate"
         transition={{ duration: 0.8, delay: 0.4 }}
       >
-        Dashboard
-      </motion.button>
+        <Link href="/dashboard" className="text-slate-300 hover:opacity-75">
+          Dashboard
+        </Link>
+      </motion.div>
     </div>
   )
 }

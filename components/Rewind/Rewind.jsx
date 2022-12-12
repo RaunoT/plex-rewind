@@ -3,7 +3,7 @@ import CardHeading from '../CardHeading/CardHeading'
 import CardTop from '../CardTop/CardTop'
 import RewindTitle from '../RewindTitle/RewindTitle'
 
-function Rewind({ rewind, returnHome }) {
+function Rewind({ rewind }) {
   const [showTotals, setShowTotals] = useState(true)
   const [showTv, setShowTv] = useState(false)
   const [showMovies, setShowMovies] = useState(false)
@@ -17,8 +17,8 @@ function Rewind({ rewind, returnHome }) {
   }, [showTotals, showTv, showMovies, showMusic])
 
   return (
-    <>
-      <RewindTitle returnHome={returnHome} />
+    <div className="w-full max-w-2xl">
+      <RewindTitle />
 
       {showTv ? (
         <CardTop
@@ -127,7 +127,7 @@ function Rewind({ rewind, returnHome }) {
           </div>
         </CardTop>
       )}
-    </>
+    </div>
   )
 }
 

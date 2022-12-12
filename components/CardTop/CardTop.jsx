@@ -28,7 +28,7 @@ function CardTop({
 }) {
   return (
     <AnimatePresence key={page}>
-      <Card className={`animate-bg-gradient--short ${className}`}>
+      <Card className={className}>
         <h2 className="flex items-center mb-1 text-sm font-medium text-black uppercase sm:mb-2 sm:text-xl">
           <span>{statTitle}</span>
           <span className="mx-1 sm:mx-2">-</span>
@@ -52,7 +52,7 @@ function CardTop({
         {children}
 
         {items && (
-          <ul className="mt-4 overflow-y-auto sm:mt-6">
+          <ul className="mt-4 sm:mt-6">
             {items.map((item, i) => {
               return (
                 <motion.li
@@ -88,7 +88,7 @@ function CardTop({
                         <span>{item.total_plays === 1 ? 'play' : 'plays'}</span>
                       </div>
                       {/* Duration */}
-                      <div className="flex items-center gap-2 sm:text-sm">
+                      <div className="flex items-center gap-2">
                         <BoltIcon className="w-5 text-slate-900" />
                         {secondsToTime(item.total_duration)}
                       </div>

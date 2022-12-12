@@ -3,7 +3,7 @@ import getStats from '../../utils/getStats'
 import CardTop from '../CardTop/CardTop'
 import DashboardTitle from '../DashboardTitle/DashboardTitle'
 
-function Dashboard({ dashboard, returnHome }) {
+function Dashboard({ dashboard }) {
   const [showTv, setShowTv] = useState(true)
   const [showMovies, setShowMovies] = useState(false)
   const [showMusic, setShowMusic] = useState(false)
@@ -38,8 +38,8 @@ function Dashboard({ dashboard, returnHome }) {
   }, [showTv, showMovies, showMusic, showUsers])
 
   return (
-    <>
-      <DashboardTitle returnHome={returnHome} />
+    <div className="w-full max-w-2xl">
+      <DashboardTitle />
 
       {showMovies ? (
         <CardTop
@@ -105,7 +105,7 @@ function Dashboard({ dashboard, returnHome }) {
           page="1 / 4"
         />
       )}
-    </>
+    </div>
   )
 }
 
