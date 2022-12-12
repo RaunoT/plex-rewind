@@ -1,51 +1,34 @@
-import Link from 'next/link'
-import { motion } from 'framer-motion'
-import { animateFadeIn } from '../styles/motion'
+import { useState } from 'react'
+import Dashboard from '../components/Dashboard/Dashboard'
+import Rewind from '../components/Rewind/Rewind'
+import WelcomeScreen from '../components/WelcomeScreen/WelcomeScreen'
+import fetchDashboard from '../utils/fetchDashboard'
+import fetchRewind from '../utils/fetchRewind'
 
-export default function Home() {
-  return (
-    <div className="text-center">
-      <h1 className="flex items-center gap-4 mb-6 text-4xl font-bold">
-        <motion.img
-          src="/plex.svg"
-          alt="Plex logo"
-          className="h-12"
-          initial={{ opacity: 0, translateX: '-50px' }}
-          animate={{ opacity: 1, translateX: 0 }}
-          transition={{ duration: 0.8 }}
-        />
-        <motion.span
-          initial={{ opacity: 0, translateX: '50px' }}
-          animate={{ opacity: 1, translateX: 0 }}
-          transition={{ duration: 0.8 }}
-        >
-          Rewind
-        </motion.span>
-      </h1>
+export default function Home({ dashboard, rewind }) {
+  const [isDashboard, setIsDashboard] = useState(false)
+  const [isRewind, setIsRewind] = useState(false)
 
-      {/* TODO: Maybe we can use <motion /> as <Link /> already */}
-      <motion.div
-        variants={animateFadeIn}
-        initial="initial"
-        animate="animate"
-        transition={{ duration: 0.8 }}
-      >
-        <Link href="/rewind/total" className="mx-auto mb-6 button">
-          Get started
-        </Link>
-      </motion.div>
-
-      {/* TODO: Maybe we can use <motion /> as <Link /> already */}
-      <motion.div
-        variants={animateFadeIn}
-        initial="initial"
-        animate="animate"
-        transition={{ duration: 0.8, delay: 0.4 }}
-      >
-        <Link href="/dashboard/tv" className="text-slate-300 hover:opacity-75">
-          Dashboard
-        </Link>
-      </motion.div>
-    </div>
+  return isDashboard ? (
+    <Dashboard dashboard={dashboard} returnHome={() => setIsDashboard(false)} />
+  ) : isRewind ? (
+    <Rewind rewind={rewind} returnHome={() => setIsRewind(false)} />
+  ) : (
+    <WelcomeScreen
+      startDashboard={() => setIsDashboard(true)}
+      startRewind={() => setIsRewind(true)}
+    />
   )
+}
+
+export async function getServerSideProps() {
+  const dashboard = await fetchDashboard()
+  const rewind = await fetchRewind(8898770)
+
+  return {
+    props: {
+      dashboard,
+      rewind,
+    },
+  }
 }

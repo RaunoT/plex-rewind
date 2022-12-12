@@ -8,7 +8,6 @@ import {
 } from '@heroicons/react/24/solid'
 import { motion } from 'framer-motion'
 import Image from 'next/image.js'
-import Link from 'next/link'
 import { animateSlideUp } from '../../styles/motion.js'
 import secondsToTime from '../../utils/secondsToTime.js'
 import Card from '../Card/Card'
@@ -19,8 +18,8 @@ function CardTop({
   statCategory,
   subtitle,
   page,
-  prevCard = '',
-  nextCard = '',
+  prevCard = false,
+  nextCard = false,
   className,
   items,
   users,
@@ -53,7 +52,7 @@ function CardTop({
 
       {items && (
         <ul className="mt-4 overflow-y-auto sm:mt-6">
-          {items.rows.map((item, i) => {
+          {items.map((item, i) => {
             return (
               <motion.li
                 key={i}
@@ -62,6 +61,7 @@ function CardTop({
                 initial="initial"
                 animate="animate"
                 transition={{ delay: i * 0.1 }}
+                exit={{ opacity: 0 }}
               >
                 <Image
                   height={80}
@@ -117,15 +117,19 @@ function CardTop({
 
       <div className="flex items-center justify-between pt-5 mt-auto text-sm">
         <div className="flex-1">
-          <Link href={prevCard} className="block w-5">
-            {prevCard && <ArrowLongLeftIcon className="text-teal-300" />}
-          </Link>
+          {prevCard && (
+            <button onClick={prevCard} className="block w-5">
+              <ArrowLongLeftIcon className="text-teal-300" />
+            </button>
+          )}
         </div>
         <span className="flex-1 text-center">{page}</span>
         <div className="flex-1 text-right">
-          <Link href={nextCard} className="block w-5 ml-auto">
-            {nextCard && <ArrowLongRightIcon className="text-teal-300" />}
-          </Link>
+          {nextCard && (
+            <button onClick={nextCard} className="block w-5 ml-auto">
+              <ArrowLongRightIcon className="text-teal-300" />
+            </button>
+          )}
         </div>
       </div>
     </Card>

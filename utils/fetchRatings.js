@@ -1,7 +1,7 @@
-import fetchStats from './fetchTautulli'
+import fetchStats from './fetchFromTautulli'
 
 async function fetchRatings(ratingKeys) {
-  // TODO: Add try-catch
+  // TODO: Catch errors
   let criticRatingsArray = []
   let audienceRatingsArray = []
   const ratingsPromises = ratingKeys.map((ratingKey) =>
