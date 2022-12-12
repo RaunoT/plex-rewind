@@ -46,7 +46,7 @@ function Dashboard({ dashboard }) {
           totalDuration={dashboard.music.duration}
           prevCard={() => {
             setShowMusic(false)
-            setShowTv(true)
+            setShowMovies(true)
           }}
           nextCard={() => {
             setShowMusic(false)
