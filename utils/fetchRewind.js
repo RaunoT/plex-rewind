@@ -1,37 +1,43 @@
 import fetchFromTautulli from './fetchFromTautulli'
-import secondsToTime from './secondsToTime'
+import { FIRST_OF_CURRENT_YEAR, removeAfterMinutes } from './time'
 
 async function fetchRewind(userId) {
-  const totalStats = await fetchFromTautulli('get_user_watch_time_stats', {
-    user_id: 8898770,
-    query_days: 0,
+  const totalStats = await fetchFromTautulli('get_history', {
+    user_id: userId,
+    length: 0,
+    after: FIRST_OF_CURRENT_YEAR,
   })
-  const musicStats = await fetchFromTautulli('get_library_user_stats', {
-    section_id: 1,
-  })
-  const musicStatsFiltered = musicStats.response.data.filter(
-    (stat) => stat.user_id === userId,
-  )
-  const tvStats = await fetchFromTautulli('get_library_user_stats', {
+  const tvStats = await fetchFromTautulli('get_history', {
+    user_id: userId,
     section_id: 2,
+    after: FIRST_OF_CURRENT_YEAR,
   })
-  const tvStatsFiltered = tvStats.response.data.filter(
-    (stat) => stat.user_id === userId,
-  )
-  const movieStats = await fetchFromTautulli('get_library_user_stats', {
+  const movieStats = await fetchFromTautulli('get_history', {
+    user_id: userId,
     section_id: 3,
+    after: FIRST_OF_CURRENT_YEAR,
   })
-  const movieStatsFiltered = movieStats.response.data.filter(
-    (stat) => stat.user_id === userId,
-  )
+  const musicStats = await fetchFromTautulli('get_history', {
+    user_id: userId,
+    section_id: 1,
+    after: FIRST_OF_CURRENT_YEAR,
+  })
 
   const rewind = {
     period: 'lifetime',
     user: userId,
-    totals: { duration: secondsToTime(totalStats.response.data[0].total_time) },
-    tv: { duration: secondsToTime(tvStatsFiltered[0].total_time) },
-    movies: { duration: secondsToTime(movieStatsFiltered[0].total_time) },
-    music: { duration: secondsToTime(musicStatsFiltered[0].total_time) },
+    totals: {
+      duration: removeAfterMinutes(totalStats.response.data.total_duration),
+    },
+    tv: {
+      duration: removeAfterMinutes(tvStats.response.data.total_duration),
+    },
+    movies: {
+      duration: removeAfterMinutes(movieStats.response.data.total_duration),
+    },
+    music: {
+      duration: removeAfterMinutes(musicStats.response.data.total_duration),
+    },
   }
 
   return rewind

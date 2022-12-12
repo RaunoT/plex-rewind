@@ -1,6 +1,6 @@
 import fetchRatings from './fetchRatings'
 import fetchFromTautulli from './fetchFromTautulli'
-import secondsToTime from './secondsToTime'
+import { DAYS_AGO_30, removeAfterMinutes, secondsToTime } from './time'
 
 async function fetchDashboard() {
   // TODO: Catch errors
@@ -27,9 +27,7 @@ async function fetchDashboard() {
   // Users
   const usersTotalDuration = await fetchFromTautulli('get_history', {
     length: 0,
-    after: new Date(new Date().setDate(new Date().getDate() - 30))
-      .toISOString()
-      .split('T')[0],
+    after: DAYS_AGO_30,
   })
 
   // Ratings
@@ -85,9 +83,8 @@ async function fetchDashboard() {
       top: data.filter((stat) => stat.stat_id === 'top_music')[0].rows,
     },
     users: {
-      duration: usersTotalDuration.response.data.total_duration.replace(
-        /mins.*/,
-        'mins',
+      duration: removeAfterMinutes(
+        usersTotalDuration.response.data.total_duration,
       ),
       top: data.filter((stat) => stat.stat_id === 'top_users')[0].rows,
     },

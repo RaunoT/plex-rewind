@@ -21,7 +21,6 @@ function Dashboard({ dashboard }) {
 
       {showMovies ? (
         <CardTop
-          className="bg-gradient-to-br from-teal-700 via-indigo-700 to-purple-800"
           statTitle="Most watched"
           statCategory="Movies"
           items={dashboard.movies.top}
@@ -39,7 +38,6 @@ function Dashboard({ dashboard }) {
         />
       ) : showMusic ? (
         <CardTop
-          className="bg-gradient-to-br from-teal-700 via-indigo-700 to-purple-800"
           statTitle="Most played"
           statCategory="Artists"
           items={dashboard.music.top}
@@ -56,7 +54,6 @@ function Dashboard({ dashboard }) {
         />
       ) : showUsers ? (
         <CardTop
-          className="bg-gradient-to-br from-teal-700 via-indigo-700 to-purple-800"
           statTitle="Most active"
           statCategory="Users"
           items={dashboard.users.top}
@@ -70,7 +67,6 @@ function Dashboard({ dashboard }) {
         />
       ) : (
         <CardTop
-          className="bg-gradient-to-br from-teal-700 via-indigo-700 to-purple-800"
           statTitle="Most watched"
           statCategory="TV shows"
           items={dashboard.tv.top}

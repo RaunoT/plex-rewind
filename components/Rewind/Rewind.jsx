@@ -33,7 +33,6 @@ function Rewind({ rewind }) {
             setShowTv(false)
             setShowMovies(true)
           }}
-          className="bg-gradient-to-br from-teal-700 via-indigo-700 to-purple-800"
           subtitle="Rauno T"
         >
           <div className="flex flex-col justify-center flex-1 pb-12">
@@ -43,7 +42,8 @@ function Rewind({ rewind }) {
               <span className="inline-block text-3xl font-semibold text-black">
                 {rewind.tv.duration}
               </span>
-              &nbsp;of that time.
+              &nbsp;of your year on&nbsp;
+              <span className="text-yellow-500">Plex</span>.
             </CardHeading>
           </div>
         </CardTop>
@@ -60,7 +60,6 @@ function Rewind({ rewind }) {
             setShowMovies(false)
             setShowMusic(true)
           }}
-          className="bg-gradient-to-br from-teal-700 via-indigo-700 to-purple-800"
           subtitle="Rauno T"
         >
           <div className="flex flex-col justify-center flex-1 pb-12">
@@ -85,7 +84,6 @@ function Rewind({ rewind }) {
             setShowMusic(false)
             setShowMovies(true)
           }}
-          className="bg-gradient-to-br from-teal-700 via-indigo-700 to-purple-800"
           subtitle="Rauno T"
         >
           <div className="flex flex-col justify-center flex-1 pb-12">
@@ -110,7 +108,6 @@ function Rewind({ rewind }) {
             setShowTotals(false)
             setShowTv(true)
           }}
-          className="bg-gradient-to-br from-teal-700 via-indigo-700 to-purple-800"
           subtitle="Rauno T"
         >
           <div className="flex flex-col justify-center flex-1 pb-12">

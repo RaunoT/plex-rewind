@@ -9,7 +9,7 @@ import {
 import { AnimatePresence, motion } from 'framer-motion'
 import Image from 'next/image.js'
 import { animateSlideUp } from '../../styles/motion.js'
-import secondsToTime from '../../utils/secondsToTime.js'
+import { secondsToTime } from '../../utils/time.js'
 import Card from '../Card/Card'
 
 function CardTop({
@@ -20,7 +20,6 @@ function CardTop({
   page,
   prevCard = false,
   nextCard = false,
-  className,
   items,
   users,
   totalDuration,
@@ -28,7 +27,7 @@ function CardTop({
 }) {
   return (
     <AnimatePresence key={page}>
-      <Card className={className}>
+      <Card>
         <h2 className="flex items-center mb-1 text-sm font-medium text-black uppercase sm:mb-2 sm:text-xl">
           <span>{statTitle}</span>
           <span className="mx-1 sm:mx-2">-</span>
