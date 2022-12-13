@@ -12,7 +12,7 @@ export async function getStaticProps() {
     props: {
       rewind,
     },
-    revalidate: 1800,
+    revalidate: 300,
   }
 }
 
