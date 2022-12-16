@@ -1,12 +1,12 @@
 import {
   ArrowLongLeftIcon,
   ArrowLongRightIcon,
-  BoltIcon,
+  CalendarDaysIcon,
   ClockIcon,
   MusicalNoteIcon,
   PlayCircleIcon,
   StarIcon,
-} from '@heroicons/react/24/outline'
+} from '@heroicons/react/24/solid'
 import { AnimatePresence, motion } from 'framer-motion'
 import Image from 'next/image.js'
 import { animateSlideUp } from '../../styles/motion.js'
@@ -89,7 +89,7 @@ function CardTop({
                     <div className="flex flex-wrap items-center gap-2 text-xs italic sm:gap-3 sm:text-base">
                       {item.year && (type === 'movies' || type === 'tv') && (
                         <div className="flex items-center gap-1 sm:gap-2">
-                          <ClockIcon className="w-5 text-slate-900" />
+                          <CalendarDaysIcon className="w-5 text-slate-900" />
                           {item.year}
                         </div>
                       )}
@@ -105,7 +105,7 @@ function CardTop({
                       </div>
                       {/* Duration */}
                       <div className="flex items-center gap-1 sm:gap-2">
-                        <BoltIcon className="w-5 text-slate-900" />
+                        <ClockIcon className="w-5 text-slate-900" />
                         {secondsToTime(item.total_duration)}
                       </div>
                       {/* Ratings */}

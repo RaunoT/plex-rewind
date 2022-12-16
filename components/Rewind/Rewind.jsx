@@ -1,5 +1,5 @@
 import {
-  BoltIcon,
+  ClockIcon,
   MusicalNoteIcon,
   PlayCircleIcon,
 } from '@heroicons/react/24/outline'
@@ -125,7 +125,7 @@ function Rewind({ rewind }) {
               You&apos;ve spent a{' '}
               <span className="inline-flex items-center text-teal-300">
                 Total
-                <BoltIcon className="w-8 ml-1" />
+                <ClockIcon className="w-8 ml-1" />
               </span>{' '}
               of{' '}
               <span className="inline-block text-3xl font-semibold text-black">
