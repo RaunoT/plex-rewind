@@ -11,6 +11,7 @@
   "dependencies": {
     "@heroicons/react": "^2.0.13",
     "autoprefixer": "^10.4.13",
+    "classnames": "^2.3.2",
     "framer-motion": "^7.6.19",
     "lodash": "^4.17.21",
     "next": "13.0.6",

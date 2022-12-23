@@ -1,15 +1,16 @@
 import { ArrowLeftIcon } from '@heroicons/react/24/solid'
+import cx from 'classnames'
 import Link from 'next/link'
 import React from 'react'
 
 function PageTitle({ title, subtitle }) {
   return (
-    <div className="relative w-full mb-4 text-center uppercase min-h-[">
+    <div className="relative w-full mb-4 text-center uppercase">
       <Link
         href="/"
-        className={`w-5 block ml-5 ${
-          title ? 'absolute my-auto -translate-y-1/2 left-0 top-1/2' : ''
-        }`}
+        className={cx('w-5 block ml-5', {
+          'absolute my-auto -translate-y-1/2 left-0 top-1/2': title,
+        })}
       >
         <ArrowLeftIcon />
       </Link>
