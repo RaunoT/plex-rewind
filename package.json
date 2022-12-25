@@ -6,7 +6,21 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "lint-staged": "lint-staged",
+    "prettier": "prettier --write --ignore-unknown .",
+    "prettier:check": "prettier --check --ignore-unknown ."
+  },
+  "git": {
+    "pre-commit": "lint-staged"
+  },
+  "lint-staged": {
+    "*": "prettier --write --ignore-unknown"
+  },
+  "prettier": {
+    "semi": false,
+    "trailingComma": "all",
+    "singleQuote": true
   },
   "dependencies": {
     "@heroicons/react": "^2.0.13",
@@ -22,7 +36,7 @@
   "devDependencies": {
     "eslint": "^8.29.0",
     "eslint-config-next": "^13.0.6",
-    "eslint-config-prettier": "^8.5.0",
+    "lint-staged": "^13.1.0",
     "postcss": "^8.4.19",
     "prettier": "^2.8.1"
   }

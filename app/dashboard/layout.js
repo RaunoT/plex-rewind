@@ -1,4 +1,4 @@
-import PageTitle from '../../components/PageTitle/PageTitle'
+import PageTitle from '../../ui/PageTitle'
 
 function DashboardLayout({ children }) {
   return (

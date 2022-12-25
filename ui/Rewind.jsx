@@ -5,7 +5,7 @@ import {
 } from '@heroicons/react/24/outline'
 import { useEffect, useState } from 'react'
 import CardHeading from '../CardHeading/CardHeading'
-import CardTop from '../CardTop/CardTop'
+import CardContent from '../CardContent/CardContent'
 import PageTitle from '../PageTitle/PageTitle'
 
 function Rewind({ rewind }) {
@@ -26,7 +26,7 @@ function Rewind({ rewind }) {
       <PageTitle />
 
       {showTv ? (
-        <CardTop
+        <CardContent
           statTitle="Watch time"
           statCategory="TV Shows"
           page="2 / 4"
@@ -53,9 +53,9 @@ function Rewind({ rewind }) {
               of your year on <span className="text-yellow-500">Plex</span>.
             </CardHeading>
           </div>
-        </CardTop>
+        </CardContent>
       ) : showMovies ? (
-        <CardTop
+        <CardContent
           statTitle="Watch time"
           statCategory="Movies"
           page="3 / 4"
@@ -82,9 +82,9 @@ function Rewind({ rewind }) {
               on <span className="text-yellow-500">Plex</span> this year.
             </CardHeading>
           </div>
-        </CardTop>
+        </CardContent>
       ) : showMusic ? (
-        <CardTop
+        <CardContent
           statTitle="Listen time"
           statCategory="Music"
           page="4 / 4"
@@ -108,9 +108,9 @@ function Rewind({ rewind }) {
               on <span className="text-yellow-500">Plex</span>.
             </CardHeading>
           </div>
-        </CardTop>
+        </CardContent>
       ) : (
-        <CardTop
+        <CardContent
           statTitle="Watch time"
           statCategory="Total"
           page="1 / 4"
@@ -134,7 +134,7 @@ function Rewind({ rewind }) {
               on <span className="text-yellow-500">Plex</span> this year!
             </CardHeading>
           </div>
-        </CardTop>
+        </CardContent>
       )}
     </div>
   )

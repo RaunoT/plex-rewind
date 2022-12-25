@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from 'framer-motion'
-import { animateSlideUp } from '../../styles/motion'
+import { animateSlideUp } from '../utils/motion'
 
 function CardHeading({ children }) {
   return (

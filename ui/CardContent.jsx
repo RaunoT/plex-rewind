@@ -1,3 +1,6 @@
+// TODO: Remove this
+'use client'
+
 import {
   ArrowLongLeftIcon,
   ArrowLongRightIcon,
@@ -7,12 +10,13 @@ import {
   PlayCircleIcon,
   StarIcon,
 } from '@heroicons/react/24/solid'
-import { AnimatePresence, motion } from 'framer-motion'
+import { motion } from 'framer-motion'
 import Image from 'next/image.js'
-import { animateSlideUp } from '../../utils/motion.js'
-import { secondsToTime } from '../../utils/time.js'
+import Link from 'next/link.js'
+import { animateSlideUp } from '../utils/motion.js'
+import { secondsToTime } from '../utils/time.js'
 
-function CardTop({
+function CardContent({
   children,
   statTitle,
   statCategory,
@@ -27,7 +31,7 @@ function CardTop({
   type,
 }) {
   return (
-    <AnimatePresence key={page}>
+    <>
       <h2 className="flex items-center mb-1 text-sm font-medium text-black uppercase sm:mb-2 sm:text-xl">
         <span>{statTitle}</span>
         <span className="mx-1 sm:mx-2">-</span>
@@ -61,7 +65,6 @@ function CardTop({
                 initial="initial"
                 animate="animate"
                 transition={{ delay: i * 0.1 }}
-                exit={{ opacity: 0 }}
               >
                 <div className="relative flex-shrink-0 w-20 h-28">
                   <Image
@@ -126,22 +129,22 @@ function CardTop({
       <div className="flex items-center justify-between pt-5 mt-auto text-sm">
         <div className="flex-1">
           {prevCard && (
-            <button onClick={prevCard} className="block w-5">
+            <Link href={prevCard} className="block w-5">
               <ArrowLongLeftIcon className="text-teal-300" />
-            </button>
+            </Link>
           )}
         </div>
         <span className="flex-1 text-center">{page}</span>
         <div className="flex-1 text-right">
           {nextCard && (
-            <button onClick={nextCard} className="block w-5 ml-auto">
+            <Link href={nextCard} className="block w-5 ml-auto">
               <ArrowLongRightIcon className="text-teal-300" />
-            </button>
+            </Link>
           )}
         </div>
       </div>
-    </AnimatePresence>
+    </>
   )
 }
 
-export default CardTop
+export default CardContent

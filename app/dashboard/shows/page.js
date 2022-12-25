@@ -1,15 +1,24 @@
-async function getData() {
-  const res = await fetch(
-    'https://tautulli.rauno.eu/api/v2?apikey=0976ef8d45234737be74da14ef38de8c&cmd=get_home_stats&stat_id=top_tv&stats_count=5&stats_type=duration',
+import CardContent from '../../../ui/CardContent'
+import fetchFromTautulli from '../../../utils/fetchFromTautulli'
+
+export default async function Shows() {
+  const shows = await fetchFromTautulli('get_home_stats', {
+    stat_id: 'top_tv',
+    stats_count: 5,
+    stats_type: 'duration',
+    time_range: 30,
+  })
+
+  return (
+    <CardContent
+      statTitle="Most watched"
+      statCategory="TV shows"
+      items={shows.response.data.rows}
+      // totalDuration={dashboard.tv.duration}
+      // ratings={dashboard.tv.ratings}
+      nextCard="dashboard/movies"
+      page="1 / 4"
+      type="tv"
+    />
   )
-  // The return value is *not* serialized
-  // You can return Date, Map, Set, etc.
-  return res.json()
-}
-
-export default async function Dashboard() {
-  const data = await getData()
-  console.log(data)
-
-  return <h1>Hello, shows!</h1>
 }

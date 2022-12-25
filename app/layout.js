@@ -2,7 +2,7 @@
 'use client'
 
 import { usePathname } from 'next/navigation'
-import './globals.css'
+import '../styles/globals.css'
 import cx from 'classnames'
 
 export default function RootLayout({ children }) {
