@@ -10,4 +10,4 @@ function RewindLayout({ children }) {
   )
 }
 
-export default DashboardLayout
+export default RewindLayout

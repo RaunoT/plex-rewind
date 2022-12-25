@@ -22,8 +22,8 @@ function CardContent({
   statCategory,
   subtitle,
   page,
-  prevCard = false,
-  nextCard = false,
+  prevCard,
+  nextCard,
   items,
   users,
   totalDuration,
@@ -60,11 +60,11 @@ function CardContent({
             return (
               <motion.li
                 key={i}
-                className="flex items-center gap-3 mb-3 sm:mb-5 last:mb-0"
+                className="flex items-center gap-3 mb-3 sm:mb-5 last:mb-0 transiton-all"
                 variants={animateSlideUp}
                 initial="initial"
                 animate="animate"
-                transition={{ delay: i * 0.1 }}
+                transition={{ delay: i * 0.1, duration: 0.2 }}
               >
                 <div className="relative flex-shrink-0 w-20 h-28">
                   <Image
@@ -86,7 +86,7 @@ function CardContent({
                     {users ? item.user : item.title}
                   </h3>
                   <div className="flex flex-wrap items-center gap-2 text-xs italic sm:gap-3 sm:text-base">
-                    {item.year && (type === 'movies' || type === 'tv') && (
+                    {item.year && (type === 'movies' || type === 'shows') && (
                       <div className="flex items-center gap-1 sm:gap-2">
                         <CalendarDaysIcon className="w-5 text-slate-900" />
                         {item.year}

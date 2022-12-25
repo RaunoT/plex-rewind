@@ -1,5 +1,6 @@
 import CardContent from '../../../ui/CardContent'
 import fetchFromTautulli from '../../../utils/fetchFromTautulli'
+import { DAYS_AGO_30, removeAfterMinutes } from '../../../utils/time'
 
 export default async function Movies() {
   const movies = await fetchFromTautulli('get_home_stats', {
@@ -8,13 +9,20 @@ export default async function Movies() {
     stats_type: 'duration',
     time_range: 30,
   })
+  const totalDuration = await fetchFromTautulli('get_history', {
+    section_id: 3,
+    after: DAYS_AGO_30,
+    length: 0,
+  })
 
   return (
     <CardContent
       statTitle="Most watched"
       statCategory="Movies"
       items={movies.response.data.rows}
-      // totalDuration={dashboard.movies.duration}
+      totalDuration={removeAfterMinutes(
+        totalDuration.response.data.total_duration,
+      )}
       // ratings={dashboard.movies.ratings}
       prevCard="dashboard/shows"
       nextCard="dashboard/artists"

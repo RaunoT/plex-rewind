@@ -1,9 +1,9 @@
-import { PlayCircleIcon } from '@heroicons/react/24/outline'
+import { ClockIcon } from '@heroicons/react/24/solid'
 import CardContent from '../../../ui/CardContent'
 import CardHeading from '../../../ui/CardHeading'
 import fetchFromTautulli from '../../../utils/fetchFromTautulli'
 
-export default async function Shows() {
+export default async function Totals() {
   const shows = await fetchFromTautulli('get_home_stats', {
     stat_id: 'top_tv',
     stats_count: 5,
@@ -14,23 +14,26 @@ export default async function Shows() {
   return (
     <CardContent
       statTitle="Watch time"
-      statCategory="TV Shows"
-      page="2 / 4"
-      prevCard="/rewind/totals"
-      nextCard="/rewind/movies"
+      statCategory="Total"
+      page="1 / 4"
+      nextCard={() => {
+        setShowTotals(false)
+        setShowTv(true)
+      }}
       subtitle="Rauno T"
     >
       <div className="flex flex-col justify-center flex-1 pb-12">
         <CardHeading>
+          You&apos;ve spent a{' '}
           <span className="inline-flex items-center text-teal-300">
-            TV Shows
-            <PlayCircleIcon className="w-8 ml-1" />
+            Total
+            <ClockIcon className="w-8 ml-1" />
           </span>{' '}
-          took up{' '}
+          of{' '}
           <span className="inline-block text-3xl font-semibold text-black">
-            {rewind.tv.duration}
+            {rewind.totals.duration}
           </span>{' '}
-          of your year on <span className="text-yellow-500">Plex</span>.
+          on <span className="text-yellow-500">Plex</span> this year!
         </CardHeading>
       </div>
     </CardContent>
