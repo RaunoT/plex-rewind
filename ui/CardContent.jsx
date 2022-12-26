@@ -29,12 +29,13 @@ export default function CardContent({
   totalSize,
   ratings,
   type,
+  rewind,
 }) {
   const rankingColors = ['text-yellow-500', 'text-gray-400', 'text-yellow-700']
 
   return (
     <>
-      <h2 className="flex items-center mb-1 text-sm font-medium text-black uppercase sm:text-xl">
+      <h2 className="flex items-center mb-1 text-sm text-black uppercase sm:text-xl">
         <span>{statTitle}</span>
         <span className="mx-1 sm:mx-2" aria-hidden>
           -
@@ -42,20 +43,30 @@ export default function CardContent({
         <span className="font-bold text-center">{statCategory}</span>
       </h2>
 
-      {totalDuration && (
-        <div className="text-xs font-medium uppercase sm:text-sm text-slate-900">
-          All <span className="font-bold">{statCategory}</span>
-          <span className="mx-1 sm:mx-2" aria-hidden>
-            -
-          </span>
-          <span className="normal-case">{totalDuration}</span>
-          {totalSize && <span className="ml-1">({totalSize})</span>}
-        </div>
-      )}
+      <div className="text-xs uppercase sm:text-sm text-slate-900">
+        {totalDuration && (
+          <>
+            All <span className="font-bold">{statCategory}</span>
+            <span className="mx-1 sm:mx-2" aria-hidden>
+              -
+            </span>
+            <span className="normal-case">{totalDuration}</span>
+          </>
+        )}
+        {totalSize && <span className="ml-1">({totalSize})</span>}
+      </div>
 
       {subtitle && (
-        <div className="text-xs font-medium uppercase sm:text-sm text-slate-900">
+        <div className="text-xs uppercase sm:text-sm text-slate-900">
           {subtitle}
+          {rewind && (
+            <>
+              <span className="mx-1 sm:mx-2" aria-hidden>
+                -
+              </span>
+              <span>Rewind {new Date().getFullYear()}</span>
+            </>
+          )}
         </div>
       )}
 

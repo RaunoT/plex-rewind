@@ -31,8 +31,23 @@
   }
 
   .skeleton {
+    @apply animate-pulse;
+
     border-radius: theme('borderRadius.full');
-    background: theme('colors.slate.400');
+    background: theme('colors.slate.500');
+    padding: theme('spacing.2') theme('spacing.4');
+
+    &--large {
+      padding: theme('spacing.3') theme('spacing.6');
+    }
+  }
+
+  .animation-delay-200 {
+    animation-delay: 0.3s;
+  }
+
+  .animation-delay-400 {
+    animation-delay: 0.6s;
   }
 }
 

@@ -1,8 +1,7 @@
 import { PlayCircleIcon } from '@heroicons/react/24/outline'
 import { Suspense } from 'react'
 import CardContent from '../../../ui/CardContent'
-import CardText from '../../../ui/CardText'
-import CardTextFallback from '../../../ui/CardTextFallback'
+import CardText, { CardTextSkeleton } from '../../../ui/CardText'
 import { FIRST_OF_CURRENT_YEAR } from '../../../utils/constants'
 import fetchFromTautulli from '../../../utils/fetchFromTautulli'
 import { removeAfterMinutes } from '../../../utils/formatting'
@@ -21,15 +20,16 @@ async function getTotalDuration() {
 export default async function Shows() {
   return (
     <CardContent
-      statTitle="Watch time"
+      statTitle="Rewind"
       statCategory="TV Shows"
       page="2 / 4"
       prevCard="/rewind/total"
       nextCard="/rewind/movies"
       subtitle="Rauno T"
+      rewind
     >
       <div className="flex flex-col justify-center flex-1 sm:pb-12">
-        <Suspense fallback={<CardTextFallback />}>
+        <Suspense fallback={<CardTextSkeleton />}>
           <Stats promise={getTotalDuration()} />
         </Suspense>
       </div>
