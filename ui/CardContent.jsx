@@ -67,7 +67,7 @@ function CardContent({
                 variants={animateSlideUp}
                 initial="initial"
                 animate="animate"
-                transition={{ delay: i * 0.1, duration: 0.2 }}
+                transition={{ delay: i * 0.1, duration: 0.25 }}
               >
                 <div className="relative flex-shrink-0 w-20 h-28">
                   <Image

@@ -13,14 +13,18 @@ export default function Page() {
           src="/plex.svg"
           alt="Plex logo"
           className="h-12"
-          initial={{ opacity: 0, translateX: '-50px' }}
-          animate={{ opacity: 1, translateX: 0 }}
-          transition={{ duration: 0.8 }}
+          initial={{ opacity: 0, translateY: '-50px' }}
+          animate={{ opacity: 1, translateY: 0 }}
+          transition={{
+            type: 'spring',
+            bounce: 0.5,
+            delay: 0.7,
+          }}
         />
         <motion.span
           initial={{ opacity: 0, translateX: '50px' }}
           animate={{ opacity: 1, translateX: 0 }}
-          transition={{ duration: 0.8 }}
+          transition={{ duration: 0.7 }}
         >
           Rewind
         </motion.span>
@@ -31,7 +35,7 @@ export default function Page() {
         variants={animateFadeIn}
         initial="initial"
         animate="animate"
-        transition="transition"
+        transition={{ duration: 0.8 }}
       >
         <Link href="/rewind/total" className="mx-auto mb-6 button">
           Get started

@@ -10,6 +10,7 @@ function CardHeading({ children }) {
       variants={animateSlideUp}
       initial="initial"
       animate="animate"
+      transition={{ duration: 0.25 }}
       className="text-4xl italic"
     >
       {children}

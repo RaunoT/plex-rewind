@@ -2,18 +2,35 @@ import CardContent from '../../../ui/CardContent'
 import fetchFromTautulli from '../../../utils/fetchFromTautulli'
 import { DAYS_AGO_30, removeAfterMinutes } from '../../../utils/time'
 
-export default async function Artists() {
+async function getArtists() {
   const artists = await fetchFromTautulli('get_home_stats', {
     stat_id: 'top_music',
     stats_count: 5,
     stats_type: 'duration',
     time_range: 30,
   })
+
+  return artists
+}
+
+async function getTotalDuration() {
   const totalDuration = await fetchFromTautulli('get_history', {
     section_id: 1,
     after: DAYS_AGO_30,
     length: 0,
   })
+
+  return totalDuration
+}
+
+export default async function Artists() {
+  const artistsData = getArtists()
+  const totalDurationData = getTotalDuration()
+
+  const [artists, totalDuration] = await Promise.all([
+    artistsData,
+    totalDurationData,
+  ])
 
   return (
     <CardContent

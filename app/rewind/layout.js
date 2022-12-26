@@ -1,7 +1,7 @@
 import Card from '../../ui/Card'
 import PageTitle from '../../ui/PageTitle'
 
-function RewindLayout({ children }) {
+export default function RewindLayout({ children }) {
   return (
     <div className="w-full max-w-2xl">
       <PageTitle />
@@ -9,5 +9,3 @@ function RewindLayout({ children }) {
     </div>
   )
 }
-
-export default RewindLayout

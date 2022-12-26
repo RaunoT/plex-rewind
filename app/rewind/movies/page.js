@@ -4,12 +4,19 @@ import CardHeading from '../../../ui/CardHeading'
 import fetchFromTautulli from '../../../utils/fetchFromTautulli'
 import { FIRST_OF_CURRENT_YEAR, removeAfterMinutes } from '../../../utils/time'
 
-export default async function Movies() {
+async function getTotalDuration() {
   const totalDuration = await fetchFromTautulli('get_history', {
     user_id: 8898770,
     section_id: 3,
     after: FIRST_OF_CURRENT_YEAR,
+    length: 0,
   })
+
+  return totalDuration
+}
+
+export default async function Movies() {
+  const totalDuration = await getTotalDuration()
 
   return (
     <CardContent
