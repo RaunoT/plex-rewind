@@ -4,7 +4,7 @@
 import { motion } from 'framer-motion'
 import { animateSlideUp } from '../utils/motion'
 
-function CardHeading({ children }) {
+export default function CardHeading({ children }) {
   return (
     <motion.h2
       variants={animateSlideUp}
@@ -17,5 +17,3 @@ function CardHeading({ children }) {
     </motion.h2>
   )
 }
-
-export default CardHeading

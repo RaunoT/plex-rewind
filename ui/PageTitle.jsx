@@ -3,7 +3,7 @@ import cx from 'classnames'
 import Link from 'next/link'
 import React from 'react'
 
-function PageTitle({ title, subtitle }) {
+export default function PageTitle({ title, subtitle }) {
   return (
     <div className="relative w-full mb-4 text-center uppercase">
       <Link
@@ -23,5 +23,3 @@ function PageTitle({ title, subtitle }) {
     </div>
   )
 }
-
-export default PageTitle

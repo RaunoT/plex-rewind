@@ -15,7 +15,7 @@ import Link from 'next/link.js'
 import { animateSlideUp } from '../utils/motion.js'
 import { secondsToTime } from '../utils/time.js'
 
-function CardContent({
+export default function CardContent({
   children,
   statTitle,
   statCategory,
@@ -152,5 +152,3 @@ function CardContent({
     </>
   )
 }
-
-export default CardContent
