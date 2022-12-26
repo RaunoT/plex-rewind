@@ -47,14 +47,7 @@ export default function CardContent({
             -
           </span>
           <span className="normal-case">{totalDuration}</span>
-          {totalSize && (
-            <>
-              <span className="mx-1 sm:mx-2" aria-hidden>
-                -
-              </span>
-              <span>{totalSize}</span>
-            </>
-          )}
+          {totalSize && <span className="ml-1">({totalSize})</span>}
         </div>
       )}
 
