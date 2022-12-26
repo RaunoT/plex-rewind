@@ -1,4 +1,4 @@
-export default function CardHeadingFallback() {
+export default function CardTextFallback() {
   return (
     <div className="animate-pulse">
       <div className="w-10/12 h-6 mb-3 skeleton"></div>

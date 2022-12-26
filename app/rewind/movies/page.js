@@ -1,10 +1,11 @@
 import { PlayCircleIcon } from '@heroicons/react/24/outline'
 import { Suspense } from 'react'
 import CardContent from '../../../ui/CardContent'
-import CardHeading from '../../../ui/CardHeading'
-import CardHeadingFallback from '../../../ui/CardHeadingFallback'
+import CardText from '../../../ui/CardText'
+import CardTextFallback from '../../../ui/CardTextFallback'
+import { FIRST_OF_CURRENT_YEAR } from '../../../utils/constants'
 import fetchFromTautulli from '../../../utils/fetchFromTautulli'
-import { FIRST_OF_CURRENT_YEAR, removeAfterMinutes } from '../../../utils/time'
+import { removeAfterMinutes } from '../../../utils/formatting'
 
 async function getTotalDuration() {
   const totalDuration = await fetchFromTautulli('get_history', {
@@ -18,8 +19,6 @@ async function getTotalDuration() {
 }
 
 export default async function Movies() {
-  const totalDuration = await getTotalDuration()
-
   return (
     <CardContent
       statTitle="Watch time"
@@ -30,19 +29,19 @@ export default async function Movies() {
       subtitle="Rauno T"
     >
       <div className="flex flex-col justify-center flex-1 pb-12">
-        <Suspense fallback={<CardHeadingFallback />}>
-          <TotalDuration promise={getTotalDuration()} />
+        <Suspense fallback={<CardTextFallback />}>
+          <Stats promise={getTotalDuration()} />
         </Suspense>
       </div>
     </CardContent>
   )
 }
 
-async function TotalDuration({ promise }) {
+async function Stats({ promise }) {
   const totalDuration = await promise
 
   return (
-    <CardHeading>
+    <CardText>
       <span className="inline-block text-3xl font-semibold text-black">
         {removeAfterMinutes(totalDuration.response.data.total_duration)}
       </span>{' '}
@@ -52,6 +51,6 @@ async function TotalDuration({ promise }) {
         <PlayCircleIcon className="w-8 ml-1" />
       </span>{' '}
       on <span className="text-yellow-500">Plex</span> this year.
-    </CardHeading>
+    </CardText>
   )
 }

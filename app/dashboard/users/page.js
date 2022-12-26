@@ -1,6 +1,7 @@
 import CardContent from '../../../ui/CardContent'
+import { DAYS_AGO_30 } from '../../../utils/constants'
 import fetchFromTautulli from '../../../utils/fetchFromTautulli'
-import { DAYS_AGO_30, removeAfterMinutes } from '../../../utils/time'
+import { removeAfterMinutes } from '../../../utils/formatting'
 
 async function getUsers() {
   const users = await fetchFromTautulli('get_home_stats', {

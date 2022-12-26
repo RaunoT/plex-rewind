@@ -1,6 +1,7 @@
 import CardContent from '../../../ui/CardContent'
+import { DAYS_AGO_30 } from '../../../utils/constants'
 import fetchFromTautulli from '../../../utils/fetchFromTautulli'
-import { DAYS_AGO_30, removeAfterMinutes } from '../../../utils/time'
+import { bytesToSize, removeAfterMinutes } from '../../../utils/formatting'
 
 async function getShows() {
   const shows = await fetchFromTautulli('get_home_stats', {
@@ -23,13 +24,20 @@ async function getTotalDuration() {
   return totalDuration
 }
 
-export default async function Shows() {
-  const showsData = getShows()
-  const totalDurationData = getTotalDuration()
+async function getTotalSize() {
+  const totalSize = await fetchFromTautulli('get_library_media_info', {
+    section_id: 2,
+    length: 0,
+  })
 
-  const [shows, totalDuration] = await Promise.all([
-    showsData,
-    totalDurationData,
+  return totalSize
+}
+
+export default async function Shows() {
+  const [shows, totalDuration, totalSize] = await Promise.all([
+    getShows(),
+    getTotalDuration(),
+    getTotalSize(),
   ])
 
   return (
@@ -40,6 +48,7 @@ export default async function Shows() {
       totalDuration={removeAfterMinutes(
         totalDuration.response.data.total_duration,
       )}
+      totalSize={bytesToSize(totalSize.response.data.total_file_size)}
       nextCard="dashboard/movies"
       page="1 / 4"
       type="shows"

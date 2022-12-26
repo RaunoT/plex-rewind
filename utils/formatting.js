@@ -14,12 +14,16 @@ function removeAfterMinutes(timeString) {
   return timeString.replace(/mins.*/, 'mins')
 }
 
-const DAYS_AGO_30 = new Date(new Date().setDate(new Date().getDate() - 30))
-  .toISOString()
-  .split('T')[0]
+function bytesToSize(bytes, decimals = 2) {
+  if (!+bytes) return '0 Bytes'
 
-const FIRST_OF_CURRENT_YEAR = new Date(new Date().getFullYear(), 0, 1)
-  .toISOString()
-  .split('T')[0]
+  const k = 1024
+  const dm = decimals < 0 ? 0 : decimals
+  const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB']
 
-export { secondsToTime, removeAfterMinutes, DAYS_AGO_30, FIRST_OF_CURRENT_YEAR }
+  const i = Math.floor(Math.log(bytes) / Math.log(k))
+
+  return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`
+}
+
+export { secondsToTime, removeAfterMinutes, bytesToSize }

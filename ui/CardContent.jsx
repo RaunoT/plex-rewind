@@ -12,8 +12,8 @@ import {
 import { motion } from 'framer-motion'
 import Image from 'next/image.js'
 import Link from 'next/link.js'
+import { secondsToTime } from '../utils/formatting.js'
 import { animateSlideUp } from '../utils/motion.js'
-import { secondsToTime } from '../utils/time.js'
 
 export default function CardContent({
   children,
@@ -26,6 +26,7 @@ export default function CardContent({
   items,
   users,
   totalDuration,
+  totalSize,
   ratings,
   type,
 }) {
@@ -46,6 +47,14 @@ export default function CardContent({
             -
           </span>
           <span className="normal-case">{totalDuration}</span>
+          {totalSize && (
+            <>
+              <span className="mx-1 sm:mx-2" aria-hidden>
+                -
+              </span>
+              <span>{totalSize}</span>
+            </>
+          )}
         </div>
       )}
 
