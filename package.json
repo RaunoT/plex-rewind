@@ -3,13 +3,13 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev -p 3001",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
     "lint-staged": "lint-staged",
-    "prettier": "prettier --write --ignore-unknown .",
-    "prettier:check": "prettier --check --ignore-unknown ."
+    "format": "prettier --write --ignore-unknown .",
+    "format:check": "prettier --check --ignore-unknown ."
   },
   "git": {
     "pre-commit": "lint-staged"
@@ -25,7 +25,7 @@
   "dependencies": {
     "@heroicons/react": "^2.0.13",
     "autoprefixer": "^10.4.13",
-    "classnames": "^2.3.2",
+    "clsx": "^1.2.1",
     "framer-motion": "^7.6.19",
     "lodash": "^4.17.21",
     "next": "13.0.6",

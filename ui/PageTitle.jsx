@@ -1,5 +1,5 @@
 import { ArrowLeftIcon } from '@heroicons/react/24/solid'
-import cx from 'classnames'
+import clsx from 'clsx'
 import Link from 'next/link'
 import React from 'react'
 
@@ -8,7 +8,7 @@ export default function PageTitle({ title, subtitle }) {
     <div className="relative w-full mb-4 text-center uppercase">
       <Link
         href="/"
-        className={cx('w-5 block ml-5', {
+        className={clsx('w-5 block ml-5', {
           'absolute my-auto -translate-y-1/2 left-0 top-1/2': title,
         })}
       >
