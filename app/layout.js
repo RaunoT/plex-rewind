@@ -1,4 +1,4 @@
-// TODO: We should probably avoid this
+// FIXME: Remove this
 'use client'
 
 import { usePathname } from 'next/navigation'

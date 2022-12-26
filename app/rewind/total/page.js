@@ -1,14 +1,14 @@
-import { ClockIcon } from '@heroicons/react/24/solid'
+import { ClockIcon } from '@heroicons/react/24/outline'
 import CardContent from '../../../ui/CardContent'
 import CardHeading from '../../../ui/CardHeading'
 import fetchFromTautulli from '../../../utils/fetchFromTautulli'
+import { FIRST_OF_CURRENT_YEAR, removeAfterMinutes } from '../../../utils/time'
 
-export default async function Totals() {
-  const shows = await fetchFromTautulli('get_home_stats', {
-    stat_id: 'top_tv',
-    stats_count: 5,
-    stats_type: 'duration',
-    time_range: 30,
+export default async function Total() {
+  const totalDuration = await fetchFromTautulli('get_history', {
+    user_id: 8898770,
+    length: 0,
+    after: FIRST_OF_CURRENT_YEAR,
   })
 
   return (
@@ -16,10 +16,7 @@ export default async function Totals() {
       statTitle="Watch time"
       statCategory="Total"
       page="1 / 4"
-      nextCard={() => {
-        setShowTotals(false)
-        setShowTv(true)
-      }}
+      nextCard="/rewind/shows"
       subtitle="Rauno T"
     >
       <div className="flex flex-col justify-center flex-1 pb-12">
@@ -31,7 +28,7 @@ export default async function Totals() {
           </span>{' '}
           of{' '}
           <span className="inline-block text-3xl font-semibold text-black">
-            {rewind.totals.duration}
+            {removeAfterMinutes(totalDuration.response.data.total_duration)}
           </span>{' '}
           on <span className="text-yellow-500">Plex</span> this year!
         </CardHeading>

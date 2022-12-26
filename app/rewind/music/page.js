@@ -1,15 +1,14 @@
 import { MusicalNoteIcon } from '@heroicons/react/24/outline'
-import { ClockIcon } from '@heroicons/react/24/solid'
 import CardContent from '../../../ui/CardContent'
 import CardHeading from '../../../ui/CardHeading'
 import fetchFromTautulli from '../../../utils/fetchFromTautulli'
+import { FIRST_OF_CURRENT_YEAR, removeAfterMinutes } from '../../../utils/time'
 
-export default async function Totals() {
-  const shows = await fetchFromTautulli('get_home_stats', {
-    stat_id: 'top_tv',
-    stats_count: 5,
-    stats_type: 'duration',
-    time_range: 30,
+export default async function Music() {
+  const totalDuration = await fetchFromTautulli('get_history', {
+    user_id: 8898770,
+    section_id: 1,
+    after: FIRST_OF_CURRENT_YEAR,
   })
 
   return (
@@ -17,17 +16,14 @@ export default async function Totals() {
       statTitle="Listen time"
       statCategory="Music"
       page="4 / 4"
-      prevCard={() => {
-        setShowMusic(false)
-        setShowMovies(true)
-      }}
+      prevCard="/rewind/movies"
       subtitle="Rauno T"
     >
       <div className="flex flex-col justify-center flex-1 pb-12">
         <CardHeading>
           And to top it all off, you listened to&nbsp;
           <span className="inline-block text-3xl font-semibold text-black">
-            {rewind.music.duration}
+            {removeAfterMinutes(totalDuration.response.data.total_duration)}
           </span>{' '}
           of{' '}
           <span className="inline-flex items-center text-teal-300">

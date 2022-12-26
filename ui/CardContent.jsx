@@ -1,4 +1,4 @@
-// TODO: Remove this
+// FIXME: Remove this
 'use client'
 
 import {
@@ -8,7 +8,6 @@ import {
   ClockIcon,
   MusicalNoteIcon,
   PlayCircleIcon,
-  StarIcon,
 } from '@heroicons/react/24/solid'
 import { motion } from 'framer-motion'
 import Image from 'next/image.js'
@@ -34,14 +33,18 @@ function CardContent({
     <>
       <h2 className="flex items-center mb-1 text-sm font-medium text-black uppercase sm:mb-2 sm:text-xl">
         <span>{statTitle}</span>
-        <span className="mx-1 sm:mx-2">-</span>
+        <span className="mx-1 sm:mx-2" aria-hidden>
+          -
+        </span>
         <span className="font-bold text-center">{statCategory}</span>
       </h2>
 
       {totalDuration && (
         <div className="text-xs font-medium uppercase sm:text-sm text-slate-900">
           All <span className="font-bold">{statCategory}</span>
-          <span className="mx-1 sm:mx-2">-</span>
+          <span className="mx-1 sm:mx-2" aria-hidden>
+            -
+          </span>
           <span className="normal-case">{totalDuration}</span>
         </div>
       )}
@@ -55,7 +58,7 @@ function CardContent({
       {children}
 
       {items && (
-        <ul className="mt-4 sm:mt-6">
+        <ul className="mt-4 overflow-hidden sm:mt-6">
           {items.map((item, i) => {
             return (
               <motion.li
@@ -82,7 +85,7 @@ function CardContent({
                 </div>
                 <div>
                   <h3 className="mb-2 font-semibold sm:text-2xl">
-                    <span className="mr-2 text-teal-300">#{i + 1}</span>
+                    <span className="text-teal-300">#{i + 1} </span>
                     {users ? item.user : item.title}
                   </h3>
                   <div className="flex flex-wrap items-center gap-2 text-xs italic sm:gap-3 sm:text-base">
@@ -93,22 +96,25 @@ function CardContent({
                       </div>
                     )}
                     {/* Plays */}
+                    {/* TODO: Seperate music plays from other media */}
                     <div className="flex items-center gap-1 sm:gap-2">
                       {type === 'music' ? (
                         <MusicalNoteIcon className="w-5 text-slate-900" />
                       ) : (
                         <PlayCircleIcon className="w-5 text-slate-900" />
                       )}
-                      <span>{item.total_plays}</span>
-                      <span>{item.total_plays === 1 ? 'play' : 'plays'}</span>
+                      <span>
+                        {item.total_plays}
+                        {item.total_plays === 1 ? ' play' : ' plays'}
+                      </span>
                     </div>
                     {/* Duration */}
                     <div className="flex items-center gap-1 sm:gap-2">
                       <ClockIcon className="w-5 text-slate-900" />
                       {secondsToTime(item.total_duration)}
                     </div>
-                    {/* Ratings */}
-                    {ratings && (
+                    {/* TODO: Implement ratings */}
+                    {/* {ratings && (
                       <>
                         {ratings[i] && (
                           <div className="flex items-center gap-1 sm:gap-2">
@@ -117,7 +123,7 @@ function CardContent({
                           </div>
                         )}
                       </>
-                    )}
+                    )} */}
                   </div>
                 </div>
               </motion.li>

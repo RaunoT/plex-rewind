@@ -1,4 +1,4 @@
-// TODO: We should probably avoid this
+// FIXME: Remove this
 'use client'
 
 import { motion } from 'framer-motion'
@@ -26,19 +26,19 @@ export default function Page() {
         </motion.span>
       </h1>
 
-      {/* TODO: Maybe we can use <motion /> as <Link /> already */}
+      {/* TODO: Maybe we can pass <Link /> to <motion /> already */}
       <motion.div
         variants={animateFadeIn}
         initial="initial"
         animate="animate"
-        transition={{ duration: 0.8 }}
+        transition="transition"
       >
-        <Link href="/rewind" className="mx-auto mb-6 button">
+        <Link href="/rewind/total" className="mx-auto mb-6 button">
           Get started
         </Link>
       </motion.div>
 
-      {/* TODO: Maybe we can use <motion /> as <Link /> already */}
+      {/* TODO: Maybe we can pass <Link /> to <motion /> already */}
       <motion.div
         variants={animateFadeIn}
         initial="initial"

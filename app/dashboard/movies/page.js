@@ -23,7 +23,6 @@ export default async function Movies() {
       totalDuration={removeAfterMinutes(
         totalDuration.response.data.total_duration,
       )}
-      // ratings={dashboard.movies.ratings}
       prevCard="dashboard/shows"
       nextCard="dashboard/artists"
       page="2 / 4"
