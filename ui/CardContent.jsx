@@ -30,9 +30,11 @@ export default function CardContent({
   ratings,
   type,
 }) {
+  const rankingColors = ['text-yellow-500', 'text-gray-400', 'text-yellow-700']
+
   return (
     <>
-      <h2 className="flex items-center mb-1 text-sm font-medium text-black uppercase sm:mb-2 sm:text-xl">
+      <h2 className="flex items-center mb-1 text-sm font-medium text-black uppercase sm:text-xl">
         <span>{statTitle}</span>
         <span className="mx-1 sm:mx-2" aria-hidden>
           -
@@ -60,16 +62,16 @@ export default function CardContent({
       {children}
 
       {items && (
-        <ul className="mt-4 overflow-hidden sm:mt-6">
+        <ul className="mt-4 overflow-hidden xl:grid xl:grid-flow-col xl:grid-cols-2 xl:grid-rows-3 sm:mt-6">
           {items.map((item, i) => {
             return (
               <motion.li
                 key={i}
-                className="flex items-center gap-3 mb-3 sm:mb-5 last:mb-0 transiton-all"
+                className="flex items-center gap-3 mb-3 sm:mb-5 last:mb-0 last:hidden xl:last:flex"
                 variants={animateSlideUp}
                 initial="initial"
                 animate="animate"
-                transition={{ delay: i * 0.1, duration: 0.25 }}
+                transition={{ delay: i * 0.1 }}
               >
                 <div className="relative flex-shrink-0 w-20 h-28">
                   <Image
@@ -87,7 +89,9 @@ export default function CardContent({
                 </div>
                 <div>
                   <h3 className="mb-2 font-semibold sm:text-2xl">
-                    <span className="text-teal-300">#{i + 1} </span>
+                    <span className={rankingColors[i] ?? 'text-black'}>
+                      #{i + 1}{' '}
+                    </span>
                     {users ? item.user : item.title}
                   </h3>
                   <div className="flex flex-wrap items-center gap-2 text-xs italic sm:gap-3 sm:text-base">

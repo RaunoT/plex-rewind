@@ -3,6 +3,7 @@ import { Suspense } from 'react'
 import CardContent from '../../../ui/CardContent'
 import CardText from '../../../ui/CardText'
 import CardTextFallback from '../../../ui/CardTextFallback'
+import Delayed from '../../../ui/Delayed'
 import { FIRST_OF_CURRENT_YEAR } from '../../../utils/constants'
 import fetchFromTautulli from '../../../utils/fetchFromTautulli'
 import { bytesToSize, removeAfterMinutes } from '../../../utils/formatting'
@@ -79,17 +80,19 @@ async function Stats({ promises }) {
         on <span className="text-yellow-500">Plex</span> this year!
       </CardText>
 
-      <CardText animationDelay={2}>
-        Did you know the total{' '}
-        <span className="inline-flex items-center text-teal-300">
-          Filesize
-          <FolderIcon className="w-8 ml-1" />
-        </span>{' '}
-        of all the available content is{' '}
-        <span className="inline-block text-3xl font-semibold text-black">
-          {bytesToSize(getLibraryTotalSize)}
-        </span>
-      </CardText>
+      <Delayed delay={2500}>
+        <CardText>
+          Did you know the{' '}
+          <span className="inline-flex items-center text-teal-300">
+            Filesize
+            <FolderIcon className="w-8 ml-1" />
+          </span>{' '}
+          of all the available content is{' '}
+          <span className="inline-block text-3xl font-semibold text-black">
+            {bytesToSize(getLibraryTotalSize)}
+          </span>
+        </CardText>
+      </Delayed>
     </>
   )
 }

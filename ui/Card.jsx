@@ -1,6 +1,13 @@
-export default function Card({ children }) {
+import clsx from 'clsx'
+
+export default function Card({ children, className }) {
   return (
-    <article className="px-6 sm:px-8 pt-8 pb-3 sm:pb-5 rounded-3xl w-full min-h-[75vh] flex flex-col bg-gradient">
+    <article
+      className={clsx(
+        'px-6 sm:px-8 pt-8 pb-3 sm:pb-5 rounded-3xl w-full flex flex-col bg-gradient min-h-[75vh]',
+        className,
+      )}
+    >
       {children}
     </article>
   )

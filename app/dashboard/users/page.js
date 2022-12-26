@@ -6,7 +6,7 @@ import { removeAfterMinutes } from '../../../utils/formatting'
 async function getUsers() {
   const users = await fetchFromTautulli('get_home_stats', {
     stat_id: 'top_users',
-    stats_count: 5,
+    stats_count: 6,
     stats_type: 'duration',
     time_range: 30,
   })

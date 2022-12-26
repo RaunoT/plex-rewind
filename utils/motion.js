@@ -1,11 +1,11 @@
 const animateSlideUp = {
   initial: {
     opacity: 0,
-    translateY: '50px',
+    y: 50,
   },
   animate: {
     opacity: 1,
-    translateY: 0,
+    y: 0,
   },
 }
 

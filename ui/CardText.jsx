@@ -11,7 +11,7 @@ export default function CardText({ children, className, animationDelay = 0 }) {
       variants={animateSlideUp}
       initial="initial"
       animate="animate"
-      transition={{ duration: 0.25, delay: animationDelay }}
+      transition={{ delay: animationDelay }}
       className={clsx('text-3xl sm:text-4xl italic', className)}
     >
       {children}
