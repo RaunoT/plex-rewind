@@ -49,8 +49,8 @@ export default function CardText({
     <motion.li
       className="mb-6 last:mb-0"
       variants={animateCardText}
-      initial="initial"
-      animate={['slideIn', !noScale && 'scaleDown']}
+      initial="hidden"
+      animate={['show', !noScale && 'scaleDown']}
       style={{ originX: 0, originY: '100%' }}
       custom={scaleDelay}
     >
@@ -72,8 +72,8 @@ function Loader() {
     <motion.div
       className="flex items-center gap-2 w-fit skeleton skeleton--no-animate"
       variants={fadeIn}
-      initial="initial"
-      animate="animate"
+      initial="hidden"
+      animate="show"
     >
       <span className="w-1 h-1 bg-white rounded-full animate-pulse"></span>
       <span className="w-1 h-1 bg-white rounded-full animate-pulse animation-delay-200"></span>

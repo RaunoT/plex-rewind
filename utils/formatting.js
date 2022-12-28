@@ -1,4 +1,4 @@
-function secondsToTime(seconds) {
+export function secondsToTime(seconds) {
   const months = Math.floor(seconds / 2629746)
   const weeks = Math.floor((seconds - months * 2629746) / 604800)
   const days = Math.floor((seconds - months * 2629746 - weeks * 604800) / 86400)
@@ -27,11 +27,11 @@ function secondsToTime(seconds) {
   )
 }
 
-function removeAfterMinutes(timeString) {
+export function removeAfterMinutes(timeString) {
   return timeString.replace(/mins.*/, 'mins')
 }
 
-function bytesToSize(bytes, decimals = 2) {
+export function bytesToSize(bytes, decimals = 2) {
   if (!+bytes) return '0 Bytes'
 
   const k = 1024
@@ -42,5 +42,3 @@ function bytesToSize(bytes, decimals = 2) {
 
   return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`
 }
-
-export { secondsToTime, removeAfterMinutes, bytesToSize }

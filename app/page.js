@@ -17,8 +17,8 @@ export default function Page() {
         />
         <motion.span
           variants={fadeIn}
-          initial="initial"
-          animate="animate"
+          initial="hidden"
+          animate="show"
           transition={{ delay: 0.4 }}
         >
           rewind

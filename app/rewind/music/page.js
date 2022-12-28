@@ -40,7 +40,7 @@ async function Stats({ promise }) {
   const totalDuration = await promise
 
   return (
-    <CardText>
+    <CardText noScale>
       And to top it all off, you listened to&nbsp;
       <span className="inline-block text-3xl font-semibold text-black">
         {removeAfterMinutes(totalDuration.response.data.total_duration)}

@@ -79,8 +79,8 @@ export default function CardContent({
                 key={i}
                 className="flex items-center gap-3 mb-3 sm:mb-5 last:mb-0 last:hidden xl:last:flex"
                 variants={slideDown}
-                initial="initial"
-                animate="animate"
+                initial="hidden"
+                animate="show"
                 transition={{ delay: i * 0.1 }}
               >
                 <div className="relative flex-shrink-0 w-20 h-28">

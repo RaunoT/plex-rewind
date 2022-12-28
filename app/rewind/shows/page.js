@@ -28,11 +28,11 @@ export default async function Shows() {
       subtitle="Rauno T"
       rewind
     >
-      <div className="flex flex-col justify-center flex-1 sm:pb-12">
+      <ul className="flex flex-col justify-center flex-1 sm:pb-12">
         <Suspense fallback={<CardTextSkeleton />}>
           <Stats promise={getTotalDuration()} />
         </Suspense>
-      </div>
+      </ul>
     </CardContent>
   )
 }
@@ -41,7 +41,7 @@ async function Stats({ promise }) {
   const totalDuration = await promise
 
   return (
-    <CardText>
+    <CardText noScale>
       <span className="inline-flex items-center text-teal-300">
         TV Shows
         <PlayCircleIcon className="w-8 ml-1" />
