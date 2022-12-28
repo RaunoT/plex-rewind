@@ -1,12 +1,29 @@
 function secondsToTime(seconds) {
-  const days = Math.floor(seconds / 86400)
-  const hours = Math.floor((seconds - days * 86400) / 3600)
-  const minutes = Math.floor((seconds - days * 86400 - hours * 3600) / 60)
+  const months = Math.floor(seconds / 2629746)
+  const weeks = Math.floor((seconds - months * 2629746) / 604800)
+  const days = Math.floor((seconds - months * 2629746 - weeks * 604800) / 86400)
+  const hours = Math.floor(
+    (seconds - months * 2629746 - weeks * 604800 - days * 86400) / 3600,
+  )
+  const minutes = Math.floor(
+    (seconds -
+      months * 2629746 -
+      weeks * 604800 -
+      days * 86400 -
+      hours * 3600) /
+      60,
+  )
 
   return (
+    (months > 0 ? months + (months === 1 ? ' month ' : ' months ') : '') +
+    (weeks > 0 ? weeks + (weeks === 1 ? ' week ' : ' weeks ') : '') +
     (days > 0 ? days + (days === 1 ? ' day ' : ' days ') : '') +
-    (hours > 0 ? hours + (hours === 1 ? ' hr ' : ' hrs ') : '') +
-    (minutes > 0 ? minutes + (minutes === 1 ? ' min' : ' mins') : '')
+    (hours > 0 && months === 0
+      ? hours + (hours === 1 ? ' hr ' : ' hrs ')
+      : '') +
+    (minutes > 0 && months === 0 && weeks === 0
+      ? minutes + (minutes === 1 ? ' min' : ' mins')
+      : '')
   )
 }
 

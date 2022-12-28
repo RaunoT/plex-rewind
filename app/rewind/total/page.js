@@ -1,20 +1,55 @@
-import { ClockIcon, FolderIcon } from '@heroicons/react/24/outline'
+import {
+  ChartPieIcon,
+  ClockIcon,
+  FolderIcon,
+} from '@heroicons/react/24/outline'
 import { Suspense } from 'react'
 import CardContent from '../../../ui/CardContent'
 import CardText, { CardTextSkeleton } from '../../../ui/CardText'
-import Delayed from '../../../ui/Delayed'
-import { FIRST_OF_CURRENT_YEAR } from '../../../utils/constants'
 import fetchFromTautulli from '../../../utils/fetchFromTautulli'
-import { bytesToSize, removeAfterMinutes } from '../../../utils/formatting'
+import { bytesToSize, secondsToTime } from '../../../utils/formatting'
 
-async function getTotalDuration() {
-  const totalDuration = await fetchFromTautulli('get_history', {
-    user_id: 8898770,
-    length: 0,
-    after: FIRST_OF_CURRENT_YEAR,
+async function getUserTotalDuration() {
+  const musicTotalDuration = fetchFromTautulli('get_library_user_stats', {
+    section_id: 1,
+  })
+  const showsTotalDuration = fetchFromTautulli('get_library_user_stats', {
+    section_id: 2,
+  })
+  const moviesTotalDuration = fetchFromTautulli('get_library_user_stats', {
+    section_id: 3,
+  })
+  const audiobooksTotalDuration = fetchFromTautulli('get_library_user_stats', {
+    section_id: 4,
   })
 
-  return totalDuration
+  let [
+    musicTotalDurationData,
+    showsTotalDurationData,
+    moviesTotalDurationData,
+    audiobooksTotalDurationData,
+  ] = await Promise.all([
+    musicTotalDuration,
+    showsTotalDuration,
+    moviesTotalDuration,
+    audiobooksTotalDuration,
+  ])
+
+  //Filter data
+  const musicTotal = musicTotalDurationData.response?.data.filter(
+    (user) => user.user_id === 8898770,
+  )[0].total_time
+  const showsTotal = showsTotalDurationData.response?.data.filter(
+    (user) => user.user_id === 8898770,
+  )[0].total_time
+  const moviesTotal = moviesTotalDurationData.response?.data.filter(
+    (user) => user.user_id === 8898770,
+  )[0].total_time
+  const audiobooksTotal = audiobooksTotalDurationData.response?.data.filter(
+    (user) => user.user_id === 8898770,
+  )[0].total_time
+
+  return musicTotal + showsTotal + moviesTotal + audiobooksTotal
 }
 
 async function getLibraryTotalSize() {
@@ -22,25 +57,49 @@ async function getLibraryTotalSize() {
     section_id: 1,
     length: 0,
   })
-
   const showsTotalSize = fetchFromTautulli('get_library_media_info', {
     section_id: 2,
     length: 0,
   })
-
   const moviesTotalSize = fetchFromTautulli('get_library_media_info', {
     section_id: 3,
     length: 0,
   })
+  const audiobooksTotalSize = fetchFromTautulli('get_library_media_info', {
+    section_id: 4,
+    length: 0,
+  })
 
-  const [musicTotalSizeData, showsTotalSizeData, moviesTotalSizeData] =
-    await Promise.all([musicTotalSize, showsTotalSize, moviesTotalSize])
+  const [
+    musicTotalSizeData,
+    showsTotalSizeData,
+    moviesTotalSizeData,
+    audiobooksTotalSizeData,
+  ] = await Promise.all([
+    musicTotalSize,
+    showsTotalSize,
+    moviesTotalSize,
+    audiobooksTotalSize,
+  ])
 
   return (
     musicTotalSizeData.response.data.total_file_size +
     showsTotalSizeData.response.data.total_file_size +
-    moviesTotalSizeData.response.data.total_file_size
+    moviesTotalSizeData.response.data.total_file_size +
+    audiobooksTotalSizeData.response.data.total_file_size
   )
+}
+
+// FIXME: This information is incorrect
+async function getLibraryTotalDuration() {
+  const librariesTable = await fetchFromTautulli('get_libraries_table')
+  let totalDuration = 0
+
+  librariesTable.response?.data?.data?.forEach((library) => {
+    totalDuration += library.duration * 30
+  })
+
+  return totalDuration
 }
 
 export default async function Total() {
@@ -53,21 +112,28 @@ export default async function Total() {
       subtitle="Rauno T"
       rewind
     >
-      <div className="flex flex-col justify-center flex-1 sm:pb-12">
+      <ul className="flex flex-col justify-center flex-1 sm:pb-12">
         <Suspense fallback={<CardTextSkeleton />}>
-          <Stats promises={[getTotalDuration(), getLibraryTotalSize()]} />
+          <Stats
+            promises={[
+              getUserTotalDuration(),
+              getLibraryTotalSize(),
+              getLibraryTotalDuration(),
+            ]}
+          />
         </Suspense>
-      </div>
+      </ul>
     </CardContent>
   )
 }
 
 async function Stats({ promises }) {
-  const [totalDuration, getLibraryTotalSize] = await Promise.all(promises)
+  const [userTotalDuration, libraryTotalSize, libraryTotalDuration] =
+    await Promise.all(promises)
 
   return (
     <>
-      <CardText className="mb-6">
+      <CardText hideAfter={10}>
         You&apos;ve spent a{' '}
         <span className="inline-flex items-center text-teal-300">
           Total
@@ -75,24 +141,37 @@ async function Stats({ promises }) {
         </span>{' '}
         of{' '}
         <span className="inline-block text-3xl font-semibold text-black">
-          {removeAfterMinutes(totalDuration.response?.data?.total_duration)}
+          {secondsToTime(userTotalDuration)}
         </span>{' '}
         on <span className="text-yellow-500">Plex</span> this year!
       </CardText>
 
-      <Delayed delay={2500}>
-        <CardText>
-          Did you know the{' '}
-          <span className="inline-flex items-center text-teal-300">
-            Filesize
-            <FolderIcon className="w-8 ml-1" />
-          </span>{' '}
-          of all the available content is{' '}
-          <span className="inline-block text-3xl font-semibold text-black">
-            {bytesToSize(getLibraryTotalSize)}
-          </span>
-        </CardText>
-      </Delayed>
+      <CardText renderDelay={5}>
+        That&apos;s{' '}
+        <span className="inline-flex items-center text-teal-300">
+          {Math.round((userTotalDuration * 100) / libraryTotalDuration)}
+          %
+          <ChartPieIcon className="w-8 ml-1" />
+        </span>{' '}
+        from{' '}
+        <span className="inline-block text-3xl font-semibold text-black">
+          {secondsToTime(libraryTotalDuration)}
+        </span>{' '}
+        of content
+      </CardText>
+
+      <CardText renderDelay={10} loaderDelay={5} noScale>
+        Did you know the{' '}
+        <span className="inline-flex items-center text-teal-300">
+          Filesize
+          <FolderIcon className="w-8 ml-1" />
+        </span>{' '}
+        of all the available content on{' '}
+        <span className="text-yellow-500">Plex</span> is{' '}
+        <span className="inline-block text-3xl font-semibold text-black">
+          {bytesToSize(libraryTotalSize)}
+        </span>
+      </CardText>
     </>
   )
 }

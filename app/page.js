@@ -1,9 +1,8 @@
-// FIXME: Remove this
 'use client'
 
 import { motion } from 'framer-motion'
 import Link from 'next/link'
-import { animateFadeIn } from '../utils/motion'
+import { fadeIn } from '../utils/motion'
 
 export default function Page() {
   return (
@@ -17,7 +16,7 @@ export default function Page() {
           animate={{ opacity: 1, x: 0 }}
         />
         <motion.span
-          variants={animateFadeIn}
+          variants={fadeIn}
           initial="initial"
           animate="animate"
           transition={{ delay: 0.4 }}

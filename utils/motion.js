@@ -1,4 +1,4 @@
-const animateSlideUp = {
+const slideDown = {
   initial: {
     opacity: 0,
     y: 50,
@@ -9,7 +9,7 @@ const animateSlideUp = {
   },
 }
 
-const animateFadeIn = {
+const fadeIn = {
   initial: {
     opacity: 0,
   },
@@ -18,4 +18,25 @@ const animateFadeIn = {
   },
 }
 
-export { animateSlideUp, animateFadeIn }
+const animateCardText = {
+  initial: {
+    opacity: 0,
+    y: 50,
+  },
+  slideIn: {
+    opacity: 1,
+    y: 0,
+  },
+  scaleDown: (scaleDelay) => ({
+    scale: 0.75,
+    transition: {
+      delay: scaleDelay,
+    },
+  }),
+  slideOut: {
+    opacity: 0,
+    y: -50,
+  },
+}
+
+export { slideDown, fadeIn, animateCardText }

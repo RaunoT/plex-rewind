@@ -40,6 +40,10 @@
     &--large {
       padding: theme('spacing.3') theme('spacing.6');
     }
+
+    &--no-animate {
+      @apply animate-none;
+    }
   }
 
   .animation-delay-200 {

@@ -3,6 +3,7 @@
     "bradlc.vscode-tailwindcss",
     "esbenp.prettier-vscode",
     "dbaeumer.vscode-eslint",
-    "heybourn.headwind"
+    "heybourn.headwind",
+    "editorconfig.editorconfig"
   ]
 }

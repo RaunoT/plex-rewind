@@ -2,26 +2,47 @@
 
 import { motion } from 'framer-motion'
 import { useEffect, useState } from 'react'
-import { animateFadeIn } from '../utils/motion'
+import { fadeIn } from '../utils/motion'
 
-export default function Delayed({ children, delay }) {
-  const [isShown, setIsShown] = useState(false)
+export default function Delayed({
+  children,
+  renderDelay = 0,
+  loaderDelay = 0,
+  hideDelay,
+}) {
+  const [isComponentShown, setIsComponentShown] = useState(false)
+  const [isLoaderShown, setIsLoaderShown] = useState(false)
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsShown(true)
-    }, delay)
-    return () => clearTimeout(timer)
-  }, [delay])
+    const componentTimer = setTimeout(() => {
+      setIsComponentShown(true)
+    }, renderDelay)
+    return () => clearTimeout(componentTimer)
+  }, [renderDelay])
 
-  return isShown ? children : <SkeletonLoader />
+  useEffect(() => {
+    const loaderTimer = setTimeout(() => {
+      setIsLoaderShown(true)
+    }, loaderDelay)
+    return () => clearTimeout(loaderTimer)
+  }, [loaderDelay])
+
+  useEffect(() => {
+    const hideTimer = setTimeout(() => {
+      setIsComponentShown(false)
+      setIsLoaderShown(false)
+    }, hideDelay)
+    return () => clearTimeout(hideTimer)
+  }, [hideDelay])
+
+  return isComponentShown ? children : isLoaderShown ? <SkeletonLoader /> : null
 }
 
 function SkeletonLoader() {
   return (
     <motion.div
-      className="flex items-center gap-2 w-fit skeleton"
-      variants={animateFadeIn}
+      className="flex items-center gap-2 w-fit skeleton skeleton--no-animate"
+      variants={fadeIn}
       initial="initial"
       animate="animate"
     >

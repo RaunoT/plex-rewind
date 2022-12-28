@@ -1,4 +1,3 @@
-// FIXME: Remove this
 'use client'
 
 import {
@@ -13,7 +12,7 @@ import { motion } from 'framer-motion'
 import Image from 'next/image.js'
 import Link from 'next/link.js'
 import { secondsToTime } from '../utils/formatting.js'
-import { animateSlideUp } from '../utils/motion.js'
+import { slideDown } from '../utils/motion.js'
 
 export default function CardContent({
   children,
@@ -43,7 +42,7 @@ export default function CardContent({
         <span className="font-bold text-center">{statCategory}</span>
       </h2>
 
-      <div className="text-xs uppercase sm:text-sm text-slate-900">
+      <div className="text-xs font-medium uppercase sm:text-sm text-slate-900">
         {totalDuration && (
           <>
             All <span className="font-bold">{statCategory}</span>
@@ -57,7 +56,7 @@ export default function CardContent({
       </div>
 
       {subtitle && (
-        <div className="text-xs uppercase sm:text-sm text-slate-900">
+        <div className="text-xs font-medium uppercase sm:text-sm text-slate-900">
           {subtitle}
           {rewind && (
             <>
@@ -79,7 +78,7 @@ export default function CardContent({
               <motion.li
                 key={i}
                 className="flex items-center gap-3 mb-3 sm:mb-5 last:mb-0 last:hidden xl:last:flex"
-                variants={animateSlideUp}
+                variants={slideDown}
                 initial="initial"
                 animate="animate"
                 transition={{ delay: i * 0.1 }}

@@ -1,4 +1,3 @@
-// FIXME: Remove this
 'use client'
 
 import { usePathname } from 'next/navigation'

@@ -27,11 +27,11 @@ export default async function Music() {
       subtitle="Rauno T"
       rewind
     >
-      <div className="flex flex-col justify-center flex-1 sm:pb-12">
+      <ul className="flex flex-col justify-center flex-1 sm:pb-12">
         <Suspense fallback={<CardTextSkeleton />}>
           <Stats promise={getTotalDuration()} />
         </Suspense>
-      </div>
+      </ul>
     </CardContent>
   )
 }
