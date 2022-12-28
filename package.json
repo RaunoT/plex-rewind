@@ -22,6 +22,9 @@
     "trailingComma": "all",
     "singleQuote": true
   },
+  "eslintConfig": {
+    "extends": "next/core-web-vitals"
+  },
   "dependencies": {
     "@heroicons/react": "^2.0.13",
     "autoprefixer": "^10.4.13",
