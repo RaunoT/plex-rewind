@@ -5,9 +5,10 @@ import {
   ArrowLongRightIcon,
   CalendarDaysIcon,
   ClockIcon,
+  FilmIcon,
   MusicalNoteIcon,
   PlayCircleIcon,
-} from '@heroicons/react/24/solid'
+} from '@heroicons/react/24/outline'
 import { motion } from 'framer-motion'
 import Image from 'next/image.js'
 import Link from 'next/link.js'
@@ -23,7 +24,6 @@ export default function CardContent({
   prevCard,
   nextCard,
   items,
-  users,
   totalDuration,
   totalSize,
   ratings,
@@ -87,11 +87,15 @@ export default function CardContent({
                   <Image
                     fill
                     className="object-cover object-top"
-                    alt={users ? item.user + ' avatar' : item.title + ' poster'}
+                    alt={
+                      type === 'users'
+                        ? item.user + ' avatar'
+                        : item.title + ' poster'
+                    }
                     src={`${
                       process.env.NEXT_PUBLIC_TAUTULLI_URL
                     }/pms_image_proxy?img=${
-                      users ? item.user_thumb : item.thumb
+                      type === 'users' ? item.user_thumb : item.thumb
                     }&width=300`}
                     sizes="7rem"
                     priority
@@ -102,7 +106,7 @@ export default function CardContent({
                     <span className={rankingColors[i] ?? 'text-black'}>
                       #{i + 1}{' '}
                     </span>
-                    {users ? item.user : item.title}
+                    {type === 'users' ? item.user : item.title}
                   </h3>
                   <div className="flex flex-wrap items-center gap-2 text-xs italic sm:gap-3 sm:text-base">
                     {item.year && (type === 'movies' || type === 'shows') && (
@@ -116,6 +120,8 @@ export default function CardContent({
                     <div className="flex items-center gap-1 sm:gap-2">
                       {type === 'music' ? (
                         <MusicalNoteIcon className="w-5 text-slate-900" />
+                      ) : type === 'movies' ? (
+                        <FilmIcon className="w-5 text-slate-900" />
                       ) : (
                         <PlayCircleIcon className="w-5 text-slate-900" />
                       )}

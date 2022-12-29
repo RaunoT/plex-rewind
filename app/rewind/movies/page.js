@@ -1,4 +1,4 @@
-import { PlayCircleIcon } from '@heroicons/react/24/outline'
+import { FilmIcon } from '@heroicons/react/24/outline'
 import { Suspense } from 'react'
 import CardContent from '../../../ui/CardContent'
 import CardText, { CardTextSkeleton } from '../../../ui/CardText'
@@ -48,7 +48,7 @@ async function Stats({ promise }) {
       of your time was spent watching{' '}
       <span className="inline-flex text-teal-300">
         Movies
-        <PlayCircleIcon className="w-8 ml-1" />
+        <FilmIcon className="w-8 ml-1" />
       </span>{' '}
       on <span className="text-yellow-500">Plex</span> this year.
     </CardText>

@@ -42,7 +42,7 @@ export default async function Users() {
       )}
       prevCard="dashboard/artists"
       page="4 / 4"
-      users
+      type="users"
     />
   )
 }

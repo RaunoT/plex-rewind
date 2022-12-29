@@ -90,13 +90,12 @@ async function getLibraryTotalSize() {
   )
 }
 
-// FIXME: This information is incorrect
 async function getLibraryTotalDuration() {
   const librariesTable = await fetchFromTautulli('get_libraries_table')
   let totalDuration = 0
 
   librariesTable.response?.data?.data?.forEach((library) => {
-    totalDuration += library.duration * 30
+    totalDuration += library.duration
   })
 
   return totalDuration
@@ -153,11 +152,7 @@ async function Stats({ promises }) {
           %
           <ChartPieIcon className="w-8 ml-1" />
         </span>{' '}
-        from{' '}
-        <span className="inline-block text-3xl font-semibold text-black">
-          {secondsToTime(libraryTotalDuration)}
-        </span>{' '}
-        of content
+        from all plays
       </CardText>
 
       <CardText renderDelay={10} loaderDelay={5} noScale>
