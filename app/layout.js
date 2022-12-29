@@ -1,14 +1,11 @@
 'use client'
 
-import clsx from 'clsx'
-import { usePathname } from 'next/navigation'
 import { createContext, useState } from 'react'
 import '../styles/globals.css'
 
 export const CardContext = createContext()
 
 export default function RootLayout({ children }) {
-  const pathname = usePathname()
   const [prevPage, setPrevPage] = useState('')
   const [nextPage, setNextPage] = useState('')
 
@@ -21,14 +18,8 @@ export default function RootLayout({ children }) {
           nextPageState: [nextPage, setNextPage],
         }}
       >
-        <body className="min-h-screen text-white bg-gradient-to-br from-indigo-900 via-neutral-800 to-neutral-900">
-          <main
-            className={clsx(
-              'container flex flex-col items-center justify-center py-8 overflow-x-hidden',
-              { 'min-h-screen': pathname === '/' },
-              { 'sm:min-h-screen': pathname !== '/' },
-            )}
-          >
+        <body className="text-white bg-gradient-to-br from-indigo-900 via-neutral-800 to-neutral-900 min-height-screen">
+          <main className="container flex flex-col items-center justify-center py-8 overflow-x-hidden min-height-screen">
             {children}
           </main>
         </body>

@@ -60,9 +60,12 @@
   .animation-delay-400 {
     animation-delay: 0.6s;
   }
-}
 
-/* TODO: https://github.com/vercel/next.js/issues/42345 */
-[data-nextjs-scroll-focus-boundary] {
-  display: contents;
+  .min-height-screen {
+    min-height: 100vh;
+
+    @supports (-webkit-touch-callout: none) {
+      min-height: -webkit-fill-available;
+    }
+  }
 }
