@@ -104,8 +104,7 @@ async function getLibraryTotalDuration() {
 export default async function Total() {
   return (
     <CardContent
-      statTitle="General stats"
-      statCategory="Totals"
+      statCategory="General stats"
       page="1 / 4"
       nextCard="/rewind/shows"
       subtitle="Rauno T"

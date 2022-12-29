@@ -9,6 +9,7 @@ import {
   MusicalNoteIcon,
   PlayCircleIcon,
 } from '@heroicons/react/24/outline'
+import clsx from 'clsx'
 import { motion } from 'framer-motion'
 import Image from 'next/image.js'
 import Link from 'next/link.js'
@@ -30,25 +31,29 @@ export default function CardContent({
   type,
   rewind,
 }) {
-  const rankingColors = ['text-yellow-500', 'text-gray-400', 'text-yellow-700']
+  const rankingColors = ['text-yellow-500', 'text-gray-300', 'text-yellow-600']
 
   return (
     <>
-      <h2 className="flex items-center mb-1 text-sm text-black uppercase sm:text-xl">
+      <h2 className="flex items-center mb-1 text-sm font-bold text-black uppercase sm:text-xl">
         <span>{statTitle}</span>
-        <span className="mx-1 sm:mx-2" aria-hidden>
-          -
-        </span>
-        <span className="font-bold text-center">{statCategory}</span>
+        {statTitle && statCategory && (
+          <span className="mx-1 sm:mx-2" aria-hidden>
+            -
+          </span>
+        )}
+        <span>{statCategory}</span>
       </h2>
 
       <div className="text-xs font-medium uppercase sm:text-sm text-slate-900">
         {totalDuration && (
           <>
-            All <span className="font-bold">{statCategory}</span>
-            <span className="mx-1 sm:mx-2" aria-hidden>
-              -
-            </span>
+            All <span>{statCategory}</span>
+            {statCategory && totalDuration && (
+              <span className="mx-1 sm:mx-2" aria-hidden>
+                -
+              </span>
+            )}
             <span className="normal-case">{totalDuration}</span>
           </>
         )}
@@ -72,7 +77,7 @@ export default function CardContent({
       {children}
 
       {items && (
-        <ul className="mt-4 overflow-hidden xl:grid xl:grid-flow-col xl:grid-cols-2 xl:grid-rows-3 sm:mt-6">
+        <ul className="mt-4 overflow-hidden xl:grid xl:grid-flow-col xl:grid-cols-2 xl:grid-rows-3 sm:mt-6 xl:gap-x-8">
           {items.map((item, i) => {
             return (
               <motion.li
@@ -102,11 +107,18 @@ export default function CardContent({
                   />
                 </div>
                 <div>
-                  <h3 className="mb-2 font-semibold sm:text-2xl">
-                    <span className={rankingColors[i] ?? 'text-black'}>
+                  <h3 className="mb-2 sm:text-2xl">
+                    <span
+                      className={clsx(
+                        'font-bold',
+                        rankingColors[i] ?? 'text-black',
+                      )}
+                    >
                       #{i + 1}{' '}
                     </span>
-                    {type === 'users' ? item.user : item.title}
+                    <span className="font-medium">
+                      {type === 'users' ? item.user : item.title}
+                    </span>
                   </h3>
                   <div className="flex flex-wrap items-center gap-2 text-xs italic sm:gap-3 sm:text-base">
                     {item.year && (type === 'movies' || type === 'shows') && (
