@@ -44,10 +44,10 @@ export default function Card({ children, className }) {
       </motion.article>
 
       {prevPage && (
-        <ArrowSmallLeftIcon className="absolute top-[35vh] sm:inset-y-0 sm:my-auto w-10 opacity-75 left-4 md:left-8 -z-10" />
+        <ArrowSmallLeftIcon className="fixed inset-y-0 w-10 my-auto opacity-75 sm:absolute left-8 -z-10" />
       )}
       {nextPage && (
-        <ArrowSmallRightIcon className="absolute top-[35vh] sm:inset-y-0 sm:my-auto w-10 opacity-75 right-4 md:right-8 -z-10" />
+        <ArrowSmallRightIcon className="fixed inset-y-0 w-10 my-auto opacity-75 sm:absolute right-8 -z-10" />
       )}
     </div>
   )
