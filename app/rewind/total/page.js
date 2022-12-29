@@ -151,7 +151,7 @@ async function Stats({ promises }) {
           %
           <ChartPieIcon className="w-8 ml-1" />
         </span>{' '}
-        from all plays
+        of all plays
       </CardText>
 
       <CardText renderDelay={10} loaderDelay={5} noScale>
