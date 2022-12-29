@@ -91,7 +91,7 @@ export default function CardContent({
       )}
 
       {rewind ? (
-        <ul className="flex flex-col flex-1 pt-16 sm:justify-center sm:pb-12 sm:pt-4">
+        <ul className="flex flex-col flex-1 pt-12 sm:justify-center sm:pb-12 sm:pt-4">
           {children}
         </ul>
       ) : (
