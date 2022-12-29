@@ -13,6 +13,8 @@ import clsx from 'clsx'
 import { motion } from 'framer-motion'
 import Image from 'next/image.js'
 import Link from 'next/link.js'
+import { useContext, useEffect } from 'react'
+import { CardContext } from '../app/layout.js'
 import { secondsToTime } from '../utils/formatting.js'
 import { slideDown } from '../utils/motion.js'
 
@@ -32,12 +34,20 @@ export default function CardContent({
   rewind,
   usersPlaysData,
 }) {
-  const rankingColors = ['text-yellow-500', 'text-gray-300', 'text-yellow-600']
+  const { prevPageState, nextPageState } = useContext(CardContext)
+  const [prevPage, setPrevPage] = prevPageState
+  const [nextPage, setNextPage] = nextPageState
 
-  function getPlaysByUser(user, statName) {
+  const rankingColors = ['text-yellow-500', 'text-gray-300', 'text-yellow-600']
+  const getPlaysByUser = (user, statName) => {
     return usersPlaysData.series.filter((stat) => stat.name === statName)[0]
       .data[usersPlaysData.categories.indexOf(user)]
   }
+
+  useEffect(() => {
+    setPrevPage(prevCard)
+    setNextPage(nextCard)
+  }, [prevCard, setPrevPage, nextCard, setNextPage])
 
   return (
     <>
@@ -81,7 +91,7 @@ export default function CardContent({
       )}
 
       {rewind ? (
-        <ul className="flex flex-col flex-1 pt-12 sm:justify-center sm:pb-12 sm:pt-4">
+        <ul className="flex flex-col flex-1 pt-16 sm:justify-center sm:pb-12 sm:pt-4">
           {children}
         </ul>
       ) : (
@@ -209,16 +219,16 @@ export default function CardContent({
 
       <div className="flex items-center justify-between pt-5 mt-auto text-sm">
         <div className="flex-1">
-          {prevCard && (
-            <Link href={prevCard} className="block w-5">
+          {prevPage && (
+            <Link href={prevPage} className="block w-5">
               <ArrowLongLeftIcon className="text-teal-300" />
             </Link>
           )}
         </div>
         <span className="flex-1 text-center">{page}</span>
         <div className="flex-1 text-right">
-          {nextCard && (
-            <Link href={nextCard} className="block w-5 ml-auto">
+          {nextPage && (
+            <Link href={nextPage} className="block w-5 ml-auto">
               <ArrowLongRightIcon className="text-teal-300" />
             </Link>
           )}
