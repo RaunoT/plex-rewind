@@ -1,7 +1,11 @@
 import {
+  BookOpenIcon,
   ChartPieIcon,
   ClockIcon,
+  FilmIcon,
   FolderIcon,
+  MusicalNoteIcon,
+  PlayCircleIcon,
 } from '@heroicons/react/24/outline'
 import { Suspense } from 'react'
 import CardContent from '../../../ui/CardContent'
@@ -10,83 +14,60 @@ import fetchFromTautulli from '../../../utils/fetchFromTautulli'
 import { bytesToSize, secondsToTime } from '../../../utils/formatting'
 
 async function getUserTotalDuration() {
-  const musicTotalDuration = fetchFromTautulli('get_library_user_stats', {
-    section_id: 1,
-  })
-  const showsTotalDuration = fetchFromTautulli('get_library_user_stats', {
-    section_id: 2,
-  })
-  const moviesTotalDuration = fetchFromTautulli('get_library_user_stats', {
-    section_id: 3,
-  })
-  const audiobooksTotalDuration = fetchFromTautulli('get_library_user_stats', {
-    section_id: 4,
-  })
+  const filterLibraryDurationByUser = (library, userId = 8898770) => {
+    return library.response?.data?.filter((user) => user.user_id === userId)[0]
+      .total_time
+  }
+  const [musicUserStats, showsUserStats, moviesUserStats, audiobooksUserStats] =
+    await Promise.all([
+      fetchFromTautulli('get_library_user_stats', {
+        section_id: 1,
+      }),
+      fetchFromTautulli('get_library_user_stats', {
+        section_id: 2,
+      }),
+      fetchFromTautulli('get_library_user_stats', {
+        section_id: 3,
+      }),
+      fetchFromTautulli('get_library_user_stats', {
+        section_id: 4,
+      }),
+    ])
 
-  let [
-    musicTotalDurationData,
-    showsTotalDurationData,
-    moviesTotalDurationData,
-    audiobooksTotalDurationData,
-  ] = await Promise.all([
-    musicTotalDuration,
-    showsTotalDuration,
-    moviesTotalDuration,
-    audiobooksTotalDuration,
-  ])
-
-  //Filter data
-  const musicTotal = musicTotalDurationData.response?.data.filter(
-    (user) => user.user_id === 8898770,
-  )[0].total_time
-  const showsTotal = showsTotalDurationData.response?.data.filter(
-    (user) => user.user_id === 8898770,
-  )[0].total_time
-  const moviesTotal = moviesTotalDurationData.response?.data.filter(
-    (user) => user.user_id === 8898770,
-  )[0].total_time
-  const audiobooksTotal = audiobooksTotalDurationData.response?.data.filter(
-    (user) => user.user_id === 8898770,
-  )[0].total_time
-
-  return musicTotal + showsTotal + moviesTotal + audiobooksTotal
+  return (
+    filterLibraryDurationByUser(musicUserStats) +
+    filterLibraryDurationByUser(showsUserStats) +
+    filterLibraryDurationByUser(moviesUserStats) +
+    filterLibraryDurationByUser(audiobooksUserStats)
+  )
 }
 
 async function getLibraryTotalSize() {
-  const musicTotalSize = fetchFromTautulli('get_library_media_info', {
-    section_id: 1,
-    length: 0,
-  })
-  const showsTotalSize = fetchFromTautulli('get_library_media_info', {
-    section_id: 2,
-    length: 0,
-  })
-  const moviesTotalSize = fetchFromTautulli('get_library_media_info', {
-    section_id: 3,
-    length: 0,
-  })
-  const audiobooksTotalSize = fetchFromTautulli('get_library_media_info', {
-    section_id: 4,
-    length: 0,
-  })
-
-  const [
-    musicTotalSizeData,
-    showsTotalSizeData,
-    moviesTotalSizeData,
-    audiobooksTotalSizeData,
-  ] = await Promise.all([
-    musicTotalSize,
-    showsTotalSize,
-    moviesTotalSize,
-    audiobooksTotalSize,
-  ])
+  const [musicMediaInfo, showsMediaInfo, moviesMediaInfo, audiobooksMediaInfo] =
+    await Promise.all([
+      fetchFromTautulli('get_library_media_info', {
+        section_id: 1,
+        length: 0,
+      }),
+      fetchFromTautulli('get_library_media_info', {
+        section_id: 2,
+        length: 0,
+      }),
+      fetchFromTautulli('get_library_media_info', {
+        section_id: 3,
+        length: 0,
+      }),
+      fetchFromTautulli('get_library_media_info', {
+        section_id: 4,
+        length: 0,
+      }),
+    ])
 
   return bytesToSize(
-    musicTotalSizeData.response.data.total_file_size +
-      showsTotalSizeData.response.data.total_file_size +
-      moviesTotalSizeData.response.data.total_file_size +
-      audiobooksTotalSizeData.response.data.total_file_size,
+    musicMediaInfo.response?.data?.total_file_size +
+      showsMediaInfo.response?.data?.total_file_size +
+      moviesMediaInfo.response?.data?.total_file_size +
+      audiobooksMediaInfo.response?.data?.total_file_size,
   )
 }
 
@@ -99,6 +80,12 @@ async function getLibraryTotalDuration() {
   })
 
   return totalDuration
+}
+
+async function getLibraryContentCount() {
+  const libraries = await fetchFromTautulli('get_libraries')
+
+  return libraries.response?.data
 }
 
 export default async function Total() {
@@ -116,6 +103,7 @@ export default async function Total() {
             getUserTotalDuration(),
             getLibraryTotalSize(),
             getLibraryTotalDuration(),
+            getLibraryContentCount(),
           ]}
         />
       </Suspense>
@@ -124,8 +112,24 @@ export default async function Total() {
 }
 
 async function Stats({ promises }) {
-  const [userTotalDuration, libraryTotalSize, libraryTotalDuration] =
-    await Promise.all(promises)
+  const [
+    userTotalDuration,
+    libraryTotalSize,
+    libraryTotalDuration,
+    libraryContentCount,
+  ] = await Promise.all(promises)
+  const renderCount = (count, name, icon) => {
+    return (
+      <li key={name} className="my-2 last:my-0">
+        <span className="font-semibold text-black">{count}</span>
+        <span className="mx-2 text-black">•</span>
+        <span className="inline-flex items-center text-teal-300">
+          {name}
+          {icon}
+        </span>
+      </li>
+    )
+  }
 
   return (
     <>
@@ -140,7 +144,7 @@ async function Stats({ promises }) {
         on <span className="text-yellow-500">Plex</span> this year!
       </CardContentText>
 
-      <CardContentText renderDelay={5}>
+      <CardContentText renderDelay={5} hideAfter={15}>
         That&apos;s{' '}
         <span className="inline-flex items-center text-teal-300">
           {Math.round((userTotalDuration * 100) / libraryTotalDuration)}
@@ -150,7 +154,7 @@ async function Stats({ promises }) {
         of all plays.
       </CardContentText>
 
-      <CardContentText renderDelay={10} loaderDelay={5} noScale>
+      <CardContentText renderDelay={10} loaderDelay={5}>
         Did you know the{' '}
         <span className="inline-flex items-center text-teal-300">
           Filesize
@@ -159,6 +163,40 @@ async function Stats({ promises }) {
         of all the available content on{' '}
         <span className="text-yellow-500">Plex</span> is{' '}
         <span className="rewind-stat">{libraryTotalSize}</span>
+      </CardContentText>
+
+      <CardContentText renderDelay={15} loaderDelay={10} noScale>
+        The current library consist of:
+        <ul className="list">
+          {libraryContentCount.map((contentType) => {
+            switch (contentType.section_name) {
+              case 'TV Shows':
+                return renderCount(
+                  contentType.child_count,
+                  'Episodes',
+                  <PlayCircleIcon className="w-8 ml-1" />,
+                )
+              case 'Movies':
+                return renderCount(
+                  contentType.count,
+                  'Movies',
+                  <FilmIcon className="w-8 ml-1" />,
+                )
+              case 'Music':
+                return renderCount(
+                  contentType.child_count,
+                  'Songs',
+                  <MusicalNoteIcon className="w-8 ml-1" />,
+                )
+              case 'Audiobooks':
+                return renderCount(
+                  contentType.parent_count,
+                  'Audiobooks',
+                  <BookOpenIcon className="w-8 ml-1" />,
+                )
+            }
+          })}
+        </ul>
       </CardContentText>
     </>
   )
