@@ -11,7 +11,7 @@ async function getMovies() {
     time_range: 30,
   })
 
-  return movies
+  return movies.response?.data?.rows
 }
 
 async function getTotalDuration() {
@@ -21,7 +21,7 @@ async function getTotalDuration() {
     length: 0,
   })
 
-  return totalDuration
+  return removeAfterMinutes(totalDuration.response?.data?.total_duration)
 }
 
 async function getTotalSize() {
@@ -30,7 +30,7 @@ async function getTotalSize() {
     length: 0,
   })
 
-  return totalSize
+  return bytesToSize(totalSize.response?.data.total_file_size)
 }
 
 export default async function Movies() {
@@ -44,11 +44,9 @@ export default async function Movies() {
     <CardContent
       statTitle="Most watched"
       statCategory="Movies"
-      items={movies.response.data.rows}
-      totalDuration={removeAfterMinutes(
-        totalDuration.response.data.total_duration,
-      )}
-      totalSize={bytesToSize(totalSize.response.data.total_file_size)}
+      items={movies}
+      totalDuration={totalDuration}
+      totalSize={totalSize}
       prevCard="dashboard/shows"
       nextCard="dashboard/artists"
       page="2 / 4"

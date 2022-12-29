@@ -14,7 +14,7 @@ async function getTotalDuration() {
     length: 0,
   })
 
-  return totalDuration
+  return removeAfterMinutes(totalDuration.response?.data?.total_duration)
 }
 
 export default async function Music() {
@@ -42,7 +42,7 @@ async function Stats({ promise }) {
     <CardText noScale>
       And to top it all off, you listened to&nbsp;
       <span className="inline-block text-3xl font-semibold text-black">
-        {removeAfterMinutes(totalDuration.response.data.total_duration)}
+        {totalDuration}
       </span>{' '}
       of{' '}
       <span className="inline-flex items-center text-teal-300">

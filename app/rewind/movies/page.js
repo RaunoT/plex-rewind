@@ -14,7 +14,7 @@ async function getTotalDuration() {
     length: 0,
   })
 
-  return totalDuration
+  return removeAfterMinutes(totalDuration.response?.data?.total_duration)
 }
 
 export default async function Movies() {
@@ -42,7 +42,7 @@ async function Stats({ promise }) {
   return (
     <CardText noScale>
       <span className="inline-block text-3xl font-semibold text-black">
-        {removeAfterMinutes(totalDuration.response.data.total_duration)}
+        {totalDuration}
       </span>{' '}
       of your time was spent watching{' '}
       <span className="inline-flex text-teal-300">

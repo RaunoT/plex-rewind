@@ -30,8 +30,14 @@ export default function CardContent({
   ratings,
   type,
   rewind,
+  usersPlaysData,
 }) {
   const rankingColors = ['text-yellow-500', 'text-gray-300', 'text-yellow-600']
+
+  function getPlaysByUser(user, statName) {
+    return usersPlaysData.series.filter((stat) => stat.name === statName)[0]
+      .data[usersPlaysData.categories.indexOf(user)]
+  }
 
   return (
     <>
@@ -128,20 +134,49 @@ export default function CardContent({
                       </div>
                     )}
                     {/* Plays */}
-                    {/* TODO: Seperate music plays from other media */}
-                    <div className="flex items-center gap-1 sm:gap-2">
-                      {type === 'music' ? (
-                        <MusicalNoteIcon className="w-5 text-slate-900" />
-                      ) : type === 'movies' ? (
-                        <FilmIcon className="w-5 text-slate-900" />
-                      ) : (
-                        <PlayCircleIcon className="w-5 text-slate-900" />
-                      )}
-                      <span>
-                        {item.total_plays}
-                        {item.total_plays === 1 ? ' play' : ' plays'}
-                      </span>
-                    </div>
+                    {type === 'users' ? (
+                      usersPlaysData.series.map((category, key) => {
+                        if (category.name) {
+                          const plays = getPlaysByUser(item.user, category.name)
+
+                          return (
+                            plays > 0 && (
+                              <div
+                                className="flex items-center gap-1 sm:gap-2"
+                                key={key}
+                              >
+                                {category.name === 'Music' ? (
+                                  <MusicalNoteIcon className="w-5 text-slate-900" />
+                                ) : category.name === 'Movies' ? (
+                                  <FilmIcon className="w-5 text-slate-900" />
+                                ) : (
+                                  <PlayCircleIcon className="w-5 text-slate-900" />
+                                )}
+
+                                <span>
+                                  {plays}
+                                  {plays === 1 ? ' play' : ' plays'}
+                                </span>
+                              </div>
+                            )
+                          )
+                        }
+                      })
+                    ) : (
+                      <div className="flex items-center gap-1 sm:gap-2">
+                        {type === 'music' ? (
+                          <MusicalNoteIcon className="w-5 text-slate-900" />
+                        ) : type === 'movies' ? (
+                          <FilmIcon className="w-5 text-slate-900" />
+                        ) : (
+                          <PlayCircleIcon className="w-5 text-slate-900" />
+                        )}
+                        <span>
+                          {item.total_plays}
+                          {item.total_plays === 1 ? ' play' : ' plays'}
+                        </span>
+                      </div>
+                    )}
                     {/* Duration */}
                     <div className="flex items-center gap-1 sm:gap-2">
                       <ClockIcon className="w-5 text-slate-900" />

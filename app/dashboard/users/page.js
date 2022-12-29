@@ -11,7 +11,7 @@ async function getUsers() {
     time_range: 30,
   })
 
-  return users
+  return users.response?.data?.rows
 }
 
 async function getTotalDuration() {
@@ -20,29 +20,32 @@ async function getTotalDuration() {
     length: 0,
   })
 
-  return totalDuration
+  return removeAfterMinutes(totalDuration.response?.data?.total_duration)
+}
+
+async function getUsersPlaysData() {
+  const playData = await fetchFromTautulli('get_plays_by_top_10_users')
+
+  return playData.response?.data
 }
 
 export default async function Users() {
-  const usersData = getUsers()
-  const totalDurationData = getTotalDuration()
-
-  const [users, totalDuration] = await Promise.all([
-    usersData,
-    totalDurationData,
+  const [usersData, totalDuration, usersPlaysData] = await Promise.all([
+    getUsers(),
+    getTotalDuration(),
+    getUsersPlaysData(),
   ])
 
   return (
     <CardContent
       statTitle="Most active"
       statCategory="Users"
-      items={users.response.data.rows}
-      totalDuration={removeAfterMinutes(
-        totalDuration.response.data.total_duration,
-      )}
+      items={usersData}
+      totalDuration={totalDuration}
       prevCard="dashboard/artists"
       page="4 / 4"
       type="users"
+      usersPlaysData={usersPlaysData}
     />
   )
 }

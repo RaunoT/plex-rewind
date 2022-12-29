@@ -82,11 +82,11 @@ async function getLibraryTotalSize() {
     audiobooksTotalSize,
   ])
 
-  return (
+  return bytesToSize(
     musicTotalSizeData.response.data.total_file_size +
-    showsTotalSizeData.response.data.total_file_size +
-    moviesTotalSizeData.response.data.total_file_size +
-    audiobooksTotalSizeData.response.data.total_file_size
+      showsTotalSizeData.response.data.total_file_size +
+      moviesTotalSizeData.response.data.total_file_size +
+      audiobooksTotalSizeData.response.data.total_file_size,
   )
 }
 
@@ -151,7 +151,7 @@ async function Stats({ promises }) {
           %
           <ChartPieIcon className="w-8 ml-1" />
         </span>{' '}
-        of all plays
+        of all plays.
       </CardText>
 
       <CardText renderDelay={10} loaderDelay={5} noScale>
@@ -163,7 +163,7 @@ async function Stats({ promises }) {
         of all the available content on{' '}
         <span className="text-yellow-500">Plex</span> is{' '}
         <span className="inline-block text-3xl font-semibold text-black">
-          {bytesToSize(libraryTotalSize)}
+          {libraryTotalSize}
         </span>
       </CardText>
     </>

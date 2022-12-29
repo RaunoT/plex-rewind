@@ -14,7 +14,7 @@ async function getTotalDuration() {
     length: 0,
   })
 
-  return totalDuration
+  return removeAfterMinutes(totalDuration.response?.data?.total_duration)
 }
 
 export default async function Shows() {
@@ -47,7 +47,7 @@ async function Stats({ promise }) {
       </span>{' '}
       took up{' '}
       <span className="inline-block text-3xl font-semibold text-black">
-        {removeAfterMinutes(totalDuration.response.data.total_duration)}
+        {totalDuration}
       </span>{' '}
       of your year on <span className="text-yellow-500">Plex</span>.
     </CardText>
