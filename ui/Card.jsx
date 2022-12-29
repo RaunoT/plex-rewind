@@ -15,15 +15,11 @@ export default function Card({ children, className }) {
   return (
     <motion.article
       drag="x"
-      dragConstraints={{ left: 20, right: 20 }}
       dragSnapToOrigin
-      dragElastic={0.1}
-      dragTransition={{ bounceStiffness: 500, bounceDamping: 15 }}
-      // FIXME: Not working properly on desktop
-      onDragEnd={(event) => {
-        if (event.offsetX >= 100 && prevPage) {
+      onDragEnd={(event, info) => {
+        if (info.offset.x >= 150 && prevPage) {
           router.push(prevPage)
-        } else if (event.offsetX <= -100 && nextPage) {
+        } else if (info.offset.x <= -150 && nextPage) {
           router.push(nextPage)
         }
       }}
