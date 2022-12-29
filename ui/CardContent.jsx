@@ -80,7 +80,13 @@ export default function CardContent({
         </div>
       )}
 
-      {children}
+      {rewind ? (
+        <ul className="flex flex-col flex-1 pt-12 sm:justify-center sm:pb-12 sm:pt-4">
+          {children}
+        </ul>
+      ) : (
+        children
+      )}
 
       {items && (
         <ul className="mt-4 overflow-hidden xl:grid xl:grid-flow-col xl:grid-cols-2 xl:grid-rows-3 sm:mt-6 xl:gap-x-8">

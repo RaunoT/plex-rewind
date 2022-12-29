@@ -26,11 +26,9 @@ export default async function Music() {
       subtitle="Rauno T"
       rewind
     >
-      <ul className="flex flex-col justify-center flex-1 sm:pb-12">
-        <Suspense fallback={<CardTextSkeleton />}>
-          <Stats promise={getTotalDuration()} />
-        </Suspense>
-      </ul>
+      <Suspense fallback={<CardTextSkeleton />}>
+        <Stats promise={getTotalDuration()} />
+      </Suspense>
     </CardContent>
   )
 }
@@ -41,10 +39,7 @@ async function Stats({ promise }) {
   return (
     <CardText noScale>
       And to top it all off, you listened to&nbsp;
-      <span className="inline-block text-3xl font-semibold text-black">
-        {totalDuration}
-      </span>{' '}
-      of{' '}
+      <span className="rewind-stat">{totalDuration}</span> of{' '}
       <span className="inline-flex items-center text-teal-300">
         Music
         <MusicalNoteIcon className="w-8 ml-1" />

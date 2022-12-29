@@ -27,11 +27,9 @@ export default async function Shows() {
       subtitle="Rauno T"
       rewind
     >
-      <ul className="flex flex-col justify-center flex-1 sm:pb-12">
-        <Suspense fallback={<CardTextSkeleton />}>
-          <Stats promise={getTotalDuration()} />
-        </Suspense>
-      </ul>
+      <Suspense fallback={<CardTextSkeleton />}>
+        <Stats promise={getTotalDuration()} />
+      </Suspense>
     </CardContent>
   )
 }
@@ -45,11 +43,8 @@ async function Stats({ promise }) {
         TV Shows
         <PlayCircleIcon className="w-8 ml-1" />
       </span>{' '}
-      took up{' '}
-      <span className="inline-block text-3xl font-semibold text-black">
-        {totalDuration}
-      </span>{' '}
-      of your year on <span className="text-yellow-500">Plex</span>.
+      took up <span className="rewind-stat">{totalDuration}</span> of your year
+      on <span className="text-yellow-500">Plex</span>.
     </CardText>
   )
 }

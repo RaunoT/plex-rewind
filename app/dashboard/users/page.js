@@ -24,7 +24,9 @@ async function getTotalDuration() {
 }
 
 async function getUsersPlaysData() {
-  const playData = await fetchFromTautulli('get_plays_by_top_10_users')
+  const playData = await fetchFromTautulli('get_plays_by_top_10_users', {
+    time_range: '30',
+  })
 
   return playData.response?.data
 }

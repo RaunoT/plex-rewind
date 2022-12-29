@@ -27,11 +27,9 @@ export default async function Movies() {
       subtitle="Rauno T"
       rewind
     >
-      <ul className="flex flex-col justify-center flex-1 sm:pb-12">
-        <Suspense fallback={<CardTextSkeleton />}>
-          <Stats promise={getTotalDuration()} />
-        </Suspense>
-      </ul>
+      <Suspense fallback={<CardTextSkeleton />}>
+        <Stats promise={getTotalDuration()} />
+      </Suspense>
     </CardContent>
   )
 }
@@ -41,10 +39,8 @@ async function Stats({ promise }) {
 
   return (
     <CardText noScale>
-      <span className="inline-block text-3xl font-semibold text-black">
-        {totalDuration}
-      </span>{' '}
-      of your time was spent watching{' '}
+      <span className="rewind-stat">{totalDuration}</span> of your time was
+      spent watching{' '}
       <span className="inline-flex text-teal-300">
         Movies
         <FilmIcon className="w-8 ml-1" />

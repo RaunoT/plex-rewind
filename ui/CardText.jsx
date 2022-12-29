@@ -47,24 +47,21 @@ export default function CardText({
 
   return isComponentShown ? (
     <motion.li
-      className="mb-6 last:mb-0"
+      className={clsx(
+        'text-3xl sm:text-4xl italic mb-4 last:mb-0 leading-tight',
+        className,
+      )}
       variants={animateCardText}
       initial="hidden"
       animate={['show', !noScale && 'scaleDown']}
       style={{ originX: 0, originY: '100%' }}
       custom={scaleDelay}
     >
-      <CardTextContent className={className}>{children}</CardTextContent>
+      <p>{children}</p>
     </motion.li>
   ) : isLoaderShown ? (
     <Loader />
   ) : null
-}
-
-function CardTextContent({ children, className }) {
-  return (
-    <p className={clsx('text-3xl sm:text-4xl italic', className)}>{children}</p>
-  )
 }
 
 function Loader() {

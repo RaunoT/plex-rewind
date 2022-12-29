@@ -110,17 +110,15 @@ export default async function Total() {
       subtitle="Rauno T"
       rewind
     >
-      <ul className="flex flex-col justify-center flex-1 sm:pb-12">
-        <Suspense fallback={<CardTextSkeleton />}>
-          <Stats
-            promises={[
-              getUserTotalDuration(),
-              getLibraryTotalSize(),
-              getLibraryTotalDuration(),
-            ]}
-          />
-        </Suspense>
-      </ul>
+      <Suspense fallback={<CardTextSkeleton />}>
+        <Stats
+          promises={[
+            getUserTotalDuration(),
+            getLibraryTotalSize(),
+            getLibraryTotalDuration(),
+          ]}
+        />
+      </Suspense>
     </CardContent>
   )
 }
@@ -138,9 +136,7 @@ async function Stats({ promises }) {
           <ClockIcon className="w-8 ml-1" />
         </span>{' '}
         of{' '}
-        <span className="inline-block text-3xl font-semibold text-black">
-          {secondsToTime(userTotalDuration)}
-        </span>{' '}
+        <span className="rewind-stat">{secondsToTime(userTotalDuration)}</span>{' '}
         on <span className="text-yellow-500">Plex</span> this year!
       </CardText>
 
@@ -162,9 +158,7 @@ async function Stats({ promises }) {
         </span>{' '}
         of all the available content on{' '}
         <span className="text-yellow-500">Plex</span> is{' '}
-        <span className="inline-block text-3xl font-semibold text-black">
-          {libraryTotalSize}
-        </span>
+        <span className="rewind-stat">{libraryTotalSize}</span>
       </CardText>
     </>
   )
