@@ -16,10 +16,13 @@ export default function Card({ children, className }) {
     <motion.article
       drag="x"
       dragSnapToOrigin
+      dragDirectionLock
+      dragConstraints={{ left: 20, right: 20 }}
+      dragTransition={{ bounceStiffness: 600, bounceDamping: 20 }}
       onDragEnd={(event, info) => {
-        if (info.offset.x >= 150 && prevPage) {
+        if (info.offset.x > 150 && info.velocity.x > 15 && prevPage) {
           router.push(prevPage)
-        } else if (info.offset.x <= -150 && nextPage) {
+        } else if (info.offset.x < -150 && info.velocity.x < -15 && nextPage) {
           router.push(nextPage)
         }
       }}
