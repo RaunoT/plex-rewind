@@ -5,7 +5,7 @@ import { motion } from 'framer-motion'
 import { useEffect, useState } from 'react'
 import { animateCardText, fadeIn } from '../utils/motion'
 
-export default function CardText({
+export default function CardContentText({
   children,
   className,
   renderDelay = 0,

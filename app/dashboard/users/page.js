@@ -23,7 +23,7 @@ async function getTotalDuration() {
   return removeAfterMinutes(totalDuration.response?.data?.total_duration)
 }
 
-async function getUsersPlaysData() {
+async function getUsersPlays() {
   const playData = await fetchFromTautulli('get_plays_by_top_10_users', {
     time_range: '30',
   })
@@ -32,10 +32,10 @@ async function getUsersPlaysData() {
 }
 
 export default async function Users() {
-  const [usersData, totalDuration, usersPlaysData] = await Promise.all([
+  const [usersData, totalDuration, usersPlays] = await Promise.all([
     getUsers(),
     getTotalDuration(),
-    getUsersPlaysData(),
+    getUsersPlays(),
   ])
 
   return (
@@ -47,7 +47,7 @@ export default async function Users() {
       prevCard="dashboard/artists"
       page="4 / 4"
       type="users"
-      usersPlaysData={usersPlaysData}
+      usersPlays={usersPlays}
     />
   )
 }

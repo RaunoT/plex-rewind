@@ -1,7 +1,7 @@
 import { MusicalNoteIcon } from '@heroicons/react/24/outline'
 import { Suspense } from 'react'
 import CardContent from '../../../ui/CardContent'
-import CardText, { CardTextSkeleton } from '../../../ui/CardText'
+import CardContentText, { CardTextSkeleton } from '../../../ui/CardContentText'
 import { FIRST_OF_CURRENT_YEAR } from '../../../utils/constants'
 import fetchFromTautulli from '../../../utils/fetchFromTautulli'
 import { removeAfterMinutes } from '../../../utils/formatting'
@@ -37,7 +37,7 @@ async function Stats({ promise }) {
   const totalDuration = await promise
 
   return (
-    <CardText noScale>
+    <CardContentText noScale>
       And to top it all off, you listened to&nbsp;
       <span className="rewind-stat">{totalDuration}</span> of{' '}
       <span className="inline-flex items-center text-teal-300">
@@ -45,6 +45,6 @@ async function Stats({ promise }) {
         <MusicalNoteIcon className="w-8 ml-1" />
       </span>{' '}
       on <span className="text-yellow-500">Plex</span>.
-    </CardText>
+    </CardContentText>
   )
 }

@@ -1,7 +1,7 @@
 import { FilmIcon } from '@heroicons/react/24/outline'
 import { Suspense } from 'react'
 import CardContent from '../../../ui/CardContent'
-import CardText, { CardTextSkeleton } from '../../../ui/CardText'
+import CardContentText, { CardTextSkeleton } from '../../../ui/CardContentText'
 import { FIRST_OF_CURRENT_YEAR } from '../../../utils/constants'
 import fetchFromTautulli from '../../../utils/fetchFromTautulli'
 import { removeAfterMinutes } from '../../../utils/formatting'
@@ -38,7 +38,7 @@ async function Stats({ promise }) {
   const totalDuration = await promise
 
   return (
-    <CardText noScale>
+    <CardContentText noScale>
       <span className="rewind-stat">{totalDuration}</span> of your time was
       spent watching{' '}
       <span className="inline-flex text-teal-300">
@@ -46,6 +46,6 @@ async function Stats({ promise }) {
         <FilmIcon className="w-8 ml-1" />
       </span>{' '}
       on <span className="text-yellow-500">Plex</span> this year.
-    </CardText>
+    </CardContentText>
   )
 }

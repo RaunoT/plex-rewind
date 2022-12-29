@@ -5,7 +5,7 @@ import {
 } from '@heroicons/react/24/outline'
 import { Suspense } from 'react'
 import CardContent from '../../../ui/CardContent'
-import CardText, { CardTextSkeleton } from '../../../ui/CardText'
+import CardContentText, { CardTextSkeleton } from '../../../ui/CardContentText'
 import fetchFromTautulli from '../../../utils/fetchFromTautulli'
 import { bytesToSize, secondsToTime } from '../../../utils/formatting'
 
@@ -129,7 +129,7 @@ async function Stats({ promises }) {
 
   return (
     <>
-      <CardText hideAfter={10}>
+      <CardContentText hideAfter={10}>
         You&apos;ve spent a{' '}
         <span className="inline-flex items-center text-teal-300">
           Total
@@ -138,9 +138,9 @@ async function Stats({ promises }) {
         of{' '}
         <span className="rewind-stat">{secondsToTime(userTotalDuration)}</span>{' '}
         on <span className="text-yellow-500">Plex</span> this year!
-      </CardText>
+      </CardContentText>
 
-      <CardText renderDelay={5}>
+      <CardContentText renderDelay={5}>
         That&apos;s{' '}
         <span className="inline-flex items-center text-teal-300">
           {Math.round((userTotalDuration * 100) / libraryTotalDuration)}
@@ -148,9 +148,9 @@ async function Stats({ promises }) {
           <ChartPieIcon className="w-8 ml-1" />
         </span>{' '}
         of all plays.
-      </CardText>
+      </CardContentText>
 
-      <CardText renderDelay={10} loaderDelay={5} noScale>
+      <CardContentText renderDelay={10} loaderDelay={5} noScale>
         Did you know the{' '}
         <span className="inline-flex items-center text-teal-300">
           Filesize
@@ -159,7 +159,7 @@ async function Stats({ promises }) {
         of all the available content on{' '}
         <span className="text-yellow-500">Plex</span> is{' '}
         <span className="rewind-stat">{libraryTotalSize}</span>
-      </CardText>
+      </CardContentText>
     </>
   )
 }

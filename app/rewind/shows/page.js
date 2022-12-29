@@ -1,7 +1,7 @@
 import { PlayCircleIcon } from '@heroicons/react/24/outline'
 import { Suspense } from 'react'
 import CardContent from '../../../ui/CardContent'
-import CardText, { CardTextSkeleton } from '../../../ui/CardText'
+import CardContentText, { CardTextSkeleton } from '../../../ui/CardContentText'
 import { FIRST_OF_CURRENT_YEAR } from '../../../utils/constants'
 import fetchFromTautulli from '../../../utils/fetchFromTautulli'
 import { removeAfterMinutes } from '../../../utils/formatting'
@@ -38,13 +38,13 @@ async function Stats({ promise }) {
   const totalDuration = await promise
 
   return (
-    <CardText noScale>
+    <CardContentText noScale>
       <span className="inline-flex items-center text-teal-300">
         TV Shows
         <PlayCircleIcon className="w-8 ml-1" />
       </span>{' '}
       took up <span className="rewind-stat">{totalDuration}</span> of your year
       on <span className="text-yellow-500">Plex</span>.
-    </CardText>
+    </CardContentText>
   )
 }
