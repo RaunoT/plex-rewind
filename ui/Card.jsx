@@ -1,5 +1,9 @@
 'use client'
 
+import {
+  ArrowSmallLeftIcon,
+  ArrowSmallRightIcon,
+} from '@heroicons/react/24/outline'
 import clsx from 'clsx'
 import { motion } from 'framer-motion'
 import { useRouter } from 'next/navigation'
@@ -13,25 +17,38 @@ export default function Card({ children, className }) {
   const router = useRouter()
 
   return (
-    <motion.article
-      drag="x"
-      dragSnapToOrigin
-      dragDirectionLock
-      dragConstraints={{ left: 20, right: 20 }}
-      dragTransition={{ bounceStiffness: 600, bounceDamping: 20 }}
-      onDragEnd={(event, info) => {
-        if (info.offset.x > 150 && info.velocity.x > 15 && prevPage) {
-          router.push(prevPage)
-        } else if (info.offset.x < -150 && info.velocity.x < -15 && nextPage) {
-          router.push(nextPage)
-        }
-      }}
-      className={clsx(
-        'px-6 sm:px-8 pt-8 pb-3 sm:pb-5 rounded-3xl w-full flex flex-col bg-gradient min-h-[75vh]',
-        className,
+    <div className="relative">
+      <motion.article
+        drag="x"
+        dragSnapToOrigin
+        dragDirectionLock
+        dragConstraints={{ left: 10, right: 10 }}
+        dragTransition={{ bounceStiffness: 700, bounceDamping: 25 }}
+        onDragEnd={(event, info) => {
+          if (info.offset.x > 150 && info.velocity.x > 15 && prevPage) {
+            router.push(prevPage)
+          } else if (
+            info.offset.x < -150 &&
+            info.velocity.x < -15 &&
+            nextPage
+          ) {
+            router.push(nextPage)
+          }
+        }}
+        className={clsx(
+          'px-6 sm:px-8 pt-8 pb-3 sm:pb-5 rounded-3xl w-full flex flex-col bg-gradient min-h-[75vh]',
+          className,
+        )}
+      >
+        {children}
+      </motion.article>
+
+      {prevPage && (
+        <ArrowSmallLeftIcon className="absolute top-[35vh] sm:inset-y-0 sm:my-auto w-10 opacity-75 left-4 md:left-8 -z-10" />
       )}
-    >
-      {children}
-    </motion.article>
+      {nextPage && (
+        <ArrowSmallRightIcon className="absolute top-[35vh] sm:inset-y-0 sm:my-auto w-10 opacity-75 right-4 md:right-8 -z-10" />
+      )}
+    </div>
   )
 }
