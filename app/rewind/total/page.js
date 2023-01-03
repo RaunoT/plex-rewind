@@ -19,6 +19,7 @@ async function getUserTotalDuration() {
       .total_time
   }
   const [musicUserStats, showsUserStats, moviesUserStats, audiobooksUserStats] =
+    // FIXME: Start date is wrong
     await Promise.all([
       fetchFromTautulli('get_library_user_stats', {
         section_id: 1,

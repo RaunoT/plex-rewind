@@ -39,13 +39,27 @@ async function Stats({ promise }) {
 
   return (
     <CardContentText noScale>
-      <span className="rewind-stat">{totalDuration}</span> of your time was
-      spent watching{' '}
-      <span className="inline-flex text-teal-300">
-        Movies
-        <FilmIcon className="w-8 ml-1" />
-      </span>{' '}
-      on <span className="text-yellow-500">Plex</span> this year.
+      {totalDuration > 0 ? (
+        <>
+          <span className="rewind-stat">{totalDuration}</span> of your time was
+          spent watching{' '}
+          <span className="inline-flex text-teal-300">
+            Movies
+            <FilmIcon className="w-8 ml-1" />
+          </span>{' '}
+          on <span className="text-yellow-500">Plex</span> this year.
+        </>
+      ) : (
+        <>
+          You haven&apos;t watched any{' '}
+          <span className="inline-flex text-teal-300">
+            Movies
+            <FilmIcon className="w-8 ml-1" />
+          </span>{' '}
+          on <span className="text-yellow-500">Plex</span> this year{' '}
+          <span className="not-italic">🥹</span>
+        </>
+      )}
     </CardContentText>
   )
 }
