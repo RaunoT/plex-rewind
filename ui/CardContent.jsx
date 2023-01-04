@@ -11,8 +11,7 @@ import CardContentItems from './CardContentItems.jsx'
 
 export default function CardContent({
   children,
-  statTitle,
-  statCategory,
+  title,
   subtitle,
   page,
   prevCard,
@@ -36,24 +35,16 @@ export default function CardContent({
   return (
     <>
       <h2 className="flex items-center mb-1 text-sm font-bold text-black uppercase sm:text-xl">
-        <span>{statTitle}</span>
-        {statTitle && statCategory && (
-          <span className="mx-1 sm:mx-2" aria-hidden>
-            -
-          </span>
-        )}
-        <span>{statCategory}</span>
+        <span>{title}</span>
       </h2>
 
       <div className="text-xs font-medium uppercase sm:text-sm text-slate-900">
         {totalDuration && (
           <>
-            All <span>{statCategory}</span>
-            {statCategory && totalDuration && (
-              <span className="mx-1 sm:mx-2" aria-hidden>
-                -
-              </span>
-            )}
+            Total plays
+            <span className="mx-1 sm:mx-2" aria-hidden>
+              -
+            </span>
             <span className="normal-case">{totalDuration}</span>
           </>
         )}

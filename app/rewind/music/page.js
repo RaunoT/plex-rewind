@@ -20,7 +20,7 @@ async function getTotalDuration() {
 export default async function Music() {
   return (
     <CardContent
-      statCategory="Music"
+      title="Music"
       page="5 / 5"
       prevCard="/rewind/movies"
       subtitle="Rauno T"

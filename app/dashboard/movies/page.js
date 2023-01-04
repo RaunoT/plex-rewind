@@ -42,8 +42,7 @@ export default async function Movies() {
 
   return (
     <CardContent
-      statTitle="Most watched"
-      statCategory="Movies"
+      title="Movies"
       items={movies}
       totalDuration={totalDuration}
       totalSize={totalSize}

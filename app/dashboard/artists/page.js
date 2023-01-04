@@ -42,8 +42,7 @@ export default async function Artists() {
 
   return (
     <CardContent
-      statTitle="Most played"
-      statCategory="Artists"
+      title="Music"
       items={artists}
       totalDuration={totalDuration}
       totalSize={totalSize}

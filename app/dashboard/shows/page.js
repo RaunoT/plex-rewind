@@ -42,8 +42,7 @@ export default async function Shows() {
 
   return (
     <CardContent
-      statTitle="Most watched"
-      statCategory="TV shows"
+      title="TV shows"
       items={shows}
       totalDuration={totalDuration}
       totalSize={totalSize}

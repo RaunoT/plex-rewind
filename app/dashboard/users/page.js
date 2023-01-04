@@ -40,8 +40,7 @@ export default async function Users() {
 
   return (
     <CardContent
-      statTitle="Most active"
-      statCategory="Users"
+      title="Users"
       items={usersData}
       totalDuration={totalDuration}
       prevCard="dashboard/artists"

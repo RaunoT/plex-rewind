@@ -28,7 +28,7 @@ async function getUserRequestsTotal() {
 export default async function Requests() {
   return (
     <CardContent
-      statCategory="Requests"
+      title="Requests"
       page="2 / 5"
       prevCard="/rewind/total"
       nextCard="/rewind/shows"

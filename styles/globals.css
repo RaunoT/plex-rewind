@@ -31,7 +31,7 @@
     background: theme('colors.slate.500');
     padding: theme('spacing.2') theme('spacing.4');
 
-    &--large {
+    @screen sm {
       padding: theme('spacing.3') theme('spacing.6');
     }
 

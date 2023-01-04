@@ -93,7 +93,7 @@ async function getLibraryContentCount() {
 export default async function Total() {
   return (
     <CardContent
-      statCategory="General stats"
+      title="General stats"
       page="1 / 5"
       nextCard="/rewind/requests"
       subtitle="Rauno T"
