@@ -10,7 +10,7 @@ import {
 import { Suspense } from 'react'
 import CardContent from '../../../ui/CardContent'
 import CardContentText, { CardTextSkeleton } from '../../../ui/CardContentText'
-import fetchFromTautulli from '../../../utils/fetchFromTautulli'
+import fetchTautulli from '../../../utils/fetchTautulli'
 import { bytesToSize, secondsToTime } from '../../../utils/formatting'
 
 async function getUserTotalDuration() {
@@ -21,16 +21,16 @@ async function getUserTotalDuration() {
   const [musicUserStats, showsUserStats, moviesUserStats, audiobooksUserStats] =
     // FIXME: Start date is wrong
     await Promise.all([
-      fetchFromTautulli('get_library_user_stats', {
+      fetchTautulli('get_library_user_stats', {
         section_id: 1,
       }),
-      fetchFromTautulli('get_library_user_stats', {
+      fetchTautulli('get_library_user_stats', {
         section_id: 2,
       }),
-      fetchFromTautulli('get_library_user_stats', {
+      fetchTautulli('get_library_user_stats', {
         section_id: 3,
       }),
-      fetchFromTautulli('get_library_user_stats', {
+      fetchTautulli('get_library_user_stats', {
         section_id: 4,
       }),
     ])
@@ -46,19 +46,19 @@ async function getUserTotalDuration() {
 async function getLibraryTotalSize() {
   const [musicMediaInfo, showsMediaInfo, moviesMediaInfo, audiobooksMediaInfo] =
     await Promise.all([
-      fetchFromTautulli('get_library_media_info', {
+      fetchTautulli('get_library_media_info', {
         section_id: 1,
         length: 0,
       }),
-      fetchFromTautulli('get_library_media_info', {
+      fetchTautulli('get_library_media_info', {
         section_id: 2,
         length: 0,
       }),
-      fetchFromTautulli('get_library_media_info', {
+      fetchTautulli('get_library_media_info', {
         section_id: 3,
         length: 0,
       }),
-      fetchFromTautulli('get_library_media_info', {
+      fetchTautulli('get_library_media_info', {
         section_id: 4,
         length: 0,
       }),
@@ -73,7 +73,7 @@ async function getLibraryTotalSize() {
 }
 
 async function getLibraryTotalDuration() {
-  const librariesTable = await fetchFromTautulli('get_libraries_table')
+  const librariesTable = await fetchTautulli('get_libraries_table')
   let totalDuration = 0
 
   librariesTable.response?.data?.data?.forEach((library) => {
@@ -84,7 +84,7 @@ async function getLibraryTotalDuration() {
 }
 
 async function getLibraryContentCount() {
-  const libraries = await fetchFromTautulli('get_libraries')
+  const libraries = await fetchTautulli('get_libraries')
 
   return libraries.response?.data
 }

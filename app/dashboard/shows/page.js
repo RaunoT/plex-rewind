@@ -1,10 +1,10 @@
 import CardContent from '../../../ui/CardContent'
 import { DAYS_AGO_30 } from '../../../utils/constants'
-import fetchFromTautulli from '../../../utils/fetchFromTautulli'
+import fetchTautulli from '../../../utils/fetchTautulli'
 import { bytesToSize, removeAfterMinutes } from '../../../utils/formatting'
 
 async function getShows() {
-  const shows = await fetchFromTautulli('get_home_stats', {
+  const shows = await fetchTautulli('get_home_stats', {
     stat_id: 'top_tv',
     stats_count: 6,
     stats_type: 'duration',
@@ -15,7 +15,7 @@ async function getShows() {
 }
 
 async function getTotalDuration() {
-  const totalDuration = await fetchFromTautulli('get_history', {
+  const totalDuration = await fetchTautulli('get_history', {
     section_id: 2,
     after: DAYS_AGO_30,
     length: 0,
@@ -25,7 +25,7 @@ async function getTotalDuration() {
 }
 
 async function getTotalSize() {
-  const totalSize = await fetchFromTautulli('get_library_media_info', {
+  const totalSize = await fetchTautulli('get_library_media_info', {
     section_id: 2,
     length: 0,
   })

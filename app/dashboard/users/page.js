@@ -1,10 +1,10 @@
 import CardContent from '../../../ui/CardContent'
 import { DAYS_AGO_30 } from '../../../utils/constants'
-import fetchFromTautulli from '../../../utils/fetchFromTautulli'
+import fetchTautulli from '../../../utils/fetchTautulli'
 import { removeAfterMinutes } from '../../../utils/formatting'
 
 async function getUsers() {
-  const users = await fetchFromTautulli('get_home_stats', {
+  const users = await fetchTautulli('get_home_stats', {
     stat_id: 'top_users',
     stats_count: 6,
     stats_type: 'duration',
@@ -15,7 +15,7 @@ async function getUsers() {
 }
 
 async function getTotalDuration() {
-  const totalDuration = await fetchFromTautulli('get_history', {
+  const totalDuration = await fetchTautulli('get_history', {
     after: DAYS_AGO_30,
     length: 0,
   })
@@ -24,7 +24,7 @@ async function getTotalDuration() {
 }
 
 async function getUsersPlays() {
-  const playData = await fetchFromTautulli('get_plays_by_top_10_users', {
+  const playData = await fetchTautulli('get_plays_by_top_10_users', {
     time_range: '30',
   })
 

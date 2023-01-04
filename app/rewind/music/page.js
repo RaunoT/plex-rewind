@@ -3,11 +3,11 @@ import { Suspense } from 'react'
 import CardContent from '../../../ui/CardContent'
 import CardContentText, { CardTextSkeleton } from '../../../ui/CardContentText'
 import { FIRST_OF_CURRENT_YEAR } from '../../../utils/constants'
-import fetchFromTautulli from '../../../utils/fetchFromTautulli'
+import fetchTautulli from '../../../utils/fetchTautulli'
 import { removeAfterMinutes } from '../../../utils/formatting'
 
 async function getTotalDuration() {
-  const totalDuration = await fetchFromTautulli('get_history', {
+  const totalDuration = await fetchTautulli('get_history', {
     user_id: 8898770,
     section_id: 1,
     after: FIRST_OF_CURRENT_YEAR,
