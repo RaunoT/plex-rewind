@@ -21,7 +21,7 @@ export default async function Music() {
   return (
     <CardContent
       statCategory="Music"
-      page="4 / 4"
+      page="5 / 5"
       prevCard="/rewind/movies"
       subtitle="Rauno T"
       rewind
@@ -38,7 +38,7 @@ async function Stats({ promise }) {
 
   return (
     <CardContentText noScale>
-      {totalDuration > 0 ? (
+      {totalDuration !== '0' ? (
         <>
           And to top it all off, you listened to&nbsp;
           <span className="rewind-stat">{totalDuration}</span> of{' '}

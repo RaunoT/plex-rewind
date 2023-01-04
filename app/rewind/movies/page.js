@@ -21,7 +21,7 @@ export default async function Movies() {
   return (
     <CardContent
       statCategory="Movies"
-      page="3 / 4"
+      page="4 / 5"
       prevCard="/rewind/shows"
       nextCard="/rewind/music"
       subtitle="Rauno T"
@@ -39,7 +39,7 @@ async function Stats({ promise }) {
 
   return (
     <CardContentText noScale>
-      {totalDuration > 0 ? (
+      {totalDuration !== '0' ? (
         <>
           <span className="rewind-stat">{totalDuration}</span> of your time was
           spent watching{' '}

@@ -10,6 +10,7 @@ import {
 import { Suspense } from 'react'
 import CardContent from '../../../ui/CardContent'
 import CardContentText, { CardTextSkeleton } from '../../../ui/CardContentText'
+import StatListItem from '../../../ui/StatListItem'
 import fetchTautulli from '../../../utils/fetchTautulli'
 import { bytesToSize, secondsToTime } from '../../../utils/formatting'
 
@@ -93,8 +94,8 @@ export default async function Total() {
   return (
     <CardContent
       statCategory="General stats"
-      page="1 / 4"
-      nextCard="/rewind/shows"
+      page="1 / 5"
+      nextCard="/rewind/requests"
       subtitle="Rauno T"
       rewind
     >
@@ -119,18 +120,6 @@ async function Stats({ promises }) {
     libraryTotalDuration,
     libraryContentCount,
   ] = await Promise.all(promises)
-  const renderCount = (count, name, icon) => {
-    return (
-      <li key={name} className="my-2 last:my-0">
-        <span className="font-semibold text-black">{count}</span>
-        <span className="mx-2 text-black">•</span>
-        <span className="inline-flex items-center text-teal-300">
-          {name}
-          {icon}
-        </span>
-      </li>
-    )
-  }
 
   return (
     <>
@@ -169,31 +158,46 @@ async function Stats({ promises }) {
       <CardContentText renderDelay={15} loaderDelay={10} noScale>
         The current library consist of:
         <ul className="list">
-          {libraryContentCount.map((contentType) => {
+          {libraryContentCount.map((contentType, i) => {
             switch (contentType.section_name) {
               case 'TV Shows':
-                return renderCount(
-                  contentType.child_count,
-                  'Episodes',
-                  <PlayCircleIcon className="w-8 ml-1" />,
+                return (
+                  <StatListItem
+                    count={contentType.child_count}
+                    name="Episodes"
+                    icon={<PlayCircleIcon className="w-8 ml-1" />}
+                    key={i}
+                  />
                 )
+
               case 'Movies':
-                return renderCount(
-                  contentType.count,
-                  'Movies',
-                  <FilmIcon className="w-8 ml-1" />,
+                return (
+                  <StatListItem
+                    count={contentType.count}
+                    name="Movies"
+                    icon={<FilmIcon className="w-8 ml-1" />}
+                    key={i}
+                  />
                 )
+
               case 'Music':
-                return renderCount(
-                  contentType.child_count,
-                  'Songs',
-                  <MusicalNoteIcon className="w-8 ml-1" />,
+                return (
+                  <StatListItem
+                    count={contentType.child_count}
+                    name="Songs"
+                    icon={<MusicalNoteIcon className="w-8 ml-1" />}
+                    key={i}
+                  />
                 )
+
               case 'Audiobooks':
-                return renderCount(
-                  contentType.parent_count,
-                  'Audiobooks',
-                  <BookOpenIcon className="w-8 ml-1" />,
+                return (
+                  <StatListItem
+                    count={contentType.parent_count}
+                    name="Audiobooks"
+                    icon={<BookOpenIcon className="w-8 ml-1" />}
+                    key={i}
+                  />
                 )
             }
           })}

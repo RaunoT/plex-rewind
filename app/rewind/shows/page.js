@@ -21,8 +21,8 @@ export default async function Shows() {
   return (
     <CardContent
       statCategory="TV Shows"
-      page="2 / 4"
-      prevCard="/rewind/total"
+      page="3 / 5"
+      prevCard="/rewind/requests"
       nextCard="/rewind/movies"
       subtitle="Rauno T"
       rewind
@@ -39,7 +39,7 @@ async function Stats({ promise }) {
 
   return (
     <CardContentText noScale>
-      {totalDuration > 0 ? (
+      {totalDuration !== '0' ? (
         <>
           <span className="inline-flex items-center text-teal-300">
             TV Shows
