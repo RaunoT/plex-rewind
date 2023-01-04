@@ -44,7 +44,6 @@ export default async function Requests() {
 
 async function Stats({ promises }) {
   const [requestTotals, userRequestsTotal] = await Promise.all(promises)
-  console.log(userRequestsTotal)
 
   return (
     <>
