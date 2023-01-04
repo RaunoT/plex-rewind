@@ -73,6 +73,11 @@ export default function CardContentItems({ items, type, usersPlays }) {
                     {item.year}
                   </div>
                 )}
+                {/* Duration */}
+                <div className="flex items-center gap-1 sm:gap-2">
+                  <ClockIcon className="w-5 text-slate-900" />
+                  {secondsToTime(item.total_duration)}
+                </div>
                 {/* Plays */}
                 {type === 'users' ? (
                   usersPlays.series.map((category, key) => {
@@ -117,11 +122,6 @@ export default function CardContentItems({ items, type, usersPlays }) {
                     </span>
                   </div>
                 )}
-                {/* Duration */}
-                <div className="flex items-center gap-1 sm:gap-2">
-                  <ClockIcon className="w-5 text-slate-900" />
-                  {secondsToTime(item.total_duration)}
-                </div>
               </div>
             </div>
           </motion.li>
