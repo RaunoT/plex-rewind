@@ -11,40 +11,25 @@ import { Suspense } from 'react'
 import CardContent from '../../../ui/CardContent'
 import CardContentText, { CardTextSkeleton } from '../../../ui/CardContentText'
 import StatListItem from '../../../ui/StatListItem'
+import { FIRST_OF_CURRENT_YEAR } from '../../../utils/constants'
 import fetchTautulli from '../../../utils/fetchTautulli'
-import { bytesToSize, secondsToTime } from '../../../utils/formatting'
+import {
+  bytesToSize,
+  secondsToTime,
+  timeToSeconds,
+} from '../../../utils/formatting'
 
 async function getUserTotalDuration() {
-  const filterLibraryDurationByUser = (library, userId = 8898770) => {
-    return library.response?.data?.filter((user) => user.user_id === userId)[0]
-      .total_time
-  }
-  const [musicUserStats, showsUserStats, moviesUserStats, audiobooksUserStats] =
-    // FIXME: Start date is wrong
-    await Promise.all([
-      fetchTautulli('get_library_user_stats', {
-        section_id: 1,
-      }),
-      fetchTautulli('get_library_user_stats', {
-        section_id: 2,
-      }),
-      fetchTautulli('get_library_user_stats', {
-        section_id: 3,
-      }),
-      fetchTautulli('get_library_user_stats', {
-        section_id: 4,
-      }),
-    ])
+  const userTotalDuration = await fetchTautulli('get_history', {
+    user_id: 8898770,
+    after: FIRST_OF_CURRENT_YEAR,
+    length: 0,
+  })
 
-  return (
-    filterLibraryDurationByUser(musicUserStats) +
-    filterLibraryDurationByUser(showsUserStats) +
-    filterLibraryDurationByUser(moviesUserStats) +
-    filterLibraryDurationByUser(audiobooksUserStats)
-  )
+  return timeToSeconds(userTotalDuration.response?.data?.total_duration)
 }
 
-async function getLibraryTotalSize() {
+async function getlibrariesTotalSize() {
   const [musicMediaInfo, showsMediaInfo, moviesMediaInfo, audiobooksMediaInfo] =
     await Promise.all([
       fetchTautulli('get_library_media_info', {
@@ -73,18 +58,16 @@ async function getLibraryTotalSize() {
   )
 }
 
-async function getLibraryTotalDuration() {
-  const librariesTable = await fetchTautulli('get_libraries_table')
-  let totalDuration = 0
-
-  librariesTable.response?.data?.data?.forEach((library) => {
-    totalDuration += library.duration
+async function getLibrariesTotalDuration() {
+  const librariesTotalDuration = await fetchTautulli('get_history', {
+    after: FIRST_OF_CURRENT_YEAR,
+    length: 0,
   })
 
-  return totalDuration
+  return timeToSeconds(librariesTotalDuration.response?.data?.total_duration)
 }
 
-async function getLibraryContentCount() {
+async function getlibraryContentCounts() {
   const libraries = await fetchTautulli('get_libraries')
 
   return libraries.response?.data
@@ -103,9 +86,9 @@ export default async function Total() {
         <Stats
           promises={[
             getUserTotalDuration(),
-            getLibraryTotalSize(),
-            getLibraryTotalDuration(),
-            getLibraryContentCount(),
+            getlibrariesTotalSize(),
+            getLibrariesTotalDuration(),
+            getlibraryContentCounts(),
           ]}
         />
       </Suspense>
@@ -116,10 +99,13 @@ export default async function Total() {
 async function Stats({ promises }) {
   const [
     userTotalDuration,
-    libraryTotalSize,
-    libraryTotalDuration,
-    libraryContentCount,
+    librariesTotalSize,
+    librariesTotalDuration,
+    libraryContentCounts,
   ] = await Promise.all(promises)
+
+  console.log(userTotalDuration)
+  console.log(librariesTotalDuration)
 
   return (
     <>
@@ -137,7 +123,7 @@ async function Stats({ promises }) {
       <CardContentText renderDelay={5} hideAfter={15}>
         That&apos;s{' '}
         <span className="inline-flex items-center text-teal-300">
-          {Math.round((userTotalDuration * 100) / libraryTotalDuration)}
+          {Math.round((userTotalDuration * 100) / librariesTotalDuration)}
           %
           <ChartPieIcon className="w-8 ml-1" />
         </span>{' '}
@@ -152,13 +138,13 @@ async function Stats({ promises }) {
         </span>{' '}
         of all the available content on{' '}
         <span className="text-yellow-500">Plex</span> is{' '}
-        <span className="rewind-stat">{libraryTotalSize}</span>
+        <span className="rewind-stat">{librariesTotalSize}</span>
       </CardContentText>
 
       <CardContentText renderDelay={15} loaderDelay={10} noScale>
         The current library consist of:
         <ul className="list">
-          {libraryContentCount.map((contentType, i) => {
+          {libraryContentCounts.map((contentType, i) => {
             switch (contentType.section_name) {
               case 'TV Shows':
                 return (

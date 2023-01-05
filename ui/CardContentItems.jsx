@@ -13,6 +13,7 @@ import Image from 'next/image'
 import { secondsToTime } from '../utils/formatting'
 import { slideDown } from '../utils/motion'
 
+// TODO: Add Skeleton Loader
 export default function CardContentItems({ items, type, usersPlays }) {
   const rankingColors = ['text-yellow-500', 'text-gray-300', 'text-yellow-600']
 
@@ -73,6 +74,8 @@ export default function CardContentItems({ items, type, usersPlays }) {
                     {item.year}
                   </div>
                 )}
+                {/* TODO: Add ratings */}
+                {/* TODO: Add user requests */}
                 {/* Duration */}
                 <div className="flex items-center gap-1 sm:gap-2">
                   <ClockIcon className="w-5 text-slate-900" />

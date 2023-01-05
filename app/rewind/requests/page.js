@@ -18,6 +18,7 @@ async function getRequestsTotals() {
   return requestTotals
 }
 
+// FIXME: Only include data from this year
 async function getUserRequestsTotal() {
   const userId = await fetchOverseerrUserId(8898770)
   const userRequestsTotal = await fetchOverseerr(`user/${userId}/requests`)

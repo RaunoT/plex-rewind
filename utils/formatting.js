@@ -42,3 +42,18 @@ export function bytesToSize(bytes, decimals = 2) {
 
   return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`
 }
+
+export function timeToSeconds(time) {
+  const days = time.match(/([\d.]+) *day/)
+    ? time.match(/([\d.]+) *day/)[1] * 86400
+    : 0
+  const hours = time.match(/([\d.]+) *hr/)
+    ? time.match(/([\d.]+) *hr/)[1] * 3600
+    : 0
+  const mins = time.match(/([\d.]+) *min/)
+    ? time.match(/([\d.]+) *min/)[1] * 60
+    : 0
+  const secs = time.match(/([\d.]+) *sec/) ? time.match(/([\d.]+) *secs/)[1] : 0
+
+  return parseInt(days) + parseInt(hours) + parseInt(mins) + parseInt(secs)
+}
