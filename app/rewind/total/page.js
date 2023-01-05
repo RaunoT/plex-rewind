@@ -104,9 +104,6 @@ async function Stats({ promises }) {
     libraryContentCounts,
   ] = await Promise.all(promises)
 
-  console.log(userTotalDuration)
-  console.log(librariesTotalDuration)
-
   return (
     <>
       <CardContentText hideAfter={10}>

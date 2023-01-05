@@ -75,11 +75,13 @@ async function Stats({ promises }) {
             count={requestTotals.movie}
             name="Movies"
             icon={<FilmIcon className="w-8 ml-1" />}
+            separator="for"
           />
           <StatListItem
             count={requestTotals.tv}
             name="Shows"
             icon={<PlayCircleIcon className="w-8 ml-1" />}
+            separator="for"
           />
         </ul>
       </CardContentText>
