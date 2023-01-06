@@ -106,28 +106,43 @@ async function Stats({ promises }) {
 
   return (
     <>
-      <CardContentText hideAfter={10}>
-        You&apos;ve spent a{' '}
-        <span className="inline-flex items-center text-teal-300">
-          Total
-          <ClockIcon className="w-8 ml-1" />
-        </span>{' '}
-        of{' '}
-        <span className="rewind-stat">{secondsToTime(userTotalDuration)}</span>{' '}
-        on <span className="text-yellow-500">Plex</span> this year!
-      </CardContentText>
+      {userTotalDuration != 0 ? (
+        <>
+          <CardContentText hideAfter={10}>
+            You&apos;ve spent a{' '}
+            <span className="inline-flex items-center text-teal-300">
+              Total
+              <ClockIcon className="w-8 ml-1" />
+            </span>{' '}
+            of{' '}
+            <span className="rewind-stat">
+              {secondsToTime(userTotalDuration)}
+            </span>{' '}
+            on <span className="text-yellow-500">Plex</span> this year!
+          </CardContentText>
 
-      <CardContentText renderDelay={5} hideAfter={15}>
-        That&apos;s{' '}
-        <span className="inline-flex items-center text-teal-300">
-          {Math.round((userTotalDuration * 100) / librariesTotalDuration)}
-          %
-          <ChartPieIcon className="w-8 ml-1" />
-        </span>{' '}
-        of all plays.
-      </CardContentText>
+          <CardContentText renderDelay={5} hideAfter={15}>
+            That&apos;s{' '}
+            <span className="inline-flex items-center text-teal-300">
+              {Math.round((userTotalDuration * 100) / librariesTotalDuration)}
+              %
+              <ChartPieIcon className="w-8 ml-1" />
+            </span>{' '}
+            of all plays.
+          </CardContentText>
+        </>
+      ) : (
+        <CardContentText hideAfter={15} scaleDelay={10}>
+          You haven&apos;t played any content on{' '}
+          <span className="text-yellow-500">Plex</span> this year!{' '}
+          <span className="not-italic">🤯</span> What are you waiting for?
+        </CardContentText>
+      )}
 
-      <CardContentText renderDelay={10} loaderDelay={5}>
+      <CardContentText
+        renderDelay={10}
+        loaderDelay={userTotalDuration != 0 ? 5 : 0}
+      >
         Did you know the{' '}
         <span className="inline-flex items-center text-teal-300">
           Filesize

@@ -46,6 +46,12 @@
     font-weight: 600;
     color: theme('colors.black');
   }
+
+  .link {
+    color: theme('colors.blue.300');
+    font-weight: 500;
+    text-decoration: underline;
+  }
 }
 
 @layer utilities {

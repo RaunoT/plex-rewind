@@ -39,7 +39,7 @@ async function Stats({ promise }) {
 
   return (
     <CardContentText noScale>
-      {totalDuration !== '0' ? (
+      {totalDuration != 0 ? (
         <>
           <span className="inline-flex items-center text-teal-300">
             TV Shows

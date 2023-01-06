@@ -38,7 +38,7 @@ async function Stats({ promise }) {
 
   return (
     <CardContentText noScale>
-      {totalDuration !== '0' ? (
+      {totalDuration != 0 ? (
         <>
           And to top it all off, you listened to&nbsp;
           <span className="rewind-stat">{totalDuration}</span> of{' '}
@@ -46,7 +46,11 @@ async function Stats({ promise }) {
             Music
             <MusicalNoteIcon className="w-8 ml-1" />
           </span>{' '}
-          on <span className="text-yellow-500">Plex</span>.
+          on <span className="text-yellow-500">Plex</span> during{' '}
+          <span className="text-purple-300 rewind-stat">
+            {new Date().getFullYear()}
+          </span>
+          .
         </>
       ) : (
         <>
