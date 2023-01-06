@@ -1,5 +1,9 @@
 import CardContent from '../../../ui/CardContent'
-import { DAYS_AGO_30 } from '../../../utils/constants'
+import { DAYS_AGO_30, DAYS_AGO_30_STRING } from '../../../utils/constants'
+import {
+  fetchOverseerrUserId,
+  fetchPaginatedOverseerrStats,
+} from '../../../utils/fetchOverseerr'
 import fetchTautulli from '../../../utils/fetchTautulli'
 import { removeAfterMinutes } from '../../../utils/formatting'
 
@@ -16,7 +20,7 @@ async function getUsers() {
 
 async function getTotalDuration() {
   const totalDuration = await fetchTautulli('get_history', {
-    after: DAYS_AGO_30,
+    after: DAYS_AGO_30_STRING,
     length: 0,
   })
 
@@ -34,15 +38,46 @@ async function getUsersPlays() {
 async function getUsersCount() {
   const usersCount = await fetchTautulli('get_users')
 
-  return usersCount.response?.data.length - 1
+  return usersCount.response?.data.slice(1).length
+}
+
+async function getUsersRequestsCounts() {
+  const users = await fetchTautulli('get_users')
+  const overseerrUserIds = Promise.all(
+    users.response?.data.slice(1).map(async (user) => {
+      const overseerrId = await fetchOverseerrUserId(user.user_id)
+      return overseerrId
+    }),
+  )
+  const usersRequestsCounts = Promise.all(
+    (await overseerrUserIds).map(async (user, i) => {
+      const userTotal = await fetchPaginatedOverseerrStats(
+        `user/${user}/requests`,
+        DAYS_AGO_30,
+      )
+      return {
+        user: users.response?.data.slice(1)[i].user_id,
+        requests: userTotal.length,
+      }
+    }),
+  )
+
+  return usersRequestsCounts
 }
 
 export default async function Users() {
-  const [usersData, totalDuration, usersPlays, usersCount] = await Promise.all([
+  const [
+    usersData,
+    totalDuration,
+    usersPlays,
+    usersCount,
+    usersRequestsCounts,
+  ] = await Promise.all([
     getUsers(),
     getTotalDuration(),
     getUsersPlays(),
     getUsersCount(),
+    getUsersRequestsCounts(),
   ])
 
   return (
@@ -55,6 +90,8 @@ export default async function Users() {
       page="4 / 4"
       type="users"
       usersPlays={usersPlays}
+      // TODO: Maybe there's a cleaner way of doing this
+      userRequests={usersRequestsCounts}
     />
   )
 }

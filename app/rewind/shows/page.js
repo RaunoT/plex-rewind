@@ -2,7 +2,7 @@ import { PlayCircleIcon } from '@heroicons/react/24/outline'
 import { Suspense } from 'react'
 import CardContent from '../../../ui/CardContent'
 import CardContentText, { CardTextSkeleton } from '../../../ui/CardContentText'
-import { FIRST_OF_CURRENT_YEAR } from '../../../utils/constants'
+import { CURRENT_YEAR_STRING } from '../../../utils/constants'
 import fetchTautulli from '../../../utils/fetchTautulli'
 import { removeAfterMinutes } from '../../../utils/formatting'
 
@@ -10,7 +10,7 @@ async function getTotalDuration() {
   const totalDuration = await fetchTautulli('get_history', {
     user_id: 8898770,
     section_id: 2,
-    after: FIRST_OF_CURRENT_YEAR,
+    after: CURRENT_YEAR_STRING,
     length: 0,
   })
 

@@ -6,6 +6,7 @@ import {
   FilmIcon,
   MusicalNoteIcon,
   PlayCircleIcon,
+  QuestionMarkCircleIcon,
 } from '@heroicons/react/24/outline'
 import clsx from 'clsx'
 import { motion } from 'framer-motion'
@@ -14,13 +15,22 @@ import { secondsToTime } from '../utils/formatting'
 import { slideDown } from '../utils/motion'
 
 // TODO: Add Skeleton Loader
-export default function CardContentItems({ items, type, usersPlays }) {
+export default function CardContentItems({
+  items,
+  type,
+  usersPlays,
+  userRequests,
+}) {
   const rankingColors = ['text-yellow-500', 'text-gray-300', 'text-yellow-600']
 
-  function getPlaysByUser(user, statName) {
+  const getPlaysByUser = (user, statName) => {
     return usersPlays.series.filter((stat) => stat.name === statName)[0].data[
       usersPlays.categories.indexOf(user)
     ]
+  }
+
+  const getUserRequestsCount = (id) => {
+    return userRequests.find((request) => request.user === id).requests
   }
 
   return (
@@ -76,12 +86,20 @@ export default function CardContentItems({ items, type, usersPlays }) {
                   </div>
                 )}
                 {/* TODO: Add ratings */}
-                {/* TODO: Add user requests count */}
+                {/* TODO: Add tooltips explaining stat */}
                 {/* Duration */}
                 <div className="flex items-center gap-1 sm:gap-2">
                   <ClockIcon className="w-5 text-slate-900" />
                   {secondsToTime(item.total_duration)}
                 </div>
+                {/* Requests */}
+                {type === 'users' &&
+                  getUserRequestsCount(item.user_id) != 0 && (
+                    <div className="flex items-center gap-1 sm:gap-2">
+                      <QuestionMarkCircleIcon className="w-5 text-slate-900" />
+                      {getUserRequestsCount(item.user_id)}
+                    </div>
+                  )}
                 {/* Plays */}
                 {type === 'users' ? (
                   usersPlays.series.map((category, key) => {

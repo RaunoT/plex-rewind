@@ -8,26 +8,13 @@ import CardContent from '../../../ui/CardContent'
 import CardContentText, { CardTextSkeleton } from '../../../ui/CardContentText'
 import StatListItem from '../../../ui/StatListItem'
 import { CURRENT_YEAR } from '../../../utils/constants'
-import fetchOverseerr, {
+import {
   fetchOverseerrUserId,
+  fetchPaginatedOverseerrStats,
 } from '../../../utils/fetchOverseerr'
 
 async function getRequestsTotals() {
-  let currentPage = 1
-  let totalPages = 1
-  let reqUrl = `request`
-  let requests = []
-
-  do {
-    const requestsData = await fetchOverseerr(reqUrl)
-    const requestsDataFiltered = requestsData.results.filter(
-      (request) => Date.parse(request.createdAt) > Date.parse(CURRENT_YEAR),
-    )
-    requests = [...requestsDataFiltered, ...requests]
-    totalPages = requestsData.pageInfo.pages
-    currentPage = requestsData.pageInfo.page
-    reqUrl = `request?skip=${requestsData.pageInfo.pageSize * currentPage}`
-  } while (currentPage < totalPages)
+  const requests = await fetchPaginatedOverseerrStats('request', CURRENT_YEAR)
 
   return {
     total: requests.length,
@@ -38,25 +25,12 @@ async function getRequestsTotals() {
 
 async function getUserRequestsTotal() {
   const userId = await fetchOverseerrUserId(8898770)
-  let currentPage = 1
-  let totalPages = 1
-  let reqUrl = `user/${userId}/requests`
-  let userRequestsTotal = 0
+  const userRequestsTotal = await fetchPaginatedOverseerrStats(
+    `user/${userId}/requests`,
+    CURRENT_YEAR,
+  )
 
-  do {
-    const userRequestsData = await fetchOverseerr(reqUrl)
-    const userRequestsDataFiltered = userRequestsData.results.filter(
-      (request) => Date.parse(request.createdAt) > Date.parse(CURRENT_YEAR),
-    )
-    userRequestsTotal += userRequestsDataFiltered.length
-    totalPages = userRequestsData.pageInfo.pages
-    currentPage = userRequestsData.pageInfo.page
-    reqUrl = `user/${userId}/requests?skip=${
-      userRequestsData.pageInfo.pageSize * currentPage
-    }`
-  } while (currentPage < totalPages)
-
-  return userRequestsTotal
+  return userRequestsTotal.length
 }
 
 export default async function Requests() {

@@ -22,6 +22,7 @@ export default function CardContent({
   type,
   rewind,
   usersPlays,
+  userRequests,
 }) {
   const { prevPageState, nextPageState } = useContext(CardContext)
   const [prevPage, setPrevPage] = prevPageState
@@ -81,7 +82,12 @@ export default function CardContent({
       )}
 
       {items && (
-        <CardContentItems items={items} usersPlays={usersPlays} type={type} />
+        <CardContentItems
+          items={items}
+          usersPlays={usersPlays}
+          type={type}
+          userRequests={userRequests}
+        />
       )}
 
       <div className="flex items-center justify-between pt-5 mt-auto text-sm">

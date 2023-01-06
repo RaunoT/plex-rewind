@@ -1,5 +1,5 @@
 import CardContent from '../../../ui/CardContent'
-import { DAYS_AGO_30 } from '../../../utils/constants'
+import { DAYS_AGO_30_STRING } from '../../../utils/constants'
 import fetchTautulli from '../../../utils/fetchTautulli'
 import { bytesToSize, removeAfterMinutes } from '../../../utils/formatting'
 
@@ -17,7 +17,7 @@ async function getArtists() {
 async function getTotalDuration() {
   const totalDuration = await fetchTautulli('get_history', {
     section_id: 1,
-    after: DAYS_AGO_30,
+    after: DAYS_AGO_30_STRING,
     length: 0,
   })
 

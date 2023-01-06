@@ -11,7 +11,7 @@ import { Suspense } from 'react'
 import CardContent from '../../../ui/CardContent'
 import CardContentText, { CardTextSkeleton } from '../../../ui/CardContentText'
 import StatListItem from '../../../ui/StatListItem'
-import { FIRST_OF_CURRENT_YEAR } from '../../../utils/constants'
+import { CURRENT_YEAR_STRING } from '../../../utils/constants'
 import fetchTautulli from '../../../utils/fetchTautulli'
 import {
   bytesToSize,
@@ -22,7 +22,7 @@ import {
 async function getUserTotalDuration() {
   const userTotalDuration = await fetchTautulli('get_history', {
     user_id: 8898770,
-    after: FIRST_OF_CURRENT_YEAR,
+    after: CURRENT_YEAR_STRING,
     length: 0,
   })
 
@@ -60,7 +60,7 @@ async function getlibrariesTotalSize() {
 
 async function getLibrariesTotalDuration() {
   const librariesTotalDuration = await fetchTautulli('get_history', {
-    after: FIRST_OF_CURRENT_YEAR,
+    after: CURRENT_YEAR_STRING,
     length: 0,
   })
 
