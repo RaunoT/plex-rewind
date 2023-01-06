@@ -7,23 +7,56 @@ import { Suspense } from 'react'
 import CardContent from '../../../ui/CardContent'
 import CardContentText, { CardTextSkeleton } from '../../../ui/CardContentText'
 import StatListItem from '../../../ui/StatListItem'
+import { CURRENT_YEAR } from '../../../utils/constants'
 import fetchOverseerr, {
   fetchOverseerrUserId,
 } from '../../../utils/fetchOverseerr'
 
-// FIXME: Only include data from this year
 async function getRequestsTotals() {
-  const requestTotals = await fetchOverseerr('request/count')
+  let currentPage = 1
+  let totalPages = 1
+  let reqUrl = `request`
+  let requests = []
 
-  return requestTotals
+  do {
+    const requestsData = await fetchOverseerr(reqUrl)
+    const requestsDataFiltered = requestsData.results.filter(
+      (request) => Date.parse(request.createdAt) > Date.parse(CURRENT_YEAR),
+    )
+    requests = [...requestsDataFiltered, ...requests]
+    totalPages = requestsData.pageInfo.pages
+    currentPage = requestsData.pageInfo.page
+    reqUrl = `request?skip=${requestsData.pageInfo.pageSize * currentPage}`
+  } while (currentPage < totalPages)
+
+  return {
+    total: requests.length,
+    movies: requests.filter((request) => request.type === 'movie').length,
+    shows: requests.filter((request) => request.type === 'tv').length,
+  }
 }
 
-// FIXME: Only include data from this year
 async function getUserRequestsTotal() {
   const userId = await fetchOverseerrUserId(8898770)
-  const userRequestsTotal = await fetchOverseerr(`user/${userId}/requests`)
+  let currentPage = 1
+  let totalPages = 1
+  let reqUrl = `user/${userId}/requests`
+  let userRequestsTotal = 0
 
-  return userRequestsTotal.pageInfo?.results
+  do {
+    const userRequestsData = await fetchOverseerr(reqUrl)
+    const userRequestsDataFiltered = userRequestsData.results.filter(
+      (request) => Date.parse(request.createdAt) > Date.parse(CURRENT_YEAR),
+    )
+    userRequestsTotal += userRequestsDataFiltered.length
+    totalPages = userRequestsData.pageInfo.pages
+    currentPage = userRequestsData.pageInfo.page
+    reqUrl = `user/${userId}/requests?skip=${
+      userRequestsData.pageInfo.pageSize * currentPage
+    }`
+  } while (currentPage < totalPages)
+
+  return userRequestsTotal
 }
 
 export default async function Requests() {
@@ -59,7 +92,7 @@ async function Stats({ promises }) {
       </CardContentText>
 
       <CardContentText renderDelay={5}>
-        Overall there have been{' '}
+        Altogether there have been{' '}
         <span className="rewind-stat">{requestTotals.total}</span>{' '}
         <span className="inline-flex items-center text-teal-300">
           Requests
@@ -72,13 +105,13 @@ async function Stats({ promises }) {
         That includes:
         <ul className="list">
           <StatListItem
-            count={requestTotals.movie}
+            count={requestTotals.movies}
             name="Movies"
             icon={<FilmIcon className="w-8 ml-1" />}
             separator="for"
           />
           <StatListItem
-            count={requestTotals.tv}
+            count={requestTotals.shows}
             name="Shows"
             icon={<PlayCircleIcon className="w-8 ml-1" />}
             separator="for"

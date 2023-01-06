@@ -31,11 +31,18 @@ async function getUsersPlays() {
   return playData.response?.data
 }
 
+async function getUsersCount() {
+  const usersCount = await fetchTautulli('get_users')
+
+  return usersCount.response?.data.length - 1
+}
+
 export default async function Users() {
-  const [usersData, totalDuration, usersPlays] = await Promise.all([
+  const [usersData, totalDuration, usersPlays, usersCount] = await Promise.all([
     getUsers(),
     getTotalDuration(),
     getUsersPlays(),
+    getUsersCount(),
   ])
 
   return (
@@ -43,6 +50,7 @@ export default async function Users() {
       title="Users"
       items={usersData}
       totalDuration={totalDuration}
+      totalSize={usersCount}
       prevCard="dashboard/artists"
       page="4 / 4"
       type="users"

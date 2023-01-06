@@ -36,6 +36,14 @@ export default function CardContent({
     <>
       <h2 className="flex items-center mb-1 text-sm font-bold text-black uppercase sm:text-xl">
         <span>{title}</span>
+        {totalSize && (
+          <>
+            <span className="mx-1 sm:mx-2" aria-hidden>
+              -
+            </span>
+            <span>{totalSize}</span>
+          </>
+        )}
       </h2>
 
       <div className="text-xs font-medium uppercase sm:text-sm text-slate-900">
@@ -48,7 +56,6 @@ export default function CardContent({
             <span className="normal-case">{totalDuration}</span>
           </>
         )}
-        {totalSize && <span className="ml-1">({totalSize})</span>}
       </div>
 
       {subtitle && (

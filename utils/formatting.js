@@ -53,7 +53,7 @@ export function timeToSeconds(time) {
   const mins = time.match(/([\d.]+) *min/)
     ? time.match(/([\d.]+) *min/)[1] * 60
     : 0
-  const secs = time.match(/([\d.]+) *sec/) ? time.match(/([\d.]+) *secs/)[1] : 0
+  const secs = time.match(/([\d.]+) *sec/) ? time.match(/([\d.]+) *sec/)[1] : 0
 
   return parseInt(days) + parseInt(hours) + parseInt(mins) + parseInt(secs)
 }

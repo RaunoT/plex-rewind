@@ -68,6 +68,7 @@ export default function CardContentItems({ items, type, usersPlays }) {
                 </span>
               </h3>
               <div className="flex flex-wrap items-center gap-2 text-xs italic sm:gap-3 sm:text-base">
+                {/* FIXME: Shows not always properly showing year */}
                 {item.year && (type === 'movies' || type === 'shows') && (
                   <div className="flex items-center gap-1 sm:gap-2">
                     <CalendarDaysIcon className="w-5 text-slate-900" />
@@ -75,7 +76,7 @@ export default function CardContentItems({ items, type, usersPlays }) {
                   </div>
                 )}
                 {/* TODO: Add ratings */}
-                {/* TODO: Add user requests */}
+                {/* TODO: Add user requests count */}
                 {/* Duration */}
                 <div className="flex items-center gap-1 sm:gap-2">
                   <ClockIcon className="w-5 text-slate-900" />
