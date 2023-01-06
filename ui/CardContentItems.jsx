@@ -97,7 +97,7 @@ export default function CardContentItems({
                   getUserRequestsCount(item.user_id) != 0 && (
                     <div className="flex items-center gap-1 sm:gap-2">
                       <QuestionMarkCircleIcon className="w-5 text-slate-900" />
-                      {getUserRequestsCount(item.user_id)}
+                      {getUserRequestsCount(item.user_id)} requests
                     </div>
                   )}
                 {/* Plays */}
