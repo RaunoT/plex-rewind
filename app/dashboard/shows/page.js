@@ -5,14 +5,35 @@ import fetchTmdb from '../../../utils/fetchTmdb'
 import { bytesToSize, removeAfterMinutes } from '../../../utils/formatting'
 
 async function getShows() {
-  const shows = await fetchTautulli('get_home_stats', {
+  const showsData = await fetchTautulli('get_home_stats', {
     stat_id: 'top_tv',
     stats_count: 6,
     stats_type: 'duration',
     time_range: 30,
   })
 
-  return shows.response?.data?.rows
+  const shows = showsData.response?.data?.rows
+
+  // Workaround for Tautulli not properly returning year via get_home_stats collection
+  let ratingKeys = []
+  shows.map((show) => {
+    ratingKeys.push(show.rating_key)
+  })
+  const years = await Promise.all(
+    ratingKeys.map(async (key) => {
+      const itemData = await fetchTautulli('get_metadata', {
+        rating_key: key,
+      })
+
+      return itemData.response?.data?.year
+    }),
+  )
+
+  shows.map((show, i) => {
+    show.year = years[i]
+  })
+
+  return shows
 }
 
 async function getTotalDuration() {
