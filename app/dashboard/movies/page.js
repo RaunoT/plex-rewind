@@ -39,10 +39,10 @@ async function getRatings() {
 
   const ratings = Promise.all(
     movies.map(async (movie) => {
-      const movieData = await fetchTmdb(
-        'search/movie',
-        encodeURIComponent(movie.title),
-      )
+      const movieData = await fetchTmdb('search/movie', {
+        query: movie.title,
+        year: movie.year,
+      })
 
       return {
         title: movie.title,

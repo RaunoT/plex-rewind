@@ -39,14 +39,14 @@ async function getRatings() {
 
   const ratings = Promise.all(
     shows.map(async (show) => {
-      const showData = await fetchTmdb(
-        'search/tv',
-        encodeURIComponent(show.title),
-      )
+      const showData = await fetchTmdb('search/tv', {
+        query: show.title,
+        first_air_date_year: show.year,
+      })
 
       return {
         title: show.title,
-        rating: showData.results[0].vote_average,
+        rating: showData.results[0]?.vote_average,
       }
     }),
   )
