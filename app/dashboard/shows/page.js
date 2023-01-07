@@ -33,11 +33,31 @@ async function getTotalSize() {
   return bytesToSize(totalSize.response?.data.total_file_size)
 }
 
+async function getRatings() {
+  const shows = await getShows()
+
+  const ratings = Promise.all(
+    shows.map(async (show) => {
+      const showRating = await fetch(
+        `https://api.themoviedb.org/3/search/tv?api_key=x&query=${encodeURIComponent(
+          show.title,
+        )}`,
+      )
+      console.log(showRating)
+      return showRating?.results[0]?.vote_average
+    }),
+  )
+
+  // console.log(ratings)
+  return ratings
+}
+
 export default async function Shows() {
-  const [shows, totalDuration, totalSize] = await Promise.all([
+  const [shows, totalDuration, totalSize, ratings] = await Promise.all([
     getShows(),
     getTotalDuration(),
     getTotalSize(),
+    getRatings(),
   ])
 
   return (
