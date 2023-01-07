@@ -93,13 +93,12 @@ export default function CardContentItems({
                   {secondsToTime(item.total_duration)}
                 </div>
                 {/* Requests */}
-                {type === 'users' &&
-                  getUserRequestsCount(item.user_id) != 0 && (
-                    <div className="flex items-center gap-1 sm:gap-2">
-                      <QuestionMarkCircleIcon className="w-5 text-slate-900" />
-                      {getUserRequestsCount(item.user_id)} requests
-                    </div>
-                  )}
+                {type === 'users' && (
+                  <div className="flex items-center gap-1 sm:gap-2">
+                    <QuestionMarkCircleIcon className="w-5 text-slate-900" />
+                    {getUserRequestsCount(item.user_id)} requests
+                  </div>
+                )}
                 {/* Plays */}
                 {type === 'users' ? (
                   usersPlays.series.map((category, key) => {
@@ -107,25 +106,23 @@ export default function CardContentItems({
                       const plays = getPlaysByUser(item.user, category.name)
 
                       return (
-                        plays > 0 && (
-                          <div
-                            className="flex items-center gap-1 sm:gap-2"
-                            key={key}
-                          >
-                            {category.name === 'Music' ? (
-                              <MusicalNoteIcon className="w-5 text-slate-900" />
-                            ) : category.name === 'Movies' ? (
-                              <FilmIcon className="w-5 text-slate-900" />
-                            ) : (
-                              <PlayCircleIcon className="w-5 text-slate-900" />
-                            )}
+                        <div
+                          className="flex items-center gap-1 sm:gap-2"
+                          key={key}
+                        >
+                          {category.name === 'Music' ? (
+                            <MusicalNoteIcon className="w-5 text-slate-900" />
+                          ) : category.name === 'Movies' ? (
+                            <FilmIcon className="w-5 text-slate-900" />
+                          ) : (
+                            <PlayCircleIcon className="w-5 text-slate-900" />
+                          )}
 
-                            <span>
-                              {plays}
-                              {plays === 1 ? ' play' : ' plays'}
-                            </span>
-                          </div>
-                        )
+                          <span>
+                            {plays}
+                            {plays === 1 ? ' play' : ' plays'}
+                          </span>
+                        </div>
                       )
                     }
                   })
