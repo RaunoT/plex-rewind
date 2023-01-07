@@ -21,7 +21,7 @@ import {
 } from '../../../utils/formatting'
 
 async function getUserTotalDuration() {
-  const user = fetchUser()
+  const user = await fetchUser()
   const userTotalDuration = await fetchTautulli('get_history', {
     user_id: user.plexId,
     after: CURRENT_YEAR_STRING,

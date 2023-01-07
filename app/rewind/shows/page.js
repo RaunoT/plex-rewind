@@ -8,7 +8,7 @@ import fetchTautulli from '../../../utils/fetchTautulli'
 import { removeAfterMinutes } from '../../../utils/formatting'
 
 async function getTotalDuration() {
-  const user = fetchUser()
+  const user = await fetchUser()
   const totalDuration = await fetchTautulli('get_history', {
     user_id: user.plexId,
     section_id: 2,
