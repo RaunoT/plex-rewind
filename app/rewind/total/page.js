@@ -12,6 +12,7 @@ import CardContent from '../../../ui/CardContent'
 import CardContentText, { CardTextSkeleton } from '../../../ui/CardContentText'
 import StatListItem from '../../../ui/StatListItem'
 import { CURRENT_YEAR_STRING } from '../../../utils/constants'
+import { fetchUser } from '../../../utils/fetchOverseerr'
 import fetchTautulli from '../../../utils/fetchTautulli'
 import {
   bytesToSize,
@@ -20,8 +21,9 @@ import {
 } from '../../../utils/formatting'
 
 async function getUserTotalDuration() {
+  const user = fetchUser()
   const userTotalDuration = await fetchTautulli('get_history', {
-    user_id: 8898770,
+    user_id: user.plexId,
     after: CURRENT_YEAR_STRING,
     length: 0,
   })

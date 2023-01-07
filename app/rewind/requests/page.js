@@ -9,8 +9,8 @@ import CardContentText, { CardTextSkeleton } from '../../../ui/CardContentText'
 import StatListItem from '../../../ui/StatListItem'
 import { CURRENT_YEAR } from '../../../utils/constants'
 import {
-  fetchOverseerrUserId,
   fetchPaginatedOverseerrStats,
+  fetchUser,
 } from '../../../utils/fetchOverseerr'
 
 async function getRequestsTotals() {
@@ -24,9 +24,9 @@ async function getRequestsTotals() {
 }
 
 async function getUserRequestsTotal() {
-  const userId = await fetchOverseerrUserId(8898770)
+  const user = await fetchUser()
   const userRequestsTotal = await fetchPaginatedOverseerrStats(
-    `user/${userId}/requests`,
+    `user/${user.id}/requests`,
     CURRENT_YEAR,
   )
 

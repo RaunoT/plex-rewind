@@ -39,3 +39,9 @@ export async function fetchPaginatedOverseerrStats(req, timeframe) {
 
   return requestsArr
 }
+
+export async function fetchUser() {
+  const user = await fetchOverseerr('auth/me')
+
+  return user
+}

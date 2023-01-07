@@ -3,12 +3,14 @@ import { Suspense } from 'react'
 import CardContent from '../../../ui/CardContent'
 import CardContentText, { CardTextSkeleton } from '../../../ui/CardContentText'
 import { CURRENT_YEAR_STRING } from '../../../utils/constants'
+import { fetchUser } from '../../../utils/fetchOverseerr'
 import fetchTautulli from '../../../utils/fetchTautulli'
 import { removeAfterMinutes } from '../../../utils/formatting'
 
 async function getTotalDuration() {
+  const user = fetchUser()
   const totalDuration = await fetchTautulli('get_history', {
-    user_id: 8898770,
+    user_id: user.plexId,
     section_id: 2,
     after: CURRENT_YEAR_STRING,
     length: 0,
