@@ -1,6 +1,7 @@
 import CardContent from '../../../ui/CardContent'
 import { DAYS_AGO_30_STRING } from '../../../utils/constants'
 import fetchTautulli from '../../../utils/fetchTautulli'
+import fetchTmdb from '../../../utils/fetchTmdb'
 import { bytesToSize, removeAfterMinutes } from '../../../utils/formatting'
 
 async function getShows() {
@@ -38,17 +39,18 @@ async function getRatings() {
 
   const ratings = Promise.all(
     shows.map(async (show) => {
-      const showRating = await fetch(
-        `https://api.themoviedb.org/3/search/tv?api_key=x&query=${encodeURIComponent(
-          show.title,
-        )}`,
+      const showData = await fetchTmdb(
+        'search/tv',
+        encodeURIComponent(show.title),
       )
-      console.log(showRating)
-      return showRating?.results[0]?.vote_average
+
+      return {
+        title: show.title,
+        rating: showData.results[0].vote_average,
+      }
     }),
   )
 
-  // console.log(ratings)
   return ratings
 }
 
@@ -69,6 +71,7 @@ export default async function Shows() {
       nextCard="dashboard/movies"
       page="1 / 4"
       type="shows"
+      ratings={ratings}
     />
   )
 }

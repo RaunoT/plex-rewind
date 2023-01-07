@@ -1,6 +1,7 @@
 import CardContent from '../../../ui/CardContent'
 import { DAYS_AGO_30_STRING } from '../../../utils/constants'
 import fetchTautulli from '../../../utils/fetchTautulli'
+import fetchTmdb from '../../../utils/fetchTmdb'
 import { bytesToSize, removeAfterMinutes } from '../../../utils/formatting'
 
 async function getMovies() {
@@ -33,11 +34,32 @@ async function getTotalSize() {
   return bytesToSize(totalSize.response?.data.total_file_size)
 }
 
+async function getRatings() {
+  const movies = await getMovies()
+
+  const ratings = Promise.all(
+    movies.map(async (movie) => {
+      const movieData = await fetchTmdb(
+        'search/movie',
+        encodeURIComponent(movie.title),
+      )
+
+      return {
+        title: movie.title,
+        rating: movieData.results[0]?.vote_average,
+      }
+    }),
+  )
+
+  return ratings
+}
+
 export default async function Movies() {
-  const [movies, totalDuration, totalSize] = await Promise.all([
+  const [movies, totalDuration, totalSize, ratings] = await Promise.all([
     getMovies(),
     getTotalDuration(),
     getTotalSize(),
+    getRatings(),
   ])
 
   return (
@@ -50,6 +72,7 @@ export default async function Movies() {
       nextCard="dashboard/artists"
       page="2 / 4"
       type="movies"
+      ratings={ratings}
     />
   )
 }
