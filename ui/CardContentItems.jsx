@@ -41,12 +41,12 @@ export default function CardContentItems({
   }
 
   return (
-    <ul className="mt-4 overflow-hidden xl:grid xl:grid-flow-col xl:grid-cols-2 xl:grid-rows-3 sm:mt-6 xl:gap-x-8">
+    <ul className="grid mt-4 overflow-hidden xl:grid-flow-col xl:grid-cols-2 xl:grid-rows-3 sm:mt-6 xl:gap-x-8 gap-y-3 sm:gap-y-5">
       {items.map((item, i) => {
         return (
           <motion.li
             key={i}
-            className="flex items-center gap-3 mb-3 sm:mb-5 last:mb-0 last:hidden xl:last:flex"
+            className="flex items-center gap-3 last:hidden xl:last:flex"
             variants={slideDown}
             initial="hidden"
             animate="show"
