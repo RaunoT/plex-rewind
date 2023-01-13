@@ -1,17 +1,39 @@
 import CardContent from '../../../ui/CardContent'
 import { DAYS_AGO_30_STRING } from '../../../utils/constants'
 import fetchTautulli from '../../../utils/fetchTautulli'
+import fetchTmdb from '../../../utils/fetchTmdb'
 import { bytesToSize, removeAfterMinutes } from '../../../utils/formatting'
 
 async function getShows() {
-  const shows = await fetchTautulli('get_home_stats', {
+  const showsData = await fetchTautulli('get_home_stats', {
     stat_id: 'top_tv',
     stats_count: 6,
     stats_type: 'duration',
     time_range: 30,
   })
 
-  return shows.response?.data?.rows
+  const shows = showsData.response?.data?.rows
+
+  // Workaround for Tautulli not properly returning year via get_home_stats collection
+  let ratingKeys = []
+  shows.map((show) => {
+    ratingKeys.push(show.rating_key)
+  })
+  const years = await Promise.all(
+    ratingKeys.map(async (key) => {
+      const itemData = await fetchTautulli('get_metadata', {
+        rating_key: key,
+      })
+
+      return itemData.response?.data?.year
+    }),
+  )
+
+  shows.map((show, i) => {
+    show.year = years[i]
+  })
+
+  return shows
 }
 
 async function getTotalDuration() {
@@ -33,11 +55,32 @@ async function getTotalSize() {
   return bytesToSize(totalSize.response?.data.total_file_size)
 }
 
+async function getRatings() {
+  const shows = await getShows()
+
+  const ratings = Promise.all(
+    shows.map(async (show) => {
+      const showData = await fetchTmdb('search/tv', {
+        query: show.title,
+        first_air_date_year: show.year,
+      })
+
+      return {
+        title: show.title,
+        rating: showData.results[0]?.vote_average,
+      }
+    }),
+  )
+
+  return ratings
+}
+
 export default async function Shows() {
-  const [shows, totalDuration, totalSize] = await Promise.all([
+  const [shows, totalDuration, totalSize, ratings] = await Promise.all([
     getShows(),
     getTotalDuration(),
     getTotalSize(),
+    getRatings(),
   ])
 
   return (
@@ -49,6 +92,7 @@ export default async function Shows() {
       nextCard="dashboard/movies"
       page="1 / 4"
       type="shows"
+      ratings={ratings}
     />
   )
 }

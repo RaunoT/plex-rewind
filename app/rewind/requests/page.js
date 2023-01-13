@@ -3,9 +3,8 @@ import {
   PlayCircleIcon,
   QuestionMarkCircleIcon,
 } from '@heroicons/react/24/outline'
-import { Suspense } from 'react'
 import CardContent from '../../../ui/CardContent'
-import CardContentText, { CardTextSkeleton } from '../../../ui/CardContentText'
+import CardContentText from '../../../ui/CardContentText'
 import StatListItem from '../../../ui/StatListItem'
 import { CURRENT_YEAR } from '../../../utils/constants'
 import {
@@ -34,6 +33,11 @@ async function getUserRequestsTotal() {
 }
 
 export default async function Requests() {
+  const [requestTotals, userRequestsTotal] = await Promise.all([
+    getRequestsTotals(),
+    getUserRequestsTotal(),
+  ])
+
   return (
     <CardContent
       title="Requests"
@@ -43,18 +47,6 @@ export default async function Requests() {
       subtitle="Rauno T"
       rewind
     >
-      <Suspense fallback={<CardTextSkeleton />}>
-        <Stats promises={[getRequestsTotals(), getUserRequestsTotal()]} />
-      </Suspense>
-    </CardContent>
-  )
-}
-
-async function Stats({ promises }) {
-  const [requestTotals, userRequestsTotal] = await Promise.all(promises)
-
-  return (
-    <>
       {userRequestsTotal != 0 ? (
         <CardContentText hideAfter={requestTotals.total != 0 ? 10 : 0}>
           You&apos;ve made{' '}
@@ -113,6 +105,6 @@ async function Stats({ promises }) {
           </ul>
         </CardContentText>
       )}
-    </>
+    </CardContent>
   )
 }

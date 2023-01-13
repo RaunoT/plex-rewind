@@ -90,7 +90,6 @@ export default async function Users() {
       page="4 / 4"
       type="users"
       usersPlays={usersPlays}
-      // TODO: Maybe there's a cleaner way of doing this
       userRequests={usersRequestsCounts}
     />
   )
