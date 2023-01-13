@@ -1,14 +1,15 @@
 import { MusicalNoteIcon } from '@heroicons/react/24/outline'
-import { Suspense } from 'react'
 import CardContent from '../../../ui/CardContent'
-import CardContentText, { CardTextSkeleton } from '../../../ui/CardContentText'
+import CardContentText from '../../../ui/CardContentText'
 import { CURRENT_YEAR_STRING } from '../../../utils/constants'
+import { fetchUser } from '../../../utils/fetchOverseerr'
 import fetchTautulli from '../../../utils/fetchTautulli'
 import { removeAfterMinutes } from '../../../utils/formatting'
 
 async function getTotalDuration() {
+  const user = await fetchUser()
   const totalDuration = await fetchTautulli('get_history', {
-    user_id: 8898770,
+    user_id: user.plexId,
     section_id: 1,
     after: CURRENT_YEAR_STRING,
     length: 0,
@@ -18,51 +19,46 @@ async function getTotalDuration() {
 }
 
 export default async function Music() {
+  const [totalDuration, user] = await Promise.all([
+    getTotalDuration(),
+    fetchUser(),
+  ])
+
   return (
     <CardContent
       title="Music"
       page="5 / 5"
       prevCard="/rewind/movies"
-      subtitle="Rauno T"
+      subtitle={user.plexUsername}
       rewind
     >
-      <Suspense fallback={<CardTextSkeleton />}>
-        <Stats promise={getTotalDuration()} />
-      </Suspense>
+      <CardContentText noScale>
+        {totalDuration != 0 ? (
+          <>
+            And to top it all off, you listened to&nbsp;
+            <span className="rewind-stat">{totalDuration}</span> of{' '}
+            <span className="inline-flex items-center text-teal-300">
+              Music
+              <MusicalNoteIcon className="w-8 ml-1" />
+            </span>{' '}
+            on <span className="text-yellow-500">Plex</span> during{' '}
+            <span className="text-purple-300 rewind-stat">
+              {new Date().getFullYear()}
+            </span>
+            .
+          </>
+        ) : (
+          <>
+            You haven&apos;t listened to any{' '}
+            <span className="inline-flex items-center text-teal-300">
+              Music
+              <MusicalNoteIcon className="w-8 ml-1" />
+            </span>{' '}
+            on <span className="text-yellow-500">Plex</span> this year{' '}
+            <span className="not-italic">🥵</span>
+          </>
+        )}
+      </CardContentText>
     </CardContent>
-  )
-}
-
-async function Stats({ promise }) {
-  const totalDuration = await promise
-
-  return (
-    <CardContentText noScale>
-      {totalDuration != 0 ? (
-        <>
-          And to top it all off, you listened to&nbsp;
-          <span className="rewind-stat">{totalDuration}</span> of{' '}
-          <span className="inline-flex items-center text-teal-300">
-            Music
-            <MusicalNoteIcon className="w-8 ml-1" />
-          </span>{' '}
-          on <span className="text-yellow-500">Plex</span> during{' '}
-          <span className="text-purple-300 rewind-stat">
-            {new Date().getFullYear()}
-          </span>
-          .
-        </>
-      ) : (
-        <>
-          You haven&apos;t listened to any{' '}
-          <span className="inline-flex items-center text-teal-300">
-            Music
-            <MusicalNoteIcon className="w-8 ml-1" />
-          </span>{' '}
-          on <span className="text-yellow-500">Plex</span> this year{' '}
-          <span className="not-italic">🥵</span>
-        </>
-      )}
-    </CardContentText>
   )
 }

@@ -33,11 +33,32 @@ async function getTotalSize() {
   return bytesToSize(totalSize.response?.data.total_file_size)
 }
 
+async function getRatings() {
+  const movies = await getMovies()
+
+  const ratings = Promise.all(
+    movies.map(async (movie) => {
+      const movieData = await fetchTautulli('get_metadata', {
+        rating_key: movie.rating_key,
+        year: movie.year,
+      })
+
+      return {
+        title: movie.title,
+        rating: movieData.response?.data.audience_rating,
+      }
+    }),
+  )
+
+  return ratings
+}
+
 export default async function Movies() {
-  const [movies, totalDuration, totalSize] = await Promise.all([
+  const [movies, totalDuration, totalSize, ratings] = await Promise.all([
     getMovies(),
     getTotalDuration(),
     getTotalSize(),
+    getRatings(),
   ])
 
   return (
@@ -50,6 +71,7 @@ export default async function Movies() {
       nextCard="dashboard/artists"
       page="2 / 4"
       type="movies"
+      ratings={ratings}
     />
   )
 }

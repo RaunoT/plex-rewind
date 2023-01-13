@@ -1,5 +1,6 @@
 'use client'
 
+import { Analytics } from '@vercel/analytics/react'
 import { createContext, useState } from 'react'
 import '../styles/globals.css'
 
@@ -19,9 +20,11 @@ export default function RootLayout({ children }) {
         }}
       >
         <body className="text-white bg-gradient-to-br from-indigo-900 via-neutral-800 to-neutral-900 min-height-screen">
-          <main className="container flex flex-col items-center justify-center py-8 overflow-x-hidden min-height-screen">
+          <main className="px-4 flex flex-col items-center justify-center py-8 overflow-x-hidden min-height-screen">
             {children}
           </main>
+
+          <Analytics />
         </body>
       </CardContext.Provider>
     </html>

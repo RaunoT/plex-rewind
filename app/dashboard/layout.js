@@ -15,7 +15,7 @@ export default function DashboardLayout({ children }) {
   return (
     <div className="w-full max-w-2xl xl:max-w-5xl">
       <PageTitle title="Dashboard" />
-      <Card className="xl:min-h-0">{children}</Card>
+      <Card className="xl:min-h-[564px]">{children}</Card>
     </div>
   )
 }

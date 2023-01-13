@@ -23,6 +23,7 @@ export default function CardContent({
   rewind,
   usersPlays,
   userRequests,
+  ratings,
 }) {
   const { prevPageState, nextPageState } = useContext(CardContext)
   const [prevPage, setPrevPage] = prevPageState
@@ -87,6 +88,7 @@ export default function CardContent({
           usersPlays={usersPlays}
           type={type}
           userRequests={userRequests}
+          ratings={ratings}
         />
       )}
 

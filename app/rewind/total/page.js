@@ -7,11 +7,11 @@ import {
   MusicalNoteIcon,
   PlayCircleIcon,
 } from '@heroicons/react/24/outline'
-import { Suspense } from 'react'
 import CardContent from '../../../ui/CardContent'
-import CardContentText, { CardTextSkeleton } from '../../../ui/CardContentText'
+import CardContentText from '../../../ui/CardContentText'
 import StatListItem from '../../../ui/StatListItem'
 import { CURRENT_YEAR_STRING } from '../../../utils/constants'
+import { fetchUser } from '../../../utils/fetchOverseerr'
 import fetchTautulli from '../../../utils/fetchTautulli'
 import {
   bytesToSize,
@@ -20,8 +20,9 @@ import {
 } from '../../../utils/formatting'
 
 async function getUserTotalDuration() {
+  const user = await fetchUser()
   const userTotalDuration = await fetchTautulli('get_history', {
-    user_id: 8898770,
+    user_id: user.plexId,
     after: CURRENT_YEAR_STRING,
     length: 0,
   })
@@ -74,38 +75,28 @@ async function getlibraryContentCounts() {
 }
 
 export default async function Total() {
-  return (
-    <CardContent
-      title="General stats"
-      page="1 / 5"
-      nextCard="/rewind/requests"
-      subtitle="Rauno T"
-      rewind
-    >
-      <Suspense fallback={<CardTextSkeleton />}>
-        <Stats
-          promises={[
-            getUserTotalDuration(),
-            getlibrariesTotalSize(),
-            getLibrariesTotalDuration(),
-            getlibraryContentCounts(),
-          ]}
-        />
-      </Suspense>
-    </CardContent>
-  )
-}
-
-async function Stats({ promises }) {
   const [
     userTotalDuration,
     librariesTotalSize,
     librariesTotalDuration,
     libraryContentCounts,
-  ] = await Promise.all(promises)
+    user,
+  ] = await Promise.all([
+    getUserTotalDuration(),
+    getlibrariesTotalSize(),
+    getLibrariesTotalDuration(),
+    getlibraryContentCounts(),
+    fetchUser(),
+  ])
 
   return (
-    <>
+    <CardContent
+      title="General stats"
+      page="1 / 5"
+      nextCard="/rewind/requests"
+      subtitle={user.plexUsername}
+      rewind
+    >
       {userTotalDuration != 0 ? (
         <>
           <CardContentText hideAfter={10}>
@@ -201,6 +192,6 @@ async function Stats({ promises }) {
           })}
         </ul>
       </CardContentText>
-    </>
+    </CardContent>
   )
 }

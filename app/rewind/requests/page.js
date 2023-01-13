@@ -3,14 +3,13 @@ import {
   PlayCircleIcon,
   QuestionMarkCircleIcon,
 } from '@heroicons/react/24/outline'
-import { Suspense } from 'react'
 import CardContent from '../../../ui/CardContent'
-import CardContentText, { CardTextSkeleton } from '../../../ui/CardContentText'
+import CardContentText from '../../../ui/CardContentText'
 import StatListItem from '../../../ui/StatListItem'
 import { CURRENT_YEAR } from '../../../utils/constants'
 import {
-  fetchOverseerrUserId,
   fetchPaginatedOverseerrStats,
+  fetchUser,
 } from '../../../utils/fetchOverseerr'
 
 async function getRequestsTotals() {
@@ -24,9 +23,9 @@ async function getRequestsTotals() {
 }
 
 async function getUserRequestsTotal() {
-  const userId = await fetchOverseerrUserId(8898770)
+  const user = await fetchUser()
   const userRequestsTotal = await fetchPaginatedOverseerrStats(
-    `user/${userId}/requests`,
+    `user/${user.id}/requests`,
     CURRENT_YEAR,
   )
 
@@ -34,27 +33,21 @@ async function getUserRequestsTotal() {
 }
 
 export default async function Requests() {
+  const [requestTotals, userRequestsTotal, user] = await Promise.all([
+    getRequestsTotals(),
+    getUserRequestsTotal(),
+    fetchUser(),
+  ])
+
   return (
     <CardContent
       title="Requests"
       page="2 / 5"
       prevCard="/rewind/total"
       nextCard="/rewind/shows"
-      subtitle="Rauno T"
+      subtitle={user.plexUsername}
       rewind
     >
-      <Suspense fallback={<CardTextSkeleton />}>
-        <Stats promises={[getRequestsTotals(), getUserRequestsTotal()]} />
-      </Suspense>
-    </CardContent>
-  )
-}
-
-async function Stats({ promises }) {
-  const [requestTotals, userRequestsTotal] = await Promise.all(promises)
-
-  return (
-    <>
       {userRequestsTotal != 0 ? (
         <CardContentText hideAfter={requestTotals.total != 0 ? 10 : 0}>
           You&apos;ve made{' '}
@@ -113,6 +106,6 @@ async function Stats({ promises }) {
           </ul>
         </CardContentText>
       )}
-    </>
+    </CardContent>
   )
 }

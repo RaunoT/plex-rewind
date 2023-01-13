@@ -78,12 +78,3 @@ function Loader() {
     </motion.div>
   )
 }
-
-export function CardTextSkeleton() {
-  return (
-    <div className="animate-pulse">
-      <div className="w-10/12 mb-3 skeleton sm:skeleton--large"></div>
-      <div className="w-5/12 skeleton sm:skeleton--large animation-delay-200"></div>
-    </div>
-  )
-}
