@@ -1,7 +1,6 @@
 import CardContent from '../../../ui/CardContent'
 import { DAYS_AGO_30_STRING } from '../../../utils/constants'
 import fetchTautulli from '../../../utils/fetchTautulli'
-import fetchTmdb from '../../../utils/fetchTmdb'
 import { bytesToSize, removeAfterMinutes } from '../../../utils/formatting'
 
 async function getMovies() {
@@ -39,14 +38,14 @@ async function getRatings() {
 
   const ratings = Promise.all(
     movies.map(async (movie) => {
-      const movieData = await fetchTmdb('search/movie', {
-        query: movie.title,
+      const movieData = await fetchTautulli('get_metadata', {
+        rating_key: movie.rating_key,
         year: movie.year,
       })
 
       return {
         title: movie.title,
-        rating: movieData.results[0]?.vote_average,
+        rating: movieData.response?.data.audience_rating,
       }
     }),
   )

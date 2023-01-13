@@ -9,7 +9,7 @@ import { removeAfterMinutes } from '../../../utils/formatting'
 async function getTotalDuration() {
   const user = await fetchUser()
   const totalDuration = await fetchTautulli('get_history', {
-    user_id: user,
+    user_id: user.plexId,
     section_id: 3,
     after: CURRENT_YEAR_STRING,
     length: 0,

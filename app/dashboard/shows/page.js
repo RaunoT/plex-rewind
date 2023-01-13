@@ -1,7 +1,6 @@
 import CardContent from '../../../ui/CardContent'
 import { DAYS_AGO_30_STRING } from '../../../utils/constants'
 import fetchTautulli from '../../../utils/fetchTautulli'
-import fetchTmdb from '../../../utils/fetchTmdb'
 import { bytesToSize, removeAfterMinutes } from '../../../utils/formatting'
 
 async function getShows() {
@@ -14,7 +13,7 @@ async function getShows() {
 
   const shows = showsData.response?.data?.rows
 
-  // Workaround for Tautulli not properly returning year via get_home_stats collection
+  // FIXME: Workaround for Tautulli not properly returning year via get_home_stats collection
   let ratingKeys = []
   shows.map((show) => {
     ratingKeys.push(show.rating_key)
@@ -60,14 +59,14 @@ async function getRatings() {
 
   const ratings = Promise.all(
     shows.map(async (show) => {
-      const showData = await fetchTmdb('search/tv', {
-        query: show.title,
-        first_air_date_year: show.year,
+      const showData = await fetchTautulli('get_metadata', {
+        rating_key: show.rating_key,
+        year: show.year,
       })
 
       return {
         title: show.title,
-        rating: showData.results[0]?.vote_average,
+        rating: showData.response?.data.audience_rating,
       }
     }),
   )
