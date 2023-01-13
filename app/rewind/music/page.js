@@ -1,7 +1,6 @@
 import { MusicalNoteIcon } from '@heroicons/react/24/outline'
-import { Suspense } from 'react'
 import CardContent from '../../../ui/CardContent'
-import CardContentText, { CardTextSkeleton } from '../../../ui/CardContentText'
+import CardContentText from '../../../ui/CardContentText'
 import { CURRENT_YEAR_STRING } from '../../../utils/constants'
 import fetchTautulli from '../../../utils/fetchTautulli'
 import { removeAfterMinutes } from '../../../utils/formatting'
@@ -18,6 +17,8 @@ async function getTotalDuration() {
 }
 
 export default async function Music() {
+  const totalDuration = await getTotalDuration()
+
   return (
     <CardContent
       title="Music"
@@ -26,43 +27,33 @@ export default async function Music() {
       subtitle="Rauno T"
       rewind
     >
-      <Suspense fallback={<CardTextSkeleton />}>
-        <Stats promise={getTotalDuration()} />
-      </Suspense>
+      <CardContentText noScale>
+        {totalDuration != 0 ? (
+          <>
+            And to top it all off, you listened to&nbsp;
+            <span className="rewind-stat">{totalDuration}</span> of{' '}
+            <span className="inline-flex items-center text-teal-300">
+              Music
+              <MusicalNoteIcon className="w-8 ml-1" />
+            </span>{' '}
+            on <span className="text-yellow-500">Plex</span> during{' '}
+            <span className="text-purple-300 rewind-stat">
+              {new Date().getFullYear()}
+            </span>
+            .
+          </>
+        ) : (
+          <>
+            You haven&apos;t listened to any{' '}
+            <span className="inline-flex items-center text-teal-300">
+              Music
+              <MusicalNoteIcon className="w-8 ml-1" />
+            </span>{' '}
+            on <span className="text-yellow-500">Plex</span> this year{' '}
+            <span className="not-italic">🥵</span>
+          </>
+        )}
+      </CardContentText>
     </CardContent>
-  )
-}
-
-async function Stats({ promise }) {
-  const totalDuration = await promise
-
-  return (
-    <CardContentText noScale>
-      {totalDuration != 0 ? (
-        <>
-          And to top it all off, you listened to&nbsp;
-          <span className="rewind-stat">{totalDuration}</span> of{' '}
-          <span className="inline-flex items-center text-teal-300">
-            Music
-            <MusicalNoteIcon className="w-8 ml-1" />
-          </span>{' '}
-          on <span className="text-yellow-500">Plex</span> during{' '}
-          <span className="text-purple-300 rewind-stat">
-            {new Date().getFullYear()}
-          </span>
-          .
-        </>
-      ) : (
-        <>
-          You haven&apos;t listened to any{' '}
-          <span className="inline-flex items-center text-teal-300">
-            Music
-            <MusicalNoteIcon className="w-8 ml-1" />
-          </span>{' '}
-          on <span className="text-yellow-500">Plex</span> this year{' '}
-          <span className="not-italic">🥵</span>
-        </>
-      )}
-    </CardContentText>
   )
 }

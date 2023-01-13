@@ -7,9 +7,8 @@ import {
   MusicalNoteIcon,
   PlayCircleIcon,
 } from '@heroicons/react/24/outline'
-import { Suspense } from 'react'
 import CardContent from '../../../ui/CardContent'
-import CardContentText, { CardTextSkeleton } from '../../../ui/CardContentText'
+import CardContentText from '../../../ui/CardContentText'
 import StatListItem from '../../../ui/StatListItem'
 import { CURRENT_YEAR_STRING } from '../../../utils/constants'
 import fetchTautulli from '../../../utils/fetchTautulli'
@@ -74,6 +73,18 @@ async function getlibraryContentCounts() {
 }
 
 export default async function Total() {
+  const [
+    userTotalDuration,
+    librariesTotalSize,
+    librariesTotalDuration,
+    libraryContentCounts,
+  ] = await Promise.all([
+    getUserTotalDuration(),
+    getlibrariesTotalSize(),
+    getLibrariesTotalDuration(),
+    getlibraryContentCounts(),
+  ])
+
   return (
     <CardContent
       title="General stats"
@@ -82,30 +93,6 @@ export default async function Total() {
       subtitle="Rauno T"
       rewind
     >
-      <Suspense fallback={<CardTextSkeleton />}>
-        <Stats
-          promises={[
-            getUserTotalDuration(),
-            getlibrariesTotalSize(),
-            getLibrariesTotalDuration(),
-            getlibraryContentCounts(),
-          ]}
-        />
-      </Suspense>
-    </CardContent>
-  )
-}
-
-async function Stats({ promises }) {
-  const [
-    userTotalDuration,
-    librariesTotalSize,
-    librariesTotalDuration,
-    libraryContentCounts,
-  ] = await Promise.all(promises)
-
-  return (
-    <>
       {userTotalDuration != 0 ? (
         <>
           <CardContentText hideAfter={10}>
@@ -201,6 +188,6 @@ async function Stats({ promises }) {
           })}
         </ul>
       </CardContentText>
-    </>
+    </CardContent>
   )
 }

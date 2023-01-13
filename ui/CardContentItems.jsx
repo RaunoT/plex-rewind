@@ -15,7 +15,6 @@ import Image from 'next/image'
 import { secondsToTime } from '../utils/formatting'
 import { slideDown } from '../utils/motion'
 
-// TODO: Add Skeleton Loader
 export default function CardContentItems({
   items,
   type,
@@ -85,34 +84,34 @@ export default function CardContentItems({
                   {type === 'users' ? item.user : item.title}
                 </span>
               </h3>
-              <div className="flex flex-wrap items-center gap-2 text-xs italic sm:gap-3 sm:text-base">
+              <ul className="flex flex-wrap items-center gap-2 text-xs italic sm:gap-3 sm:text-base">
                 {/* FIXME: Shows not always properly showing year */}
                 {item.year && (type === 'movies' || type === 'shows') && (
-                  <div className="flex items-center gap-1 sm:gap-2">
+                  <li className="flex items-center gap-1 sm:gap-2">
                     <CalendarDaysIcon className="w-5 text-slate-900" />
                     {item.year}
-                  </div>
+                  </li>
                 )}
                 {/* Ratings */}
                 {(type === 'movies' || type === 'shows') &&
                   getRating(item.title) != 0 && (
-                    <div className="flex items-center gap-1 sm:gap-2">
+                    <li className="flex items-center gap-1 sm:gap-2">
                       <StarIcon className="w-5 text-slate-900" />
                       {getRating(item.title)}
-                    </div>
+                    </li>
                   )}
                 {/* TODO: Add tooltips explaining stat */}
                 {/* Duration */}
-                <div className="flex items-center gap-1 sm:gap-2">
+                <li className="flex items-center gap-1 sm:gap-2">
                   <ClockIcon className="w-5 text-slate-900" />
                   {secondsToTime(item.total_duration)}
-                </div>
+                </li>
                 {/* Requests */}
                 {type === 'users' && (
-                  <div className="flex items-center gap-1 sm:gap-2">
+                  <li className="flex items-center gap-1 sm:gap-2">
                     <QuestionMarkCircleIcon className="w-5 text-slate-900" />
                     {getUserRequestsCount(item.user_id)} requests
-                  </div>
+                  </li>
                 )}
                 {/* Plays */}
                 {type === 'users' ? (
@@ -121,7 +120,7 @@ export default function CardContentItems({
                       const plays = getPlaysByUser(item.user, category.name)
 
                       return (
-                        <div
+                        <li
                           className="flex items-center gap-1 sm:gap-2"
                           key={key}
                         >
@@ -137,12 +136,12 @@ export default function CardContentItems({
                             {plays}
                             {plays === 1 ? ' play' : ' plays'}
                           </span>
-                        </div>
+                        </li>
                       )
                     }
                   })
                 ) : (
-                  <div className="flex items-center gap-1 sm:gap-2">
+                  <li className="flex items-center gap-1 sm:gap-2">
                     {type === 'music' ? (
                       <MusicalNoteIcon className="w-5 text-slate-900" />
                     ) : type === 'movies' ? (
@@ -154,9 +153,9 @@ export default function CardContentItems({
                       {item.total_plays}
                       {item.total_plays === 1 ? ' play' : ' plays'}
                     </span>
-                  </div>
+                  </li>
                 )}
-              </div>
+              </ul>
             </div>
           </motion.li>
         )
