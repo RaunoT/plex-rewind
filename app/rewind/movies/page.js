@@ -19,7 +19,10 @@ async function getTotalDuration() {
 }
 
 export default async function Movies() {
-  const totalDuration = await getTotalDuration()
+  const [totalDuration, user] = await Promise.all([
+    getTotalDuration(),
+    fetchUser(),
+  ])
 
   return (
     <CardContent
@@ -27,7 +30,7 @@ export default async function Movies() {
       page="4 / 5"
       prevCard="/rewind/shows"
       nextCard="/rewind/music"
-      subtitle="Rauno T"
+      subtitle={user.plexUsername}
       rewind
     >
       <CardContentText noScale>

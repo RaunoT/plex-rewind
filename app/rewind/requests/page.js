@@ -33,9 +33,10 @@ async function getUserRequestsTotal() {
 }
 
 export default async function Requests() {
-  const [requestTotals, userRequestsTotal] = await Promise.all([
+  const [requestTotals, userRequestsTotal, user] = await Promise.all([
     getRequestsTotals(),
     getUserRequestsTotal(),
+    fetchUser(),
   ])
 
   return (
@@ -44,7 +45,7 @@ export default async function Requests() {
       page="2 / 5"
       prevCard="/rewind/total"
       nextCard="/rewind/shows"
-      subtitle="Rauno T"
+      subtitle={user.plexUsername}
       rewind
     >
       {userRequestsTotal != 0 ? (

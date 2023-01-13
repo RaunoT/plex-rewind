@@ -80,11 +80,13 @@ export default async function Total() {
     librariesTotalSize,
     librariesTotalDuration,
     libraryContentCounts,
+    user,
   ] = await Promise.all([
     getUserTotalDuration(),
     getlibrariesTotalSize(),
     getLibrariesTotalDuration(),
     getlibraryContentCounts(),
+    fetchUser(),
   ])
 
   return (
@@ -92,7 +94,7 @@ export default async function Total() {
       title="General stats"
       page="1 / 5"
       nextCard="/rewind/requests"
-      subtitle="Rauno T"
+      subtitle={user.plexUsername}
       rewind
     >
       {userTotalDuration != 0 ? (
