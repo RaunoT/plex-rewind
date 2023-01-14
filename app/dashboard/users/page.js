@@ -1,5 +1,5 @@
 import CardContent from '../../../ui/CardContent'
-import { DAYS_AGO_30, DAYS_AGO_30_STRING } from '../../../utils/constants'
+import { ALLOWED_PERIODS } from '../../../utils/constants'
 import {
   fetchOverseerrUserId,
   fetchPaginatedOverseerrStats,
@@ -7,29 +7,29 @@ import {
 import fetchTautulli from '../../../utils/fetchTautulli'
 import { removeAfterMinutes } from '../../../utils/formatting'
 
-async function getUsers() {
+async function getUsers(period) {
   const users = await fetchTautulli('get_home_stats', {
     stat_id: 'top_users',
     stats_count: 6,
     stats_type: 'duration',
-    time_range: 30,
+    time_range: period,
   })
 
   return users.response?.data?.rows
 }
 
-async function getTotalDuration() {
+async function getTotalDuration(period) {
   const totalDuration = await fetchTautulli('get_history', {
-    after: DAYS_AGO_30_STRING,
+    after: period,
     length: 0,
   })
 
   return removeAfterMinutes(totalDuration.response?.data?.total_duration)
 }
 
-async function getUsersPlays() {
+async function getUsersPlays(period) {
   const playData = await fetchTautulli('get_plays_by_top_10_users', {
-    time_range: '30',
+    time_range: period,
   })
 
   return playData.response?.data
@@ -41,7 +41,7 @@ async function getUsersCount() {
   return usersCount.response?.data.slice(1).length
 }
 
-async function getUsersRequestsCounts() {
+async function getUsersRequestsCounts(period) {
   const users = await fetchTautulli('get_users')
   const overseerrUserIds = Promise.all(
     users.response?.data.slice(1).map(async (user) => {
@@ -53,7 +53,7 @@ async function getUsersRequestsCounts() {
     (await overseerrUserIds).map(async (user, i) => {
       const userTotal = await fetchPaginatedOverseerrStats(
         `user/${user}/requests`,
-        DAYS_AGO_30,
+        period,
       )
       return {
         user: users.response?.data.slice(1)[i].user_id,
@@ -65,7 +65,12 @@ async function getUsersRequestsCounts() {
   return usersRequestsCounts
 }
 
-export default async function Users() {
+export default async function Users({ searchParams }) {
+  let period = ALLOWED_PERIODS['30days']
+  if (ALLOWED_PERIODS[searchParams.period]) {
+    period = ALLOWED_PERIODS[searchParams.period]
+  }
+
   const [
     usersData,
     totalDuration,
@@ -73,11 +78,11 @@ export default async function Users() {
     usersCount,
     usersRequestsCounts,
   ] = await Promise.all([
-    getUsers(),
-    getTotalDuration(),
-    getUsersPlays(),
+    getUsers(period.daysAgo),
+    getTotalDuration(period.string),
+    getUsersPlays(period.daysAgo),
     getUsersCount(),
-    getUsersRequestsCounts(),
+    getUsersRequestsCounts(period.date),
   ])
 
   return (
@@ -91,6 +96,7 @@ export default async function Users() {
       type="users"
       usersPlays={usersPlays}
       userRequests={usersRequestsCounts}
+      dashboard
     />
   )
 }

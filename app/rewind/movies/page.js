@@ -1,7 +1,7 @@
 import { FilmIcon } from '@heroicons/react/24/outline'
 import CardContent from '../../../ui/CardContent'
 import CardContentText from '../../../ui/CardContentText'
-import { CURRENT_YEAR_STRING } from '../../../utils/constants'
+import { ALLOWED_PERIODS } from '../../../utils/constants'
 import { fetchUser } from '../../../utils/fetchOverseerr'
 import fetchTautulli from '../../../utils/fetchTautulli'
 import { removeAfterMinutes } from '../../../utils/formatting'
@@ -11,7 +11,7 @@ async function getTotalDuration() {
   const totalDuration = await fetchTautulli('get_history', {
     user_id: user.plexId,
     section_id: 3,
-    after: CURRENT_YEAR_STRING,
+    after: ALLOWED_PERIODS.thisYear.string,
     length: 0,
   })
 

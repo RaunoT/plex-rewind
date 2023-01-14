@@ -1,14 +1,14 @@
 import CardContent from '../../../ui/CardContent'
-import { DAYS_AGO_30_STRING } from '../../../utils/constants'
+import { ALLOWED_PERIODS } from '../../../utils/constants'
 import fetchTautulli from '../../../utils/fetchTautulli'
 import { bytesToSize, removeAfterMinutes } from '../../../utils/formatting'
 
-async function getShows() {
+async function getShows(period) {
   const showsData = await fetchTautulli('get_home_stats', {
     stat_id: 'top_tv',
     stats_count: 6,
     stats_type: 'duration',
-    time_range: 30,
+    time_range: period,
   })
 
   const shows = showsData.response?.data?.rows
@@ -35,10 +35,10 @@ async function getShows() {
   return shows
 }
 
-async function getTotalDuration() {
+async function getTotalDuration(period) {
   const totalDuration = await fetchTautulli('get_history', {
     section_id: 2,
-    after: DAYS_AGO_30_STRING,
+    after: period,
     length: 0,
   })
 
@@ -54,8 +54,8 @@ async function getTotalSize() {
   return bytesToSize(totalSize.response?.data.total_file_size)
 }
 
-async function getRatings() {
-  const shows = await getShows()
+async function getRatings(period) {
+  const shows = await getShows(period)
 
   const ratings = Promise.all(
     shows.map(async (show) => {
@@ -74,12 +74,17 @@ async function getRatings() {
   return ratings
 }
 
-export default async function Shows() {
+export default async function Shows({ searchParams }) {
+  let period = ALLOWED_PERIODS['30days']
+  if (ALLOWED_PERIODS[searchParams.period]) {
+    period = ALLOWED_PERIODS[searchParams.period]
+  }
+
   const [shows, totalDuration, totalSize, ratings] = await Promise.all([
-    getShows(),
-    getTotalDuration(),
+    getShows(period.daysAgo),
+    getTotalDuration(period.string),
     getTotalSize(),
-    getRatings(),
+    getRatings(period.daysAgo),
   ])
 
   return (
@@ -92,6 +97,7 @@ export default async function Shows() {
       page="1 / 4"
       type="shows"
       ratings={ratings}
+      dashboard
     />
   )
 }

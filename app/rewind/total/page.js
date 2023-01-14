@@ -10,7 +10,7 @@ import {
 import CardContent from '../../../ui/CardContent'
 import CardContentText from '../../../ui/CardContentText'
 import StatListItem from '../../../ui/StatListItem'
-import { CURRENT_YEAR_STRING } from '../../../utils/constants'
+import { ALLOWED_PERIODS } from '../../../utils/constants'
 import { fetchUser } from '../../../utils/fetchOverseerr'
 import fetchTautulli from '../../../utils/fetchTautulli'
 import {
@@ -23,7 +23,7 @@ async function getUserTotalDuration() {
   const user = await fetchUser()
   const userTotalDuration = await fetchTautulli('get_history', {
     user_id: user.plexId,
-    after: CURRENT_YEAR_STRING,
+    after: ALLOWED_PERIODS.thisYear.string,
     length: 0,
   })
 
@@ -61,7 +61,7 @@ async function getlibrariesTotalSize() {
 
 async function getLibrariesTotalDuration() {
   const librariesTotalDuration = await fetchTautulli('get_history', {
-    after: CURRENT_YEAR_STRING,
+    after: ALLOWED_PERIODS.thisYear.string,
     length: 0,
   })
 
