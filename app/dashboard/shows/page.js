@@ -1,5 +1,5 @@
 import CardContent from '../../../ui/CardContent'
-import { DAYS_AGO_30_STRING } from '../../../utils/constants'
+import { ALLOWED_PERIODS, DAYS_AGO_30_STRING } from '../../../utils/constants'
 import fetchTautulli from '../../../utils/fetchTautulli'
 import { bytesToSize, removeAfterMinutes } from '../../../utils/formatting'
 
@@ -74,7 +74,14 @@ async function getRatings() {
   return ratings
 }
 
-export default async function Shows() {
+export default async function Shows({ searchParams }) {
+  let period = ALLOWED_PERIODS
+  if (ALLOWED_PERIODS[searchParams.period]) {
+    // period = ALLOWED_PERIODS[searchParams.period]
+  }
+
+  console.log(period)
+
   const [shows, totalDuration, totalSize, ratings] = await Promise.all([
     getShows(),
     getTotalDuration(),

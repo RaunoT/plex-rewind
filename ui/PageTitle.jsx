@@ -1,9 +1,16 @@
+'use client'
+
 import { ArrowLeftIcon } from '@heroicons/react/24/solid'
 import clsx from 'clsx'
 import Link from 'next/link'
+import { usePathname, useSearchParams } from 'next/navigation'
 import React from 'react'
 
 export default function PageTitle({ title }) {
+  const pathname = usePathname()
+  const searchParams = useSearchParams()
+  const period = searchParams.get('period')
+
   return (
     <div className="w-full mb-2">
       <div className="relative text-center uppercase">
@@ -17,18 +24,42 @@ export default function PageTitle({ title }) {
         </Link>
         {title && <h1 className="text-xl font-bold sm:text-2xl">{title}</h1>}
       </div>
-      <ul className="flex items-center text-teal-300 font-medium gap-4 mt-3 justify-center text-xs sm:text-base">
+      <ul className="flex items-center justify-center gap-4 mt-3 text-xs font-medium sm:text-base">
         <li>
-          <button className="uppercase">30 days</button>
+          <Link
+            href={`${pathname}?period=30days`}
+            className="text-white uppercase aria-selected:text-teal-300"
+            aria-selected={period === '30days'}
+          >
+            30 days
+          </Link>
         </li>
         <li>
-          <button className="uppercase text-white">3 months</button>
+          <Link
+            href={`${pathname}?period=3months`}
+            className="text-white uppercase aria-selected:text-teal-300"
+            aria-selected={period === '3months'}
+          >
+            3 months
+          </Link>
         </li>
         <li>
-          <button className="uppercase text-white">This year</button>
+          <Link
+            href={`${pathname}?period=thisYear`}
+            className="text-white uppercase aria-selected:text-teal-300"
+            aria-selected={period === 'thisYear'}
+          >
+            This year
+          </Link>
         </li>
         <li>
-          <button className="uppercase text-white">All time</button>
+          <Link
+            href={`${pathname}?period=allTime`}
+            className="text-white uppercase aria-selected:text-teal-300"
+            aria-selected={period === 'allTime'}
+          >
+            All time
+          </Link>
         </li>
       </ul>
     </div>
