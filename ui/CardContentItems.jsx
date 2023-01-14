@@ -85,6 +85,7 @@ export default function CardContentItems({
                 </span>
               </h3>
               <ul className="flex flex-wrap items-center gap-2 text-xs italic sm:gap-3 sm:text-base">
+                {/* TODO: Add indicator if item has been deleted on is available */}
                 {/* FIXME: Shows not always properly showing year */}
                 {item.year && (type === 'movies' || type === 'shows') && (
                   <li className="flex items-center gap-1 sm:gap-2">
