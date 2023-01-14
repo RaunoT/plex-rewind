@@ -6,14 +6,17 @@ import {
 import CardContent from '../../../ui/CardContent'
 import CardContentText from '../../../ui/CardContentText'
 import StatListItem from '../../../ui/StatListItem'
-import { CURRENT_YEAR } from '../../../utils/constants'
+import { ALLOWED_PERIODS } from '../../../utils/constants'
 import {
   fetchPaginatedOverseerrStats,
   fetchUser,
 } from '../../../utils/fetchOverseerr'
 
 async function getRequestsTotals() {
-  const requests = await fetchPaginatedOverseerrStats('request', CURRENT_YEAR)
+  const requests = await fetchPaginatedOverseerrStats(
+    'request',
+    ALLOWED_PERIODS.thisYear.date,
+  )
 
   return {
     total: requests.length,
@@ -26,7 +29,7 @@ async function getUserRequestsTotal() {
   const user = await fetchUser()
   const userRequestsTotal = await fetchPaginatedOverseerrStats(
     `user/${user.id}/requests`,
-    CURRENT_YEAR,
+    ALLOWED_PERIODS.thisYear.date,
   )
 
   return userRequestsTotal.length

@@ -27,20 +27,20 @@ export default function PageTitle({ title }) {
       <ul className="flex items-center justify-center gap-4 mt-3 text-xs font-medium sm:text-base">
         <li>
           <Link
+            href={`${pathname}?period=7days`}
+            className="text-white uppercase aria-selected:text-teal-300"
+            aria-selected={period === '7days'}
+          >
+            7 days
+          </Link>
+        </li>
+        <li>
+          <Link
             href={`${pathname}?period=30days`}
             className="text-white uppercase aria-selected:text-teal-300"
             aria-selected={period === '30days'}
           >
             30 days
-          </Link>
-        </li>
-        <li>
-          <Link
-            href={`${pathname}?period=3months`}
-            className="text-white uppercase aria-selected:text-teal-300"
-            aria-selected={period === '3months'}
-          >
-            3 months
           </Link>
         </li>
         <li>
