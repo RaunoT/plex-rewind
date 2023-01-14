@@ -55,6 +55,7 @@ export default async function Artists({ searchParams }) {
       nextCard="dashboard/users"
       page="3 / 4"
       type="music"
+      dashboard
     />
   )
 }

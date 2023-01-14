@@ -5,8 +5,10 @@ import {
   ArrowLongRightIcon,
 } from '@heroicons/react/24/outline'
 import Link from 'next/link.js'
+import { useSearchParams } from 'next/navigation.js'
 import { useContext, useEffect } from 'react'
 import { CardContext } from '../app/layout.js'
+import { ALLOWED_PERIODS } from '../utils/constants.js'
 import CardContentItems from './CardContentItems.jsx'
 
 export default function CardContent({
@@ -21,6 +23,7 @@ export default function CardContent({
   totalSize,
   type,
   rewind,
+  dashboard,
   usersPlays,
   userRequests,
   ratings,
@@ -28,11 +31,27 @@ export default function CardContent({
   const { prevPageState, nextPageState } = useContext(CardContext)
   const [prevPage, setPrevPage] = prevPageState
   const [nextPage, setNextPage] = nextPageState
+  const searchParams = useSearchParams()
+  const period = searchParams.get('period')
 
+  // TODO: Rerun animations on params change
   useEffect(() => {
-    setPrevPage(prevCard)
-    setNextPage(nextCard)
-  }, [prevCard, setPrevPage, nextCard, setNextPage])
+    if (dashboard) {
+      setPrevPage(
+        prevCard
+          ? prevCard + (ALLOWED_PERIODS[period] ? '?period=' + period : '')
+          : null,
+      )
+      setNextPage(
+        nextCard
+          ? nextCard + (ALLOWED_PERIODS[period] ? '?period=' + period : '')
+          : null,
+      )
+    } else {
+      setPrevPage(prevCard)
+      setNextPage(nextCard)
+    }
+  }, [prevCard, setPrevPage, nextCard, setNextPage, period, dashboard])
 
   return (
     <>

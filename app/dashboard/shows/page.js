@@ -97,6 +97,7 @@ export default async function Shows({ searchParams }) {
       page="1 / 4"
       type="shows"
       ratings={ratings}
+      dashboard
     />
   )
 }

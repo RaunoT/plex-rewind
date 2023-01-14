@@ -77,6 +77,7 @@ export default async function Movies({ searchParams }) {
       page="2 / 4"
       type="movies"
       ratings={ratings}
+      dashboard
     />
   )
 }
