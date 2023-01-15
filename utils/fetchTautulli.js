@@ -4,7 +4,7 @@ export default async function fetchTautulli(query, params, cache = false) {
   const paramsStr = params ? '&' + new URLSearchParams(params).toString() : ''
 
   const res = await fetch(`${apiUrl}&cmd=${query}${paramsStr}`, {
-    cache: cache ? 'default' : 'no-store',
+    next: { revalidate: cache ? 300 : 0 },
   })
   const data = await res.json()
 
