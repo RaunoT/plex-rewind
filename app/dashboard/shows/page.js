@@ -21,14 +21,12 @@ async function getShows(period) {
   })
   const years = await Promise.all(
     ratingKeys.map(async (key, i) => {
-      // console.log(shows[i].title)
       let itemData = await fetchTautulli('get_metadata', {
         rating_key: key,
       })
       let year = itemData.response?.data?.year
 
       if (!year && !IGNORED_FOR_RATINGS.includes(shows[i].title)) {
-        console.log('pole year', i)
         itemData = await fetchTmdb('search/tv', {
           query: shows[i].title,
         })
