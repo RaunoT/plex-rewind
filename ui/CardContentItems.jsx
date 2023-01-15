@@ -84,9 +84,19 @@ export default function CardContentItems({
                   {type === 'users' ? item.user : item.title}
                 </span>
               </h3>
-              <ul className="flex flex-wrap items-center gap-2 text-xs italic sm:gap-3 sm:text-base">
-                {/* TODO: Add indicator if item has been deleted on is available */}
-                {/* FIXME: Shows not always properly showing year */}
+              {(type === 'movies' || type === 'shows') && (
+                <div
+                  className={clsx(
+                    'px-1 mb-2 text-[0.65rem] font-semibold uppercase rounded-sm w-fit bg-gradient-to-r',
+                    item.isDeleted
+                      ? 'from-red-500 to-red-700'
+                      : 'from-green-500 to-green-700',
+                  )}
+                >
+                  {item.isDeleted ? 'Unavailable' : 'Available'}
+                </div>
+              )}
+              <ul className="flex flex-wrap items-center gap-2 text-xs italic sm:gap-x-3 sm:text-base">
                 {item.year && (type === 'movies' || type === 'shows') && (
                   <li className="flex items-center gap-1 sm:gap-2">
                     <CalendarDaysIcon className="w-5 text-slate-900" />
@@ -125,7 +135,7 @@ export default function CardContentItems({
                           className="flex items-center gap-1 sm:gap-2"
                           key={key}
                         >
-                          {category.name === 'Audio' ? (
+                          {category.name === 'Music' ? (
                             <MusicalNoteIcon className="w-5 text-slate-900" />
                           ) : category.name === 'Movies' ? (
                             <FilmIcon className="w-5 text-slate-900" />

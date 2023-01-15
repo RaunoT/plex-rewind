@@ -11,7 +11,6 @@ async function getShows(period) {
     stats_type: 'duration',
     time_range: period,
   })
-
   const shows = showsData.response?.data?.rows
 
   // FIXME: Workaround for Tautulli not properly returning year via get_home_stats collection or for deleted items
@@ -19,26 +18,31 @@ async function getShows(period) {
   shows.map((show) => {
     ratingKeys.push(show.rating_key)
   })
-  const years = await Promise.all(
+  const additionalData = await Promise.all(
     ratingKeys.map(async (key, i) => {
-      let itemData = await fetchTautulli('get_metadata', {
+      let show = await fetchTautulli('get_metadata', {
         rating_key: key,
       })
-      let year = itemData.response?.data?.year
+      let data = show.response?.data
+      let year = data.year
 
       if (!year && !IGNORED_FOR_RATINGS.includes(shows[i].title)) {
-        itemData = await fetchTmdb('search/tv', {
+        show = await fetchTmdb('search/tv', {
           query: shows[i].title,
         })
-        year = new Date(itemData.results[0]?.first_air_date).getFullYear()
+        year = new Date(show.results[0]?.first_air_date).getFullYear()
       }
 
-      return year
+      return {
+        year: year,
+        isDeleted: Object.keys(data).length === 0,
+      }
     }),
   )
 
   shows.map((show, i) => {
-    show.year = years[i]
+    show.year = additionalData[i].year
+    show.isDeleted = additionalData[i].isDeleted
   })
 
   return shows

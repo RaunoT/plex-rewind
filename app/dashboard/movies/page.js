@@ -5,14 +5,36 @@ import fetchTmdb from '../../../utils/fetchTmdb'
 import { bytesToSize, removeAfterMinutes } from '../../../utils/formatting'
 
 async function getMovies(period) {
-  const movies = await fetchTautulli('get_home_stats', {
+  const moviesData = await fetchTautulli('get_home_stats', {
     stat_id: 'top_movies',
     stats_count: 6,
     stats_type: 'duration',
     time_range: period,
   })
+  const movies = moviesData.response?.data?.rows
 
-  return movies.response?.data?.rows
+  let ratingKeys = []
+  movies.map((movie) => {
+    ratingKeys.push(movie.rating_key)
+  })
+  const additionalData = await Promise.all(
+    ratingKeys.map(async (key) => {
+      const movie = await fetchTautulli('get_metadata', {
+        rating_key: key,
+      })
+      const data = movie.response?.data
+
+      return {
+        isDeleted: Object.keys(data).length === 0,
+      }
+    }),
+  )
+
+  movies.map((movie, i) => {
+    movie.isDeleted = additionalData[i].isDeleted
+  })
+
+  return movies
 }
 
 async function getTotalDuration(period) {
