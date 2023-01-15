@@ -1,6 +1,7 @@
 import CardContent from '../../../ui/CardContent'
 import { ALLOWED_PERIODS } from '../../../utils/constants'
 import fetchTautulli from '../../../utils/fetchTautulli'
+import fetchTmdb from '../../../utils/fetchTmdb'
 import { bytesToSize, removeAfterMinutes } from '../../../utils/formatting'
 
 async function getMovies(period) {
@@ -38,14 +39,24 @@ async function getRatings(period) {
 
   const ratings = Promise.all(
     movies.map(async (movie) => {
-      const movieData = await fetchTautulli('get_metadata', {
+      let movieData = await fetchTautulli('get_metadata', {
         rating_key: movie.rating_key,
         year: movie.year,
       })
+      let rating = movieData.response?.data.audience_rating
+
+      // FIXME: Workaround for Tautulli not properly returning rating for deleted items
+      if (!rating) {
+        movieData = await fetchTmdb('search/movie', {
+          query: movie.title,
+          first_air_date_year: movie.year,
+        })
+        rating = movieData.results[0]?.vote_average
+      }
 
       return {
         title: movie.title,
-        rating: movieData.response?.data.audience_rating,
+        rating: rating,
       }
     }),
   )
@@ -73,7 +84,7 @@ export default async function Movies({ searchParams }) {
       totalDuration={totalDuration}
       totalSize={totalSize}
       prevCard="dashboard/shows"
-      nextCard="dashboard/artists"
+      nextCard="dashboard/audio"
       page="2 / 4"
       type="movies"
       ratings={ratings}

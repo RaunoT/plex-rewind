@@ -91,7 +91,7 @@ export default async function Users({ searchParams }) {
       items={usersData}
       totalDuration={totalDuration}
       totalSize={usersCount}
-      prevCard="dashboard/artists"
+      prevCard="dashboard/audio"
       page="4 / 4"
       type="users"
       usersPlays={usersPlays}

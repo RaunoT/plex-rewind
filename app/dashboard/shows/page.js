@@ -1,6 +1,7 @@
 import CardContent from '../../../ui/CardContent'
-import { ALLOWED_PERIODS } from '../../../utils/constants'
+import { ALLOWED_PERIODS, IGNORED_FOR_RATINGS } from '../../../utils/constants'
 import fetchTautulli from '../../../utils/fetchTautulli'
+import fetchTmdb from '../../../utils/fetchTmdb'
 import { bytesToSize, removeAfterMinutes } from '../../../utils/formatting'
 
 async function getShows(period) {
@@ -13,18 +14,28 @@ async function getShows(period) {
 
   const shows = showsData.response?.data?.rows
 
-  // FIXME: Workaround for Tautulli not properly returning year via get_home_stats collection
+  // FIXME: Workaround for Tautulli not properly returning year via get_home_stats collection or for deleted items
   let ratingKeys = []
   shows.map((show) => {
     ratingKeys.push(show.rating_key)
   })
   const years = await Promise.all(
-    ratingKeys.map(async (key) => {
-      const itemData = await fetchTautulli('get_metadata', {
+    ratingKeys.map(async (key, i) => {
+      // console.log(shows[i].title)
+      let itemData = await fetchTautulli('get_metadata', {
         rating_key: key,
       })
+      let year = itemData.response?.data?.year
 
-      return itemData.response?.data?.year
+      if (!year && !IGNORED_FOR_RATINGS.includes(shows[i].title)) {
+        console.log('pole year', i)
+        itemData = await fetchTmdb('search/tv', {
+          query: shows[i].title,
+        })
+        year = new Date(itemData.results[0]?.first_air_date).getFullYear()
+      }
+
+      return year
     }),
   )
 
@@ -59,14 +70,24 @@ async function getRatings(period) {
 
   const ratings = Promise.all(
     shows.map(async (show) => {
-      const showData = await fetchTautulli('get_metadata', {
+      let showData = await fetchTautulli('get_metadata', {
         rating_key: show.rating_key,
         year: show.year,
       })
+      let rating = showData.response?.data.audience_rating
+
+      // FIXME: Workaround for Tautulli not properly returning rating for deleted items
+      if (!rating && !IGNORED_FOR_RATINGS.includes(show.title)) {
+        showData = await fetchTmdb('search/tv', {
+          query: show.title,
+          first_air_date_year: show.year,
+        })
+        rating = showData.results[0]?.vote_average
+      }
 
       return {
         title: show.title,
-        rating: showData.response?.data.audience_rating,
+        rating: rating,
       }
     }),
   )

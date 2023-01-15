@@ -29,3 +29,5 @@ export const ALLOWED_PERIODS = {
     ),
   },
 }
+
+export const IGNORED_FOR_RATINGS = ['Villa']

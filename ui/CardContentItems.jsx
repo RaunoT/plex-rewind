@@ -52,7 +52,7 @@ export default function CardContentItems({
             animate="show"
             transition={{ delay: i * 0.1 }}
           >
-            <div className="relative flex-shrink-0 w-20 h-28">
+            <div className="relative flex-shrink-0 w-20 aspect-[2/3]">
               <Image
                 fill
                 className="object-cover object-top"
@@ -66,7 +66,7 @@ export default function CardContentItems({
                 }/pms_image_proxy?img=${
                   type === 'users' ? item.user_thumb : item.thumb
                 }&width=300`}
-                sizes="7rem"
+                sizes="10rem"
                 priority
               />
             </div>
@@ -125,7 +125,7 @@ export default function CardContentItems({
                           className="flex items-center gap-1 sm:gap-2"
                           key={key}
                         >
-                          {category.name === 'Music' ? (
+                          {category.name === 'Audio' ? (
                             <MusicalNoteIcon className="w-5 text-slate-900" />
                           ) : category.name === 'Movies' ? (
                             <FilmIcon className="w-5 text-slate-900" />

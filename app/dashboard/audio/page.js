@@ -33,7 +33,7 @@ async function getTotalSize() {
   return bytesToSize(totalSize.response?.data.total_file_size)
 }
 
-export default async function Artists({ searchParams }) {
+export default async function Audio({ searchParams }) {
   let period = ALLOWED_PERIODS['30days']
   if (ALLOWED_PERIODS[searchParams.period]) {
     period = ALLOWED_PERIODS[searchParams.period]
@@ -47,14 +47,14 @@ export default async function Artists({ searchParams }) {
 
   return (
     <CardContent
-      title="Music"
+      title="Audio"
       items={artists}
       totalDuration={totalDuration}
       totalSize={totalSize}
       prevCard="dashboard/movies"
       nextCard="dashboard/users"
       page="3 / 4"
-      type="music"
+      type="audio"
       dashboard
     />
   )
