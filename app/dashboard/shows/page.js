@@ -13,7 +13,6 @@ async function getShows(period) {
   })
   const shows = showsData.response?.data?.rows
 
-  // FIXME: Workaround for Tautulli not properly returning year via get_home_stats collection or for deleted items
   let ratingKeys = []
   shows.map((show) => {
     ratingKeys.push(show.rating_key)
@@ -25,17 +24,23 @@ async function getShows(period) {
       })
       let data = show.response?.data
       let year = data.year
+      let rating = data.audience_rating
 
-      if (!year && !IGNORED_FOR_RATINGS.includes(shows[i].title)) {
+      // WORKAROUND: Tautulli not properly returning year or rating
+      if ((!year || !rating) && !IGNORED_FOR_RATINGS.includes(shows[i].title)) {
         show = await fetchTmdb('search/tv', {
           query: shows[i].title,
+          first_air_date_year: year,
         })
-        year = new Date(show.results[0]?.first_air_date).getFullYear()
+        data = show.results[0]
+        year = new Date(data.first_air_date).getFullYear()
+        rating = data.vote_average
       }
 
       return {
         year: year,
         isDeleted: Object.keys(data).length === 0,
+        rating: rating,
       }
     }),
   )
@@ -43,6 +48,7 @@ async function getShows(period) {
   shows.map((show, i) => {
     show.year = additionalData[i].year
     show.isDeleted = additionalData[i].isDeleted
+    show.rating = additionalData[i].rating
   })
 
   return shows
@@ -67,47 +73,16 @@ async function getTotalSize() {
   return bytesToSize(totalSize.response?.data.total_file_size)
 }
 
-async function getRatings(period) {
-  const shows = await getShows(period)
-
-  const ratings = Promise.all(
-    shows.map(async (show) => {
-      let showData = await fetchTautulli('get_metadata', {
-        rating_key: show.rating_key,
-        year: show.year,
-      })
-      let rating = showData.response?.data.audience_rating
-
-      // FIXME: Workaround for Tautulli not properly returning rating for deleted items
-      if (!rating && !IGNORED_FOR_RATINGS.includes(show.title)) {
-        showData = await fetchTmdb('search/tv', {
-          query: show.title,
-          first_air_date_year: show.year,
-        })
-        rating = showData.results[0]?.vote_average
-      }
-
-      return {
-        title: show.title,
-        rating: rating,
-      }
-    }),
-  )
-
-  return ratings
-}
-
 export default async function Shows({ searchParams }) {
   let period = ALLOWED_PERIODS['30days']
   if (ALLOWED_PERIODS[searchParams.period]) {
     period = ALLOWED_PERIODS[searchParams.period]
   }
 
-  const [shows, totalDuration, totalSize, ratings] = await Promise.all([
+  const [shows, totalDuration, totalSize] = await Promise.all([
     getShows(period.daysAgo),
     getTotalDuration(period.string),
     getTotalSize(),
-    getRatings(period.daysAgo),
   ])
 
   return (
@@ -119,8 +94,6 @@ export default async function Shows({ searchParams }) {
       nextCard="dashboard/movies"
       page="1 / 4"
       type="shows"
-      ratings={ratings}
-      dashboard
     />
   )
 }

@@ -5,7 +5,7 @@ import {
   ArrowLongRightIcon,
 } from '@heroicons/react/24/outline'
 import Link from 'next/link.js'
-import { useSearchParams } from 'next/navigation.js'
+import { usePathname, useSearchParams } from 'next/navigation.js'
 import { useContext, useEffect } from 'react'
 import { CardContext } from '../app/layout.js'
 import { ALLOWED_PERIODS } from '../utils/constants.js'
@@ -22,8 +22,6 @@ export default function CardContent({
   totalDuration,
   totalSize,
   type,
-  rewind,
-  dashboard,
   usersPlays,
   userRequests,
   ratings,
@@ -31,12 +29,15 @@ export default function CardContent({
   const { prevPageState, nextPageState } = useContext(CardContext)
   const [prevPage, setPrevPage] = prevPageState
   const [nextPage, setNextPage] = nextPageState
+  const pathname = usePathname()
+  const isDashboard = pathname.split('/')[1] === 'dashboard'
+  const isRewind = pathname.split('/')[1] === 'rewind'
   const searchParams = useSearchParams()
   const period = searchParams.get('period')
 
   // TODO: Rerun animations on params change
   useEffect(() => {
-    if (dashboard) {
+    if (isDashboard) {
       setPrevPage(
         prevCard
           ? prevCard + (ALLOWED_PERIODS[period] ? '?period=' + period : '')
@@ -51,7 +52,7 @@ export default function CardContent({
       setPrevPage(prevCard)
       setNextPage(nextCard)
     }
-  }, [prevCard, setPrevPage, nextCard, setNextPage, period, dashboard])
+  }, [prevCard, setPrevPage, nextCard, setNextPage, period, isDashboard])
 
   return (
     <>
@@ -82,7 +83,7 @@ export default function CardContent({
       {subtitle && (
         <div className="text-xs font-medium uppercase sm:text-sm text-slate-900">
           {subtitle}
-          {rewind && (
+          {isRewind && (
             <>
               <span className="mx-1 sm:mx-2" aria-hidden>
                 -
@@ -93,7 +94,7 @@ export default function CardContent({
         </div>
       )}
 
-      {rewind ? (
+      {isRewind ? (
         <ul className="flex flex-col flex-1 pt-12 sm:justify-center sm:pb-12 sm:pt-4">
           {children}
         </ul>
@@ -111,7 +112,7 @@ export default function CardContent({
         />
       )}
 
-      <div className="flex items-center justify-between pt-5 mt-auto text-sm">
+      <div className="flex items-center justify-between pt-6 mt-auto text-sm">
         <div className="flex-1">
           {prevPage && (
             <Link href={prevPage} className="block w-5">

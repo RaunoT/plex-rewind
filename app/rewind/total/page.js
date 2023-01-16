@@ -95,7 +95,6 @@ export default async function Total() {
       page="1 / 5"
       nextCard="/rewind/requests"
       subtitle={user.plexUsername}
-      rewind
     >
       {userTotalDuration != 0 ? (
         <>

@@ -30,7 +30,6 @@ export default async function Music() {
       page="5 / 5"
       prevCard="/rewind/movies"
       subtitle={user.plexUsername}
-      rewind
     >
       <CardContentText noScale>
         {totalDuration != 0 ? (

@@ -55,7 +55,6 @@ export default async function Audio({ searchParams }) {
       nextCard="dashboard/users"
       page="3 / 4"
       type="music"
-      dashboard
     />
   )
 }

@@ -20,7 +20,6 @@ export default function CardContentItems({
   type,
   usersPlays,
   userRequests,
-  ratings,
 }) {
   const rankingColors = ['text-yellow-500', 'text-gray-300', 'text-yellow-600']
 
@@ -32,12 +31,6 @@ export default function CardContentItems({
 
   const getUserRequestsCount = (id) => {
     return userRequests.find((request) => request.user === id).requests
-  }
-
-  const getRating = (title) => {
-    const rating = ratings.find((item) => item.title === title).rating
-
-    return rating ?? 0
   }
 
   return (
@@ -104,13 +97,12 @@ export default function CardContentItems({
                   </li>
                 )}
                 {/* Ratings */}
-                {(type === 'movies' || type === 'shows') &&
-                  getRating(item.title) != 0 && (
-                    <li className="flex items-center gap-1 sm:gap-2">
-                      <StarIcon className="w-5 text-slate-900" />
-                      {getRating(item.title)}
-                    </li>
-                  )}
+                {(type === 'movies' || type === 'shows') && item.rating && (
+                  <li className="flex items-center gap-1 sm:gap-2">
+                    <StarIcon className="w-5 text-slate-900" />
+                    {item.rating}
+                  </li>
+                )}
                 {/* TODO: Add tooltips explaining stat */}
                 {/* Duration */}
                 <li className="flex items-center gap-1 sm:gap-2">

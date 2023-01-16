@@ -3,49 +3,50 @@
 import Link from 'next/link'
 import { usePathname, useSearchParams } from 'next/navigation'
 
-export default function PeriodSelect() {
+export default function DashboardNav() {
   const pathname = usePathname()
   const searchParams = useSearchParams()
   const period = searchParams.get('period')
+    ? '?period=' + searchParams.get('period')
+    : ''
 
   return (
-    <ul className="flex items-center justify-center gap-4 mt-2 text-xs font-medium uppercase sm:text-sm">
+    <ul className="flex items-center justify-center gap-4 mb-2 -mt-2 text-xs font-medium uppercase sm:text-base text-neutral-200">
       {/* TODO: Don't allow hover on already selected items */}
       <li>
         <Link
-          href={`${pathname}?period=7days`}
+          href={`/dashboard/shows${period}`}
           className="transition aria-selected:text-teal-300 hover:opacity-75"
-          aria-selected={period === '7days'}
+          aria-selected={pathname === '/dashboard/shows'}
         >
-          7 days
+          Shows
         </Link>
       </li>
       <li>
         <Link
-          href={`${pathname}`}
+          href={`/dashboard/movies${period}`}
           className="transition aria-selected:text-teal-300 hover:opacity-75"
-          aria-selected={!period}
+          aria-selected={pathname === '/dashboard/movies'}
         >
-          30 days
+          Movies
         </Link>
       </li>
       <li>
         <Link
-          href={`${pathname}?period=thisYear`}
+          href={`/dashboard/audio${period}`}
           className="transition aria-selected:text-teal-300 hover:opacity-75"
-          aria-selected={period === 'thisYear'}
+          aria-selected={pathname === '/dashboard/audio'}
         >
-          This year
+          Music
         </Link>
       </li>
-      {/* TODO: Add previous year filter */}
       <li>
         <Link
-          href={`${pathname}?period=allTime`}
+          href={`/dashboard/users${period}`}
           className="transition aria-selected:text-teal-300 hover:opacity-75"
-          aria-selected={period === 'allTime'}
+          aria-selected={pathname === '/dashboard/users'}
         >
-          All time
+          Users
         </Link>
       </li>
     </ul>

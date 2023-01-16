@@ -96,7 +96,6 @@ export default async function Users({ searchParams }) {
       type="users"
       usersPlays={usersPlays}
       userRequests={usersRequestsCounts}
-      dashboard
     />
   )
 }

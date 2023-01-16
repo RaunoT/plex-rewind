@@ -31,7 +31,6 @@ export default async function Shows() {
       prevCard="/rewind/requests"
       nextCard="/rewind/movies"
       subtitle={user.plexUsername}
-      rewind
     >
       <CardContentText noScale>
         {totalDuration != 0 ? (

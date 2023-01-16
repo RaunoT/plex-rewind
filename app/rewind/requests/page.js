@@ -49,7 +49,6 @@ export default async function Requests() {
       prevCard="/rewind/total"
       nextCard="/rewind/shows"
       subtitle={user.plexUsername}
-      rewind
     >
       {userRequestsTotal != 0 ? (
         <CardContentText hideAfter={requestTotals.total != 0 ? 10 : 0}>
