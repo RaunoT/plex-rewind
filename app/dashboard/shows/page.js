@@ -22,7 +22,7 @@ async function getShows(period) {
       let show = await fetchTautulli('get_metadata', {
         rating_key: key,
       })
-      let data = show.response?.data
+      const data = show.response?.data
       let year = data.year
       let rating = data.audience_rating
 
@@ -32,9 +32,8 @@ async function getShows(period) {
           query: shows[i].title,
           first_air_date_year: year,
         })
-        data = show.results[0]
-        year = new Date(data.first_air_date).getFullYear()
-        rating = data.vote_average
+        year = new Date(show.results[0].first_air_date).getFullYear()
+        rating = show.results[0].vote_average
       }
 
       return {

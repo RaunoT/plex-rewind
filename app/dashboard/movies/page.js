@@ -22,7 +22,7 @@ async function getMovies(period) {
       let movie = await fetchTautulli('get_metadata', {
         rating_key: key,
       })
-      let data = movie.response?.data
+      const data = movie.response?.data
       let rating = data.audience_rating
 
       // WORKAROUND: Tautulli not properly rating for deleted items
@@ -31,8 +31,7 @@ async function getMovies(period) {
           query: movies[i].title,
           first_air_date_year: movies[i].year,
         })
-        data = movie.results[0]
-        rating = data.vote_average
+        rating = movie.results[0].vote_average
       }
 
       return {
