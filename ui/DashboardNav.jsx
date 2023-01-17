@@ -37,7 +37,7 @@ export default function DashboardNav() {
           className="transition aria-selected:text-teal-300 hover:opacity-75"
           aria-selected={pathname === '/dashboard/audio'}
         >
-          Music
+          Audio
         </Link>
       </li>
       <li>
