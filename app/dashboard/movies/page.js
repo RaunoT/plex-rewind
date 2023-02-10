@@ -1,6 +1,7 @@
 import CardContent from '../../../ui/CardContent'
-import { ALLOWED_PERIODS } from '../../../utils/constants'
+import { ALLOWED_PERIODS, IGNORED_FOR_RATINGS } from '../../../utils/constants'
 import fetchTautulli from '../../../utils/fetchTautulli'
+import fetchTmdb from '../../../utils/fetchTmdb'
 import { bytesToSize, removeAfterMinutes } from '../../../utils/formatting'
 
 async function getMovies(period) {
@@ -16,33 +17,33 @@ async function getMovies(period) {
   movies.map((movie) => {
     ratingKeys.push(movie.rating_key)
   })
-  // const additionalData = await Promise.all(
-  //   ratingKeys.map(async (key, i) => {
-  //     let movie = await fetchTautulli('get_metadata', {
-  //       rating_key: key,
-  //     })
-  //     const data = movie.response?.data
-  //     let rating = data.audience_rating
+  const additionalData = await Promise.all(
+    ratingKeys.map(async (key, i) => {
+      let movie = await fetchTautulli('get_metadata', {
+        rating_key: key,
+      })
+      const data = movie.response?.data
+      let rating = data.audience_rating
 
-  //     // WORKAROUND: Tautulli not properly rating for deleted items
-  //     if (!rating && !IGNORED_FOR_RATINGS.includes(movies[i].title)) {
-  //       movie = await fetchTmdb('search/movie', {
-  //         query: movies[i].title,
-  //         first_air_date_year: movies[i].year,
-  //       })
-  //       rating = movie.results[0].vote_average
-  //     }
+      // WORKAROUND: Tautulli not properly rating for deleted items
+      if (!rating && !IGNORED_FOR_RATINGS.includes(movies[i].title)) {
+        movie = await fetchTmdb('search/movie', {
+          query: movies[i].title,
+          first_air_date_year: movies[i].year,
+        })
+        rating = movie.results[0].vote_average
+      }
 
-  //     return {
-  //       isDeleted: Object.keys(data).length === 0,
-  //       rating: rating,
-  //     }
-  //   }),
-  // )
+      return {
+        isDeleted: Object.keys(data).length === 0,
+        rating: rating,
+      }
+    }),
+  )
 
   movies.map((movie, i) => {
-    // movie.isDeleted = additionalData[i].isDeleted
-    // movie.rating = additionalData[i].rating
+    movie.isDeleted = additionalData[i].isDeleted
+    movie.rating = additionalData[i].rating
   })
 
   return movies
