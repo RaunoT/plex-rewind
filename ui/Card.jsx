@@ -17,9 +17,9 @@ export default function Card({ children, className }) {
   const router = useRouter()
 
   return (
-    <div className="relative">
+    <div className='relative'>
       <motion.article
-        drag="x"
+        drag='x'
         dragSnapToOrigin
         dragDirectionLock
         dragConstraints={{ left: 10, right: 10 }}
@@ -37,17 +37,17 @@ export default function Card({ children, className }) {
         }}
         className={clsx(
           'px-6 sm:px-8 pt-8 pb-3 sm:pb-5 rounded-3xl w-full flex flex-col bg-gradient',
-          className,
+          className
         )}
       >
         {children}
       </motion.article>
 
       {prevPage && (
-        <ArrowSmallLeftIcon className="fixed inset-y-0 w-10 my-auto opacity-75 sm:absolute left-8 -z-10" />
+        <ArrowSmallLeftIcon className='fixed inset-y-0 w-10 my-auto opacity-75 sm:absolute left-8 -z-10' />
       )}
       {nextPage && (
-        <ArrowSmallRightIcon className="fixed inset-y-0 w-10 my-auto opacity-75 sm:absolute right-8 -z-10" />
+        <ArrowSmallRightIcon className='fixed inset-y-0 w-10 my-auto opacity-75 sm:absolute right-8 -z-10' />
       )}
     </div>
   )

@@ -11,12 +11,12 @@ export default function DashboardNav() {
     : ''
 
   return (
-    <ul className="flex items-center justify-center gap-4 mb-2 -mt-2 text-xs font-medium uppercase sm:text-base text-neutral-200">
+    <ul className='flex items-center justify-center gap-4 mb-2 -mt-2 text-xs font-medium uppercase sm:text-base text-neutral-200'>
       {/* TODO: Don't allow hover on already selected items */}
       <li>
         <Link
           href={`/dashboard/shows${period}`}
-          className="transition aria-selected:text-teal-300 hover:opacity-75"
+          className='transition aria-selected:text-teal-300 hover:opacity-75'
           aria-selected={pathname === '/dashboard/shows'}
         >
           Shows
@@ -25,7 +25,7 @@ export default function DashboardNav() {
       <li>
         <Link
           href={`/dashboard/movies${period}`}
-          className="transition aria-selected:text-teal-300 hover:opacity-75"
+          className='transition aria-selected:text-teal-300 hover:opacity-75'
           aria-selected={pathname === '/dashboard/movies'}
         >
           Movies
@@ -34,7 +34,7 @@ export default function DashboardNav() {
       <li>
         <Link
           href={`/dashboard/audio${period}`}
-          className="transition aria-selected:text-teal-300 hover:opacity-75"
+          className='transition aria-selected:text-teal-300 hover:opacity-75'
           aria-selected={pathname === '/dashboard/audio'}
         >
           Audio
@@ -43,7 +43,7 @@ export default function DashboardNav() {
       <li>
         <Link
           href={`/dashboard/users${period}`}
-          className="transition aria-selected:text-teal-300 hover:opacity-75"
+          className='transition aria-selected:text-teal-300 hover:opacity-75'
           aria-selected={pathname === '/dashboard/users'}
         >
           Users

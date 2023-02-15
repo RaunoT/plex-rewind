@@ -34,21 +34,21 @@ export default function CardContentItems({
   }
 
   return (
-    <ul className="grid mt-4 overflow-hidden xl:grid-flow-col xl:grid-cols-2 xl:grid-rows-3 sm:mt-6 xl:gap-x-8 gap-y-3 sm:gap-y-5">
+    <ul className='grid mt-4 overflow-hidden xl:grid-flow-col xl:grid-cols-2 xl:grid-rows-3 sm:mt-6 xl:gap-x-8 gap-y-3 sm:gap-y-5'>
       {items.map((item, i) => {
         return (
           <motion.li
             key={i}
-            className="flex items-center gap-3 last:hidden xl:last:flex"
+            className='flex items-center gap-3 last:hidden xl:last:flex'
             variants={slideDown}
-            initial="hidden"
-            animate="show"
+            initial='hidden'
+            animate='show'
             transition={{ delay: i * 0.1 }}
           >
-            <div className="relative flex-shrink-0 w-20 aspect-[2/3]">
+            <div className='relative flex-shrink-0 w-20 aspect-[2/3]'>
               <Image
                 fill
-                className="object-cover object-top"
+                className='object-cover object-top'
                 alt={
                   type === 'users'
                     ? item.user + ' avatar'
@@ -59,21 +59,21 @@ export default function CardContentItems({
                 }/pms_image_proxy?img=${
                   type === 'users' ? item.user_thumb : item.thumb
                 }&width=300`}
-                sizes="10rem"
+                sizes='10rem'
                 priority
               />
             </div>
             <div>
-              <h3 className="mb-2 sm:text-2xl">
+              <h3 className='mb-2 sm:text-2xl'>
                 <span
                   className={clsx(
                     'font-bold',
-                    rankingColors[i] ?? 'text-black',
+                    rankingColors[i] ?? 'text-black'
                   )}
                 >
                   #{i + 1}{' '}
                 </span>
-                <span className="font-medium">
+                <span className='font-medium'>
                   {type === 'users' ? item.user : item.title}
                 </span>
               </h3>
@@ -83,36 +83,36 @@ export default function CardContentItems({
                     'px-1 mb-2 text-[0.65rem] font-semibold uppercase rounded-sm w-fit bg-gradient-to-r',
                     item.isDeleted
                       ? 'from-red-500 to-red-700'
-                      : 'from-green-500 to-green-700',
+                      : 'from-green-500 to-green-700'
                   )}
                 >
                   {item.isDeleted ? 'Unavailable' : 'Available'}
                 </div>
               )}
-              <ul className="flex flex-wrap items-center gap-2 text-xs italic sm:gap-x-3 sm:text-base">
+              <ul className='flex flex-wrap items-center gap-2 text-xs italic sm:gap-x-3 sm:text-base'>
                 {item.year && (type === 'movies' || type === 'shows') && (
-                  <li className="flex items-center gap-1 sm:gap-2">
-                    <CalendarDaysIcon className="w-5 text-slate-900" />
+                  <li className='flex items-center gap-1 sm:gap-2'>
+                    <CalendarDaysIcon className='w-5 text-slate-900' />
                     {item.year}
                   </li>
                 )}
                 {/* Ratings */}
                 {(type === 'movies' || type === 'shows') && item.rating && (
-                  <li className="flex items-center gap-1 sm:gap-2">
-                    <StarIcon className="w-5 text-slate-900" />
+                  <li className='flex items-center gap-1 sm:gap-2'>
+                    <StarIcon className='w-5 text-slate-900' />
                     {item.rating}
                   </li>
                 )}
                 {/* TODO: Add tooltips explaining stat */}
                 {/* Duration */}
-                <li className="flex items-center gap-1 sm:gap-2">
-                  <ClockIcon className="w-5 text-slate-900" />
+                <li className='flex items-center gap-1 sm:gap-2'>
+                  <ClockIcon className='w-5 text-slate-900' />
                   {secondsToTime(item.total_duration)}
                 </li>
                 {/* Requests */}
                 {type === 'users' && (
-                  <li className="flex items-center gap-1 sm:gap-2">
-                    <QuestionMarkCircleIcon className="w-5 text-slate-900" />
+                  <li className='flex items-center gap-1 sm:gap-2'>
+                    <QuestionMarkCircleIcon className='w-5 text-slate-900' />
                     {getUserRequestsCount(item.user_id)} requests
                   </li>
                 )}
@@ -124,15 +124,15 @@ export default function CardContentItems({
 
                       return (
                         <li
-                          className="flex items-center gap-1 sm:gap-2"
+                          className='flex items-center gap-1 sm:gap-2'
                           key={key}
                         >
                           {category.name === 'Music' ? (
-                            <MusicalNoteIcon className="w-5 text-slate-900" />
+                            <MusicalNoteIcon className='w-5 text-slate-900' />
                           ) : category.name === 'Movies' ? (
-                            <FilmIcon className="w-5 text-slate-900" />
+                            <FilmIcon className='w-5 text-slate-900' />
                           ) : (
-                            <PlayCircleIcon className="w-5 text-slate-900" />
+                            <PlayCircleIcon className='w-5 text-slate-900' />
                           )}
 
                           <span>
@@ -144,13 +144,13 @@ export default function CardContentItems({
                     }
                   })
                 ) : (
-                  <li className="flex items-center gap-1 sm:gap-2">
+                  <li className='flex items-center gap-1 sm:gap-2'>
                     {type === 'music' ? (
-                      <MusicalNoteIcon className="w-5 text-slate-900" />
+                      <MusicalNoteIcon className='w-5 text-slate-900' />
                     ) : type === 'movies' ? (
-                      <FilmIcon className="w-5 text-slate-900" />
+                      <FilmIcon className='w-5 text-slate-900' />
                     ) : (
-                      <PlayCircleIcon className="w-5 text-slate-900" />
+                      <PlayCircleIcon className='w-5 text-slate-900' />
                     )}
                     <span>
                       {item.total_plays}

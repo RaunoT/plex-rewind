@@ -47,19 +47,19 @@ async function getUsersRequestsCounts(period) {
     users.response?.data.slice(1).map(async (user) => {
       const overseerrId = await fetchOverseerrUserId(user.user_id)
       return overseerrId
-    }),
+    })
   )
   const usersRequestsCounts = Promise.all(
     (await overseerrUserIds).map(async (user, i) => {
       const userTotal = await fetchPaginatedOverseerrStats(
         `user/${user}/requests`,
-        period,
+        period
       )
       return {
         user: users.response?.data.slice(1)[i].user_id,
         requests: userTotal.length,
       }
-    }),
+    })
   )
 
   return usersRequestsCounts
@@ -87,13 +87,13 @@ export default async function Users({ searchParams }) {
 
   return (
     <CardContent
-      title="Users"
+      title='Users'
       items={usersData}
       totalDuration={totalDuration}
       totalSize={usersCount}
-      prevCard="dashboard/audio"
-      page="4 / 4"
-      type="users"
+      prevCard='dashboard/audio'
+      page='4 / 4'
+      type='users'
       usersPlays={usersPlays}
       userRequests={usersRequestsCounts}
     />

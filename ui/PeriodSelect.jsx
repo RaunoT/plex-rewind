@@ -9,12 +9,12 @@ export default function PeriodSelect() {
   const period = searchParams.get('period')
 
   return (
-    <ul className="flex items-center justify-center gap-4 mt-2 text-xs font-medium uppercase sm:text-sm">
+    <ul className='flex items-center justify-center gap-4 mt-2 text-xs font-medium uppercase sm:text-sm'>
       {/* TODO: Don't allow hover on already selected items */}
       <li>
         <Link
           href={`${pathname}?period=7days`}
-          className="transition aria-selected:text-teal-300 hover:opacity-75"
+          className='transition aria-selected:text-teal-300 hover:opacity-75'
           aria-selected={period === '7days'}
         >
           7 days
@@ -23,7 +23,7 @@ export default function PeriodSelect() {
       <li>
         <Link
           href={`${pathname}`}
-          className="transition aria-selected:text-teal-300 hover:opacity-75"
+          className='transition aria-selected:text-teal-300 hover:opacity-75'
           aria-selected={!period}
         >
           30 days
@@ -32,7 +32,7 @@ export default function PeriodSelect() {
       <li>
         <Link
           href={`${pathname}?period=thisYear`}
-          className="transition aria-selected:text-teal-300 hover:opacity-75"
+          className='transition aria-selected:text-teal-300 hover:opacity-75'
           aria-selected={period === 'thisYear'}
         >
           This year
@@ -42,7 +42,7 @@ export default function PeriodSelect() {
       <li>
         <Link
           href={`${pathname}?period=allTime`}
-          className="transition aria-selected:text-teal-300 hover:opacity-75"
+          className='transition aria-selected:text-teal-300 hover:opacity-75'
           aria-selected={period === 'allTime'}
         >
           All time

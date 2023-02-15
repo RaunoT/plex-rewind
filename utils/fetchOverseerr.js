@@ -29,7 +29,7 @@ export async function fetchPaginatedOverseerrStats(req, timeframe) {
   do {
     const requestsData = await fetchOverseerr(reqUrl)
     const requestsDataFiltered = requestsData.results.filter(
-      (request) => Date.parse(request.createdAt) > Date.parse(timeframe),
+      (request) => Date.parse(request.createdAt) > Date.parse(timeframe)
     )
     requestsArr = [...requestsDataFiltered, ...requestsArr]
     totalPages = requestsData.pageInfo.pages

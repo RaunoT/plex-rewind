@@ -41,14 +41,14 @@ export default function Delayed({
 function SkeletonLoader() {
   return (
     <motion.div
-      className="flex items-center gap-2 w-fit skeleton skeleton--no-animate"
+      className='flex items-center gap-2 w-fit skeleton skeleton--no-animate'
       variants={fadeIn}
-      initial="hidden"
-      animate="show"
+      initial='hidden'
+      animate='show'
     >
-      <span className="w-1 h-1 bg-white rounded-full animate-pulse"></span>
-      <span className="w-1 h-1 bg-white rounded-full animate-pulse animation-delay-200"></span>
-      <span className="w-1 h-1 bg-white rounded-full animate-pulse animation-delay-400"></span>
+      <span className='w-1 h-1 bg-white rounded-full animate-pulse'></span>
+      <span className='w-1 h-1 bg-white rounded-full animate-pulse animation-delay-200'></span>
+      <span className='w-1 h-1 bg-white rounded-full animate-pulse animation-delay-400'></span>
     </motion.div>
   )
 }

@@ -3,7 +3,7 @@ export function secondsToTime(seconds) {
   const weeks = Math.floor((seconds - months * 2629746) / 604800)
   const days = Math.floor((seconds - months * 2629746 - weeks * 604800) / 86400)
   const hours = Math.floor(
-    (seconds - months * 2629746 - weeks * 604800 - days * 86400) / 3600,
+    (seconds - months * 2629746 - weeks * 604800 - days * 86400) / 3600
   )
   const minutes = Math.floor(
     (seconds -
@@ -11,7 +11,7 @@ export function secondsToTime(seconds) {
       weeks * 604800 -
       days * 86400 -
       hours * 3600) /
-      60,
+      60
   )
 
   return (

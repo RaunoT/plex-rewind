@@ -41,7 +41,7 @@ async function getShows(period) {
         isDeleted: Object.keys(data).length === 0,
         rating: rating,
       }
-    }),
+    })
   )
 
   shows.map((show, i) => {
@@ -86,13 +86,13 @@ export default async function Shows({ searchParams }) {
 
   return (
     <CardContent
-      title="TV shows"
+      title='TV shows'
       items={shows}
       totalDuration={totalDuration}
       totalSize={totalSize}
-      nextCard="dashboard/movies"
-      page="1 / 4"
-      type="shows"
+      nextCard='dashboard/movies'
+      page='1 / 4'
+      type='shows'
     />
   )
 }

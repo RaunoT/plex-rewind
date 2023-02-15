@@ -55,7 +55,7 @@ async function getlibrariesTotalSize() {
     musicMediaInfo.response?.data?.total_file_size +
       showsMediaInfo.response?.data?.total_file_size +
       moviesMediaInfo.response?.data?.total_file_size +
-      audiobooksMediaInfo.response?.data?.total_file_size,
+      audiobooksMediaInfo.response?.data?.total_file_size
   )
 }
 
@@ -91,32 +91,32 @@ export default async function Total() {
 
   return (
     <CardContent
-      title="General stats"
-      page="1 / 5"
-      nextCard="/rewind/requests"
+      title='General stats'
+      page='1 / 5'
+      nextCard='/rewind/requests'
       subtitle={user.plexUsername}
     >
       {userTotalDuration != 0 ? (
         <>
           <CardContentText hideAfter={10}>
             You&apos;ve spent a{' '}
-            <span className="inline-flex items-center text-teal-300">
+            <span className='inline-flex items-center text-teal-300'>
               Total
-              <ClockIcon className="w-8 ml-1" />
+              <ClockIcon className='w-8 ml-1' />
             </span>{' '}
             of{' '}
-            <span className="rewind-stat">
+            <span className='rewind-stat'>
               {secondsToTime(userTotalDuration)}
             </span>{' '}
-            on <span className="text-yellow-500">Plex</span> this year!
+            on <span className='text-yellow-500'>Plex</span> this year!
           </CardContentText>
 
           <CardContentText renderDelay={5} hideAfter={15}>
             That&apos;s{' '}
-            <span className="inline-flex items-center text-teal-300">
+            <span className='inline-flex items-center text-teal-300'>
               {Math.round((userTotalDuration * 100) / librariesTotalDuration)}
               %
-              <ChartPieIcon className="w-8 ml-1" />
+              <ChartPieIcon className='w-8 ml-1' />
             </span>{' '}
             of all plays.
           </CardContentText>
@@ -124,8 +124,8 @@ export default async function Total() {
       ) : (
         <CardContentText hideAfter={15} scaleDelay={10}>
           You haven&apos;t played any content on{' '}
-          <span className="text-yellow-500">Plex</span> this year!{' '}
-          <span className="not-italic">🤯</span> What are you waiting for?
+          <span className='text-yellow-500'>Plex</span> this year!{' '}
+          <span className='not-italic'>🤯</span> What are you waiting for?
         </CardContentText>
       )}
 
@@ -134,26 +134,26 @@ export default async function Total() {
         loaderDelay={userTotalDuration != 0 ? 5 : 0}
       >
         Did you know the{' '}
-        <span className="inline-flex items-center text-teal-300">
+        <span className='inline-flex items-center text-teal-300'>
           Filesize
-          <FolderIcon className="w-8 ml-1" />
+          <FolderIcon className='w-8 ml-1' />
         </span>{' '}
         of all the available content on{' '}
-        <span className="text-yellow-500">Plex</span> is{' '}
-        <span className="rewind-stat">{librariesTotalSize}</span>
+        <span className='text-yellow-500'>Plex</span> is{' '}
+        <span className='rewind-stat'>{librariesTotalSize}</span>
       </CardContentText>
 
       <CardContentText renderDelay={15} loaderDelay={10} noScale>
         The current library consist of:
-        <ul className="list">
+        <ul className='list'>
           {libraryContentCounts.map((contentType, i) => {
             switch (contentType.section_name) {
               case 'TV Shows':
                 return (
                   <StatListItem
                     count={contentType.child_count}
-                    name="Episodes"
-                    icon={<PlayCircleIcon className="w-8 ml-1" />}
+                    name='Episodes'
+                    icon={<PlayCircleIcon className='w-8 ml-1' />}
                     key={i}
                   />
                 )
@@ -162,8 +162,8 @@ export default async function Total() {
                 return (
                   <StatListItem
                     count={contentType.count}
-                    name="Movies"
-                    icon={<FilmIcon className="w-8 ml-1" />}
+                    name='Movies'
+                    icon={<FilmIcon className='w-8 ml-1' />}
                     key={i}
                   />
                 )
@@ -172,8 +172,8 @@ export default async function Total() {
                 return (
                   <StatListItem
                     count={contentType.child_count}
-                    name="Songs"
-                    icon={<MusicalNoteIcon className="w-8 ml-1" />}
+                    name='Songs'
+                    icon={<MusicalNoteIcon className='w-8 ml-1' />}
                     key={i}
                   />
                 )
@@ -182,8 +182,8 @@ export default async function Total() {
                 return (
                   <StatListItem
                     count={contentType.parent_count}
-                    name="Audiobooks"
-                    icon={<BookOpenIcon className="w-8 ml-1" />}
+                    name='Audiobooks'
+                    icon={<BookOpenIcon className='w-8 ml-1' />}
                     key={i}
                   />
                 )

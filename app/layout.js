@@ -22,11 +22,11 @@ export default function RootLayout({ children }) {
           nextPageState: [nextPage, setNextPage],
         }}
       >
-        <body className="text-white bg-gradient-to-br from-indigo-900 via-neutral-800 to-neutral-900 min-height-screen">
+        <body className='text-white bg-gradient-to-br from-indigo-900 via-neutral-800 to-neutral-900 min-height-screen'>
           <main
             className={clsx(
               'flex flex-col items-center px-4 py-8 overflow-x-hidden min-height-screen sm:justify-center',
-              { 'justify-center': pathname === '/' },
+              { 'justify-center': pathname === '/' }
             )}
           >
             {children}

@@ -49,10 +49,10 @@ export default function CardContentText({
     <motion.li
       className={clsx(
         'text-3xl sm:text-4xl italic mb-4 last:mb-0 leading-tight',
-        className,
+        className
       )}
       variants={animateCardText}
-      initial="hidden"
+      initial='hidden'
       animate={['show', !noScale && 'scaleDown']}
       style={{ originX: 0, originY: '100%' }}
       custom={scaleDelay}
@@ -67,14 +67,14 @@ export default function CardContentText({
 function Loader() {
   return (
     <motion.div
-      className="flex items-center gap-2 w-fit skeleton skeleton--no-animate"
+      className='flex items-center gap-2 w-fit skeleton skeleton--no-animate'
       variants={fadeIn}
-      initial="hidden"
-      animate="show"
+      initial='hidden'
+      animate='show'
     >
-      <span className="w-1 h-1 bg-white rounded-full animate-pulse"></span>
-      <span className="w-1 h-1 bg-white rounded-full animate-pulse animation-delay-200"></span>
-      <span className="w-1 h-1 bg-white rounded-full animate-pulse animation-delay-400"></span>
+      <span className='w-1 h-1 bg-white rounded-full animate-pulse'></span>
+      <span className='w-1 h-1 bg-white rounded-full animate-pulse animation-delay-200'></span>
+      <span className='w-1 h-1 bg-white rounded-full animate-pulse animation-delay-400'></span>
     </motion.div>
   )
 }

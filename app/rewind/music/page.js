@@ -26,22 +26,22 @@ export default async function Music() {
 
   return (
     <CardContent
-      title="Music"
-      page="5 / 5"
-      prevCard="/rewind/movies"
+      title='Music'
+      page='5 / 5'
+      prevCard='/rewind/movies'
       subtitle={user.plexUsername}
     >
       <CardContentText noScale>
         {totalDuration != 0 ? (
           <>
             And to top it all off, you listened to&nbsp;
-            <span className="rewind-stat">{totalDuration}</span> of{' '}
-            <span className="inline-flex items-center text-teal-300">
+            <span className='rewind-stat'>{totalDuration}</span> of{' '}
+            <span className='inline-flex items-center text-teal-300'>
               Music
-              <MusicalNoteIcon className="w-8 ml-1" />
+              <MusicalNoteIcon className='w-8 ml-1' />
             </span>{' '}
-            on <span className="text-yellow-500">Plex</span> during{' '}
-            <span className="text-purple-300 rewind-stat">
+            on <span className='text-yellow-500'>Plex</span> during{' '}
+            <span className='text-purple-300 rewind-stat'>
               {new Date().getFullYear()}
             </span>
             .
@@ -49,12 +49,12 @@ export default async function Music() {
         ) : (
           <>
             You haven&apos;t listened to any{' '}
-            <span className="inline-flex items-center text-teal-300">
+            <span className='inline-flex items-center text-teal-300'>
               Music
-              <MusicalNoteIcon className="w-8 ml-1" />
+              <MusicalNoteIcon className='w-8 ml-1' />
             </span>{' '}
-            on <span className="text-yellow-500">Plex</span> this year{' '}
-            <span className="not-italic">🥵</span>
+            on <span className='text-yellow-500'>Plex</span> this year{' '}
+            <span className='not-italic'>🥵</span>
           </>
         )}
       </CardContentText>

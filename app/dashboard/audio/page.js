@@ -47,14 +47,14 @@ export default async function Audio({ searchParams }) {
 
   return (
     <CardContent
-      title="Audio"
+      title='Audio'
       items={artists}
       totalDuration={totalDuration}
       totalSize={totalSize}
-      prevCard="dashboard/movies"
-      nextCard="dashboard/users"
-      page="3 / 4"
-      type="music"
+      prevCard='dashboard/movies'
+      nextCard='dashboard/users'
+      page='3 / 4'
+      type='music'
     />
   )
 }

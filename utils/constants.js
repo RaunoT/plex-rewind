@@ -18,14 +18,14 @@ export const ALLOWED_PERIODS = {
     date: CURRENT_YEAR,
     string: CURRENT_YEAR.toISOString().split('T')[0],
     daysAgo: Math.ceil(
-      (new Date().getTime() - CURRENT_YEAR.getTime()) / (1000 * 3600 * 24),
+      (new Date().getTime() - CURRENT_YEAR.getTime()) / (1000 * 3600 * 24)
     ),
   },
   allTime: {
     date: ALL_TIME,
     string: ALL_TIME.toISOString().split('T')[0],
     daysAgo: Math.ceil(
-      (new Date().getTime() - ALL_TIME.getTime()) / (1000 * 3600 * 24),
+      (new Date().getTime() - ALL_TIME.getTime()) / (1000 * 3600 * 24)
     ),
   },
 }

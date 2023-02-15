@@ -38,7 +38,7 @@ async function getMovies(period) {
         isDeleted: Object.keys(data).length === 0,
         rating: rating,
       }
-    }),
+    })
   )
 
   movies.map((movie, i) => {
@@ -82,14 +82,14 @@ export default async function Movies({ searchParams }) {
 
   return (
     <CardContent
-      title="Movies"
+      title='Movies'
       items={movies}
       totalDuration={totalDuration}
       totalSize={totalSize}
-      prevCard="dashboard/shows"
-      nextCard="dashboard/audio"
-      page="2 / 4"
-      type="movies"
+      prevCard='dashboard/shows'
+      nextCard='dashboard/audio'
+      page='2 / 4'
+      type='movies'
     />
   )
 }
