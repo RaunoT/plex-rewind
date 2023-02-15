@@ -10,7 +10,6 @@ import {
   StarIcon,
 } from '@heroicons/react/24/outline'
 import clsx from 'clsx'
-import { motion } from 'framer-motion'
 import Image from 'next/image'
 import { secondsToTime } from '../utils/formatting'
 import { slideDown } from '../utils/motion'
@@ -37,7 +36,7 @@ export default function CardContentItems({
     <ul className='grid mt-4 overflow-hidden xl:grid-flow-col xl:grid-cols-2 xl:grid-rows-3 sm:mt-6 xl:gap-x-8 gap-y-3 sm:gap-y-5'>
       {items.map((item, i) => {
         return (
-          <motion.li
+          <li
             key={i}
             className='flex items-center gap-3 last:hidden xl:last:flex'
             variants={slideDown}
@@ -160,7 +159,7 @@ export default function CardContentItems({
                 )}
               </ul>
             </div>
-          </motion.li>
+          </li>
         )
       })}
     </ul>
