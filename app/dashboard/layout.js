@@ -18,7 +18,7 @@ export default function DashboardLayout({ children }) {
     <div className='w-full max-w-2xl xl:max-w-5xl'>
       <PageTitle title='Dashboard' />
       <DashboardNav />
-      {/* TODO: Separate Audiobooks page */}
+      {/* TODO: Add separate Audiobooks page */}
       <Card className='xl:min-h-[572px]'>{children}</Card>
       <PeriodSelect />
     </div>

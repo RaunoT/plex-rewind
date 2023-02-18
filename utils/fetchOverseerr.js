@@ -1,5 +1,4 @@
 export default async function fetchOverseerr(endpoint, cache = false) {
-  // TODO: Catch errors
   const apiUrl = `${process.env.NEXT_PUBLIC_OVERSEERR_URL}/api/v1/${endpoint}`
 
   const res = await fetch(apiUrl, {

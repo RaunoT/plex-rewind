@@ -5,7 +5,7 @@ export default function RewindLayout({ children }) {
   return (
     <div className='w-full max-w-2xl'>
       <PageTitle />
-      {/* TODO: Separate Audiobooks page */}
+      {/* TODO: Add separate Audiobooks page */}
       <Card className='min-h-[75vh]'>{children}</Card>
     </div>
   )
