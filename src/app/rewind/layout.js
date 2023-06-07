@@ -1,5 +1,5 @@
-import Card from '../../components/Card'
-import PageTitle from '../../components/PageTitle'
+import Card from '@/components/Card'
+import PageTitle from '@/components/PageTitle'
 
 export default function RewindLayout({ children }) {
   return (

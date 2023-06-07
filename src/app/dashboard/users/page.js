@@ -1,11 +1,11 @@
-import CardContent from '../../../components/CardContent'
-import { ALLOWED_PERIODS } from '../../../utils/constants'
+import CardContent from '@/components/CardContent'
+import { ALLOWED_PERIODS } from '@/utils/constants'
 import {
   fetchOverseerrUserId,
   fetchPaginatedOverseerrStats,
-} from '../../../utils/fetchOverseerr'
-import fetchTautulli from '../../../utils/fetchTautulli'
-import { removeAfterMinutes } from '../../../utils/formatting'
+} from '@/utils/fetchOverseerr'
+import fetchTautulli from '@/utils/fetchTautulli'
+import { removeAfterMinutes } from '@/utils/formatting'
 
 async function getUsers(period) {
   const users = await fetchTautulli('get_home_stats', {

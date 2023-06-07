@@ -1,9 +1,9 @@
 'use client'
 
+import { animateCardText, fadeIn } from '@/utils/motion'
 import clsx from 'clsx'
 import { motion } from 'framer-motion'
 import { useEffect, useState } from 'react'
-import { animateCardText, fadeIn } from '../utils/motion'
 
 export default function CardContentText({
   children,

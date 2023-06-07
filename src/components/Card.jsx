@@ -1,5 +1,6 @@
 'use client'
 
+import { CardContext } from '@/app/layout'
 import {
   ArrowSmallLeftIcon,
   ArrowSmallRightIcon,
@@ -8,7 +9,6 @@ import clsx from 'clsx'
 import { motion } from 'framer-motion'
 import { useRouter } from 'next/navigation'
 import { useContext } from 'react'
-import { CardContext } from '../app/layout'
 
 export default function Card({ children, className }) {
   const { prevPageState, nextPageState } = useContext(CardContext)

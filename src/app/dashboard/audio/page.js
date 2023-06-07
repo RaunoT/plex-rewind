@@ -1,7 +1,7 @@
-import CardContent from '../../../components/CardContent'
-import { ALLOWED_PERIODS } from '../../../utils/constants'
-import fetchTautulli from '../../../utils/fetchTautulli'
-import { bytesToSize, removeAfterMinutes } from '../../../utils/formatting'
+import CardContent from '@/components/CardContent'
+import { ALLOWED_PERIODS } from '@/utils/constants'
+import fetchTautulli from '@/utils/fetchTautulli'
+import { bytesToSize, removeAfterMinutes } from '@/utils/formatting'
 
 async function getArtists(period) {
   const artists = await fetchTautulli('get_home_stats', {

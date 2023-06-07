@@ -1,3 +1,10 @@
+import CardContent from '@/components/CardContent'
+import CardContentText from '@/components/CardContentText'
+import StatListItem from '@/components/StatListItem'
+import { ALLOWED_PERIODS } from '@/utils/constants'
+import { fetchUser } from '@/utils/fetchOverseerr'
+import fetchTautulli from '@/utils/fetchTautulli'
+import { bytesToSize, secondsToTime, timeToSeconds } from '@/utils/formatting'
 import {
   BookOpenIcon,
   ChartPieIcon,
@@ -7,17 +14,6 @@ import {
   MusicalNoteIcon,
   PlayCircleIcon,
 } from '@heroicons/react/24/outline'
-import CardContent from '../../../components/CardContent'
-import CardContentText from '../../../components/CardContentText'
-import StatListItem from '../../../components/StatListItem'
-import { ALLOWED_PERIODS } from '../../../utils/constants'
-import { fetchUser } from '../../../utils/fetchOverseerr'
-import fetchTautulli from '../../../utils/fetchTautulli'
-import {
-  bytesToSize,
-  secondsToTime,
-  timeToSeconds,
-} from '../../../utils/formatting'
 
 async function getUserTotalDuration() {
   const user = await fetchUser()

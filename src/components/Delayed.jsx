@@ -1,8 +1,8 @@
 'use client'
 
+import { fadeIn } from '@/utils/motion'
 import { motion } from 'framer-motion'
 import { useEffect, useState } from 'react'
-import { fadeIn } from '../utils/motion'
 
 export default function Delayed({
   children,

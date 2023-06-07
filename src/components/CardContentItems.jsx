@@ -1,5 +1,7 @@
 'use client'
 
+import { secondsToTime } from '@/utils/formatting'
+import { slideDown } from '@/utils/motion'
 import {
   CalendarDaysIcon,
   ClockIcon,
@@ -12,8 +14,6 @@ import {
 import clsx from 'clsx'
 import { motion } from 'framer-motion'
 import Image from 'next/image'
-import { secondsToTime } from '../utils/formatting'
-import { slideDown } from '../utils/motion'
 
 export default function CardContentItems({
   items,

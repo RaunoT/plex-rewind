@@ -1,11 +1,11 @@
 'use client'
 
+import Card from '@/components/Card'
+import DashboardNav from '@/components/DashboardNav'
+import PageTitle from '@/components/PageTitle'
+import PeriodSelect from '@/components/PeriodSelect'
 import { usePathname } from 'next/navigation'
 import { useEffect } from 'react'
-import Card from '../../components/Card'
-import DashboardNav from '../../components/DashboardNav'
-import PageTitle from '../../components/PageTitle'
-import PeriodSelect from '../../components/PeriodSelect'
 
 export default function DashboardLayout({ children }) {
   const pathname = usePathname()

@@ -1,5 +1,7 @@
 'use client'
 
+import { CardContext } from '@/app/layout.js'
+import { ALLOWED_PERIODS } from '@/utils/constants.js'
 import {
   ArrowLongLeftIcon,
   ArrowLongRightIcon,
@@ -7,8 +9,6 @@ import {
 import Link from 'next/link.js'
 import { usePathname, useSearchParams } from 'next/navigation.js'
 import { useContext, useEffect } from 'react'
-import { CardContext } from '../app/layout.js'
-import { ALLOWED_PERIODS } from '../utils/constants.js'
 import CardContentItems from './CardContentItems.jsx'
 
 export default function CardContent({

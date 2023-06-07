@@ -1,8 +1,8 @@
-import CardContent from '../../../components/CardContent'
-import { ALLOWED_PERIODS, IGNORED_FOR_RATINGS } from '../../../utils/constants'
-import fetchTautulli from '../../../utils/fetchTautulli'
-import fetchTmdb from '../../../utils/fetchTmdb'
-import { bytesToSize, removeAfterMinutes } from '../../../utils/formatting'
+import CardContent from '@/components/CardContent'
+import { ALLOWED_PERIODS, IGNORED_FOR_RATINGS } from '@/utils/constants'
+import fetchTautulli from '@/utils/fetchTautulli'
+import fetchTmdb from '@/utils/fetchTmdb'
+import { bytesToSize, removeAfterMinutes } from '@/utils/formatting'
 
 async function getShows(period) {
   const showsData = await fetchTautulli('get_home_stats', {

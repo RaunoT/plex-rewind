@@ -1,10 +1,10 @@
+import CardContent from '@/components/CardContent'
+import CardContentText from '@/components/CardContentText'
+import { ALLOWED_PERIODS } from '@/utils/constants'
+import { fetchUser } from '@/utils/fetchOverseerr'
+import fetchTautulli from '@/utils/fetchTautulli'
+import { removeAfterMinutes } from '@/utils/formatting'
 import { MusicalNoteIcon } from '@heroicons/react/24/outline'
-import CardContent from '../../../components/CardContent'
-import CardContentText from '../../../components/CardContentText'
-import { ALLOWED_PERIODS } from '../../../utils/constants'
-import { fetchUser } from '../../../utils/fetchOverseerr'
-import fetchTautulli from '../../../utils/fetchTautulli'
-import { removeAfterMinutes } from '../../../utils/formatting'
 
 async function getTotalDuration() {
   const user = await fetchUser()
