@@ -1,4 +1,4 @@
-import CardContent from '../../../ui/CardContent'
+import CardContent from '../../../components/CardContent'
 import { ALLOWED_PERIODS, IGNORED_FOR_RATINGS } from '../../../utils/constants'
 import fetchTautulli from '../../../utils/fetchTautulli'
 import fetchTmdb from '../../../utils/fetchTmdb'

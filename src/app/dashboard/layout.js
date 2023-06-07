@@ -2,10 +2,10 @@
 
 import { usePathname } from 'next/navigation'
 import { useEffect } from 'react'
-import Card from '../../ui/Card'
-import DashboardNav from '../../ui/DashboardNav'
-import PageTitle from '../../ui/PageTitle'
-import PeriodSelect from '../../ui/PeriodSelect'
+import Card from '../../components/Card'
+import DashboardNav from '../../components/DashboardNav'
+import PageTitle from '../../components/PageTitle'
+import PeriodSelect from '../../components/PeriodSelect'
 
 export default function DashboardLayout({ children }) {
   const pathname = usePathname()

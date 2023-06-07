@@ -3,9 +3,9 @@ import {
   PlayCircleIcon,
   QuestionMarkCircleIcon,
 } from '@heroicons/react/24/outline'
-import CardContent from '../../../ui/CardContent'
-import CardContentText from '../../../ui/CardContentText'
-import StatListItem from '../../../ui/StatListItem'
+import CardContent from '../../../components/CardContent'
+import CardContentText from '../../../components/CardContentText'
+import StatListItem from '../../../components/StatListItem'
 import { ALLOWED_PERIODS } from '../../../utils/constants'
 import {
   fetchPaginatedOverseerrStats,

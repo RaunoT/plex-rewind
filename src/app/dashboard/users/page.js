@@ -1,4 +1,4 @@
-import CardContent from '../../../ui/CardContent'
+import CardContent from '../../../components/CardContent'
 import { ALLOWED_PERIODS } from '../../../utils/constants'
 import {
   fetchOverseerrUserId,

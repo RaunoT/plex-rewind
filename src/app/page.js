@@ -1,20 +1,21 @@
 'use client'
 
+import plexSvg from '@/assets/plex.svg'
+import { fadeIn } from '@/utils/motion'
 import { motion } from 'framer-motion'
+import Image from 'next/image'
 import Link from 'next/link'
-import { fadeIn } from '../utils/motion'
 
 export default function Page() {
   return (
     <div className='text-center'>
       <h1 className='flex items-center gap-4 mb-6 text-4xl font-bold'>
-        <motion.img
-          src='/plex.svg'
-          alt='Plex logo'
-          className='h-12'
+        <motion.div
           initial={{ opacity: 0, x: -50 }}
           animate={{ opacity: 1, x: 0 }}
-        />
+        >
+          <Image src={plexSvg} className='w-auto h-12' alt='Plex logo' />
+        </motion.div>
         <motion.span
           variants={fadeIn}
           initial='hidden'

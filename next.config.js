@@ -1,7 +1,6 @@
-const nextConfig = {
-  experimental: {
-    appDir: true,
-  },
+/** @type {import('next').NextConfig} */
+/** https://nextjs.org/docs/api-reference/next.config.js/introduction */
+module.exports = {
   reactStrictMode: true,
   images: {
     remotePatterns: [
@@ -12,5 +11,3 @@ const nextConfig = {
     ],
   },
 }
-
-module.exports = nextConfig

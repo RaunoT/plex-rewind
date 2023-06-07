@@ -1,10 +1,10 @@
 'use client'
 
+import '@/styles/globals.css'
 import { Analytics } from '@vercel/analytics/react'
 import clsx from 'clsx'
 import { usePathname } from 'next/navigation'
 import { createContext, useState } from 'react'
-import '../styles/globals.css'
 
 export const CardContext = createContext()
 
@@ -14,8 +14,7 @@ export default function RootLayout({ children }) {
   const [nextPage, setNextPage] = useState('')
 
   return (
-    <html>
-      <head />
+    <html lang='en'>
       <CardContext.Provider
         value={{
           prevPageState: [prevPage, setPrevPage],
