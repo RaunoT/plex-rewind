@@ -39,7 +39,7 @@ async function getShows(period) {
       return {
         year: year,
         isDeleted: Object.keys(data).length === 0,
-        rating: rating,
+        rating: parseFloat(rating).toFixed(1),
       }
     })
   )
