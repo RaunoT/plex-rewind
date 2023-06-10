@@ -1,6 +1,5 @@
 'use client'
 
-import Meta from '@/components/Meta'
 import '@/styles/globals.css'
 import { Analytics } from '@vercel/analytics/react'
 import clsx from 'clsx'
@@ -16,7 +15,6 @@ export default function RootLayout({ children }) {
 
   return (
     <html lang='en'>
-      <Meta />
       <CardContext.Provider
         value={{
           prevPageState: [prevPage, setPrevPage],
