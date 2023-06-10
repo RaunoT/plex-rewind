@@ -33,11 +33,11 @@ export default function DashboardNav() {
       </li>
       <li>
         <Link
-          href={`/dashboard/audio${period}`}
+          href={`/dashboard/music${period}`}
           className='transition aria-selected:text-teal-300 hover:opacity-75'
-          aria-selected={pathname === '/dashboard/audio'}
+          aria-selected={pathname === '/dashboard/music'}
         >
-          Audio
+          Music
         </Link>
       </li>
       <li>

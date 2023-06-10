@@ -1,8 +1,17 @@
 import CardContent from '@/components/CardContent'
-import { ALLOWED_PERIODS, IGNORED_FOR_RATINGS } from '@/utils/constants'
+import {
+  ALLOWED_PERIODS,
+  IGNORED_FOR_RATINGS,
+  metaDescription,
+} from '@/utils/constants'
 import fetchTautulli from '@/utils/fetchTautulli'
 import fetchTmdb from '@/utils/fetchTmdb'
 import { bytesToSize, removeAfterMinutes } from '@/utils/formatting'
+
+export const metadata = {
+  title: 'Movies | Plex rewind dashboard',
+  description: metaDescription,
+}
 
 async function getMovies(period) {
   const moviesData = await fetchTautulli('get_home_stats', {
@@ -87,7 +96,7 @@ export default async function Movies({ searchParams }) {
       totalDuration={totalDuration}
       totalSize={totalSize}
       prevCard='dashboard/shows'
-      nextCard='dashboard/audio'
+      nextCard='dashboard/music'
       page='2 / 4'
       type='movies'
     />

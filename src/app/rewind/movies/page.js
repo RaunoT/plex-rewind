@@ -1,10 +1,15 @@
 import CardContent from '@/components/CardContent'
 import CardContentText from '@/components/CardContentText'
-import { ALLOWED_PERIODS } from '@/utils/constants'
+import { ALLOWED_PERIODS, metaDescription } from '@/utils/constants'
 import { fetchUser } from '@/utils/fetchOverseerr'
 import fetchTautulli from '@/utils/fetchTautulli'
 import { removeAfterMinutes } from '@/utils/formatting'
 import { FilmIcon } from '@heroicons/react/24/outline'
+
+export const metadata = {
+  title: 'Movies | Plex rewind',
+  description: metaDescription,
+}
 
 async function getTotalDuration() {
   const user = await fetchUser()

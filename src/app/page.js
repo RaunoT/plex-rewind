@@ -5,8 +5,19 @@ import { fadeIn } from '@/utils/motion'
 import { motion } from 'framer-motion'
 import Image from 'next/image'
 import Link from 'next/link'
+import { useEffect } from 'react'
+
+// TODO: How do we write metadata in Next.js 13 client compos?
+// export const metadata = {
+//   title: 'Plex rewind',
+//   description: metaDescription,
+// }
 
 export default function Page() {
+  useEffect(() => {
+    document.title = 'Plex rewind'
+  })
+
   return (
     <div className='text-center'>
       <h1 className='flex items-center gap-4 mb-6 text-4xl font-bold'>
@@ -26,7 +37,7 @@ export default function Page() {
         </motion.span>
       </h1>
 
-      <Link href='/rewind/total' className='mx-auto mb-6 button'>
+      <Link href='/rewind/totals' className='mx-auto mb-6 button'>
         Get started
       </Link>
 

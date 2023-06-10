@@ -1,11 +1,16 @@
 import CardContent from '@/components/CardContent'
-import { ALLOWED_PERIODS } from '@/utils/constants'
+import { ALLOWED_PERIODS, metaDescription } from '@/utils/constants'
 import {
   fetchOverseerrUserId,
   fetchPaginatedOverseerrStats,
 } from '@/utils/fetchOverseerr'
 import fetchTautulli from '@/utils/fetchTautulli'
 import { removeAfterMinutes } from '@/utils/formatting'
+
+export const metadata = {
+  title: 'Users | Plex rewind dashboard',
+  description: metaDescription,
+}
 
 async function getUsers(period) {
   const users = await fetchTautulli('get_home_stats', {
@@ -91,7 +96,7 @@ export default async function Users({ searchParams }) {
       items={usersData}
       totalDuration={totalDuration}
       totalSize={usersCount}
-      prevCard='dashboard/audio'
+      prevCard='dashboard/music'
       page='4 / 4'
       type='users'
       usersPlays={usersPlays}

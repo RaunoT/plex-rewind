@@ -1,7 +1,7 @@
 import CardContent from '@/components/CardContent'
 import CardContentText from '@/components/CardContentText'
 import StatListItem from '@/components/StatListItem'
-import { ALLOWED_PERIODS } from '@/utils/constants'
+import { ALLOWED_PERIODS, metaDescription } from '@/utils/constants'
 import { fetchUser } from '@/utils/fetchOverseerr'
 import fetchTautulli from '@/utils/fetchTautulli'
 import { bytesToSize, secondsToTime, timeToSeconds } from '@/utils/formatting'
@@ -14,6 +14,11 @@ import {
   MusicalNoteIcon,
   PlayCircleIcon,
 } from '@heroicons/react/24/outline'
+
+export const metadata = {
+  title: 'Totals | Plex rewind',
+  description: metaDescription,
+}
 
 async function getUserTotalDuration() {
   const user = await fetchUser()

@@ -1,7 +1,12 @@
 import CardContent from '@/components/CardContent'
-import { ALLOWED_PERIODS } from '@/utils/constants'
+import { ALLOWED_PERIODS, metaDescription } from '@/utils/constants'
 import fetchTautulli from '@/utils/fetchTautulli'
 import { bytesToSize, removeAfterMinutes } from '@/utils/formatting'
+
+export const metadata = {
+  title: 'Music | Plex rewind dashboard',
+  description: metaDescription,
+}
 
 async function getArtists(period) {
   const artists = await fetchTautulli('get_home_stats', {
@@ -33,7 +38,7 @@ async function getTotalSize() {
   return bytesToSize(totalSize.response?.data.total_file_size)
 }
 
-export default async function Audio({ searchParams }) {
+export default async function Music({ searchParams }) {
   let period = ALLOWED_PERIODS['30days']
   if (ALLOWED_PERIODS[searchParams.period]) {
     period = ALLOWED_PERIODS[searchParams.period]
@@ -47,7 +52,7 @@ export default async function Audio({ searchParams }) {
 
   return (
     <CardContent
-      title='Audio'
+      title='Music'
       items={artists}
       totalDuration={totalDuration}
       totalSize={totalSize}

@@ -1,7 +1,7 @@
 import CardContent from '@/components/CardContent'
 import CardContentText from '@/components/CardContentText'
 import StatListItem from '@/components/StatListItem'
-import { ALLOWED_PERIODS } from '@/utils/constants'
+import { ALLOWED_PERIODS, metaDescription } from '@/utils/constants'
 import { fetchPaginatedOverseerrStats, fetchUser } from '@/utils/fetchOverseerr'
 import {
   FilmIcon,
@@ -32,6 +32,11 @@ async function getUserRequestsTotal() {
   return userRequestsTotal.length
 }
 
+export const metadata = {
+  title: 'Requests | Plex rewind',
+  description: metaDescription,
+}
+
 export default async function Requests() {
   const [requestTotals, userRequestsTotal, user] = await Promise.all([
     getRequestsTotals(),
@@ -43,7 +48,7 @@ export default async function Requests() {
     <CardContent
       title='Requests'
       page='2 / 5'
-      prevCard='/rewind/total'
+      prevCard='/rewind/totals'
       nextCard='/rewind/shows'
       subtitle={user.plexUsername}
     >

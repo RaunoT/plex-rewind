@@ -1,8 +1,17 @@
 import CardContent from '@/components/CardContent'
-import { ALLOWED_PERIODS, IGNORED_FOR_RATINGS } from '@/utils/constants'
+import {
+  ALLOWED_PERIODS,
+  IGNORED_FOR_RATINGS,
+  metaDescription,
+} from '@/utils/constants'
 import fetchTautulli from '@/utils/fetchTautulli'
 import fetchTmdb from '@/utils/fetchTmdb'
 import { bytesToSize, removeAfterMinutes } from '@/utils/formatting'
+
+export const metadata = {
+  title: 'Shows | Plex rewind dashboard',
+  description: metaDescription,
+}
 
 async function getShows(period) {
   const showsData = await fetchTautulli('get_home_stats', {

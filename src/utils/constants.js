@@ -31,3 +31,6 @@ export const ALLOWED_PERIODS = {
 }
 
 export const IGNORED_FOR_RATINGS = ['Villa']
+
+export const metaDescription =
+  'Present user statistics and habits in a beautiful and organized manner'
