@@ -13,7 +13,7 @@ import {
 import clsx from 'clsx'
 import { motion } from 'framer-motion'
 import Image from 'next/image'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 export default function CardContentItem({
   data,
@@ -38,6 +38,14 @@ export default function CardContentItem({
   const getUserRequestsCount = (id) => {
     return userRequests.find((request) => request.user === id).requests
   }
+
+  useEffect(() => {
+    setPosterSrc(
+      `${process.env.NEXT_PUBLIC_TAUTULLI_URL}/pms_image_proxy?img=${
+        type === 'users' ? data.user_thumb : data.thumb
+      }&width=300`
+    )
+  }, [data, type])
 
   return (
     <motion.li
