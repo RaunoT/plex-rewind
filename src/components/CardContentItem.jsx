@@ -9,6 +9,7 @@ import {
   PlayCircleIcon,
   QuestionMarkCircleIcon,
   StarIcon,
+  UserIcon,
 } from '@heroicons/react/24/outline'
 import clsx from 'clsx'
 import { motion } from 'framer-motion'
@@ -116,6 +117,13 @@ export default function CardContentItem({
             <li className='flex items-center gap-1 sm:gap-2'>
               <QuestionMarkCircleIcon className='w-5 text-slate-900' />
               {getUserRequestsCount(data.user_id)} requests
+            </li>
+          )}
+          {/* Users watched */}
+          {type === 'shows' && data.users_watched && (
+            <li className='flex items-center gap-1 sm:gap-2'>
+              <UserIcon className='w-5 text-slate-900' />
+              {data.users_watched}
             </li>
           )}
           {/* Plays */}

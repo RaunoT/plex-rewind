@@ -1,30 +1,31 @@
 export function secondsToTime(seconds) {
-  const months = Math.floor(seconds / 2629746)
-  const weeks = Math.floor((seconds - months * 2629746) / 604800)
-  const days = Math.floor((seconds - months * 2629746 - weeks * 604800) / 86400)
-  const hours = Math.floor(
-    (seconds - months * 2629746 - weeks * 604800 - days * 86400) / 3600
-  )
-  const minutes = Math.floor(
-    (seconds -
-      months * 2629746 -
-      weeks * 604800 -
-      days * 86400 -
-      hours * 3600) /
-      60
-  )
+  const units = [
+    { label: 'month', duration: 2629746 },
+    { label: 'week', duration: 604800 },
+    { label: 'day', duration: 86400 },
+    { label: 'hr', duration: 3600 },
+    { label: 'min', duration: 60 },
+  ]
+  let remainingSeconds = seconds
+  let unitCount = 0
 
-  return (
-    (months > 0 ? months + (months === 1 ? ' month ' : ' months ') : '') +
-    (weeks > 0 ? weeks + (weeks === 1 ? ' week ' : ' weeks ') : '') +
-    (days > 0 ? days + (days === 1 ? ' day ' : ' days ') : '') +
-    (hours > 0 && months === 0
-      ? hours + (hours === 1 ? ' hr ' : ' hrs ')
-      : '') +
-    (minutes > 0 && months === 0 && weeks === 0
-      ? minutes + (minutes === 1 ? ' min' : ' mins')
-      : '')
-  )
+  return units
+    .map(({ label, duration }) => {
+      if (unitCount >= 2) {
+        return ''
+      }
+
+      const value = Math.floor(remainingSeconds / duration)
+      remainingSeconds %= duration
+
+      if (value > 0) {
+        unitCount++
+      }
+
+      return value > 0 ? `${value} ${value === 1 ? label : label + 's'} ` : ''
+    })
+    .join('')
+    .trim()
 }
 
 export function removeAfterMinutes(timeString) {

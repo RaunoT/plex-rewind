@@ -13,7 +13,7 @@ export default function Error({ error, reset }) {
         Uh oh.. something went wrong!
       </h1>
       <button
-        className='text-slate-300 hover:opacity-75'
+        className='mx-auto text-slate-300 hover:opacity-75 w-fit'
         onClick={() => reset()}
       >
         Try again
