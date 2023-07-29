@@ -17,13 +17,13 @@ async function getShows(period) {
     time_range: period,
   })
   const shows = showsData.response?.data?.rows
-  const usersWatchedData = await fetchTautulli('get_home_stats', {
+  const usersWatched = await fetchTautulli('get_home_stats', {
     stat_id: 'popular_tv',
     // https://github.com/Tautulli/Tautulli/issues/2103
     stats_count: 25,
     time_range: period,
   })
-  const usersWatched = usersWatchedData.response?.data?.rows
+  const usersWatchedData = usersWatched.response?.data?.rows
   let ratingKeys = []
 
   shows.map((show) => {
@@ -53,7 +53,7 @@ async function getShows(period) {
   )
 
   shows.map((show, i) => {
-    const watchedData = usersWatched.find(
+    const watchedData = usersWatchedData.find(
       (uw) => uw.rating_key === show.rating_key
     )
 

@@ -120,7 +120,7 @@ export default function CardContentItem({
             </li>
           )}
           {/* Users watched */}
-          {type === 'shows' && data.users_watched && (
+          {(type === 'shows' || type === 'music') && data.users_watched && (
             <li className='flex items-center gap-1 sm:gap-2'>
               <UserIcon className='w-5 text-slate-900' />
               {data.users_watched}

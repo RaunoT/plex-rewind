@@ -9,14 +9,30 @@ export const metadata = {
 }
 
 async function getArtists(period) {
-  const artists = await fetchTautulli('get_home_stats', {
+  const artistsData = await fetchTautulli('get_home_stats', {
     stat_id: 'top_music',
     stats_count: 6,
     stats_type: 'duration',
     time_range: period,
   })
+  const artists = artistsData.response?.data?.rows
+  const usersListened = await fetchTautulli('get_home_stats', {
+    stat_id: 'popular_music',
+    // https://github.com/Tautulli/Tautulli/issues/2103
+    stats_count: 25,
+    time_range: period,
+  })
+  const usersListenedData = usersListened.response?.data?.rows
 
-  return artists.response?.data?.rows
+  artists.map((artist) => {
+    const listenedData = usersListenedData.find(
+      (uw) => uw.rating_key === artist.rating_key
+    )
+
+    artist.users_watched = listenedData?.users_watched
+  })
+
+  return artists
 }
 
 async function getTotalDuration(period) {
