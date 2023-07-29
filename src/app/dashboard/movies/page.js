@@ -1,9 +1,5 @@
 import CardContent from '@/components/CardContent'
-import {
-  ALLOWED_PERIODS,
-  IGNORED_FOR_RATINGS,
-  metaDescription,
-} from '@/utils/constants'
+import { ALLOWED_PERIODS, metaDescription } from '@/utils/constants'
 import fetchTautulli from '@/utils/fetchTautulli'
 import fetchTmdb from '@/utils/fetchTmdb'
 import { bytesToSize, removeAfterMinutes } from '@/utils/formatting'
@@ -21,30 +17,27 @@ async function getMovies(period) {
     time_range: period,
   })
   const movies = moviesData.response?.data?.rows
-
   let ratingKeys = []
+
   movies.map((movie) => {
     ratingKeys.push(movie.rating_key)
   })
+
   const additionalData = await Promise.all(
     ratingKeys.map(async (key, i) => {
-      let movie = await fetchTautulli('get_metadata', {
+      const movieTautulli = await fetchTautulli('get_metadata', {
         rating_key: key,
       })
-      const data = movie.response?.data
-      let rating = data.audience_rating
-
-      // WORKAROUND: Tautulli not returning year or rating for removed items
-      if (!rating && !IGNORED_FOR_RATINGS.includes(movies[i].title)) {
-        movie = await fetchTmdb('search/movie', {
-          query: movies[i].title,
-          first_air_date_year: movies[i].year,
-        })
-        rating = movie.results[0].vote_average
-      }
+      const movieTautulliData = movieTautulli.response?.data
+      // Tautulli doesn't return rating for removed items, so we're using TMDB
+      const movieTmdb = await fetchTmdb('search/movie', {
+        query: movies[i].title,
+        first_air_date_year: movies[i].year,
+      })
+      const rating = movieTmdb.results[0].vote_average
 
       return {
-        isDeleted: Object.keys(data).length === 0,
+        isDeleted: Object.keys(movieTautulliData).length === 0,
         rating: parseFloat(rating).toFixed(1),
       }
     })
