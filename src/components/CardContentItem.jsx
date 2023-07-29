@@ -89,18 +89,20 @@ export default function CardContentItem({
             {type === 'users' ? data.user : data.title}
           </span>
         </h3>
-        {(type === 'movies' || type === 'shows') && (
-          <div
-            className={clsx(
-              'px-1 mb-2 text-[0.65rem] font-semibold uppercase rounded-sm w-fit bg-gradient-to-r',
-              data.isDeleted
-                ? 'from-red-500 to-red-700'
-                : 'from-green-500 to-green-700'
-            )}
-          >
-            {data.isDeleted ? 'Unavailable' : 'Available'}
-          </div>
-        )}
+        {(type === 'movies' || type === 'shows') &&
+          (data.isDeleted ? (
+            <div className='px-1 mb-2 text-[0.65rem] font-semibold uppercase rounded-sm w-fit bg-gradient-to-r from-red-500 to-red-700'>
+              Unavailable
+            </div>
+          ) : (
+            <a
+              href={plexUrl}
+              target='_blank'
+              className='block px-1 mb-2 text-[0.65rem] font-semibold uppercase rounded-sm w-fit bg-gradient-to-r from-green-500 to-green-700'
+            >
+              Available
+            </a>
+          ))}
         <ul className='flex flex-wrap items-center gap-2 text-xs italic sm:gap-x-3 sm:text-base'>
           {data.year && (type === 'movies' || type === 'shows') && (
             <li className='flex items-center gap-1 sm:gap-2'>
