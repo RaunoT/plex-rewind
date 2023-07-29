@@ -8,10 +8,12 @@ export default function PageTitle({ title }) {
       <div className='relative text-center uppercase'>
         <Link
           href='/'
-          className={clsx('w-5 block ml-5', {
-            'absolute my-auto -translate-y-1/2 left-0 top-1/2 hover:translate-x-0.5 transition-transform hover:opacity-75':
-              title,
-          })}
+          className={clsx(
+            'w-5 block ml-5 hover:translate-x-0.5 transition-transform hover:opacity-75',
+            {
+              'absolute my-auto -translate-y-1/2 left-0 top-1/2': title,
+            }
+          )}
         >
           <ArrowLeftIcon />
         </Link>
