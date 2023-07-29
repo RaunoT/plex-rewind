@@ -10,7 +10,6 @@ export default function PeriodSelect() {
 
   return (
     <ul className='flex items-center justify-center gap-4 mt-2 text-xs font-medium uppercase sm:text-sm'>
-      {/* TODO: Don't allow hover on already selected items */}
       <li>
         <Link
           href={`${pathname}?period=7days`}
@@ -34,7 +33,6 @@ export default function PeriodSelect() {
           This year
         </Link>
       </li>
-      {/* TODO: Add previous year filter */}
       <li>
         <Link
           href={`${pathname}?period=allTime`}

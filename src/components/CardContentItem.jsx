@@ -106,7 +106,6 @@ export default function CardContentItem({
               {data.rating}
             </li>
           )}
-          {/* TODO: Add tooltips explaining stat */}
           {/* Duration */}
           <li className='flex items-center gap-1 sm:gap-2'>
             <ClockIcon className='w-5 text-slate-900' />

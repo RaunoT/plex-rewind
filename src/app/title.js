@@ -12,7 +12,7 @@ export default function Title() {
         initial={{ opacity: 0, x: -50 }}
         animate={{ opacity: 1, x: 0 }}
       >
-        <Image src={plexSvg} className='w-auto h-12' alt='Plex logo' />
+        <Image src={plexSvg} className='w-auto h-12' alt='Plex logo' priority />
       </motion.div>
       <motion.span
         variants={fadeIn}
