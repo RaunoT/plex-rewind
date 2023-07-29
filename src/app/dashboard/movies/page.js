@@ -34,7 +34,7 @@ async function getMovies(period) {
       const data = movie.response?.data
       let rating = data.audience_rating
 
-      // WORKAROUND: Tautulli not properly rating for deleted items
+      // WORKAROUND: Tautulli not returning year or rating for removed items
       if (!rating && !IGNORED_FOR_RATINGS.includes(movies[i].title)) {
         movie = await fetchTmdb('search/movie', {
           query: movies[i].title,

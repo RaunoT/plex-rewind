@@ -35,7 +35,7 @@ async function getShows(period) {
       let year = data.year
       let rating = data.audience_rating
 
-      // WORKAROUND: Tautulli not properly returning year or rating
+      // WORKAROUND: Tautulli not returning year or rating for removed items
       if ((!year || !rating) && !IGNORED_FOR_RATINGS.includes(shows[i].title)) {
         show = await fetchTmdb('search/tv', {
           query: shows[i].title,
