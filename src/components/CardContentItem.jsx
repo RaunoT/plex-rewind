@@ -73,7 +73,7 @@ export default function CardContentItem({
         />
       </div>
       <div>
-        <h3 className='mb-2 sm:text-2xl'>
+        <h3 className='mb-2 sm:text-xl'>
           <span className={clsx('font-bold', rankingColors[i] ?? 'text-black')}>
             #{i + 1}{' '}
           </span>
