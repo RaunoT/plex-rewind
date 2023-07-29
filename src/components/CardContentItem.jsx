@@ -40,6 +40,14 @@ export default function CardContentItem({
     return userRequests.find((request) => request.user === id).requests
   }
 
+  const pluralize = (value, string) => {
+    if (value > 1 || value === 0) {
+      return `${value} ${string}s`
+    } else {
+      return `${value} ${string}`
+    }
+  }
+
   useEffect(() => {
     setPosterSrc(
       `${process.env.NEXT_PUBLIC_TAUTULLI_URL}/pms_image_proxy?img=${
@@ -116,14 +124,14 @@ export default function CardContentItem({
           {type === 'users' && (
             <li className='flex items-center gap-1 sm:gap-2'>
               <QuestionMarkCircleIcon className='w-5 text-slate-900' />
-              {getUserRequestsCount(data.user_id)} requests
+              {pluralize(getUserRequestsCount(data.user_id), 'request')}
             </li>
           )}
           {/* Users watched */}
           {(type === 'shows' || type === 'music') && data.users_watched && (
             <li className='flex items-center gap-1 sm:gap-2'>
               <UserIcon className='w-5 text-slate-900' />
-              {data.users_watched}
+              {pluralize(data.users_watched, 'user')}
             </li>
           )}
           {/* Plays */}
@@ -142,10 +150,7 @@ export default function CardContentItem({
                       <PlayCircleIcon className='w-5 text-slate-900' />
                     )}
 
-                    <span>
-                      {plays}
-                      {plays === 1 ? ' play' : ' plays'}
-                    </span>
+                    <span>{pluralize(plays, 'play')}</span>
                   </li>
                 )
               }
@@ -159,10 +164,7 @@ export default function CardContentItem({
               ) : (
                 <PlayCircleIcon className='w-5 text-slate-900' />
               )}
-              <span>
-                {data.total_plays}
-                {data.total_plays === 1 ? ' play' : ' plays'}
-              </span>
+              <span>{pluralize(data.total_plays, 'play')}</span>
             </li>
           )}
         </ul>
