@@ -14,25 +14,21 @@ export default function PeriodSelect() {
       <li>
         <Link
           href={`${pathname}?period=7days`}
-          className='transition aria-selected:text-teal-300 hover:opacity-75'
+          className='nav-link'
           aria-selected={period === '7days'}
         >
           7 days
         </Link>
       </li>
       <li>
-        <Link
-          href={`${pathname}`}
-          className='transition aria-selected:text-teal-300 hover:opacity-75'
-          aria-selected={!period}
-        >
+        <Link href={`${pathname}`} className='nav-link' aria-selected={!period}>
           30 days
         </Link>
       </li>
       <li>
         <Link
           href={`${pathname}?period=thisYear`}
-          className='transition aria-selected:text-teal-300 hover:opacity-75'
+          className='nav-link'
           aria-selected={period === 'thisYear'}
         >
           This year
@@ -42,7 +38,7 @@ export default function PeriodSelect() {
       <li>
         <Link
           href={`${pathname}?period=allTime`}
-          className='transition aria-selected:text-teal-300 hover:opacity-75'
+          className='nav-link'
           aria-selected={period === 'allTime'}
         >
           All time

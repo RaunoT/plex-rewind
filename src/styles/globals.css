@@ -52,6 +52,17 @@
     font-weight: 500;
     text-decoration: underline;
   }
+
+  .nav-link {
+    &[aria-selected='true'],
+    &[aria-current='page'] {
+      color: theme('colors.teal.300');
+    }
+
+    &:hover {
+      opacity: 0.75;
+    }
+  }
 }
 
 @layer utilities {

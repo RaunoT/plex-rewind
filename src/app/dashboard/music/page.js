@@ -56,8 +56,8 @@ export default async function Music({ searchParams }) {
       items={artists}
       totalDuration={totalDuration}
       totalSize={totalSize}
-      prevCard='dashboard/movies'
-      nextCard='dashboard/users'
+      prevCard='/dashboard/movies'
+      nextCard='/dashboard/users'
       page='3 / 4'
       type='music'
     />

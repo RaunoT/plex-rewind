@@ -5,7 +5,7 @@ import {
   ArrowLongRightIcon,
 } from '@heroicons/react/24/outline'
 import Link from 'next/link.js'
-import { usePathname } from 'next/navigation.js'
+import { usePathname, useSearchParams } from 'next/navigation.js'
 import CardContentItems from './CardContentItems.jsx'
 
 export default function CardContent({
@@ -25,6 +25,10 @@ export default function CardContent({
 }) {
   const pathname = usePathname()
   const isRewind = pathname.split('/')[1] === 'rewind'
+  const searchParams = useSearchParams()
+  const period = searchParams.get('period')
+    ? '?period=' + searchParams.get('period')
+    : ''
 
   return (
     <>
@@ -87,7 +91,10 @@ export default function CardContent({
       <div className='flex items-center justify-between pt-6 mt-auto text-sm'>
         <div className='flex-1'>
           {prevCard && (
-            <Link href={prevCard} className='block w-5'>
+            <Link
+              href={prevCard + period}
+              className='block w-5 transition-transform hover:opacity-75 hover:translate-x-0.5'
+            >
               <ArrowLongLeftIcon className='text-teal-300' />
             </Link>
           )}
@@ -95,7 +102,10 @@ export default function CardContent({
         <span className='flex-1 text-center'>{page}</span>
         <div className='flex-1 text-right'>
           {nextCard && (
-            <Link href={nextCard} className='block w-5 ml-auto'>
+            <Link
+              href={nextCard + period}
+              className='block w-5 ml-auto transition-transform hover:opacity-75 hover:-translate-x-0.5'
+            >
               <ArrowLongRightIcon className='text-teal-300' />
             </Link>
           )}

@@ -99,7 +99,7 @@ export default async function Shows({ searchParams }) {
       items={shows}
       totalDuration={totalDuration}
       totalSize={totalSize}
-      nextCard='dashboard/movies'
+      nextCard='/dashboard/movies'
       page='1 / 4'
       type='shows'
     />

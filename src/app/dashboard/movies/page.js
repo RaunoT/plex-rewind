@@ -95,8 +95,8 @@ export default async function Movies({ searchParams }) {
       items={movies}
       totalDuration={totalDuration}
       totalSize={totalSize}
-      prevCard='dashboard/shows'
-      nextCard='dashboard/music'
+      prevCard='/dashboard/shows'
+      nextCard='/dashboard/music'
       page='2 / 4'
       type='movies'
     />
