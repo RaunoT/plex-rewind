@@ -22,6 +22,7 @@ export default function CardContent({
   usersPlays,
   userRequests,
   ratings,
+  serverId = '',
 }) {
   const pathname = usePathname()
   const isRewind = pathname.split('/')[1] === 'rewind'
@@ -85,6 +86,7 @@ export default function CardContent({
           type={type}
           userRequests={userRequests}
           ratings={ratings}
+          serverId={serverId}
         />
       )}
 

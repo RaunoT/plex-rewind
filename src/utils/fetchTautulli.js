@@ -8,3 +8,12 @@ export default async function fetchTautulli(query, params) {
 
   return data
 }
+
+export async function getServerId() {
+  const serverIdPromise = await fetchTautulli('get_server_id', {
+    hostname: 'localhost',
+    port: '32400',
+  })
+
+  return serverIdPromise.response?.data?.identifier
+}

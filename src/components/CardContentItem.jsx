@@ -15,6 +15,7 @@ import clsx from 'clsx'
 import { motion } from 'framer-motion'
 import Image from 'next/image'
 import { useEffect, useState } from 'react'
+import PlexDeeplink from './PlexDeeplink'
 
 export default function CardContentItem({
   data,
@@ -22,6 +23,7 @@ export default function CardContentItem({
   usersPlays,
   userRequests,
   type,
+  serverId,
 }) {
   const [posterSrc, setPosterSrc] = useState(
     `${process.env.NEXT_PUBLIC_TAUTULLI_URL}/pms_image_proxy?img=${
@@ -89,18 +91,14 @@ export default function CardContentItem({
             {type === 'users' ? data.user : data.title}
           </span>
         </h3>
-        {(type === 'movies' || type === 'shows') && (
-          <div
-            className={clsx(
-              'px-1 mb-2 text-[0.65rem] font-semibold uppercase rounded-sm w-fit bg-gradient-to-r',
-              data.isDeleted
-                ? 'from-red-500 to-red-700'
-                : 'from-green-500 to-green-700'
-            )}
-          >
-            {data.isDeleted ? 'Unavailable' : 'Available'}
-          </div>
-        )}
+        {(type === 'movies' || type === 'shows') &&
+          (data.isDeleted ? (
+            <div className='px-1 mb-2 text-[0.65rem] font-semibold uppercase rounded-sm w-fit bg-gradient-to-r from-red-500 to-red-700'>
+              Unavailable
+            </div>
+          ) : (
+            <PlexDeeplink serverId={serverId} ratingKey={data.rating_key} />
+          ))}
         <ul className='flex flex-wrap items-center gap-2 text-xs italic sm:gap-x-3 sm:text-base'>
           {data.year && (type === 'movies' || type === 'shows') && (
             <li className='flex items-center gap-1 sm:gap-2'>
