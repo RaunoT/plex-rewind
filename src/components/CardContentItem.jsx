@@ -15,6 +15,7 @@ import clsx from 'clsx'
 import { motion } from 'framer-motion'
 import Image from 'next/image'
 import { useEffect, useState } from 'react'
+import PlexDeeplink from './PlexDeeplink'
 
 export default function CardContentItem({
   data,
@@ -22,6 +23,7 @@ export default function CardContentItem({
   usersPlays,
   userRequests,
   type,
+  serverId,
 }) {
   const [posterSrc, setPosterSrc] = useState(
     `${process.env.NEXT_PUBLIC_TAUTULLI_URL}/pms_image_proxy?img=${
@@ -95,13 +97,7 @@ export default function CardContentItem({
               Unavailable
             </div>
           ) : (
-            <a
-              href={plexUrl}
-              target='_blank'
-              className='block px-1 mb-2 text-[0.65rem] font-semibold uppercase rounded-sm w-fit bg-gradient-to-r from-green-500 to-green-700'
-            >
-              Available
-            </a>
+            <PlexDeeplink serverId={serverId} ratingKey={data.rating_key} />
           ))}
         <ul className='flex flex-wrap items-center gap-2 text-xs italic sm:gap-x-3 sm:text-base'>
           {data.year && (type === 'movies' || type === 'shows') && (

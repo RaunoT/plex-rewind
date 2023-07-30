@@ -1,6 +1,6 @@
 import CardContent from '@/components/CardContent'
 import { ALLOWED_PERIODS, metaDescription } from '@/utils/constants'
-import fetchTautulli from '@/utils/fetchTautulli'
+import fetchTautulli, { getServerId } from '@/utils/fetchTautulli'
 import fetchTmdb from '@/utils/fetchTmdb'
 import { bytesToSize, removeAfterMinutes } from '@/utils/formatting'
 
@@ -76,10 +76,11 @@ export default async function Movies({ searchParams }) {
     period = ALLOWED_PERIODS[searchParams.period]
   }
 
-  const [movies, totalDuration, totalSize] = await Promise.all([
+  const [movies, totalDuration, totalSize, serverId] = await Promise.all([
     getMovies(period.daysAgo),
     getTotalDuration(period.string),
     getTotalSize(),
+    getServerId(),
   ])
 
   return (
@@ -92,6 +93,7 @@ export default async function Movies({ searchParams }) {
       nextCard='/dashboard/music'
       page='2 / 4'
       type='movies'
+      serverId={serverId}
     />
   )
 }
