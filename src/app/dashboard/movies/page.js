@@ -25,20 +25,27 @@ async function getMovies(period) {
 
   const additionalData = await Promise.all(
     ratingKeys.map(async (key, i) => {
-      const movieTautulli = await fetchTautulli('get_metadata', {
-        rating_key: key,
-      })
+      const movieTautulli = await fetchTautulli(
+        'get_metadata',
+        {
+          rating_key: key,
+        },
+        true
+      )
       const movieTautulliData = movieTautulli.response?.data
       // Tautulli doesn't return rating for removed items, so we're using TMDB
       const movieTmdb = await fetchTmdb('search/movie', {
         query: movies[i].title,
         first_air_date_year: movies[i].year,
       })
-      const rating = movieTmdb.results[0].vote_average
+      const imdbId = await fetchTmdb(
+        `movie/${movieTmdb.results[0].id}/external_ids`
+      )
 
       return {
         isDeleted: Object.keys(movieTautulliData).length === 0,
-        rating: parseFloat(rating).toFixed(1),
+        rating: parseFloat(movieTmdb.results[0].vote_average).toFixed(1),
+        imdbId: imdbId.imdb_id,
       }
     })
   )
@@ -46,6 +53,7 @@ async function getMovies(period) {
   movies.map((movie, i) => {
     movie.isDeleted = additionalData[i].isDeleted
     movie.rating = additionalData[i].rating
+    movie.imdbId = additionalData[i].imdbId
   })
 
   return movies

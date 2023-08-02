@@ -19,7 +19,7 @@ export default function PlexDeeplink({ ratingKey, serverId }) {
     <a
       href={plexUrl}
       target='_blank'
-      className='block px-1 mb-2 text-[0.65rem] font-semibold uppercase rounded-sm w-fit bg-gradient-to-r from-green-500 to-green-700'
+      className='block px-1 text-[0.65rem] font-semibold uppercase rounded-sm w-fit bg-gradient-to-r from-green-500 to-green-700'
     >
       Available
     </a>

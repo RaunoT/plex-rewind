@@ -32,22 +32,28 @@ async function getShows(period) {
 
   const additionalData = await Promise.all(
     ratingKeys.map(async (key, i) => {
-      const showTautulli = await fetchTautulli('get_metadata', {
-        rating_key: key,
-      })
+      const showTautulli = await fetchTautulli(
+        'get_metadata',
+        {
+          rating_key: key,
+        },
+        true
+      )
       const showTautulliData = showTautulli.response?.data
       // Tautulli doesn't return year or rating for removed items, so we're using TMDB
       const showTmdb = await fetchTmdb('search/tv', {
         query: shows[i].title,
         first_air_date_year: showTautulliData.year,
       })
-      const year = new Date(showTmdb.results[0].first_air_date).getFullYear()
-      const rating = showTmdb.results[0].vote_average
+      const imdbId = await fetchTmdb(
+        `tv/${showTmdb.results[0].id}/external_ids`
+      )
 
       return {
-        year: year,
+        year: new Date(showTmdb.results[0].first_air_date).getFullYear(),
         isDeleted: Object.keys(showTautulliData).length === 0,
-        rating: parseFloat(rating).toFixed(1),
+        rating: parseFloat(showTmdb.results[0].vote_average).toFixed(1),
+        imdbId: imdbId.imdb_id,
       }
     })
   )
@@ -60,7 +66,8 @@ async function getShows(period) {
     show.year = additionalData[i].year
     show.isDeleted = additionalData[i].isDeleted
     show.rating = additionalData[i].rating
-    show.users_watched = watchedData?.users_watched
+    show.imdbId = additionalData[i].imdbId
+    show.usersWatched = watchedData?.users_watched
   })
 
   return shows

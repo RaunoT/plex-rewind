@@ -1,8 +1,8 @@
-export default async function fetchOverseerr(endpoint, cache = false) {
+export default async function fetchOverseerr(endpoint, cache) {
   const apiUrl = `${process.env.NEXT_PUBLIC_OVERSEERR_URL}/api/v1/${endpoint}`
 
   const res = await fetch(apiUrl, {
-    next: { revalidate: cache ? 300 : 0 },
+    next: { revalidate: cache ? 3600 : 0 },
     headers: {
       'X-API-KEY': process.env.OVERSEERR_API_KEY,
     },

@@ -4,10 +4,12 @@ import { slideDown } from '@/utils/motion'
 import {
   CalendarDaysIcon,
   ClockIcon,
+  EyeIcon,
   FilmIcon,
   MusicalNoteIcon,
   PlayCircleIcon,
   QuestionMarkCircleIcon,
+  SpeakerWaveIcon,
   StarIcon,
   UserIcon,
 } from '@heroicons/react/24/outline'
@@ -91,14 +93,24 @@ export default function CardContentItem({
             {type === 'users' ? data.user : data.title}
           </span>
         </h3>
-        {(type === 'movies' || type === 'shows') &&
-          (data.isDeleted ? (
-            <div className='px-1 mb-2 text-[0.65rem] font-semibold uppercase rounded-sm w-fit bg-gradient-to-r from-red-500 to-red-700'>
-              Unavailable
-            </div>
-          ) : (
-            <PlexDeeplink serverId={serverId} ratingKey={data.rating_key} />
-          ))}
+        {(type === 'movies' || type === 'shows') && (
+          <div className='flex items-center gap-2 mb-2'>
+            {data.isDeleted ? (
+              <div className='px-1 text-[0.65rem] font-semibold uppercase rounded-sm w-fit bg-gradient-to-r from-red-500 to-red-700'>
+                Unavailable
+              </div>
+            ) : (
+              <PlexDeeplink serverId={serverId} ratingKey={data.rating_key} />
+            )}
+            <a
+              href={`https://www.imdb.com/title/${data.imdbId}`}
+              target='_blank'
+              className='px-1 text-[0.65rem] font-semibold uppercase rounded-sm w-fit bg-gradient-to-r from-yellow-300 to-yellow-600 text-black'
+            >
+              IMDB
+            </a>
+          </div>
+        )}
         <ul className='flex flex-wrap items-center gap-2 text-xs italic sm:gap-x-3 sm:text-base'>
           {data.year && (type === 'movies' || type === 'shows') && (
             <li className='flex items-center gap-1 sm:gap-2'>
@@ -115,21 +127,20 @@ export default function CardContentItem({
           )}
           {/* Duration */}
           <li className='flex items-center gap-1 sm:gap-2'>
-            <ClockIcon className='w-5 text-slate-900' />
+            {type === 'shows' || type === 'movies' ? (
+              <EyeIcon className='w-5 text-slate-900' />
+            ) : type === 'music' ? (
+              <SpeakerWaveIcon className='w-5 text-slate-900' />
+            ) : (
+              type === 'users' && <ClockIcon className='w-5 text-slate-900' />
+            )}
             {secondsToTime(data.total_duration)}
           </li>
-          {/* Requests */}
-          {type === 'users' && (
-            <li className='flex items-center gap-1 sm:gap-2'>
-              <QuestionMarkCircleIcon className='w-5 text-slate-900' />
-              {pluralize(getUserRequestsCount(data.user_id), 'request')}
-            </li>
-          )}
           {/* Users watched */}
-          {(type === 'shows' || type === 'music') && data.users_watched && (
+          {(type === 'shows' || type === 'music') && data.usersWatched && (
             <li className='flex items-center gap-1 sm:gap-2'>
               <UserIcon className='w-5 text-slate-900' />
-              {pluralize(data.users_watched, 'user')}
+              {pluralize(data.usersWatched, 'user')}
             </li>
           )}
           {/* Plays */}
@@ -163,6 +174,13 @@ export default function CardContentItem({
                 <PlayCircleIcon className='w-5 text-slate-900' />
               )}
               <span>{pluralize(data.total_plays, 'play')}</span>
+            </li>
+          )}
+          {/* Requests */}
+          {type === 'users' && (
+            <li className='flex items-center gap-1 sm:gap-2'>
+              <QuestionMarkCircleIcon className='w-5 text-slate-900' />
+              {pluralize(getUserRequestsCount(data.user_id), 'request')}
             </li>
           )}
         </ul>
