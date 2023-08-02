@@ -102,13 +102,15 @@ export default function CardContentItem({
             ) : (
               <PlexDeeplink serverId={serverId} ratingKey={data.rating_key} />
             )}
-            <a
-              href={`https://www.imdb.com/title/${data.imdbId}`}
-              target='_blank'
-              className='px-1 text-[0.65rem] font-semibold uppercase rounded-sm w-fit bg-gradient-to-r from-yellow-300 to-yellow-600 text-black'
-            >
-              IMDB
-            </a>
+            {data.imdbId && (
+              <a
+                href={`https://www.imdb.com/title/${data.imdbId}`}
+                target='_blank'
+                className='px-1 text-[0.65rem] font-semibold uppercase rounded-sm w-fit bg-gradient-to-r from-yellow-300 to-yellow-600 text-black'
+              >
+                IMDB
+              </a>
+            )}
           </div>
         )}
         <ul className='flex flex-wrap items-center gap-2 text-xs italic sm:gap-x-3 sm:text-base'>
