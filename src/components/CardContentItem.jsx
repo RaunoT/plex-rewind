@@ -33,6 +33,7 @@ export default function CardContentItem({
     }&width=300`
   )
   const rankingColors = ['text-yellow-500', 'text-gray-300', 'text-yellow-600']
+  const [dataKey, setDataKey] = useState(0)
 
   const getPlaysByUser = (user, statName) => {
     return usersPlays.series.filter((stat) => stat.name === statName)[0].data[
@@ -58,16 +59,17 @@ export default function CardContentItem({
         type === 'users' ? data.user_thumb : data.thumb
       }&width=300`
     )
+    setDataKey((prevDataKey) => prevDataKey + 1)
   }, [data, type])
 
   return (
     <motion.li
-      key={i}
+      key={dataKey}
       className='flex items-center gap-3 last:hidden xl:last:flex'
       variants={slideDown}
       initial='hidden'
       animate='show'
-      transition={{ delay: i * 0.1 }}
+      transition={{ delay: i * 0.075 }}
     >
       <div className='relative flex-shrink-0 w-20 aspect-[2/3]'>
         <Image
