@@ -19,7 +19,8 @@ export default function PlexDeeplink({ ratingKey, serverId }) {
     <a
       href={plexUrl}
       target='_blank'
-      className='block px-1 text-[0.65rem] font-semibold uppercase rounded-sm w-fit bg-gradient-to-r from-green-500 to-green-700'
+      rel='noopener noreferrer'
+      className='button-card from-green-500 to-green-700'
     >
       Available
     </a>

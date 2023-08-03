@@ -131,9 +131,11 @@ export default function CardContentItem({
         {(type === 'movies' || type === 'shows') && (
           <div className='flex items-center gap-2 mb-2'>
             {data.isDeleted ? (
-              <div className='px-1 text-[0.65rem] font-semibold uppercase rounded-sm w-fit bg-gradient-to-r from-red-500 to-red-700'>
-                Deleted
-              </div>
+              <>
+                <div className='button-card from-red-500 to-red-700'>
+                  Deleted
+                </div>
+              </>
             ) : (
               <PlexDeeplink serverId={serverId} ratingKey={data.rating_key} />
             )}
@@ -141,9 +143,22 @@ export default function CardContentItem({
               <a
                 href={`https://www.imdb.com/title/${data.imdbId}`}
                 target='_blank'
-                className='px-1 text-[0.65rem] font-semibold uppercase rounded-sm w-fit bg-gradient-to-r from-yellow-300 to-yellow-600 text-black'
+                rel='noopener noreferrer'
+                className='text-black button-card from-yellow-300 to-yellow-600'
               >
                 IMDB
+              </a>
+            )}
+            {data.isDeleted && (
+              <a
+                href={`${process.env.NEXT_PUBLIC_OVERSEERR_URL}/${
+                  type === 'movies' ? 'movie' : 'tv'
+                }/${data.tmdbId}`}
+                target='_blank'
+                rel='noopener noreferrer'
+                className='button-card from-purple-400 to-purple-700'
+              >
+                Request
               </a>
             )}
           </div>

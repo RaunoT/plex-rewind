@@ -24,6 +24,10 @@
     }
   }
 
+  .button-card {
+    @apply px-1 text-[0.65rem] font-semibold uppercase rounded-sm w-fit bg-gradient-to-r block;
+  }
+
   .skeleton {
     @apply animate-pulse;
 

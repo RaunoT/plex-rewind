@@ -45,14 +45,14 @@ async function getShows(period) {
         query: shows[i].title,
         first_air_date_year: showTautulliData.year,
       })
-      const imdbId = await fetchTmdb(
-        `tv/${showTmdb.results[0].id}/external_ids`
-      )
+      const tmdbId = showTmdb.results[0].id
+      const imdbId = await fetchTmdb(`tv/${tmdbId}/external_ids`)
 
       return {
         year: new Date(showTmdb.results[0].first_air_date).getFullYear(),
         isDeleted: Object.keys(showTautulliData).length === 0,
         rating: parseFloat(showTmdb.results[0].vote_average).toFixed(1),
+        tmdbId: tmdbId,
         imdbId: imdbId.imdb_id,
       }
     })
@@ -66,6 +66,7 @@ async function getShows(period) {
     show.year = additionalData[i].year
     show.isDeleted = additionalData[i].isDeleted
     show.rating = additionalData[i].rating
+    show.tmdbId = additionalData[i].tmdbId
     show.imdbId = additionalData[i].imdbId
     show.usersWatched = watchedData?.users_watched
   })

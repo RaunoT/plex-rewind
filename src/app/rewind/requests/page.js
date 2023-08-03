@@ -74,7 +74,7 @@ export default async function Requests() {
             className='link'
             href='https://media.rauno.eu/'
             target='_blank'
-            rel='noreferrer'
+            rel='noopener noreferrer'
           >
             media.rauno.eu
           </a>

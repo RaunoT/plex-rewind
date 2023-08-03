@@ -38,13 +38,13 @@ async function getMovies(period) {
         query: movies[i].title,
         first_air_date_year: movies[i].year,
       })
-      const imdbId = await fetchTmdb(
-        `movie/${movieTmdb.results[0].id}/external_ids`
-      )
+      const tmdbId = movieTmdb.results[0].id
+      const imdbId = await fetchTmdb(`movie/${tmdbId}/external_ids`)
 
       return {
         isDeleted: Object.keys(movieTautulliData).length === 0,
         rating: parseFloat(movieTmdb.results[0].vote_average).toFixed(1),
+        tmdbId: tmdbId,
         imdbId: imdbId.imdb_id,
       }
     })
@@ -53,6 +53,7 @@ async function getMovies(period) {
   movies.map((movie, i) => {
     movie.isDeleted = additionalData[i].isDeleted
     movie.rating = additionalData[i].rating
+    movie.tmdbId = additionalData[i].tmdbId
     movie.imdbId = additionalData[i].imdbId
   })
 
