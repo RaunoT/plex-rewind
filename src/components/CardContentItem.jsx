@@ -132,7 +132,7 @@ export default function CardContentItem({
           <div className='flex items-center gap-2 mb-2'>
             {data.isDeleted ? (
               <div className='px-1 text-[0.65rem] font-semibold uppercase rounded-sm w-fit bg-gradient-to-r from-red-500 to-red-700'>
-                Unavailable
+                Deleted
               </div>
             ) : (
               <PlexDeeplink serverId={serverId} ratingKey={data.rating_key} />
