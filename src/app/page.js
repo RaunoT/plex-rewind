@@ -8,7 +8,7 @@ export const metadata = {
 }
 
 export default function Page() {
-  const isRewindDisabled = process.env.NEXT_PUBLIC_IS_REWIND_DISABLED
+  const isRewindDisabled = process.env.NEXT_PUBLIC_IS_REWIND_DISABLED === 'true'
 
   return (
     <div className='text-center'>
