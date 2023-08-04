@@ -39,16 +39,16 @@ export default async function Shows() {
     >
       <CardContentText noScale>
         {totalDuration != 0 ? (
-          <>
+          <p>
             <span className='inline-flex items-center text-teal-300'>
               TV Shows
               <PlayCircleIcon className='w-8 ml-1' />
             </span>{' '}
             took up <span className='rewind-stat'>{totalDuration}</span> of your
             year on <span className='text-yellow-500'>Plex</span>.
-          </>
+          </p>
         ) : (
-          <>
+          <p>
             You haven&apos;t watched any{' '}
             <span className='inline-flex items-center text-teal-300'>
               TV Shows
@@ -56,7 +56,7 @@ export default async function Shows() {
             </span>{' '}
             on <span className='text-yellow-500'>Plex</span> this year{' '}
             <span className='not-italic'>😥</span>
-          </>
+          </p>
         )}
       </CardContentText>
     </CardContent>

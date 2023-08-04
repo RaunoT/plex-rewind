@@ -39,7 +39,7 @@ export default async function Movies() {
     >
       <CardContentText noScale>
         {totalDuration != 0 ? (
-          <>
+          <p>
             <span className='rewind-stat'>{totalDuration}</span> of your time
             was spent watching{' '}
             <span className='inline-flex text-teal-300'>
@@ -47,9 +47,9 @@ export default async function Movies() {
               <FilmIcon className='w-8 ml-1' />
             </span>{' '}
             on <span className='text-yellow-500'>Plex</span> this year.
-          </>
+          </p>
         ) : (
-          <>
+          <p>
             You haven&apos;t watched any{' '}
             <span className='inline-flex text-teal-300'>
               Movies
@@ -57,7 +57,7 @@ export default async function Movies() {
             </span>{' '}
             on <span className='text-yellow-500'>Plex</span> this year{' '}
             <span className='not-italic'>🥹</span>
-          </>
+          </p>
         )}
       </CardContentText>
     </CardContent>

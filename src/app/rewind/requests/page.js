@@ -54,46 +54,52 @@ export default async function Requests() {
     >
       {userRequestsTotal != 0 ? (
         <CardContentText hideAfter={requestTotals.total != 0 ? 10 : 0}>
-          You&apos;ve made{' '}
-          <span className='rewind-stat'>{userRequestsTotal}</span> content{' '}
+          <p>
+            You&apos;ve made{' '}
+            <span className='rewind-stat'>{userRequestsTotal}</span> content{' '}
+            <span className='inline-flex items-center text-teal-300'>
+              Requests
+              <QuestionMarkCircleIcon className='w-8 ml-1' />
+            </span>{' '}
+            this year.
+          </p>
+        </CardContentText>
+      ) : (
+        <CardContentText hideAfter={requestTotals.total != 0 ? 10 : 0}>
+          <p>
+            You haven&apos;t made any content{' '}
+            <span className='inline-flex items-center text-teal-300'>
+              Requests
+              <QuestionMarkCircleIcon className='w-8 ml-1' />
+            </span>{' '}
+            this year! You can make them via{' '}
+            <a
+              className='link'
+              href='https://media.rauno.eu/'
+              target='_blank'
+              rel='noopener noreferrer'
+            >
+              media.rauno.eu
+            </a>
+          </p>
+        </CardContentText>
+      )}
+
+      <CardContentText renderDelay={5} noScale={requestTotals.total == 0}>
+        <p>
+          Altogether there have been{' '}
+          <span className='rewind-stat'>{requestTotals.total}</span>{' '}
           <span className='inline-flex items-center text-teal-300'>
             Requests
             <QuestionMarkCircleIcon className='w-8 ml-1' />
           </span>{' '}
           this year.
-        </CardContentText>
-      ) : (
-        <CardContentText hideAfter={requestTotals.total != 0 ? 10 : 0}>
-          You haven&apos;t made any content{' '}
-          <span className='inline-flex items-center text-teal-300'>
-            Requests
-            <QuestionMarkCircleIcon className='w-8 ml-1' />
-          </span>{' '}
-          this year! You can make them via{' '}
-          <a
-            className='link'
-            href='https://media.rauno.eu/'
-            target='_blank'
-            rel='noopener noreferrer'
-          >
-            media.rauno.eu
-          </a>
-        </CardContentText>
-      )}
-
-      <CardContentText renderDelay={5} noScale={requestTotals.total == 0}>
-        Altogether there have been{' '}
-        <span className='rewind-stat'>{requestTotals.total}</span>{' '}
-        <span className='inline-flex items-center text-teal-300'>
-          Requests
-          <QuestionMarkCircleIcon className='w-8 ml-1' />
-        </span>{' '}
-        this year.
+        </p>
       </CardContentText>
 
       {requestTotals.total != 0 && (
         <CardContentText renderDelay={10} loaderDelay={5} noScale>
-          That includes:
+          <p>That includes:</p>
           <ul className='list'>
             <StatListItem
               count={requestTotals.movies}

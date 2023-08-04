@@ -38,7 +38,7 @@ export default async function Music() {
     >
       <CardContentText noScale>
         {totalDuration != 0 ? (
-          <>
+          <p>
             And to top it all off, you listened to&nbsp;
             <span className='rewind-stat'>{totalDuration}</span> of{' '}
             <span className='inline-flex items-center text-teal-300'>
@@ -50,9 +50,9 @@ export default async function Music() {
               {new Date().getFullYear()}
             </span>
             .
-          </>
+          </p>
         ) : (
-          <>
+          <p>
             You haven&apos;t listened to any{' '}
             <span className='inline-flex items-center text-teal-300'>
               Music
@@ -60,7 +60,7 @@ export default async function Music() {
             </span>{' '}
             on <span className='text-yellow-500'>Plex</span> this year{' '}
             <span className='not-italic'>🥵</span>
-          </>
+          </p>
         )}
       </CardContentText>
     </CardContent>

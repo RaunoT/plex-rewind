@@ -57,7 +57,7 @@ export default function CardContentText({
       style={{ originX: 0, originY: '100%' }}
       custom={scaleDelay}
     >
-      <p>{children}</p>
+      <div>{children}</div>
     </motion.li>
   ) : isLoaderShown ? (
     <Loader />

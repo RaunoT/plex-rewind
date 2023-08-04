@@ -100,33 +100,39 @@ export default async function Total() {
       {userTotalDuration != 0 ? (
         <>
           <CardContentText hideAfter={10}>
-            You&apos;ve spent a{' '}
-            <span className='inline-flex items-center text-teal-300'>
-              Total
-              <ClockIcon className='w-8 ml-1' />
-            </span>{' '}
-            of{' '}
-            <span className='rewind-stat'>
-              {secondsToTime(userTotalDuration)}
-            </span>{' '}
-            on <span className='text-yellow-500'>Plex</span> this year!
+            <p>
+              You&apos;ve spent a{' '}
+              <span className='inline-flex items-center text-teal-300'>
+                Total
+                <ClockIcon className='w-8 ml-1' />
+              </span>{' '}
+              of{' '}
+              <span className='rewind-stat'>
+                {secondsToTime(userTotalDuration)}
+              </span>{' '}
+              on <span className='text-yellow-500'>Plex</span> this year!
+            </p>
           </CardContentText>
 
           <CardContentText renderDelay={5} hideAfter={15}>
-            That&apos;s{' '}
-            <span className='inline-flex items-center text-teal-300'>
-              {Math.round((userTotalDuration * 100) / librariesTotalDuration)}
-              %
-              <ChartPieIcon className='w-8 ml-1' />
-            </span>{' '}
-            of all plays.
+            <p>
+              That&apos;s{' '}
+              <span className='inline-flex items-center text-teal-300'>
+                {Math.round((userTotalDuration * 100) / librariesTotalDuration)}
+                %
+                <ChartPieIcon className='w-8 ml-1' />
+              </span>{' '}
+              of all plays.
+            </p>
           </CardContentText>
         </>
       ) : (
         <CardContentText hideAfter={15} scaleDelay={10}>
-          You haven&apos;t played any content on{' '}
-          <span className='text-yellow-500'>Plex</span> this year!{' '}
-          <span className='not-italic'>🤯</span> What are you waiting for?
+          <p>
+            You haven&apos;t played any content on{' '}
+            <span className='text-yellow-500'>Plex</span> this year!{' '}
+            <span className='not-italic'>🤯</span> What are you waiting for?
+          </p>
         </CardContentText>
       )}
 
@@ -134,18 +140,20 @@ export default async function Total() {
         renderDelay={10}
         loaderDelay={userTotalDuration != 0 ? 5 : 0}
       >
-        Did you know the{' '}
-        <span className='inline-flex items-center text-teal-300'>
-          Filesize
-          <FolderIcon className='w-8 ml-1' />
-        </span>{' '}
-        of all the available content on{' '}
-        <span className='text-yellow-500'>Plex</span> is{' '}
-        <span className='rewind-stat'>{librariesTotalSize}</span>
+        <p>
+          Did you know the{' '}
+          <span className='inline-flex items-center text-teal-300'>
+            Filesize
+            <FolderIcon className='w-8 ml-1' />
+          </span>{' '}
+          of all the available content on{' '}
+          <span className='text-yellow-500'>Plex</span> is{' '}
+          <span className='rewind-stat'>{librariesTotalSize}</span>
+        </p>
       </CardContentText>
 
       <CardContentText renderDelay={15} loaderDelay={10} noScale>
-        The current library consist of:
+        <p>The current library consist of:</p>
         <ul className='list'>
           {libraryContentCounts.map((contentType, i) => {
             switch (contentType.section_name) {
