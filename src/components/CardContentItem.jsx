@@ -1,7 +1,8 @@
 import placeholderPoster from '@/assets/placeholder.svg'
-import { secondsToTime } from '@/utils/formatting'
+import { pluralize, secondsToTime } from '@/utils/formatting'
 import { slideDown } from '@/utils/motion'
 import {
+  BookOpenIcon,
   CalendarDaysIcon,
   ClockIcon,
   EyeIcon,
@@ -18,38 +19,13 @@ import Image from 'next/image'
 import { useEffect, useState } from 'react'
 import PlexDeeplink from './PlexDeeplink'
 
-export default function CardContentItem({
-  data,
-  i,
-  usersPlays,
-  userRequests,
-  type,
-  serverId,
-}) {
+export default function CardContentItem({ data, i, type, serverId }) {
   const [posterSrc, setPosterSrc] = useState(
     `${process.env.NEXT_PUBLIC_TAUTULLI_URL}/pms_image_proxy?img=${
       type === 'users' ? data.user_thumb : data.thumb
     }&width=300`
   )
   const [dataKey, setDataKey] = useState(0)
-
-  const getPlaysByUser = (user, statName) => {
-    return usersPlays.series.filter((stat) => stat.name === statName)[0].data[
-      usersPlays.categories.indexOf(user)
-    ]
-  }
-
-  const getUserRequestsCount = (id) => {
-    return userRequests.find((request) => request.user === id).requests
-  }
-
-  const pluralize = (value, string) => {
-    if (value > 1 || value === 0) {
-      return `${value} ${string}s`
-    } else {
-      return `${value} ${string}`
-    }
-  }
 
   useEffect(() => {
     setPosterSrc(
@@ -197,25 +173,32 @@ export default function CardContentItem({
           )}
           {/* Plays */}
           {type === 'users' ? (
-            usersPlays.series.map((category, key) => {
-              if (category.name) {
-                const plays = getPlaysByUser(data.user, category.name)
-
-                return (
-                  <li className='flex items-center gap-1 sm:gap-2' key={key}>
-                    {category.name === 'Music' ? (
-                      <MusicalNoteIcon className='w-5 text-slate-900' />
-                    ) : category.name === 'Movies' ? (
-                      <FilmIcon className='w-5 text-slate-900' />
-                    ) : (
-                      <PlayCircleIcon className='w-5 text-slate-900' />
-                    )}
-
-                    <span>{pluralize(plays, 'play')}</span>
-                  </li>
-                )
-              }
-            })
+            <>
+              {data.showsPlaysCount > 0 && (
+                <li className='flex items-center gap-1 sm:gap-2'>
+                  <PlayCircleIcon className='w-5 text-slate-900' />
+                  {pluralize(data.showsPlaysCount, 'play')}
+                </li>
+              )}
+              {data.moviesPlaysCount > 0 && (
+                <li className='flex items-center gap-1 sm:gap-2'>
+                  <FilmIcon className='w-5 text-slate-900' />
+                  {pluralize(data.moviesPlaysCount, 'play')}
+                </li>
+              )}
+              {data.musicPlaysCount > 0 && (
+                <li className='flex items-center gap-1 sm:gap-2'>
+                  <MusicalNoteIcon className='w-5 text-slate-900' />
+                  {pluralize(data.musicPlaysCount, 'play')}
+                </li>
+              )}
+              {data.audiobookPlaysCount > 0 && (
+                <li className='flex items-center gap-1 sm:gap-2'>
+                  <BookOpenIcon className='w-5 text-slate-900' />
+                  {pluralize(data.audiobookPlaysCount, 'play')}
+                </li>
+              )}
+            </>
           ) : (
             <li className='flex items-center gap-1 sm:gap-2'>
               {type === 'music' ? (
@@ -229,10 +212,10 @@ export default function CardContentItem({
             </li>
           )}
           {/* Requests */}
-          {type === 'users' && (
+          {type === 'users' && data.requests > 0 && (
             <li className='flex items-center gap-1 sm:gap-2'>
               <QuestionMarkCircleIcon className='w-5 text-slate-900' />
-              {pluralize(getUserRequestsCount(data.user_id), 'request')}
+              {pluralize(data.requests, 'request')}
             </li>
           )}
         </ul>

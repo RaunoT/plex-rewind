@@ -5,22 +5,84 @@ import {
   fetchPaginatedOverseerrStats,
 } from '@/utils/fetchOverseerr'
 import fetchTautulli from '@/utils/fetchTautulli'
-import { removeAfterMinutes } from '@/utils/formatting'
+import { secondsToTime, timeToSeconds } from '@/utils/formatting'
 
 export const metadata = {
   title: 'Users | Plex rewind dashboard',
   description: metaDescription,
 }
 
-async function getUsers(period) {
-  const users = await fetchTautulli('get_home_stats', {
+async function getUsers(period, requestsPeriod, periodString) {
+  const usersPromise = await fetchTautulli('get_home_stats', {
     stat_id: 'top_users',
     stats_count: 6,
     stats_type: 'duration',
     time_range: period,
   })
+  const users = usersPromise.response?.data?.rows
 
-  return users.response?.data?.rows
+  const overseerrUserIds = await Promise.all(
+    users.map(async (user) => {
+      const overseerrId = await fetchOverseerrUserId(user.user_id)
+
+      return overseerrId
+    })
+  )
+
+  const usersRequestsCounts = await Promise.all(
+    overseerrUserIds.map(async (overseerrId) => {
+      const userTotal = await fetchPaginatedOverseerrStats(
+        `user/${overseerrId}/requests`,
+        requestsPeriod
+      )
+
+      return {
+        requests: userTotal.length,
+      }
+    })
+  )
+
+  const usersPlaysAndDurations = await Promise.all(
+    users.map(async (user) => {
+      const userMovies = await fetchTautulli('get_history', {
+        user_id: user.user_id,
+        after: periodString,
+        section_id: 3,
+      })
+      const userShows = await fetchTautulli('get_history', {
+        user_id: user.user_id,
+        after: periodString,
+        section_id: 2,
+      })
+      const userMusic = await fetchTautulli('get_history', {
+        user_id: user.user_id,
+        after: periodString,
+        section_id: 1,
+      })
+      const userAudiobook = await fetchTautulli('get_history', {
+        user_id: user.user_id,
+        after: periodString,
+        section_id: 4,
+      })
+
+      return {
+        moviesPlaysCount: userMovies.response?.data?.recordsFiltered,
+        showsPlaysCount: userShows.response?.data?.recordsFiltered,
+        musicPlaysCount: userMusic.response?.data?.recordsFiltered,
+        audiobookPlaysCount: userAudiobook.response?.data?.recordsFiltered,
+      }
+    })
+  )
+
+  users.map((user, i) => {
+    user.requests = usersRequestsCounts[i].requests
+    user.moviesPlaysCount = usersPlaysAndDurations[i].moviesPlaysCount
+    user.showsPlaysCount = usersPlaysAndDurations[i].showsPlaysCount
+    user.musicPlaysCount = usersPlaysAndDurations[i].musicPlaysCount
+    user.audiobookPlaysCount = usersPlaysAndDurations[i].audiobookPlaysCount
+  })
+
+  return users
 }
 
 async function getTotalDuration(period) {
@@ -29,15 +91,9 @@ async function getTotalDuration(period) {
     length: 0,
   })
 
-  return removeAfterMinutes(totalDuration.response?.data?.total_duration)
-}
-
-async function getUsersPlays(period) {
-  const playData = await fetchTautulli('get_plays_by_top_10_users', {
-    time_range: period,
-  })
-
-  return playData.response?.data
+  return secondsToTime(
+    timeToSeconds(totalDuration.response?.data?.total_duration)
+  )
 }
 
 async function getUsersCount() {
@@ -46,48 +102,16 @@ async function getUsersCount() {
   return usersCount.response?.data.slice(1).length
 }
 
-async function getUsersRequestsCounts(period) {
-  const users = await fetchTautulli('get_users')
-  const overseerrUserIds = Promise.all(
-    users.response?.data.slice(1).map(async (user) => {
-      const overseerrId = await fetchOverseerrUserId(user.user_id)
-      return overseerrId
-    })
-  )
-  const usersRequestsCounts = Promise.all(
-    (await overseerrUserIds).map(async (user, i) => {
-      const userTotal = await fetchPaginatedOverseerrStats(
-        `user/${user}/requests`,
-        period
-      )
-      return {
-        user: users.response?.data.slice(1)[i].user_id,
-        requests: userTotal.length,
-      }
-    })
-  )
-
-  return usersRequestsCounts
-}
-
 export default async function Users({ searchParams }) {
   let period = ALLOWED_PERIODS['30days']
   if (ALLOWED_PERIODS[searchParams.period]) {
     period = ALLOWED_PERIODS[searchParams.period]
   }
 
-  const [
-    usersData,
-    totalDuration,
-    usersPlays,
-    usersCount,
-    usersRequestsCounts,
-  ] = await Promise.all([
-    getUsers(period.daysAgo),
+  const [usersData, totalDuration, usersCount] = await Promise.all([
+    getUsers(period.daysAgo, period.date, period.string),
     getTotalDuration(period.string),
-    getUsersPlays(period.daysAgo),
     getUsersCount(),
-    getUsersRequestsCounts(period.date),
   ])
 
   return (
@@ -99,8 +123,6 @@ export default async function Users({ searchParams }) {
       prevCard='/dashboard/music'
       page='4 / 4'
       type='users'
-      usersPlays={usersPlays}
-      userRequests={usersRequestsCounts}
     />
   )
 }

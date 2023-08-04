@@ -18,7 +18,7 @@ export default function DashboardLayout({ children }) {
     <div className='w-full max-w-2xl xl:max-w-5xl'>
       <PageTitle title='Dashboard' />
       <DashboardNav />
-      <Card className='xl:min-h-[572px]'>{children}</Card>
+      <Card className='xl:min-h-[572px] min-h-[50vh]'>{children}</Card>
       <PeriodSelect />
     </div>
   )

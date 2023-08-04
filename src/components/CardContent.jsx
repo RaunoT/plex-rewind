@@ -19,8 +19,6 @@ export default function CardContent({
   totalDuration,
   totalSize,
   type,
-  usersPlays,
-  userRequests,
   ratings,
   serverId = '',
 }) {
@@ -82,9 +80,7 @@ export default function CardContent({
       {items && (
         <CardContentItems
           items={items}
-          usersPlays={usersPlays}
           type={type}
-          userRequests={userRequests}
           ratings={ratings}
           serverId={serverId}
         />

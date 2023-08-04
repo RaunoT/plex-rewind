@@ -13,7 +13,7 @@ export default async function fetchOverseerr(endpoint, cache) {
 }
 
 export async function fetchOverseerrUserId(plexUserId) {
-  const users = await fetchOverseerr('user')
+  const users = await fetchOverseerr('user', true)
   const result = users.results?.filter((user) => user.plexId === plexUserId)
 
   return result[0].id
@@ -40,7 +40,7 @@ export async function fetchPaginatedOverseerrStats(req, timeframe) {
 }
 
 export async function fetchUser() {
-  const user = await fetchOverseerr('auth/me')
+  const user = await fetchOverseerr('auth/me', true)
 
   return user
 }

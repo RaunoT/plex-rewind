@@ -58,3 +58,11 @@ export function timeToSeconds(time) {
 
   return parseInt(days) + parseInt(hours) + parseInt(mins) + parseInt(secs)
 }
+
+export function pluralize(value, string) {
+  if (value > 1 || value === 0) {
+    return `${value} ${string}s`
+  } else {
+    return `${value} ${string}`
+  }
+}

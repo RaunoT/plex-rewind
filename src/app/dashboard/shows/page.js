@@ -2,7 +2,7 @@ import CardContent from '@/components/CardContent'
 import { ALLOWED_PERIODS, metaDescription } from '@/utils/constants'
 import fetchTautulli, { getServerId } from '@/utils/fetchTautulli'
 import fetchTmdb from '@/utils/fetchTmdb'
-import { bytesToSize, removeAfterMinutes } from '@/utils/formatting'
+import { bytesToSize, secondsToTime, timeToSeconds } from '@/utils/formatting'
 
 export const metadata = {
   title: 'Shows | Plex rewind dashboard',
@@ -81,7 +81,9 @@ async function getTotalDuration(period) {
     length: 0,
   })
 
-  return removeAfterMinutes(totalDuration.response?.data?.total_duration)
+  return secondsToTime(
+    timeToSeconds(totalDuration.response?.data?.total_duration)
+  )
 }
 
 async function getTotalSize() {
