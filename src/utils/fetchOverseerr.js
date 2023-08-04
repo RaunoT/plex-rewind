@@ -44,7 +44,7 @@ export async function fetchUser() {
     const res = await fetch(
       `${process.env.NEXT_PUBLIC_OVERSEERR_URL}/api/v1/auth/me`,
       {
-        next: { revalidate: 0 },
+        next: { revalidate: 3600 },
       }
     )
 
@@ -55,7 +55,7 @@ export async function fetchUser() {
     return await res.json()
   } catch (error) {
     try {
-      const user = await fetchOverseerr('auth/me')
+      const user = await fetchOverseerr('auth/me', true)
 
       return user
     } catch (e) {
