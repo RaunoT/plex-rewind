@@ -40,7 +40,18 @@ export async function fetchPaginatedOverseerrStats(req, timeframe) {
 }
 
 export async function fetchUser() {
-  const user = await fetchOverseerr('auth/me', true)
+  let user = null
+
+  if (process.env.NODE_ENV === 'production') {
+    const apiUrl = `${process.env.NEXT_PUBLIC_OVERSEERR_URL}/api/v1/auth/me`
+    const res = await fetch(apiUrl, {
+      next: { revalidate: 3600 },
+    })
+
+    user = await res.json()
+  } else {
+    user = await fetchOverseerr('auth/me', true)
+  }
 
   return user
 }
