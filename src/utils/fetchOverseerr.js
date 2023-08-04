@@ -40,28 +40,7 @@ export async function fetchPaginatedOverseerrStats(req, timeframe) {
 }
 
 export async function fetchUser() {
-  try {
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_OVERSEERR_URL}/api/v1/auth/me`,
-      {
-        next: { revalidate: 3600 },
-      }
-    )
+  const user = await fetchOverseerr('auth/me', true)
 
-    if (!res.ok) {
-      throw new Error(`Overseerr API responded with status: ${res.status}`)
-    }
-
-    return await res.json()
-  } catch (error) {
-    try {
-      const user = await fetchOverseerr('auth/me', true)
-
-      return user
-    } catch (e) {
-      console.error('Error fetching user from Overseerr:', e.message)
-    }
-  }
-
-  return null
+  return user
 }
