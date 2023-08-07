@@ -14,6 +14,7 @@ import {
   StarIcon,
   UserIcon,
 } from '@heroicons/react/24/outline'
+import clsx from 'clsx'
 import { motion } from 'framer-motion'
 import Image from 'next/image'
 import { useEffect, useState } from 'react'
@@ -39,7 +40,7 @@ export default function CardContentItem({ data, i, type, serverId }) {
   return (
     <motion.li
       key={dataKey}
-      className='flex items-center gap-3 last:hidden xl:last:flex'
+      className={clsx('flex items-center gap-3', i > 4 && 'hidden xl:flex')}
       variants={slideDown}
       initial='hidden'
       animate='show'
