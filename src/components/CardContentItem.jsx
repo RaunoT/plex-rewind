@@ -40,7 +40,7 @@ export default function CardContentItem({ data, i, type, serverId }) {
   return (
     <motion.li
       key={dataKey}
-      className={clsx('flex items-center gap-3', i > 4 && 'hidden xl:flex')}
+      className={clsx('flex items-center gap-3', i > 4 && 'hidden lg:flex')}
       variants={slideDown}
       initial='hidden'
       animate='show'
