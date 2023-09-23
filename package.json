@@ -6,26 +6,11 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint .",
+    "lint:types": "tsc --noEmit",
+    "lint:css": "stylelint '**/*.css'",
+    "lint": "next lint ; npm run lint:types ; npm run lint:css",
     "format": "prettier --write .",
     "postinstall": "husky install"
-  },
-  "prettier": {
-    "singleQuote": true,
-    "jsxSingleQuote": true,
-    "semi": false,
-    "tabWidth": 2,
-    "useTabs": false
-  },
-  "eslintConfig": {
-    "env": {
-      "es6": true
-    },
-    "extends": [
-      "eslint:recommended",
-      "next/core-web-vitals",
-      "prettier"
-    ]
   },
   "dependencies": {
     "@heroicons/react": "^2.0.13",
@@ -40,12 +25,20 @@
     "tailwindcss": "^3.2.4"
   },
   "devDependencies": {
+    "@types/node": "^20.6.3",
+    "@types/react": "^18.2.22",
+    "@types/react-dom": "^18.2.7",
+    "@typescript-eslint/eslint-plugin": "^6.7.2",
+    "@typescript-eslint/parser": "^6.7.2",
     "eslint": "^8.30.0",
     "eslint-config-next": "^13.1.1",
     "eslint-config-prettier": "^8.6.0",
     "husky": "^8.0.3",
     "lint-staged": "^13.1.0",
-    "prettier": "^2.8.1"
+    "prettier": "^2.8.1",
+    "stylelint": "^15.10.3",
+    "stylelint-config-standard": "^34.0.0",
+    "typescript": "^5.2.2"
   },
   "lint-staged": {
     "*.{js,jsx}": "eslint --cache --fix",
