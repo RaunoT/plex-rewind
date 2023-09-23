@@ -1,16 +1,22 @@
 import clsx from 'clsx'
 
+type Props = {
+  count: number
+  name: string
+  icon: React.ReactNode
+  separator?: string
+}
+
 export default function StatListItem({
   count,
   name,
   icon,
   separator = '•',
-  ...props
-}) {
+}: Props) {
   return (
-    <li className='my-2 last:my-0' {...props}>
+    <li className='my-2 last:my-0'>
       <span className='font-semibold text-black'>
-        {parseInt(count).toLocaleString('en-US')}
+        {count.toLocaleString('en-US')}
       </span>
       <span
         className={clsx(

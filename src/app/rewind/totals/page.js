@@ -155,7 +155,7 @@ export default async function Total() {
       <CardContentText renderDelay={15} loaderDelay={10} noScale>
         <p>The current library consist of:</p>
         <ul className='list'>
-          {libraryContentCounts.map((contentType, i) => {
+          {libraryContentCounts.map((contentType) => {
             switch (contentType.section_name) {
               case 'TV Shows':
                 return (
@@ -163,7 +163,6 @@ export default async function Total() {
                     count={contentType.child_count}
                     name='Episodes'
                     icon={<PlayCircleIcon className='w-8 ml-1' />}
-                    key={i}
                   />
                 )
 
@@ -173,7 +172,6 @@ export default async function Total() {
                     count={contentType.count}
                     name='Movies'
                     icon={<FilmIcon className='w-8 ml-1' />}
-                    key={i}
                   />
                 )
 
@@ -183,7 +181,6 @@ export default async function Total() {
                     count={contentType.child_count}
                     name='Songs'
                     icon={<MusicalNoteIcon className='w-8 ml-1' />}
-                    key={i}
                   />
                 )
 
@@ -193,7 +190,6 @@ export default async function Total() {
                     count={contentType.parent_count}
                     name='Audiobooks'
                     icon={<BookOpenIcon className='w-8 ml-1' />}
-                    key={i}
                   />
                 )
             }

@@ -24,8 +24,8 @@ export default function CardContentText({
   hideAfter = 0,
   noScale = false,
 }: Props) {
-  const [isComponentShown, setIsComponentShown] = useState(false)
-  const [isLoaderShown, setIsLoaderShown] = useState(false)
+  const [isComponentShown, setIsComponentShown] = useState<boolean>(false)
+  const [isLoaderShown, setIsLoaderShown] = useState<boolean>(false)
 
   useEffect(() => {
     const renderTimer = setTimeout(() => {

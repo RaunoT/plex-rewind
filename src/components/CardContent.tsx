@@ -6,7 +6,21 @@ import {
 } from '@heroicons/react/24/outline'
 import Link from 'next/link.js'
 import { usePathname, useSearchParams } from 'next/navigation.js'
-import CardContentItems from './CardContentItems.jsx'
+import CardContentItems from './CardContentItems'
+
+type Props = {
+  children: React.ReactNode
+  title: string
+  subtitle?: string
+  page?: string
+  prevCard?: string
+  nextCard?: string
+  items?: MediaItem[]
+  totalDuration?: string
+  totalSize?: string
+  type?: string
+  serverId?: string
+}
 
 export default function CardContent({
   children,
@@ -18,10 +32,9 @@ export default function CardContent({
   items,
   totalDuration,
   totalSize,
-  type,
-  ratings,
+  type = '',
   serverId = '',
-}) {
+}: Props) {
   const pathname = usePathname()
   const isRewind = pathname.split('/')[1] === 'rewind'
   const searchParams = useSearchParams()
@@ -78,12 +91,7 @@ export default function CardContent({
       )}
 
       {items && (
-        <CardContentItems
-          items={items}
-          type={type}
-          ratings={ratings}
-          serverId={serverId}
-        />
+        <CardContentItems items={items} type={type} serverId={serverId} />
       )}
 
       <div className='flex items-center justify-between pt-6 mt-auto text-sm'>

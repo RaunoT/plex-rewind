@@ -20,13 +20,20 @@ import Image from 'next/image'
 import { useEffect, useState } from 'react'
 import PlexDeeplink from './PlexDeeplink'
 
-export default function CardContentItem({ data, i, type, serverId }) {
-  const [posterSrc, setPosterSrc] = useState(
+type Props = {
+  data: MediaItem
+  i: number
+  type: string
+  serverId?: string
+}
+
+export default function CardContentItem({ data, i, type, serverId }: Props) {
+  const [posterSrc, setPosterSrc] = useState<string>(
     `${process.env.NEXT_PUBLIC_TAUTULLI_URL}/pms_image_proxy?img=${
       type === 'users' ? data.user_thumb : data.thumb
     }&width=300`
   )
-  const [dataKey, setDataKey] = useState(0)
+  const [dataKey, setDataKey] = useState<number>(0)
 
   useEffect(() => {
     setPosterSrc(
@@ -114,7 +121,9 @@ export default function CardContentItem({ data, i, type, serverId }) {
                 </div>
               </>
             ) : (
-              <PlexDeeplink serverId={serverId} ratingKey={data.rating_key} />
+              serverId && (
+                <PlexDeeplink serverId={serverId} ratingKey={data.rating_key} />
+              )
             )}
             {data.imdbId && (
               <a
