@@ -2,7 +2,12 @@
 
 import { useEffect, useState } from 'react'
 
-export default function PlexDeeplink({ ratingKey, serverId }) {
+type Props = {
+  ratingKey: string
+  serverId: string
+}
+
+export default function PlexDeeplink({ ratingKey, serverId }: Props) {
   const [plexUrl, setPlexUrl] = useState(
     `https://app.plex.tv/desktop#!/server/${serverId}/details?key=%2Flibrary%2Fmetadata%2F${ratingKey}`
   )

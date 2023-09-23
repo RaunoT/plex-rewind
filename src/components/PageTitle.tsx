@@ -2,7 +2,11 @@ import { ArrowLeftIcon } from '@heroicons/react/24/solid'
 import clsx from 'clsx'
 import Link from 'next/link'
 
-export default function PageTitle({ title }) {
+type Props = {
+  title?: string
+}
+
+export default function PageTitle({ title }: Props) {
   return (
     <div className='w-full mb-4'>
       <div className='relative text-center uppercase'>

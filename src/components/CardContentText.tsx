@@ -5,15 +5,25 @@ import clsx from 'clsx'
 import { motion } from 'framer-motion'
 import { useEffect, useState } from 'react'
 
+type Props = {
+  children: React.ReactNode
+  className?: string
+  renderDelay?: number
+  loaderDelay?: number
+  scaleDelay?: number
+  hideAfter?: number
+  noScale?: boolean
+}
+
 export default function CardContentText({
   children,
   className,
   renderDelay = 0,
   loaderDelay = 0,
   scaleDelay = 5,
-  hideAfter = false,
-  noScale,
-}) {
+  hideAfter = 0,
+  noScale = false,
+}: Props) {
   const [isComponentShown, setIsComponentShown] = useState(false)
   const [isLoaderShown, setIsLoaderShown] = useState(false)
 
@@ -26,7 +36,7 @@ export default function CardContentText({
   }, [renderDelay])
 
   useEffect(() => {
-    let loaderTimer = setTimeout(() => {
+    const loaderTimer = setTimeout(() => {
       setIsLoaderShown(true)
     }, loaderDelay * 1000)
 
@@ -34,7 +44,7 @@ export default function CardContentText({
   }, [loaderDelay])
 
   useEffect(() => {
-    let hideTimer = hideAfter
+    let hideTimer: NodeJS.Timeout | number = hideAfter
 
     if (hideTimer) {
       hideTimer = setTimeout(() => {
@@ -53,7 +63,7 @@ export default function CardContentText({
       )}
       variants={animateCardText}
       initial='hidden'
-      animate={['show', !noScale && 'scaleDown']}
+      animate={noScale ? ['show'] : ['show', 'scaleDown']}
       style={{ originX: 0, originY: '100%' }}
       custom={scaleDelay}
     >

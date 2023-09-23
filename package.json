@@ -39,9 +39,5 @@
     "stylelint": "^15.10.3",
     "stylelint-config-standard": "^34.0.0",
     "typescript": "^5.2.2"
-  },
-  "lint-staged": {
-    "*.{js,jsx}": "eslint --cache --fix",
-    "*.{js,jsx,css,md,json}": "prettier --write"
   }
 }

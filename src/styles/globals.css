@@ -4,23 +4,14 @@
 
 @layer components {
   .button {
-    @apply transition-all bg-gradient-to-r from-blue-800 to-teal-700;
-
-    display: block;
-    width: fit-content;
-    text-align: center;
-    padding: theme('spacing.3') theme('spacing.8');
-    border-radius: theme('borderRadius.2xl');
-    font-weight: theme('fontWeight.semibold');
+    @apply block px-8 py-3 font-semibold text-center transition-all bg-gradient-to-r from-blue-800 to-teal-700 w-fit rounded-2xl;
 
     &:hover {
-      opacity: 0.8;
+      @apply opacity-80;
     }
 
     &[disabled] {
-      opacity: 0.25;
-      cursor: not-allowed;
-      user-select: none;
+      @apply opacity-25 cursor-not-allowed select-none;
     }
   }
 
@@ -29,14 +20,10 @@
   }
 
   .skeleton {
-    @apply animate-pulse;
-
-    border-radius: theme('borderRadius.full');
-    background: theme('colors.slate.500');
-    padding: theme('spacing.2') theme('spacing.4');
+    @apply px-4 py-2 rounded-full animate-pulse bg-slate-500;
 
     &--large {
-      padding: theme('spacing.3') theme('spacing.6');
+      @apply px-6 py-3;
     }
 
     &--no-animate {
@@ -45,26 +32,23 @@
   }
 
   .rewind-stat {
-    display: inline-block;
+    @apply inline-block font-semibold text-black;
+
     font-size: 80%;
-    font-weight: 600;
-    color: theme('colors.black');
   }
 
   .link {
-    color: theme('colors.blue.300');
-    font-weight: 500;
-    text-decoration: underline;
+    @apply font-medium text-blue-300 underline;
   }
 
   .nav-link {
     &[aria-selected='true'],
     &[aria-current='page'] {
-      color: theme('colors.teal.300');
+      @apply text-teal-300;
     }
 
     &:hover {
-      opacity: 0.75;
+      @apply opacity-75;
     }
   }
 }
@@ -83,9 +67,10 @@
   }
 
   .min-height-screen {
-    min-height: 100vh;
+    @apply min-h-screen;
 
     @supports (-webkit-touch-callout: none) {
+      /* stylelint-disable-next-line value-no-vendor-prefix */
       min-height: -webkit-fill-available;
     }
   }
