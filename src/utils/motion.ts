@@ -28,7 +28,7 @@ export const animateCardText = {
     opacity: 1,
     y: 0,
   },
-  scaleDown: (scaleDelay) => ({
+  scaleDown: (scaleDelay: number) => ({
     opacity: 0.5,
     fontSize: '20px',
     transition: {

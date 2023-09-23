@@ -1,4 +1,4 @@
-export function secondsToTime(seconds) {
+export function secondsToTime(seconds: number): string {
   const units = [
     { label: 'month', duration: 2629746 },
     { label: 'week', duration: 604800 },
@@ -28,11 +28,11 @@ export function secondsToTime(seconds) {
     .trim()
 }
 
-export function removeAfterMinutes(timeString) {
+export function removeAfterMinutes(timeString: string): string {
   return timeString.replace(/mins.*/, 'mins')
 }
 
-export function bytesToSize(bytes, decimals = 2) {
+export function bytesToSize(bytes: number, decimals = 2): string {
   if (!+bytes) return '0 Bytes'
 
   const k = 1024
@@ -44,22 +44,21 @@ export function bytesToSize(bytes, decimals = 2) {
   return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`
 }
 
-export function timeToSeconds(time) {
-  const days = time.match(/([\d.]+) *day/)
-    ? time.match(/([\d.]+) *day/)[1] * 86400
-    : 0
-  const hours = time.match(/([\d.]+) *hr/)
-    ? time.match(/([\d.]+) *hr/)[1] * 3600
-    : 0
-  const mins = time.match(/([\d.]+) *min/)
-    ? time.match(/([\d.]+) *min/)[1] * 60
-    : 0
-  const secs = time.match(/([\d.]+) *sec/) ? time.match(/([\d.]+) *sec/)[1] : 0
+export function timeToSeconds(time: string): number {
+  const dayMatch = time.match(/([\d.]+) *day/)
+  const hourMatch = time.match(/([\d.]+) *hr/)
+  const minMatch = time.match(/([\d.]+) *min/)
+  const secMatch = time.match(/([\d.]+) *sec/)
 
-  return parseInt(days) + parseInt(hours) + parseInt(mins) + parseInt(secs)
+  const days = dayMatch ? parseFloat(dayMatch[1]) * 86400 : 0
+  const hours = hourMatch ? parseFloat(hourMatch[1]) * 3600 : 0
+  const mins = minMatch ? parseFloat(minMatch[1]) * 60 : 0
+  const secs = secMatch ? parseFloat(secMatch[1]) : 0
+
+  return days + hours + mins + secs
 }
 
-export function pluralize(value, string) {
+export function pluralize(value: number, string: string): string {
   if (value > 1 || value === 0) {
     return `${value} ${string}s`
   } else {
