@@ -7,7 +7,11 @@ import PeriodSelect from '@/components/PeriodSelect'
 import { notFound, usePathname } from 'next/navigation'
 import { useEffect } from 'react'
 
-export default function DashboardLayout({ children }) {
+type Props = {
+  children: React.ReactNode
+}
+
+export default function DashboardLayout({ children }: Props) {
   const pathname = usePathname()
 
   useEffect(() => {

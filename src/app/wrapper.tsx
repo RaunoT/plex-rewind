@@ -3,7 +3,11 @@
 import clsx from 'clsx'
 import { usePathname } from 'next/navigation'
 
-export default function Wrapper({ children }) {
+type Props = {
+  children: React.ReactNode
+}
+
+export default function Wrapper({ children }: Props) {
   const pathname = usePathname()
 
   return (

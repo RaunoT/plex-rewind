@@ -9,7 +9,17 @@ export const metadata = {
   description: metaDescription,
 }
 
-async function getMovies(period) {
+type Movie = {
+  rating_key: string
+  title: string
+  year: string
+  isDeleted: boolean
+  rating: string
+  tmdbId: number
+  imdbId: string
+}
+
+async function getMovies(period: string): Promise<Movie[]> {
   const moviesData = await fetchTautulli('get_home_stats', {
     stat_id: 'top_movies',
     stats_count: 6,
@@ -17,7 +27,7 @@ async function getMovies(period) {
     time_range: period,
   })
   const movies = moviesData.response?.data?.rows
-  let ratingKeys = []
+  const ratingKeys: string[] = []
 
   movies.map((movie) => {
     ratingKeys.push(movie.rating_key)
@@ -60,7 +70,7 @@ async function getMovies(period) {
   return movies
 }
 
-async function getTotalDuration(period) {
+async function getTotalDuration(period: string): Promise<string> {
   const totalDuration = await fetchTautulli('get_history', {
     section_id: 3,
     after: period,
