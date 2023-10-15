@@ -1,9 +1,17 @@
-const DAYS_AGO_7 = new Date(new Date().setDate(new Date().getDate() - 7))
-const DAYS_AGO_30 = new Date(new Date().setDate(new Date().getDate() - 30))
-const CURRENT_YEAR = new Date(new Date().getFullYear(), 0, 1)
-const ALL_TIME = new Date('2022-12-03')
+const DAYS_AGO_7: Date = new Date(new Date().setDate(new Date().getDate() - 7))
+const DAYS_AGO_30: Date = new Date(
+  new Date().setDate(new Date().getDate() - 30)
+)
+const CURRENT_YEAR: Date = new Date(new Date().getFullYear(), 0, 1)
+const ALL_TIME: Date = new Date('2022-12-03')
 
-export const ALLOWED_PERIODS = {
+interface Period {
+  date: Date
+  string: string
+  daysAgo: number
+}
+
+export const ALLOWED_PERIODS: { [key: string]: Period } = {
   '7days': {
     date: DAYS_AGO_7,
     string: DAYS_AGO_7.toISOString().split('T')[0],
@@ -30,5 +38,5 @@ export const ALLOWED_PERIODS = {
   },
 }
 
-export const metaDescription =
+export const metaDescription: string =
   'Present user statistics and habits in a beautiful and organized manner'
