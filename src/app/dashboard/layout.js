@@ -4,7 +4,7 @@ import Card from '@/components/Card'
 import DashboardNav from '@/components/DashboardNav'
 import PageTitle from '@/components/PageTitle'
 import PeriodSelect from '@/components/PeriodSelect'
-import { usePathname } from 'next/navigation'
+import { notFound, usePathname } from 'next/navigation'
 import { useEffect } from 'react'
 
 export default function DashboardLayout({ children }) {
@@ -14,7 +14,9 @@ export default function DashboardLayout({ children }) {
     window.scrollTo(0, 0)
   }, [pathname])
 
-  return (
+  return process.env.NEXT_PUBLIC_IS_DASHBOARD_DISABLED === 'true' ? (
+    notFound()
+  ) : (
     <div className='w-full max-w-2xl lg:max-w-5xl'>
       <PageTitle title='Dashboard' />
       <DashboardNav />
