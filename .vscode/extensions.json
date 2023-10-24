@@ -5,6 +5,7 @@
     "dbaeumer.vscode-eslint",
     "heybourn.headwind",
     "editorconfig.editorconfig",
-    "stylelint.vscode-stylelint"
+    "stylelint.vscode-stylelint",
+    "csstools.postcss"
   ]
 }
