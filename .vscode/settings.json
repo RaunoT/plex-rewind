@@ -10,5 +10,10 @@
     "typescript",
     "typescriptreact"
   ],
+  "css.validate": false,
+  "scss.validate": false,
+  "stylelint.packageManager": "yarn",
+  "stylelint.snippet": ["css", "scss"],
+  "stylelint.validate": ["css", "scss"],
   "typescript.tsdk": "node_modules/typescript/lib"
 }
