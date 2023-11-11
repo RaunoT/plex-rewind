@@ -1,26 +1,41 @@
-// TODO: Define types for the parameters and response structure
-type Params = {
-  [key: string]: string
+type TautulliResponse<T> = {
+  response: {
+    data: T
+  }
 }
-// TODO: Replace 'any' with a more specific type based on the expected API response structure
-type TautulliResponse = any
 
-export default async function fetchTautulli(
+type SearchParams = {
+  [key: string]: string | number
+}
+
+export default async function fetchTautulli<T>(
   query: string,
-  params?: Params,
+  params?: SearchParams,
   cache?: boolean,
-): Promise<TautulliResponse> {
+): Promise<TautulliResponse<T>> {
   const apiUrl = `${process.env.NEXT_PUBLIC_TAUTULLI_URL}/api/v2?apikey=${process.env.TAUTULLI_API_KEY}`
-  const paramsStr = params ? '&' + new URLSearchParams(params).toString() : ''
-  const res = await fetch(`${apiUrl}&cmd=${query}${paramsStr}`, {
-    next: { revalidate: cache ? 3600 : 0 },
-  })
+
+  // Convert numeric params to strings
+  const convertedParams: { [key: string]: string } = {}
+  if (params) {
+    for (const key in params) {
+      convertedParams[key] = String(params[key])
+    }
+  }
+
+  const paramsStr = new URLSearchParams(convertedParams).toString()
+  const res = await fetch(
+    `${apiUrl}&cmd=${query}${paramsStr ? '&' + paramsStr : ''}`,
+    {
+      next: { revalidate: cache ? 3600 : 0 },
+    },
+  )
   const data = await res.json()
 
   return data
 }
 
-export async function getServerId(): Promise<string | undefined> {
+export async function getServerId(): Promise<string> {
   const serverIdPromise = await fetchTautulli('get_server_id', {
     hostname: 'localhost',
     port: '32400',

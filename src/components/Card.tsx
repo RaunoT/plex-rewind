@@ -9,7 +9,7 @@ import { usePathname, useSearchParams } from 'next/navigation.js'
 import CardMediaItems from './CardMediaItems'
 
 type Props = {
-  children: React.ReactNode
+  children?: React.ReactNode
   title: string
   subtitle?: string
   page?: string

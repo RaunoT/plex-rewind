@@ -9,29 +9,29 @@ export const metadata = {
   description: metaDescription,
 }
 
-async function getShows(period) {
-  const showsData = await fetchTautulli('get_home_stats', {
+async function getShows(period: number) {
+  const showsData = await fetchTautulli<MediaItemRows>('get_home_stats', {
     stat_id: 'top_tv',
-    stats_count: 6,
+    stats_count: '6',
     stats_type: 'duration',
     time_range: period,
   })
   const shows = showsData.response?.data?.rows
-  const users_watched = await fetchTautulli('get_home_stats', {
+  const usersWatched = await fetchTautulli<MediaItemRows>('get_home_stats', {
     stat_id: 'popular_tv',
-    stats_count: 25, // https://github.com/Tautulli/Tautulli/issues/2103
+    stats_count: '25', // https://github.com/Tautulli/Tautulli/issues/2103
     time_range: period,
   })
-  const users_watchedData = users_watched.response?.data?.rows
-  let ratingKeys = []
+  const usersWatchedData = usersWatched.response?.data?.rows
+  const ratingKeys: number[] = []
 
-  shows.map((show) => {
+  shows.map((show: MediaItem) => {
     ratingKeys.push(show.rating_key)
   })
 
   const additionalData = await Promise.all(
     ratingKeys.map(async (key, i) => {
-      const showTautulli = await fetchTautulli(
+      const showTautulli = await fetchTautulli<MediaItem>(
         'get_metadata',
         {
           rating_key: key,
@@ -44,21 +44,21 @@ async function getShows(period) {
         query: shows[i].title,
         first_air_date_year: showTautulliData.year,
       })
-      const tmdb_id = showTmdb.results[0].id
-      const imdb_id = await fetchTmdb(`tv/${tmdb_id}/external_ids`)
+      const tmdbId = showTmdb.results[0].id
+      const imdbId = await fetchTmdb(`tv/${tmdbId}/external_ids`)
 
       return {
         year: new Date(showTmdb.results[0].first_air_date).getFullYear(),
         is_deleted: Object.keys(showTautulliData).length === 0,
         rating: parseFloat(showTmdb.results[0].vote_average).toFixed(1),
-        tmdb_id: tmdb_id,
-        imdb_id: imdb_id.imdb_id,
+        tmdb_id: tmdbId,
+        imdb_id: imdbId.imdb_id,
       }
     }),
   )
 
   shows.map((show, i) => {
-    const watchedData = users_watchedData.find(
+    const watchedData = usersWatchedData.find(
       (uw) => uw.rating_key === show.rating_key,
     )
 
@@ -73,12 +73,15 @@ async function getShows(period) {
   return shows
 }
 
-async function getTotalDuration(period) {
-  const totalDuration = await fetchTautulli('get_history', {
-    section_id: 2,
-    after: period,
-    length: 0,
-  })
+async function getTotalDuration(period: string) {
+  const totalDuration = await fetchTautulli<{ total_duration: string }>(
+    'get_history',
+    {
+      section_id: 2,
+      after: period,
+      length: 0,
+    },
+  )
 
   return secondsToTime(
     timeToSeconds(totalDuration.response?.data?.total_duration),
@@ -86,19 +89,27 @@ async function getTotalDuration(period) {
 }
 
 async function getTotalSize() {
-  const totalSize = await fetchTautulli('get_library_media_info', {
-    section_id: 2,
-    length: 0,
-  })
+  const totalSize = await fetchTautulli<{ total_file_size: number }>(
+    'get_library_media_info',
+    {
+      section_id: 2,
+      length: 0,
+    },
+  )
 
   return bytesToSize(totalSize.response?.data.total_file_size)
 }
 
-export default async function Shows({ searchParams }) {
-  let period = ALLOWED_PERIODS['30days']
-  if (ALLOWED_PERIODS[searchParams.period]) {
-    period = ALLOWED_PERIODS[searchParams.period]
-  }
+export default async function Shows({
+  searchParams,
+}: {
+  searchParams: PeriodSearchParams
+}) {
+  const periodKey =
+    searchParams.period && ALLOWED_PERIODS[searchParams.period]
+      ? searchParams.period
+      : '30days'
+  const period = ALLOWED_PERIODS[periodKey]
 
   const [shows, totalDuration, totalSize, serverId] = await Promise.all([
     getShows(period.daysAgo),

@@ -1,16 +1,20 @@
+import { ALLOWED_PERIODS } from '@/utils/constants'
+
 export {}
 
 declare global {
+  type MediaItemRows = { rows: MediaItem[] }
+
   type MediaItem = {
     title: string
     year: number
     total_plays: number
     total_duration: number
-    users_watched: number
+    users_watched: number | undefined
     rating_key: number
     thumb: string
     is_deleted: boolean
-    rating: number
+    rating: string
     tmdb_id: number
     imdb_id: string
     users_watched: number
@@ -21,5 +25,9 @@ declare global {
     music_plays_count: number
     movies_plays_count: number
     shows_plays_count: number
+  }
+
+  type PeriodSearchParams = {
+    period?: keyof typeof ALLOWED_PERIODS
   }
 }
