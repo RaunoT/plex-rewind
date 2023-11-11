@@ -1,5 +1,5 @@
 import CardContent from '@/components/CardContent'
-import CardContentText from '@/components/CardContentText'
+import CardText from '@/components/CardText'
 import { ALLOWED_PERIODS, metaDescription } from '@/utils/constants'
 import { fetchUser } from '@/utils/fetchOverseerr'
 import fetchTautulli from '@/utils/fetchTautulli'
@@ -37,7 +37,7 @@ export default async function Shows() {
       nextCard='/rewind/movies'
       subtitle={user.plexUsername}
     >
-      <CardContentText noScale>
+      <CardText noScale>
         {totalDuration != 0 ? (
           <p>
             <span className='inline-flex items-center text-teal-300'>
@@ -58,7 +58,7 @@ export default async function Shows() {
             <span className='not-italic'>😥</span>
           </p>
         )}
-      </CardContentText>
+      </CardText>
     </CardContent>
   )
 }

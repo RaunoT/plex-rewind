@@ -15,7 +15,7 @@ type Props = {
   noScale?: boolean
 }
 
-export default function CardContentText({
+export default function CardText({
   children,
   className,
   renderDelay = 0,

@@ -1,5 +1,5 @@
 import CardContent from '@/components/CardContent'
-import CardContentText from '@/components/CardContentText'
+import CardText from '@/components/CardText'
 import StatListItem from '@/components/StatListItem'
 import { ALLOWED_PERIODS, metaDescription } from '@/utils/constants'
 import { fetchPaginatedOverseerrStats, fetchUser } from '@/utils/fetchOverseerr'
@@ -53,7 +53,7 @@ export default async function Requests() {
       subtitle={user.plexUsername}
     >
       {userRequestsTotal != 0 ? (
-        <CardContentText hideAfter={requestTotals.total != 0 ? 10 : 0}>
+        <CardText hideAfter={requestTotals.total != 0 ? 10 : 0}>
           <p>
             You&apos;ve made{' '}
             <span className='rewind-stat'>{userRequestsTotal}</span> content{' '}
@@ -63,9 +63,9 @@ export default async function Requests() {
             </span>{' '}
             this year.
           </p>
-        </CardContentText>
+        </CardText>
       ) : (
-        <CardContentText hideAfter={requestTotals.total != 0 ? 10 : 0}>
+        <CardText hideAfter={requestTotals.total != 0 ? 10 : 0}>
           <p>
             You haven&apos;t made any content{' '}
             <span className='inline-flex items-center text-teal-300'>
@@ -82,10 +82,10 @@ export default async function Requests() {
               media.rauno.eu
             </a>
           </p>
-        </CardContentText>
+        </CardText>
       )}
 
-      <CardContentText renderDelay={5} noScale={requestTotals.total == 0}>
+      <CardText renderDelay={5} noScale={requestTotals.total == 0}>
         <p>
           Altogether there have been{' '}
           <span className='rewind-stat'>{requestTotals.total}</span>{' '}
@@ -95,10 +95,10 @@ export default async function Requests() {
           </span>{' '}
           this year.
         </p>
-      </CardContentText>
+      </CardText>
 
       {requestTotals.total != 0 && (
-        <CardContentText renderDelay={10} loaderDelay={5} noScale>
+        <CardText renderDelay={10} loaderDelay={5} noScale>
           <p>That includes:</p>
           <ul className='list'>
             <StatListItem
@@ -114,7 +114,7 @@ export default async function Requests() {
               separator='for'
             />
           </ul>
-        </CardContentText>
+        </CardText>
       )}
     </CardContent>
   )

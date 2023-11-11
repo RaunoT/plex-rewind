@@ -1,4 +1,4 @@
-import CardContent from '@/components/CardContent'
+import Card from '@/components/Card'
 import { ALLOWED_PERIODS, metaDescription } from '@/utils/constants'
 import fetchTautulli, { getServerId } from '@/utils/fetchTautulli'
 import fetchTmdb from '@/utils/fetchTmdb'
@@ -19,8 +19,7 @@ async function getShows(period) {
   const shows = showsData.response?.data?.rows
   const users_watched = await fetchTautulli('get_home_stats', {
     stat_id: 'popular_tv',
-    // https://github.com/Tautulli/Tautulli/issues/2103
-    stats_count: 25,
+    stats_count: 25, // https://github.com/Tautulli/Tautulli/issues/2103
     time_range: period,
   })
   const users_watchedData = users_watched.response?.data?.rows
@@ -109,7 +108,7 @@ export default async function Shows({ searchParams }) {
   ])
 
   return (
-    <CardContent
+    <Card
       title='TV shows'
       items={shows}
       totalDuration={totalDuration}

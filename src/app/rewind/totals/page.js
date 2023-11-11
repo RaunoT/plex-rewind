@@ -1,5 +1,5 @@
 import CardContent from '@/components/CardContent'
-import CardContentText from '@/components/CardContentText'
+import CardText from '@/components/CardText'
 import StatListItem from '@/components/StatListItem'
 import { ALLOWED_PERIODS, metaDescription } from '@/utils/constants'
 import { fetchUser } from '@/utils/fetchOverseerr'
@@ -99,7 +99,7 @@ export default async function Total() {
     >
       {userTotalDuration != 0 ? (
         <>
-          <CardContentText hideAfter={10}>
+          <CardText hideAfter={10}>
             <p>
               You&apos;ve spent a{' '}
               <span className='inline-flex items-center text-teal-300'>
@@ -112,9 +112,9 @@ export default async function Total() {
               </span>{' '}
               on <span className='text-yellow-500'>Plex</span> this year!
             </p>
-          </CardContentText>
+          </CardText>
 
-          <CardContentText renderDelay={5} hideAfter={15}>
+          <CardText renderDelay={5} hideAfter={15}>
             <p>
               That&apos;s{' '}
               <span className='inline-flex items-center text-teal-300'>
@@ -124,22 +124,19 @@ export default async function Total() {
               </span>{' '}
               of all plays.
             </p>
-          </CardContentText>
+          </CardText>
         </>
       ) : (
-        <CardContentText hideAfter={15} scaleDelay={10}>
+        <CardText hideAfter={15} scaleDelay={10}>
           <p>
             You haven&apos;t played any content on{' '}
             <span className='text-yellow-500'>Plex</span> this year!{' '}
             <span className='not-italic'>🤯</span> What are you waiting for?
           </p>
-        </CardContentText>
+        </CardText>
       )}
 
-      <CardContentText
-        renderDelay={10}
-        loaderDelay={userTotalDuration != 0 ? 5 : 0}
-      >
+      <CardText renderDelay={10} loaderDelay={userTotalDuration != 0 ? 5 : 0}>
         <p>
           Did you know the{' '}
           <span className='inline-flex items-center text-teal-300'>
@@ -150,9 +147,9 @@ export default async function Total() {
           <span className='text-yellow-500'>Plex</span> is{' '}
           <span className='rewind-stat'>{librariesTotalSize}</span>
         </p>
-      </CardContentText>
+      </CardText>
 
-      <CardContentText renderDelay={15} loaderDelay={10} noScale>
+      <CardText renderDelay={15} loaderDelay={10} noScale>
         <p>The current library consist of:</p>
         <ul className='list'>
           {libraryContentCounts.map((contentType) => {
@@ -195,7 +192,7 @@ export default async function Total() {
             }
           })}
         </ul>
-      </CardContentText>
+      </CardText>
     </CardContent>
   )
 }

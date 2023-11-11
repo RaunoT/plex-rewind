@@ -1,6 +1,6 @@
 'use client'
 
-import Card from '@/components/Card'
+import CardWrapper from '@/components/CardWrapper'
 import DashboardNav from '@/components/DashboardNav'
 import PageTitle from '@/components/PageTitle'
 import PeriodSelect from '@/components/PeriodSelect'
@@ -24,7 +24,9 @@ export default function DashboardLayout({ children }: Props) {
     <div className='w-full max-w-2xl lg:max-w-5xl'>
       <PageTitle title='Dashboard' />
       <DashboardNav />
-      <Card className='min-h-[50vh] lg:min-h-[572px]'>{children}</Card>
+      <CardWrapper className='min-h-[50vh] lg:min-h-[572px]'>
+        {children}
+      </CardWrapper>
       <PeriodSelect />
     </div>
   )

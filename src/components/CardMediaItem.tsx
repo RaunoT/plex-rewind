@@ -27,7 +27,7 @@ type Props = {
   serverId?: string
 }
 
-export default function CardContentItem({ data, i, type, serverId }: Props) {
+export default function CardMediaItem({ data, i, type, serverId }: Props) {
   const [posterSrc, setPosterSrc] = useState<string>(
     `${process.env.NEXT_PUBLIC_TAUTULLI_URL}/pms_image_proxy?img=${
       type === 'users' ? data.user_thumb : data.thumb

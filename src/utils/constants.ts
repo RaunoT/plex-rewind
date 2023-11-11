@@ -5,7 +5,7 @@ const DAYS_AGO_30: Date = new Date(
 const CURRENT_YEAR: Date = new Date(new Date().getFullYear(), 0, 1)
 const ALL_TIME: Date = new Date('2022-12-03')
 
-interface Period {
+type Period = {
   date: Date
   string: string
   daysAgo: number
