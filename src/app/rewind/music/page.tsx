@@ -1,4 +1,4 @@
-import CardContent from '@/components/CardContent'
+import Card from '@/components/Card'
 import CardText from '@/components/CardText'
 import { ALLOWED_PERIODS, metaDescription } from '@/utils/constants'
 import { fetchUser } from '@/utils/fetchOverseerr'
@@ -13,12 +13,15 @@ export const metadata = {
 
 async function getTotalDuration() {
   const user = await fetchUser()
-  const totalDuration = await fetchTautulli('get_history', {
-    user_id: user.plexId,
-    section_id: 1,
-    after: ALLOWED_PERIODS.thisYear.string,
-    length: 0,
-  })
+  const totalDuration = await fetchTautulli<{ total_duration: string }>(
+    'get_history',
+    {
+      user_id: user.plexId,
+      section_id: 1,
+      after: ALLOWED_PERIODS.thisYear.string,
+      length: 0,
+    },
+  )
 
   return removeAfterMinutes(totalDuration.response?.data?.total_duration)
 }
@@ -30,14 +33,14 @@ export default async function Music() {
   ])
 
   return (
-    <CardContent
+    <Card
       title='Music'
       page='5 / 5'
       prevCard='/rewind/movies'
       subtitle={user.plexUsername}
     >
       <CardText noScale>
-        {totalDuration != 0 ? (
+        {totalDuration ? (
           <p>
             And to top it all off, you listened to&nbsp;
             <span className='rewind-stat'>{totalDuration}</span> of{' '}
@@ -63,6 +66,6 @@ export default async function Music() {
           </p>
         )}
       </CardText>
-    </CardContent>
+    </Card>
   )
 }

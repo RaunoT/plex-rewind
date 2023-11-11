@@ -31,6 +31,7 @@ export default async function fetchOverseerr<T>(
 type User = {
   id: number
   plexId: number
+  plexUsername: string
 }
 
 export async function fetchOverseerrUserId(plexUserId: number) {
@@ -42,6 +43,7 @@ export async function fetchOverseerrUserId(plexUserId: number) {
 
 type PaginatedRequestItem = {
   createdAt: string
+  type: string
 }
 
 export async function fetchPaginatedOverseerrStats(

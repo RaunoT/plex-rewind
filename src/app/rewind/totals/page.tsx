@@ -1,4 +1,4 @@
-import CardContent from '@/components/CardContent'
+import Card from '@/components/Card'
 import CardText from '@/components/CardText'
 import StatListItem from '@/components/StatListItem'
 import { ALLOWED_PERIODS, metaDescription } from '@/utils/constants'
@@ -22,11 +22,14 @@ export const metadata = {
 
 async function getUserTotalDuration() {
   const user = await fetchUser()
-  const userTotalDuration = await fetchTautulli('get_history', {
-    user_id: user.plexId,
-    after: ALLOWED_PERIODS.thisYear.string,
-    length: 0,
-  })
+  const userTotalDuration = await fetchTautulli<{ total_duration: string }>(
+    'get_history',
+    {
+      user_id: user.plexId,
+      after: ALLOWED_PERIODS.thisYear.string,
+      length: 0,
+    },
+  )
 
   return timeToSeconds(userTotalDuration.response?.data?.total_duration)
 }
@@ -34,19 +37,19 @@ async function getUserTotalDuration() {
 async function getlibrariesTotalSize() {
   const [musicMediaInfo, showsMediaInfo, moviesMediaInfo, audiobooksMediaInfo] =
     await Promise.all([
-      fetchTautulli('get_library_media_info', {
+      fetchTautulli<{ total_file_size: number }>('get_library_media_info', {
         section_id: 1,
         length: 0,
       }),
-      fetchTautulli('get_library_media_info', {
+      fetchTautulli<{ total_file_size: number }>('get_library_media_info', {
         section_id: 2,
         length: 0,
       }),
-      fetchTautulli('get_library_media_info', {
+      fetchTautulli<{ total_file_size: number }>('get_library_media_info', {
         section_id: 3,
         length: 0,
       }),
-      fetchTautulli('get_library_media_info', {
+      fetchTautulli<{ total_file_size: number }>('get_library_media_info', {
         section_id: 4,
         length: 0,
       }),
@@ -61,7 +64,9 @@ async function getlibrariesTotalSize() {
 }
 
 async function getLibrariesTotalDuration() {
-  const librariesTotalDuration = await fetchTautulli('get_history', {
+  const librariesTotalDuration = await fetchTautulli<{
+    total_duration: string
+  }>('get_history', {
     after: ALLOWED_PERIODS.thisYear.string,
     length: 0,
   })
@@ -69,8 +74,16 @@ async function getLibrariesTotalDuration() {
   return timeToSeconds(librariesTotalDuration.response?.data?.total_duration)
 }
 
-async function getlibraryContentCounts() {
-  const libraries = await fetchTautulli('get_libraries')
+type Library = {
+  section_name: string
+  section_id: string
+  count: string
+  parent_count: string
+  child_count: string
+}
+
+async function getlibraries() {
+  const libraries = await fetchTautulli<Library[]>('get_libraries')
 
   return libraries.response?.data
 }
@@ -80,18 +93,18 @@ export default async function Total() {
     userTotalDuration,
     librariesTotalSize,
     librariesTotalDuration,
-    libraryContentCounts,
+    libraries,
     user,
   ] = await Promise.all([
     getUserTotalDuration(),
     getlibrariesTotalSize(),
     getLibrariesTotalDuration(),
-    getlibraryContentCounts(),
+    getlibraries(),
     fetchUser(),
   ])
 
   return (
-    <CardContent
+    <Card
       title='General stats'
       page='1 / 5'
       nextCard='/rewind/requests'
@@ -152,12 +165,13 @@ export default async function Total() {
       <CardText renderDelay={15} loaderDelay={10} noScale>
         <p>The current library consist of:</p>
         <ul className='list'>
-          {libraryContentCounts.map((contentType) => {
-            switch (contentType.section_name) {
+          {libraries.map((library) => {
+            switch (library.section_name) {
               case 'TV Shows':
                 return (
                   <StatListItem
-                    count={contentType.child_count}
+                    key={library.section_id}
+                    count={parseInt(library.child_count)}
                     name='Episodes'
                     icon={<PlayCircleIcon className='ml-1 w-8' />}
                   />
@@ -166,7 +180,8 @@ export default async function Total() {
               case 'Movies':
                 return (
                   <StatListItem
-                    count={contentType.count}
+                    key={library.section_id}
+                    count={parseInt(library.count)}
                     name='Movies'
                     icon={<FilmIcon className='ml-1 w-8' />}
                   />
@@ -175,7 +190,8 @@ export default async function Total() {
               case 'Music':
                 return (
                   <StatListItem
-                    count={contentType.child_count}
+                    key={library.section_id}
+                    count={parseInt(library.child_count)}
                     name='Songs'
                     icon={<MusicalNoteIcon className='ml-1 w-8' />}
                   />
@@ -184,7 +200,8 @@ export default async function Total() {
               case 'Audiobooks':
                 return (
                   <StatListItem
-                    count={contentType.parent_count}
+                    key={library.section_id}
+                    count={parseInt(library.parent_count)}
                     name='Audiobooks'
                     icon={<BookOpenIcon className='ml-1 w-8' />}
                   />
@@ -193,6 +210,6 @@ export default async function Total() {
           })}
         </ul>
       </CardText>
-    </CardContent>
+    </Card>
   )
 }

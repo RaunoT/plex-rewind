@@ -1,4 +1,4 @@
-import CardContent from '@/components/CardContent'
+import Card from '@/components/Card'
 import CardText from '@/components/CardText'
 import StatListItem from '@/components/StatListItem'
 import { ALLOWED_PERIODS, metaDescription } from '@/utils/constants'
@@ -45,7 +45,7 @@ export default async function Requests() {
   ])
 
   return (
-    <CardContent
+    <Card
       title='Requests'
       page='2 / 5'
       prevCard='/rewind/totals'
@@ -116,6 +116,6 @@ export default async function Requests() {
           </ul>
         </CardText>
       )}
-    </CardContent>
+    </Card>
   )
 }
