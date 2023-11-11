@@ -11,12 +11,23 @@
     "typescriptreact"
   ],
   "css.validate": false,
-  "scss.validate": false,
+  "[css]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
   "stylelint.packageManager": "yarn",
-  "stylelint.snippet": ["css", "scss", "postcss"],
-  "stylelint.validate": ["css", "scss", "postcss"],
+  "stylelint.snippet": ["css", "postcss"],
+  "stylelint.validate": ["css", "postcss"],
   "typescript.tsdk": "node_modules/typescript/lib",
   "files.associations": {
     "*.css": "postcss"
-  }
+  },
+  "tailwindCSS.experimental.classRegex": [
+    ["clsx\\(([^)]*)\\)", "(?:'|\"|`)([^']*)(?:'|\"|`)"]
+  ]
 }
