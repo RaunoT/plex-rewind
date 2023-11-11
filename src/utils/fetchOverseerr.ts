@@ -11,7 +11,7 @@ type OverseerrResponse<T> = {
 export default async function fetchOverseerr<T>(
   endpoint: string,
   cache?: boolean,
-): Promise<OverseerrResponse<T>> {
+): Promise<T> {
   const apiUrl = `${process.env.NEXT_PUBLIC_OVERSEERR_URL}/api/v1/${endpoint}`
   const headers: HeadersInit = new Headers()
 
@@ -35,7 +35,7 @@ type User = {
 }
 
 export async function fetchOverseerrUserId(plexUserId: number) {
-  const users = await fetchOverseerr<User[]>('user', true)
+  const users = await fetchOverseerr<OverseerrResponse<User[]>>('user', true)
   const result = users.results?.filter((user) => user.plexId === plexUserId)
 
   return result[0].id
@@ -56,7 +56,8 @@ export async function fetchPaginatedOverseerrStats(
   let reqUrl = req
 
   do {
-    const requestsData = await fetchOverseerr<PaginatedRequestItem[]>(reqUrl)
+    const requestsData =
+      await fetchOverseerr<OverseerrResponse<PaginatedRequestItem[]>>(reqUrl)
     const requestsDataFiltered = requestsData.results?.filter(
       (request) => request.createdAt > timeframe,
     )
@@ -69,9 +70,8 @@ export async function fetchPaginatedOverseerrStats(
   return requestsArr
 }
 
-// TODO: Add proper types
-export async function fetchUser(): Promise<User> {
-  const user = await fetchOverseerr('auth/me', true)
+export async function fetchUser() {
+  const user = await fetchOverseerr<User>('auth/me', true)
 
   return user
 }

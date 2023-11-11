@@ -1,4 +1,5 @@
 import placeholderPoster from '@/assets/placeholder.svg'
+import { TautulliItem } from '@/utils/fetchTautulli'
 import { pluralize, secondsToTime } from '@/utils/formatting'
 import { slideDown } from '@/utils/motion'
 import {
@@ -21,7 +22,7 @@ import { useEffect, useState } from 'react'
 import PlexDeeplink from './PlexDeeplink'
 
 type Props = {
-  data: MediaItem
+  data: TautulliItem
   i: number
   type: string
   serverId?: string

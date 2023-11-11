@@ -1,7 +1,8 @@
+import { TautulliItem } from '@/utils/fetchTautulli'
 import CardContentItem from './CardMediaItem'
 
 type Props = {
-  items: MediaItem[]
+  items: TautulliItem[]
   type: string
   serverId: string
 }

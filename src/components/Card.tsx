@@ -1,5 +1,6 @@
 'use client'
 
+import { TautulliItem } from '@/utils/fetchTautulli'
 import {
   ArrowLongLeftIcon,
   ArrowLongRightIcon,
@@ -15,7 +16,7 @@ type Props = {
   page?: string
   prevCard?: string
   nextCard?: string
-  items?: MediaItem[]
+  items?: TautulliItem[]
   totalDuration?: string
   totalSize?: string | number
   type?: string

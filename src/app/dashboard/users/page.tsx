@@ -4,7 +4,7 @@ import {
   fetchOverseerrUserId,
   fetchPaginatedOverseerrStats,
 } from '@/utils/fetchOverseerr'
-import fetchTautulli from '@/utils/fetchTautulli'
+import fetchTautulli, { TautulliItemRows } from '@/utils/fetchTautulli'
 import { secondsToTime, timeToSeconds } from '@/utils/formatting'
 
 export const metadata = {
