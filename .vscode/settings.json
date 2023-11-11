@@ -20,6 +20,7 @@
   "[typescript]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
+  "prettier.documentSelectors": ["**/*.svg"],
   "stylelint.packageManager": "yarn",
   "stylelint.snippet": ["css", "postcss"],
   "stylelint.validate": ["css", "postcss"],
