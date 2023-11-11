@@ -17,13 +17,13 @@ async function getShows(period) {
     time_range: period,
   })
   const shows = showsData.response?.data?.rows
-  const usersWatched = await fetchTautulli('get_home_stats', {
+  const users_watched = await fetchTautulli('get_home_stats', {
     stat_id: 'popular_tv',
     // https://github.com/Tautulli/Tautulli/issues/2103
     stats_count: 25,
     time_range: period,
   })
-  const usersWatchedData = usersWatched.response?.data?.rows
+  const users_watchedData = users_watched.response?.data?.rows
   let ratingKeys = []
 
   shows.map((show) => {
@@ -45,30 +45,30 @@ async function getShows(period) {
         query: shows[i].title,
         first_air_date_year: showTautulliData.year,
       })
-      const tmdbId = showTmdb.results[0].id
-      const imdbId = await fetchTmdb(`tv/${tmdbId}/external_ids`)
+      const tmdb_id = showTmdb.results[0].id
+      const imdb_id = await fetchTmdb(`tv/${tmdb_id}/external_ids`)
 
       return {
         year: new Date(showTmdb.results[0].first_air_date).getFullYear(),
-        isDeleted: Object.keys(showTautulliData).length === 0,
+        is_deleted: Object.keys(showTautulliData).length === 0,
         rating: parseFloat(showTmdb.results[0].vote_average).toFixed(1),
-        tmdbId: tmdbId,
-        imdbId: imdbId.imdb_id,
+        tmdb_id: tmdb_id,
+        imdb_id: imdb_id.imdb_id,
       }
     })
   )
 
   shows.map((show, i) => {
-    const watchedData = usersWatchedData.find(
+    const watchedData = users_watchedData.find(
       (uw) => uw.rating_key === show.rating_key
     )
 
     show.year = additionalData[i].year
-    show.isDeleted = additionalData[i].isDeleted
+    show.is_deleted = additionalData[i].is_deleted
     show.rating = additionalData[i].rating
-    show.tmdbId = additionalData[i].tmdbId
-    show.imdbId = additionalData[i].imdbId
-    show.usersWatched = watchedData?.users_watched
+    show.tmdb_id = additionalData[i].tmdb_id
+    show.imdb_id = additionalData[i].imdb_id
+    show.users_watched = watchedData?.users_watched
   })
 
   return shows

@@ -66,20 +66,20 @@ async function getUsers(period, requestsPeriod, periodString) {
       })
 
       return {
-        moviesPlaysCount: userMovies.response?.data?.recordsFiltered,
-        showsPlaysCount: userShows.response?.data?.recordsFiltered,
-        musicPlaysCount: userMusic.response?.data?.recordsFiltered,
-        audiobookPlaysCount: userAudiobook.response?.data?.recordsFiltered,
+        movies_plays_count: userMovies.response?.data?.recordsFiltered,
+        shows_plays_count: userShows.response?.data?.recordsFiltered,
+        music_plays_count: userMusic.response?.data?.recordsFiltered,
+        audiobook_plays_count: userAudiobook.response?.data?.recordsFiltered,
       }
     })
   )
 
   users.map((user, i) => {
     user.requests = usersRequestsCounts[i].requests
-    user.moviesPlaysCount = usersPlaysAndDurations[i].moviesPlaysCount
-    user.showsPlaysCount = usersPlaysAndDurations[i].showsPlaysCount
-    user.musicPlaysCount = usersPlaysAndDurations[i].musicPlaysCount
-    user.audiobookPlaysCount = usersPlaysAndDurations[i].audiobookPlaysCount
+    user.movies_plays_count = usersPlaysAndDurations[i].movies_plays_count
+    user.shows_plays_count = usersPlaysAndDurations[i].shows_plays_count
+    user.music_plays_count = usersPlaysAndDurations[i].music_plays_count
+    user.audiobook_plays_count = usersPlaysAndDurations[i].audiobook_plays_count
   })
 
   return users

@@ -29,7 +29,7 @@ async function getArtists(period) {
       (uw) => uw.rating_key === artist.rating_key
     )
 
-    artist.usersWatched = listenedData?.users_watched
+    artist.users_watched = listenedData?.users_watched
   })
 
   return artists

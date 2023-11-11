@@ -13,10 +13,10 @@ type Movie = {
   rating_key: string
   title: string
   year: string
-  isDeleted: boolean
+  is_deleted: boolean
   rating: string
-  tmdbId: number
-  imdbId: string
+  tmdb_id: number
+  imdb_id: string
 }
 
 async function getMovies(period: string): Promise<Movie[]> {
@@ -48,23 +48,23 @@ async function getMovies(period: string): Promise<Movie[]> {
         query: movies[i].title,
         first_air_date_year: movies[i].year,
       })
-      const tmdbId = movieTmdb.results[0].id
-      const imdbId = await fetchTmdb(`movie/${tmdbId}/external_ids`)
+      const tmdb_id = movieTmdb.results[0].id
+      const imdb_id = await fetchTmdb(`movie/${tmdb_id}/external_ids`)
 
       return {
-        isDeleted: Object.keys(movieTautulliData).length === 0,
+        is_deleted: Object.keys(movieTautulliData).length === 0,
         rating: parseFloat(movieTmdb.results[0].vote_average).toFixed(1),
-        tmdbId: tmdbId,
-        imdbId: imdbId.imdb_id,
+        tmdb_id: tmdb_id,
+        imdb_id: imdb_id.imdb_id,
       }
     })
   )
 
   movies.map((movie, i) => {
-    movie.isDeleted = additionalData[i].isDeleted
+    movie.is_deleted = additionalData[i].is_deleted
     movie.rating = additionalData[i].rating
-    movie.tmdbId = additionalData[i].tmdbId
-    movie.imdbId = additionalData[i].imdbId
+    movie.tmdb_id = additionalData[i].tmdb_id
+    movie.imdb_id = additionalData[i].imdb_id
   })
 
   return movies

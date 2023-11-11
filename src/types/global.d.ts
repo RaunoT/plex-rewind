@@ -9,17 +9,17 @@ declare global {
     users_watched: number
     rating_key: number
     thumb: string
-    isDeleted: boolean
+    is_deleted: boolean
     rating: number
-    tmdbId: number
-    imdbId: string
-    usersWatched: number
+    tmdb_id: number
+    imdb_id: string
+    users_watched: number
     user_thumb: string
     user: string
     requests: number
-    audiobookPlaysCount: number
-    musicPlaysCount: number
-    moviesPlaysCount: number
-    showsPlaysCount: number
+    audiobook_plays_count: number
+    music_plays_count: number
+    movies_plays_count: number
+    shows_plays_count: number
   }
 }

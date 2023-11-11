@@ -114,7 +114,7 @@ export default function CardContentItem({ data, i, type, serverId }: Props) {
         </h3>
         {(type === 'movies' || type === 'shows') && (
           <div className='flex items-center gap-2 mb-2'>
-            {data.isDeleted ? (
+            {data.is_deleted ? (
               <>
                 <div className='button-card from-red-500 to-red-700'>
                   Deleted
@@ -125,9 +125,9 @@ export default function CardContentItem({ data, i, type, serverId }: Props) {
                 <PlexDeeplink serverId={serverId} ratingKey={data.rating_key} />
               )
             )}
-            {data.imdbId && (
+            {data.imdb_id && (
               <a
-                href={`https://www.imdb.com/title/${data.imdbId}`}
+                href={`https://www.imdb.com/title/${data.imdb_id}`}
                 target='_blank'
                 rel='noopener noreferrer'
                 className='text-black button-card from-yellow-300 to-yellow-600'
@@ -135,11 +135,11 @@ export default function CardContentItem({ data, i, type, serverId }: Props) {
                 IMDB
               </a>
             )}
-            {data.isDeleted && (
+            {data.is_deleted && (
               <a
                 href={`${process.env.NEXT_PUBLIC_OVERSEERR_URL}/${
                   type === 'movies' ? 'movie' : 'tv'
-                }/${data.tmdbId}`}
+                }/${data.tmdb_id}`}
                 target='_blank'
                 rel='noopener noreferrer'
                 className='button-card from-purple-400 to-purple-700'
@@ -175,37 +175,37 @@ export default function CardContentItem({ data, i, type, serverId }: Props) {
             {secondsToTime(data.total_duration)}
           </li>
           {/* Users watched */}
-          {(type === 'shows' || type === 'music') && data.usersWatched && (
+          {(type === 'shows' || type === 'music') && data.users_watched && (
             <li className='flex items-center gap-1 sm:gap-2'>
               <UserIcon className='w-5 text-slate-900' />
-              {pluralize(data.usersWatched, 'user')}
+              {pluralize(data.users_watched, 'user')}
             </li>
           )}
           {/* Plays */}
           {type === 'users' ? (
             <>
-              {data.showsPlaysCount > 0 && (
+              {data.shows_plays_count > 0 && (
                 <li className='flex items-center gap-1 sm:gap-2'>
                   <PlayCircleIcon className='w-5 text-slate-900' />
-                  {pluralize(data.showsPlaysCount, 'play')}
+                  {pluralize(data.shows_plays_count, 'play')}
                 </li>
               )}
-              {data.moviesPlaysCount > 0 && (
+              {data.movies_plays_count > 0 && (
                 <li className='flex items-center gap-1 sm:gap-2'>
                   <FilmIcon className='w-5 text-slate-900' />
-                  {pluralize(data.moviesPlaysCount, 'play')}
+                  {pluralize(data.movies_plays_count, 'play')}
                 </li>
               )}
-              {data.musicPlaysCount > 0 && (
+              {data.music_plays_count > 0 && (
                 <li className='flex items-center gap-1 sm:gap-2'>
                   <MusicalNoteIcon className='w-5 text-slate-900' />
-                  {pluralize(data.musicPlaysCount, 'play')}
+                  {pluralize(data.music_plays_count, 'play')}
                 </li>
               )}
-              {data.audiobookPlaysCount > 0 && (
+              {data.audiobook_plays_count > 0 && (
                 <li className='flex items-center gap-1 sm:gap-2'>
                   <BookOpenIcon className='w-5 text-slate-900' />
-                  {pluralize(data.audiobookPlaysCount, 'play')}
+                  {pluralize(data.audiobook_plays_count, 'play')}
                 </li>
               )}
             </>
