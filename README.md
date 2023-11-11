@@ -9,19 +9,13 @@ Present user statistics and habits in a beautiful and organized manner - as a we
 Install dependencies:
 
 ```
-yarn install
+yarn
 ```
 
-For development:
+Start development:
 
 ```
 yarn dev
-```
-
-For production:
-
-```
-yarn build
 ```
 
 ## Learn More

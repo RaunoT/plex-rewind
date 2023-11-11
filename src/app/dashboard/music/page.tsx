@@ -1,4 +1,4 @@
-import CardContent from '@/components/CardContent'
+import Card from '@/components/Card'
 import { ALLOWED_PERIODS, metaDescription } from '@/utils/constants'
 import fetchTautulli from '@/utils/fetchTautulli'
 import { bytesToSize, secondsToTime, timeToSeconds } from '@/utils/formatting'
@@ -8,18 +8,17 @@ export const metadata = {
   description: metaDescription,
 }
 
-async function getArtists(period) {
-  const artistsData = await fetchTautulli('get_home_stats', {
+async function getArtists(period: number) {
+  const artistsData = await fetchTautulli<MediaItemRows>('get_home_stats', {
     stat_id: 'top_music',
     stats_count: 6,
     stats_type: 'duration',
     time_range: period,
   })
   const artists = artistsData.response?.data?.rows
-  const usersListened = await fetchTautulli('get_home_stats', {
+  const usersListened = await fetchTautulli<MediaItemRows>('get_home_stats', {
     stat_id: 'popular_music',
-    // https://github.com/Tautulli/Tautulli/issues/2103
-    stats_count: 25,
+    stats_count: 25, // https://github.com/Tautulli/Tautulli/issues/2103
     time_range: period,
   })
   const usersListenedData = usersListened.response?.data?.rows
@@ -35,12 +34,15 @@ async function getArtists(period) {
   return artists
 }
 
-async function getTotalDuration(period) {
-  const totalDuration = await fetchTautulli('get_history', {
-    section_id: 1,
-    after: period,
-    length: 0,
-  })
+async function getTotalDuration(period: string) {
+  const totalDuration = await fetchTautulli<{ total_duration: string }>(
+    'get_history',
+    {
+      section_id: 1,
+      after: period,
+      length: 0,
+    },
+  )
 
   return secondsToTime(
     timeToSeconds(totalDuration.response?.data?.total_duration),
@@ -48,19 +50,27 @@ async function getTotalDuration(period) {
 }
 
 async function getTotalSize() {
-  const totalSize = await fetchTautulli('get_library_media_info', {
-    section_id: 1,
-    length: 0,
-  })
+  const totalSize = await fetchTautulli<{ total_file_size: number }>(
+    'get_library_media_info',
+    {
+      section_id: 1,
+      length: 0,
+    },
+  )
 
   return bytesToSize(totalSize.response?.data.total_file_size)
 }
 
-export default async function Music({ searchParams }) {
-  let period = ALLOWED_PERIODS['30days']
-  if (ALLOWED_PERIODS[searchParams.period]) {
-    period = ALLOWED_PERIODS[searchParams.period]
-  }
+export default async function Music({
+  searchParams,
+}: {
+  searchParams: PeriodSearchParams
+}) {
+  const periodKey =
+    searchParams.period && ALLOWED_PERIODS[searchParams.period]
+      ? searchParams.period
+      : '30days'
+  const period = ALLOWED_PERIODS[periodKey]
 
   const [artists, totalDuration, totalSize] = await Promise.all([
     getArtists(period.daysAgo),
@@ -69,7 +79,7 @@ export default async function Music({ searchParams }) {
   ])
 
   return (
-    <CardContent
+    <Card
       title='Music'
       items={artists}
       totalDuration={totalDuration}

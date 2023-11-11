@@ -1,4 +1,4 @@
-import CardContent from '@/components/CardContent'
+import Card from '@/components/Card'
 import { ALLOWED_PERIODS, metaDescription } from '@/utils/constants'
 import {
   fetchOverseerrUserId,
@@ -12,8 +12,12 @@ export const metadata = {
   description: metaDescription,
 }
 
-async function getUsers(period, requestsPeriod, periodString) {
-  const usersPromise = await fetchTautulli('get_home_stats', {
+async function getUsers(
+  period: number,
+  requestsPeriod: string,
+  periodString: string,
+) {
+  const usersPromise = await fetchTautulli<MediaItemRows>('get_home_stats', {
     stat_id: 'top_users',
     stats_count: 6,
     stats_type: 'duration',
@@ -44,26 +48,38 @@ async function getUsers(period, requestsPeriod, periodString) {
 
   const usersPlaysAndDurations = await Promise.all(
     users.map(async (user) => {
-      const userMovies = await fetchTautulli('get_history', {
-        user_id: user.user_id,
-        after: periodString,
-        section_id: 3,
-      })
-      const userShows = await fetchTautulli('get_history', {
-        user_id: user.user_id,
-        after: periodString,
-        section_id: 2,
-      })
-      const userMusic = await fetchTautulli('get_history', {
-        user_id: user.user_id,
-        after: periodString,
-        section_id: 1,
-      })
-      const userAudiobook = await fetchTautulli('get_history', {
-        user_id: user.user_id,
-        after: periodString,
-        section_id: 4,
-      })
+      const userMovies = await fetchTautulli<{ recordsFiltered: number }>(
+        'get_history',
+        {
+          user_id: user.user_id,
+          after: periodString,
+          section_id: 3,
+        },
+      )
+      const userShows = await fetchTautulli<{ recordsFiltered: number }>(
+        'get_history',
+        {
+          user_id: user.user_id,
+          after: periodString,
+          section_id: 2,
+        },
+      )
+      const userMusic = await fetchTautulli<{ recordsFiltered: number }>(
+        'get_history',
+        {
+          user_id: user.user_id,
+          after: periodString,
+          section_id: 1,
+        },
+      )
+      const userAudiobook = await fetchTautulli<{ recordsFiltered: number }>(
+        'get_history',
+        {
+          user_id: user.user_id,
+          after: periodString,
+          section_id: 4,
+        },
+      )
 
       return {
         movies_plays_count: userMovies.response?.data?.recordsFiltered,
@@ -85,11 +101,14 @@ async function getUsers(period, requestsPeriod, periodString) {
   return users
 }
 
-async function getTotalDuration(period) {
-  const totalDuration = await fetchTautulli('get_history', {
-    after: period,
-    length: 0,
-  })
+async function getTotalDuration(period: string) {
+  const totalDuration = await fetchTautulli<{ total_duration: string }>(
+    'get_history',
+    {
+      after: period,
+      length: 0,
+    },
+  )
 
   return secondsToTime(
     timeToSeconds(totalDuration.response?.data?.total_duration),
@@ -97,16 +116,21 @@ async function getTotalDuration(period) {
 }
 
 async function getUsersCount() {
-  const usersCount = await fetchTautulli('get_users')
+  const usersCount = await fetchTautulli<[]>('get_users')
 
   return usersCount.response?.data.slice(1).length
 }
 
-export default async function Users({ searchParams }) {
-  let period = ALLOWED_PERIODS['30days']
-  if (ALLOWED_PERIODS[searchParams.period]) {
-    period = ALLOWED_PERIODS[searchParams.period]
-  }
+export default async function Users({
+  searchParams,
+}: {
+  searchParams: PeriodSearchParams
+}) {
+  const periodKey =
+    searchParams.period && ALLOWED_PERIODS[searchParams.period]
+      ? searchParams.period
+      : '30days'
+  const period = ALLOWED_PERIODS[periodKey]
 
   const [usersData, totalDuration, usersCount] = await Promise.all([
     getUsers(period.daysAgo, period.date, period.string),
@@ -115,7 +139,7 @@ export default async function Users({ searchParams }) {
   ])
 
   return (
-    <CardContent
+    <Card
       title='Users'
       items={usersData}
       totalDuration={totalDuration}

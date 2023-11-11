@@ -1,4 +1,4 @@
-import CardContent from '@/components/CardContent'
+import Card from '@/components/Card'
 import { ALLOWED_PERIODS, metaDescription } from '@/utils/constants'
 import fetchTautulli, { getServerId } from '@/utils/fetchTautulli'
 import fetchTmdb from '@/utils/fetchTmdb'
@@ -9,25 +9,15 @@ export const metadata = {
   description: metaDescription,
 }
 
-type Movie = {
-  rating_key: string
-  title: string
-  year: string
-  is_deleted: boolean
-  rating: string
-  tmdb_id: number
-  imdb_id: string
-}
-
-async function getMovies(period: string): Promise<Movie[]> {
-  const moviesData = await fetchTautulli('get_home_stats', {
+async function getMovies(period: number) {
+  const moviesData = await fetchTautulli<MediaItemRows>('get_home_stats', {
     stat_id: 'top_movies',
     stats_count: 6,
     stats_type: 'duration',
     time_range: period,
   })
   const movies = moviesData.response?.data?.rows
-  const ratingKeys: string[] = []
+  const ratingKeys: number[] = []
 
   movies.map((movie) => {
     ratingKeys.push(movie.rating_key)
@@ -35,7 +25,7 @@ async function getMovies(period: string): Promise<Movie[]> {
 
   const additionalData = await Promise.all(
     ratingKeys.map(async (key, i) => {
-      const movieTautulli = await fetchTautulli(
+      const movieTautulli = await fetchTautulli<MediaItem>(
         'get_metadata',
         {
           rating_key: key,
@@ -48,14 +38,14 @@ async function getMovies(period: string): Promise<Movie[]> {
         query: movies[i].title,
         first_air_date_year: movies[i].year,
       })
-      const tmdb_id = movieTmdb.results[0].id
-      const imdb_id = await fetchTmdb(`movie/${tmdb_id}/external_ids`)
+      const tmdbId = movieTmdb.results[0].id
+      const imdbId = await fetchTmdb(`movie/${tmdbId}/external_ids`)
 
       return {
         is_deleted: Object.keys(movieTautulliData).length === 0,
         rating: parseFloat(movieTmdb.results[0].vote_average).toFixed(1),
-        tmdb_id: tmdb_id,
-        imdb_id: imdb_id.imdb_id,
+        tmdb_id: tmdbId,
+        imdb_id: imdbId.imdb_id,
       }
     }),
   )
@@ -70,12 +60,15 @@ async function getMovies(period: string): Promise<Movie[]> {
   return movies
 }
 
-async function getTotalDuration(period: string): Promise<string> {
-  const totalDuration = await fetchTautulli('get_history', {
-    section_id: 3,
-    after: period,
-    length: 0,
-  })
+async function getTotalDuration(period: string) {
+  const totalDuration = await fetchTautulli<{ total_duration: string }>(
+    'get_history',
+    {
+      section_id: 3,
+      after: period,
+      length: 0,
+    },
+  )
 
   return secondsToTime(
     timeToSeconds(totalDuration.response?.data?.total_duration),
@@ -83,19 +76,27 @@ async function getTotalDuration(period: string): Promise<string> {
 }
 
 async function getTotalSize() {
-  const totalSize = await fetchTautulli('get_library_media_info', {
-    section_id: 3,
-    length: 0,
-  })
+  const totalSize = await fetchTautulli<{ total_file_size: number }>(
+    'get_library_media_info',
+    {
+      section_id: 3,
+      length: 0,
+    },
+  )
 
   return bytesToSize(totalSize.response?.data.total_file_size)
 }
 
-export default async function Movies({ searchParams }) {
-  let period = ALLOWED_PERIODS['30days']
-  if (ALLOWED_PERIODS[searchParams.period]) {
-    period = ALLOWED_PERIODS[searchParams.period]
-  }
+export default async function Movies({
+  searchParams,
+}: {
+  searchParams: PeriodSearchParams
+}) {
+  const periodKey =
+    searchParams.period && ALLOWED_PERIODS[searchParams.period]
+      ? searchParams.period
+      : '30days'
+  const period = ALLOWED_PERIODS[periodKey]
 
   const [movies, totalDuration, totalSize, serverId] = await Promise.all([
     getMovies(period.daysAgo),
@@ -105,7 +106,7 @@ export default async function Movies({ searchParams }) {
   ])
 
   return (
-    <CardContent
+    <Card
       title='Movies'
       items={movies}
       totalDuration={totalDuration}

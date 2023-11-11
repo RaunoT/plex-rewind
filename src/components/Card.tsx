@@ -17,7 +17,7 @@ type Props = {
   nextCard?: string
   items?: MediaItem[]
   totalDuration?: string
-  totalSize?: string
+  totalSize?: string | number
   type?: string
   serverId?: string
 }
@@ -90,8 +90,14 @@ export default function Card({
         children
       )}
 
-      {items && (
+      {items?.length ? (
         <CardMediaItems items={items} type={type} serverId={serverId} />
+      ) : (
+        <div className='flex flex-1 flex-col justify-center text-center text-neutral-300'>
+          <h2 className='mb-4 text-3xl italic leading-tight last:mb-0'>
+            No activity during this period.. 😴
+          </h2>
+        </div>
       )}
 
       <div className='mt-auto flex items-center justify-between pt-6 text-sm'>

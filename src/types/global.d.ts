@@ -25,6 +25,7 @@ declare global {
     music_plays_count: number
     movies_plays_count: number
     shows_plays_count: number
+    user_id: number
   }
 
   type PeriodSearchParams = {

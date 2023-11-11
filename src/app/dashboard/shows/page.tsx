@@ -12,20 +12,20 @@ export const metadata = {
 async function getShows(period: number) {
   const showsData = await fetchTautulli<MediaItemRows>('get_home_stats', {
     stat_id: 'top_tv',
-    stats_count: '6',
+    stats_count: 6,
     stats_type: 'duration',
     time_range: period,
   })
   const shows = showsData.response?.data?.rows
   const usersWatched = await fetchTautulli<MediaItemRows>('get_home_stats', {
     stat_id: 'popular_tv',
-    stats_count: '25', // https://github.com/Tautulli/Tautulli/issues/2103
+    stats_count: 25, // https://github.com/Tautulli/Tautulli/issues/2103
     time_range: period,
   })
   const usersWatchedData = usersWatched.response?.data?.rows
   const ratingKeys: number[] = []
 
-  shows.map((show: MediaItem) => {
+  shows.map((show) => {
     ratingKeys.push(show.rating_key)
   })
 

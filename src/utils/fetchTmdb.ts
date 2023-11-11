@@ -1,9 +1,8 @@
-// TODO: Define a type for the query parameters
+// TODO: Define types
 type QueryParams = {
   [key: string]: string | number
 }
 
-// TODO: Replace 'any' with a more specific type based on the expected API response structure from TMDB
 type TmdbResponse = any
 
 export default async function fetchTmdb(

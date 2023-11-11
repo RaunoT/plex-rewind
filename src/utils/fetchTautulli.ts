@@ -35,6 +35,7 @@ export default async function fetchTautulli<T>(
   return data
 }
 
+// TODO: Add proper types
 export async function getServerId(): Promise<string> {
   const serverIdPromise = await fetchTautulli('get_server_id', {
     hostname: 'localhost',
