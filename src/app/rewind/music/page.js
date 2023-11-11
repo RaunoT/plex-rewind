@@ -43,10 +43,10 @@ export default async function Music() {
             <span className='rewind-stat'>{totalDuration}</span> of{' '}
             <span className='inline-flex items-center text-teal-300'>
               Music
-              <MusicalNoteIcon className='w-8 ml-1' />
+              <MusicalNoteIcon className='ml-1 w-8' />
             </span>{' '}
             on <span className='text-yellow-500'>Plex</span> during{' '}
-            <span className='text-purple-300 rewind-stat'>
+            <span className='rewind-stat text-purple-300'>
               {new Date().getFullYear()}
             </span>
             .
@@ -56,7 +56,7 @@ export default async function Music() {
             You haven&apos;t listened to any{' '}
             <span className='inline-flex items-center text-teal-300'>
               Music
-              <MusicalNoteIcon className='w-8 ml-1' />
+              <MusicalNoteIcon className='ml-1 w-8' />
             </span>{' '}
             on <span className='text-yellow-500'>Plex</span> this year{' '}
             <span className='not-italic'>🥵</span>

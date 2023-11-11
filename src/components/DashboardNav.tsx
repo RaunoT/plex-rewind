@@ -12,7 +12,7 @@ export default function DashboardNav() {
 
   return (
     <nav>
-      <ul className='flex items-center justify-center gap-4 mb-2 -mt-2 text-xs font-medium uppercase sm:text-base text-neutral-200'>
+      <ul className='-mt-2 mb-2 flex items-center justify-center gap-4 text-xs font-medium uppercase text-neutral-200 sm:text-base'>
         <li>
           <Link
             href={`/dashboard/shows${period}`}

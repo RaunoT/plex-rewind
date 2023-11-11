@@ -21,7 +21,7 @@ export default function StatListItem({
       <span
         className={clsx(
           'mx-2',
-          separator === '•' ? 'text-black' : 'text-white'
+          separator === '•' ? 'text-black' : 'text-white',
         )}
       >
         {separator}

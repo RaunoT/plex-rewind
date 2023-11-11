@@ -8,15 +8,15 @@ type Props = {
 
 export default function PageTitle({ title }: Props) {
   return (
-    <div className='w-full mb-4'>
+    <div className='mb-4 w-full'>
       <div className='relative text-center uppercase'>
         <Link
           href='/'
           className={clsx(
-            'w-5 block ml-5 hover:translate-x-0.5 transition-transform hover:opacity-75',
+            'ml-5 block w-5 transition-transform hover:translate-x-0.5 hover:opacity-75',
             {
-              'absolute my-auto -translate-y-1/2 left-0 top-1/2': title,
-            }
+              'absolute left-0 top-1/2 my-auto -translate-y-1/2': title,
+            },
           )}
         >
           <ArrowLeftIcon />

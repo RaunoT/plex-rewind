@@ -31,7 +31,7 @@ export default function CardContentItem({ data, i, type, serverId }: Props) {
   const [posterSrc, setPosterSrc] = useState<string>(
     `${process.env.NEXT_PUBLIC_TAUTULLI_URL}/pms_image_proxy?img=${
       type === 'users' ? data.user_thumb : data.thumb
-    }&width=300`
+    }&width=300`,
   )
   const [dataKey, setDataKey] = useState<number>(0)
 
@@ -39,7 +39,7 @@ export default function CardContentItem({ data, i, type, serverId }: Props) {
     setPosterSrc(
       `${process.env.NEXT_PUBLIC_TAUTULLI_URL}/pms_image_proxy?img=${
         type === 'users' ? data.user_thumb : data.thumb
-      }&width=300`
+      }&width=300`,
     )
     setDataKey((prevDataKey) => prevDataKey + 1)
   }, [data, type])
@@ -53,7 +53,7 @@ export default function CardContentItem({ data, i, type, serverId }: Props) {
       animate='show'
       transition={{ delay: i * 0.075 }}
     >
-      <div className='relative flex-shrink-0 w-20 aspect-[2/3]'>
+      <div className='relative aspect-[2/3] w-20 flex-shrink-0'>
         <Image
           fill
           className='object-cover object-top'
@@ -70,7 +70,7 @@ export default function CardContentItem({ data, i, type, serverId }: Props) {
       </div>
       <div>
         <h3 className='mb-2 sm:text-xl'>
-          <div className='inline-flex items-baseline gap-1 mr-1.5'>
+          <div className='mr-1.5 inline-flex items-baseline gap-1'>
             <span className='font-bold text-black'>#{i + 1} </span>
             {i < 3 && (
               <svg width='16px' viewBox='0 0 300.439 300.439'>
@@ -113,7 +113,7 @@ export default function CardContentItem({ data, i, type, serverId }: Props) {
           </span>
         </h3>
         {(type === 'movies' || type === 'shows') && (
-          <div className='flex items-center gap-2 mb-2'>
+          <div className='mb-2 flex items-center gap-2'>
             {data.is_deleted ? (
               <>
                 <div className='button-card from-red-500 to-red-700'>
@@ -130,7 +130,7 @@ export default function CardContentItem({ data, i, type, serverId }: Props) {
                 href={`https://www.imdb.com/title/${data.imdb_id}`}
                 target='_blank'
                 rel='noopener noreferrer'
-                className='text-black button-card from-yellow-300 to-yellow-600'
+                className='button-card from-yellow-300 to-yellow-600 text-black'
               >
                 IMDB
               </a>

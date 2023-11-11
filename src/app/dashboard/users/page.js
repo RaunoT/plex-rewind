@@ -26,20 +26,20 @@ async function getUsers(period, requestsPeriod, periodString) {
       const overseerrId = await fetchOverseerrUserId(user.user_id)
 
       return overseerrId
-    })
+    }),
   )
 
   const usersRequestsCounts = await Promise.all(
     overseerrUserIds.map(async (overseerrId) => {
       const userTotal = await fetchPaginatedOverseerrStats(
         `user/${overseerrId}/requests`,
-        requestsPeriod
+        requestsPeriod,
       )
 
       return {
         requests: userTotal.length,
       }
-    })
+    }),
   )
 
   const usersPlaysAndDurations = await Promise.all(
@@ -71,7 +71,7 @@ async function getUsers(period, requestsPeriod, periodString) {
         music_plays_count: userMusic.response?.data?.recordsFiltered,
         audiobook_plays_count: userAudiobook.response?.data?.recordsFiltered,
       }
-    })
+    }),
   )
 
   users.map((user, i) => {
@@ -92,7 +92,7 @@ async function getTotalDuration(period) {
   })
 
   return secondsToTime(
-    timeToSeconds(totalDuration.response?.data?.total_duration)
+    timeToSeconds(totalDuration.response?.data?.total_duration),
   )
 }
 

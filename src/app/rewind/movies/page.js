@@ -44,7 +44,7 @@ export default async function Movies() {
             was spent watching{' '}
             <span className='inline-flex text-teal-300'>
               Movies
-              <FilmIcon className='w-8 ml-1' />
+              <FilmIcon className='ml-1 w-8' />
             </span>{' '}
             on <span className='text-yellow-500'>Plex</span> this year.
           </p>
@@ -53,7 +53,7 @@ export default async function Movies() {
             You haven&apos;t watched any{' '}
             <span className='inline-flex text-teal-300'>
               Movies
-              <FilmIcon className='w-8 ml-1' />
+              <FilmIcon className='ml-1 w-8' />
             </span>{' '}
             on <span className='text-yellow-500'>Plex</span> this year{' '}
             <span className='not-italic'>🥹</span>

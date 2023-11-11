@@ -37,7 +37,7 @@ async function getShows(period) {
         {
           rating_key: key,
         },
-        true
+        true,
       )
       const showTautulliData = showTautulli.response?.data
       // Tautulli doesn't return year or rating for removed items, so we're using TMDB
@@ -55,12 +55,12 @@ async function getShows(period) {
         tmdb_id: tmdb_id,
         imdb_id: imdb_id.imdb_id,
       }
-    })
+    }),
   )
 
   shows.map((show, i) => {
     const watchedData = users_watchedData.find(
-      (uw) => uw.rating_key === show.rating_key
+      (uw) => uw.rating_key === show.rating_key,
     )
 
     show.year = additionalData[i].year
@@ -82,7 +82,7 @@ async function getTotalDuration(period) {
   })
 
   return secondsToTime(
-    timeToSeconds(totalDuration.response?.data?.total_duration)
+    timeToSeconds(totalDuration.response?.data?.total_duration),
   )
 }
 

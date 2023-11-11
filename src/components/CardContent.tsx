@@ -44,7 +44,7 @@ export default function CardContent({
 
   return (
     <>
-      <h2 className='flex items-center mb-1 text-sm font-bold text-black uppercase sm:text-xl'>
+      <h2 className='mb-1 flex items-center text-sm font-bold uppercase text-black sm:text-xl'>
         <span>{title}</span>
         {totalSize && (
           <>
@@ -56,7 +56,7 @@ export default function CardContent({
         )}
       </h2>
 
-      <div className='text-xs font-medium uppercase sm:text-sm text-slate-900'>
+      <div className='text-xs font-medium uppercase text-slate-900 sm:text-sm'>
         {totalDuration && (
           <>
             Total plays
@@ -69,7 +69,7 @@ export default function CardContent({
       </div>
 
       {subtitle && (
-        <div className='text-xs font-medium uppercase sm:text-sm text-slate-900'>
+        <div className='text-xs font-medium uppercase text-slate-900 sm:text-sm'>
           {subtitle}
           {isRewind && (
             <>
@@ -83,7 +83,7 @@ export default function CardContent({
       )}
 
       {isRewind ? (
-        <ul className='flex flex-col flex-1 pt-12 sm:justify-center sm:pb-12 sm:pt-4'>
+        <ul className='flex flex-1 flex-col pt-12 sm:justify-center sm:pb-12 sm:pt-4'>
           {children}
         </ul>
       ) : (
@@ -94,12 +94,12 @@ export default function CardContent({
         <CardContentItems items={items} type={type} serverId={serverId} />
       )}
 
-      <div className='flex items-center justify-between pt-6 mt-auto text-sm'>
+      <div className='mt-auto flex items-center justify-between pt-6 text-sm'>
         <div className='flex-1'>
           {prevCard && (
             <Link
               href={prevCard + period}
-              className='block w-5 transition-transform hover:opacity-75 hover:translate-x-0.5'
+              className='block w-5 transition-transform hover:translate-x-0.5 hover:opacity-75'
             >
               <ArrowLongLeftIcon className='text-teal-300' />
             </Link>
@@ -110,7 +110,7 @@ export default function CardContent({
           {nextCard && (
             <Link
               href={nextCard + period}
-              className='block w-5 ml-auto transition-transform hover:opacity-75 hover:-translate-x-0.5'
+              className='ml-auto block w-5 transition-transform hover:-translate-x-0.5 hover:opacity-75'
             >
               <ArrowLongRightIcon className='text-teal-300' />
             </Link>

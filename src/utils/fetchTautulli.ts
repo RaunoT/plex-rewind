@@ -8,7 +8,7 @@ type TautulliResponse = any
 export default async function fetchTautulli(
   query: string,
   params?: Params,
-  cache?: boolean
+  cache?: boolean,
 ): Promise<TautulliResponse> {
   const apiUrl = `${process.env.NEXT_PUBLIC_TAUTULLI_URL}/api/v2?apikey=${process.env.TAUTULLI_API_KEY}`
   const paramsStr = params ? '&' + new URLSearchParams(params).toString() : ''

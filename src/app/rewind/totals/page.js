@@ -56,7 +56,7 @@ async function getlibrariesTotalSize() {
     musicMediaInfo.response?.data?.total_file_size +
       showsMediaInfo.response?.data?.total_file_size +
       moviesMediaInfo.response?.data?.total_file_size +
-      audiobooksMediaInfo.response?.data?.total_file_size
+      audiobooksMediaInfo.response?.data?.total_file_size,
   )
 }
 
@@ -104,7 +104,7 @@ export default async function Total() {
               You&apos;ve spent a{' '}
               <span className='inline-flex items-center text-teal-300'>
                 Total
-                <ClockIcon className='w-8 ml-1' />
+                <ClockIcon className='ml-1 w-8' />
               </span>{' '}
               of{' '}
               <span className='rewind-stat'>
@@ -120,7 +120,7 @@ export default async function Total() {
               <span className='inline-flex items-center text-teal-300'>
                 {Math.round((userTotalDuration * 100) / librariesTotalDuration)}
                 %
-                <ChartPieIcon className='w-8 ml-1' />
+                <ChartPieIcon className='ml-1 w-8' />
               </span>{' '}
               of all plays.
             </p>
@@ -144,7 +144,7 @@ export default async function Total() {
           Did you know the{' '}
           <span className='inline-flex items-center text-teal-300'>
             Filesize
-            <FolderIcon className='w-8 ml-1' />
+            <FolderIcon className='ml-1 w-8' />
           </span>{' '}
           of all the available content on{' '}
           <span className='text-yellow-500'>Plex</span> is{' '}
@@ -162,7 +162,7 @@ export default async function Total() {
                   <StatListItem
                     count={contentType.child_count}
                     name='Episodes'
-                    icon={<PlayCircleIcon className='w-8 ml-1' />}
+                    icon={<PlayCircleIcon className='ml-1 w-8' />}
                   />
                 )
 
@@ -171,7 +171,7 @@ export default async function Total() {
                   <StatListItem
                     count={contentType.count}
                     name='Movies'
-                    icon={<FilmIcon className='w-8 ml-1' />}
+                    icon={<FilmIcon className='ml-1 w-8' />}
                   />
                 )
 
@@ -180,7 +180,7 @@ export default async function Total() {
                   <StatListItem
                     count={contentType.child_count}
                     name='Songs'
-                    icon={<MusicalNoteIcon className='w-8 ml-1' />}
+                    icon={<MusicalNoteIcon className='ml-1 w-8' />}
                   />
                 )
 
@@ -189,7 +189,7 @@ export default async function Total() {
                   <StatListItem
                     count={contentType.parent_count}
                     name='Audiobooks'
-                    icon={<BookOpenIcon className='w-8 ml-1' />}
+                    icon={<BookOpenIcon className='ml-1 w-8' />}
                   />
                 )
             }

@@ -4,23 +4,23 @@
 
 @layer components {
   .button {
-    @apply block px-8 py-3 font-semibold text-center transition-all bg-gradient-to-r from-blue-800 to-teal-700 w-fit rounded-2xl;
+    @apply block w-fit rounded-2xl bg-gradient-to-r from-blue-800 to-teal-700 px-8 py-3 text-center font-semibold transition-all;
 
     &:hover {
       @apply opacity-80;
     }
 
     &[disabled] {
-      @apply opacity-25 cursor-not-allowed select-none;
+      @apply cursor-not-allowed select-none opacity-25;
     }
   }
 
   .button-card {
-    @apply px-1 text-[0.65rem] font-semibold uppercase rounded-sm w-fit bg-gradient-to-r block;
+    @apply block w-fit rounded-sm bg-gradient-to-r px-1 text-[0.65rem] font-semibold uppercase;
   }
 
   .skeleton {
-    @apply px-4 py-2 rounded-full animate-pulse bg-slate-500;
+    @apply animate-pulse rounded-full bg-slate-500 px-4 py-2;
 
     &--large {
       @apply px-6 py-3;

@@ -17,7 +17,7 @@ export default function Page() {
       <Title />
 
       {!isRewindDisabled && (
-        <Link href='/rewind/totals' className='mx-auto mb-4 button'>
+        <Link href='/rewind/totals' className='button mx-auto mb-4'>
           Get started
         </Link>
       )}

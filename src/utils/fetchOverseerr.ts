@@ -5,7 +5,7 @@ type Request = any
 
 export default async function fetchOverseerr(
   endpoint: string,
-  cache: boolean
+  cache: boolean,
 ): Promise<OverseerrResponse> {
   const apiUrl = `${process.env.NEXT_PUBLIC_OVERSEERR_URL}/api/v1/${endpoint}`
 
@@ -22,11 +22,11 @@ export default async function fetchOverseerr(
 }
 
 export async function fetchOverseerrUserId(
-  plexUserId: string
+  plexUserId: string,
 ): Promise<string> {
   const users = await fetchOverseerr('user', true)
   const result = users.results?.filter(
-    (user: User) => user.plexId === plexUserId
+    (user: User) => user.plexId === plexUserId,
   )
 
   console.log('fetchOverseerrUserId result', result)
@@ -35,7 +35,7 @@ export async function fetchOverseerrUserId(
 
 export async function fetchPaginatedOverseerrStats(
   req: string,
-  timeframe: string
+  timeframe: string,
 ): Promise<Request[]> {
   let requestsArr: Request[] = []
   let currentPage = 1
@@ -46,7 +46,7 @@ export async function fetchPaginatedOverseerrStats(
     const requestsData = await fetchOverseerr(reqUrl)
     const requestsDataFiltered = requestsData.results.filter(
       (request: Request) =>
-        Date.parse(request.createdAt) > Date.parse(timeframe)
+        Date.parse(request.createdAt) > Date.parse(timeframe),
     )
     console.log('requestsData result', requestsDataFiltered)
     console.log('requestsData.pageInfo result', requestsDataFiltered.pageInfo)

@@ -58,8 +58,8 @@ export default function CardContentText({
   return isComponentShown ? (
     <motion.li
       className={clsx(
-        'text-3xl sm:text-4xl italic mb-4 last:mb-0 leading-tight',
-        className
+        'mb-4 text-3xl italic leading-tight last:mb-0 sm:text-4xl',
+        className,
       )}
       variants={animateCardText}
       initial='hidden'
@@ -77,14 +77,14 @@ export default function CardContentText({
 function Loader() {
   return (
     <motion.div
-      className='flex items-center gap-2 w-fit skeleton skeleton--no-animate'
+      className='skeleton skeleton--no-animate flex w-fit items-center gap-2'
       variants={fadeIn}
       initial='hidden'
       animate='show'
     >
-      <span className='w-1 h-1 bg-white rounded-full animate-pulse'></span>
-      <span className='w-1 h-1 bg-white rounded-full animate-pulse animation-delay-200'></span>
-      <span className='w-1 h-1 bg-white rounded-full animate-pulse animation-delay-400'></span>
+      <span className='h-1 w-1 animate-pulse rounded-full bg-white'></span>
+      <span className='animation-delay-200 h-1 w-1 animate-pulse rounded-full bg-white'></span>
+      <span className='animation-delay-400 h-1 w-1 animate-pulse rounded-full bg-white'></span>
     </motion.div>
   )
 }

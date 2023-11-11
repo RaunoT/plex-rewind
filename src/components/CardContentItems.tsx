@@ -8,7 +8,7 @@ type Props = {
 
 export default function CardContentItems({ items, type, serverId }: Props) {
   return (
-    <ul className='grid mt-4 overflow-hidden lg:grid-flow-col lg:grid-cols-2 lg:grid-rows-3 sm:mt-6 lg:gap-x-8 gap-y-3 sm:gap-y-5'>
+    <ul className='mt-4 grid gap-y-3 overflow-hidden sm:mt-6 sm:gap-y-5 lg:grid-flow-col lg:grid-cols-2 lg:grid-rows-3 lg:gap-x-8'>
       {items.map((itemData, i) => (
         <CardContentItem
           data={itemData}

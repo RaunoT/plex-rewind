@@ -12,7 +12,7 @@ import {
 async function getRequestsTotals() {
   const requests = await fetchPaginatedOverseerrStats(
     'request',
-    ALLOWED_PERIODS.thisYear.date
+    ALLOWED_PERIODS.thisYear.date,
   )
 
   return {
@@ -26,7 +26,7 @@ async function getUserRequestsTotal() {
   const user = await fetchUser()
   const userRequestsTotal = await fetchPaginatedOverseerrStats(
     `user/${user.id}/requests`,
-    ALLOWED_PERIODS.thisYear.date
+    ALLOWED_PERIODS.thisYear.date,
   )
 
   return userRequestsTotal.length
@@ -59,7 +59,7 @@ export default async function Requests() {
             <span className='rewind-stat'>{userRequestsTotal}</span> content{' '}
             <span className='inline-flex items-center text-teal-300'>
               Requests
-              <QuestionMarkCircleIcon className='w-8 ml-1' />
+              <QuestionMarkCircleIcon className='ml-1 w-8' />
             </span>{' '}
             this year.
           </p>
@@ -70,7 +70,7 @@ export default async function Requests() {
             You haven&apos;t made any content{' '}
             <span className='inline-flex items-center text-teal-300'>
               Requests
-              <QuestionMarkCircleIcon className='w-8 ml-1' />
+              <QuestionMarkCircleIcon className='ml-1 w-8' />
             </span>{' '}
             this year! You can make them via{' '}
             <a
@@ -91,7 +91,7 @@ export default async function Requests() {
           <span className='rewind-stat'>{requestTotals.total}</span>{' '}
           <span className='inline-flex items-center text-teal-300'>
             Requests
-            <QuestionMarkCircleIcon className='w-8 ml-1' />
+            <QuestionMarkCircleIcon className='ml-1 w-8' />
           </span>{' '}
           this year.
         </p>
@@ -104,13 +104,13 @@ export default async function Requests() {
             <StatListItem
               count={requestTotals.movies}
               name='Movies'
-              icon={<FilmIcon className='w-8 ml-1' />}
+              icon={<FilmIcon className='ml-1 w-8' />}
               separator='for'
             />
             <StatListItem
               count={requestTotals.shows}
               name='Shows'
-              icon={<PlayCircleIcon className='w-8 ml-1' />}
+              icon={<PlayCircleIcon className='ml-1 w-8' />}
               separator='for'
             />
           </ul>

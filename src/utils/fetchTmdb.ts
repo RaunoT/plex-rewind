@@ -8,7 +8,7 @@ type TmdbResponse = any
 
 export default async function fetchTmdb(
   endpoint: string,
-  params?: QueryParams
+  params?: QueryParams,
 ): Promise<TmdbResponse> {
   const query = params
     ? '&' + new URLSearchParams(params as Record<string, string>).toString()

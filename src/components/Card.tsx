@@ -10,8 +10,8 @@ export default function Card({ children, className }: Props) {
     <div className='relative'>
       <article
         className={clsx(
-          'px-6 sm:px-8 pt-8 pb-3 rounded-3xl w-full flex flex-col bg-gradient sm:pb-5',
-          className
+          'bg-gradient flex w-full flex-col rounded-3xl px-6 pb-3 pt-8 sm:px-8 sm:pb-5',
+          className,
         )}
       >
         {children}

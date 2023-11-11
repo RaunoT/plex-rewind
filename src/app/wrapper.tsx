@@ -13,8 +13,8 @@ export default function Wrapper({ children }: Props) {
   return (
     <main
       className={clsx(
-        'flex flex-col items-center px-4 py-8 overflow-x-hidden min-height-screen sm:justify-center',
-        { 'justify-center': pathname === '/' }
+        'min-height-screen flex flex-col items-center overflow-x-hidden px-4 py-8 sm:justify-center',
+        { 'justify-center': pathname === '/' },
       )}
     >
       {children}

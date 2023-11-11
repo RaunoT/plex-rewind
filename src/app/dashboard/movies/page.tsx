@@ -40,7 +40,7 @@ async function getMovies(period: string): Promise<Movie[]> {
         {
           rating_key: key,
         },
-        true
+        true,
       )
       const movieTautulliData = movieTautulli.response?.data
       // Tautulli doesn't return rating for removed items, so we're using TMDB
@@ -57,7 +57,7 @@ async function getMovies(period: string): Promise<Movie[]> {
         tmdb_id: tmdb_id,
         imdb_id: imdb_id.imdb_id,
       }
-    })
+    }),
   )
 
   movies.map((movie, i) => {
@@ -78,7 +78,7 @@ async function getTotalDuration(period: string): Promise<string> {
   })
 
   return secondsToTime(
-    timeToSeconds(totalDuration.response?.data?.total_duration)
+    timeToSeconds(totalDuration.response?.data?.total_duration),
   )
 }
 

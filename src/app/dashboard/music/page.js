@@ -26,7 +26,7 @@ async function getArtists(period) {
 
   artists.map((artist) => {
     const listenedData = usersListenedData.find(
-      (uw) => uw.rating_key === artist.rating_key
+      (uw) => uw.rating_key === artist.rating_key,
     )
 
     artist.users_watched = listenedData?.users_watched
@@ -43,7 +43,7 @@ async function getTotalDuration(period) {
   })
 
   return secondsToTime(
-    timeToSeconds(totalDuration.response?.data?.total_duration)
+    timeToSeconds(totalDuration.response?.data?.total_duration),
   )
 }
 

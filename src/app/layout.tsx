@@ -12,7 +12,7 @@ type Props = {
 export default function RootLayout({ children }: Props) {
   return (
     <html lang='en'>
-      <body className='text-white bg-gradient-to-br from-indigo-900 via-neutral-800 to-neutral-900 min-height-screen'>
+      <body className='min-height-screen bg-gradient-to-br from-indigo-900 via-neutral-800 to-neutral-900 text-white'>
         <Wrapper>{children}</Wrapper>
       </body>
     </html>
