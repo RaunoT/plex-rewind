@@ -1,6 +1,6 @@
 import Card from '@/components/Card'
 import { ALLOWED_PERIODS, metaDescription } from '@/utils/constants'
-import fetchTautulli from '@/utils/fetchTautulli'
+import fetchTautulli, { TautulliItemRows } from '@/utils/fetchTautulli'
 import { bytesToSize, secondsToTime, timeToSeconds } from '@/utils/formatting'
 
 export const metadata = {
@@ -9,18 +9,21 @@ export const metadata = {
 }
 
 async function getArtists(period: number) {
-  const artistsData = await fetchTautulli<MediaItemRows>('get_home_stats', {
+  const artistsData = await fetchTautulli<TautulliItemRows>('get_home_stats', {
     stat_id: 'top_music',
     stats_count: 6,
     stats_type: 'duration',
     time_range: period,
   })
   const artists = artistsData.response?.data?.rows
-  const usersListened = await fetchTautulli<MediaItemRows>('get_home_stats', {
-    stat_id: 'popular_music',
-    stats_count: 25, // https://github.com/Tautulli/Tautulli/issues/2103
-    time_range: period,
-  })
+  const usersListened = await fetchTautulli<TautulliItemRows>(
+    'get_home_stats',
+    {
+      stat_id: 'popular_music',
+      stats_count: 25, // https://github.com/Tautulli/Tautulli/issues/2103
+      time_range: period,
+    },
+  )
   const usersListenedData = usersListened.response?.data?.rows
 
   artists.map((artist) => {
@@ -64,7 +67,7 @@ async function getTotalSize() {
 export default async function Music({
   searchParams,
 }: {
-  searchParams: PeriodSearchParams
+  searchParams: FilterQueryParams
 }) {
   const periodKey =
     searchParams.period && ALLOWED_PERIODS[searchParams.period]

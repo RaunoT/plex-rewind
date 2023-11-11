@@ -17,7 +17,7 @@ async function getUsers(
   requestsPeriod: string,
   periodString: string,
 ) {
-  const usersPromise = await fetchTautulli<MediaItemRows>('get_home_stats', {
+  const usersPromise = await fetchTautulli<TautulliItemRows>('get_home_stats', {
     stat_id: 'top_users',
     stats_count: 6,
     stats_type: 'duration',
@@ -124,7 +124,7 @@ async function getUsersCount() {
 export default async function Users({
   searchParams,
 }: {
-  searchParams: PeriodSearchParams
+  searchParams: FilterQueryParams
 }) {
   const periodKey =
     searchParams.period && ALLOWED_PERIODS[searchParams.period]

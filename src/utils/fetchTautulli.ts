@@ -1,16 +1,40 @@
+export type TautulliItem = {
+  title: string
+  year: number
+  total_plays: number
+  total_duration: number
+  users_watched: number | undefined
+  rating_key: number
+  thumb: string
+  is_deleted: boolean
+  rating: string
+  tmdb_id: number
+  imdb_id: string
+  user_thumb: string
+  user: string
+  requests: number
+  audiobook_plays_count: number
+  music_plays_count: number
+  movies_plays_count: number
+  shows_plays_count: number
+  user_id: number
+}
+
+export type TautulliItemRows = { rows: TautulliItem[] }
+
 type TautulliResponse<T> = {
   response: {
     data: T
   }
 }
 
-type SearchParams = {
+type QueryParams = {
   [key: string]: string | number
 }
 
 export default async function fetchTautulli<T>(
   query: string,
-  params?: SearchParams,
+  params?: QueryParams,
   cache?: boolean,
 ): Promise<TautulliResponse<T>> {
   const apiUrl = `${process.env.NEXT_PUBLIC_TAUTULLI_URL}/api/v2?apikey=${process.env.TAUTULLI_API_KEY}`

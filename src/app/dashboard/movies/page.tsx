@@ -1,7 +1,10 @@
 import Card from '@/components/Card'
 import { ALLOWED_PERIODS, metaDescription } from '@/utils/constants'
-import fetchTautulli, { getServerId } from '@/utils/fetchTautulli'
-import fetchTmdb from '@/utils/fetchTmdb'
+import fetchTautulli, {
+  TautulliItemRows,
+  getServerId,
+} from '@/utils/fetchTautulli'
+import fetchTmdb, { TmdbExternalId, TmdbItem } from '@/utils/fetchTmdb'
 import { bytesToSize, secondsToTime, timeToSeconds } from '@/utils/formatting'
 
 export const metadata = {
@@ -10,7 +13,7 @@ export const metadata = {
 }
 
 async function getMovies(period: number) {
-  const moviesData = await fetchTautulli<MediaItemRows>('get_home_stats', {
+  const moviesData = await fetchTautulli<TautulliItemRows>('get_home_stats', {
     stat_id: 'top_movies',
     stats_count: 6,
     stats_type: 'duration',
@@ -25,7 +28,7 @@ async function getMovies(period: number) {
 
   const additionalData = await Promise.all(
     ratingKeys.map(async (key, i) => {
-      const movieTautulli = await fetchTautulli<MediaItem>(
+      const movieTautulli = await fetchTautulli<TautulliItemRows>(
         'get_metadata',
         {
           rating_key: key,
@@ -34,16 +37,18 @@ async function getMovies(period: number) {
       )
       const movieTautulliData = movieTautulli.response?.data
       // Tautulli doesn't return rating for removed items, so we're using TMDB
-      const movieTmdb = await fetchTmdb('search/movie', {
+      const movieTmdb = await fetchTmdb<TmdbItem>('search/movie', {
         query: movies[i].title,
         first_air_date_year: movies[i].year,
       })
       const tmdbId = movieTmdb.results[0].id
-      const imdbId = await fetchTmdb(`movie/${tmdbId}/external_ids`)
+      const imdbId = await fetchTmdb<TmdbExternalId>(
+        `movie/${tmdbId}/external_ids`,
+      )
 
       return {
         is_deleted: Object.keys(movieTautulliData).length === 0,
-        rating: parseFloat(movieTmdb.results[0].vote_average).toFixed(1),
+        rating: movieTmdb.results[0].vote_average.toFixed(1),
         tmdb_id: tmdbId,
         imdb_id: imdbId.imdb_id,
       }
@@ -90,7 +95,7 @@ async function getTotalSize() {
 export default async function Movies({
   searchParams,
 }: {
-  searchParams: PeriodSearchParams
+  searchParams: FilterQueryParams
 }) {
   const periodKey =
     searchParams.period && ALLOWED_PERIODS[searchParams.period]
