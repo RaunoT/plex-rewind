@@ -8,6 +8,12 @@ import {
   PlayCircleIcon,
   QuestionMarkCircleIcon,
 } from '@heroicons/react/24/outline'
+import { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'Requests | Plex rewind',
+  description: metaDescription,
+}
 
 async function getRequestsTotals() {
   const requests = await fetchPaginatedOverseerrStats(
@@ -30,11 +36,6 @@ async function getUserRequestsTotal() {
   )
 
   return userRequestsTotal.length
-}
-
-export const metadata = {
-  title: 'Requests | Plex rewind',
-  description: metaDescription,
 }
 
 export default async function Requests() {

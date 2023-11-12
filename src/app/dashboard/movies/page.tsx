@@ -6,8 +6,9 @@ import fetchTautulli, {
 } from '@/utils/fetchTautulli'
 import fetchTmdb, { TmdbExternalId, TmdbItem } from '@/utils/fetchTmdb'
 import { bytesToSize, secondsToTime, timeToSeconds } from '@/utils/formatting'
+import { Metadata } from 'next'
 
-export const metadata = {
+export const metadata: Metadata = {
   title: 'Movies | Plex rewind dashboard',
   description: metaDescription,
 }

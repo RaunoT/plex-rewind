@@ -1,8 +1,9 @@
 import { metaDescription } from '@/utils/constants'
+import { Metadata } from 'next'
 import Link from 'next/link'
 import Title from './title'
 
-export const metadata = {
+export const metadata: Metadata = {
   title: 'Plex rewind',
   description: metaDescription,
 }

@@ -1,7 +1,8 @@
 import '@/styles/globals.css'
+import { Viewport } from 'next'
 import Wrapper from './wrapper'
 
-export const metadata = {
+export const viewport: Viewport = {
   themeColor: '#312e81',
 }
 

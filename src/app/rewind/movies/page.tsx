@@ -5,8 +5,9 @@ import { fetchUser } from '@/utils/fetchOverseerr'
 import fetchTautulli from '@/utils/fetchTautulli'
 import { removeAfterMinutes } from '@/utils/formatting'
 import { FilmIcon } from '@heroicons/react/24/outline'
+import { Metadata } from 'next'
 
-export const metadata = {
+export const metadata: Metadata = {
   title: 'Movies | Plex rewind',
   description: metaDescription,
 }

@@ -6,8 +6,9 @@ import {
 } from '@/utils/fetchOverseerr'
 import fetchTautulli, { TautulliItemRows } from '@/utils/fetchTautulli'
 import { secondsToTime, timeToSeconds } from '@/utils/formatting'
+import { Metadata } from 'next'
 
-export const metadata = {
+export const metadata: Metadata = {
   title: 'Users | Plex rewind dashboard',
   description: metaDescription,
 }
