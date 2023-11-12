@@ -1,3 +1,4 @@
+import PlexLogin from '@/components/PlexLogin'
 import { metaDescription } from '@/utils/constants'
 import { Metadata } from 'next'
 import Link from 'next/link'
@@ -16,6 +17,8 @@ export default function Page() {
   return (
     <div className='text-center'>
       <Title />
+
+      <PlexLogin />
 
       {!isRewindDisabled && (
         <Link href='/rewind/totals' className='button mx-auto mb-4'>
