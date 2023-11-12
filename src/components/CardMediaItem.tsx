@@ -3,7 +3,6 @@ import { TautulliItem } from '@/utils/fetchTautulli'
 import { pluralize, secondsToTime } from '@/utils/formatting'
 import { slideDown } from '@/utils/motion'
 import {
-  BookOpenIcon,
   CalendarDaysIcon,
   ClockIcon,
   EyeIcon,
@@ -201,12 +200,6 @@ export default function CardMediaItem({ data, i, type, serverId }: Props) {
                 <li className='flex items-center gap-1 sm:gap-2'>
                   <MusicalNoteIcon className='w-5 text-slate-900' />
                   {pluralize(data.music_plays_count, 'play')}
-                </li>
-              )}
-              {data.audiobook_plays_count > 0 && (
-                <li className='flex items-center gap-1 sm:gap-2'>
-                  <BookOpenIcon className='w-5 text-slate-900' />
-                  {pluralize(data.audiobook_plays_count, 'play')}
                 </li>
               )}
             </>

@@ -13,7 +13,6 @@ export type TautulliItem = {
   user_thumb: string
   user: string
   requests: number
-  audiobook_plays_count: number
   music_plays_count: number
   movies_plays_count: number
   shows_plays_count: number

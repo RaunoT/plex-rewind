@@ -6,7 +6,6 @@ import { fetchUser } from '@/utils/fetchOverseerr'
 import fetchTautulli from '@/utils/fetchTautulli'
 import { bytesToSize, secondsToTime, timeToSeconds } from '@/utils/formatting'
 import {
-  BookOpenIcon,
   ChartPieIcon,
   ClockIcon,
   FilmIcon,
@@ -36,31 +35,25 @@ async function getUserTotalDuration() {
 }
 
 async function getlibrariesTotalSize() {
-  const [musicMediaInfo, showsMediaInfo, moviesMediaInfo, audiobooksMediaInfo] =
-    await Promise.all([
-      fetchTautulli<{ total_file_size: number }>('get_library_media_info', {
-        section_id: 1,
-        length: 0,
-      }),
-      fetchTautulli<{ total_file_size: number }>('get_library_media_info', {
-        section_id: 2,
-        length: 0,
-      }),
-      fetchTautulli<{ total_file_size: number }>('get_library_media_info', {
-        section_id: 3,
-        length: 0,
-      }),
-      fetchTautulli<{ total_file_size: number }>('get_library_media_info', {
-        section_id: 4,
-        length: 0,
-      }),
-    ])
+  const [musicMediaInfo, showsMediaInfo, moviesMediaInfo] = await Promise.all([
+    fetchTautulli<{ total_file_size: number }>('get_library_media_info', {
+      section_id: 1,
+      length: 0,
+    }),
+    fetchTautulli<{ total_file_size: number }>('get_library_media_info', {
+      section_id: 2,
+      length: 0,
+    }),
+    fetchTautulli<{ total_file_size: number }>('get_library_media_info', {
+      section_id: 3,
+      length: 0,
+    }),
+  ])
 
   return bytesToSize(
     musicMediaInfo.response?.data?.total_file_size +
       showsMediaInfo.response?.data?.total_file_size +
-      moviesMediaInfo.response?.data?.total_file_size +
-      audiobooksMediaInfo.response?.data?.total_file_size,
+      moviesMediaInfo.response?.data?.total_file_size,
   )
 }
 
@@ -195,16 +188,6 @@ export default async function Total() {
                     count={parseInt(library.child_count)}
                     name='Songs'
                     icon={<MusicalNoteIcon className='ml-1 w-8' />}
-                  />
-                )
-
-              case 'Audiobooks':
-                return (
-                  <StatListItem
-                    key={library.section_id}
-                    count={parseInt(library.parent_count)}
-                    name='Audiobooks'
-                    icon={<BookOpenIcon className='ml-1 w-8' />}
                   />
                 )
             }

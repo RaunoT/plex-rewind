@@ -73,20 +73,11 @@ async function getUsers(
           section_id: 1,
         },
       )
-      const userAudiobook = await fetchTautulli<{ recordsFiltered: number }>(
-        'get_history',
-        {
-          user_id: user.user_id,
-          after: periodString,
-          section_id: 4,
-        },
-      )
 
       return {
         movies_plays_count: userMovies.response?.data?.recordsFiltered,
         shows_plays_count: userShows.response?.data?.recordsFiltered,
         music_plays_count: userMusic.response?.data?.recordsFiltered,
-        audiobook_plays_count: userAudiobook.response?.data?.recordsFiltered,
       }
     }),
   )
@@ -96,7 +87,6 @@ async function getUsers(
     user.movies_plays_count = usersPlaysAndDurations[i].movies_plays_count
     user.shows_plays_count = usersPlaysAndDurations[i].shows_plays_count
     user.music_plays_count = usersPlaysAndDurations[i].music_plays_count
-    user.audiobook_plays_count = usersPlaysAndDurations[i].audiobook_plays_count
   })
 
   return users
