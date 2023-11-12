@@ -1,7 +1,13 @@
-import GoogleAnalytics from '@/components/GoogleAnalytics'
 import '@/styles/globals.css'
-import { Viewport } from 'next'
-import Wrapper from './wrapper'
+import { metaDescription } from '@/utils/constants'
+import { Metadata, Viewport } from 'next'
+import GoogleAnalytics from './GoogleAnalytics'
+import Wrapper from './Wrapper'
+
+export const metadata: Metadata = {
+  title: 'Plex rewind',
+  description: metaDescription,
+}
 
 export const viewport: Viewport = {
   themeColor: '#312e81',
