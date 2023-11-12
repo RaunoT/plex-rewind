@@ -57,7 +57,7 @@ export default function PlexLoginComponent() {
           user: {
             thumb: result.user.$.thumb,
             name: result.user.$.title,
-            isLoggedIn: isLoggedIn,
+            isLoggedIn: true,
           },
         })
       } catch (error) {
