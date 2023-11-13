@@ -2,17 +2,17 @@
 
 import PlexLogin from '@/app/PlexLogin'
 import plexSvg from '@/assets/plex.svg'
+import useSession from '@/hooks/useSession'
 import { fadeIn } from '@/utils/motion'
 import { motion } from 'framer-motion'
 import Image from 'next/image'
 import Link from 'next/link'
-import { useGlobalContext } from './Wrapper'
 
 export default function Page() {
-  const { globalState } = useGlobalContext()
-  const isLoggedIn = globalState.user?.isLoggedIn
-  const userThumb = globalState.user?.thumb
-  const userName = globalState.user?.name
+  const { session, clearSession } = useSession()
+  const userName = session.user?.name
+  const userThumb = session.user?.thumb
+  const isLoggedIn = session.isLoggedIn
   const isRewindDisabled = process.env.NEXT_PUBLIC_IS_REWIND_DISABLED === 'true'
   const isDashboardDisabled =
     process.env.NEXT_PUBLIC_IS_DASHBOARD_DISABLED === 'true'
@@ -72,6 +72,15 @@ export default function Page() {
         >
           Dashboard
         </Link>
+      )}
+
+      {isLoggedIn && (
+        <button
+          onClick={() => clearSession()}
+          className='mx-auto mt-32 block text-slate-500'
+        >
+          Sign out
+        </button>
       )}
     </div>
   )

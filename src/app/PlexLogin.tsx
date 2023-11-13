@@ -1,17 +1,17 @@
 'use client'
 
+import useSession from '@/hooks/useSession'
 import { useRouter } from 'next/navigation'
 import { IPlexClientDetails, PlexOauth } from 'plex-oauth'
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import xml2js from 'xml2js'
-import { useGlobalContext } from './Wrapper'
 
 const clientInformation: IPlexClientDetails = {
   clientIdentifier: 'plex_rewind',
   product: 'Plex Rewind',
   device: 'YOUR_DEVICE_NAME', // TODO:: What should this be?
   version: '1',
-  forwardUrl: 'http://localhost:3000', // TODO: Add site URL
+  forwardUrl: process.env.NEXT_PUBLIC_SITE_URL,
   platform: 'Web',
   urlencode: true,
 }
@@ -19,15 +19,15 @@ const clientInformation: IPlexClientDetails = {
 const plexOauth = new PlexOauth(clientInformation)
 
 export default function PlexLoginComponent() {
-  const { globalState, setGlobalState } = useGlobalContext()
-  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false)
+  const { session, setPlexSession } = useSession()
+  const isLoggedIn = session?.isLoggedIn
   const router = useRouter()
 
   const handleLogin = async () => {
     try {
       const [hostedUILink, pinId] = await plexOauth.requestHostedLoginURL()
 
-      localStorage.setItem('plexPinId', pinId.toString())
+      sessionStorage.setItem('plexPinId', pinId.toString())
       router.push(hostedUILink)
     } catch (err) {
       console.error('Login failed:', err)
@@ -35,7 +35,7 @@ export default function PlexLoginComponent() {
   }
 
   useEffect(() => {
-    const fetchUser = async (authToken: string) => {
+    const fetchSession = async (authToken: string) => {
       try {
         const response = await fetch(`https://plex.tv/api/v2/user`, {
           method: 'GET',
@@ -52,14 +52,15 @@ export default function PlexLoginComponent() {
         const parser = new xml2js.Parser()
         const result = await parser.parseStringPromise(xmlData)
 
-        setGlobalState({
-          ...globalState,
+        const plexSession = {
           user: {
-            thumb: result.user.$.thumb,
             name: result.user.$.title,
-            isLoggedIn: true,
+            thumb: result.user.$.thumb,
+            plexId: result.user.$.id,
           },
-        })
+          isLoggedIn: true,
+        }
+        setPlexSession(plexSession)
       } catch (error) {
         console.error('Error fetching or parsing data:', error)
 
@@ -68,7 +69,7 @@ export default function PlexLoginComponent() {
     }
 
     const getAuthToken = async () => {
-      const storedPinId = Number(localStorage.getItem('plexPinId'))
+      const storedPinId = Number(sessionStorage.getItem('plexPinId'))
 
       if (storedPinId) {
         try {
@@ -77,9 +78,8 @@ export default function PlexLoginComponent() {
           const token = await plexOauth.checkForAuthToken(storedPinId)
 
           if (token) {
-            localStorage.removeItem('plexPinId')
-            fetchUser(token)
-            setIsLoggedIn(true)
+            sessionStorage.removeItem('plexPinId')
+            fetchSession(token)
           }
         } catch (err) {
           console.error(err)
@@ -88,7 +88,7 @@ export default function PlexLoginComponent() {
     }
 
     getAuthToken()
-  }, [globalState, setGlobalState, isLoggedIn])
+  }, [isLoggedIn, setPlexSession])
 
   return (
     !isLoggedIn && (
