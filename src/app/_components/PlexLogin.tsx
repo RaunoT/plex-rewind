@@ -9,7 +9,7 @@ import xml2js from 'xml2js'
 const clientInformation: IPlexClientDetails = {
   clientIdentifier: 'plex_rewind',
   product: 'Plex Rewind',
-  device: 'YOUR_DEVICE_NAME', // TODO:: What should this be?
+  device: 'browser', // TODO: What should this be?
   version: '1',
   forwardUrl: process.env.NEXT_PUBLIC_SITE_URL,
   platform: 'Web',
@@ -19,7 +19,7 @@ const clientInformation: IPlexClientDetails = {
 const plexOauth = new PlexOauth(clientInformation)
 
 export default function PlexLoginComponent() {
-  const { session, setPlexSession } = useSession()
+  const { session, setSession } = useSession()
   const isLoggedIn = session?.isLoggedIn
   const router = useRouter()
 
@@ -60,7 +60,7 @@ export default function PlexLoginComponent() {
           },
           isLoggedIn: true,
         }
-        setPlexSession(plexSession)
+        setSession(plexSession)
       } catch (error) {
         console.error('Error fetching or parsing data:', error)
 
@@ -88,7 +88,7 @@ export default function PlexLoginComponent() {
     }
 
     getAuthToken()
-  }, [isLoggedIn, setPlexSession])
+  }, [isLoggedIn, setSession])
 
   return (
     !isLoggedIn && (

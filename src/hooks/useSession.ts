@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 
 type SessionProps = {
   user?: {
@@ -6,21 +6,15 @@ type SessionProps = {
     thumb: string
     plexId: number
   }
-  isLoggedIn?: boolean
+  isLoggedIn: boolean
+}
+
+const defaultSession: SessionProps = {
+  isLoggedIn: false,
 }
 
 export default function useSession() {
-  const [session, setSession] = useState<SessionProps>({})
-
-  useEffect(() => {
-    const storage = sessionStorage.getItem('plexSession')
-
-    if (storage) {
-      const storedSession = JSON.parse(storage)
-
-      setSession(storedSession)
-    }
-  }, [])
+  const [session, setSession] = useState<SessionProps>(defaultSession)
 
   const setPlexSession = (newValue: SessionProps) => {
     if (typeof window !== 'undefined') {
@@ -30,9 +24,26 @@ export default function useSession() {
   }
 
   const clearSession = () => {
-    sessionStorage.removeItem('plexSession')
-    setSession({})
+    if (typeof window !== 'undefined') {
+      sessionStorage.removeItem('plexSession')
+      setSession(defaultSession)
+    }
   }
 
-  return { session, setPlexSession, clearSession }
+  const memoizedSession = useMemo(() => session, [session])
+
+  useEffect(() => {
+    const storage = sessionStorage.getItem('plexSession')
+
+    if (storage) {
+      const storedSession = JSON.parse(storage)
+      setSession(storedSession)
+    }
+  }, [])
+
+  return {
+    session: memoizedSession,
+    setSession: setPlexSession,
+    clearSession,
+  }
 }

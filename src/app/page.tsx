@@ -27,6 +27,7 @@ export default function Page() {
             className='rounded-full object-cover'
             sizes='10rem'
             fill
+            priority
           />
         </div>
       )}
@@ -77,7 +78,7 @@ export default function Page() {
       {isLoggedIn && (
         <button
           onClick={() => clearSession()}
-          className='mx-auto mt-32 block text-slate-500'
+          className='mx-auto mt-16 block opacity-50'
         >
           Sign out
         </button>
