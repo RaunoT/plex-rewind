@@ -1,6 +1,6 @@
 'use client'
 
-import PlexLogin from '@/app/PlexLogin'
+import PlexLogin from '@/app/_components/PlexLogin'
 import plexSvg from '@/assets/plex.svg'
 import useSession from '@/hooks/useSession'
 import { fadeIn } from '@/utils/motion'

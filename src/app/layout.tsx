@@ -1,8 +1,8 @@
 import '@/styles/globals.css'
 import { metaDescription } from '@/utils/constants'
 import { Metadata, Viewport } from 'next'
-import GoogleAnalytics from './GoogleAnalytics'
-import Wrapper from './Wrapper'
+import GoogleAnalytics from './_components/GoogleAnalytics'
+import Wrapper from './_components/Wrapper'
 
 export const metadata: Metadata = {
   title: 'Plex rewind',
