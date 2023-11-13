@@ -20,12 +20,9 @@ export const fadeIn = {
 
 export const animateCardText = {
   hidden: {
-    //TODO: opacity: 0 broken on initial render
-    opacity: 1,
     y: 50,
   },
   show: {
-    opacity: 1,
     y: 0,
   },
   scaleDown: (scaleDelay: number) => ({

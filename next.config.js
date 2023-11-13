@@ -11,7 +11,7 @@ module.exports = {
       },
       {
         protocol: 'https',
-        hostname: 'tautulli.rauno.eu',
+        hostname: 'tautulli.rauno.eu', // TODO: How to make this adjustable?
       },
     ],
   },

@@ -73,7 +73,7 @@ export default function PlexLoginComponent() {
 
       if (storedPinId) {
         try {
-          // TODO: We should not use the token publicly
+          // TODO: We should store the token for future requests, but not use it on the frontend
           // https://github.com/Dmbob/plex-oauth#overview
           const token = await plexOauth.checkForAuthToken(storedPinId)
 
