@@ -19,8 +19,7 @@ const clientInformation: IPlexClientDetails = {
 const plexOauth = new PlexOauth(clientInformation)
 
 export default function PlexLoginComponent() {
-  const { session, setSession } = useSession()
-  const isLoggedIn = session?.isLoggedIn
+  const { setSession } = useSession()
   const router = useRouter()
 
   const handleLogin = async () => {
@@ -88,16 +87,14 @@ export default function PlexLoginComponent() {
     }
 
     getAuthToken()
-  }, [isLoggedIn, setSession])
+  }, [setSession])
 
   return (
-    !isLoggedIn && (
-      <button
-        className='button button-sm mx-auto from-yellow-500 via-yellow-600 to-neutral-700'
-        onClick={handleLogin}
-      >
-        Log in with Plex
-      </button>
-    )
+    <button
+      className='button button-sm mx-auto from-yellow-500 via-yellow-600 to-neutral-700'
+      onClick={handleLogin}
+    >
+      Log in with Plex
+    </button>
   )
 }

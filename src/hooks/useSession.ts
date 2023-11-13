@@ -20,6 +20,7 @@ export default function useSession() {
     if (typeof window !== 'undefined') {
       sessionStorage.setItem('plexSession', JSON.stringify(newValue))
       setSession(newValue)
+      window.dispatchEvent(new Event('sessionUpdate'))
     }
   }
 
@@ -33,11 +34,20 @@ export default function useSession() {
   const memoizedSession = useMemo(() => session, [session])
 
   useEffect(() => {
-    const storage = sessionStorage.getItem('plexSession')
+    const handleSessionChange = () => {
+      const storage = sessionStorage.getItem('plexSession')
 
-    if (storage) {
-      const storedSession = JSON.parse(storage)
-      setSession(storedSession)
+      if (storage) {
+        const storedSession = JSON.parse(storage)
+        setSession(storedSession)
+      }
+    }
+
+    window.addEventListener('sessionUpdate', handleSessionChange)
+    handleSessionChange()
+
+    return () => {
+      window.removeEventListener('sessionUpdate', handleSessionChange)
     }
   }, [])
 
