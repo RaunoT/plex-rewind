@@ -78,7 +78,7 @@ export default function Page() {
       {isLoggedIn && (
         <button
           onClick={() => clearSession()}
-          className='mx-auto mt-16 block opacity-50'
+          className='mx-auto mt-16 block opacity-50 hover:opacity-40'
         >
           Sign out
         </button>
