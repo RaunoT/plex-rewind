@@ -1,5 +1,4 @@
 import { AUTH_COOKIE_MAX_AGE, AUTH_COOKIE_NAME } from '@/utils/constants'
-import { serialize } from 'cookie'
 import { sign } from 'jsonwebtoken'
 import { PlexOauth } from 'plex-oauth'
 
@@ -9,24 +8,20 @@ export async function POST(request: Request) {
   const authToken = await plexOauth.checkForAuthToken(body.pinId)
   const secret = process.env.JWT_SECRET || ''
   const token = sign({ authToken }, secret, { expiresIn: AUTH_COOKIE_MAX_AGE })
-  const serialized = serialize(AUTH_COOKIE_NAME, token, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: 'strict',
-    path: '/',
-    maxAge: AUTH_COOKIE_MAX_AGE,
-  })
-  const response = {
-    message: 'Successfully authenticated',
-  }
+  const cookieParts = [
+    `${AUTH_COOKIE_NAME}=${encodeURIComponent(token)}`,
+    'HttpOnly',
+    process.env.NODE_ENV === 'production' ? 'Secure' : '',
+    'SameSite=Strict',
+    'Path=/',
+    `Max-Age=${AUTH_COOKIE_MAX_AGE}`,
+  ]
+  const cookie = cookieParts.filter(Boolean).join('; ')
 
-  return (
-    new Response(JSON.stringify(response)),
-    {
-      status: 200,
-      headers: {
-        'Set-Cookie': serialized,
-      },
-    }
-  )
+  return new Response(JSON.stringify({ message: 'Authenticated!' }), {
+    status: 200,
+    headers: {
+      'Set-Cookie': cookie,
+    },
+  })
 }

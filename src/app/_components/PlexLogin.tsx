@@ -32,20 +32,19 @@ export default function PlexLoginComponent() {
   }
 
   const authUser = async () => {
-    const res = await fetch('/api/auth', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        pinId: sessionStorage.getItem('plexPinId'),
-        clientInformation,
-      }),
-    })
-
-    if (res.ok) {
-      const data = await res.json()
-      console.log(data)
+    try {
+      await fetch('/api/auth', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          pinId: sessionStorage.getItem('plexPinId'),
+          clientInformation,
+        }),
+      })
+    } catch (e) {
+      console.error('User authentication failed', e)
     }
   }
 

@@ -2,25 +2,64 @@
 
 import PlexLogin from '@/app/_components/PlexLogin'
 import plexSvg from '@/assets/plex.svg'
-import useSession from '@/hooks/useSession'
+import Loader from '@/components/Loader'
 import { fadeIn } from '@/utils/motion'
 import { motion } from 'framer-motion'
 import Image from 'next/image'
 import Link from 'next/link'
+import { useEffect, useState } from 'react'
 
 export default function Page() {
-  const { session, clearSession } = useSession()
-  const userName = session.user?.name
-  const userThumb = session.user?.thumb
-  const isLoggedIn = session.isLoggedIn
+  const [userName, setUserName] = useState<string>('')
+  const [userThumb, setUserThumb] = useState<string>('')
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false)
+  const [isLoading, setIsLoading] = useState<boolean>(true)
   const isRewindDisabled = process.env.NEXT_PUBLIC_IS_REWIND_DISABLED === 'true'
   const isDashboardDisabled =
     process.env.NEXT_PUBLIC_IS_DASHBOARD_DISABLED === 'true'
 
+  const fetchUser = async () => {
+    try {
+      const res = await fetch('/api/me')
+
+      if (res.ok) {
+        const data = await res.json()
+
+        setUserName(data.user.name)
+        setUserThumb(data.user.thumb)
+        setIsLoggedIn(data.isLoggedIn)
+      } else {
+        console.error('Failed to fetch user:', res.status)
+      }
+    } catch (error) {
+      console.error('Error fetching user:', error)
+    }
+
+    setIsLoading(false)
+  }
+
+  const logOut = async () => {
+    try {
+      const res = await fetch('/api/logout')
+
+      if (res.ok) {
+        setIsLoggedIn(false)
+      } else {
+        console.error('Failed to log out:', res.status)
+      }
+    } catch (error) {
+      console.error('Error logging out:', error)
+    }
+  }
+
+  useEffect(() => {
+    fetchUser()
+  }, [])
+
   return (
-    <div className='text-center'>
+    <div className='flex flex-col items-center text-center'>
       {userThumb && (
-        <div className='relative mx-auto mb-5 h-20 w-20'>
+        <div className='relative mb-5 h-20 w-20'>
           <Image
             src={userThumb}
             alt={`${userName} profile picture`}
@@ -32,32 +71,34 @@ export default function Page() {
         </div>
       )}
 
-      <h1 className='mb-6 flex items-center gap-4 text-4xl font-bold'>
-        <motion.div
-          initial={{ opacity: 0, x: -50 }}
-          animate={{ opacity: 1, x: 0 }}
-        >
-          <Image
-            src={plexSvg}
-            className='h-12 w-auto'
-            alt='Plex logo'
-            priority
-          />
-        </motion.div>
-        <motion.span
-          variants={fadeIn}
-          initial='hidden'
-          animate='show'
-          transition={{ delay: 0.4 }}
-        >
-          rewind
-        </motion.span>
-      </h1>
+      {!isLoading && (
+        <h1 className='mb-6 flex items-center gap-4 text-4xl font-bold'>
+          <motion.div
+            initial={{ opacity: 0, x: -50 }}
+            animate={{ opacity: 1, x: 0 }}
+          >
+            <Image
+              src={plexSvg}
+              className='h-12 w-auto'
+              alt='Plex logo'
+              priority
+            />
+          </motion.div>
+          <motion.span
+            variants={fadeIn}
+            initial='hidden'
+            animate='show'
+            transition={{ delay: 0.4 }}
+          >
+            rewind
+          </motion.span>
+        </h1>
+      )}
 
-      {!isLoggedIn && <PlexLogin />}
+      {isLoading ? <Loader /> : !isLoggedIn && <PlexLogin />}
 
       {!isRewindDisabled && isLoggedIn && (
-        <Link href='/rewind/totals' className='button mx-auto mb-4'>
+        <Link href='/rewind/totals' className='button mb-4'>
           Get started
         </Link>
       )}
@@ -66,9 +107,7 @@ export default function Page() {
         <Link
           href='/dashboard/shows'
           className={
-            isRewindDisabled
-              ? 'button mx-auto'
-              : 'text-slate-300 hover:opacity-75'
+            isRewindDisabled ? 'button' : 'text-slate-300 hover:opacity-75'
           }
         >
           Dashboard
@@ -77,8 +116,8 @@ export default function Page() {
 
       {isLoggedIn && (
         <button
-          onClick={() => clearSession()}
-          className='mx-auto mt-16 block opacity-50 hover:opacity-40'
+          onClick={() => logOut()}
+          className='mt-16 block opacity-50 hover:opacity-40'
         >
           Sign out
         </button>
