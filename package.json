@@ -16,6 +16,7 @@
     "@heroicons/react": "^2.0.18",
     "autoprefixer": "^10.4.16",
     "clsx": "^2.0.0",
+    "cookie": "^0.6.0",
     "framer-motion": "^10.16.4",
     "jsonwebtoken": "^9.0.2",
     "lodash": "^4.17.21",

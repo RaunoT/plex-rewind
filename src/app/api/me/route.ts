@@ -52,12 +52,13 @@ export async function GET() {
     const xmlData = await userResponse.text()
     const jsonData = await parseStringPromise(xmlData)
     const data = jsonData.user.$
-    const { title, id, thumb } = data
+    const { title, id, thumb, email } = data
     const userData = {
       user: {
         name: title,
         id: id,
         thumb: thumb,
+        email: email,
       },
       isLoggedIn: true,
     }

@@ -33,7 +33,7 @@ export default function PlexLoginComponent() {
 
   const authUser = async () => {
     try {
-      await fetch('/api/auth', {
+      const res = await fetch('/api/auth', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -43,6 +43,10 @@ export default function PlexLoginComponent() {
           clientInformation,
         }),
       })
+
+      if (!res.ok) {
+        console.error('User authentication failed:', res.status)
+      }
     } catch (e) {
       console.error('User authentication failed', e)
     }

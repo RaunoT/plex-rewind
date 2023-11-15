@@ -22,15 +22,14 @@ export default function Page() {
     try {
       const res = await fetch('/api/me')
 
-      if (res.ok) {
-        const data = await res.json()
-
-        setUserName(data.user.name)
-        setUserThumb(data.user.thumb)
-        setIsLoggedIn(data.isLoggedIn)
-      } else {
+      if (!res.ok) {
         console.error('Failed to fetch user:', res.status)
       }
+      const data = await res.json()
+
+      setUserName(data.user.name)
+      setUserThumb(data.user.thumb)
+      setIsLoggedIn(data.isLoggedIn)
     } catch (error) {
       console.error('Error fetching user:', error)
     }
@@ -42,11 +41,11 @@ export default function Page() {
     try {
       const res = await fetch('/api/logout')
 
-      if (res.ok) {
-        setIsLoggedIn(false)
-      } else {
+      if (!res.ok) {
         console.error('Failed to log out:', res.status)
       }
+
+      setIsLoggedIn(false)
     } catch (error) {
       console.error('Error logging out:', error)
     }
