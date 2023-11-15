@@ -34,30 +34,49 @@ type QueryParams = {
 export default async function fetchTautulli<T>(
   query: string,
   params?: QueryParams,
-  cache?: boolean,
+  cache: boolean = true,
 ): Promise<TautulliResponse<T>> {
-  const apiUrl = `${process.env.NEXT_PUBLIC_TAUTULLI_URL}/api/v2?apikey=${process.env.TAUTULLI_API_KEY}`
+  const tautulliUrl = process.env.NEXT_PUBLIC_TAUTULLI_URL
+  const apiKey = process.env.TAUTULLI_API_KEY
 
-  // Convert numeric params to strings
-  const convertedParams: { [key: string]: string } = {}
+  if (!tautulliUrl) {
+    throw new Error('Tautulli URL is not configured!')
+  }
+
+  if (!apiKey) {
+    throw new Error('Tautulli API key is not configured!')
+  }
+
+  const apiUrl = `${process.env.NEXT_PUBLIC_TAUTULLI_URL}/api/v2?apikey=${process.env.TAUTULLI_API_KEY}`
+  const queryParams = new URLSearchParams()
   if (params) {
-    for (const key in params) {
-      convertedParams[key] = String(params[key])
+    for (const [key, value] of Object.entries(params)) {
+      queryParams.set(key, String(value))
     }
   }
 
-  const paramsStr = new URLSearchParams(convertedParams).toString()
-  const res = await fetch(
-    `${apiUrl}&cmd=${query}${paramsStr ? '&' + paramsStr : ''}`,
-    {
-      next: { revalidate: cache ? 3600 : 0 },
-    },
-  )
-  const data = await res.json()
+  try {
+    const res = await fetch(`${apiUrl}&cmd=${query}&${queryParams}`, {
+      cache: cache ? 'force-cache' : 'no-store',
+    })
 
-  return data
+    if (!res.ok) {
+      throw new Error(
+        `Tautulli API request failed: ${res.status} ${res.statusText}`,
+      )
+    }
+
+    return res.json()
+  } catch (error) {
+    throw new Error(
+      `Failed to fetch from Tautulli API: ${
+        error instanceof Error ? error.message : String(error)
+      }`,
+    )
+  }
 }
 
+// TODO: Improve this
 export async function getServerId(): Promise<string> {
   const serverIdPromise = await fetchTautulli<{ identifier: string }>(
     'get_server_id',

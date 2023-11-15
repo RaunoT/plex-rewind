@@ -1,8 +1,8 @@
 import Card from '@/components/Card'
 import CardText from '@/components/CardText'
 import { ALLOWED_PERIODS, metaDescription } from '@/utils/constants'
-import { fetchUser } from '@/utils/fetchOverseerr'
 import fetchTautulli from '@/utils/fetchTautulli'
+import fetchUser from '@/utils/fetchUser'
 import { removeAfterMinutes } from '@/utils/formatting'
 import { FilmIcon } from '@heroicons/react/24/outline'
 import { Metadata } from 'next'
@@ -13,11 +13,12 @@ export const metadata: Metadata = {
 }
 
 async function getTotalDuration() {
-  const user = await fetchUser()
+  const userData = await fetchUser()
+  const { user } = userData
   const totalDuration = await fetchTautulli<{ total_duration: string }>(
     'get_history',
     {
-      user_id: user.plexId,
+      user_id: user.id,
       section_id: 3,
       after: ALLOWED_PERIODS.thisYear.string,
       length: 0,

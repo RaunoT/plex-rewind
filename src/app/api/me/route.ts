@@ -1,44 +1,59 @@
 import { AUTH_COOKIE_NAME } from '@/utils/constants'
-import { decode, verify } from 'jsonwebtoken'
+import { errorResponse } from '@/utils/response'
+import { JwtPayload, verify } from 'jsonwebtoken'
 import { cookies } from 'next/headers'
 import { parseStringPromise } from 'xml2js'
+
+interface AuthPayload extends JwtPayload {
+  authToken: string
+}
 
 export async function GET() {
   const cookiesStore = cookies()
   const authCookie = cookiesStore.get(AUTH_COOKIE_NAME)
 
   if (!authCookie) {
-    return new Response(null, {
-      status: 401,
-      statusText: 'Unauthorized!',
-    })
+    return errorResponse('Unauthorized: No cookie found!', 401)
   }
 
-  const { value } = authCookie
-  const secret = process.env.JWT_SECRET || ''
+  const secret = process.env.JWT_SECRET
+
+  if (!secret) {
+    return errorResponse('JWT secret not configured', 500)
+  }
+
+  let decodedToken
 
   try {
-    verify(value, secret)
-  } catch (e) {
-    return new Response(null, {
-      status: 401,
-      statusText: 'Unauthorized!',
-    })
+    decodedToken = verify(authCookie.value, secret) as AuthPayload
+
+    if (!decodedToken) {
+      return errorResponse('Unauthorized: Failed to verify token!', 401)
+    }
+  } catch (error) {
+    if (error instanceof Error) {
+      return errorResponse('Unauthorized: Invalid token!', 401, error.message)
+    } else {
+      return errorResponse('Unauthorized: Invalid token!', 401)
+    }
   }
 
-  const userResponse = await fetch('https://plex.tv/api/v2/user', {
-    headers: {
-      'X-Plex-Token': decode(value).authToken,
-    },
-  })
+  try {
+    const userResponse = await fetch('https://plex.tv/api/v2/user', {
+      headers: {
+        'X-Plex-Token': decodedToken.authToken,
+      },
+    })
 
-  if (userResponse.ok) {
+    if (!userResponse.ok) {
+      return errorResponse('Failed to fetch user data!', userResponse.status)
+    }
+
     const xmlData = await userResponse.text()
     const jsonData = await parseStringPromise(xmlData)
-    const userData = jsonData.user.$
-    const { title, id, thumb } = userData
-
-    const plexData = {
+    const data = jsonData.user.$
+    const { title, id, thumb } = data
+    const userData = {
       user: {
         name: title,
         id: id,
@@ -47,17 +62,17 @@ export async function GET() {
       isLoggedIn: true,
     }
 
-    return new Response(JSON.stringify(plexData), {
+    return Response.json(userData, {
       status: 200,
+      headers: {
+        'Content-Type': 'application/json',
+      },
     })
+  } catch (error) {
+    if (error instanceof Error) {
+      return errorResponse('Failed to fetch user data!', 400, error.message)
+    } else {
+      return errorResponse('Failed to fetch user data!', 400)
+    }
   }
-
-  return new Response(
-    JSON.stringify({
-      message: 'Something went wrong while fetching user information!',
-    }),
-    {
-      status: 400,
-    },
-  )
 }

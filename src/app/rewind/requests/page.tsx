@@ -29,6 +29,7 @@ async function getRequestsTotals() {
 }
 
 async function getUserRequestsTotal() {
+  // TODO: Get overseerr id
   const user = await fetchUser()
   const userRequestsTotal = await fetchPaginatedOverseerrStats(
     `user/${user.id}/requests`,

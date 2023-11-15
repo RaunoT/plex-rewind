@@ -12,12 +12,34 @@ export default async function fetchTmdb<T>(
   endpoint: string,
   params?: QueryParams,
 ): Promise<T> {
-  const query = params
-    ? '&' + new URLSearchParams(params as Record<string, string>).toString()
-    : ''
-  const apiUrl = `https://api.themoviedb.org/3/${endpoint}?api_key=${process.env.TMDB_API_KEY}${query}`
-  const res = await fetch(apiUrl, { next: { revalidate: 3600 } })
-  const data = await res.json()
+  const apiKey = process.env.TMDB_API_KEY
+  if (!apiKey) {
+    throw new Error('TMDB API key is not set!')
+  }
 
-  return data
+  const queryParams = new URLSearchParams()
+  if (params) {
+    for (const [key, value] of Object.entries(params)) {
+      queryParams.set(key, String(value))
+    }
+  }
+
+  try {
+    const apiUrl = `https://api.themoviedb.org/3/${endpoint}?api_key=${apiKey}&${queryParams}`
+    const res = await fetch(apiUrl)
+
+    if (!res.ok) {
+      throw new Error(
+        `TMDB API request failed: ${res.status} ${res.statusText}`,
+      )
+    }
+
+    return res.json()
+  } catch (error) {
+    throw new Error(
+      `Failed to fetch from TMDB API: ${
+        error instanceof Error ? error.message : String(error)
+      }`,
+    )
+  }
 }
