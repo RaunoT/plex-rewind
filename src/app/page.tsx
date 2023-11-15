@@ -25,11 +25,11 @@ export default function Page() {
       if (!res.ok) {
         console.error('Failed to fetch user:', res.status)
       }
-      const data = await res.json()
+      const user = await res.json()
 
-      setUserName(data.user.name)
-      setUserThumb(data.user.thumb)
-      setIsLoggedIn(data.isLoggedIn)
+      setUserName(user.name)
+      setUserThumb(user.thumb)
+      setIsLoggedIn(user.isLoggedIn)
     } catch (error) {
       console.error('Error fetching user:', error)
     }

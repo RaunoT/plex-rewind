@@ -8,6 +8,14 @@ interface AuthPayload extends JwtPayload {
   authToken: string
 }
 
+type UserData = {
+  name: string
+  id: string
+  thumb: string
+  email: string
+  isLoggedIn: boolean
+}
+
 export async function GET() {
   const cookiesStore = cookies()
   const authCookie = cookiesStore.get(AUTH_COOKIE_NAME)
@@ -53,13 +61,11 @@ export async function GET() {
     const jsonData = await parseStringPromise(xmlData)
     const data = jsonData.user.$
     const { title, id, thumb, email } = data
-    const userData = {
-      user: {
-        name: title,
-        id: id,
-        thumb: thumb,
-        email: email,
-      },
+    const userData: UserData = {
+      name: title,
+      id: id,
+      thumb: thumb,
+      email: email,
       isLoggedIn: true,
     }
 

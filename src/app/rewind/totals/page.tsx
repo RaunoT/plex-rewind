@@ -21,8 +21,7 @@ export const metadata: Metadata = {
 }
 
 async function getUserTotalDuration() {
-  const userData = await fetchUser()
-  const { user } = userData
+  const user = await fetchUser()
   const userTotalDuration = await fetchTautulli<{ total_duration: string }>(
     'get_history',
     {
@@ -103,7 +102,7 @@ export default async function Total() {
       title='General stats'
       page='1 / 5'
       nextCard='/rewind/requests'
-      subtitle={user.plexUsername}
+      subtitle={user.name}
     >
       {userTotalDuration != 0 ? (
         <>

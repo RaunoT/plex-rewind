@@ -2,7 +2,11 @@ import Card from '@/components/Card'
 import CardText from '@/components/CardText'
 import StatListItem from '@/components/StatListItem'
 import { ALLOWED_PERIODS, metaDescription } from '@/utils/constants'
-import { fetchPaginatedOverseerrStats, fetchUser } from '@/utils/fetchOverseerr'
+import {
+  fetchOverseerrUserId,
+  fetchPaginatedOverseerrStats,
+} from '@/utils/fetchOverseerr'
+import fetchUser from '@/utils/fetchUser'
 import {
   FilmIcon,
   PlayCircleIcon,
@@ -29,10 +33,10 @@ async function getRequestsTotals() {
 }
 
 async function getUserRequestsTotal() {
-  // TODO: Get overseerr id
   const user = await fetchUser()
+  const overseerrUserId = await fetchOverseerrUserId(Number(user.id))
   const userRequestsTotal = await fetchPaginatedOverseerrStats(
-    `user/${user.id}/requests`,
+    `user/${overseerrUserId}/requests`,
     ALLOWED_PERIODS.thisYear.date,
   )
 
@@ -52,7 +56,7 @@ export default async function Requests() {
       page='2 / 5'
       prevCard='/rewind/totals'
       nextCard='/rewind/shows'
-      subtitle={user.plexUsername}
+      subtitle={user.name}
     >
       {userRequestsTotal != 0 ? (
         <CardText hideAfter={requestTotals.total != 0 ? 10 : 0}>
