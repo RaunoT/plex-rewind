@@ -58,7 +58,7 @@ export default function Page() {
 
   return (
     <div className='flex flex-col items-center text-center'>
-      {userThumb && (
+      {userThumb && isLoggedIn && (
         <div className='relative mb-5 h-20 w-20'>
           <Image
             src={userThumb}

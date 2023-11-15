@@ -3,6 +3,7 @@ import { errorResponse } from '@/utils/response'
 import { sign } from 'jsonwebtoken'
 import { PlexOauth } from 'plex-oauth'
 
+// TODO: Check if user actually belongs to THIS server
 export async function POST(request: Request) {
   try {
     const body = await request.json()

@@ -76,11 +76,11 @@ export default async function fetchTautulli<T>(
   }
 }
 
-// TODO: Improve this
 export async function getServerId(): Promise<string> {
   const serverIdPromise = await fetchTautulli<{ identifier: string }>(
     'get_server_id',
     {
+      // TODO: Should probably be configurable
       hostname: 'localhost',
       port: '32400',
     },
