@@ -11,7 +11,7 @@ type UserData = {
   email: string
 }
 
-const authOptions = {
+export const authOptions = {
   providers: [
     CredentialsProvider({
       id: 'plex',

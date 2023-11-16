@@ -1,3 +1,4 @@
+import { authOptions } from '@/app/api/auth/[...nextauth]/route'
 import Card from '@/components/Card'
 import CardText from '@/components/CardText'
 import StatListItem from '@/components/StatListItem'
@@ -6,13 +7,13 @@ import {
   fetchOverseerrUserId,
   fetchPaginatedOverseerrStats,
 } from '@/utils/fetchOverseerr'
-import fetchUser from '@/utils/fetchUser'
 import {
   FilmIcon,
   PlayCircleIcon,
   QuestionMarkCircleIcon,
 } from '@heroicons/react/24/outline'
 import { Metadata } from 'next'
+import { getServerSession } from 'next-auth'
 
 export const metadata: Metadata = {
   title: 'Requests | Plex rewind',
@@ -32,9 +33,8 @@ async function getRequestsTotals() {
   }
 }
 
-async function getUserRequestsTotal() {
-  const user = await fetchUser()
-  const overseerrUserId = await fetchOverseerrUserId(Number(user.id))
+async function getUserRequestsTotal(userId) {
+  const overseerrUserId = await fetchOverseerrUserId(Number(userId))
   const userRequestsTotal = await fetchPaginatedOverseerrStats(
     `user/${overseerrUserId}/requests`,
     ALLOWED_PERIODS.thisYear.date,
@@ -44,10 +44,10 @@ async function getUserRequestsTotal() {
 }
 
 export default async function Requests() {
-  const [requestTotals, userRequestsTotal, user] = await Promise.all([
+  const session = await getServerSession(authOptions)
+  const [requestTotals, userRequestsTotal] = await Promise.all([
     getRequestsTotals(),
-    getUserRequestsTotal(),
-    fetchUser(),
+    getUserRequestsTotal(session?.user.id),
   ])
 
   return (
@@ -56,7 +56,7 @@ export default async function Requests() {
       page='2 / 5'
       prevCard='/rewind/totals'
       nextCard='/rewind/shows'
-      subtitle={user.name}
+      subtitle={session?.user?.name}
     >
       {userRequestsTotal != 0 ? (
         <CardText hideAfter={requestTotals.total != 0 ? 10 : 0}>

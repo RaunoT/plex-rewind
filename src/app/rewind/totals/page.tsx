@@ -1,9 +1,9 @@
+import { authOptions } from '@/app/api/auth/[...nextauth]/route'
 import Card from '@/components/Card'
 import CardText from '@/components/CardText'
 import StatListItem from '@/components/StatListItem'
 import { ALLOWED_PERIODS, metaDescription } from '@/utils/constants'
 import fetchTautulli from '@/utils/fetchTautulli'
-import fetchUser from '@/utils/fetchUser'
 import { bytesToSize, secondsToTime, timeToSeconds } from '@/utils/formatting'
 import {
   ChartPieIcon,
@@ -14,18 +14,18 @@ import {
   PlayCircleIcon,
 } from '@heroicons/react/24/outline'
 import { Metadata } from 'next'
+import { getServerSession } from 'next-auth'
 
 export const metadata: Metadata = {
   title: 'Totals | Plex rewind',
   description: metaDescription,
 }
 
-async function getUserTotalDuration() {
-  const user = await fetchUser()
+async function getUserTotalDuration(userId) {
   const userTotalDuration = await fetchTautulli<{ total_duration: string }>(
     'get_history',
     {
-      user_id: user.id,
+      user_id: userId,
       after: ALLOWED_PERIODS.thisYear.string,
       length: 0,
     },
@@ -83,18 +83,17 @@ async function getlibraries() {
 }
 
 export default async function Total() {
+  const session = await getServerSession(authOptions)
   const [
     userTotalDuration,
     librariesTotalSize,
     librariesTotalDuration,
     libraries,
-    user,
   ] = await Promise.all([
-    getUserTotalDuration(),
+    getUserTotalDuration(session.user.id),
     getlibrariesTotalSize(),
     getLibrariesTotalDuration(),
     getlibraries(),
-    fetchUser(),
   ])
 
   return (
@@ -102,7 +101,7 @@ export default async function Total() {
       title='General stats'
       page='1 / 5'
       nextCard='/rewind/requests'
-      subtitle={user.name}
+      subtitle={session.user.name}
     >
       {userTotalDuration != 0 ? (
         <>
