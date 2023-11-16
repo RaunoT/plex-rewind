@@ -59,7 +59,7 @@ export default function PlexLoginComponent() {
     ) {
       authUser()
     }
-  })
+  }, [searchParams])
 
   return (
     <button
