@@ -18,25 +18,6 @@ export default function Page() {
   const isDashboardDisabled =
     process.env.NEXT_PUBLIC_IS_DASHBOARD_DISABLED === 'true'
 
-  const fetchUser = async () => {
-    try {
-      const res = await fetch('/api/me')
-
-      if (!res.ok) {
-        console.error('Failed to fetch user:', res.status)
-      }
-      const user = await res.json()
-
-      setUserName(user.name)
-      setUserThumb(user.thumb)
-      setIsLoggedIn(user.isLoggedIn)
-    } catch (error) {
-      console.error('Error fetching user:', error)
-    }
-
-    setIsLoading(false)
-  }
-
   const logOut = async () => {
     try {
       const res = await fetch('/api/logout')
@@ -52,6 +33,26 @@ export default function Page() {
   }
 
   useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const res = await fetch('/api/me')
+
+        if (!res.ok) {
+          console.error('Failed to fetch user:', res.status)
+        }
+
+        const user = await res.json()
+
+        setUserName(user.name)
+        setUserThumb(user.thumb)
+        setIsLoggedIn(user.isLoggedIn)
+      } catch (error) {
+        console.error('Error fetching user:', error)
+      }
+
+      setIsLoading(false)
+    }
+
     fetchUser()
   }, [])
 

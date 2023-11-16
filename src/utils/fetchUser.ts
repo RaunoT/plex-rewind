@@ -1,6 +1,6 @@
 import { cookies } from 'next/headers'
 
-export default async function fetchUser() {
+export default async function fetchUser(): Promise<UserData> {
   try {
     const res = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/me`, {
       headers: { Cookie: cookies().toString() },
