@@ -1,10 +1,11 @@
 'use client'
 
 import plexSvg from '@/assets/plex.svg'
+import Loader from '@/components/Loader'
 import { fadeIn } from '@/utils/motion'
 import { createPlexAuthUrl, getPlexAuthToken } from '@/utils/plexAuth'
 import { motion } from 'framer-motion'
-import { signIn, useSession } from 'next-auth/react'
+import { signIn, signOut, useSession } from 'next-auth/react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
@@ -22,8 +23,6 @@ export default function Page() {
   const isDashboardDisabled =
     process.env.NEXT_PUBLIC_IS_DASHBOARD_DISABLED === 'true'
 
-  console.log('my session', session)
-
   // TODO: Improve error handling
   const handleLogin = async () => {
     try {
@@ -36,7 +35,7 @@ export default function Page() {
 
   // TODO: Implement logout
   const handleLogout = () => {
-    console.log('logging out')
+    signOut()
   }
 
   useEffect(() => {
@@ -71,6 +70,17 @@ export default function Page() {
       authUser()
     }
   }, [searchParams])
+
+  useEffect(() => {
+    console.log(session)
+    setUserName(session?.user?.name)
+    setUserThumb(session?.user?.thumb)
+    setIsLoggedIn(status === 'authenticated')
+  }, [session, status])
+
+  if (status === 'loading') {
+    return <Loader />
+  }
 
   return (
     <div className='flex flex-col items-center text-center'>
