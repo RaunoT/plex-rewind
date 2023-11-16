@@ -55,11 +55,11 @@ type User = {
 }
 
 export async function fetchOverseerrUserId(
-  plexId: number,
+  plexId: string,
 ): Promise<number | null> {
   try {
     const users = await fetchOverseerr<OverseerrResponse<User[]>>('user')
-    const user = users.results.find((user) => user.plexId === plexId)
+    const user = users.results.find((user) => String(user.plexId) === plexId)
 
     return user ? user.id : null
   } catch (error) {

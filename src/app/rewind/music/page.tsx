@@ -13,7 +13,7 @@ export const metadata: Metadata = {
   description: metaDescription,
 }
 
-async function getTotalDuration(plexId) {
+async function getTotalDuration(plexId: string) {
   const totalDuration = await fetchTautulli<{ total_duration: string }>(
     'get_history',
     {
@@ -29,16 +29,19 @@ async function getTotalDuration(plexId) {
 
 export default async function Music() {
   const session = await getServerSession(authOptions)
-  const [totalDuration] = await Promise.all([
-    getTotalDuration(session?.user.id),
-  ])
+
+  if (!session?.user) {
+    return
+  }
+
+  const [totalDuration] = await Promise.all([getTotalDuration(session.user.id)])
 
   return (
     <Card
       title='Music'
       page='5 / 5'
       prevCard='/rewind/movies'
-      subtitle={session?.user.name}
+      subtitle={session.user.name}
     >
       <CardText noScale>
         {totalDuration ? (

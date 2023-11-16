@@ -12,7 +12,7 @@ import CardMediaItems from './CardMediaItems'
 type Props = {
   children?: React.ReactNode
   title: string
-  subtitle?: string
+  subtitle?: string | null
   page?: string
   prevCard?: string
   nextCard?: string

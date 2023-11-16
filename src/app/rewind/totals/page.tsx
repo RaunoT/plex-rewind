@@ -21,7 +21,7 @@ export const metadata: Metadata = {
   description: metaDescription,
 }
 
-async function getUserTotalDuration(userId) {
+async function getUserTotalDuration(userId: string) {
   const userTotalDuration = await fetchTautulli<{ total_duration: string }>(
     'get_history',
     {
@@ -84,6 +84,11 @@ async function getlibraries() {
 
 export default async function Total() {
   const session = await getServerSession(authOptions)
+
+  if (!session?.user) {
+    return
+  }
+
   const [
     userTotalDuration,
     librariesTotalSize,

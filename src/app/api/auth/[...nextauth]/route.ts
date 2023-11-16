@@ -1,17 +1,15 @@
-// pages/api/auth/[...nextauth].ts
 import { PLEX_API_ENDPOINT } from '@/utils/constants'
-import NextAuth from 'next-auth'
+import NextAuth, { AuthOptions, Session, User } from 'next-auth'
+import { AdapterUser } from 'next-auth/adapters'
+import { JWT } from 'next-auth/jwt'
 import CredentialsProvider from 'next-auth/providers/credentials'
 import { parseStringPromise } from 'xml2js'
 
-type UserData = {
-  name: string
+type ExtendedUser = User & {
   id: string
-  thumb: string
-  email: string
 }
 
-export const authOptions = {
+export const authOptions: AuthOptions = {
   providers: [
     CredentialsProvider({
       id: 'plex',
@@ -46,11 +44,11 @@ export const authOptions = {
           const jsonData = await parseStringPromise(xmlData)
           const data = jsonData.user.$
           const { title, id, thumb, email } = data
-          const userData: UserData = {
-            name: title,
+          const userData = {
             id: id,
-            thumb: thumb,
+            name: title,
             email: email,
+            image: thumb,
           }
 
           if (res.ok && userData) {
@@ -72,24 +70,21 @@ export const authOptions = {
   pages: {
     signIn: '/',
   },
-  session: {
-    jwt: true,
-  },
   callbacks: {
-    async session({ session, token, user }) {
-      session.user.id = token.id
-      session.user.thumb = token.thumb
-      return session
+    async session({ session, token }: { session: Session; token: JWT }) {
+      const extendedSession = session as Session & { user: ExtendedUser }
+
+      if (extendedSession.user) {
+        extendedSession.user.id = token.sub as string
+      }
+
+      return extendedSession
     },
-    async jwt({ token, user }) {
+    async jwt({ token, user }: { token: JWT; user: User | AdapterUser }) {
       if (user) {
-        token.id = user.id
-        token.thumb = user.thumb
+        token.sub = user.id
       }
       return token
-    },
-    async redirect({ url, baseUrl }) {
-      return baseUrl
     },
   },
 }

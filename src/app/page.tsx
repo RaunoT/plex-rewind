@@ -15,27 +15,20 @@ export default function Page() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const { data: session, status } = useSession()
-  const [userName, setUserName] = useState<string>('')
-  const [userThumb, setUserThumb] = useState<string>('')
+  const [userName, setUserName] = useState<string | null | undefined>('')
+  const [userThumb, setUserThumb] = useState<string | null | undefined>('')
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false)
-  const [isLoading, setIsLoading] = useState<boolean>(false)
   const isRewindDisabled = process.env.NEXT_PUBLIC_IS_REWIND_DISABLED === 'true'
   const isDashboardDisabled =
     process.env.NEXT_PUBLIC_IS_DASHBOARD_DISABLED === 'true'
 
-  // TODO: Improve error handling
   const handleLogin = async () => {
     try {
       const plexUrl = await createPlexAuthUrl()
       router.push(plexUrl)
     } catch (error) {
-      console.error(error)
+      console.error('Error creating Plex auth url:', error)
     }
-  }
-
-  // TODO: Implement logout
-  const handleLogout = () => {
-    signOut()
   }
 
   useEffect(() => {
@@ -43,27 +36,23 @@ export default function Page() {
 
     if (plexPinId) {
       const authUser = async () => {
-        setIsLoading(true)
-
         try {
           const plexAuthToken = await getPlexAuthToken(plexPinId)
 
           try {
             const res = await signIn('plex', {
               authToken: plexAuthToken,
+              callbackUrl: '/',
             })
 
             if (res?.error) {
-              console.error(res.error)
+              console.error('Failed to sign in:', res.error)
             }
-
-            setIsLoading(false)
           } catch (error) {
-            console.error(error)
-            setIsLoading(false)
+            console.error('Error during sign-in:', error)
           }
         } catch (error) {
-          console.error(error)
+          console.error('Error getting Plex auth token:', error)
         }
       }
 
@@ -72,9 +61,8 @@ export default function Page() {
   }, [searchParams])
 
   useEffect(() => {
-    console.log(session)
     setUserName(session?.user?.name)
-    setUserThumb(session?.user?.thumb)
+    setUserThumb(session?.user?.image)
     setIsLoggedIn(status === 'authenticated')
   }, [session, status])
 
@@ -97,29 +85,27 @@ export default function Page() {
         </div>
       )}
 
-      {!isLoading && (
-        <h1 className='mb-6 flex items-center gap-4 text-4xl font-bold'>
-          <motion.div
-            initial={{ opacity: 0, x: -50 }}
-            animate={{ opacity: 1, x: 0 }}
-          >
-            <Image
-              src={plexSvg}
-              className='h-12 w-auto'
-              alt='Plex logo'
-              priority
-            />
-          </motion.div>
-          <motion.span
-            variants={fadeIn}
-            initial='hidden'
-            animate='show'
-            transition={{ delay: 0.4 }}
-          >
-            rewind
-          </motion.span>
-        </h1>
-      )}
+      <h1 className='mb-6 flex items-center gap-4 text-4xl font-bold'>
+        <motion.div
+          initial={{ opacity: 0, x: -50 }}
+          animate={{ opacity: 1, x: 0 }}
+        >
+          <Image
+            src={plexSvg}
+            className='h-12 w-auto'
+            alt='Plex logo'
+            priority
+          />
+        </motion.div>
+        <motion.span
+          variants={fadeIn}
+          initial='hidden'
+          animate='show'
+          transition={{ delay: 0.4 }}
+        >
+          rewind
+        </motion.span>
+      </h1>
 
       {!isLoggedIn && (
         <button
@@ -148,7 +134,7 @@ export default function Page() {
 
       {isLoggedIn && (
         <button
-          onClick={() => handleLogout()}
+          onClick={() => signOut()}
           className='mt-16 block opacity-50 hover:opacity-40'
         >
           Sign out

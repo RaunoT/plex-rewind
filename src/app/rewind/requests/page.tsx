@@ -33,8 +33,8 @@ async function getRequestsTotals() {
   }
 }
 
-async function getUserRequestsTotal(userId) {
-  const overseerrUserId = await fetchOverseerrUserId(Number(userId))
+async function getUserRequestsTotal(userId: string) {
+  const overseerrUserId = await fetchOverseerrUserId(userId)
   const userRequestsTotal = await fetchPaginatedOverseerrStats(
     `user/${overseerrUserId}/requests`,
     ALLOWED_PERIODS.thisYear.date,
@@ -45,9 +45,14 @@ async function getUserRequestsTotal(userId) {
 
 export default async function Requests() {
   const session = await getServerSession(authOptions)
+
+  if (!session?.user) {
+    return
+  }
+
   const [requestTotals, userRequestsTotal] = await Promise.all([
     getRequestsTotals(),
-    getUserRequestsTotal(session?.user.id),
+    getUserRequestsTotal(session.user.id),
   ])
 
   return (
@@ -56,7 +61,7 @@ export default async function Requests() {
       page='2 / 5'
       prevCard='/rewind/totals'
       nextCard='/rewind/shows'
-      subtitle={session?.user?.name}
+      subtitle={session.user.name}
     >
       {userRequestsTotal != 0 ? (
         <CardText hideAfter={requestTotals.total != 0 ? 10 : 0}>

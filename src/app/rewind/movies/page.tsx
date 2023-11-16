@@ -13,7 +13,7 @@ export const metadata: Metadata = {
   description: metaDescription,
 }
 
-async function getTotalDuration(userId) {
+async function getTotalDuration(userId: string) {
   const totalDuration = await fetchTautulli<{ total_duration: string }>(
     'get_history',
     {
@@ -29,9 +29,12 @@ async function getTotalDuration(userId) {
 
 export default async function Movies() {
   const session = await getServerSession(authOptions)
-  const [totalDuration] = await Promise.all([
-    getTotalDuration(session?.user.id),
-  ])
+
+  if (!session?.user) {
+    return
+  }
+
+  const [totalDuration] = await Promise.all([getTotalDuration(session.user.id)])
 
   return (
     <Card
