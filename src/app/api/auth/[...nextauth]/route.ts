@@ -1,67 +1,83 @@
 // pages/api/auth/[...nextauth].ts
-import { PLEX_API_ENDPOINT } from '@/utils/constants'
-import { errorResponse } from '@/utils/response'
 import NextAuth from 'next-auth'
 import CredentialsProvider from 'next-auth/providers/credentials'
-import { parseStringPromise } from 'xml2js'
+
+type UserData = {
+  name: string
+  id: string
+  thumb: string
+  email: string
+}
 
 export const authOptions = {
   providers: [
     CredentialsProvider({
       name: 'Plex',
-      credentials: {},
+      credentials: {
+        authToken: {
+          label: 'authToken',
+          type: 'string',
+        },
+      },
       async authorize(credentials) {
-        const { authToken } = credentials
-        console.log('authToken', authToken)
+        // console.log('credentials', credentials)
+        // if (!credentials) {
+        //   return null
+        // }
 
-        try {
-          const userResponse = await fetch(`${PLEX_API_ENDPOINT}/user`, {
-            headers: {
-              'X-Plex-Token': authToken,
-            },
-          })
-
-          if (!userResponse.ok) {
-            return errorResponse(
-              'Failed to fetch user data!',
-              userResponse.status,
-            )
-          }
-
-          const xmlData = await userResponse.text()
-          const jsonData = await parseStringPromise(xmlData)
-          const data = jsonData.user.$
-          const { title, id, thumb, email } = data
-          const userData: UserData = {
-            name: title,
-            id: id,
-            thumb: thumb,
-            email: email,
-            isLoggedIn: true,
-          }
-
-          return userData
-        } catch (error) {
-          if (error instanceof Error) {
-            return errorResponse(
-              'Error fetching user data!',
-              400,
-              error.message,
-            )
-          } else {
-            return errorResponse('Error fetching user data!', 400)
-          }
+        return {
+          name: 'ok',
         }
+
+        // const { authToken } = credentials
+
+        // try {
+        //   const res = await fetch(`${PLEX_API_ENDPOINT}/user`, {
+        //     headers: {
+        //       'X-Plex-Token': authToken,
+        //     },
+        //   })
+
+        //   if (!res.ok) {
+        //     throw new Error(
+        //       `Failed to fetch user: ${res.status} ${res.statusText}`,
+        //     )
+        //   }
+
+        //   const xmlData = await res.text()
+        //   const jsonData = await parseStringPromise(xmlData)
+        //   const data = jsonData.user.$
+        //   const { title, id, thumb, email } = data
+        //   const userData: UserData = {
+        //     name: title,
+        //     id: id,
+        //     thumb: thumb,
+        //     email: email,
+        //   }
+
+        //   if (res.ok && userData) {
+        //     return userData
+        //   }
+
+        //   return null
+        // } catch (error) {
+        //   throw new Error(
+        //     `Error getting Plex user: ${
+        //       error instanceof Error ? error.message : String(error)
+        //     }`,
+        //   )
+        // }
       },
     }),
   ],
-  session: {
-    strategy: 'jwt',
-  },
   secret: process.env.NEXTAUTH_SECRET,
   pages: {
     signIn: '/',
   },
+  session: {
+    jwt: true,
+  },
+  debug: process.env.NODE_ENV === 'development',
 }
 
 const handler = NextAuth(authOptions)

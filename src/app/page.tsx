@@ -22,7 +22,7 @@ export default function Page() {
   const isDashboardDisabled =
     process.env.NEXT_PUBLIC_IS_DASHBOARD_DISABLED === 'true'
 
-  console.log(session)
+  console.log('my session', session)
 
   // TODO: Improve error handling
   const handleLogin = async () => {
@@ -48,20 +48,20 @@ export default function Page() {
 
         try {
           const plexAuthToken = await getPlexAuthToken(plexPinId)
-          console.log('THA TOKEN', plexAuthToken)
 
           try {
             const res = await signIn('plex', {
               authToken: plexAuthToken,
             })
 
-            if (res.error) {
+            if (res?.error) {
               console.error(res.error)
             }
 
             setIsLoading(false)
           } catch (error) {
             console.error(error)
+            setIsLoading(false)
           }
         } catch (error) {
           console.error(error)
@@ -70,7 +70,7 @@ export default function Page() {
 
       authUser()
     }
-  }, [searchParams, router])
+  }, [searchParams])
 
   return (
     <div className='flex flex-col items-center text-center'>
