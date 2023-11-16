@@ -41,7 +41,4 @@ export const ALLOWED_PERIODS: { [key: string]: Period } = {
 export const metaDescription: string =
   'Present user statistics and habits in a beautiful and organized manner'
 
-export const AUTH_COOKIE_NAME = 'plex-auth-token'
-export const AUTH_COOKIE_MAX_AGE = 60 * 60 * 24 * 14 // 14 days
-
 export const PLEX_API_ENDPOINT = 'https://plex.tv/api/v2'

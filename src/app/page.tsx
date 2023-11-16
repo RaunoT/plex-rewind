@@ -1,64 +1,80 @@
 'use client'
 
-import PlexLogin from '@/app/_components/PlexLogin'
 import plexSvg from '@/assets/plex.svg'
-import Loader from '@/components/Loader'
 import { fadeIn } from '@/utils/motion'
+import { createPlexAuthUrl, getPlexAuthToken } from '@/utils/plexAuth'
 import { motion } from 'framer-motion'
+import { signIn, useSession } from 'next-auth/react'
 import Image from 'next/image'
 import Link from 'next/link'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
 
 export default function Page() {
+  const router = useRouter()
+  const searchParams = useSearchParams()
+  const { data: session, status } = useSession()
   const [userName, setUserName] = useState<string>('')
   const [userThumb, setUserThumb] = useState<string>('')
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false)
-  const [isLoading, setIsLoading] = useState<boolean>(true)
+  const [isLoading, setIsLoading] = useState<boolean>(false)
   const isRewindDisabled = process.env.NEXT_PUBLIC_IS_REWIND_DISABLED === 'true'
   const isDashboardDisabled =
     process.env.NEXT_PUBLIC_IS_DASHBOARD_DISABLED === 'true'
 
-  const logOut = async () => {
+  console.log(session)
+
+  // TODO: Improve error handling
+  const handleLogin = async () => {
     try {
-      const res = await fetch('/api/logout')
-
-      if (!res.ok) {
-        console.error('Failed to log out:', res.status)
-      }
-
-      setIsLoggedIn(false)
+      const plexUrl = await createPlexAuthUrl()
+      router.push(plexUrl)
     } catch (error) {
-      console.error('Error logging out:', error)
+      console.error(error)
     }
   }
 
+  // TODO: Implement logout
+  const handleLogout = () => {
+    console.log('logging out')
+  }
+
   useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const res = await fetch('/api/me')
+    const plexPinId = searchParams.get('plexPinId')
 
-        if (!res.ok) {
-          console.error('Failed to fetch user:', res.status)
+    if (plexPinId) {
+      const authUser = async () => {
+        setIsLoading(true)
+
+        try {
+          const plexAuthToken = await getPlexAuthToken(plexPinId)
+          console.log('THA TOKEN', plexAuthToken)
+
+          try {
+            const res = await signIn('plex', {
+              authToken: plexAuthToken,
+            })
+
+            if (res.error) {
+              console.error(res.error)
+            }
+
+            setIsLoading(false)
+          } catch (error) {
+            console.error(error)
+          }
+        } catch (error) {
+          console.error(error)
         }
-
-        const user = await res.json()
-
-        setUserName(user.name)
-        setUserThumb(user.thumb)
-        setIsLoggedIn(user.isLoggedIn)
-      } catch (error) {
-        console.error('Error fetching user:', error)
       }
 
-      setIsLoading(false)
+      authUser()
     }
-
-    fetchUser()
-  }, [])
+  }, [searchParams, router])
 
   return (
     <div className='flex flex-col items-center text-center'>
-      {userThumb && isLoggedIn && (
+      {userThumb && (
         <div className='relative mb-5 h-20 w-20'>
           <Image
             src={userThumb}
@@ -95,14 +111,20 @@ export default function Page() {
         </h1>
       )}
 
-      {isLoading ? <Loader /> : !isLoggedIn && <PlexLogin />}
+      {!isLoggedIn && (
+        <button
+          className='button button-sm mx-auto from-yellow-500 via-yellow-600 to-neutral-700'
+          onClick={() => handleLogin()}
+        >
+          Log in with Plex
+        </button>
+      )}
 
       {!isRewindDisabled && isLoggedIn && (
         <Link href='/rewind/totals' className='button mb-4'>
           Get started
         </Link>
       )}
-
       {!isDashboardDisabled && isLoggedIn && (
         <Link
           href='/dashboard/shows'
@@ -116,7 +138,7 @@ export default function Page() {
 
       {isLoggedIn && (
         <button
-          onClick={() => logOut()}
+          onClick={() => handleLogout()}
           className='mt-16 block opacity-50 hover:opacity-40'
         >
           Sign out
