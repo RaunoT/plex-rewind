@@ -41,7 +41,7 @@ export default async function fetchOverseerr<T>(
     return res.json()
   } catch (error) {
     throw new Error(
-      `Failed to fetch from Overseerr API: ${
+      `Error fetching from Overseerr API: ${
         error instanceof Error ? error.message : String(error)
       }`,
     )

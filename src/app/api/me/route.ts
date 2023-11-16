@@ -1,4 +1,4 @@
-import { AUTH_COOKIE_NAME } from '@/utils/constants'
+import { AUTH_COOKIE_NAME, PLEX_API_ENDPOINT } from '@/utils/constants'
 import { errorResponse } from '@/utils/response'
 import { JwtPayload, verify } from 'jsonwebtoken'
 import { cookies } from 'next/headers'
@@ -39,7 +39,7 @@ export async function GET() {
   }
 
   try {
-    const userResponse = await fetch('https://plex.tv/api/v2/user', {
+    const userResponse = await fetch(`${PLEX_API_ENDPOINT}/user`, {
       headers: {
         'X-Plex-Token': decodedToken.authToken,
       },
@@ -69,9 +69,9 @@ export async function GET() {
     })
   } catch (error) {
     if (error instanceof Error) {
-      return errorResponse('Failed to fetch user data!', 400, error.message)
+      return errorResponse('Error fetching user data!', 400, error.message)
     } else {
-      return errorResponse('Failed to fetch user data!', 400)
+      return errorResponse('Error fetching user data!', 400)
     }
   }
 }

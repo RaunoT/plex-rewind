@@ -69,7 +69,7 @@ export default async function fetchTautulli<T>(
     return res.json()
   } catch (error) {
     throw new Error(
-      `Failed to fetch from Tautulli API: ${
+      `Error fetching from Tautulli API: ${
         error instanceof Error ? error.message : String(error)
       }`,
     )

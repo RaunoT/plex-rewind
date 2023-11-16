@@ -43,3 +43,5 @@ export const metaDescription: string =
 
 export const AUTH_COOKIE_NAME = 'plex-auth-token'
 export const AUTH_COOKIE_MAX_AGE = 60 * 60 * 24 * 14 // 14 days
+
+export const PLEX_API_ENDPOINT = 'https://plex.tv/api/v2'

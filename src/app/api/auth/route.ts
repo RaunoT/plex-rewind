@@ -45,9 +45,9 @@ export async function POST(request: Request) {
     )
   } catch (error) {
     if (error instanceof Error) {
-      return errorResponse('Authentication failed!', 401, error.message)
+      return errorResponse('Error authenticating!', 401, error.message)
     } else {
-      return errorResponse('Authentication failed!', 401)
+      return errorResponse('Error authenticating!', 401)
     }
   }
 }

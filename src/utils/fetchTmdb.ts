@@ -37,7 +37,7 @@ export default async function fetchTmdb<T>(
     return res.json()
   } catch (error) {
     throw new Error(
-      `Failed to fetch from TMDB API: ${
+      `Error fetching from TMDB API: ${
         error instanceof Error ? error.message : String(error)
       }`,
     )
