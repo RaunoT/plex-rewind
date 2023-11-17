@@ -1,7 +1,7 @@
-import { authOptions } from '@/app/api/auth/[...nextauth]/route'
 import Card from '@/components/Card'
 import CardText from '@/components/CardText'
 import StatListItem from '@/components/StatListItem'
+import { ExtendedUser, authOptions } from '@/utils/authOptions'
 import { ALLOWED_PERIODS, metaDescription } from '@/utils/constants'
 import fetchTautulli from '@/utils/fetchTautulli'
 import { bytesToSize, secondsToTime, timeToSeconds } from '@/utils/formatting'
@@ -14,7 +14,7 @@ import {
   PlayCircleIcon,
 } from '@heroicons/react/24/outline'
 import { Metadata } from 'next'
-import { getServerSession } from 'next-auth'
+import { Session, getServerSession } from 'next-auth'
 
 export const metadata: Metadata = {
   title: 'Totals | Plex rewind',
@@ -83,7 +83,9 @@ async function getlibraries() {
 }
 
 export default async function Total() {
-  const session = await getServerSession(authOptions)
+  const session = (await getServerSession(authOptions)) as Session & {
+    user: ExtendedUser
+  }
 
   if (!session?.user) {
     return

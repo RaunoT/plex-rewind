@@ -1,12 +1,12 @@
-import { authOptions } from '@/app/api/auth/[...nextauth]/route'
 import Card from '@/components/Card'
 import CardText from '@/components/CardText'
+import { ExtendedUser, authOptions } from '@/utils/authOptions'
 import { ALLOWED_PERIODS, metaDescription } from '@/utils/constants'
 import fetchTautulli from '@/utils/fetchTautulli'
 import { removeAfterMinutes } from '@/utils/formatting'
 import { MusicalNoteIcon } from '@heroicons/react/24/outline'
 import { Metadata } from 'next'
-import { getServerSession } from 'next-auth'
+import { Session, getServerSession } from 'next-auth'
 
 export const metadata: Metadata = {
   title: 'Music | Plex rewind',
@@ -28,7 +28,9 @@ async function getTotalDuration(plexId: string) {
 }
 
 export default async function Music() {
-  const session = await getServerSession(authOptions)
+  const session = (await getServerSession(authOptions)) as Session & {
+    user: ExtendedUser
+  }
 
   if (!session?.user) {
     return

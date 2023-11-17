@@ -1,7 +1,7 @@
-import { authOptions } from '@/app/api/auth/[...nextauth]/route'
 import Card from '@/components/Card'
 import CardText from '@/components/CardText'
 import StatListItem from '@/components/StatListItem'
+import { ExtendedUser, authOptions } from '@/utils/authOptions'
 import { ALLOWED_PERIODS, metaDescription } from '@/utils/constants'
 import {
   fetchOverseerrUserId,
@@ -13,7 +13,7 @@ import {
   QuestionMarkCircleIcon,
 } from '@heroicons/react/24/outline'
 import { Metadata } from 'next'
-import { getServerSession } from 'next-auth'
+import { Session, getServerSession } from 'next-auth'
 
 export const metadata: Metadata = {
   title: 'Requests | Plex rewind',
@@ -44,7 +44,9 @@ async function getUserRequestsTotal(userId: string) {
 }
 
 export default async function Requests() {
-  const session = await getServerSession(authOptions)
+  const session = (await getServerSession(authOptions)) as Session & {
+    user: ExtendedUser
+  }
 
   if (!session?.user) {
     return
