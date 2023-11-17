@@ -34,7 +34,7 @@ type QueryParams = {
 export default async function fetchTautulli<T>(
   query: string,
   params?: QueryParams,
-  cache: boolean = true,
+  cache: boolean = false,
 ): Promise<TautulliResponse<T>> {
   const tautulliUrl = process.env.NEXT_PUBLIC_TAUTULLI_URL
   const apiKey = process.env.TAUTULLI_API_KEY

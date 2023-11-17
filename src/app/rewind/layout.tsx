@@ -1,4 +1,4 @@
-import CardWrapper from '@/components/CardWrapper'
+import CardWrapper from '@/components/Card/CardWrapper'
 import PageTitle from '@/components/PageTitle'
 import { notFound } from 'next/navigation'
 

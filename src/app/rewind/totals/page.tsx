@@ -1,5 +1,5 @@
-import Card from '@/components/Card'
-import CardText from '@/components/CardText'
+import Card from '@/components/Card/Card'
+import CardText from '@/components/Card/CardText'
 import StatListItem from '@/components/StatListItem'
 import { ExtendedUser, authOptions } from '@/utils/authOptions'
 import { ALLOWED_PERIODS, metaDescription } from '@/utils/constants'

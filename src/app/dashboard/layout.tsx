@@ -1,6 +1,6 @@
 'use client'
 
-import CardWrapper from '@/components/CardWrapper'
+import CardWrapper from '@/components/Card/CardWrapper'
 import DashboardNav from '@/components/DashboardNav'
 import PageTitle from '@/components/PageTitle'
 import PeriodSelect from '@/components/PeriodSelect'
