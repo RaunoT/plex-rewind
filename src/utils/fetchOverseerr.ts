@@ -10,22 +10,42 @@ type OverseerrResponse<T> = {
 
 export default async function fetchOverseerr<T>(
   endpoint: string,
-  cache?: boolean,
+  cache: boolean = true,
 ): Promise<T> {
-  const apiUrl = `${process.env.NEXT_PUBLIC_OVERSEERR_URL}/api/v1/${endpoint}`
-  const headers: HeadersInit = new Headers()
+  const overseerrUrl = process.env.NEXT_PUBLIC_OVERSEERR_URL
+  const apiKey = process.env.OVERSEERR_API_KEY
 
-  if (process.env.OVERSEERR_API_KEY) {
-    headers.append('X-API-KEY', process.env.OVERSEERR_API_KEY)
+  if (!overseerrUrl) {
+    throw new Error('Overseerr URL is not configured!')
   }
 
-  const res = await fetch(apiUrl, {
-    next: { revalidate: cache ? 3600 : 0 },
-    headers: headers,
-  })
-  const data = await res.json()
+  if (!apiKey) {
+    throw new Error('Overseerr API key is not configured!')
+  }
 
-  return data
+  const apiUrl = `${overseerrUrl}/api/v1/${endpoint}`
+
+  try {
+    const res = await fetch(apiUrl, {
+      headers: {
+        'X-API-KEY': apiKey,
+      },
+      cache: cache ? 'force-cache' : 'no-store',
+    })
+    if (!res.ok) {
+      throw new Error(
+        `Overseerr API request failed: ${res.status} ${res.statusText}`,
+      )
+    }
+
+    return res.json()
+  } catch (error) {
+    throw new Error(
+      `Error fetching from Overseerr API: ${
+        error instanceof Error ? error.message : String(error)
+      }`,
+    )
+  }
 }
 
 type User = {
@@ -34,11 +54,21 @@ type User = {
   plexUsername: string
 }
 
-export async function fetchOverseerrUserId(plexUserId: number) {
-  const users = await fetchOverseerr<OverseerrResponse<User[]>>('user', true)
-  const result = users.results?.filter((user) => user.plexId === plexUserId)
+export async function fetchOverseerrUserId(
+  plexId: string,
+): Promise<number | null> {
+  try {
+    const users = await fetchOverseerr<OverseerrResponse<User[]>>('user')
+    const user = users.results.find((user) => String(user.plexId) === plexId)
 
-  return result[0].id
+    return user ? user.id : null
+  } catch (error) {
+    throw new Error(
+      `Error fetching Overseerr user ID: ${
+        error instanceof Error ? error.message : String(error)
+      }`,
+    )
+  }
 }
 
 type PaginatedRequestItem = {
@@ -49,7 +79,7 @@ type PaginatedRequestItem = {
 export async function fetchPaginatedOverseerrStats(
   req: string,
   timeframe: string,
-) {
+): Promise<PaginatedRequestItem[]> {
   let requestsArr: PaginatedRequestItem[] = []
   let currentPage = 1
   let totalPages = 1
@@ -68,10 +98,4 @@ export async function fetchPaginatedOverseerrStats(
   } while (currentPage < totalPages)
 
   return requestsArr
-}
-
-export async function fetchUser() {
-  const user = await fetchOverseerr<User>('auth/me', true)
-
-  return user
 }

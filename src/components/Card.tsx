@@ -12,7 +12,7 @@ import CardMediaItems from './CardMediaItems'
 type Props = {
   children?: React.ReactNode
   title: string
-  subtitle?: string
+  subtitle?: string | null
   page?: string
   prevCard?: string
   nextCard?: string
@@ -96,7 +96,7 @@ export default function Card({
       ) : (
         !isRewind && (
           <div className='flex flex-1 flex-col justify-center text-center text-neutral-300'>
-            <h2 className='mb-4 text-3xl italic leading-tight last:mb-0'>
+            <h2 className='mb-4 text-2xl italic leading-tight last:mb-0 sm:text-3xl'>
               No activity during this period.. 😴
             </h2>
           </div>

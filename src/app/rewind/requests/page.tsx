@@ -1,14 +1,19 @@
 import Card from '@/components/Card'
 import CardText from '@/components/CardText'
 import StatListItem from '@/components/StatListItem'
+import { ExtendedUser, authOptions } from '@/utils/authOptions'
 import { ALLOWED_PERIODS, metaDescription } from '@/utils/constants'
-import { fetchPaginatedOverseerrStats, fetchUser } from '@/utils/fetchOverseerr'
+import {
+  fetchOverseerrUserId,
+  fetchPaginatedOverseerrStats,
+} from '@/utils/fetchOverseerr'
 import {
   FilmIcon,
   PlayCircleIcon,
   QuestionMarkCircleIcon,
 } from '@heroicons/react/24/outline'
 import { Metadata } from 'next'
+import { Session, getServerSession } from 'next-auth'
 
 export const metadata: Metadata = {
   title: 'Requests | Plex rewind',
@@ -28,10 +33,10 @@ async function getRequestsTotals() {
   }
 }
 
-async function getUserRequestsTotal() {
-  const user = await fetchUser()
+async function getUserRequestsTotal(userId: string) {
+  const overseerrUserId = await fetchOverseerrUserId(userId)
   const userRequestsTotal = await fetchPaginatedOverseerrStats(
-    `user/${user.id}/requests`,
+    `user/${overseerrUserId}/requests`,
     ALLOWED_PERIODS.thisYear.date,
   )
 
@@ -39,10 +44,17 @@ async function getUserRequestsTotal() {
 }
 
 export default async function Requests() {
-  const [requestTotals, userRequestsTotal, user] = await Promise.all([
+  const session = (await getServerSession(authOptions)) as Session & {
+    user: ExtendedUser
+  }
+
+  if (!session?.user) {
+    return
+  }
+
+  const [requestTotals, userRequestsTotal] = await Promise.all([
     getRequestsTotals(),
-    getUserRequestsTotal(),
-    fetchUser(),
+    getUserRequestsTotal(session.user.id),
   ])
 
   return (
@@ -51,7 +63,7 @@ export default async function Requests() {
       page='2 / 5'
       prevCard='/rewind/totals'
       nextCard='/rewind/shows'
-      subtitle={user.plexUsername}
+      subtitle={session.user.name}
     >
       {userRequestsTotal != 0 ? (
         <CardText hideAfter={requestTotals.total != 0 ? 10 : 0}>
@@ -76,7 +88,7 @@ export default async function Requests() {
             this year! You can make them via{' '}
             <a
               className='link'
-              href='https://media.rauno.eu/'
+              href='https://media.rauno.eu/' // TODO: Make configurable
               target='_blank'
               rel='noopener noreferrer'
             >

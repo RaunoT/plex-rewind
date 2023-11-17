@@ -40,3 +40,5 @@ export const ALLOWED_PERIODS: { [key: string]: Period } = {
 
 export const metaDescription: string =
   'Present user statistics and habits in a beautiful and organized manner'
+
+export const PLEX_API_ENDPOINT = 'https://plex.tv/api/v2'

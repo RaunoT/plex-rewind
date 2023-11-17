@@ -1,23 +1,23 @@
 import Card from '@/components/Card'
 import CardText from '@/components/CardText'
+import { ExtendedUser, authOptions } from '@/utils/authOptions'
 import { ALLOWED_PERIODS, metaDescription } from '@/utils/constants'
-import { fetchUser } from '@/utils/fetchOverseerr'
 import fetchTautulli from '@/utils/fetchTautulli'
 import { removeAfterMinutes } from '@/utils/formatting'
 import { FilmIcon } from '@heroicons/react/24/outline'
 import { Metadata } from 'next'
+import { Session, getServerSession } from 'next-auth'
 
 export const metadata: Metadata = {
   title: 'Movies | Plex rewind',
   description: metaDescription,
 }
 
-async function getTotalDuration() {
-  const user = await fetchUser()
+async function getTotalDuration(userId: string) {
   const totalDuration = await fetchTautulli<{ total_duration: string }>(
     'get_history',
     {
-      user_id: user.plexId,
+      user_id: userId,
       section_id: 3,
       after: ALLOWED_PERIODS.thisYear.string,
       length: 0,
@@ -28,10 +28,15 @@ async function getTotalDuration() {
 }
 
 export default async function Movies() {
-  const [totalDuration, user] = await Promise.all([
-    getTotalDuration(),
-    fetchUser(),
-  ])
+  const session = (await getServerSession(authOptions)) as Session & {
+    user: ExtendedUser
+  }
+
+  if (!session?.user) {
+    return
+  }
+
+  const [totalDuration] = await Promise.all([getTotalDuration(session.user.id)])
 
   return (
     <Card
@@ -39,7 +44,7 @@ export default async function Movies() {
       page='4 / 5'
       prevCard='/rewind/shows'
       nextCard='/rewind/music'
-      subtitle={user.plexUsername}
+      subtitle={session.user.name}
     >
       <CardText noScale>
         {totalDuration ? (

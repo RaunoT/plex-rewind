@@ -28,7 +28,7 @@ async function getUsers(
 
   const overseerrUserIds = await Promise.all(
     users.map(async (user) => {
-      const overseerrId = await fetchOverseerrUserId(user.user_id)
+      const overseerrId = await fetchOverseerrUserId(String(user.user_id))
 
       return overseerrId
     }),
