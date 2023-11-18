@@ -3,6 +3,7 @@ import { AuthOptions, Session, User } from 'next-auth'
 import { JWT } from 'next-auth/jwt'
 import CredentialsProvider from 'next-auth/providers/credentials'
 import { parseStringPromise } from 'xml2js'
+import fetchTautulli from './fetchTautulli'
 
 export type ExtendedUser = User & {
   id: string
@@ -51,7 +52,35 @@ export const authOptions: AuthOptions = {
           }
 
           if (res.ok && userData) {
-            return userData
+            try {
+              const tautulliRes = await fetchTautulli<{ email: string }>(
+                'get_user',
+                {
+                  user_id: userData.id,
+                },
+              )
+
+              // if (!tautulliRes.ok) {
+              //   throw new Error(
+              //     `Failed to fetch user from Tautulli: ${tautulliRes.status} ${tautulliRes.statusText}`,
+              //   )
+              // }
+
+              const userExists =
+                tautulliRes.response?.data?.email === userData.email
+
+              if (userExists) {
+                return userData
+              } else {
+                throw new Error('User does not belong to this server!')
+              }
+            } catch (error) {
+              throw new Error(
+                `Error getting Plex user from Tautulli: ${
+                  error instanceof Error ? error.message : String(error)
+                }`,
+              )
+            }
           }
 
           return null
