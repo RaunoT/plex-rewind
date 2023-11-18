@@ -2,6 +2,7 @@
 
 import { TautulliItem } from '@/utils/fetchTautulli'
 import { motion, useAnimation } from 'framer-motion'
+import { debounce } from 'lodash'
 import { useEffect, useRef } from 'react'
 
 type Props = {
@@ -13,26 +14,38 @@ type Props = {
 
 export default function CardTitle({ i, data, type, parentRef }: Props) {
   const titleRef = useRef<HTMLSpanElement>(null)
+  const numberRef = useRef<HTMLSpanElement>(null)
   const controls = useAnimation()
 
   useEffect(() => {
     const checkWidth = () => {
       const titleElement = titleRef.current
       const parentElement = parentRef.current
-      const numberWidth = 40 // Space for the # symbol
+      const numberElement = numberRef.current
 
-      if (titleElement && parentElement) {
+      if (titleElement && parentElement && numberElement) {
+        const numberWidth = numberElement.clientWidth + 6
+        const scrollDuration = 5
+        const pauseDuration = 1
+        const totalDuration = 2 * scrollDuration + 3 * pauseDuration
         const excessWidth =
           titleElement.scrollWidth + numberWidth - parentElement.clientWidth
 
         if (excessWidth > 0) {
-          // TODO: Implement a small pause at the end and start
           controls.start({
-            x: [0, -excessWidth, 0],
+            x: [0, 0, -excessWidth, -excessWidth, 0, 0],
             transition: {
               repeat: Infinity,
-              duration: excessWidth / 10,
+              duration: totalDuration,
               ease: 'linear',
+              times: [
+                0,
+                pauseDuration / totalDuration,
+                (pauseDuration + scrollDuration) / totalDuration,
+                (2 * pauseDuration + scrollDuration) / totalDuration,
+                (2 * pauseDuration + 2 * scrollDuration) / totalDuration,
+                1,
+              ],
             },
           })
         } else {
@@ -41,18 +54,27 @@ export default function CardTitle({ i, data, type, parentRef }: Props) {
       }
     }
 
-    window.addEventListener('resize', checkWidth)
+    const restartAnimation = () => {
+      controls.stop()
+      controls.set({ x: 0 })
+      checkWidth()
+    }
+
+    const debouncedRestartAnimation = debounce(restartAnimation, 250)
+
+    window.addEventListener('resize', debouncedRestartAnimation)
     checkWidth()
 
     return () => {
       controls.stop()
-      window.removeEventListener('resize', checkWidth)
+      window.removeEventListener('resize', debouncedRestartAnimation)
+      debouncedRestartAnimation.cancel()
     }
   }, [controls, parentRef])
 
   return (
     <h3 className='mb-2 flex sm:text-xl'>
-      <span className='mr-1.5 inline-flex items-baseline gap-1'>
+      <span className='mr-1.5 inline-flex items-baseline gap-1' ref={numberRef}>
         <span className='font-bold text-black'>#{i + 1} </span>
         {i < 3 && (
           <svg width='16px' viewBox='0 0 300.439 300.439'>
@@ -73,7 +95,7 @@ export default function CardTitle({ i, data, type, parentRef }: Props) {
                     : 'fill-yellow-700'
               }
               d='M154.914,93.887c57.271,0,103.276,46.005,103.276,103.276s-46.005,103.276-103.276,103.276
-		                  S51.638,254.434,51.638,197.163S97.643,93.887,154.914,93.887z'
+                S51.638,254.434,51.638,197.163S97.643,93.887,154.914,93.887z'
             />
             <path
               className={
@@ -84,8 +106,8 @@ export default function CardTitle({ i, data, type, parentRef }: Props) {
                     : 'fill-yellow-800'
               }
               d='M154.914,122.053c-41.31,0-75.11,33.799-75.11,75.11s33.799,75.11,75.11,75.11
-		                  s75.11-33.799,75.11-75.11S196.224,122.053,154.914,122.053z M154.914,253.495c-30.983,0-56.332-25.35-56.332-56.332
-		                  s25.35-56.332,56.332-56.332s56.332,25.35,56.332,56.332S185.896,253.495,154.914,253.495z'
+                s75.11-33.799,75.11-75.11S196.224,122.053,154.914,122.053z M154.914,253.495c-30.983,0-56.332-25.35-56.332-56.332
+                s25.35-56.332,56.332-56.332s56.332,25.35,56.332,56.332S185.896,253.495,154.914,253.495z'
             />
           </svg>
         )}
