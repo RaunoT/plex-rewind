@@ -6,6 +6,7 @@ import { ALLOWED_PERIODS, metaDescription } from '@/utils/constants'
 import fetchTautulli from '@/utils/fetchTautulli'
 import { bytesToSize, secondsToTime, timeToSeconds } from '@/utils/formatting'
 import {
+  ArrowPathRoundedSquareIcon,
   ChartPieIcon,
   ClockIcon,
   FilmIcon,
@@ -50,10 +51,10 @@ async function getlibrariesTotalSize() {
     }),
   ])
 
-  return bytesToSize(
+  return (
     musicMediaInfo.response?.data?.total_file_size +
-      showsMediaInfo.response?.data?.total_file_size +
-      moviesMediaInfo.response?.data?.total_file_size,
+    showsMediaInfo.response?.data?.total_file_size +
+    moviesMediaInfo.response?.data?.total_file_size
   )
 }
 
@@ -102,6 +103,12 @@ export default async function Total() {
     getLibrariesTotalDuration(),
     getlibraries(),
   ])
+  const iPodShuffles = Math.round(
+    librariesTotalSize / 4000000000,
+  ).toLocaleString('en-US')
+  const totalDurationPercentage = Math.round(
+    (userTotalDuration * 100) / librariesTotalDuration,
+  )
 
   return (
     <Card
@@ -115,9 +122,9 @@ export default async function Total() {
           <CardText hideAfter={10}>
             <p>
               You&apos;ve spent a{' '}
-              <span className='inline-flex items-center text-teal-300'>
+              <span className='rewind-cat'>
                 Total
-                <ClockIcon className='ml-1 w-8' />
+                <ClockIcon />
               </span>{' '}
               of{' '}
               <span className='rewind-stat'>
@@ -130,10 +137,10 @@ export default async function Total() {
           <CardText renderDelay={5} hideAfter={15}>
             <p>
               That&apos;s{' '}
-              <span className='inline-flex items-center text-teal-300'>
-                {Math.round((userTotalDuration * 100) / librariesTotalDuration)}
+              <span className='rewind-cat'>
+                {totalDurationPercentage}
                 %
-                <ChartPieIcon className='ml-1 w-8' />
+                <ChartPieIcon />
               </span>{' '}
               of all plays.
             </p>
@@ -152,13 +159,19 @@ export default async function Total() {
       <CardText renderDelay={10} loaderDelay={userTotalDuration != 0 ? 5 : 0}>
         <p>
           Did you know the{' '}
-          <span className='inline-flex items-center text-teal-300'>
+          <span className='rewind-cat'>
             Filesize
-            <FolderIcon className='ml-1 w-8' />
+            <FolderIcon />
           </span>{' '}
           of all the available content on{' '}
           <span className='text-yellow-500'>Plex</span> is{' '}
-          <span className='rewind-stat'>{librariesTotalSize}</span>
+          <span className='rewind-stat'>{bytesToSize(librariesTotalSize)}</span>
+          . That&apos;s like..{' '}
+          <span className='rewind-stat'>{iPodShuffles}</span>{' '}
+          <span className='rewind-cat'>
+            iPod Shuffles <ArrowPathRoundedSquareIcon />
+          </span>{' '}
+          worth!
         </p>
       </CardText>
 
@@ -173,7 +186,7 @@ export default async function Total() {
                     key={library.section_id}
                     count={parseInt(library.child_count)}
                     name='Episodes'
-                    icon={<PlayCircleIcon className='ml-1 w-8' />}
+                    icon={<PlayCircleIcon />}
                   />
                 )
 
@@ -183,7 +196,7 @@ export default async function Total() {
                     key={library.section_id}
                     count={parseInt(library.count)}
                     name='Movies'
-                    icon={<FilmIcon className='ml-1 w-8' />}
+                    icon={<FilmIcon />}
                   />
                 )
 
@@ -193,7 +206,7 @@ export default async function Total() {
                     key={library.section_id}
                     count={parseInt(library.child_count)}
                     name='Songs'
-                    icon={<MusicalNoteIcon className='ml-1 w-8' />}
+                    icon={<MusicalNoteIcon />}
                   />
                 )
             }

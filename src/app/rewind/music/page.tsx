@@ -50,9 +50,9 @@ export default async function Music() {
           <p>
             And to top it all off, you listened to&nbsp;
             <span className='rewind-stat'>{totalDuration}</span> of{' '}
-            <span className='inline-flex items-center text-teal-300'>
+            <span className='rewind-cat'>
               Music
-              <MusicalNoteIcon className='ml-1 w-8' />
+              <MusicalNoteIcon />
             </span>{' '}
             on <span className='text-yellow-500'>Plex</span> during{' '}
             <span className='rewind-stat text-purple-300'>
@@ -63,9 +63,9 @@ export default async function Music() {
         ) : (
           <p>
             You haven&apos;t listened to any{' '}
-            <span className='inline-flex items-center text-teal-300'>
+            <span className='rewind-cat'>
               Music
-              <MusicalNoteIcon className='ml-1 w-8' />
+              <MusicalNoteIcon />
             </span>{' '}
             on <span className='text-yellow-500'>Plex</span> this year{' '}
             <span className='not-italic'>🥵</span>

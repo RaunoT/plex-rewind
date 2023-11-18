@@ -41,6 +41,14 @@
     font-size: 80%;
   }
 
+  .rewind-cat {
+    @apply inline-flex items-center text-teal-300;
+
+    > svg {
+      @apply ml-1 w-8;
+    }
+  }
+
   .link {
     @apply font-medium text-blue-300 underline;
   }

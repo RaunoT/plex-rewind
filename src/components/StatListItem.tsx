@@ -26,7 +26,7 @@ export default function StatListItem({
       >
         {separator}
       </span>
-      <span className='inline-flex items-center text-teal-300'>
+      <span className='rewind-cat'>
         {name}
         {icon}
       </span>

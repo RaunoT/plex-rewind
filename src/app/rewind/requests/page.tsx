@@ -70,9 +70,9 @@ export default async function Requests() {
           <p>
             You&apos;ve made{' '}
             <span className='rewind-stat'>{userRequestsTotal}</span> content{' '}
-            <span className='inline-flex items-center text-teal-300'>
+            <span className='rewind-cat'>
               Requests
-              <QuestionMarkCircleIcon className='ml-1 w-8' />
+              <QuestionMarkCircleIcon />
             </span>{' '}
             this year.
           </p>
@@ -81,9 +81,9 @@ export default async function Requests() {
         <CardText hideAfter={requestTotals.total != 0 ? 10 : 0}>
           <p>
             You haven&apos;t made any content{' '}
-            <span className='inline-flex items-center text-teal-300'>
+            <span className='rewind-cat'>
               Requests
-              <QuestionMarkCircleIcon className='ml-1 w-8' />
+              <QuestionMarkCircleIcon />
             </span>{' '}
             this year! You can make them via{' '}
             <a
@@ -102,9 +102,9 @@ export default async function Requests() {
         <p>
           Altogether there have been{' '}
           <span className='rewind-stat'>{requestTotals.total}</span>{' '}
-          <span className='inline-flex items-center text-teal-300'>
+          <span className='rewind-cat'>
             Requests
-            <QuestionMarkCircleIcon className='ml-1 w-8' />
+            <QuestionMarkCircleIcon />
           </span>{' '}
           this year.
         </p>
@@ -117,13 +117,13 @@ export default async function Requests() {
             <StatListItem
               count={requestTotals.movies}
               name='Movies'
-              icon={<FilmIcon className='ml-1 w-8' />}
+              icon={<FilmIcon />}
               separator='for'
             />
             <StatListItem
               count={requestTotals.shows}
               name='Shows'
-              icon={<PlayCircleIcon className='ml-1 w-8' />}
+              icon={<PlayCircleIcon />}
               separator='for'
             />
           </ul>
