@@ -114,7 +114,7 @@ export default function Card({
             </Link>
           )}
         </div>
-        <span className='flex-1 text-center'>{page}</span>
+        <span className='flex-1 text-center text-gray-400'>{page}</span>
         <div className='flex-1 text-right'>
           {nextCard && (
             <Link

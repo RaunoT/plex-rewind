@@ -53,21 +53,15 @@ export const authOptions: AuthOptions = {
 
           if (res.ok && userData) {
             try {
-              const tautulliRes = await fetchTautulli<{ email: string }>(
+              const checkUser = await fetchTautulli<{ email: string }>(
                 'get_user',
                 {
                   user_id: userData.id,
                 },
               )
 
-              // if (!tautulliRes.ok) {
-              //   throw new Error(
-              //     `Failed to fetch user from Tautulli: ${tautulliRes.status} ${tautulliRes.statusText}`,
-              //   )
-              // }
-
               const userExists =
-                tautulliRes.response?.data?.email === userData.email
+                checkUser.response?.data?.email === userData.email
 
               if (userExists) {
                 return userData
