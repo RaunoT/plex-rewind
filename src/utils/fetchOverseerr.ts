@@ -57,18 +57,10 @@ type User = {
 export async function fetchOverseerrUserId(
   plexId: string,
 ): Promise<number | null> {
-  try {
-    const users = await fetchOverseerr<OverseerrResponse<User[]>>('user')
-    const user = users.results.find((user) => String(user.plexId) === plexId)
+  const users = await fetchOverseerr<OverseerrResponse<User[]>>('user')
+  const user = users.results.find((user) => String(user.plexId) === plexId)
 
-    return user ? user.id : null
-  } catch (error) {
-    throw new Error(
-      `Error fetching Overseerr user ID: ${
-        error instanceof Error ? error.message : String(error)
-      }`,
-    )
-  }
+  return user ? user.id : null
 }
 
 type PaginatedRequestItem = {

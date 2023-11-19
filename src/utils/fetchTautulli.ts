@@ -77,14 +77,16 @@ export default async function fetchTautulli<T>(
 }
 
 export async function getServerId(): Promise<string> {
-  const serverIdPromise = await fetchTautulli<{ identifier: string }>(
-    'get_server_id',
-    {
-      // TODO: Should probably be configurable
-      hostname: 'localhost',
-      port: '32400',
-    },
-  )
-
-  return serverIdPromise.response?.data?.identifier
+  if (process.env.PLEX_HOSTNAME && process.env.PLEX_PORT) {
+    const serverIdPromise = await fetchTautulli<{ identifier: string }>(
+      'get_server_id',
+      {
+        hostname: process.env.PLEX_HOSTNAME,
+        port: process.env.PLEX_PORT,
+      },
+    )
+    return serverIdPromise.response?.data?.identifier
+  } else {
+    throw new Error('Plex hostname and/or port are not configured!')
+  }
 }

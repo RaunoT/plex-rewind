@@ -6,6 +6,7 @@ import {
 } from '@/utils/fetchOverseerr'
 import fetchTautulli, { TautulliItemRows } from '@/utils/fetchTautulli'
 import { secondsToTime, timeToSeconds } from '@/utils/formatting'
+import { FilterQueryParams } from '@/utils/types'
 import { Metadata } from 'next'
 
 export const metadata: Metadata = {

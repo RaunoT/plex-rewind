@@ -72,14 +72,6 @@ export default function Card({
       {subtitle && (
         <div className='text-xs font-medium uppercase text-slate-900 sm:text-sm'>
           {subtitle}
-          {isRewind && (
-            <>
-              <span className='mx-1 sm:mx-2' aria-hidden>
-                -
-              </span>
-              <span>Rewind {new Date().getFullYear()}</span>
-            </>
-          )}
         </div>
       )}
 
@@ -96,7 +88,7 @@ export default function Card({
       ) : (
         !isRewind && (
           <div className='flex flex-1 flex-col justify-center text-center text-neutral-300'>
-            <h2 className='mb-4 text-2xl italic leading-tight last:mb-0 sm:text-3xl'>
+            <h2 className='mb-4 py-32 text-2xl italic leading-tight last:mb-0 sm:text-3xl'>
               No activity during this period.. 😴
             </h2>
           </div>

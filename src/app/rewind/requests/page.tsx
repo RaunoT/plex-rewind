@@ -88,7 +88,7 @@ export default async function Requests() {
             this year! You can make them via{' '}
             <a
               className='link'
-              href='https://media.rauno.eu/' // TODO: Make configurable
+              href={process.env.NEXT_PUBLIC_OVERSEERR_URL}
               target='_blank'
               rel='noopener noreferrer'
             >

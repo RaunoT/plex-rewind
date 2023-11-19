@@ -52,28 +52,20 @@ export const authOptions: AuthOptions = {
           }
 
           if (res.ok && userData) {
-            try {
-              const checkUser = await fetchTautulli<{ email: string }>(
-                'get_user',
-                {
-                  user_id: userData.id,
-                },
-              )
+            const checkUser = await fetchTautulli<{ email: string }>(
+              'get_user',
+              {
+                user_id: userData.id,
+              },
+            )
 
-              const userExists =
-                checkUser.response?.data?.email === userData.email
+            const userExists =
+              checkUser.response?.data?.email === userData.email
 
-              if (userExists) {
-                return userData
-              } else {
-                throw new Error('User does not belong to this server!')
-              }
-            } catch (error) {
-              throw new Error(
-                `Error getting Plex user from Tautulli: ${
-                  error instanceof Error ? error.message : String(error)
-                }`,
-              )
+            if (userExists) {
+              return userData
+            } else {
+              throw new Error('User does not belong to this server!')
             }
           }
 

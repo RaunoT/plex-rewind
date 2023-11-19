@@ -24,9 +24,7 @@ export default function DashboardLayout({ children }: Props) {
     <div className='w-full max-w-2xl lg:max-w-5xl'>
       <PageTitle title='Dashboard' />
       <DashboardNav />
-      <CardWrapper className='min-h-[75vh] lg:min-h-[572px]'>
-        {children}
-      </CardWrapper>
+      <CardWrapper className='lg:min-h-[572px]'>{children}</CardWrapper>
       <PeriodSelect />
     </div>
   )

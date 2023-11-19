@@ -23,12 +23,8 @@ export default function Page() {
     process.env.NEXT_PUBLIC_IS_DASHBOARD_DISABLED === 'true'
 
   const handleLogin = async () => {
-    try {
-      const plexUrl = await createPlexAuthUrl()
-      router.push(plexUrl)
-    } catch (error) {
-      console.error('Error creating Plex auth url:', error)
-    }
+    const plexUrl = await createPlexAuthUrl()
+    router.push(plexUrl)
   }
 
   useEffect(() => {
@@ -36,23 +32,19 @@ export default function Page() {
 
     if (plexPinId) {
       const authUser = async () => {
+        const plexAuthToken = await getPlexAuthToken(plexPinId)
+
         try {
-          const plexAuthToken = await getPlexAuthToken(plexPinId)
+          const res = await signIn('plex', {
+            authToken: plexAuthToken,
+            callbackUrl: '/',
+          })
 
-          try {
-            const res = await signIn('plex', {
-              authToken: plexAuthToken,
-              callbackUrl: '/',
-            })
-
-            if (res?.error) {
-              console.error('Failed to sign in:', res.error)
-            }
-          } catch (error) {
-            console.error('Error during sign-in:', error)
+          if (res?.error) {
+            console.error('Failed to sign in:', res.error)
           }
         } catch (error) {
-          console.error('Error getting Plex auth token:', error)
+          console.error('Error during sign-in:', error)
         }
       }
 

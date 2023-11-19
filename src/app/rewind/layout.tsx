@@ -11,7 +11,7 @@ export default function RewindLayout({ children }: Props) {
     notFound()
   ) : (
     <div className='w-full max-w-2xl'>
-      <PageTitle />
+      <PageTitle title={`Rewind ${new Date().getFullYear()}`} />
       <CardWrapper className='min-h-[75vh]'>{children}</CardWrapper>
     </div>
   )

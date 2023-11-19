@@ -2,6 +2,7 @@ import Card from '@/components/Card/Card'
 import { ALLOWED_PERIODS, metaDescription } from '@/utils/constants'
 import fetchTautulli, { TautulliItemRows } from '@/utils/fetchTautulli'
 import { bytesToSize, secondsToTime, timeToSeconds } from '@/utils/formatting'
+import { FilterQueryParams } from '@/utils/types'
 import { Metadata } from 'next'
 
 export const metadata: Metadata = {

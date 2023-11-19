@@ -7,6 +7,7 @@ import fetchTautulli, {
 } from '@/utils/fetchTautulli'
 import fetchTmdb, { TmdbExternalId, TmdbItem } from '@/utils/fetchTmdb'
 import { bytesToSize, secondsToTime, timeToSeconds } from '@/utils/formatting'
+import { FilterQueryParams } from '@/utils/types'
 import { Metadata } from 'next'
 
 export const metadata: Metadata = {

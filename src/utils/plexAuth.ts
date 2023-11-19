@@ -41,36 +41,28 @@ async function fetchPlexPins(): Promise<PlexPinResponse> {
 }
 
 export async function createPlexAuthUrl() {
-  try {
-    const { id, code } = await fetchPlexPins()
-    const forwardUrl = `${process.env.NEXT_PUBLIC_SITE_URL}?plexPinId=${id}`
+  const { id, code } = await fetchPlexPins()
+  const forwardUrl = `${process.env.NEXT_PUBLIC_SITE_URL}?plexPinId=${id}`
 
-    if (!forwardUrl) {
-      throw new Error('Base url is not configured!')
-    }
-
-    const authAppUrl =
-      'https://app.plex.tv/auth#?' +
-      // TODO: Use URLSearchParams instead of qs
-      qs.stringify({
-        clientID: clientIdentifier,
-        code,
-        forwardUrl,
-        context: {
-          device: {
-            product: clientName,
-          },
-        },
-      })
-
-    return authAppUrl
-  } catch (error) {
-    throw new Error(
-      `Error getting Plex access token: ${
-        error instanceof Error ? error.message : String(error)
-      }`,
-    )
+  if (!forwardUrl) {
+    throw new Error('Base url is not configured!')
   }
+
+  const authAppUrl =
+    'https://app.plex.tv/auth#?' +
+    // TODO: Use URLSearchParams instead of qs
+    qs.stringify({
+      clientID: clientIdentifier,
+      code,
+      forwardUrl,
+      context: {
+        device: {
+          product: clientName,
+        },
+      },
+    })
+
+  return authAppUrl
 }
 
 export async function getPlexAuthToken(pinId: string) {

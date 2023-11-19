@@ -8,7 +8,7 @@ Present user statistics and habits in a beautiful and organized manner - as a we
 
 ![Dashboard](https://i.imgur.com/yXEiub2.png 'Dashboard')
 
-![Rewind](https://i.imgur.com/pqWMTnj.png 'Rewind')
+![Rewind](https://i.imgur.com/2xlmbUr.png 'Rewind')
 
 ## Getting Started
 
