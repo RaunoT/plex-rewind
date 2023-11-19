@@ -9,15 +9,13 @@ import { signIn, signOut, useSession } from 'next-auth/react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 
 export default function Page() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const { data: session, status } = useSession()
-  const [userName, setUserName] = useState<string | null | undefined>('')
-  const [userThumb, setUserThumb] = useState<string | null | undefined>('')
-  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false)
+  const isLoggedIn = status === 'authenticated'
   const isRewindDisabled = process.env.NEXT_PUBLIC_IS_REWIND_DISABLED === 'true'
   const isDashboardDisabled =
     process.env.NEXT_PUBLIC_IS_DASHBOARD_DISABLED === 'true'
@@ -52,23 +50,17 @@ export default function Page() {
     }
   }, [searchParams])
 
-  useEffect(() => {
-    setUserName(session?.user?.name)
-    setUserThumb(session?.user?.image)
-    setIsLoggedIn(status === 'authenticated')
-  }, [session, status])
-
   if (status === 'loading') {
     return <Loader />
   }
 
   return (
     <div className='flex flex-col items-center text-center'>
-      {userThumb && (
-        <div className='relative mb-5 h-20 w-20'>
+      {session?.user?.image && (
+        <div className='relative mb-5 h-24 w-24'>
           <Image
-            src={userThumb}
-            alt={`${userName} profile picture`}
+            src={session?.user?.image}
+            alt={`${session?.user?.name} profile picture`}
             className='rounded-full object-cover'
             sizes='10rem'
             fill

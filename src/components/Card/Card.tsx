@@ -5,6 +5,8 @@ import {
   ArrowLongLeftIcon,
   ArrowLongRightIcon,
 } from '@heroicons/react/24/outline'
+import { useSession } from 'next-auth/react'
+import Image from 'next/image'
 import Link from 'next/link.js'
 import { usePathname, useSearchParams } from 'next/navigation.js'
 import CardMediaItems from './CardMediaItems'
@@ -37,6 +39,7 @@ export default function Card({
   serverId = '',
 }: Props) {
   const pathname = usePathname()
+  const { data: session } = useSession()
   const isRewind = pathname.split('/')[1] === 'rewind'
   const searchParams = useSearchParams()
   const period = searchParams.get('period')
@@ -45,35 +48,50 @@ export default function Card({
 
   return (
     <>
-      <h2 className='mb-1 flex items-center text-sm font-bold uppercase text-black sm:text-xl'>
-        <span>{title}</span>
-        {totalSize && (
-          <>
-            <span className='mx-1 sm:mx-2' aria-hidden>
-              -
-            </span>
-            <span>{totalSize}</span>
-          </>
+      <div className='flex items-center'>
+        {isRewind && session?.user?.image && (
+          <div className='relative mr-4 h-12 w-12'>
+            <Image
+              src={session?.user?.image}
+              alt={`${session?.user?.name} profile picture`}
+              className='rounded-full object-cover'
+              sizes='10rem'
+              fill
+              priority
+            />
+          </div>
         )}
-      </h2>
+        <div>
+          <h2 className='mb-1 flex items-center text-sm font-bold uppercase text-black sm:text-xl'>
+            <span>{title}</span>
+            {totalSize && (
+              <>
+                <span className='mx-1 sm:mx-2' aria-hidden>
+                  -
+                </span>
+                <span>{totalSize}</span>
+              </>
+            )}
+          </h2>
+          <div className='text-xs font-medium uppercase text-slate-900 sm:text-sm'>
+            {totalDuration && (
+              <>
+                Total plays
+                <span className='mx-1 sm:mx-2' aria-hidden>
+                  -
+                </span>
+                <span className='normal-case'>{totalDuration}</span>
+              </>
+            )}
+          </div>
 
-      <div className='text-xs font-medium uppercase text-slate-900 sm:text-sm'>
-        {totalDuration && (
-          <>
-            Total plays
-            <span className='mx-1 sm:mx-2' aria-hidden>
-              -
-            </span>
-            <span className='normal-case'>{totalDuration}</span>
-          </>
-        )}
-      </div>
-
-      {subtitle && (
-        <div className='text-xs font-medium uppercase text-slate-900 sm:text-sm'>
-          {subtitle}
+          {subtitle && (
+            <div className='text-xs font-medium uppercase text-slate-900 sm:text-sm'>
+              {subtitle}
+            </div>
+          )}
         </div>
-      )}
+      </div>
 
       {isRewind ? (
         <ul className='flex flex-1 flex-col pt-12 sm:justify-center sm:pb-12 sm:pt-4'>

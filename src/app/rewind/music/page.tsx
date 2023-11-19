@@ -54,11 +54,7 @@ export default async function Music() {
               Music
               <MusicalNoteIcon />
             </span>{' '}
-            on <span className='text-yellow-500'>Plex</span> during{' '}
-            <span className='rewind-stat text-purple-300'>
-              {new Date().getFullYear()}
-            </span>
-            .
+            on <span className='text-yellow-500'>Plex</span>.
           </p>
         ) : (
           <p>
