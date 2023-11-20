@@ -84,6 +84,7 @@ export async function getServerId(): Promise<string> {
         hostname: process.env.PLEX_HOSTNAME,
         port: process.env.PLEX_PORT,
       },
+      true,
     )
     return serverIdPromise.response?.data?.identifier
   } else {

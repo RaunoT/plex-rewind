@@ -1,8 +1,12 @@
 import Card from '@/components/Card/Card'
-import CardText from '@/components/Card/CardText'
+import CardMediaItems from '@/components/Card/CardMediaItems'
+import CardRewind from '@/components/Card/CardRewind'
 import { ExtendedUser, authOptions } from '@/utils/authOptions'
 import { ALLOWED_PERIODS, metaDescription } from '@/utils/constants'
-import fetchTautulli from '@/utils/fetchTautulli'
+import fetchTautulli, {
+  TautulliItemRows,
+  getServerId,
+} from '@/utils/fetchTautulli'
 import { removeAfterMinutes } from '@/utils/formatting'
 import { MusicalNoteIcon } from '@heroicons/react/24/outline'
 import { Metadata } from 'next'
@@ -27,6 +31,19 @@ async function getTotalDuration(plexId: string) {
   return removeAfterMinutes(totalDuration.response?.data?.total_duration)
 }
 
+async function getTopArtists(userId: string, period: number) {
+  const artistsRes = await fetchTautulli<TautulliItemRows>('get_home_stats', {
+    user_id: userId,
+    section_id: 1,
+    time_range: period,
+    stats_count: 5,
+    stats_type: 'duration',
+    stat_id: 'top_music',
+  })
+
+  return artistsRes.response?.data?.rows
+}
+
 export default async function Music() {
   const session = (await getServerSession(authOptions)) as Session & {
     user: ExtendedUser
@@ -36,7 +53,11 @@ export default async function Music() {
     return
   }
 
-  const [totalDuration] = await Promise.all([getTotalDuration(session.user.id)])
+  const [totalDuration, topArtists, serverId] = await Promise.all([
+    getTotalDuration(session.user.id),
+    getTopArtists(session.user.id, ALLOWED_PERIODS.thisYear.daysAgo),
+    getServerId(),
+  ])
 
   return (
     <Card
@@ -45,7 +66,7 @@ export default async function Music() {
       prevCard='/rewind/movies'
       subtitle={session.user.name}
     >
-      <CardText noScale>
+      <CardRewind noScale={!topArtists}>
         {totalDuration ? (
           <p>
             And to top it all off, you listened to&nbsp;
@@ -67,7 +88,24 @@ export default async function Music() {
             <span className='not-italic'>🥵</span>
           </p>
         )}
-      </CardText>
+      </CardRewind>
+
+      {topArtists && (
+        <CardRewind renderDelay={5} noScale>
+          <p className='mb-2'>
+            Here&apos;s your <span className='rewind-cat'>Top 5:</span>
+          </p>
+
+          <div className='text-base not-italic'>
+            <CardMediaItems
+              type='movies'
+              items={topArtists}
+              serverId={serverId}
+              personal
+            />
+          </div>
+        </CardRewind>
+      )}
     </Card>
   )
 }

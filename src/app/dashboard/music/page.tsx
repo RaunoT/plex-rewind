@@ -11,13 +11,13 @@ export const metadata: Metadata = {
 }
 
 async function getArtists(period: number) {
-  const artistsData = await fetchTautulli<TautulliItemRows>('get_home_stats', {
+  const artistsRes = await fetchTautulli<TautulliItemRows>('get_home_stats', {
     stat_id: 'top_music',
     stats_count: 6,
     stats_type: 'duration',
     time_range: period,
   })
-  const artists = artistsData.response?.data?.rows
+  const artists = artistsRes.response?.data?.rows
   const usersListened = await fetchTautulli<TautulliItemRows>(
     'get_home_stats',
     {

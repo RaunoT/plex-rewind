@@ -1,12 +1,11 @@
 import Card from '@/components/Card/Card'
 import { ALLOWED_PERIODS, metaDescription } from '@/utils/constants'
 import fetchTautulli, {
-  TautulliItem,
   TautulliItemRows,
   getServerId,
 } from '@/utils/fetchTautulli'
-import fetchTmdb, { TmdbExternalId, TmdbItem } from '@/utils/fetchTmdb'
 import { bytesToSize, secondsToTime, timeToSeconds } from '@/utils/formatting'
+import getMediaAdditionalData from '@/utils/getMediaAdditionalData'
 import { FilterQueryParams } from '@/utils/types'
 import { Metadata } from 'next'
 
@@ -16,67 +15,24 @@ export const metadata: Metadata = {
 }
 
 async function getShows(period: number) {
-  const showsData = await fetchTautulli<TautulliItemRows>('get_home_stats', {
+  const showsRes = await fetchTautulli<TautulliItemRows>('get_home_stats', {
     stat_id: 'top_tv',
     stats_count: 6,
     stats_type: 'duration',
     time_range: period,
+    section_id: 2,
   })
-  const shows = showsData.response?.data?.rows
   const usersWatched = await fetchTautulli<TautulliItemRows>('get_home_stats', {
     stat_id: 'popular_tv',
     stats_count: 25, // https://github.com/Tautulli/Tautulli/issues/2103
     time_range: period,
   })
   const usersWatchedData = usersWatched.response?.data?.rows
-  const ratingKeys: number[] = []
-
-  shows.map((show) => {
-    ratingKeys.push(show.rating_key)
-  })
-
-  const additionalData = await Promise.all(
-    ratingKeys.map(async (key, i) => {
-      const showTautulli = await fetchTautulli<TautulliItem>(
-        'get_metadata',
-        {
-          rating_key: key,
-        },
-        true,
-      )
-      const showTautulliData = showTautulli.response?.data
-      // Tautulli doesn't return year or rating for removed items, so we're using TMDB
-      const showTmdb = await fetchTmdb<TmdbItem>('search/tv', {
-        query: shows[i].title,
-        first_air_date_year: showTautulliData.year,
-      })
-      const tmdbId = showTmdb.results[0].id
-      const imdbId = await fetchTmdb<TmdbExternalId>(
-        `tv/${tmdbId}/external_ids`,
-      )
-
-      return {
-        year: new Date(showTmdb.results[0].first_air_date).getFullYear(),
-        is_deleted: Object.keys(showTautulliData).length === 0,
-        rating: showTmdb.results[0].vote_average.toFixed(1),
-        tmdb_id: tmdbId,
-        imdb_id: imdbId.imdb_id,
-      }
-    }),
+  const shows = await getMediaAdditionalData(
+    showsRes.response?.data?.rows,
+    'tv',
+    usersWatchedData,
   )
-
-  shows.map((show, i) => {
-    const watchedData = usersWatchedData.find(
-      (uw) => uw.rating_key === show.rating_key,
-    )
-
-    show.year = additionalData[i].year
-    show.is_deleted = additionalData[i].is_deleted
-    show.rating = additionalData[i].rating
-    show.tmdb_id = additionalData[i].tmdb_id
-    show.imdb_id = additionalData[i].imdb_id
-    show.users_watched = watchedData?.users_watched
-  })
 
   return shows
 }

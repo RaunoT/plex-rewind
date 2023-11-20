@@ -19,13 +19,13 @@ async function getUsers(
   requestsPeriod: string,
   periodString: string,
 ) {
-  const usersPromise = await fetchTautulli<TautulliItemRows>('get_home_stats', {
+  const usersRes = await fetchTautulli<TautulliItemRows>('get_home_stats', {
     stat_id: 'top_users',
     stats_count: 6,
     stats_type: 'duration',
     time_range: period,
   })
-  const users = usersPromise.response?.data?.rows
+  const users = usersRes.response?.data?.rows
 
   const overseerrUserIds = await Promise.all(
     users.map(async (user) => {

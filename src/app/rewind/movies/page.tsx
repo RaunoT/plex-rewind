@@ -1,9 +1,14 @@
 import Card from '@/components/Card/Card'
-import CardText from '@/components/Card/CardText'
+import CardMediaItems from '@/components/Card/CardMediaItems'
+import CardRewind from '@/components/Card/CardRewind'
 import { ExtendedUser, authOptions } from '@/utils/authOptions'
 import { ALLOWED_PERIODS, metaDescription } from '@/utils/constants'
-import fetchTautulli from '@/utils/fetchTautulli'
+import fetchTautulli, {
+  TautulliItemRows,
+  getServerId,
+} from '@/utils/fetchTautulli'
 import { removeAfterMinutes } from '@/utils/formatting'
+import getMediaAdditionalData from '@/utils/getMediaAdditionalData'
 import { FilmIcon } from '@heroicons/react/24/outline'
 import { Metadata } from 'next'
 import { Session, getServerSession } from 'next-auth'
@@ -27,6 +32,23 @@ async function getTotalDuration(userId: string) {
   return removeAfterMinutes(totalDuration.response?.data?.total_duration)
 }
 
+async function getTopMovies(userId: string, period: number) {
+  const moviesRes = await fetchTautulli<TautulliItemRows>('get_home_stats', {
+    user_id: userId,
+    section_id: 3,
+    time_range: period,
+    stats_count: 5,
+    stats_type: 'duration',
+    stat_id: 'top_movies',
+  })
+  const movies = await getMediaAdditionalData(
+    moviesRes.response?.data?.rows,
+    'movie',
+  )
+
+  return movies
+}
+
 export default async function Movies() {
   const session = (await getServerSession(authOptions)) as Session & {
     user: ExtendedUser
@@ -36,7 +58,11 @@ export default async function Movies() {
     return
   }
 
-  const [totalDuration] = await Promise.all([getTotalDuration(session.user.id)])
+  const [totalDuration, topMovies, serverId] = await Promise.all([
+    getTotalDuration(session.user.id),
+    getTopMovies(session.user.id, ALLOWED_PERIODS.thisYear.daysAgo),
+    getServerId(),
+  ])
 
   return (
     <Card
@@ -46,7 +72,7 @@ export default async function Movies() {
       nextCard='/rewind/music'
       subtitle={session.user.name}
     >
-      <CardText noScale>
+      <CardRewind noScale={!topMovies}>
         {totalDuration ? (
           <p>
             <span className='rewind-stat'>{totalDuration}</span> of your time
@@ -55,7 +81,7 @@ export default async function Movies() {
               Movies
               <FilmIcon />
             </span>{' '}
-            on <span className='text-yellow-500'>Plex</span> this year.
+            on <span className='text-yellow-500'>Plex</span>.
           </p>
         ) : (
           <p>
@@ -68,7 +94,24 @@ export default async function Movies() {
             <span className='not-italic'>🥹</span>
           </p>
         )}
-      </CardText>
+      </CardRewind>
+
+      {topMovies && (
+        <CardRewind renderDelay={5} noScale>
+          <p className='mb-2'>
+            Here&apos;s your <span className='rewind-cat'>Top 5:</span>
+          </p>
+
+          <div className='text-base not-italic'>
+            <CardMediaItems
+              type='movies'
+              items={topMovies}
+              serverId={serverId}
+              personal
+            />
+          </div>
+        </CardRewind>
+      )}
     </Card>
   )
 }

@@ -1,5 +1,5 @@
 import Card from '@/components/Card/Card'
-import CardText from '@/components/Card/CardText'
+import CardRewind from '@/components/Card/CardRewind'
 import StatListItem from '@/components/StatListItem'
 import { ExtendedUser, authOptions } from '@/utils/authOptions'
 import { ALLOWED_PERIODS, metaDescription } from '@/utils/constants'
@@ -119,7 +119,7 @@ export default async function Total() {
     >
       {userTotalDuration != 0 ? (
         <>
-          <CardText hideAfter={10}>
+          <CardRewind hideAfter={10}>
             <p>
               You&apos;ve spent a{' '}
               <span className='rewind-cat'>
@@ -132,9 +132,9 @@ export default async function Total() {
               </span>{' '}
               on <span className='text-yellow-500'>Plex</span> this year!
             </p>
-          </CardText>
+          </CardRewind>
 
-          <CardText renderDelay={5} hideAfter={15}>
+          <CardRewind renderDelay={5} hideAfter={15}>
             <p>
               That&apos;s{' '}
               <span className='rewind-cat'>
@@ -144,19 +144,19 @@ export default async function Total() {
               </span>{' '}
               of all plays.
             </p>
-          </CardText>
+          </CardRewind>
         </>
       ) : (
-        <CardText hideAfter={15} scaleDelay={10}>
+        <CardRewind hideAfter={15} scaleDelay={10}>
           <p>
             You haven&apos;t played any content on{' '}
             <span className='text-yellow-500'>Plex</span> this year!{' '}
             <span className='not-italic'>🤯</span> What are you waiting for?
           </p>
-        </CardText>
+        </CardRewind>
       )}
 
-      <CardText renderDelay={10} loaderDelay={userTotalDuration != 0 ? 5 : 0}>
+      <CardRewind renderDelay={10} loaderDelay={userTotalDuration != 0 ? 5 : 0}>
         <p>
           Did you know the{' '}
           <span className='rewind-cat'>
@@ -173,9 +173,9 @@ export default async function Total() {
           </span>{' '}
           worth!
         </p>
-      </CardText>
+      </CardRewind>
 
-      <CardText renderDelay={15} loaderDelay={10} noScale>
+      <CardRewind renderDelay={15} loaderDelay={10} noScale>
         <p>The current library consist of:</p>
         <ul className='list'>
           {libraries.map((library) => {
@@ -212,7 +212,7 @@ export default async function Total() {
             }
           })}
         </ul>
-      </CardText>
+      </CardRewind>
     </Card>
   )
 }

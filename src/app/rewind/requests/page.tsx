@@ -1,5 +1,5 @@
 import Card from '@/components/Card/Card'
-import CardText from '@/components/Card/CardText'
+import CardRewind from '@/components/Card/CardRewind'
 import StatListItem from '@/components/StatListItem'
 import { ExtendedUser, authOptions } from '@/utils/authOptions'
 import { ALLOWED_PERIODS, metaDescription } from '@/utils/constants'
@@ -66,7 +66,7 @@ export default async function Requests() {
       subtitle={session.user.name}
     >
       {userRequestsTotal != 0 ? (
-        <CardText hideAfter={requestTotals.total != 0 ? 10 : 0}>
+        <CardRewind hideAfter={requestTotals.total != 0 ? 10 : 0}>
           <p>
             You&apos;ve made{' '}
             <span className='rewind-stat'>{userRequestsTotal}</span> content{' '}
@@ -76,9 +76,9 @@ export default async function Requests() {
             </span>{' '}
             this year.
           </p>
-        </CardText>
+        </CardRewind>
       ) : (
-        <CardText hideAfter={requestTotals.total != 0 ? 10 : 0}>
+        <CardRewind hideAfter={requestTotals.total != 0 ? 10 : 0}>
           <p>
             You haven&apos;t made any content{' '}
             <span className='rewind-cat'>
@@ -95,10 +95,10 @@ export default async function Requests() {
               media.rauno.eu
             </a>
           </p>
-        </CardText>
+        </CardRewind>
       )}
 
-      <CardText renderDelay={5} noScale={requestTotals.total == 0}>
+      <CardRewind renderDelay={5} noScale={requestTotals.total == 0}>
         <p>
           Altogether there have been{' '}
           <span className='rewind-stat'>{requestTotals.total}</span>{' '}
@@ -108,10 +108,10 @@ export default async function Requests() {
           </span>{' '}
           this year.
         </p>
-      </CardText>
+      </CardRewind>
 
       {requestTotals.total != 0 && (
-        <CardText renderDelay={10} loaderDelay={5} noScale>
+        <CardRewind renderDelay={10} loaderDelay={5} noScale>
           <p>That includes:</p>
           <ul className='list'>
             <StatListItem
@@ -127,7 +127,7 @@ export default async function Requests() {
               separator='for'
             />
           </ul>
-        </CardText>
+        </CardRewind>
       )}
     </Card>
   )

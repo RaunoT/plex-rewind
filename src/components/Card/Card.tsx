@@ -62,7 +62,7 @@ export default function Card({
           </div>
         )}
         <div>
-          <h2 className='mb-1 flex items-center text-sm font-bold uppercase text-black sm:text-xl'>
+          <h2 className='flex items-center text-sm font-bold uppercase text-black sm:text-xl'>
             <span>{title}</span>
             {totalSize && (
               <>
@@ -94,7 +94,7 @@ export default function Card({
       </div>
 
       {isRewind ? (
-        <ul className='flex flex-1 flex-col pt-12 sm:justify-center sm:pb-12 sm:pt-4'>
+        <ul className='flex flex-1 flex-col pt-12 sm:justify-center sm:pt-4'>
           {children}
         </ul>
       ) : (

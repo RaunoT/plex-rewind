@@ -18,7 +18,7 @@ export const fadeIn = {
   },
 }
 
-export const animateCardText = {
+export const animateCardRewind = {
   hidden: {
     opacity: 1, // TODO: opacity: 0 broken on initial render
     y: 50,

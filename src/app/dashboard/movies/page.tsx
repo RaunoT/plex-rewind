@@ -4,8 +4,8 @@ import fetchTautulli, {
   TautulliItemRows,
   getServerId,
 } from '@/utils/fetchTautulli'
-import fetchTmdb, { TmdbExternalId, TmdbItem } from '@/utils/fetchTmdb'
 import { bytesToSize, secondsToTime, timeToSeconds } from '@/utils/formatting'
+import getMediaAdditionalData from '@/utils/getMediaAdditionalData'
 import { FilterQueryParams } from '@/utils/types'
 import { Metadata } from 'next'
 
@@ -15,54 +15,17 @@ export const metadata: Metadata = {
 }
 
 async function getMovies(period: number) {
-  const moviesData = await fetchTautulli<TautulliItemRows>('get_home_stats', {
+  const moviesRes = await fetchTautulli<TautulliItemRows>('get_home_stats', {
     stat_id: 'top_movies',
     stats_count: 6,
     stats_type: 'duration',
     time_range: period,
+    section_id: 3,
   })
-  const movies = moviesData.response?.data?.rows
-  const ratingKeys: number[] = []
-
-  movies.map((movie) => {
-    ratingKeys.push(movie.rating_key)
-  })
-
-  const additionalData = await Promise.all(
-    ratingKeys.map(async (key, i) => {
-      const movieTautulli = await fetchTautulli<TautulliItemRows>(
-        'get_metadata',
-        {
-          rating_key: key,
-        },
-        true,
-      )
-      const movieTautulliData = movieTautulli.response?.data
-      // Tautulli doesn't return rating for removed items, so we're using TMDB
-      const movieTmdb = await fetchTmdb<TmdbItem>('search/movie', {
-        query: movies[i].title,
-        first_air_date_year: movies[i].year,
-      })
-      const tmdbId = movieTmdb.results[0].id
-      const imdbId = await fetchTmdb<TmdbExternalId>(
-        `movie/${tmdbId}/external_ids`,
-      )
-
-      return {
-        is_deleted: Object.keys(movieTautulliData).length === 0,
-        rating: movieTmdb.results[0].vote_average.toFixed(1),
-        tmdb_id: tmdbId,
-        imdb_id: imdbId.imdb_id,
-      }
-    }),
+  const movies = await getMediaAdditionalData(
+    moviesRes.response?.data?.rows,
+    'movie',
   )
-
-  movies.map((movie, i) => {
-    movie.is_deleted = additionalData[i].is_deleted
-    movie.rating = additionalData[i].rating
-    movie.tmdb_id = additionalData[i].tmdb_id
-    movie.imdb_id = additionalData[i].imdb_id
-  })
 
   return movies
 }

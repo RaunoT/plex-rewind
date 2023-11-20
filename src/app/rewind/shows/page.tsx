@@ -1,9 +1,14 @@
 import Card from '@/components/Card/Card'
-import CardText from '@/components/Card/CardText'
+import CardMediaItems from '@/components/Card/CardMediaItems'
+import CardRewind from '@/components/Card/CardRewind'
 import { ExtendedUser, authOptions } from '@/utils/authOptions'
 import { ALLOWED_PERIODS, metaDescription } from '@/utils/constants'
-import fetchTautulli from '@/utils/fetchTautulli'
+import fetchTautulli, {
+  TautulliItemRows,
+  getServerId,
+} from '@/utils/fetchTautulli'
 import { removeAfterMinutes } from '@/utils/formatting'
+import getMediaAdditionalData from '@/utils/getMediaAdditionalData'
 import { PlayCircleIcon } from '@heroicons/react/24/outline'
 import { Metadata } from 'next'
 import { Session, getServerSession } from 'next-auth'
@@ -27,6 +32,23 @@ async function getTotalDuration(userId: string) {
   return removeAfterMinutes(totalDuration.response?.data?.total_duration)
 }
 
+async function getTopShows(userId: string, period: number) {
+  const showsRes = await fetchTautulli<TautulliItemRows>('get_home_stats', {
+    user_id: userId,
+    section_id: 2,
+    time_range: period,
+    stats_count: 5,
+    stats_type: 'duration',
+    stat_id: 'top_tv',
+  })
+  const shows = await getMediaAdditionalData(
+    showsRes.response?.data?.rows,
+    'tv',
+  )
+
+  return shows
+}
+
 export default async function Shows() {
   const session = (await getServerSession(authOptions)) as Session & {
     user: ExtendedUser
@@ -36,7 +58,11 @@ export default async function Shows() {
     return
   }
 
-  const [totalDuration] = await Promise.all([getTotalDuration(session.user.id)])
+  const [totalDuration, topShows, serverId] = await Promise.all([
+    getTotalDuration(session.user.id),
+    getTopShows(session.user.id, ALLOWED_PERIODS.thisYear.daysAgo),
+    getServerId(),
+  ])
 
   return (
     <Card
@@ -46,7 +72,7 @@ export default async function Shows() {
       nextCard='/rewind/movies'
       subtitle={session.user.name}
     >
-      <CardText noScale>
+      <CardRewind noScale={!topShows}>
         {totalDuration ? (
           <p>
             <span className='rewind-cat'>
@@ -67,7 +93,24 @@ export default async function Shows() {
             <span className='not-italic'>😥</span>
           </p>
         )}
-      </CardText>
+      </CardRewind>
+
+      {topShows && (
+        <CardRewind renderDelay={5} noScale>
+          <p className='mb-2'>
+            Here&apos;s your <span className='rewind-cat'>Top 5:</span>
+          </p>
+
+          <div className='text-base not-italic'>
+            <CardMediaItems
+              type='movies'
+              items={topShows}
+              serverId={serverId}
+              personal
+            />
+          </div>
+        </CardRewind>
+      )}
     </Card>
   )
 }
