@@ -6,9 +6,9 @@ import { ALLOWED_PERIODS, metaDescription } from '@/utils/constants'
 import fetchTautulli from '@/utils/fetchTautulli'
 import { bytesToSize, secondsToTime, timeToSeconds } from '@/utils/formatting'
 import {
-  ArrowPathRoundedSquareIcon,
   ChartPieIcon,
   ClockIcon,
+  DevicePhoneMobileIcon,
   FilmIcon,
   FolderIcon,
   MusicalNoteIcon,
@@ -103,8 +103,8 @@ export default async function Total() {
     getLibrariesTotalDuration(),
     getlibraries(),
   ])
-  const iPodShuffles = Math.round(
-    librariesTotalSize / 4000000000,
+  const sizeInPhones = Math.round(
+    librariesTotalSize / 128000000000,
   ).toLocaleString('en-US')
   const totalDurationPercentage = Math.round(
     (userTotalDuration * 100) / librariesTotalDuration,
@@ -167,9 +167,9 @@ export default async function Total() {
           <span className='text-yellow-500'>Plex</span> is{' '}
           <span className='rewind-stat'>{bytesToSize(librariesTotalSize)}</span>
           . That&apos;s like..{' '}
-          <span className='rewind-stat'>{iPodShuffles}</span>{' '}
+          <span className='rewind-stat'>{sizeInPhones}</span>{' '}
           <span className='rewind-cat'>
-            iPod Shuffles <ArrowPathRoundedSquareIcon />
+            iPhones <DevicePhoneMobileIcon />
           </span>{' '}
           worth!
         </p>

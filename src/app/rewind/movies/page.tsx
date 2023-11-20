@@ -72,8 +72,8 @@ export default async function Movies() {
       nextCard='/rewind/music'
       subtitle={session.user.name}
     >
-      <CardRewind noScale={!topMovies}>
-        {totalDuration ? (
+      <CardRewind noScale={topMovies.length === 0}>
+        {totalDuration != '0' ? (
           <p>
             <span className='rewind-stat'>{totalDuration}</span> of your time
             was spent watching{' '}
@@ -96,7 +96,7 @@ export default async function Movies() {
         )}
       </CardRewind>
 
-      {topMovies && (
+      {topMovies.length > 0 && (
         <CardRewind renderDelay={5} noScale>
           <p className='mb-2'>
             Here&apos;s your <span className='rewind-cat'>Top 5:</span>
@@ -107,7 +107,7 @@ export default async function Movies() {
               type='movies'
               items={topMovies}
               serverId={serverId}
-              personal
+              rows
             />
           </div>
         </CardRewind>

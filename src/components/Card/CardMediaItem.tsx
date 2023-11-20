@@ -28,16 +28,9 @@ type Props = {
   i: number
   type: string
   serverId?: string
-  personal?: boolean
 }
 
-export default function CardMediaItem({
-  data,
-  i,
-  type,
-  serverId,
-  personal,
-}: Props) {
+export default function CardMediaItem({ data, i, type, serverId }: Props) {
   const [posterSrc, setPosterSrc] = useState<string>(
     `${process.env.NEXT_PUBLIC_TAUTULLI_URL}/pms_image_proxy?img=${
       type === 'users' ? data.user_thumb : data.thumb
@@ -156,40 +149,39 @@ export default function CardMediaItem({
             </li>
           )}
           {/* Plays */}
-          {!personal &&
-            (type === 'users' ? (
-              <>
-                {data.shows_plays_count > 0 && (
-                  <li className='flex items-center gap-1 sm:gap-2'>
-                    <PlayCircleIcon className='w-5 text-slate-900' />
-                    {pluralize(data.shows_plays_count, 'play')}
-                  </li>
-                )}
-                {data.movies_plays_count > 0 && (
-                  <li className='flex items-center gap-1 sm:gap-2'>
-                    <FilmIcon className='w-5 text-slate-900' />
-                    {pluralize(data.movies_plays_count, 'play')}
-                  </li>
-                )}
-                {data.music_plays_count > 0 && (
-                  <li className='flex items-center gap-1 sm:gap-2'>
-                    <MusicalNoteIcon className='w-5 text-slate-900' />
-                    {pluralize(data.music_plays_count, 'play')}
-                  </li>
-                )}
-              </>
-            ) : (
-              <li className='flex items-center gap-1 sm:gap-2'>
-                {type === 'music' ? (
-                  <MusicalNoteIcon className='w-5 text-slate-900' />
-                ) : type === 'movies' ? (
-                  <FilmIcon className='w-5 text-slate-900' />
-                ) : (
+          {type === 'users' ? (
+            <>
+              {data.shows_plays_count > 0 && (
+                <li className='flex items-center gap-1 sm:gap-2'>
                   <PlayCircleIcon className='w-5 text-slate-900' />
-                )}
-                <span>{pluralize(data.total_plays, 'play')}</span>
-              </li>
-            ))}
+                  {pluralize(data.shows_plays_count, 'play')}
+                </li>
+              )}
+              {data.movies_plays_count > 0 && (
+                <li className='flex items-center gap-1 sm:gap-2'>
+                  <FilmIcon className='w-5 text-slate-900' />
+                  {pluralize(data.movies_plays_count, 'play')}
+                </li>
+              )}
+              {data.music_plays_count > 0 && (
+                <li className='flex items-center gap-1 sm:gap-2'>
+                  <MusicalNoteIcon className='w-5 text-slate-900' />
+                  {pluralize(data.music_plays_count, 'play')}
+                </li>
+              )}
+            </>
+          ) : (
+            <li className='flex items-center gap-1 sm:gap-2'>
+              {type === 'music' ? (
+                <MusicalNoteIcon className='w-5 text-slate-900' />
+              ) : type === 'movies' ? (
+                <FilmIcon className='w-5 text-slate-900' />
+              ) : (
+                <PlayCircleIcon className='w-5 text-slate-900' />
+              )}
+              <span>{pluralize(data.total_plays, 'play')}</span>
+            </li>
+          )}
           {/* Requests */}
           {type === 'users' && data.requests > 0 && (
             <li className='flex items-center gap-1 sm:gap-2'>

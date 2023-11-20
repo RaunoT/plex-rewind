@@ -72,7 +72,7 @@ export default async function Shows() {
       nextCard='/rewind/movies'
       subtitle={session.user.name}
     >
-      <CardRewind noScale={!topShows}>
+      <CardRewind noScale={topShows.length === 0}>
         {totalDuration ? (
           <p>
             <span className='rewind-cat'>
@@ -95,7 +95,7 @@ export default async function Shows() {
         )}
       </CardRewind>
 
-      {topShows && (
+      {topShows.length > 0 && (
         <CardRewind renderDelay={5} noScale>
           <p className='mb-2'>
             Here&apos;s your <span className='rewind-cat'>Top 5:</span>
@@ -103,10 +103,10 @@ export default async function Shows() {
 
           <div className='text-base not-italic'>
             <CardMediaItems
-              type='movies'
+              type='shows'
               items={topShows}
               serverId={serverId}
-              personal
+              rows
             />
           </div>
         </CardRewind>

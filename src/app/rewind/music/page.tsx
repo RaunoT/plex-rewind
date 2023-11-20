@@ -66,8 +66,8 @@ export default async function Music() {
       prevCard='/rewind/movies'
       subtitle={session.user.name}
     >
-      <CardRewind noScale={!topArtists}>
-        {totalDuration ? (
+      <CardRewind noScale={topArtists.length === 0}>
+        {totalDuration != '0' ? (
           <p>
             And to top it all off, you listened to&nbsp;
             <span className='rewind-stat'>{totalDuration}</span> of{' '}
@@ -90,7 +90,7 @@ export default async function Music() {
         )}
       </CardRewind>
 
-      {topArtists && (
+      {topArtists.length > 0 && (
         <CardRewind renderDelay={5} noScale>
           <p className='mb-2'>
             Here&apos;s your <span className='rewind-cat'>Top 5:</span>
@@ -98,10 +98,10 @@ export default async function Music() {
 
           <div className='text-base not-italic'>
             <CardMediaItems
-              type='movies'
+              type='music'
               items={topArtists}
               serverId={serverId}
-              personal
+              rows
             />
           </div>
         </CardRewind>
