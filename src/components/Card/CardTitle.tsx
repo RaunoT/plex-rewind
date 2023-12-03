@@ -3,7 +3,7 @@
 import { TautulliItem } from '@/utils/fetchTautulli'
 import { motion, useAnimation } from 'framer-motion'
 import { debounce } from 'lodash'
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 type Props = {
   i: number
@@ -13,43 +13,49 @@ type Props = {
 }
 
 export default function CardTitle({ i, data, type, parentRef }: Props) {
+  const [prevWidth, setPrevWidth] = useState<number>(0)
   const titleRef = useRef<HTMLSpanElement>(null)
   const numberRef = useRef<HTMLSpanElement>(null)
   const controls = useAnimation()
 
   useEffect(() => {
     const checkWidth = () => {
-      const titleElement = titleRef.current
-      const parentElement = parentRef.current
-      const numberElement = numberRef.current
+      const currentWidth = window.innerWidth
 
-      if (titleElement && parentElement && numberElement) {
-        const numberWidth = numberElement.clientWidth + 6
-        const scrollDuration = 5
-        const pauseDuration = 1
-        const totalDuration = 2 * scrollDuration + 3 * pauseDuration
-        const excessWidth =
-          titleElement.scrollWidth + numberWidth - parentElement.clientWidth
+      if (currentWidth !== prevWidth) {
+        setPrevWidth(window.innerWidth)
+        const titleElement = titleRef.current
+        const parentElement = parentRef.current
+        const numberElement = numberRef.current
 
-        if (excessWidth > 0) {
-          controls.start({
-            x: [0, 0, -excessWidth, -excessWidth, 0, 0],
-            transition: {
-              repeat: Infinity,
-              duration: totalDuration,
-              ease: 'linear',
-              times: [
-                0,
-                pauseDuration / totalDuration,
-                (pauseDuration + scrollDuration) / totalDuration,
-                (2 * pauseDuration + scrollDuration) / totalDuration,
-                (2 * pauseDuration + 2 * scrollDuration) / totalDuration,
-                1,
-              ],
-            },
-          })
-        } else {
-          controls.stop()
+        if (titleElement && parentElement && numberElement) {
+          const numberWidth = numberElement.clientWidth + 6
+          const scrollDuration = 5
+          const pauseDuration = 1
+          const totalDuration = 2 * scrollDuration + 3 * pauseDuration
+          const excessWidth =
+            titleElement.scrollWidth + numberWidth - parentElement.clientWidth
+
+          if (excessWidth > 0) {
+            controls.start({
+              x: [0, 0, -excessWidth, -excessWidth, 0, 0],
+              transition: {
+                repeat: Infinity,
+                duration: totalDuration,
+                ease: 'linear',
+                times: [
+                  0,
+                  pauseDuration / totalDuration,
+                  (pauseDuration + scrollDuration) / totalDuration,
+                  (2 * pauseDuration + scrollDuration) / totalDuration,
+                  (2 * pauseDuration + 2 * scrollDuration) / totalDuration,
+                  1,
+                ],
+              },
+            })
+          } else {
+            controls.stop()
+          }
         }
       }
     }
@@ -70,7 +76,11 @@ export default function CardTitle({ i, data, type, parentRef }: Props) {
       window.removeEventListener('resize', debouncedRestartAnimation)
       debouncedRestartAnimation.cancel()
     }
-  }, [controls, parentRef])
+  }, [controls, parentRef, prevWidth, titleRef])
+
+  useEffect(() => {
+    setPrevWidth(window.innerWidth)
+  }, [])
 
   return (
     <h3 className='mb-2 flex sm:text-xl'>
