@@ -17,20 +17,3 @@ export const fadeIn = {
     opacity: 1,
   },
 }
-
-export const animateCardRewind = {
-  hidden: {
-    opacity: 1, // TODO: opacity: 0 broken on initial render
-    y: 50,
-  },
-  show: {
-    y: 0,
-  },
-  scaleDown: (scaleDelay: number) => ({
-    opacity: 0.5,
-    fontSize: '20px',
-    transition: {
-      delay: scaleDelay,
-    },
-  }),
-}
