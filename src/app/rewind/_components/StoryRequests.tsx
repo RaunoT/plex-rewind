@@ -21,7 +21,7 @@ export default function StoryRequests({ userRewind }: Props) {
       ) : (
         <>
           {userRewind.user_requests == 0 ? (
-            <CardText scaleDelay={2}>
+            <CardText scaleDelay={3}>
               <p>
                 You haven&apos;t made any content{' '}
                 <span className='rewind-cat'>
@@ -40,7 +40,7 @@ export default function StoryRequests({ userRewind }: Props) {
               </p>
             </CardText>
           ) : (
-            <CardText scaleDelay={2}>
+            <CardText scaleDelay={3}>
               <p>
                 You&apos;ve made{' '}
                 <span className='rewind-stat'>{userRewind.user_requests}</span>{' '}
@@ -54,7 +54,7 @@ export default function StoryRequests({ userRewind }: Props) {
             </CardText>
           )}
 
-          <CardText renderDelay={2} scaleDelay={2}>
+          <CardText renderDelay={3} scaleDelay={3}>
             <p>
               Altogether there have been{' '}
               <span className='rewind-stat'>{userRewind.requests.total}</span>{' '}
@@ -66,7 +66,7 @@ export default function StoryRequests({ userRewind }: Props) {
             </p>
           </CardText>
 
-          <CardText renderDelay={4} noScale>
+          <CardText renderDelay={6} noScale loaderDelay={3}>
             <p>That includes:</p>
             <ul className='list'>
               <StatListItem

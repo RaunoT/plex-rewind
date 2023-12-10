@@ -9,7 +9,7 @@ type Props = {
 export default function StoryTotal({ userRewind }: Props) {
   return (
     <>
-      <CardText scaleDelay={3}>
+      <CardText scaleDelay={4}>
         <p>
           You&apos;ve spent a{' '}
           <span className='rewind-cat'>
@@ -22,7 +22,7 @@ export default function StoryTotal({ userRewind }: Props) {
         </p>
       </CardText>
 
-      <CardText renderDelay={3} noScale>
+      <CardText renderDelay={4} noScale>
         <p>
           That&apos;s{' '}
           <span className='rewind-cat'>

@@ -30,7 +30,7 @@ export const animateCardRewind = {
   scaleDown: (scaleDelay: number) => ({
     opacity: 0.5,
     fontSize: '20px',
-    lineHeight: '1.2',
+    lineHeight: '22px',
     transition: {
       delay: scaleDelay,
     },

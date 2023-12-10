@@ -35,32 +35,32 @@ export default function Rewind() {
     {
       type: 'component',
       component: () => <StoryTotal userRewind={userRewind} />,
-      duration: 5000,
-    },
-    {
-      type: 'component',
-      component: () => <StoryLibraries userRewind={userRewind} />,
-      duration: 5000,
-    },
-    {
-      type: 'component',
-      component: () => <StoryRequests userRewind={userRewind} />,
       duration: 7000,
     },
     {
       type: 'component',
-      component: () => <StoryShows userRewind={userRewind} />,
+      component: () => <StoryLibraries userRewind={userRewind} />,
+      duration: 7000,
+    },
+    {
+      type: 'component',
+      component: () => <StoryRequests userRewind={userRewind} />,
       duration: 8000,
+    },
+    {
+      type: 'component',
+      component: () => <StoryShows userRewind={userRewind} />,
+      duration: 10000,
     },
     {
       type: 'component',
       component: () => <StoryMovies userRewind={userRewind} />,
-      duration: 8000,
+      duration: 10000,
     },
     {
       type: 'component',
       component: () => <StoryMusic userRewind={userRewind} />,
-      duration: 8000,
+      duration: 10000,
     },
   ]
 
