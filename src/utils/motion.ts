@@ -18,21 +18,19 @@ export const fadeIn = {
   },
 }
 
-export const animateCardText = {
+export const animateCardRewind = {
   hidden: {
-    opacity: 0,
+    opacity: 1, // TODO: opacity: 0 broken on initial render
     y: 50,
   },
-  show: (showDelay: number) => ({
+  show: {
     opacity: 1,
     y: 0,
-    transition: {
-      delay: showDelay,
-    },
-  }),
+  },
   scaleDown: (scaleDelay: number) => ({
     opacity: 0.5,
     fontSize: '20px',
+    lineHeight: '1.2',
     transition: {
       delay: scaleDelay,
     },

@@ -10,7 +10,7 @@ type Props = {
 export default function StoryMovies({ userRewind }: Props) {
   return userRewind.movies_total_duration ? (
     <>
-      <CardText>
+      <CardText scaleDelay={3}>
         <p>
           <span className='rewind-stat'>
             {userRewind.movies_total_duration}
@@ -24,7 +24,7 @@ export default function StoryMovies({ userRewind }: Props) {
         </p>
       </CardText>
 
-      <CardText>
+      <CardText renderDelay={3} noScale>
         <p className='mb-2'>
           Here&apos;s your <span className='rewind-cat'>Top 5:</span>
         </p>
@@ -40,7 +40,7 @@ export default function StoryMovies({ userRewind }: Props) {
       </CardText>
     </>
   ) : (
-    <CardText>
+    <CardText noScale>
       <p>
         You haven&apos;t watched any{' '}
         <span className='rewind-cat'>

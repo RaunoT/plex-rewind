@@ -213,6 +213,7 @@ export async function GET() {
     return
   }
 
+  // TODO: Can we reduce the ammount of requests?
   const [
     userTotalDuration,
     librariesTotalSize,

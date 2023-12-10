@@ -10,7 +10,7 @@ type Props = {
 export default function StoryMusic({ userRewind }: Props) {
   return userRewind.music_total_duration ? (
     <>
-      <CardText>
+      <CardText scaleDelay={3}>
         <p>
           And to top it all off, you listened to&nbsp;
           <span className='rewind-stat'>
@@ -25,7 +25,7 @@ export default function StoryMusic({ userRewind }: Props) {
         </p>
       </CardText>
 
-      <CardText>
+      <CardText renderDelay={3} noScale>
         <p className='mb-2'>
           Here&apos;s your <span className='rewind-cat'>Top 5:</span>
         </p>
@@ -41,7 +41,7 @@ export default function StoryMusic({ userRewind }: Props) {
       </CardText>
     </>
   ) : (
-    <CardText>
+    <CardText noScale>
       <p>
         You haven&apos;t listened to any{' '}
         <span className='rewind-cat'>

@@ -16,7 +16,7 @@ type Props = {
 export default function StoryLibraries({ userRewind }: Props) {
   return (
     <>
-      <CardText>
+      <CardText scaleDelay={2}>
         <p>
           Did you know the{' '}
           <span className='rewind-cat'>
@@ -32,7 +32,7 @@ export default function StoryLibraries({ userRewind }: Props) {
         </p>
       </CardText>
 
-      <CardText showDelay={2}>
+      <CardText renderDelay={2} noScale>
         <p>The current library consist of:</p>
         <ul className='list'>
           {userRewind.libraries.map((library) => {

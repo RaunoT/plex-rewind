@@ -45,30 +45,31 @@ export default function Rewind() {
     {
       type: 'component',
       component: () => <StoryRequests userRewind={userRewind} />,
-      duration: 5000,
+      duration: 7000,
     },
     {
       type: 'component',
       component: () => <StoryShows userRewind={userRewind} />,
-      duration: 5000,
+      duration: 8000,
     },
     {
       type: 'component',
       component: () => <StoryMovies userRewind={userRewind} />,
-      duration: 5000,
+      duration: 8000,
     },
     {
       type: 'component',
       component: () => <StoryMusic userRewind={userRewind} />,
-      duration: 5000,
+      duration: 8000,
     },
   ]
 
   return (
+    // TODO: Pause framer animation on story pause
     <Stories
       stories={stories}
       classNames={{
-        main: 'flex flex-1 flex-col !bg-transparent',
+        main: 'flex flex-1 flex-col !bg-transparent pt-8',
         storyContainer: '!bg-transparent flex flex-1 flex-col justify-center',
       }}
     />
