@@ -19,6 +19,14 @@ export type TautulliItem = {
   user_id: number
 }
 
+export type Library = {
+  section_name: string
+  section_id: string
+  count: string
+  parent_count: string
+  child_count: string
+}
+
 export type TautulliItemRows = { rows: TautulliItem[] }
 
 type TautulliResponse<T> = {
