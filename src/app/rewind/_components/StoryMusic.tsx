@@ -28,7 +28,7 @@ export default function StoryMusic({ userRewind }: UserRewind) {
 
         <div className='text-base not-italic'>
           <CardMediaItems
-            type='movies'
+            type='music'
             items={userRewind.music_top}
             serverId={userRewind.server_id}
             rows
