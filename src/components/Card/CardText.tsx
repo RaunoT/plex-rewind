@@ -20,7 +20,7 @@ export default function CardRewind({
   className,
   renderDelay = 0,
   loaderDelay = 0,
-  scaleDelay = 5,
+  scaleDelay = 0,
   hideAfter = 0,
   noScale = false,
 }: Props) {
@@ -56,7 +56,7 @@ export default function CardRewind({
   }, [hideAfter])
 
   return isComponentShown ? (
-    <motion.li
+    <motion.div
       className={clsx(
         'mb-4 text-3xl italic leading-tight last:mb-0 sm:text-4xl',
         className,
@@ -68,7 +68,7 @@ export default function CardRewind({
       custom={scaleDelay}
     >
       <div>{children}</div>
-    </motion.li>
+    </motion.div>
   ) : isLoaderShown ? (
     <Loader />
   ) : null

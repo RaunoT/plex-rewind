@@ -24,11 +24,13 @@ export const animateCardRewind = {
     y: 50,
   },
   show: {
+    opacity: 1,
     y: 0,
   },
   scaleDown: (scaleDelay: number) => ({
     opacity: 0.5,
     fontSize: '20px',
+    lineHeight: '22px',
     transition: {
       delay: scaleDelay,
     },

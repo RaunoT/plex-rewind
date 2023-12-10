@@ -28,6 +28,11 @@ export function secondsToTime(seconds: number): string {
     .trim()
 }
 
+export function secondsToMinutes(seconds: number): string {
+  const minutes = Math.floor(seconds / 60)
+  return `${minutes.toLocaleString('en-US')} minute${minutes !== 1 && 's'}`
+}
+
 export function removeAfterMinutes(timeString: string): string {
   return timeString.replace(/mins.*/, 'mins')
 }
