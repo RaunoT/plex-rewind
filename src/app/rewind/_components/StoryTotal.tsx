@@ -1,12 +1,8 @@
-import { RewindResponse } from '@/app/api/user/rewind/route'
 import CardText from '@/components/Card/CardText'
 import { ChartPieIcon, ClockIcon } from '@heroicons/react/24/outline'
+import { UserRewind } from './RewindStories'
 
-type Props = {
-  userRewind: RewindResponse
-}
-
-export default function StoryTotal({ userRewind }: Props) {
+export default function StoryTotal({ userRewind }: UserRewind) {
   return (
     <>
       <CardText scaleDelay={4}>

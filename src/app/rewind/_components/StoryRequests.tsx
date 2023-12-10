@@ -1,4 +1,3 @@
-import { RewindResponse } from '@/app/api/user/rewind/route'
 import CardText from '@/components/Card/CardText'
 import StatListItem from '@/components/StatListItem'
 import {
@@ -6,12 +5,9 @@ import {
   PlayCircleIcon,
   QuestionMarkCircleIcon,
 } from '@heroicons/react/24/outline'
+import { UserRewind } from './RewindStories'
 
-type Props = {
-  userRewind: RewindResponse
-}
-
-export default function StoryRequests({ userRewind }: Props) {
+export default function StoryRequests({ userRewind }: UserRewind) {
   return (
     <>
       {userRewind.requests.total == 0 ? (

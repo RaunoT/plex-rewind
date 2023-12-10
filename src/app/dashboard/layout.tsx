@@ -13,8 +13,6 @@ type Props = {
 
 export default function DashboardLayout({ children }: Props) {
   const pathname = usePathname()
-  const isDashboardDisabled =
-    process.env.NEXT_PUBLIC_IS_DASHBOARD_DISABLED === 'true'
 
   // TODO: Maybe there's a more efficient way to accomplish this and keep this a server component
   // When a user changes the period from the bottom (e.g on mobile), scroll back to top
@@ -22,7 +20,7 @@ export default function DashboardLayout({ children }: Props) {
     window.scrollTo(0, 0)
   }, [pathname])
 
-  return isDashboardDisabled ? (
+  return process.env.NEXT_PUBLIC_IS_DASHBOARD_DISABLED === 'true' ? (
     notFound()
   ) : (
     <div className='w-full max-w-2xl lg:max-w-5xl'>

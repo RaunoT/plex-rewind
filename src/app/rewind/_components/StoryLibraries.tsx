@@ -1,4 +1,3 @@
-import { RewindResponse } from '@/app/api/user/rewind/route'
 import CardText from '@/components/Card/CardText'
 import StatListItem from '@/components/StatListItem'
 import { bytesToSize } from '@/utils/formatting'
@@ -8,12 +7,9 @@ import {
   MusicalNoteIcon,
   PlayCircleIcon,
 } from '@heroicons/react/24/outline'
+import { UserRewind } from './RewindStories'
 
-type Props = {
-  userRewind: RewindResponse
-}
-
-export default function StoryLibraries({ userRewind }: Props) {
+export default function StoryLibraries({ userRewind }: UserRewind) {
   return (
     <>
       <CardText scaleDelay={3}>

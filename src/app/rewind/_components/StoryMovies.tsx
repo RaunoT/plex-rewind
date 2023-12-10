@@ -1,13 +1,9 @@
-import { RewindResponse } from '@/app/api/user/rewind/route'
 import CardMediaItems from '@/components/Card/CardMediaItems'
 import CardText from '@/components/Card/CardText'
 import { FilmIcon, PlayCircleIcon } from '@heroicons/react/24/outline'
+import { UserRewind } from './RewindStories'
 
-type Props = {
-  userRewind: RewindResponse
-}
-
-export default function StoryMovies({ userRewind }: Props) {
+export default function StoryMovies({ userRewind }: UserRewind) {
   return userRewind.movies_total_duration ? (
     <>
       <CardText scaleDelay={3}>
