@@ -53,8 +53,9 @@ export default function RewindStories({ userRewind }: UserRewind) {
     <Stories
       stories={stories}
       classNames={{
-        main: 'flex flex-1 flex-col !bg-transparent pt-8',
-        storyContainer: '!bg-transparent flex flex-1 flex-col justify-center',
+        main: 'sm:flex sm:flex-1 sm:flex-col !bg-transparent pt-10 sm:pt-8',
+        storyContainer:
+          '!bg-transparent sm:flex sm:flex-1 sm:flex-col sm:justify-center',
       }}
     />
   )
