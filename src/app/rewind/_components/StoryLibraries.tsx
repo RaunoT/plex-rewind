@@ -7,12 +7,15 @@ import {
   MusicalNoteIcon,
   PlayCircleIcon,
 } from '@heroicons/react/24/outline'
-import { UserRewind } from './RewindStories'
+import { UserRewindProps } from './RewindStories'
 
-export default function StoryLibraries({ userRewind }: UserRewind) {
+export default function StoryLibraries({
+  userRewind,
+  isPaused,
+}: UserRewindProps) {
   return (
     <>
-      <CardText scaleDelay={3}>
+      <CardText scaleDelay={3} isPaused={isPaused}>
         <p>
           Did you know the{' '}
           <span className='rewind-cat'>
@@ -28,7 +31,7 @@ export default function StoryLibraries({ userRewind }: UserRewind) {
         </p>
       </CardText>
 
-      <CardText renderDelay={3} noScale>
+      <CardText renderDelay={3} noScale isPaused={isPaused}>
         <p>The current library consist of:</p>
         <ul className='list'>
           {userRewind.libraries.map((library) => {
@@ -42,7 +45,6 @@ export default function StoryLibraries({ userRewind }: UserRewind) {
                     icon={<PlayCircleIcon />}
                   />
                 )
-
               case 'Movies':
                 return (
                   <StatListItem
@@ -52,7 +54,6 @@ export default function StoryLibraries({ userRewind }: UserRewind) {
                     icon={<FilmIcon />}
                   />
                 )
-
               case 'Music':
                 return (
                   <StatListItem

@@ -1,12 +1,12 @@
 import CardMediaItems from '@/components/Card/CardMediaItems'
 import CardText from '@/components/Card/CardText'
 import { MusicalNoteIcon, PlayCircleIcon } from '@heroicons/react/24/outline'
-import { UserRewind } from './RewindStories'
+import { UserRewindProps } from './RewindStories'
 
-export default function StoryMusic({ userRewind }: UserRewind) {
+export default function StoryMusic({ userRewind, isPaused }: UserRewindProps) {
   return userRewind.music_total_duration ? (
     <>
-      <CardText scaleDelay={3}>
+      <CardText scaleDelay={3} isPaused={isPaused}>
         <p>
           And to top it all off, you listened to&nbsp;
           <span className='rewind-stat'>
@@ -21,7 +21,7 @@ export default function StoryMusic({ userRewind }: UserRewind) {
         </p>
       </CardText>
 
-      <CardText renderDelay={3} noScale>
+      <CardText renderDelay={3} noScale isPaused={isPaused}>
         <p className='mb-2'>
           Here&apos;s your <span className='rewind-cat'>Top 5:</span>
         </p>

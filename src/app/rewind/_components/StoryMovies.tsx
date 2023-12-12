@@ -1,12 +1,12 @@
 import CardMediaItems from '@/components/Card/CardMediaItems'
 import CardText from '@/components/Card/CardText'
 import { FilmIcon, PlayCircleIcon } from '@heroicons/react/24/outline'
-import { UserRewind } from './RewindStories'
+import { UserRewindProps } from './RewindStories'
 
-export default function StoryMovies({ userRewind }: UserRewind) {
+export default function StoryMovies({ userRewind, isPaused }: UserRewindProps) {
   return userRewind.movies_total_duration ? (
     <>
-      <CardText scaleDelay={3}>
+      <CardText scaleDelay={3} isPaused={isPaused}>
         <p>
           <span className='rewind-stat'>
             {userRewind.movies_total_duration}
@@ -20,7 +20,7 @@ export default function StoryMovies({ userRewind }: UserRewind) {
         </p>
       </CardText>
 
-      <CardText renderDelay={3} noScale>
+      <CardText renderDelay={3} noScale isPaused={isPaused}>
         <p className='mb-2'>
           Here&apos;s your <span className='rewind-cat'>Top 5:</span>
         </p>

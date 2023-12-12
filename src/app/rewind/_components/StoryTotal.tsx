@@ -1,11 +1,11 @@
 import CardText from '@/components/Card/CardText'
 import { ChartPieIcon, ClockIcon } from '@heroicons/react/24/outline'
-import { UserRewind } from './RewindStories'
+import { UserRewindProps } from './RewindStories'
 
-export default function StoryTotal({ userRewind }: UserRewind) {
+export default function StoryTotal({ userRewind, isPaused }: UserRewindProps) {
   return (
     <>
-      <CardText scaleDelay={4}>
+      <CardText scaleDelay={4} isPaused={isPaused}>
         <p>
           You&apos;ve spent a{' '}
           <span className='rewind-cat'>
@@ -18,7 +18,7 @@ export default function StoryTotal({ userRewind }: UserRewind) {
         </p>
       </CardText>
 
-      <CardText renderDelay={4} noScale>
+      <CardText renderDelay={4} noScale isPaused={isPaused}>
         <p>
           That&apos;s{' '}
           <span className='rewind-cat'>

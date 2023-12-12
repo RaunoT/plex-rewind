@@ -10,40 +10,61 @@ import StoryRequests from './StoryRequests'
 import StoryShows from './StoryShows'
 import StoryTotal from './StoryTotal'
 
-export type UserRewind = {
+export type UserRewindProps = {
+  userRewind: RewindResponse
+  isPaused: boolean
+}
+
+type StoryProps = {
+  isPaused: boolean
+}
+
+type RewindStoriesProps = {
   userRewind: RewindResponse
 }
 
-export default function RewindStories({ userRewind }: UserRewind) {
+export default function RewindStories({ userRewind }: RewindStoriesProps) {
   const stories = [
     {
       type: 'component',
-      component: () => <StoryTotal userRewind={userRewind} />,
+      component: (story: StoryProps) => (
+        <StoryTotal userRewind={userRewind} isPaused={story.isPaused} />
+      ),
       duration: 7000,
     },
     {
       type: 'component',
-      component: () => <StoryLibraries userRewind={userRewind} />,
+      component: (story: StoryProps) => (
+        <StoryLibraries userRewind={userRewind} isPaused={story.isPaused} />
+      ),
       duration: 7000,
     },
     {
       type: 'component',
-      component: () => <StoryRequests userRewind={userRewind} />,
+      component: (story: StoryProps) => (
+        <StoryRequests userRewind={userRewind} isPaused={story.isPaused} />
+      ),
       duration: 8000,
     },
     {
       type: 'component',
-      component: () => <StoryShows userRewind={userRewind} />,
+      component: (story: StoryProps) => (
+        <StoryShows userRewind={userRewind} isPaused={story.isPaused} />
+      ),
       duration: 10000,
     },
     {
       type: 'component',
-      component: () => <StoryMovies userRewind={userRewind} />,
+      component: (story: StoryProps) => (
+        <StoryMovies userRewind={userRewind} isPaused={story.isPaused} />
+      ),
       duration: 10000,
     },
     {
       type: 'component',
-      component: () => <StoryMusic userRewind={userRewind} />,
+      component: (story: StoryProps) => (
+        <StoryMusic userRewind={userRewind} isPaused={story.isPaused} />
+      ),
       duration: 10000,
     },
   ]

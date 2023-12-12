@@ -5,9 +5,12 @@ import {
   PlayCircleIcon,
   QuestionMarkCircleIcon,
 } from '@heroicons/react/24/outline'
-import { UserRewind } from './RewindStories'
+import { UserRewindProps } from './RewindStories'
 
-export default function StoryRequests({ userRewind }: UserRewind) {
+export default function StoryRequests({
+  userRewind,
+  isPaused,
+}: UserRewindProps) {
   return (
     <>
       {userRewind.requests.total == 0 ? (
@@ -17,7 +20,7 @@ export default function StoryRequests({ userRewind }: UserRewind) {
       ) : (
         <>
           {userRewind.user_requests == 0 ? (
-            <CardText scaleDelay={3}>
+            <CardText scaleDelay={3} isPaused={isPaused}>
               <p>
                 You haven&apos;t made any content{' '}
                 <span className='rewind-cat'>
@@ -36,7 +39,7 @@ export default function StoryRequests({ userRewind }: UserRewind) {
               </p>
             </CardText>
           ) : (
-            <CardText scaleDelay={3}>
+            <CardText scaleDelay={3} isPaused={isPaused}>
               <p>
                 You&apos;ve made{' '}
                 <span className='rewind-stat'>{userRewind.user_requests}</span>{' '}
@@ -50,7 +53,7 @@ export default function StoryRequests({ userRewind }: UserRewind) {
             </CardText>
           )}
 
-          <CardText renderDelay={3} scaleDelay={3}>
+          <CardText renderDelay={3} scaleDelay={3} isPaused={isPaused}>
             <p>
               Altogether there have been{' '}
               <span className='rewind-stat'>{userRewind.requests.total}</span>{' '}
@@ -62,7 +65,7 @@ export default function StoryRequests({ userRewind }: UserRewind) {
             </p>
           </CardText>
 
-          <CardText renderDelay={6} noScale loaderDelay={3}>
+          <CardText renderDelay={6} noScale loaderDelay={3} isPaused={isPaused}>
             <p>That includes:</p>
             <ul className='list'>
               <StatListItem
