@@ -31,8 +31,9 @@ type Props = {
 }
 
 export default function CardMediaItem({ data, i, type, serverId }: Props) {
+  const tautulliUrl = process.env.NEXT_PUBLIC_TAUTULLI_URL
   const [posterSrc, setPosterSrc] = useState<string>(
-    `${process.env.NEXT_PUBLIC_TAUTULLI_URL}/pms_image_proxy?img=${
+    `${tautulliUrl}/pms_image_proxy?img=${
       type === 'users' ? data.user_thumb : data.thumb
     }&width=300`,
   )
@@ -41,12 +42,12 @@ export default function CardMediaItem({ data, i, type, serverId }: Props) {
 
   useEffect(() => {
     setPosterSrc(
-      `${process.env.NEXT_PUBLIC_TAUTULLI_URL}/pms_image_proxy?img=${
+      `${tautulliUrl}/pms_image_proxy?img=${
         type === 'users' ? data.user_thumb : data.thumb
       }&width=300`,
     )
     setDataKey((prevDataKey) => prevDataKey + 1)
-  }, [data, type])
+  }, [data, type, tautulliUrl])
 
   return (
     <motion.li

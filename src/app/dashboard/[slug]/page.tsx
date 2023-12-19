@@ -40,7 +40,6 @@ export default async function Page({ params, searchParams }: DashboardParams) {
     libraryIndex > 0
       ? `/dashboard/${snakeCase(libraries[libraryIndex - 1].section_name)}`
       : undefined
-
   const nextCard =
     libraryIndex >= 0 && libraryIndex < libraries.length - 1
       ? `/dashboard/${snakeCase(libraries[libraryIndex + 1].section_name)}`

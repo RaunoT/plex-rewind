@@ -8,6 +8,7 @@ import fetchTautulli, {
   Library,
   TautulliItem,
   TautulliItemRows,
+  getLibraries,
   getServerId,
 } from '@/utils/fetchTautulli'
 import {
@@ -39,32 +40,19 @@ export type RewindResponse = {
   server_id: string
 }
 
-async function getlibraries() {
-  const libraries = await fetchTautulli<Library[]>('get_libraries')
+async function getlibrariesTotalSize(libraries: Library[]) {
+  const totalSizes = await Promise.all(
+    libraries.map((library) =>
+      fetchTautulli<{ total_file_size: number }>('get_library_media_info', {
+        section_id: library.section_id,
+        length: 0,
+      }),
+    ),
+  )
 
-  return libraries.response?.data
-}
-
-async function getlibrariesTotalSize() {
-  const [musicMediaInfo, showsMediaInfo, moviesMediaInfo] = await Promise.all([
-    fetchTautulli<{ total_file_size: number }>('get_library_media_info', {
-      section_id: 1,
-      length: 0,
-    }),
-    fetchTautulli<{ total_file_size: number }>('get_library_media_info', {
-      section_id: 2,
-      length: 0,
-    }),
-    fetchTautulli<{ total_file_size: number }>('get_library_media_info', {
-      section_id: 3,
-      length: 0,
-    }),
-  ])
-
-  return (
-    musicMediaInfo.response?.data?.total_file_size +
-    showsMediaInfo.response?.data?.total_file_size +
-    moviesMediaInfo.response?.data?.total_file_size
+  return totalSizes.reduce(
+    (acc, item) => acc + (item.response?.data?.total_file_size || 0),
+    0,
   )
 }
 
@@ -115,93 +103,74 @@ async function getUserRequestsTotal(userId: string) {
   return userRequestsTotal.length
 }
 
-async function getShowsTotalDuration(userId: string) {
-  const totalDuration = await fetchTautulli<{ total_duration: string }>(
-    'get_history',
-    {
+async function getMediaTotalDuration(
+  libraries: Library[],
+  mediaType: string,
+  userId: string,
+) {
+  const mediaLibraries = libraries.filter(
+    (library) => library.section_type === mediaType,
+  )
+  const totalDurationsPromises = mediaLibraries.map((library) =>
+    fetchTautulli<{ total_duration: string }>('get_history', {
       user_id: userId,
-      section_id: 2,
+      section_id: library.section_id,
       after: ALLOWED_PERIODS.thisYear.string,
       length: 0,
-    },
+    }),
+  )
+  const totalDurationsResponses = await Promise.all(totalDurationsPromises)
+  const totalSeconds = totalDurationsResponses.reduce(
+    (acc, item) =>
+      acc +
+      timeToSeconds(
+        removeAfterMinutes(item.response?.data?.total_duration || '0'),
+      ),
+    0,
   )
 
-  return removeAfterMinutes(totalDuration.response?.data?.total_duration)
+  return secondsToTime(totalSeconds)
 }
 
-async function getTopShows(userId: string, period: number) {
-  const showsRes = await fetchTautulli<TautulliItemRows>('get_home_stats', {
-    user_id: userId,
-    section_id: 2,
-    time_range: period,
-    stats_count: 5,
-    stats_type: 'duration',
-    stat_id: 'top_tv',
-  })
-  const shows = await getMediaAdditionalData(
-    showsRes.response?.data?.rows,
-    'tv',
+async function getMediaTop(
+  libraries: Library[],
+  mediaType: 'movie' | 'show' | 'artist',
+  userId: string,
+  period: number,
+) {
+  const statIdMap = {
+    movie: 'top_movies',
+    show: 'top_tv',
+    artist: 'top_music',
+  }
+  const mediaLibraries = libraries.filter(
+    (library) => library.section_type === mediaType,
   )
-
-  return shows
-}
-
-async function getMusicTotalDuration(plexId: string) {
-  const totalDuration = await fetchTautulli<{ total_duration: string }>(
-    'get_history',
-    {
-      user_id: plexId,
-      section_id: 1,
-      after: ALLOWED_PERIODS.thisYear.string,
-      length: 0,
-    },
-  )
-
-  return removeAfterMinutes(totalDuration.response?.data?.total_duration)
-}
-
-async function getTopArtists(userId: string, period: number) {
-  const artistsRes = await fetchTautulli<TautulliItemRows>('get_home_stats', {
-    user_id: userId,
-    section_id: 1,
-    time_range: period,
-    stats_count: 5,
-    stats_type: 'duration',
-    stat_id: 'top_music',
-  })
-
-  return artistsRes.response?.data?.rows
-}
-
-async function getMoviesTotalDuration(userId: string) {
-  const totalDuration = await fetchTautulli<{ total_duration: string }>(
-    'get_history',
-    {
+  const topMediaPromises = mediaLibraries.map((library) =>
+    fetchTautulli<TautulliItemRows>('get_home_stats', {
       user_id: userId,
-      section_id: 3,
-      after: ALLOWED_PERIODS.thisYear.string,
-      length: 0,
-    },
+      section_id: library.section_id,
+      time_range: period,
+      stats_count: 5,
+      stats_type: 'duration',
+      stat_id: statIdMap[mediaType],
+    }),
   )
 
-  return removeAfterMinutes(totalDuration.response?.data?.total_duration)
-}
-
-async function getTopMovies(userId: string, period: number) {
-  const moviesRes = await fetchTautulli<TautulliItemRows>('get_home_stats', {
-    user_id: userId,
-    section_id: 3,
-    time_range: period,
-    stats_count: 5,
-    stats_type: 'duration',
-    stat_id: 'top_movies',
-  })
-  const movies = await getMediaAdditionalData(
-    moviesRes.response?.data?.rows,
-    'movie',
+  const topMediaResponses = await Promise.all(topMediaPromises)
+  const topMedia = topMediaResponses.flatMap(
+    (response) => response.response?.data?.rows || [],
   )
+  if (mediaType === 'artist') {
+    return topMedia
+  } else {
+    const mediaData = await getMediaAdditionalData(
+      topMedia,
+      mediaType === 'movie' ? 'movie' : 'tv',
+    )
 
-  return movies
+    return mediaData
+  }
 }
 
 export default async function Rewind() {
@@ -214,11 +183,11 @@ export default async function Rewind() {
   }
 
   // TODO: Can we reduce the ammount of requests?
+  const libraries = await getLibraries()
   const [
     userTotalDuration,
     librariesTotalSize,
     librariesTotalDuration,
-    libraries,
     requestTotals,
     userRequestsTotal,
     showsTotalDuration,
@@ -230,17 +199,31 @@ export default async function Rewind() {
     serverId,
   ] = await Promise.all([
     getUserTotalDuration(session.user.id),
-    getlibrariesTotalSize(),
+    getlibrariesTotalSize(libraries),
     getLibrariesTotalDuration(),
-    getlibraries(),
     getRequestsTotals(),
     getUserRequestsTotal(session.user.id),
-    getShowsTotalDuration(session.user.id),
-    getTopShows(session.user.id, ALLOWED_PERIODS.thisYear.daysAgo),
-    getMusicTotalDuration(session.user.id),
-    getTopArtists(session.user.id, ALLOWED_PERIODS.thisYear.daysAgo),
-    getMoviesTotalDuration(session.user.id),
-    getTopMovies(session.user.id, ALLOWED_PERIODS.thisYear.daysAgo),
+    getMediaTotalDuration(libraries, 'show', session.user.id),
+    getMediaTop(
+      libraries,
+      'show',
+      session.user.id,
+      ALLOWED_PERIODS.thisYear.daysAgo,
+    ),
+    getMediaTotalDuration(libraries, 'movie', session.user.id),
+    getMediaTop(
+      libraries,
+      'artist',
+      session.user.id,
+      ALLOWED_PERIODS.thisYear.daysAgo,
+    ),
+    getMediaTotalDuration(libraries, 'artist', session.user.id),
+    getMediaTop(
+      libraries,
+      'movie',
+      session.user.id,
+      ALLOWED_PERIODS.thisYear.daysAgo,
+    ),
     getServerId(),
   ])
   const totalDurationPercentage = `${Math.round(

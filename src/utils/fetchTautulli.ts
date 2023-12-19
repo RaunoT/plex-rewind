@@ -57,7 +57,7 @@ export default async function fetchTautulli<T>(
     throw new Error('Tautulli API key is not configured!')
   }
 
-  const apiUrl = `${process.env.NEXT_PUBLIC_TAUTULLI_URL}/api/v2?apikey=${process.env.TAUTULLI_API_KEY}`
+  const apiUrl = `${tautulliUrl}/api/v2?apikey=${apiKey}`
   const queryParams = new URLSearchParams()
   if (params) {
     for (const [key, value] of Object.entries(params)) {
@@ -87,12 +87,15 @@ export default async function fetchTautulli<T>(
 }
 
 export async function getServerId(): Promise<string> {
-  if (process.env.PLEX_HOSTNAME && process.env.PLEX_PORT) {
+  const plexHostname = process.env.PLEX_HOSTNAME
+  const plexPort = process.env.PLEX_PORT
+
+  if (plexHostname && plexPort) {
     const serverIdPromise = await fetchTautulli<{ identifier: string }>(
       'get_server_id',
       {
-        hostname: process.env.PLEX_HOSTNAME,
-        port: process.env.PLEX_PORT,
+        hostname: plexHostname,
+        port: plexPort,
       },
       true,
     )
@@ -106,4 +109,12 @@ export async function getLibraries(): Promise<Library[]> {
   const libraries = await fetchTautulli<Library[]>('get_libraries', {}, true)
 
   return libraries.response?.data
+}
+
+export async function getLibrariesByType(
+  type: 'movie' | 'show' | 'artist',
+): Promise<Library[]> {
+  const libraries = await getLibraries()
+
+  return libraries.filter((library) => library.section_type === type)
 }

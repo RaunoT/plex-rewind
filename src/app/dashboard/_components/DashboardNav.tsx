@@ -15,7 +15,6 @@ export default function DashboardNav({ libraries }: Props) {
   const period = searchParams.get('period')
     ? '?period=' + searchParams.get('period')
     : ''
-  console.log(libraries)
 
   return (
     <nav>
