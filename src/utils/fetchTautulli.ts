@@ -25,6 +25,8 @@ export type Library = {
   count: string
   parent_count: string
   child_count: string
+  section_type: 'movie' | 'show' | 'artist'
+  is_active: number
 }
 
 export type TautulliItemRows = { rows: TautulliItem[] }
@@ -98,4 +100,10 @@ export async function getServerId(): Promise<string> {
   } else {
     throw new Error('Plex hostname and/or port are not configured!')
   }
+}
+
+export async function getLibraries(): Promise<Library[]> {
+  const libraries = await fetchTautulli<Library[]>('get_libraries', {}, true)
+
+  return libraries.response?.data
 }

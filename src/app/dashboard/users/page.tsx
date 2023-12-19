@@ -6,7 +6,7 @@ import {
 } from '@/utils/fetchOverseerr'
 import fetchTautulli, { TautulliItemRows } from '@/utils/fetchTautulli'
 import { secondsToTime, timeToSeconds } from '@/utils/formatting'
-import { FilterQueryParams } from '@/utils/types'
+import { DashboardParams } from '@/utils/types'
 import { Metadata } from 'next'
 
 export const metadata: Metadata = {
@@ -113,11 +113,7 @@ async function getUsersCount() {
   return usersCount.response?.data.slice(1).length
 }
 
-export default async function Users({
-  searchParams,
-}: {
-  searchParams: FilterQueryParams
-}) {
+export default async function Users({ searchParams }: DashboardParams) {
   const periodKey =
     searchParams.period && ALLOWED_PERIODS[searchParams.period]
       ? searchParams.period
