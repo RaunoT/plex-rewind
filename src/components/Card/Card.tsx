@@ -23,6 +23,7 @@ type Props = {
   totalSize?: string | number
   type?: string
   serverId?: string
+  count?: string
 }
 
 export default function Card({
@@ -37,6 +38,7 @@ export default function Card({
   totalSize,
   type = '',
   serverId = '',
+  count,
 }: Props) {
   const pathname = usePathname()
   const { data: session } = useSession()
@@ -70,6 +72,21 @@ export default function Card({
                   -
                 </span>
                 <span>{totalSize}</span>
+              </>
+            )}
+            {count && (
+              <>
+                <span className='mx-1 sm:mx-2' aria-hidden>
+                  -
+                </span>
+                <span>{count}</span>&nbsp;
+                <span>
+                  {type === 'movie'
+                    ? 'movies'
+                    : type === 'show'
+                      ? 'episodes'
+                      : 'tracks'}
+                </span>
               </>
             )}
           </h2>

@@ -56,6 +56,11 @@ export default async function Page({ params, searchParams }: DashboardParams) {
       page={`${libraryIndex + 1} / ${libraries.length + 1}`}
       type={library.section_type}
       serverId={serverId}
+      count={
+        library.section_type === 'movie'
+          ? Number(library.count).toLocaleString('en-US')
+          : Number(library.child_count).toLocaleString('en-US')
+      }
     />
   )
 }
