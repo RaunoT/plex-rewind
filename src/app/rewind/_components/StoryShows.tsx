@@ -27,7 +27,7 @@ export default function StoryShows({ userRewind }: UserRewind) {
 
         <div className='text-base not-italic'>
           <CardMediaItems
-            type='shows'
+            type='show'
             items={userRewind.shows_top}
             serverId={userRewind.server_id}
             rows

@@ -1,5 +1,6 @@
 import CardWrapper from '@/components/Card/CardWrapper'
 import PageTitle from '@/components/PageTitle'
+import { isRewindDisabled } from '@/utils/config'
 import { notFound } from 'next/navigation'
 
 type Props = {
@@ -7,7 +8,7 @@ type Props = {
 }
 
 export default function RewindLayout({ children }: Props) {
-  return process.env.NEXT_PUBLIC_IS_REWIND_DISABLED === 'true' ? (
+  return isRewindDisabled ? (
     notFound()
   ) : (
     <div className='w-full max-w-2xl'>

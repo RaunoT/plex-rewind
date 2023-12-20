@@ -31,8 +31,9 @@ type Props = {
 }
 
 export default function CardMediaItem({ data, i, type, serverId }: Props) {
+  const tautulliUrl = process.env.NEXT_PUBLIC_TAUTULLI_URL
   const [posterSrc, setPosterSrc] = useState<string>(
-    `${process.env.NEXT_PUBLIC_TAUTULLI_URL}/pms_image_proxy?img=${
+    `${tautulliUrl}/pms_image_proxy?img=${
       type === 'users' ? data.user_thumb : data.thumb
     }&width=300`,
   )
@@ -41,12 +42,12 @@ export default function CardMediaItem({ data, i, type, serverId }: Props) {
 
   useEffect(() => {
     setPosterSrc(
-      `${process.env.NEXT_PUBLIC_TAUTULLI_URL}/pms_image_proxy?img=${
+      `${tautulliUrl}/pms_image_proxy?img=${
         type === 'users' ? data.user_thumb : data.thumb
       }&width=300`,
     )
     setDataKey((prevDataKey) => prevDataKey + 1)
-  }, [data, type])
+  }, [data, type, tautulliUrl])
 
   return (
     <motion.li
@@ -79,7 +80,7 @@ export default function CardMediaItem({ data, i, type, serverId }: Props) {
           type={type}
           parentRef={titleContainerRef}
         />
-        {(type === 'movies' || type === 'shows') && (
+        {(type === 'movie' || type === 'show') && (
           <div className='mb-2 flex items-center gap-2'>
             {data.is_deleted ? (
               <>
@@ -105,7 +106,7 @@ export default function CardMediaItem({ data, i, type, serverId }: Props) {
             {data.is_deleted && (
               <a
                 href={`${process.env.NEXT_PUBLIC_OVERSEERR_URL}/${
-                  type === 'movies' ? 'movie' : 'tv'
+                  type === 'movie' ? 'movie' : 'tv'
                 }/${data.tmdb_id}`}
                 target='_blank'
                 rel='noopener noreferrer'
@@ -117,14 +118,14 @@ export default function CardMediaItem({ data, i, type, serverId }: Props) {
           </div>
         )}
         <ul className='flex flex-wrap items-center gap-2 text-xs italic sm:gap-x-3 sm:text-base'>
-          {data.year && (type === 'movies' || type === 'shows') && (
+          {data.year && (type === 'movie' || type === 'show') && (
             <li className='flex items-center gap-1 sm:gap-2'>
               <CalendarDaysIcon className='w-5 text-slate-900' />
               {data.year}
             </li>
           )}
           {/* Ratings */}
-          {(type === 'movies' || type === 'shows') && data.rating && (
+          {(type === 'movie' || type === 'show') && data.rating && (
             <li className='flex items-center gap-1 sm:gap-2'>
               <StarIcon className='w-5 text-slate-900' />
               {data.rating}
@@ -132,9 +133,9 @@ export default function CardMediaItem({ data, i, type, serverId }: Props) {
           )}
           {/* Duration */}
           <li className='flex items-center gap-1 sm:gap-2'>
-            {type === 'shows' || type === 'movies' ? (
+            {type === 'show' || type === 'movie' ? (
               <EyeIcon className='w-5 text-slate-900' />
-            ) : type === 'music' ? (
+            ) : type === 'artist' ? (
               <SpeakerWaveIcon className='w-5 text-slate-900' />
             ) : (
               type === 'users' && <ClockIcon className='w-5 text-slate-900' />
@@ -142,7 +143,7 @@ export default function CardMediaItem({ data, i, type, serverId }: Props) {
             {secondsToTime(data.total_duration)}
           </li>
           {/* Users watched */}
-          {(type === 'shows' || type === 'music') && data.users_watched && (
+          {(type === 'show' || type === 'artist') && data.users_watched && (
             <li className='flex items-center gap-1 sm:gap-2'>
               <UserIcon className='w-5 text-slate-900' />
               {pluralize(data.users_watched, 'user')}
@@ -172,9 +173,9 @@ export default function CardMediaItem({ data, i, type, serverId }: Props) {
             </>
           ) : (
             <li className='flex items-center gap-1 sm:gap-2'>
-              {type === 'music' ? (
+              {type === 'artist' ? (
                 <MusicalNoteIcon className='w-5 text-slate-900' />
-              ) : type === 'movies' ? (
+              ) : type === 'movie' ? (
                 <FilmIcon className='w-5 text-slate-900' />
               ) : (
                 <PlayCircleIcon className='w-5 text-slate-900' />

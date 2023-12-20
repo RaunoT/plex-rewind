@@ -2,6 +2,7 @@
 
 import plexSvg from '@/assets/plex.svg'
 import Loader from '@/components/Loader'
+import { isDashboardDisabled, isRewindDisabled } from '@/utils/config'
 import { fadeIn } from '@/utils/motion'
 import { createPlexAuthUrl, getPlexAuthToken } from '@/utils/plexAuth'
 import { motion } from 'framer-motion'
@@ -16,9 +17,6 @@ export default function Page() {
   const searchParams = useSearchParams()
   const { data: session, status } = useSession()
   const isLoggedIn = status === 'authenticated'
-  const isRewindDisabled = process.env.NEXT_PUBLIC_IS_REWIND_DISABLED === 'true'
-  const isDashboardDisabled =
-    process.env.NEXT_PUBLIC_IS_DASHBOARD_DISABLED === 'true'
 
   const handleLogin = async () => {
     const plexUrl = await createPlexAuthUrl()
@@ -107,7 +105,7 @@ export default function Page() {
       )}
       {!isDashboardDisabled && isLoggedIn && (
         <Link
-          href='/dashboard/shows'
+          href='/dashboard'
           className={
             isRewindDisabled ? 'button' : 'text-slate-300 hover:opacity-75'
           }
