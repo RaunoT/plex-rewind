@@ -26,14 +26,15 @@ export default function RewindStories({ userRewind }: UserRewind) {
       component: () => <StoryLibraries userRewind={userRewind} />,
       duration: 7000,
     },
-    {
-      type: 'component',
-      component: () =>
-        process.env.NEXT_PUBLIC_OVERSEERR_URL && (
-          <StoryRequests userRewind={userRewind} />
-        ),
-      duration: 8000,
-    },
+    ...(process.env.NEXT_PUBLIC_OVERSEERR_URL
+      ? [
+          {
+            type: 'component',
+            component: () => <StoryRequests userRewind={userRewind} />,
+            duration: 8000,
+          },
+        ]
+      : []),
     {
       type: 'component',
       component: () => <StoryShows userRewind={userRewind} />,

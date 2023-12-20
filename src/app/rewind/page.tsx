@@ -30,8 +30,6 @@ export default async function Rewind() {
     userTotalDuration,
     librariesTotalSize,
     librariesTotalDuration,
-    requestTotals,
-    userRequestsTotal,
     showsTotalDuration,
     showsTop,
     musicTotalDuration,
@@ -43,8 +41,6 @@ export default async function Rewind() {
     getUserTotalDuration(session.user.id),
     getlibrariesTotalSize(libraries),
     getLibrariesTotalDuration(),
-    getRequestsTotals(),
-    getUserRequestsTotal(session.user.id),
     getMediaUserTotalDuration(libraries, 'show', session.user.id),
     getUserMediaTop(
       libraries,
@@ -76,8 +72,6 @@ export default async function Rewind() {
     total_duration_percentage: totalDurationPercentage,
     libraries: libraries,
     libraries_total_size: librariesTotalSize,
-    requests: requestTotals,
-    user_requests: userRequestsTotal,
     shows_total_duration: showsTotalDuration,
     shows_top: showsTop,
     music_total_duration: musicTotalDuration,
@@ -85,6 +79,16 @@ export default async function Rewind() {
     movies_total_duration: moviesTotalDuration,
     movies_top: moviesTop,
     server_id: serverId,
+  }
+
+  if (process.env.NEXT_PUBLIC_OVERSEERR_URL) {
+    const [requestTotals, userRequestsTotal] = await Promise.all([
+      getRequestsTotals(),
+      getUserRequestsTotal(session.user.id),
+    ])
+
+    userRewind.requests = requestTotals
+    userRewind.user_requests = userRequestsTotal
   }
 
   return <RewindStories userRewind={userRewind} />

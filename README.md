@@ -4,11 +4,9 @@ A Plex Rewind application in the spirit of [Spotify Wrapped](https://www.spotify
 
 Present user statistics and habits in a beautiful and organized manner - as a web application application powered by [Next.js](https://nextjs.org) and [Tailwind.css](https://tailwindcss.com), using data from [Tautulli](https://tautulli.com) and [Overseerr](https://overseerr.dev/). You can also disable the Rewind functionality and just use it as a sharable Dashboard for your Plex users or vice versa.
 
-![Welcome screen](https://i.imgur.com/be1IAyL.png 'Welcome screen')
+![Dashboard](https://i.imgur.com/gSDRySM.png 'Dashboard')
 
-![Dashboard](https://i.imgur.com/KIgRgjW.png 'Dashboard')
-
-![Rewind](https://i.imgur.com/a68x8md.png 'Rewind')
+![Rewind](https://i.imgur.com/AfjFNFJ.png 'Rewind')
 
 ## Getting started
 
@@ -23,6 +21,7 @@ git clone https://github.com/RaunoT/plex-rewind.git
 2. Fill out the variables in the `.env` file.
 
 - `NEXT_PUBLIC_GOOGLE_ANALYTICS_ID` is optional and can be left out if you don't want to use Google Analytics.
+- `NEXT_PUBLIC_OVERSEERR_URL` and `NEXT_PUBLIC_OVERSEERR_API_KEY` are also optional if you don't want to fetch requests data from Overseerr.
 - You can use `NEXT_PUBLIC_EXCLUDED_LIBRARIES` to exclude certain libraries from Rewind and Dashboard. Accepted values are library names, separated by a comma. For example: `NEXT_PUBLIC_EXCLUDED_LIBRARIES=Movies,Music`.
 - You can generate a `NEXTAUTH_SECRET` by running `openssl rand -base64 32` in your terminal, or by using an online generator like [the one by Vercel](https://generate-secret.vercel.app/32).
 
