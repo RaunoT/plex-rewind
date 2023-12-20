@@ -19,6 +19,10 @@ export const metadata: Metadata = {
   description: metaDescription,
 }
 
+type UserRequestCounts = {
+  requests: number
+}
+
 async function getUsers(
   period: number,
   requestsPeriod: string,
@@ -36,27 +40,30 @@ async function getUsers(
     getLibrariesByType('show'),
     getLibrariesByType('artist'),
   ])
+  let usersRequestsCounts: UserRequestCounts[] = []
 
-  const overseerrUserIds = await Promise.all(
-    users.map(async (user) => {
-      const overseerrId = await fetchOverseerrUserId(String(user.user_id))
+  if (process.env.NEXT_PUBLIC_OVERSEERR_URL) {
+    const overseerrUserIds = await Promise.all(
+      users.map(async (user) => {
+        const overseerrId = await fetchOverseerrUserId(String(user.user_id))
 
-      return overseerrId
-    }),
-  )
+        return overseerrId
+      }),
+    )
 
-  const usersRequestsCounts = await Promise.all(
-    overseerrUserIds.map(async (overseerrId) => {
-      const userTotal = await fetchPaginatedOverseerrStats(
-        `user/${overseerrId}/requests`,
-        requestsPeriod,
-      )
+    usersRequestsCounts = await Promise.all(
+      overseerrUserIds.map(async (overseerrId) => {
+        const userTotal = await fetchPaginatedOverseerrStats(
+          `user/${overseerrId}/requests`,
+          requestsPeriod,
+        )
 
-      return {
-        requests: userTotal.length,
-      }
-    }),
-  )
+        return {
+          requests: userTotal.length,
+        }
+      }),
+    )
+  }
 
   const usersPlaysAndDurations = await Promise.all(
     users.map(async (user) => {
@@ -109,7 +116,7 @@ async function getUsers(
   )
 
   users.map((user, i) => {
-    user.requests = usersRequestsCounts[i].requests
+    user.requests = usersRequestsCounts[i]?.requests
     user.movies_plays_count = usersPlaysAndDurations[i].movies_plays_count
     user.shows_plays_count = usersPlaysAndDurations[i].shows_plays_count
     user.music_plays_count = usersPlaysAndDurations[i].music_plays_count
