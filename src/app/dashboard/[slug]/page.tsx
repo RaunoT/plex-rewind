@@ -1,5 +1,5 @@
 import Card from '@/components/Card/Card'
-import { ALLOWED_PERIODS, metaDescription } from '@/utils/constants'
+import { ALLOWED_PERIODS } from '@/utils/constants'
 import { getLibraries, getServerId } from '@/utils/fetchTautulli'
 import { getItems, getTotalDuration, getTotalSize } from '@/utils/getDashboard'
 import { DashboardParams } from '@/utils/types'
@@ -7,10 +7,17 @@ import { snakeCase } from 'lodash'
 import { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 
-export const metadata: Metadata = {
-  // TODO: add library name instead of generic dashboard
-  title: 'Dashboard | Plex rewind dashboard',
-  description: metaDescription,
+export async function generateMetadata({
+  params,
+}: DashboardParams): Promise<Metadata> {
+  const libraries = await getLibraries()
+  const library = libraries.find(
+    (library) => snakeCase(library.section_name) === params.slug,
+  )
+
+  return {
+    title: `${library?.section_name} | Plex rewind dashboard`,
+  }
 }
 
 export default async function Page({ params, searchParams }: DashboardParams) {
