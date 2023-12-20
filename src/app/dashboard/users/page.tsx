@@ -4,9 +4,14 @@ import {
   fetchOverseerrUserId,
   fetchPaginatedOverseerrStats,
 } from '@/utils/fetchOverseerr'
-import fetchTautulli, { TautulliItemRows } from '@/utils/fetchTautulli'
+import fetchTautulli, {
+  TautulliItemRows,
+  getLibraries,
+  getLibrariesByType,
+} from '@/utils/fetchTautulli'
 import { secondsToTime, timeToSeconds } from '@/utils/formatting'
-import { FilterQueryParams } from '@/utils/types'
+import { DashboardParams } from '@/utils/types'
+import { snakeCase } from 'lodash'
 import { Metadata } from 'next'
 
 export const metadata: Metadata = {
@@ -26,6 +31,11 @@ async function getUsers(
     time_range: period,
   })
   const users = usersRes.response?.data?.rows
+  const [moviesLib, showsLib, musicLib] = await Promise.all([
+    getLibrariesByType('movie'),
+    getLibrariesByType('show'),
+    getLibrariesByType('artist'),
+  ])
 
   const overseerrUserIds = await Promise.all(
     users.map(async (user) => {
@@ -50,35 +60,50 @@ async function getUsers(
 
   const usersPlaysAndDurations = await Promise.all(
     users.map(async (user) => {
-      const userMovies = await fetchTautulli<{ recordsFiltered: number }>(
-        'get_history',
-        {
-          user_id: user.user_id,
-          after: periodString,
-          section_id: 3,
-        },
-      )
-      const userShows = await fetchTautulli<{ recordsFiltered: number }>(
-        'get_history',
-        {
-          user_id: user.user_id,
-          after: periodString,
-          section_id: 2,
-        },
-      )
-      const userMusic = await fetchTautulli<{ recordsFiltered: number }>(
-        'get_history',
-        {
-          user_id: user.user_id,
-          after: periodString,
-          section_id: 1,
-        },
-      )
+      let moviesPlaysCount = 0
+      let showsPlaysCount = 0
+      let musicPlaysCount = 0
+
+      for (const movieLib of moviesLib) {
+        const userMovies = await fetchTautulli<{ recordsFiltered: number }>(
+          'get_history',
+          {
+            user_id: user.user_id,
+            after: periodString,
+            section_id: movieLib.section_id,
+          },
+        )
+        moviesPlaysCount += userMovies.response?.data?.recordsFiltered || 0
+      }
+
+      for (const showLib of showsLib) {
+        const userShows = await fetchTautulli<{ recordsFiltered: number }>(
+          'get_history',
+          {
+            user_id: user.user_id,
+            after: periodString,
+            section_id: showLib.section_id,
+          },
+        )
+        showsPlaysCount += userShows.response?.data?.recordsFiltered || 0
+      }
+
+      for (const musicLibItem of musicLib) {
+        const userMusic = await fetchTautulli<{ recordsFiltered: number }>(
+          'get_history',
+          {
+            user_id: user.user_id,
+            after: periodString,
+            section_id: musicLibItem.section_id,
+          },
+        )
+        musicPlaysCount += userMusic.response?.data?.recordsFiltered || 0
+      }
 
       return {
-        movies_plays_count: userMovies.response?.data?.recordsFiltered,
-        shows_plays_count: userShows.response?.data?.recordsFiltered,
-        music_plays_count: userMusic.response?.data?.recordsFiltered,
+        movies_plays_count: moviesPlaysCount,
+        shows_plays_count: showsPlaysCount,
+        music_plays_count: musicPlaysCount,
       }
     }),
   )
@@ -113,22 +138,19 @@ async function getUsersCount() {
   return usersCount.response?.data.slice(1).length
 }
 
-export default async function Users({
-  searchParams,
-}: {
-  searchParams: FilterQueryParams
-}) {
+export default async function Users({ searchParams }: DashboardParams) {
   const periodKey =
     searchParams.period && ALLOWED_PERIODS[searchParams.period]
       ? searchParams.period
       : '30days'
   const period = ALLOWED_PERIODS[periodKey]
-
   const [usersData, totalDuration, usersCount] = await Promise.all([
     getUsers(period.daysAgo, period.date, period.string),
     getTotalDuration(period.string),
     getUsersCount(),
   ])
+  const libraries = await getLibraries()
+  const prevCard = `/dashboard/${snakeCase(libraries.at(-1)?.section_name)}`
 
   return (
     <Card
@@ -136,8 +158,8 @@ export default async function Users({
       items={usersData}
       totalDuration={totalDuration}
       totalSize={usersCount}
-      prevCard='/dashboard/music'
-      page='4 / 4'
+      prevCard={prevCard}
+      page={`${libraries.length + 1} / ${libraries.length + 1}`}
       type='users'
     />
   )

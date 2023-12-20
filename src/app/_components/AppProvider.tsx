@@ -8,7 +8,7 @@ type Props = {
   children: React.ReactNode
 }
 
-export default function Wrapper({ children }: Props) {
+export default function AppProvider({ children }: Props) {
   const pathname = usePathname()
 
   return (

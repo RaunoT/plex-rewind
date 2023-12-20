@@ -1,8 +1,9 @@
 import '@/styles/globals.css'
+import { googleAnalyticsId } from '@/utils/config'
 import { metaDescription } from '@/utils/constants'
 import { Metadata, Viewport } from 'next'
+import AppProvider from './_components/AppProvider'
 import GoogleAnalytics from './_components/GoogleAnalytics'
-import Wrapper from './_components/Wrapper'
 
 export const metadata: Metadata = {
   title: 'Plex rewind',
@@ -21,11 +22,9 @@ export default function RootLayout({ children }: Props) {
   return (
     <html lang='en'>
       <body className='min-height-screen bg-gradient-to-br from-neutral-900 via-neutral-800 to-indigo-900 text-white'>
-        {process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID && (
-          <GoogleAnalytics id={process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID} />
-        )}
+        {googleAnalyticsId && <GoogleAnalytics id={googleAnalyticsId} />}
 
-        <Wrapper>{children}</Wrapper>
+        <AppProvider>{children}</AppProvider>
       </body>
     </html>
   )
