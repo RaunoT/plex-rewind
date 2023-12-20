@@ -8,9 +8,6 @@ services:
       dockerfile: Dockerfile
     env_file:
       - .env
-    volumes:
-      - ./plex-rewind/src:/app/src
-      - ./plex-rewind/public:/app/public
     restart: always
     ports:
       - 3000:3000
