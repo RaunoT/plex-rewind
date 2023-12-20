@@ -14,7 +14,7 @@ export default function PeriodSelect() {
   }, [pathname])
 
   return (
-    <ul className='mt-2 flex items-center justify-center gap-4 text-xs font-medium uppercase sm:text-sm'>
+    <ul className='nav mt-2 sm:text-sm'>
       <li>
         <Link
           href={`${pathname}?period=7days`}

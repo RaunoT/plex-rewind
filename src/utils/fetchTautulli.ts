@@ -1,3 +1,5 @@
+import { excludedLibraries } from './config'
+
 export type TautulliItem = {
   title: string
   year: number
@@ -107,8 +109,11 @@ export async function getServerId(): Promise<string> {
 
 export async function getLibraries(): Promise<Library[]> {
   const libraries = await fetchTautulli<Library[]>('get_libraries', {}, true)
+  const filteredLibraries = libraries.response?.data.filter(
+    (library) => !excludedLibraries.includes(library.section_id),
+  )
 
-  return libraries.response?.data
+  return filteredLibraries
 }
 
 export async function getLibrariesByType(
