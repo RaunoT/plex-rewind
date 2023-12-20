@@ -52,7 +52,7 @@ export default function Card({
     <>
       <div className='flex items-center'>
         {isRewind && session?.user?.image && (
-          <div className='relative mr-4 h-12 w-12'>
+          <div className='relative mr-4 size-12'>
             <Image
               src={session?.user?.image}
               alt={`${session?.user?.name} profile picture`}

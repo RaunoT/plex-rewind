@@ -55,7 +55,7 @@ export default function Page() {
   return (
     <div className='flex flex-col items-center text-center'>
       {session?.user?.image && (
-        <div className='relative mb-5 h-24 w-24'>
+        <div className='relative mb-5 size-24'>
           <Image
             src={session?.user?.image}
             alt={`${session?.user?.name} profile picture`}
