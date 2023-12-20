@@ -27,7 +27,7 @@ export default function StoryMovies({ userRewind, isPaused }: UserRewindProps) {
 
         <div className='text-base not-italic'>
           <CardMediaItems
-            type='movies'
+            type='movie'
             items={userRewind.movies_top}
             serverId={userRewind.server_id}
             rows

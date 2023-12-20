@@ -53,6 +53,10 @@
     @apply font-medium text-blue-300 underline;
   }
 
+  .nav {
+    @apply flex flex-wrap items-center justify-center gap-3 gap-y-1 text-xs font-medium uppercase text-neutral-200 sm:gap-4;
+  }
+
   .nav-link {
     &[aria-selected='true'],
     &[aria-current='page'] {

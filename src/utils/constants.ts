@@ -6,7 +6,7 @@ const CURRENT_YEAR: Date = new Date(new Date().getFullYear(), 0, 1)
 const ALL_TIME: Date = new Date('2022-12-03')
 
 type Period = {
-  date: string // ISO 8601
+  date: string
   string: string
   daysAgo: number
 }

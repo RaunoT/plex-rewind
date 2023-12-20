@@ -1,8 +1,8 @@
 'use client'
 
+import { RewindResponse } from '@/utils/getRewind'
 import Stories from 'stories-react'
 import 'stories-react/dist/index.css'
-import { RewindResponse } from '../page'
 import StoryLibraries from './StoryLibraries'
 import StoryMovies from './StoryMovies'
 import StoryMusic from './StoryMusic'

@@ -1,3 +1,5 @@
+import { excludedLibraries } from './config'
+
 export type TautulliItem = {
   title: string
   year: number
@@ -25,6 +27,8 @@ export type Library = {
   count: string
   parent_count: string
   child_count: string
+  section_type: 'movie' | 'show' | 'artist'
+  is_active: number
 }
 
 export type TautulliItemRows = { rows: TautulliItem[] }
@@ -55,7 +59,7 @@ export default async function fetchTautulli<T>(
     throw new Error('Tautulli API key is not configured!')
   }
 
-  const apiUrl = `${process.env.NEXT_PUBLIC_TAUTULLI_URL}/api/v2?apikey=${process.env.TAUTULLI_API_KEY}`
+  const apiUrl = `${tautulliUrl}/api/v2?apikey=${apiKey}`
   const queryParams = new URLSearchParams()
   if (params) {
     for (const [key, value] of Object.entries(params)) {
@@ -85,12 +89,15 @@ export default async function fetchTautulli<T>(
 }
 
 export async function getServerId(): Promise<string> {
-  if (process.env.PLEX_HOSTNAME && process.env.PLEX_PORT) {
+  const plexHostname = process.env.PLEX_HOSTNAME
+  const plexPort = process.env.PLEX_PORT
+
+  if (plexHostname && plexPort) {
     const serverIdPromise = await fetchTautulli<{ identifier: string }>(
       'get_server_id',
       {
-        hostname: process.env.PLEX_HOSTNAME,
-        port: process.env.PLEX_PORT,
+        hostname: plexHostname,
+        port: plexPort,
       },
       true,
     )
@@ -98,4 +105,21 @@ export async function getServerId(): Promise<string> {
   } else {
     throw new Error('Plex hostname and/or port are not configured!')
   }
+}
+
+export async function getLibraries(): Promise<Library[]> {
+  const libraries = await fetchTautulli<Library[]>('get_libraries', {}, true)
+  const filteredLibraries = libraries.response?.data.filter(
+    (library) => !excludedLibraries.includes(library.section_name),
+  )
+
+  return filteredLibraries
+}
+
+export async function getLibrariesByType(
+  type: 'movie' | 'show' | 'artist',
+): Promise<Library[]> {
+  const libraries = await getLibraries()
+
+  return libraries.filter((library) => library.section_type === type)
 }

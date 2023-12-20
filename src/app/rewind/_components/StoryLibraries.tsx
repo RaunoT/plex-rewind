@@ -35,35 +35,31 @@ export default function StoryLibraries({
         <p>The current library consist of:</p>
         <ul className='list'>
           {userRewind.libraries.map((library) => {
-            switch (library.section_name) {
-              case 'TV Shows':
-                return (
-                  <StatListItem
-                    key={library.section_id}
-                    count={parseInt(library.child_count)}
-                    name='Episodes'
-                    icon={<PlayCircleIcon />}
-                  />
-                )
-              case 'Movies':
-                return (
-                  <StatListItem
-                    key={library.section_id}
-                    count={parseInt(library.count)}
-                    name='Movies'
-                    icon={<FilmIcon />}
-                  />
-                )
-              case 'Music':
-                return (
-                  <StatListItem
-                    key={library.section_id}
-                    count={parseInt(library.child_count)}
-                    name='Songs'
-                    icon={<MusicalNoteIcon />}
-                  />
-                )
+            const libMap = {
+              movie: {
+                library: library.section_name,
+                name: 'Movies',
+                icon: <FilmIcon />,
+                count: parseInt(library.count),
+              },
+              show: {
+                library: library.section_name,
+                name: 'Episodes',
+                icon: <PlayCircleIcon />,
+                count: parseInt(library.child_count),
+              },
+              artist: {
+                library: library.section_name,
+                name: 'Tracks',
+                icon: <MusicalNoteIcon />,
+                count: parseInt(library.child_count),
+              },
             }
+            const libType = library.section_type
+
+            return (
+              <StatListItem key={library.section_id} {...libMap[libType]} />
+            )
           })}
         </ul>
       </CardText>

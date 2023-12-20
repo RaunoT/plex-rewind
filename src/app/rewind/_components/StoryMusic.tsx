@@ -28,7 +28,7 @@ export default function StoryMusic({ userRewind, isPaused }: UserRewindProps) {
 
         <div className='text-base not-italic'>
           <CardMediaItems
-            type='music'
+            type='artist'
             items={userRewind.music_top}
             serverId={userRewind.server_id}
             rows
