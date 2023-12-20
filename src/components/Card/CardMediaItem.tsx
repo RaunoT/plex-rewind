@@ -103,7 +103,7 @@ export default function CardMediaItem({ data, i, type, serverId }: Props) {
                 IMDB
               </a>
             )}
-            {data.is_deleted && (
+            {data.is_deleted && process.env.NEXT_PUBLIC_OVERSEERR_URL && (
               <a
                 href={`${process.env.NEXT_PUBLIC_OVERSEERR_URL}/${
                   type === 'movie' ? 'movie' : 'tv'

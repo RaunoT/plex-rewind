@@ -16,12 +16,12 @@ export type RewindResponse = {
   total_duration_percentage: string
   libraries: Library[]
   libraries_total_size: number
-  requests: {
+  requests?: {
     total: number
     movies: number
     shows: number
   }
-  user_requests: number
+  user_requests?: number
   shows_total_duration: string
   shows_top: TautulliItem[]
   music_total_duration: string
