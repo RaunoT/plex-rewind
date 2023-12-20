@@ -49,7 +49,6 @@ export default function RewindStories({ userRewind }: UserRewind) {
   ]
 
   return (
-    // TODO: Pause framer animation on story pause
     <Stories
       stories={stories}
       classNames={{

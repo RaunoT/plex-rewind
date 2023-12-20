@@ -50,7 +50,7 @@ export async function createPlexAuthUrl() {
 
   const authAppUrl =
     'https://app.plex.tv/auth#?' +
-    // TODO: Use URLSearchParams instead of qs
+    // TODO: consider URLSearchParams instead of qs
     qs.stringify({
       clientID: clientIdentifier,
       code,
