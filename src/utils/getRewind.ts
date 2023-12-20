@@ -8,7 +8,7 @@ import fetchTautulli, {
   TautulliItem,
   TautulliItemRows,
 } from './fetchTautulli'
-import { removeAfterMinutes, secondsToTime, timeToSeconds } from './formatting'
+import { secondsToTime, timeToSeconds } from './formatting'
 import getMediaAdditionalData from './getMediaAdditionalData'
 
 export type RewindResponse = {
@@ -49,11 +49,7 @@ export async function getMediaUserTotalDuration(
   )
   const totalDurationsResponses = await Promise.all(totalDurationsPromises)
   const totalSeconds = totalDurationsResponses.reduce(
-    (acc, item) =>
-      acc +
-      timeToSeconds(
-        removeAfterMinutes(item.response?.data?.total_duration || '0'),
-      ),
+    (acc, item) => acc + timeToSeconds(item.response?.data?.total_duration),
     0,
   )
 

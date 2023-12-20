@@ -110,7 +110,7 @@ export async function getServerId(): Promise<string> {
 export async function getLibraries(): Promise<Library[]> {
   const libraries = await fetchTautulli<Library[]>('get_libraries', {}, true)
   const filteredLibraries = libraries.response?.data.filter(
-    (library) => !excludedLibraries.includes(library.section_id),
+    (library) => !excludedLibraries.includes(library.section_name),
   )
 
   return filteredLibraries

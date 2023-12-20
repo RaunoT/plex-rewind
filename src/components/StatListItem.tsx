@@ -5,6 +5,7 @@ type Props = {
   name: string
   icon: React.ReactNode
   separator?: string
+  library?: string
 }
 
 export default function StatListItem({
@@ -12,6 +13,7 @@ export default function StatListItem({
   name,
   icon,
   separator = '•',
+  library,
 }: Props) {
   return (
     <li className='my-2 last:my-0'>
@@ -30,6 +32,12 @@ export default function StatListItem({
         {name}
         {icon}
       </span>
+      {library && (
+        <span>
+          {' '}
+          in <span className='text-black'>{library}</span>
+        </span>
+      )}
     </li>
   )
 }

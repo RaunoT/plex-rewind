@@ -7,5 +7,6 @@ export const isRewindDisabled: boolean =
 export const googleAnalyticsId: string | undefined =
   process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID
 
-// expects library section_id's
-export const excludedLibraries: string[] = []
+// expects library section_name's
+export const excludedLibraries: string[] =
+  process.env.NEXT_PUBLIC_EXCLUDED_LIBRARIES?.split(',') ?? []
