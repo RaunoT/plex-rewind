@@ -1,11 +1,8 @@
-import { ExtendedUser, authOptions } from '@/utils/authOptions'
 import { TautulliItem } from '@/utils/fetchTautulli'
 import {
   ArrowLongLeftIcon,
   ArrowLongRightIcon,
 } from '@heroicons/react/24/outline'
-import { Session, getServerSession } from 'next-auth'
-import Image from 'next/image'
 import Link from 'next/link.js'
 import CardMediaItems from './CardMediaItems'
 
@@ -38,70 +35,52 @@ export default async function Card({
   count,
   periodQuery = null,
 }: Props) {
-  const session = (await getServerSession(authOptions)) as Session & {
-    user: ExtendedUser
-  }
-
   return (
     <>
-      <div className='flex items-center'>
-        {session?.user?.image && (
-          <div className='relative mr-4 size-12'>
-            <Image
-              src={session?.user?.image}
-              alt={`${session?.user?.name} profile picture`}
-              className='rounded-full object-cover'
-              sizes='10rem'
-              fill
-              priority
-            />
-          </div>
-        )}
-        <div>
-          <h2 className='flex items-center text-sm font-bold uppercase text-black sm:text-xl'>
-            <span>{title}</span>
-            {totalSize && (
-              <>
-                <span className='mx-1 sm:mx-2' aria-hidden>
-                  -
-                </span>
-                <span>{totalSize}</span>
-              </>
-            )}
-            {count && (
-              <>
-                <span className='mx-1 sm:mx-2' aria-hidden>
-                  -
-                </span>
-                <span>{count}</span>&nbsp;
-                <span>
-                  {type === 'movie'
-                    ? 'movies'
-                    : type === 'show'
-                      ? 'episodes'
-                      : 'tracks'}
-                </span>
-              </>
-            )}
-          </h2>
-          <div className='text-xs font-medium uppercase text-slate-900 sm:text-sm'>
-            {totalDuration && (
-              <>
-                Total plays
-                <span className='mx-1 sm:mx-2' aria-hidden>
-                  -
-                </span>
-                <span className='normal-case'>{totalDuration}</span>
-              </>
-            )}
-          </div>
-
-          {subtitle && (
-            <div className='text-xs font-medium uppercase text-slate-900 sm:text-sm'>
-              {subtitle}
-            </div>
+      <div>
+        <h2 className='flex items-center text-sm font-bold uppercase text-black sm:text-xl'>
+          <span>{title}</span>
+          {totalSize && (
+            <>
+              <span className='mx-1 sm:mx-2' aria-hidden>
+                -
+              </span>
+              <span>{totalSize}</span>
+            </>
+          )}
+          {count && (
+            <>
+              <span className='mx-1 sm:mx-2' aria-hidden>
+                -
+              </span>
+              <span>{count}</span>&nbsp;
+              <span>
+                {type === 'movie'
+                  ? 'movies'
+                  : type === 'show'
+                    ? 'episodes'
+                    : 'tracks'}
+              </span>
+            </>
+          )}
+        </h2>
+        <div className='text-xs font-medium uppercase text-slate-900 sm:text-sm'>
+          {totalDuration && (
+            <>
+              Total plays
+              <span className='mx-1 sm:mx-2' aria-hidden>
+                -
+              </span>
+              <span className='normal-case'>{totalDuration}</span>
+            </>
           )}
         </div>
+
+        {subtitle && (
+          <div className='text-xs font-medium uppercase text-slate-900 sm:text-sm'>
+            {subtitle}
+          </div>
+        )}
       </div>
 
       {items?.length ? (
