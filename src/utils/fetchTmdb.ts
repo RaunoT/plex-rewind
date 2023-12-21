@@ -1,3 +1,5 @@
+import qs from 'qs'
+
 export type TmdbItem = {
   results: [{ id: number; vote_average: number; first_air_date: string }]
 }
@@ -17,15 +19,10 @@ export default async function fetchTmdb<T>(
     throw new Error('TMDB API key is not set!')
   }
 
-  const queryParams = new URLSearchParams()
-  if (params) {
-    for (const [key, value] of Object.entries(params)) {
-      queryParams.set(key, String(value))
-    }
-  }
-
   try {
-    const apiUrl = `https://api.themoviedb.org/3/${endpoint}?api_key=${apiKey}&${queryParams}`
+    const apiUrl = `https://api.themoviedb.org/3/${endpoint}?api_key=${apiKey}&${qs.stringify(
+      params,
+    )}`
     const res = await fetch(apiUrl)
 
     if (!res.ok) {
@@ -36,10 +33,7 @@ export default async function fetchTmdb<T>(
 
     return res.json()
   } catch (error) {
-    throw new Error(
-      `Error fetching from TMDB API: ${
-        error instanceof Error ? error.message : String(error)
-      }`,
-    )
+    console.error('Error fetching from TMDB API:', error)
+    throw error
   }
 }

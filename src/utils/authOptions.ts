@@ -71,11 +71,8 @@ export const authOptions: AuthOptions = {
 
           return null
         } catch (error) {
-          throw new Error(
-            `Error getting Plex user: ${
-              error instanceof Error ? error.message : String(error)
-            }`,
-          )
+          console.error('Error getting Plex user:', error)
+          throw error
         }
       },
     }),

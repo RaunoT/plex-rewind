@@ -1,3 +1,4 @@
+import qs from 'qs'
 import { excludedLibraries } from './config'
 
 export type TautulliItem = {
@@ -60,15 +61,9 @@ export default async function fetchTautulli<T>(
   }
 
   const apiUrl = `${tautulliUrl}/api/v2?apikey=${apiKey}`
-  const queryParams = new URLSearchParams()
-  if (params) {
-    for (const [key, value] of Object.entries(params)) {
-      queryParams.set(key, String(value))
-    }
-  }
 
   try {
-    const res = await fetch(`${apiUrl}&cmd=${query}&${queryParams}`, {
+    const res = await fetch(`${apiUrl}&cmd=${query}&${qs.stringify(params)}`, {
       cache: cache ? 'force-cache' : 'no-store',
     })
 
@@ -80,11 +75,8 @@ export default async function fetchTautulli<T>(
 
     return res.json()
   } catch (error) {
-    throw new Error(
-      `Error fetching from Tautulli API: ${
-        error instanceof Error ? error.message : String(error)
-      }`,
-    )
+    console.error('Error fetching from Tautulli API:', error)
+    throw error
   }
 }
 

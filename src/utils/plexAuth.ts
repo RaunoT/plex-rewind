@@ -32,11 +32,8 @@ async function fetchPlexPins(): Promise<PlexPinResponse> {
 
     return res.json()
   } catch (error) {
-    throw new Error(
-      `Error generating Plex PIN: ${
-        error instanceof Error ? error.message : String(error)
-      }`,
-    )
+    console.error('Error generating Plex PIN:', error)
+    throw error
   }
 }
 
@@ -50,7 +47,6 @@ export async function createPlexAuthUrl() {
 
   const authAppUrl =
     'https://app.plex.tv/auth#?' +
-    // TODO: consider URLSearchParams instead of qs
     qs.stringify({
       clientID: clientIdentifier,
       code,
@@ -85,11 +81,7 @@ export async function getPlexAuthToken(pinId: string) {
 
     return data.authToken
   } catch (error) {
-    throw new Error(
-      `Error getting Plex auth token: ${
-        error instanceof Error ? error.message : String(error)
-      }`,
-    )
+    console.error('Error getting Plex auth token:', error)
   }
 }
 
@@ -121,10 +113,6 @@ export async function verifyPlexAuthToken(authToken: string) {
       return true
     }
   } catch (error) {
-    throw new Error(
-      `Error verifying Plex access token: ${
-        error instanceof Error ? error.message : String(error)
-      }`,
-    )
+    console.error('Error verifying Plex auth token:', error)
   }
 }

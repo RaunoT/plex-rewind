@@ -67,7 +67,7 @@ export default function Page() {
           setLibraries(data)
           setIsLoading(false)
         } catch (error) {
-          console.error('Error getting libraries:', error)
+          console.error('Error fetching libraries:', error)
           setIsLoading(false)
         }
       }
