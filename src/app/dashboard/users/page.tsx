@@ -150,9 +150,10 @@ async function getUsersCount() {
 }
 
 export default async function Users({ searchParams }: DashboardParams) {
+  const periodSearchParams = searchParams?.period
   const periodKey =
-    searchParams.period && ALLOWED_PERIODS[searchParams.period]
-      ? searchParams.period
+    periodSearchParams && ALLOWED_PERIODS[periodSearchParams]
+      ? periodSearchParams
       : '30days'
   const period = ALLOWED_PERIODS[periodKey]
   const [usersData, totalDuration, usersCount] = await Promise.all([
@@ -172,6 +173,7 @@ export default async function Users({ searchParams }: DashboardParams) {
       prevCard={prevCard}
       page={`${libraries.length + 1} / ${libraries.length + 1}`}
       type='users'
+      periodQuery={periodSearchParams ? `?period=${periodSearchParams}` : null}
     />
   )
 }

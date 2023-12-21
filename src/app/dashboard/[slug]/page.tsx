@@ -31,9 +31,10 @@ export default async function Page({ params, searchParams }: DashboardParams) {
     return notFound()
   }
 
+  const periodSearchParams = searchParams?.period
   const periodKey =
-    searchParams.period && ALLOWED_PERIODS[searchParams.period]
-      ? searchParams.period
+    periodSearchParams && ALLOWED_PERIODS[periodSearchParams]
+      ? periodSearchParams
       : '30days'
   const period = ALLOWED_PERIODS[periodKey]
   const [items, totalDuration, totalSize, serverId] = await Promise.all([
@@ -68,6 +69,7 @@ export default async function Page({ params, searchParams }: DashboardParams) {
           ? Number(library.count).toLocaleString('en-US')
           : Number(library.child_count).toLocaleString('en-US')
       }
+      periodQuery={periodSearchParams ? `?period=${periodSearchParams}` : null}
     />
   )
 }
