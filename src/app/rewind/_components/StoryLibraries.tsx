@@ -29,8 +29,8 @@ export default function StoryLibraries({ userRewind }: UserRewind) {
       </CardText>
 
       <CardText renderDelay={3} noScale>
-        <p>The current library consist of:</p>
-        <ul className='list'>
+        <p>The current library consists of:</p>
+        <ul className='list mt-2'>
           {userRewind.libraries.map((library) => {
             const libMap = {
               movie: {

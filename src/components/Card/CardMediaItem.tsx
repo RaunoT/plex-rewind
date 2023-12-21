@@ -81,7 +81,7 @@ export default function CardMediaItem({ data, i, type, serverId }: Props) {
           parentRef={titleContainerRef}
         />
         {(type === 'movie' || type === 'show') && (
-          <div className='mb-2 flex items-center gap-2'>
+          <div className='relative z-10 mb-2 flex items-center gap-2'>
             {data.is_deleted ? (
               <>
                 <div className='button-card from-red-500 to-red-700'>

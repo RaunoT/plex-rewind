@@ -23,7 +23,6 @@ export default function StoryTotal({ userRewind }: UserRewind) {
           That&apos;s{' '}
           <span className='rewind-cat'>
             {userRewind.total_duration_percentage}
-            %
             <ChartPieIcon />
           </span>{' '}
           of all plays.

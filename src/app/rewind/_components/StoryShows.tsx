@@ -22,13 +22,14 @@ export default function StoryShows({ userRewind }: UserRewind) {
 
       <CardText renderDelay={3} noScale>
         <p className='mb-2'>
-          Here&apos;s your <span className='rewind-cat'>Top 5:</span>
+          Your favorite was{' '}
+          <span className='rewind-cat'>{userRewind.shows_top[0].title}</span>!
         </p>
 
         <div className='text-base not-italic'>
           <CardMediaItems
             type='show'
-            items={userRewind.shows_top}
+            items={Array(userRewind.shows_top[0])}
             serverId={userRewind.server_id}
             rows
           />

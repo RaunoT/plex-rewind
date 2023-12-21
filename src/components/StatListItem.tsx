@@ -17,6 +17,9 @@ export default function StatListItem({
 }: Props) {
   return (
     <li className='my-2 last:my-0'>
+      {library && (
+        <div className='mb-1 text-base text-black lg:text-lg'>{library}</div>
+      )}
       <span className='font-semibold text-black'>
         {count.toLocaleString('en-US')}
       </span>
@@ -32,12 +35,6 @@ export default function StatListItem({
         {name}
         {icon}
       </span>
-      {library && (
-        <span>
-          {' '}
-          in <span className='text-black'>{library}</span>
-        </span>
-      )}
     </li>
   )
 }
