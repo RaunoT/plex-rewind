@@ -3,16 +3,20 @@
 import plexSvg from '@/assets/plex.svg'
 import Loader from '@/components/Loader'
 import { isDashboardDisabled, isRewindDisabled } from '@/utils/config'
+import { Library } from '@/utils/fetchTautulli'
 import { fadeIn } from '@/utils/motion'
 import { createPlexAuthUrl, getPlexAuthToken } from '@/utils/plexAuth'
 import { motion } from 'framer-motion'
+import { snakeCase } from 'lodash'
 import { signIn, signOut, useSession } from 'next-auth/react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 
 export default function Page() {
+  const [libraries, setLibraries] = useState<Library[]>([])
+  const [isLoading, setIsLoading] = useState<boolean>(true)
   const router = useRouter()
   const searchParams = useSearchParams()
   const { data: session, status } = useSession()
@@ -28,6 +32,7 @@ export default function Page() {
 
     if (plexPinId) {
       const authUser = async () => {
+        setIsLoading(true)
         const plexAuthToken = await getPlexAuthToken(plexPinId)
 
         try {
@@ -39,8 +44,10 @@ export default function Page() {
           if (res?.error) {
             console.error('Failed to sign in:', res.error)
           }
+          setIsLoading(false)
         } catch (error) {
           console.error('Error during sign-in:', error)
+          setIsLoading(false)
         }
       }
 
@@ -48,7 +55,28 @@ export default function Page() {
     }
   }, [searchParams])
 
-  if (status === 'loading') {
+  useEffect(() => {
+    if (status === 'authenticated') {
+      const getLibraries = async () => {
+        setIsLoading(true)
+
+        try {
+          const res = await fetch('/api/libraries')
+          const data = await res.json()
+
+          setLibraries(data)
+          setIsLoading(false)
+        } catch (error) {
+          console.error('Error getting libraries:', error)
+          setIsLoading(false)
+        }
+      }
+
+      getLibraries()
+    }
+  }, [status])
+
+  if (isLoading) {
     return <Loader />
   }
 
@@ -105,7 +133,7 @@ export default function Page() {
       )}
       {!isDashboardDisabled && isLoggedIn && (
         <Link
-          href='/dashboard'
+          href={`/dashboard/${snakeCase(libraries[0]?.section_name)}`}
           className={
             isRewindDisabled ? 'button' : 'text-slate-300 hover:opacity-75'
           }

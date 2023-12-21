@@ -8,9 +8,9 @@ type Props = {
 }
 
 export default function RewindLayout({ children }: Props) {
-  return isRewindDisabled ? (
-    notFound()
-  ) : (
+  isRewindDisabled && notFound()
+
+  return (
     <div className='w-full max-w-2xl'>
       <PageTitle title={`Rewind ${new Date().getFullYear()}`} />
       <CardWrapper className='min-h-[75vh]'>{children}</CardWrapper>

@@ -13,13 +13,15 @@ type Props = {
 export default async function DashboardLayout({ children }: Props) {
   const libraries = await getLibraries()
 
-  return isDashboardDisabled ? (
-    notFound()
-  ) : (
+  isDashboardDisabled && notFound()
+
+  return (
     <div className='w-full max-w-2xl lg:max-w-5xl'>
       <PageTitle title='Dashboard' />
       <DashboardNav libraries={libraries} />
-      <CardWrapper className='lg:min-h-[572px]'>{children}</CardWrapper>
+      <CardWrapper className='min-h-[75vh] lg:min-h-[572px]'>
+        {children}
+      </CardWrapper>
       <PeriodSelect />
     </div>
   )

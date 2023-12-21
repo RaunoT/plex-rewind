@@ -49,7 +49,6 @@ async function getUsers(
       users.map(async (user) => {
         const overseerrId = await fetchOverseerrUserId(String(user.user_id))
 
-        console.log(overseerrId)
         return overseerrId
       }),
     )
