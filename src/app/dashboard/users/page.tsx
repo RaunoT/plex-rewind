@@ -19,9 +19,11 @@ export const metadata: Metadata = {
   description: metaDescription,
 }
 
-type UserRequestCounts = {
-  requests: number
-}
+type UserRequestCounts =
+  | {
+      requests: number
+    }
+  | undefined
 
 async function getUsers(
   period: number,
@@ -47,19 +49,22 @@ async function getUsers(
       users.map(async (user) => {
         const overseerrId = await fetchOverseerrUserId(String(user.user_id))
 
+        console.log(overseerrId)
         return overseerrId
       }),
     )
 
     usersRequestsCounts = await Promise.all(
       overseerrUserIds.map(async (overseerrId) => {
-        const userTotal = await fetchPaginatedOverseerrStats(
-          `user/${overseerrId}/requests`,
-          requestsPeriod,
-        )
+        if (overseerrId) {
+          const userTotal = await fetchPaginatedOverseerrStats(
+            `user/${overseerrId}/requests`,
+            requestsPeriod,
+          )
 
-        return {
-          requests: userTotal.length,
+          return {
+            requests: userTotal.length,
+          }
         }
       }),
     )
@@ -116,7 +121,7 @@ async function getUsers(
   )
 
   users.map((user, i) => {
-    user.requests = usersRequestsCounts[i]?.requests
+    user.requests = usersRequestsCounts[i]?.requests || 0
     user.movies_plays_count = usersPlaysAndDurations[i].movies_plays_count
     user.shows_plays_count = usersPlaysAndDurations[i].shows_plays_count
     user.music_plays_count = usersPlaysAndDurations[i].music_plays_count
