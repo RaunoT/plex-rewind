@@ -29,7 +29,7 @@ git clone https://github.com/RaunoT/plex-rewind.git
 
 4. The application should now be running on [http://localhost:3000](http://localhost:3000).
 
-5. (optional) You can expose the app to the internet using a reverse proxy of your choice.
+5. (optional) You can expose the app to the internet using a reverse proxy of your choice. Or you can skip all of the above, fork this repository instead, and deploy it to [Vercel](https://vercel.com). You can set the env variables under "Settings" > "Environment Variables" for your project.
 
 ## Development
 
