@@ -30,6 +30,7 @@ type Props = {
   serverId?: string
 }
 
+// TODO: split into smaller pieces to reduce client rendered part
 export default function CardMediaItem({ data, i, type, serverId }: Props) {
   const tautulliUrl = process.env.NEXT_PUBLIC_TAUTULLI_URL
   const [posterSrc, setPosterSrc] = useState<string>(

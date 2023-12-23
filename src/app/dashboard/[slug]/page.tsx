@@ -20,6 +20,13 @@ export async function generateMetadata({
   }
 }
 
+export async function generateStaticParams() {
+  const libraries = await getLibraries()
+  return libraries.map((library) => ({
+    slug: snakeCase(library.section_name),
+  }))
+}
+
 export default async function Page({ params, searchParams }: DashboardParams) {
   const libraries = await getLibraries()
   const library = libraries.find(

@@ -5,6 +5,7 @@ import PageTitle from '@/components/PageTitle'
 import { isDashboardDisabled } from '@/utils/config'
 import { getLibraries } from '@/utils/fetchTautulli'
 import { notFound } from 'next/navigation'
+import { Suspense } from 'react'
 
 type Props = {
   children: React.ReactNode
@@ -18,11 +19,15 @@ export default async function DashboardLayout({ children }: Props) {
   return (
     <div className='w-full max-w-2xl lg:max-w-5xl'>
       <PageTitle title='Dashboard' />
-      <DashboardNav libraries={libraries} />
+      <Suspense>
+        <DashboardNav libraries={libraries} />
+      </Suspense>
       <CardWrapper className='min-h-[75vh] lg:min-h-[572px]'>
         {children}
       </CardWrapper>
-      <PeriodSelect />
+      <Suspense>
+        <PeriodSelect />
+      </Suspense>
     </div>
   )
 }
