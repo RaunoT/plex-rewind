@@ -173,7 +173,9 @@ export default async function Users({ searchParams }: DashboardParams) {
       prevCard={prevCard}
       page={`${libraries.length + 1} / ${libraries.length + 1}`}
       type='users'
-      periodQuery={periodSearchParams ? `?period=${periodSearchParams}` : null}
+      periodQuery={
+        periodSearchParams ? `?period=${periodSearchParams}` : undefined
+      }
     />
   )
 }

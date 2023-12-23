@@ -76,7 +76,9 @@ export default async function Page({ params, searchParams }: DashboardParams) {
           ? Number(library.count).toLocaleString('en-US')
           : Number(library.child_count).toLocaleString('en-US')
       }
-      periodQuery={periodSearchParams ? `?period=${periodSearchParams}` : null}
+      periodQuery={
+        periodSearchParams ? `?period=${periodSearchParams}` : undefined
+      }
     />
   )
 }

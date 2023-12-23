@@ -8,7 +8,6 @@ import CardMediaItems from './CardMediaItems'
 
 type Props = {
   title: string
-  subtitle?: string | null
   page?: string
   prevCard?: string
   nextCard?: string
@@ -18,12 +17,11 @@ type Props = {
   type?: string
   serverId?: string
   count?: string
-  periodQuery?: string | null
+  periodQuery?: string | undefined
 }
 
 export default async function Card({
   title,
-  subtitle,
   page,
   prevCard,
   nextCard,
@@ -33,7 +31,7 @@ export default async function Card({
   type = '',
   serverId = '',
   count,
-  periodQuery = null,
+  periodQuery = '',
 }: Props) {
   return (
     <>
@@ -75,12 +73,6 @@ export default async function Card({
             </>
           )}
         </div>
-
-        {subtitle && (
-          <div className='text-xs font-medium uppercase text-slate-900 sm:text-sm'>
-            {subtitle}
-          </div>
-        )}
       </div>
 
       {items?.length ? (
