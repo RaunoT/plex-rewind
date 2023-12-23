@@ -1,13 +1,13 @@
 import '@/styles/globals.css'
 import { googleAnalyticsId } from '@/utils/config'
-import { metaDescription } from '@/utils/constants'
+import { META_DESCRIPTION } from '@/utils/constants'
 import { Metadata, Viewport } from 'next'
 import AppProvider from './_components/AppProvider'
 import GoogleAnalytics from './_components/GoogleAnalytics'
 
 export const metadata: Metadata = {
   title: 'Plex rewind',
-  description: metaDescription,
+  description: META_DESCRIPTION,
 }
 
 export const viewport: Viewport = {

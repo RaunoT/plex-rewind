@@ -9,4 +9,7 @@ export const googleAnalyticsId: string | undefined =
 
 // expects library section_name's
 export const excludedLibraries: string[] =
-  process.env.NEXT_PUBLIC_EXCLUDED_LIBRARIES?.split(',') ?? []
+  process.env.NEXT_PUBLIC_EXCLUDED_LIBRARIES?.split(',') || []
+
+export const statisticsStartDate: string =
+  process.env.NEXT_PUBLIC_STATISTICS_START_DATE || '2020-01-01'

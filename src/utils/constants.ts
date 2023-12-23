@@ -1,9 +1,11 @@
+import { statisticsStartDate } from './config'
+
 const DAYS_AGO_7: Date = new Date(new Date().setDate(new Date().getDate() - 7))
 const DAYS_AGO_30: Date = new Date(
   new Date().setDate(new Date().getDate() - 30),
 )
 const CURRENT_YEAR: Date = new Date(new Date().getFullYear(), 0, 1)
-const ALL_TIME: Date = new Date('2022-12-03')
+const ALL_TIME: Date = new Date(statisticsStartDate)
 
 type Period = {
   date: string
@@ -38,7 +40,7 @@ export const ALLOWED_PERIODS: { [key: string]: Period } = {
   },
 }
 
-export const metaDescription: string =
+export const META_DESCRIPTION: string =
   'Present user statistics and habits in a beautiful and organized manner'
 
 export const PLEX_API_ENDPOINT = 'https://plex.tv/api/v2'

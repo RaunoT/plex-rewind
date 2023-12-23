@@ -24,6 +24,7 @@ git clone https://github.com/RaunoT/plex-rewind.git
 - `NEXT_PUBLIC_OVERSEERR_URL` and `NEXT_PUBLIC_OVERSEERR_API_KEY` are also optional, if you don't want to fetch requests data from Overseerr or display the "Request" button for media items.
 - You can use `NEXT_PUBLIC_EXCLUDED_LIBRARIES` to exclude certain libraries from Rewind and Dashboard. Accepted values are library names, separated by a comma. For example: `NEXT_PUBLIC_EXCLUDED_LIBRARIES=Movies,Music`.
 - You can generate a `NEXTAUTH_SECRET` by running `openssl rand -base64 32` in your terminal, or by using an online generator like [the one by Vercel](https://generate-secret.vercel.app/32).
+- `NEXT_PUBLIC_STATISTICS_START_DATE` expects `YYYY-MM-DD` format and will default `2020-01-01`. It is used for the "all time" option in Dashboard.
 
 3. You can now run `docker compose up` to start the application. You can use `docker compose build` to rebuild the application after changes.
 

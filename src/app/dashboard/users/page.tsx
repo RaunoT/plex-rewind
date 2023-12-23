@@ -1,5 +1,5 @@
 import Card from '@/components/Card/Card'
-import { ALLOWED_PERIODS, metaDescription } from '@/utils/constants'
+import { ALLOWED_PERIODS, META_DESCRIPTION } from '@/utils/constants'
 import {
   fetchOverseerrUserId,
   fetchPaginatedOverseerrStats,
@@ -16,7 +16,7 @@ import { Metadata } from 'next'
 
 export const metadata: Metadata = {
   title: 'Users | Plex rewind dashboard',
-  description: metaDescription,
+  description: META_DESCRIPTION,
 }
 
 type UserRequestCounts =
