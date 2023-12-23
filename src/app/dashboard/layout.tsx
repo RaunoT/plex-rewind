@@ -22,9 +22,7 @@ export default async function DashboardLayout({ children }: Props) {
       <Suspense>
         <DashboardNav libraries={libraries} />
       </Suspense>
-      <CardWrapper className='min-h-[75vh] lg:min-h-[572px]'>
-        {children}
-      </CardWrapper>
+      <CardWrapper className='lg:min-h-[572px]'>{children}</CardWrapper>
       <Suspense>
         <PeriodSelect />
       </Suspense>
