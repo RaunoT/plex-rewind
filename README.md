@@ -36,13 +36,13 @@ git clone https://github.com/RaunoT/plex-rewind.git
 Install dependencies:
 
 ```
-yarn
+pnpm
 ```
 
 Start development:
 
 ```
-yarn dev
+pnpm dev
 ```
 
 ## Learn More
