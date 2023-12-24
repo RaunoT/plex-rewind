@@ -25,6 +25,7 @@ git clone https://github.com/RaunoT/plex-rewind.git
 - You can use `NEXT_PUBLIC_EXCLUDED_LIBRARIES` to exclude certain libraries from Rewind and Dashboard. Accepted values are library names, separated by a comma. For example: `NEXT_PUBLIC_EXCLUDED_LIBRARIES=Movies,Music`.
 - You can generate a `NEXTAUTH_SECRET` by running `openssl rand -base64 32` in your terminal, or by using an online generator like [the one by Vercel](https://generate-secret.vercel.app/32).
 - `NEXT_PUBLIC_STATISTICS_START_DATE` expects `YYYY-MM-DD` format and will default `2020-01-01`. It is used for the "all time" option in Dashboard.
+- If you're using a custom domain name for Tautulli in `NEXT_PUBLIC_TAUTULLI_URL`, you will need to add it to `next.config.js` under `images.remotePatterns` also. This is to allow fetching images from external sources.
 
 3. You can now run `docker compose build` to build the application and then `docker compose up` to start it. To update, just run `git pull` and repeat the docker compose commands.
 

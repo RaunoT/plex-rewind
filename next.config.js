@@ -4,15 +4,18 @@ module.exports = {
   reactStrictMode: true,
   output: 'standalone',
   images: {
-    domains: ['localhost'],
     remotePatterns: [
+      {
+        protocol: 'http',
+        hostname: 'localhost',
+      },
       {
         protocol: 'https',
         hostname: 'plex.tv',
       },
       {
         protocol: 'https',
-        hostname: 'tautulli.rauno.eu', // TODO: how to make this adjustable?
+        hostname: 'tautulli.rauno.eu', // TODO: read from NEXT_PUBLIC_TAUTULLI_URL
       },
     ],
   },
@@ -39,7 +42,7 @@ module.exports = {
           },
           {
             key: 'Permissions-Policy',
-            value: 'geolocation=(), microphone=(), camera=(), payment=()',
+            value: '',
           },
           {
             key: 'Content-Security-Policy',
