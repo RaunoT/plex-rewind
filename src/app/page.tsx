@@ -65,14 +65,16 @@ export default function Page() {
           const data = await res.json()
 
           setLibraries(data)
-          setIsLoading(false)
         } catch (error) {
           console.error('Error fetching libraries:', error)
-          setIsLoading(false)
         }
+
+        setIsLoading(false)
       }
 
       getLibraries()
+    } else {
+      setIsLoading(false)
     }
   }, [status])
 
