@@ -4,6 +4,7 @@ module.exports = {
   reactStrictMode: true,
   output: 'standalone',
   images: {
+    domains: ['localhost'],
     remotePatterns: [
       {
         protocol: 'https',

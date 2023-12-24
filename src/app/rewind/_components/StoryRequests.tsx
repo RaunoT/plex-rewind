@@ -32,7 +32,7 @@ export default function StoryRequests({ userRewind }: UserRewind) {
                     target='_blank'
                     rel='noopener noreferrer'
                   >
-                    media.rauno.eu
+                    {process.env.NEXT_PUBLIC_OVERSEERR_URL!.split('//').pop()}
                   </a>
                 </p>
               </CardText>
