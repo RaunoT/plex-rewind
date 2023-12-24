@@ -35,7 +35,7 @@ git clone https://github.com/RaunoT/plex-rewind.git
 
 ## Donate
 
-If you like this project and wish to support it, you can do so by donating via [Patreon](https://www.patreon.com/PlexRewind) or [PayPal](paypal.me/raunot). Thank you!
+If you like this project and wish to support it, you can do so by donating via [Patreon](https://www.patreon.com/PlexRewind) or [PayPal](https://paypal.me/raunot). Thank you!
 
 _Please note that supporting does not guarantee any support or future developments._
 
