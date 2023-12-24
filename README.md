@@ -32,6 +32,12 @@ git clone https://github.com/RaunoT/plex-rewind.git
 
 5. (optional) You can expose the app to the internet using a reverse proxy of your choice. Or you can skip all of the above, fork this repository instead, and deploy it to [Vercel](https://vercel.com). You can set the env variables under "Settings" > "Environment Variables" for your project.
 
+## Donate
+
+If you like this project and wish to support it, you can do so by donating via [Patreon](https://www.patreon.com/PlexRewind) or [PayPal](paypal.me/raunot). Thank you!
+
+_Please note that supporting does not guarantee any support or future developments._
+
 ## Development
 
 Install dependencies:
