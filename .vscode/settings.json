@@ -21,7 +21,7 @@
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
   "prettier.documentSelectors": ["**/*.svg"],
-  "stylelint.packageManager": "yarn",
+  "stylelint.packageManager": "pnpm",
   "stylelint.snippet": ["css", "postcss"],
   "stylelint.validate": ["css", "postcss"],
   "typescript.tsdk": "node_modules/typescript/lib",

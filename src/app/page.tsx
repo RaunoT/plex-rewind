@@ -73,7 +73,7 @@ export default function Page() {
       }
 
       getLibraries()
-    } else {
+    } else if (status !== 'loading') {
       setIsLoading(false)
     }
   }, [status])

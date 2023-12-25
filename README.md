@@ -45,13 +45,13 @@ _Please note that supporting does not guarantee any support or future developmen
 Install dependencies:
 
 ```
-yarn
+pnpm
 ```
 
 Start development:
 
 ```
-yarn dev
+pnpm dev
 ```
 
 ## Learn More
