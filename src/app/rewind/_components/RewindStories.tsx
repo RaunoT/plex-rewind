@@ -1,17 +1,19 @@
 'use client'
 
+import { ExtendedUser } from '@/utils/authOptions'
 import { RewindResponse } from '@/utils/getRewind'
 import Stories from 'stories-react'
 import 'stories-react/dist/index.css'
-import StoryLibraries from './StoryLibraries'
-import StoryMovies from './StoryMovies'
-import StoryMoviesTop from './StoryMoviesTop'
-import StoryMusic from './StoryMusic'
-import StoryMusicTop from './StoryMusicTop'
-import StoryRequests from './StoryRequests'
-import StoryShows from './StoryShows'
-import StoryShowsTop from './StoryShowsTop'
-import StoryTotal from './StoryTotal'
+import StoryLibraries from './Stories/Libraries'
+import StoryMovies from './Stories/Movies'
+import StoryMoviesTop from './Stories/MoviesTop'
+import StoryMusic from './Stories/Music'
+import StoryMusicTop from './Stories/MusicTop'
+import StoryRequests from './Stories/Requests'
+import StoryShows from './Stories/Shows'
+import StoryShowsTop from './Stories/ShowsTop'
+import StoryTotal from './Stories/Total'
+import StoryWelcome from './Stories/Welcome'
 
 export type UserRewind = {
   userRewind: RewindResponse
@@ -20,7 +22,7 @@ export type UserRewind = {
   resume: () => void
 }
 
-type StoryProps = {
+type Story = {
   isPaused: boolean
   pause: () => void
   resume: () => void
@@ -28,13 +30,26 @@ type StoryProps = {
 
 type Props = {
   userRewind: RewindResponse
+  user: ExtendedUser
 }
 
-export default function RewindStories({ userRewind }: Props) {
+export default function RewindStories({ userRewind, user }: Props) {
   const stories = [
     {
       type: 'component',
-      component: (story: StoryProps) => (
+      component: (story: Story) => (
+        <StoryWelcome
+          user={user}
+          isPaused={story.isPaused}
+          pause={story.pause}
+          resume={story.resume}
+        />
+      ),
+      duration: 5000,
+    },
+    {
+      type: 'component',
+      component: (story: Story) => (
         <StoryTotal
           userRewind={userRewind}
           isPaused={story.isPaused}
@@ -46,7 +61,7 @@ export default function RewindStories({ userRewind }: Props) {
     },
     {
       type: 'component',
-      component: (story: StoryProps) => (
+      component: (story: Story) => (
         <StoryLibraries
           userRewind={userRewind}
           isPaused={story.isPaused}
@@ -60,7 +75,7 @@ export default function RewindStories({ userRewind }: Props) {
       ? [
           {
             type: 'component',
-            component: (story: StoryProps) => (
+            component: (story: Story) => (
               <StoryRequests
                 userRewind={userRewind}
                 isPaused={story.isPaused}
@@ -74,7 +89,7 @@ export default function RewindStories({ userRewind }: Props) {
       : []),
     {
       type: 'component',
-      component: (story: StoryProps) => (
+      component: (story: Story) => (
         <StoryShows
           userRewind={userRewind}
           isPaused={story.isPaused}
@@ -88,7 +103,7 @@ export default function RewindStories({ userRewind }: Props) {
       ? [
           {
             type: 'component',
-            component: (story: StoryProps) => (
+            component: (story: Story) => (
               <StoryShowsTop
                 userRewind={userRewind}
                 isPaused={story.isPaused}
@@ -102,7 +117,7 @@ export default function RewindStories({ userRewind }: Props) {
       : []),
     {
       type: 'component',
-      component: (story: StoryProps) => (
+      component: (story: Story) => (
         <StoryMovies
           userRewind={userRewind}
           isPaused={story.isPaused}
@@ -116,7 +131,7 @@ export default function RewindStories({ userRewind }: Props) {
       ? [
           {
             type: 'component',
-            component: (story: StoryProps) => (
+            component: (story: Story) => (
               <StoryMoviesTop
                 userRewind={userRewind}
                 isPaused={story.isPaused}
@@ -130,7 +145,7 @@ export default function RewindStories({ userRewind }: Props) {
       : []),
     {
       type: 'component',
-      component: (story: StoryProps) => (
+      component: (story: Story) => (
         <StoryMusic
           userRewind={userRewind}
           isPaused={story.isPaused}
@@ -144,7 +159,7 @@ export default function RewindStories({ userRewind }: Props) {
       ? [
           {
             type: 'component',
-            component: (story: StoryProps) => (
+            component: (story: Story) => (
               <StoryMusicTop
                 userRewind={userRewind}
                 isPaused={story.isPaused}

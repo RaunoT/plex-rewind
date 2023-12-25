@@ -44,6 +44,7 @@
   .rewind-cat {
     @apply inline-flex items-center text-teal-300;
 
+    > img,
     > svg {
       @apply ml-1 w-8;
     }

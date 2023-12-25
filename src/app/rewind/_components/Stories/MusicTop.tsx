@@ -1,10 +1,10 @@
 import CardMediaItems from '@/components/Card/CardMediaItems'
 import CardText from '@/components/Card/CardText'
-import { FilmIcon } from '@heroicons/react/24/outline'
-import { UserRewind } from './RewindStories'
-import StoryWrapper from './StoryWrapper'
+import { MusicalNoteIcon } from '@heroicons/react/24/outline'
+import { UserRewind } from '../RewindStories'
+import StoryWrapper from './Wrapper'
 
-export default function StoryMoviesTop({
+export default function StoryMusicTop({
   userRewind,
   isPaused,
   pause,
@@ -17,14 +17,14 @@ export default function StoryMoviesTop({
           Here&apos;s your full{' '}
           <span className='rewind-cat'>
             Top 5&nbsp;
-            <FilmIcon />
+            <MusicalNoteIcon />
           </span>
         </p>
 
         <div className='text-base not-italic'>
           <CardMediaItems
-            type='movie'
-            items={userRewind.movies_top}
+            type='artist'
+            items={userRewind.music_top}
             serverId={userRewind.server_id}
             rows
           />

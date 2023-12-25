@@ -91,5 +91,5 @@ export default async function Rewind() {
     userRewind.user_requests = userRequestsTotal
   }
 
-  return <RewindStories userRewind={userRewind} />
+  return <RewindStories userRewind={userRewind} user={session.user} />
 }

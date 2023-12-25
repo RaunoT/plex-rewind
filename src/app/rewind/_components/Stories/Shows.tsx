@@ -1,10 +1,10 @@
 import CardMediaItems from '@/components/Card/CardMediaItems'
 import CardText from '@/components/Card/CardText'
-import { FilmIcon, PlayCircleIcon } from '@heroicons/react/24/outline'
-import { UserRewind } from './RewindStories'
-import StoryWrapper from './StoryWrapper'
+import { PlayCircleIcon } from '@heroicons/react/24/outline'
+import { UserRewind } from '../RewindStories'
+import StoryWrapper from './Wrapper'
 
-export default function StoryMovies({
+export default function StoryShows({
   userRewind,
   isPaused,
   pause,
@@ -12,19 +12,19 @@ export default function StoryMovies({
 }: UserRewind) {
   return (
     <StoryWrapper isPaused={isPaused} pause={pause} resume={resume}>
-      {userRewind.movies_total_duration ? (
+      {userRewind.shows_total_duration ? (
         <>
           <CardText scaleDelay={3}>
             <p>
-              <span className='rewind-stat'>
-                {userRewind.movies_total_duration}
-              </span>{' '}
-              of your time was spent watching{' '}
               <span className='rewind-cat'>
-                Movies
-                <FilmIcon />
+                TV Shows
+                <PlayCircleIcon />
               </span>{' '}
-              on <span className='text-yellow-500'>Plex</span>.
+              took up{' '}
+              <span className='rewind-stat'>
+                {userRewind.shows_total_duration}
+              </span>{' '}
+              of your year on <span className='text-yellow-500'>Plex</span>.
             </p>
           </CardText>
 
@@ -32,15 +32,15 @@ export default function StoryMovies({
             <p className='mb-2'>
               Your favorite was{' '}
               <span className='rewind-cat'>
-                {userRewind.movies_top[0].title}
+                {userRewind.shows_top[0].title}
               </span>
               !
             </p>
 
             <div className='text-base not-italic'>
               <CardMediaItems
-                type='movie'
-                items={Array(userRewind.movies_top[0])}
+                type='show'
+                items={Array(userRewind.shows_top[0])}
                 serverId={userRewind.server_id}
                 rows
               />
@@ -52,7 +52,7 @@ export default function StoryMovies({
           <p>
             You haven&apos;t watched any{' '}
             <span className='rewind-cat'>
-              Movies
+              TV Shows
               <PlayCircleIcon />
             </span>{' '}
             on <span className='text-yellow-500'>Plex</span> this year{' '}

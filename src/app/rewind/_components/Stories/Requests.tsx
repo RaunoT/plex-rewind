@@ -5,8 +5,8 @@ import {
   PlayCircleIcon,
   QuestionMarkCircleIcon,
 } from '@heroicons/react/24/outline'
-import { UserRewind } from './RewindStories'
-import StoryWrapper from './StoryWrapper'
+import { UserRewind } from '../RewindStories'
+import StoryWrapper from './Wrapper'
 
 export default function StoryRequests({
   userRewind,

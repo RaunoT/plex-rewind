@@ -1,7 +1,7 @@
 import CardText from '@/components/Card/CardText'
 import { ChartPieIcon, ClockIcon } from '@heroicons/react/24/outline'
-import { UserRewind } from './RewindStories'
-import StoryWrapper from './StoryWrapper'
+import { UserRewind } from '../RewindStories'
+import StoryWrapper from './Wrapper'
 
 export default function StoryTotal({
   userRewind,
