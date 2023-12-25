@@ -8,10 +8,16 @@ import {
   PlayCircleIcon,
 } from '@heroicons/react/24/outline'
 import { UserRewind } from './RewindStories'
+import StoryWrapper from './StoryWrapper'
 
-export default function StoryLibraries({ userRewind }: UserRewind) {
+export default function StoryLibraries({
+  userRewind,
+  isPaused,
+  pause,
+  resume,
+}: UserRewind) {
   return (
-    <>
+    <StoryWrapper isPaused={isPaused} pause={pause} resume={resume}>
       <CardText scaleDelay={3}>
         <p>
           Did you know the{' '}
@@ -60,6 +66,6 @@ export default function StoryLibraries({ userRewind }: UserRewind) {
           })}
         </ul>
       </CardText>
-    </>
+    </StoryWrapper>
   )
 }

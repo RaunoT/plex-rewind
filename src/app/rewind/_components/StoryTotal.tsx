@@ -1,10 +1,16 @@
 import CardText from '@/components/Card/CardText'
 import { ChartPieIcon, ClockIcon } from '@heroicons/react/24/outline'
 import { UserRewind } from './RewindStories'
+import StoryWrapper from './StoryWrapper'
 
-export default function StoryTotal({ userRewind }: UserRewind) {
+export default function StoryTotal({
+  userRewind,
+  isPaused,
+  pause,
+  resume,
+}: UserRewind) {
   return (
-    <>
+    <StoryWrapper isPaused={isPaused} pause={pause} resume={resume}>
       <CardText scaleDelay={4}>
         <p>
           You&apos;ve spent a{' '}
@@ -28,6 +34,6 @@ export default function StoryTotal({ userRewind }: UserRewind) {
           of all plays.
         </p>
       </CardText>
-    </>
+    </StoryWrapper>
   )
 }

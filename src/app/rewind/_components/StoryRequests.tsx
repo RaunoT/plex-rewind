@@ -6,11 +6,17 @@ import {
   QuestionMarkCircleIcon,
 } from '@heroicons/react/24/outline'
 import { UserRewind } from './RewindStories'
+import StoryWrapper from './StoryWrapper'
 
-export default function StoryRequests({ userRewind }: UserRewind) {
+export default function StoryRequests({
+  userRewind,
+  isPaused,
+  pause,
+  resume,
+}: UserRewind) {
   return (
     userRewind.requests && (
-      <>
+      <StoryWrapper isPaused={isPaused} pause={pause} resume={resume}>
         {userRewind.requests.total == 0 ? (
           <CardText noScale>
             <p>There haven&apos;t been any requests this year 😲</p>
@@ -84,7 +90,7 @@ export default function StoryRequests({ userRewind }: UserRewind) {
             </CardText>
           </>
         )}
-      </>
+      </StoryWrapper>
     )
   )
 }

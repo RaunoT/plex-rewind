@@ -15,67 +15,143 @@ import StoryTotal from './StoryTotal'
 
 export type UserRewind = {
   userRewind: RewindResponse
+  isPaused: boolean
+  pause: () => void
+  resume: () => void
 }
 
-export default function RewindStories({ userRewind }: UserRewind) {
+type StoryProps = {
+  isPaused: boolean
+  pause: () => void
+  resume: () => void
+}
+
+type Props = {
+  userRewind: RewindResponse
+}
+
+export default function RewindStories({ userRewind }: Props) {
   const stories = [
     {
       type: 'component',
-      component: () => <StoryTotal userRewind={userRewind} />,
+      component: (story: StoryProps) => (
+        <StoryTotal
+          userRewind={userRewind}
+          isPaused={story.isPaused}
+          pause={story.pause}
+          resume={story.resume}
+        />
+      ),
       duration: 8000,
     },
     {
       type: 'component',
-      component: () => <StoryLibraries userRewind={userRewind} />,
+      component: (story: StoryProps) => (
+        <StoryLibraries
+          userRewind={userRewind}
+          isPaused={story.isPaused}
+          pause={story.pause}
+          resume={story.resume}
+        />
+      ),
       duration: 9000,
     },
     ...(process.env.NEXT_PUBLIC_OVERSEERR_URL
       ? [
           {
             type: 'component',
-            component: () => <StoryRequests userRewind={userRewind} />,
+            component: (story: StoryProps) => (
+              <StoryRequests
+                userRewind={userRewind}
+                isPaused={story.isPaused}
+                pause={story.pause}
+                resume={story.resume}
+              />
+            ),
             duration: 8000,
           },
         ]
       : []),
     {
       type: 'component',
-      component: () => <StoryShows userRewind={userRewind} />,
+      component: (story: StoryProps) => (
+        <StoryShows
+          userRewind={userRewind}
+          isPaused={story.isPaused}
+          pause={story.pause}
+          resume={story.resume}
+        />
+      ),
       duration: 8000,
     },
     ...(userRewind.shows_total_duration
       ? [
           {
             type: 'component',
-            component: () => <StoryShowsTop userRewind={userRewind} />,
+            component: (story: StoryProps) => (
+              <StoryShowsTop
+                userRewind={userRewind}
+                isPaused={story.isPaused}
+                pause={story.pause}
+                resume={story.resume}
+              />
+            ),
             duration: 8000,
           },
         ]
       : []),
     {
       type: 'component',
-      component: () => <StoryMovies userRewind={userRewind} />,
+      component: (story: StoryProps) => (
+        <StoryMovies
+          userRewind={userRewind}
+          isPaused={story.isPaused}
+          pause={story.pause}
+          resume={story.resume}
+        />
+      ),
       duration: 8000,
     },
     ...(userRewind.movies_total_duration
       ? [
           {
             type: 'component',
-            component: () => <StoryMoviesTop userRewind={userRewind} />,
+            component: (story: StoryProps) => (
+              <StoryMoviesTop
+                userRewind={userRewind}
+                isPaused={story.isPaused}
+                pause={story.pause}
+                resume={story.resume}
+              />
+            ),
             duration: 8000,
           },
         ]
       : []),
     {
       type: 'component',
-      component: () => <StoryMusic userRewind={userRewind} />,
+      component: (story: StoryProps) => (
+        <StoryMusic
+          userRewind={userRewind}
+          isPaused={story.isPaused}
+          pause={story.pause}
+          resume={story.resume}
+        />
+      ),
       duration: 8000,
     },
     ...(userRewind.music_total_duration
       ? [
           {
             type: 'component',
-            component: () => <StoryMusicTop userRewind={userRewind} />,
+            component: (story: StoryProps) => (
+              <StoryMusicTop
+                userRewind={userRewind}
+                isPaused={story.isPaused}
+                pause={story.pause}
+                resume={story.resume}
+              />
+            ),
             duration: 8000,
           },
         ]
