@@ -26,10 +26,11 @@ git clone https://github.com/RaunoT/plex-rewind.git
 - You can generate a `NEXTAUTH_SECRET` by running `openssl rand -base64 32` in your terminal, or by using an online generator like [the one by Vercel](https://generate-secret.vercel.app/32).
 - `NEXT_PUBLIC_STATISTICS_START_DATE` expects `YYYY-MM-DD` format and will default `2020-01-01`. It is used for the "all time" option in Dashboard.
 - If you're using a custom domain name for Tautulli in `NEXT_PUBLIC_TAUTULLI_URL`, you will need to add it to `next.config.js` under `images.remotePatterns` also. This is to allow fetching images from external sources.
+- The `NEXT_PUBLIC_SITE_URL` and `NEXTAUTH_URL` variables are used for authentication and should be set to the URL where you're hosting the application.
 
 3. You can now run `docker compose build` to build the application and then `docker compose up` to start it. To update, just run `git pull` and repeat the docker compose commands.
 
-4. The application should now be running on [http://localhost:3000](http://localhost:3000).
+4. The application should now be running on [http://localhost:8383](http://localhost:8383).
 
 5. (optional) You can expose the app to the internet using a reverse proxy of your choice. Or you can skip all of the above, fork this repository instead, and deploy it to [Vercel](https://vercel.com). You can set the env variables under "Settings" > "Environment Variables" for your project.
 

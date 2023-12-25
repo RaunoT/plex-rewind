@@ -10,4 +10,4 @@ services:
       - .env
     restart: always
     ports:
-      - 3000:3000
+      - 8383:8383
