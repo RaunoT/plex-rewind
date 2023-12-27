@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Build and push the image
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v3
         run: |
           docker login --username raunot --password ${{ secrets.GH_TOKEN }}}
           docker build . --tag ghcr.io/raunot/plex-rewind:latest
