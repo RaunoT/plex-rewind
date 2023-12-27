@@ -1,0 +1,17 @@
+name: Plex Rewind Release
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  semantic-release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Build and push the image
+        uses: actions/checkout@v3
+        run: |
+          docker login --username raunot --password ${{ secrets.GH_TOKEN }}}
+          docker build . --tag ghcr.io/raunot/plex-rewind:latest
+          docker push ghcr.io/raunot/plex-rewind:latest
