@@ -1,4 +1,4 @@
-name: Plex Rewind Release
+name: Plex Rewind Publish Release
 
 on:
   push:
@@ -12,6 +12,6 @@ jobs:
       - name: Build and push the image
       - uses: actions/checkout@v3
         run: |
-          docker login --username raunot --password ${{ secrets.GH_TOKEN }}}
+          docker login --username raunot --password {{ secrets.GH_TOKEN }} ghcr.io
           docker build . --tag ghcr.io/raunot/plex-rewind:latest
           docker push ghcr.io/raunot/plex-rewind:latest
