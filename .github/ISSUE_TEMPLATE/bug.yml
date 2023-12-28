@@ -1,0 +1,69 @@
+name: 🐛 Bug report
+description: Report a problem
+labels: ['type:bug', 'awaiting-triage']
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: Please provide a clear and concise description of the bug or issue.
+    validations:
+      required: true
+  - type: textarea
+    id: repro-steps
+    attributes:
+      label: Steps to reproduce
+      description: Please tell us how we can reproduce the undesired behavior.
+      placeholder: |
+        1. Go to...
+        2. Click on...
+        3. See error in...
+    validations:
+      required: true
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: Screenshots
+      description: If applicable, please provide screenshots depicting the problem.
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs
+      description: Please copy and paste any relevant log output.
+      render: shell
+  - type: dropdown
+    id: platform
+    attributes:
+      label: Platform
+      options:
+        - desktop
+        - smartphone
+        - tablet
+    validations:
+      required: true
+  - type: input
+    id: device
+    attributes:
+      label: Device
+      description: For example - iPhone 15 Pro, Samsung Galaxy S22
+    validations:
+      required: true
+  - type: input
+    id: os
+    attributes:
+      label: Operating System
+      description: For example - iOS 17.1, Windows 11, Android 14.0
+    validations:
+      required: true
+  - type: input
+    id: browser
+    attributes:
+      label: Browser and version
+      description: For example - Chrome 120.0.6099.129, Safari 17.2, Firefox 121.0
+    validations:
+      required: true
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional context
+      description: Any other relevant information about the issue.
