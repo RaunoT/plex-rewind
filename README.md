@@ -54,6 +54,12 @@ Start development:
 pnpm dev
 ```
 
+Build for production:
+
+```
+pnpm build
+```
+
 ## Learn More
 
 To learn more about the tools used in this project, take a look at the following resources:
