@@ -24,7 +24,7 @@ export default function StoryRequests({
         ) : (
           <>
             {userRewind.user_requests == 0 ? (
-              <CardText scaleDelay={3}>
+              <CardText isPaused={isPaused} scaleDelay={3}>
                 <p>
                   You haven&apos;t made any content{' '}
                   <span className='rewind-cat'>
@@ -43,7 +43,7 @@ export default function StoryRequests({
                 </p>
               </CardText>
             ) : (
-              <CardText scaleDelay={3}>
+              <CardText isPaused={isPaused} scaleDelay={3}>
                 <p>
                   You&apos;ve made{' '}
                   <span className='rewind-stat'>
@@ -59,7 +59,7 @@ export default function StoryRequests({
               </CardText>
             )}
 
-            <CardText renderDelay={3} scaleDelay={3}>
+            <CardText isPaused={isPaused} renderDelay={3} scaleDelay={3}>
               <p>
                 Altogether there have been{' '}
                 <span className='rewind-stat'>{userRewind.requests.total}</span>{' '}
@@ -71,7 +71,12 @@ export default function StoryRequests({
               </p>
             </CardText>
 
-            <CardText renderDelay={6} noScale loaderDelay={3}>
+            <CardText
+              isPaused={isPaused}
+              renderDelay={6}
+              noScale
+              loaderDelay={3}
+            >
               <p>That includes:</p>
               <ul className='list'>
                 <StatListItem

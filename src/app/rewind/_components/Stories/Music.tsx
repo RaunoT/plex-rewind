@@ -14,7 +14,7 @@ export default function StoryMusic({
     <StoryWrapper isPaused={isPaused} pause={pause} resume={resume}>
       {userRewind.music_total_duration ? (
         <>
-          <CardText scaleDelay={3}>
+          <CardText isPaused={isPaused} scaleDelay={3}>
             <p>
               And to top it all off, you listened to&nbsp;
               <span className='rewind-stat'>
@@ -29,7 +29,7 @@ export default function StoryMusic({
             </p>
           </CardText>
 
-          <CardText renderDelay={3} noScale>
+          <CardText isPaused={isPaused} renderDelay={3} noScale>
             <p className='mb-2'>
               Your favorite was{' '}
               <span className='rewind-cat'>

@@ -18,7 +18,7 @@ export default function StoryLibraries({
 }: UserRewind) {
   return (
     <StoryWrapper isPaused={isPaused} pause={pause} resume={resume}>
-      <CardText scaleDelay={3}>
+      <CardText isPaused={isPaused} scaleDelay={3}>
         <p>
           Did you know the{' '}
           <span className='rewind-cat'>
@@ -34,7 +34,7 @@ export default function StoryLibraries({
         </p>
       </CardText>
 
-      <CardText renderDelay={3} noScale>
+      <CardText isPaused={isPaused} renderDelay={3} noScale>
         <p>The current library consists of:</p>
         <ul className='list mt-2'>
           {userRewind.libraries.map((library) => {

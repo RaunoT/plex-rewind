@@ -14,7 +14,7 @@ export default function StoryShows({
     <StoryWrapper isPaused={isPaused} pause={pause} resume={resume}>
       {userRewind.shows_total_duration ? (
         <>
-          <CardText scaleDelay={3}>
+          <CardText isPaused={isPaused} scaleDelay={3}>
             <p>
               <span className='rewind-cat'>
                 TV Shows
@@ -28,7 +28,7 @@ export default function StoryShows({
             </p>
           </CardText>
 
-          <CardText renderDelay={3} noScale>
+          <CardText isPaused={isPaused} renderDelay={3} noScale>
             <p className='mb-2'>
               Your favorite was{' '}
               <span className='rewind-cat'>

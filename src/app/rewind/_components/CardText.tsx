@@ -13,6 +13,7 @@ type Props = {
   scaleDelay?: number
   hideAfter?: number
   noScale?: boolean
+  isPaused?: boolean
 }
 
 export default function CardText({
@@ -23,6 +24,7 @@ export default function CardText({
   scaleDelay = 0,
   hideAfter = 0,
   noScale = false,
+  isPaused = false,
 }: Props) {
   const [isComponentShown, setIsComponentShown] = useState<boolean>(false)
   const [isLoaderShown, setIsLoaderShown] = useState<boolean>(false)

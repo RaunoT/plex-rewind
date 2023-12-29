@@ -14,7 +14,7 @@ export default function StoryMovies({
     <StoryWrapper isPaused={isPaused} pause={pause} resume={resume}>
       {userRewind.movies_total_duration ? (
         <>
-          <CardText scaleDelay={3}>
+          <CardText isPaused={isPaused} scaleDelay={3}>
             <p>
               <span className='rewind-stat'>
                 {userRewind.movies_total_duration}
@@ -28,7 +28,7 @@ export default function StoryMovies({
             </p>
           </CardText>
 
-          <CardText renderDelay={3} noScale>
+          <CardText isPaused={isPaused} renderDelay={3} noScale>
             <p className='mb-2'>
               Your favorite was{' '}
               <span className='rewind-cat'>

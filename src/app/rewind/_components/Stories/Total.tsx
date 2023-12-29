@@ -11,7 +11,7 @@ export default function StoryTotal({
 }: UserRewind) {
   return (
     <StoryWrapper isPaused={isPaused} pause={pause} resume={resume}>
-      <CardText scaleDelay={4}>
+      <CardText isPaused={isPaused} scaleDelay={4}>
         <p>
           You&apos;ve spent a{' '}
           <span className='rewind-cat'>
@@ -24,7 +24,7 @@ export default function StoryTotal({
         </p>
       </CardText>
 
-      <CardText renderDelay={4} noScale>
+      <CardText isPaused={isPaused} renderDelay={4} noScale>
         <p>
           That&apos;s{' '}
           <span className='rewind-cat'>
