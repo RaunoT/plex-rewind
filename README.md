@@ -28,7 +28,7 @@ git clone https://github.com/RaunoT/plex-rewind.git --branch main
 - If you're using a custom domain name for Tautulli in `NEXT_PUBLIC_TAUTULLI_URL`, you will need to add it to `next.config.js` under `images.remotePatterns` also. This is to allow fetching images from external sources.
 - The `NEXT_PUBLIC_SITE_URL` and `NEXTAUTH_URL` variables are used for authentication and should be set to the URL where you're hosting the application.
 
-3. You can now run `docker compose build` to build the application and then `docker compose up` to start it. To update, download the latest release, or if you cloned the repo, run `git pull` and repeat the docker compose commands.
+3. You can now run `docker compose build` to build the application and then `docker compose up -d` to start it. To update, download the latest release, or if you cloned the repo, run `git pull` and repeat the docker compose commands.
 
 4. The application should now be running on [http://localhost:8383](http://localhost:8383).
 

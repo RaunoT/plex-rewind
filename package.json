@@ -2,7 +2,6 @@
   "name": "plex-rewind",
   "version": "1.0.0",
   "private": true,
-  "packageManager": "pnpm@8.13.1",
   "scripts": {
     "dev": "next dev -p 8383",
     "build": "next build",
