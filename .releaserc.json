@@ -8,12 +8,7 @@
         "changelogFile": "CHANGELOG.md"
       }
     ],
-    [
-      "@semantic-release/npm",
-      {
-        "npmPublish": false
-      }
-    ],
+    "@semantic-release/npm",
     [
       "@semantic-release/exec",
       {
@@ -29,5 +24,7 @@
     ],
     "@semantic-release/github"
   ],
-  "preset": "conventionalcommits"
+  "preset": "conventionalcommits",
+  "branches": ["main"],
+  "npmPublish": false
 }
