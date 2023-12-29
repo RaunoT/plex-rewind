@@ -1,6 +1,6 @@
 {
   "name": "plex-rewind",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "private": true,
   "scripts": {
     "dev": "next dev -p 8383",
@@ -56,6 +56,7 @@
     "prettier": "^3.1.1",
     "prettier-plugin-organize-imports": "^3.2.4",
     "prettier-plugin-tailwindcss": "^0.5.9",
+    "semantic-release": "^22.0.12",
     "stylelint": "^15.11.0",
     "stylelint-config-standard": "^34.0.0",
     "typescript": "^5.3.3"

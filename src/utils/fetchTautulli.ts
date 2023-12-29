@@ -1,38 +1,6 @@
 import qs from 'qs'
 import { excludedLibraries } from './config'
-
-export type TautulliItem = {
-  title: string
-  year: number
-  total_plays: number
-  total_duration: number
-  users_watched: number | undefined
-  rating_key: number
-  thumb: string
-  is_deleted: boolean
-  rating: string
-  tmdb_id: number
-  imdb_id: string
-  user_thumb: string
-  user: string
-  requests: number
-  music_plays_count: number
-  movies_plays_count: number
-  shows_plays_count: number
-  user_id: number
-}
-
-export type Library = {
-  section_name: string
-  section_id: string
-  count: string
-  parent_count: string
-  child_count: string
-  section_type: 'movie' | 'show' | 'artist'
-  is_active: number
-}
-
-export type TautulliItemRows = { rows: TautulliItem[] }
+import { Library } from './types'
 
 type TautulliResponse<T> = {
   response: {

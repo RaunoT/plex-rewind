@@ -1,17 +1,17 @@
-import { TautulliItem } from '@/utils/fetchTautulli'
+import MediaItems from '@/components/MediaItem/MediaItems'
+import { TautulliItemRow } from '@/utils/types'
 import {
   ArrowLongLeftIcon,
   ArrowLongRightIcon,
 } from '@heroicons/react/24/outline'
 import Link from 'next/link.js'
-import CardMediaItems from './CardMediaItems'
 
 type Props = {
   title: string
   page?: string
   prevCard?: string
   nextCard?: string
-  items?: TautulliItem[]
+  items?: TautulliItemRow[]
   totalDuration?: string
   totalSize?: string | number
   type?: string
@@ -20,7 +20,7 @@ type Props = {
   periodQuery?: string | undefined
 }
 
-export default async function Card({
+export default function Dashboard({
   title,
   page,
   prevCard,
@@ -38,14 +38,7 @@ export default async function Card({
       <div>
         <h2 className='flex items-center text-sm font-bold uppercase text-black sm:text-xl'>
           <span>{title}</span>
-          {totalSize && (
-            <>
-              <span className='mx-1 sm:mx-2' aria-hidden>
-                -
-              </span>
-              <span>{totalSize}</span>
-            </>
-          )}
+          {totalSize && <span>&nbsp;({totalSize})</span>}
           {count && (
             <>
               <span className='mx-1 sm:mx-2' aria-hidden>
@@ -57,7 +50,7 @@ export default async function Card({
                   ? 'movies'
                   : type === 'show'
                     ? 'episodes'
-                    : 'tracks'}
+                    : type === 'artist' && 'tracks'}
               </span>
             </>
           )}
@@ -76,7 +69,7 @@ export default async function Card({
       </div>
 
       {items?.length ? (
-        <CardMediaItems items={items} type={type} serverId={serverId} />
+        <MediaItems items={items} type={type} serverId={serverId} />
       ) : (
         <div className='flex flex-1 flex-col justify-center text-center text-neutral-200'>
           <h2 className='mb-4 py-32 text-2xl italic leading-tight last:mb-0 sm:text-3xl'>

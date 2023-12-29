@@ -1,11 +1,11 @@
-import DashboardNav from '@/app/dashboard/_components/DashboardNav'
-import PeriodSelect from '@/app/dashboard/_components/PeriodSelect'
-import CardWrapper from '@/components/Card/CardWrapper'
-import PageTitle from '@/components/PageTitle'
+import CardWrapper from '@/app/_components/CardWrapper'
+import PageTitle from '@/app/_components/PageTitle'
 import { isDashboardDisabled } from '@/utils/config'
 import { getLibraries } from '@/utils/fetchTautulli'
 import { notFound } from 'next/navigation'
 import { Suspense } from 'react'
+import DashboardNav from './_components/DashboardNav'
+import PeriodSelect from './_components/PeriodSelect'
 
 type Props = {
   children: React.ReactNode
@@ -17,7 +17,7 @@ export default async function DashboardLayout({ children }: Props) {
   isDashboardDisabled && notFound()
 
   return (
-    <div className='w-full max-w-2xl lg:max-w-5xl'>
+    <div className='w-full max-w-2xl lg:max-w-5xl 2xl:max-w-6xl'>
       <PageTitle title='Dashboard' />
       <Suspense>
         <DashboardNav libraries={libraries} />

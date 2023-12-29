@@ -10,7 +10,7 @@ export default function CardWrapper({ children, className }: Props) {
     <div className='relative'>
       <article
         className={clsx(
-          'bg-gradient flex min-h-[75vh] w-full flex-col rounded-3xl px-6 pb-6 pt-8 sm:px-8',
+          'bg-gradient flex min-h-[75vh] w-full flex-col rounded-3xl px-6 py-6 sm:px-8 sm:pt-8',
           className,
         )}
       >

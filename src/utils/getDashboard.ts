@@ -1,6 +1,7 @@
-import fetchTautulli, { Library, TautulliItemRows } from './fetchTautulli'
+import fetchTautulli from './fetchTautulli'
 import { bytesToSize, secondsToTime, timeToSeconds } from './formatting'
 import getMediaAdditionalData from './getMediaAdditionalData'
+import { Library, TautulliItem } from './types'
 
 export async function getItems(library: Library, period: number) {
   let items = []
@@ -10,7 +11,7 @@ export async function getItems(library: Library, period: number) {
     show: 'top_tv',
     artist: 'top_music',
   }
-  const itemsRes = await fetchTautulli<TautulliItemRows>('get_home_stats', {
+  const itemsRes = await fetchTautulli<TautulliItem>('get_home_stats', {
     stat_id: statIdMap[sectionType],
     stats_count: 6,
     stats_type: 'duration',
@@ -28,14 +29,11 @@ export async function getItems(library: Library, period: number) {
   }
 
   if (sectionType === 'show') {
-    const usersWatched = await fetchTautulli<TautulliItemRows>(
-      'get_home_stats',
-      {
-        stat_id: 'popular_tv',
-        stats_count: 25, // https://github.com/Tautulli/Tautulli/issues/2103
-        time_range: period,
-      },
-    )
+    const usersWatched = await fetchTautulli<TautulliItem>('get_home_stats', {
+      stat_id: 'popular_tv',
+      stats_count: 25, // https://github.com/Tautulli/Tautulli/issues/2103
+      time_range: period,
+    })
     const usersWatchedData = usersWatched.response?.data?.rows
     const shows = await getMediaAdditionalData(
       itemsRes.response?.data?.rows,
@@ -48,14 +46,11 @@ export async function getItems(library: Library, period: number) {
 
   if (sectionType === 'artist') {
     const artists = itemsRes.response?.data?.rows
-    const usersListened = await fetchTautulli<TautulliItemRows>(
-      'get_home_stats',
-      {
-        stat_id: 'popular_music',
-        stats_count: 25, // https://github.com/Tautulli/Tautulli/issues/2103
-        time_range: period,
-      },
-    )
+    const usersListened = await fetchTautulli<TautulliItem>('get_home_stats', {
+      stat_id: 'popular_music',
+      stats_count: 25, // https://github.com/Tautulli/Tautulli/issues/2103
+      time_range: period,
+    })
     const usersListenedData = usersListened.response?.data?.rows
 
     artists.map((artist) => {

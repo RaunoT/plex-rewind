@@ -3,33 +3,10 @@ import {
   fetchOverseerrUserId,
   fetchPaginatedOverseerrStats,
 } from './fetchOverseerr'
-import fetchTautulli, {
-  Library,
-  TautulliItem,
-  TautulliItemRows,
-} from './fetchTautulli'
+import fetchTautulli from './fetchTautulli'
 import { secondsToTime, timeToSeconds } from './formatting'
 import getMediaAdditionalData from './getMediaAdditionalData'
-
-export type RewindResponse = {
-  total_duration: string
-  total_duration_percentage: string
-  libraries: Library[]
-  libraries_total_size: number
-  requests?: {
-    total: number
-    movies: number
-    shows: number
-  }
-  user_requests?: number
-  shows_total_duration: string
-  shows_top: TautulliItem[]
-  music_total_duration: string
-  music_top: TautulliItem[]
-  movies_total_duration: string
-  movies_top: TautulliItem[]
-  server_id: string
-}
+import { Library, TautulliItem, TautulliItemRow } from './types'
 
 export async function getMediaUserTotalDuration(
   libraries: Library[],
@@ -54,51 +31,6 @@ export async function getMediaUserTotalDuration(
   )
 
   return secondsToTime(totalSeconds)
-}
-
-export async function getUserMediaTop(
-  libraries: Library[],
-  mediaType: 'movie' | 'show' | 'artist',
-  userId: string,
-  period: number,
-) {
-  const statIdMap = {
-    movie: 'top_movies',
-    show: 'top_tv',
-    artist: 'top_music',
-  }
-  const mediaLibraries = libraries.filter(
-    (library) => library.section_type === mediaType,
-  )
-  const topMediaPromises = mediaLibraries.map((library) =>
-    fetchTautulli<TautulliItemRows>('get_home_stats', {
-      user_id: userId,
-      section_id: library.section_id,
-      time_range: period,
-      stats_count: 5,
-      stats_type: 'duration',
-      stat_id: statIdMap[mediaType],
-    }),
-  )
-  const topMediaResponses = await Promise.all(topMediaPromises)
-  const topMedia = topMediaResponses.flatMap(
-    (response) => response.response?.data?.rows || [],
-  )
-  const topMediaSorted = topMedia.sort(
-    (a, b) => b.total_duration - a.total_duration,
-  )
-  const topMediaSliced = topMediaSorted.slice(0, 5)
-
-  if (mediaType === 'artist') {
-    return topMediaSliced
-  } else {
-    const mediaData = await getMediaAdditionalData(
-      topMediaSliced,
-      mediaType === 'movie' ? 'movie' : 'tv',
-    )
-
-    return mediaData
-  }
 }
 
 export async function getlibrariesTotalSize(libraries: Library[]) {
@@ -162,4 +94,26 @@ export async function getUserRequestsTotal(userId: string) {
   )
 
   return userRequestsTotal.length
+}
+
+export async function getUserMediaRewind(userId: string) {
+  const topMedia = await fetchTautulli<TautulliItem[]>('get_home_stats', {
+    user_id: userId,
+    time_range: ALLOWED_PERIODS.thisYear.daysAgo,
+    stats_count: 5,
+    stats_type: 'duration',
+  })
+  const result: Record<string, TautulliItemRow[]> = {}
+
+  for (const item of topMedia.response?.data || []) {
+    if (item.stat_id === 'top_tv') {
+      result[item.stat_id] = await getMediaAdditionalData(item.rows, 'tv')
+    } else if (item.stat_id === 'top_movies') {
+      result[item.stat_id] = await getMediaAdditionalData(item.rows, 'movie')
+    } else {
+      result[item.stat_id] = item.rows
+    }
+  }
+
+  return result
 }

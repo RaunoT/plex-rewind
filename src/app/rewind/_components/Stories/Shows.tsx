@@ -1,8 +1,8 @@
-import CardMediaItems from '@/components/Card/CardMediaItems'
-import CardText from '@/components/Card/CardText'
+import MediaItems from '@/components/MediaItem/MediaItems'
+import { UserRewind } from '@/utils/types'
 import { PlayCircleIcon } from '@heroicons/react/24/outline'
-import { UserRewind } from '../RewindStories'
-import StoryWrapper from './Wrapper'
+import CardText from '../CardText'
+import StoryWrapper from '../StoryWrapper'
 
 export default function StoryShows({
   userRewind,
@@ -38,7 +38,7 @@ export default function StoryShows({
             </p>
 
             <div className='text-base not-italic'>
-              <CardMediaItems
+              <MediaItems
                 type='show'
                 items={Array(userRewind.shows_top[0])}
                 serverId={userRewind.server_id}

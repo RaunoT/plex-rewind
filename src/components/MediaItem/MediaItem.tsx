@@ -1,9 +1,9 @@
 'use client'
 
 import placeholderPoster from '@/assets/placeholder.svg'
-import { TautulliItem } from '@/utils/fetchTautulli'
 import { pluralize, secondsToTime } from '@/utils/formatting'
 import { slideDown } from '@/utils/motion'
+import { TautulliItemRow } from '@/utils/types'
 import {
   CalendarDaysIcon,
   ClockIcon,
@@ -20,18 +20,18 @@ import clsx from 'clsx'
 import { motion } from 'framer-motion'
 import Image from 'next/image'
 import { useEffect, useRef, useState } from 'react'
-import PlexDeeplink from '../PlexDeeplink'
-import CardTitle from './CardTitle'
+import MediaItemTitle from './MediaItemTitle'
+import PlexDeeplink from './PlexDeeplink'
 
 type Props = {
-  data: TautulliItem
+  data: TautulliItemRow
   i: number
   type: string
   serverId?: string
 }
 
 // TODO: split into smaller pieces to reduce client rendered part
-export default function CardMediaItem({ data, i, type, serverId }: Props) {
+export default function MediaItem({ data, i, type, serverId }: Props) {
   const tautulliUrl = process.env.NEXT_PUBLIC_TAUTULLI_URL
   const [posterSrc, setPosterSrc] = useState<string>(
     `${tautulliUrl}/pms_image_proxy?img=${
@@ -75,7 +75,7 @@ export default function CardMediaItem({ data, i, type, serverId }: Props) {
         />
       </div>
       <div className='overflow-hidden' ref={titleContainerRef}>
-        <CardTitle
+        <MediaItemTitle
           i={i}
           data={data}
           type={type}

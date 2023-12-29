@@ -1,7 +1,6 @@
 'use client'
 
-import { ExtendedUser } from '@/utils/authOptions'
-import { RewindResponse } from '@/utils/getRewind'
+import { ExtendedUser, RewindResponse } from '@/utils/types'
 import Stories from 'stories-react'
 import 'stories-react/dist/index.css'
 import StoryLibraries from './Stories/Libraries'
@@ -14,13 +13,6 @@ import StoryShows from './Stories/Shows'
 import StoryShowsTop from './Stories/ShowsTop'
 import StoryTotal from './Stories/Total'
 import StoryWelcome from './Stories/Welcome'
-
-export type UserRewind = {
-  userRewind: RewindResponse
-  isPaused: boolean
-  pause: () => void
-  resume: () => void
-}
 
 type Story = {
   isPaused: boolean

@@ -1,8 +1,8 @@
-import CardMediaItems from '@/components/Card/CardMediaItems'
-import CardText from '@/components/Card/CardText'
+import MediaItems from '@/components/MediaItem/MediaItems'
+import { UserRewind } from '@/utils/types'
 import { MusicalNoteIcon } from '@heroicons/react/24/outline'
-import { UserRewind } from '../RewindStories'
-import StoryWrapper from './Wrapper'
+import CardText from '../CardText'
+import StoryWrapper from '../StoryWrapper'
 
 export default function StoryMusicTop({
   userRewind,
@@ -22,7 +22,7 @@ export default function StoryMusicTop({
         </p>
 
         <div className='text-base not-italic'>
-          <CardMediaItems
+          <MediaItems
             type='artist'
             items={userRewind.music_top}
             serverId={userRewind.server_id}
