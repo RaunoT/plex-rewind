@@ -10,12 +10,6 @@
     ],
     "@semantic-release/npm",
     [
-      "@semantic-release/exec",
-      {
-        "prepareCmd": "pnpm build"
-      }
-    ],
-    [
       "@semantic-release/git",
       {
         "assets": ["package.json", "CHANGELOG.md"],
