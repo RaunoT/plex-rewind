@@ -34,16 +34,24 @@ export default function CardText({
       setIsComponentShown(true)
     }, renderDelay * 1000)
 
+    if (isPaused) {
+      clearTimeout(renderTimer)
+    }
+
     return () => clearTimeout(renderTimer)
-  }, [renderDelay])
+  }, [renderDelay, isPaused])
 
   useEffect(() => {
     const loaderTimer = setTimeout(() => {
       setIsLoaderShown(true)
     }, loaderDelay * 1000)
 
+    if (isPaused) {
+      clearTimeout(loaderTimer)
+    }
+
     return () => clearTimeout(loaderTimer)
-  }, [loaderDelay])
+  }, [loaderDelay, isPaused])
 
   useEffect(() => {
     let hideTimer: NodeJS.Timeout | number = hideAfter
@@ -54,8 +62,19 @@ export default function CardText({
         setIsLoaderShown(false)
       }, hideAfter * 1000)
     }
+
+    if (isPaused) {
+      clearTimeout(hideTimer)
+    }
+
     return () => clearTimeout(hideTimer)
-  }, [hideAfter])
+  }, [hideAfter, isPaused])
+
+  useEffect(() => {
+    if (isPaused) {
+      setIsLoaderShown(false)
+    }
+  }, [isPaused])
 
   return isComponentShown ? (
     <motion.div
