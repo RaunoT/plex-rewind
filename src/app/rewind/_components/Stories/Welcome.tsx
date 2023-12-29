@@ -1,6 +1,6 @@
 import PlexRewindIcon from '@/app/icon.svg'
 import CardText from '@/components/Card/CardText'
-import { ExtendedUser } from '@/utils/authOptions'
+import { ExtendedUser } from '@/utils/auth'
 import Image from 'next/image'
 import { UserRewind } from '../RewindStories'
 import StoryWrapper from './Wrapper'

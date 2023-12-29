@@ -2,10 +2,10 @@
 
 import plexSvg from '@/assets/plex.svg'
 import Loader from '@/components/Loader'
+import { createPlexAuthUrl, getPlexAuthToken } from '@/utils/auth'
 import { isDashboardDisabled, isRewindDisabled } from '@/utils/config'
 import { Library } from '@/utils/fetchTautulli'
 import { fadeIn } from '@/utils/motion'
-import { createPlexAuthUrl, getPlexAuthToken } from '@/utils/plexAuth'
 import { motion } from 'framer-motion'
 import { snakeCase } from 'lodash'
 import { signIn, signOut, useSession } from 'next-auth/react'

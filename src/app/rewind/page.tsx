@@ -1,4 +1,4 @@
-import { ExtendedUser, authOptions } from '@/utils/authOptions'
+import { ExtendedUser, authOptions } from '@/utils/auth'
 import { getLibraries, getServerId } from '@/utils/fetchTautulli'
 import { secondsToTime } from '@/utils/formatting'
 import {

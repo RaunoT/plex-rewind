@@ -1,6 +1,6 @@
 'use client'
 
-import { ExtendedUser } from '@/utils/authOptions'
+import { ExtendedUser } from '@/utils/auth'
 import { RewindResponse } from '@/utils/getRewind'
 import Stories from 'stories-react'
 import 'stories-react/dist/index.css'
