@@ -1,9 +1,9 @@
-import { TautulliItem } from '@/utils/fetchTautulli'
+import { TautulliItemRow } from '@/utils/fetchTautulli'
 import clsx from 'clsx'
 import CardMediaItem from './CardMediaItem'
 
 type Props = {
-  items: TautulliItem[]
+  items: TautulliItemRow[]
   type: string
   serverId: string
   rows?: boolean

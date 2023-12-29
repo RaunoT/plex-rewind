@@ -1,7 +1,7 @@
 'use client'
 
 import placeholderPoster from '@/assets/placeholder.svg'
-import { TautulliItem } from '@/utils/fetchTautulli'
+import { TautulliItemRow } from '@/utils/fetchTautulli'
 import { pluralize, secondsToTime } from '@/utils/formatting'
 import { slideDown } from '@/utils/motion'
 import {
@@ -24,7 +24,7 @@ import PlexDeeplink from '../PlexDeeplink'
 import CardTitle from './CardTitle'
 
 type Props = {
-  data: TautulliItem
+  data: TautulliItemRow
   i: number
   type: string
   serverId?: string

@@ -2,6 +2,11 @@ import qs from 'qs'
 import { excludedLibraries } from './config'
 
 export type TautulliItem = {
+  rows: TautulliItemRow[]
+  stat_id: string
+}
+
+export type TautulliItemRow = {
   title: string
   year: number
   total_plays: number
@@ -31,8 +36,6 @@ export type Library = {
   section_type: 'movie' | 'show' | 'artist'
   is_active: number
 }
-
-export type TautulliItemRows = { rows: TautulliItem[] }
 
 type TautulliResponse<T> = {
   response: {

@@ -1,5 +1,4 @@
 import { ExtendedUser, authOptions } from '@/utils/authOptions'
-import { ALLOWED_PERIODS } from '@/utils/constants'
 import { getLibraries, getServerId } from '@/utils/fetchTautulli'
 import { secondsToTime } from '@/utils/formatting'
 import {
@@ -7,7 +6,7 @@ import {
   getLibrariesTotalDuration,
   getMediaUserTotalDuration,
   getRequestsTotals,
-  getUserMediaTop,
+  getUserMediaRewind,
   getUserRequestsTotal,
   getUserTotalDuration,
   getlibrariesTotalSize,
@@ -24,44 +23,24 @@ export default async function Rewind() {
     return
   }
 
-  // TODO: can we reduce the ammount of requests?
   const libraries = await getLibraries()
   const [
+    topMediaItems,
     userTotalDuration,
     librariesTotalSize,
     librariesTotalDuration,
     showsTotalDuration,
-    showsTop,
     musicTotalDuration,
-    musicTop,
     moviesTotalDuration,
-    moviesTop,
     serverId,
   ] = await Promise.all([
+    getUserMediaRewind(session.user.id),
     getUserTotalDuration(session.user.id),
     getlibrariesTotalSize(libraries),
     getLibrariesTotalDuration(),
     getMediaUserTotalDuration(libraries, 'show', session.user.id),
-    getUserMediaTop(
-      libraries,
-      'show',
-      session.user.id,
-      ALLOWED_PERIODS.thisYear.daysAgo,
-    ),
     getMediaUserTotalDuration(libraries, 'movie', session.user.id),
-    getUserMediaTop(
-      libraries,
-      'artist',
-      session.user.id,
-      ALLOWED_PERIODS.thisYear.daysAgo,
-    ),
     getMediaUserTotalDuration(libraries, 'artist', session.user.id),
-    getUserMediaTop(
-      libraries,
-      'movie',
-      session.user.id,
-      ALLOWED_PERIODS.thisYear.daysAgo,
-    ),
     getServerId(),
   ])
   const totalDurationPercentage = `${Math.round(
@@ -73,11 +52,11 @@ export default async function Rewind() {
     libraries: libraries,
     libraries_total_size: librariesTotalSize,
     shows_total_duration: showsTotalDuration,
-    shows_top: showsTop,
+    shows_top: topMediaItems.top_tv,
     music_total_duration: musicTotalDuration,
-    music_top: musicTop,
+    music_top: topMediaItems.top_music,
     movies_total_duration: moviesTotalDuration,
-    movies_top: moviesTop,
+    movies_top: topMediaItems.top_movies,
     server_id: serverId,
   }
 

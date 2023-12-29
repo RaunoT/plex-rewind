@@ -1,4 +1,4 @@
-import { TautulliItem } from '@/utils/fetchTautulli'
+import { TautulliItemRow } from '@/utils/fetchTautulli'
 import {
   ArrowLongLeftIcon,
   ArrowLongRightIcon,
@@ -11,7 +11,7 @@ type Props = {
   page?: string
   prevCard?: string
   nextCard?: string
-  items?: TautulliItem[]
+  items?: TautulliItemRow[]
   totalDuration?: string
   totalSize?: string | number
   type?: string

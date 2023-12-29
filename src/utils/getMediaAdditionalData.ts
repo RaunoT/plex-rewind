@@ -1,11 +1,11 @@
-import fetchTautulli, { TautulliItem, TautulliItemRows } from './fetchTautulli'
+import fetchTautulli, { TautulliItem, TautulliItemRow } from './fetchTautulli'
 import fetchTmdb, { TmdbExternalId, TmdbItem } from './fetchTmdb'
 
 export default async function getMediaAdditionalData(
-  media: TautulliItem[],
+  media: TautulliItemRow[],
   type: 'movie' | 'tv',
-  usersWatchedData?: TautulliItem[],
-): Promise<TautulliItem[]> {
+  usersWatchedData?: TautulliItemRow[],
+): Promise<TautulliItemRow[]> {
   const ratingKeys: number[] = []
 
   media.map((mediaItem) => {
@@ -14,7 +14,7 @@ export default async function getMediaAdditionalData(
 
   const additionalData = await Promise.all(
     ratingKeys.map(async (key, i) => {
-      const mediaTautulli = await fetchTautulli<TautulliItemRows>(
+      const mediaTautulli = await fetchTautulli<TautulliItem>(
         'get_metadata',
         {
           rating_key: key,

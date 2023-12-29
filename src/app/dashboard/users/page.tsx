@@ -5,7 +5,7 @@ import {
   fetchPaginatedOverseerrStats,
 } from '@/utils/fetchOverseerr'
 import fetchTautulli, {
-  TautulliItemRows,
+  TautulliItem,
   getLibraries,
   getLibrariesByType,
 } from '@/utils/fetchTautulli'
@@ -30,7 +30,7 @@ async function getUsers(
   requestsPeriod: string,
   periodString: string,
 ) {
-  const usersRes = await fetchTautulli<TautulliItemRows>('get_home_stats', {
+  const usersRes = await fetchTautulli<TautulliItem>('get_home_stats', {
     stat_id: 'top_users',
     stats_count: 6,
     stats_type: 'duration',

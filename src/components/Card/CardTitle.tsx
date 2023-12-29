@@ -1,13 +1,13 @@
 'use client'
 
-import { TautulliItem } from '@/utils/fetchTautulli'
+import { TautulliItemRow } from '@/utils/fetchTautulli'
 import { motion, useAnimation } from 'framer-motion'
 import { debounce } from 'lodash'
 import { useEffect, useRef } from 'react'
 
 type Props = {
   i: number
-  data: TautulliItem
+  data: TautulliItemRow
   type: string
   parentRef: React.RefObject<HTMLDivElement>
 }
