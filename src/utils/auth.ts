@@ -9,10 +9,7 @@ import {
   PLEX_CLIENT_NAME,
 } from './constants'
 import fetchTautulli from './fetchTautulli'
-
-export type ExtendedUser = User & {
-  id: string
-}
+import { ExtendedUser } from './types'
 
 export const authOptions: AuthOptions = {
   providers: [

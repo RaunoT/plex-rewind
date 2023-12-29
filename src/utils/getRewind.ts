@@ -3,33 +3,10 @@ import {
   fetchOverseerrUserId,
   fetchPaginatedOverseerrStats,
 } from './fetchOverseerr'
-import fetchTautulli, {
-  Library,
-  TautulliItem,
-  TautulliItemRow,
-} from './fetchTautulli'
+import fetchTautulli from './fetchTautulli'
 import { secondsToTime, timeToSeconds } from './formatting'
 import getMediaAdditionalData from './getMediaAdditionalData'
-
-export type RewindResponse = {
-  total_duration: string
-  total_duration_percentage: string
-  libraries: Library[]
-  libraries_total_size: number
-  requests?: {
-    total: number
-    movies: number
-    shows: number
-  }
-  user_requests?: number
-  shows_total_duration: string
-  shows_top: TautulliItemRow[]
-  music_total_duration: string
-  music_top: TautulliItemRow[]
-  movies_total_duration: string
-  movies_top: TautulliItemRow[]
-  server_id: string
-}
+import { Library, TautulliItem, TautulliItemRow } from './types'
 
 export async function getMediaUserTotalDuration(
   libraries: Library[],

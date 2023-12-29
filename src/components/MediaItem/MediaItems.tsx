@@ -1,6 +1,6 @@
-import { TautulliItemRow } from '@/utils/fetchTautulli'
+import { TautulliItemRow } from '@/utils/types'
 import clsx from 'clsx'
-import CardMediaItem from './CardMediaItem'
+import MediaItem from './MediaItem'
 
 type Props = {
   items: TautulliItemRow[]
@@ -9,7 +9,7 @@ type Props = {
   rows?: boolean
 }
 
-export default function CardMediaItems({ items, type, serverId, rows }: Props) {
+export default function MediaItems({ items, type, serverId, rows }: Props) {
   return (
     <ul
       className={clsx(
@@ -21,7 +21,7 @@ export default function CardMediaItems({ items, type, serverId, rows }: Props) {
       )}
     >
       {items.map((itemData, i) => (
-        <CardMediaItem
+        <MediaItem
           data={itemData}
           i={i}
           key={i}

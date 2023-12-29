@@ -1,18 +1,17 @@
-import Card from '@/components/Card/Card'
 import { ALLOWED_PERIODS, META_DESCRIPTION } from '@/utils/constants'
 import {
   fetchOverseerrUserId,
   fetchPaginatedOverseerrStats,
 } from '@/utils/fetchOverseerr'
 import fetchTautulli, {
-  TautulliItem,
   getLibraries,
   getLibrariesByType,
 } from '@/utils/fetchTautulli'
 import { secondsToTime, timeToSeconds } from '@/utils/formatting'
-import { DashboardParams } from '@/utils/types'
+import { DashboardParams, TautulliItem } from '@/utils/types'
 import { snakeCase } from 'lodash'
 import { Metadata } from 'next'
+import Dashboard from '../../_components/Dashboard'
 
 export const metadata: Metadata = {
   title: 'Users | Plex rewind dashboard',
@@ -165,11 +164,11 @@ export default async function Users({ searchParams }: DashboardParams) {
   const prevCard = `/dashboard/${snakeCase(libraries.at(-1)?.section_name)}`
 
   return (
-    <Card
+    <Dashboard
       title='Users'
       items={usersData}
       totalDuration={totalDuration}
-      totalSize={usersCount}
+      count={String(usersCount)}
       prevCard={prevCard}
       page={`${libraries.length + 1} / ${libraries.length + 1}`}
       type='users'

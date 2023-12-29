@@ -69,7 +69,7 @@ devDependencies:
     version: 6.9.11
   '@types/react':
     specifier: ^18.2.45
-    version: 18.2.45
+    version: 18.2.46
   '@types/react-dom':
     specifier: ^18.2.18
     version: 18.2.18
@@ -111,7 +111,7 @@ devDependencies:
     version: 3.2.4(prettier@3.1.1)(typescript@5.3.3)
   prettier-plugin-tailwindcss:
     specifier: ^0.5.9
-    version: 0.5.9(prettier-plugin-organize-imports@3.2.4)(prettier@3.1.1)
+    version: 0.5.10(prettier-plugin-organize-imports@3.2.4)(prettier@3.1.1)
   stylelint:
     specifier: ^15.11.0
     version: 15.11.0(typescript@5.3.3)
@@ -866,13 +866,13 @@ packages:
         integrity: sha512-TJxDm6OfAX2KJWJdMEVTwWke5Sc/E/RlnPGvGfS0W7+6ocy2xhDVQVh/KvC2Uf7kACs+gDytdusDSdWfWkaNzw==,
       }
     dependencies:
-      '@types/react': 18.2.45
+      '@types/react': 18.2.46
     dev: true
 
-  /@types/react@18.2.45:
+  /@types/react@18.2.46:
     resolution:
       {
-        integrity: sha512-TtAxCNrlrBp8GoeEp1npd5g+d/OejJHFxS3OWmrPBMFaVQMSN0OFySozJio5BHxTuTeug00AVXVAjfDSfk+lUg==,
+        integrity: sha512-nNCvVBcZlvX4NU1nRRNV/mFl1nNRuTuslAJglQsq+8ldXe5Xv0Wd2f7WTE3jOxhLH2BFfiZGC6GCp+kHQbgG+w==,
       }
     dependencies:
       '@types/prop-types': 15.7.11
@@ -1077,7 +1077,7 @@ packages:
       through: 2.3.8
     dev: true
 
-  /acorn-jsx@5.3.2(acorn@8.11.2):
+  /acorn-jsx@5.3.2(acorn@8.11.3):
     resolution:
       {
         integrity: sha512-rq9s+JNhf0IChjtDXxllJ7g41oZk5SlXtp0LHwyA5cejwn7vKmKp4pPri6YEePv2PU65sAsegbXtIinmDFDXgQ==,
@@ -1085,13 +1085,13 @@ packages:
     peerDependencies:
       acorn: ^6.0.0 || ^7.0.0 || ^8.0.0
     dependencies:
-      acorn: 8.11.2
+      acorn: 8.11.3
     dev: true
 
-  /acorn@8.11.2:
+  /acorn@8.11.3:
     resolution:
       {
-        integrity: sha512-nc0Axzp/0FILLEVsm4fNwLCwMttvhEI263QtVPQcbpfZZ3ts0hLsZGOpE6czNlid7CJ9MlyH8reXkpsf3YUY4w==,
+        integrity: sha512-Y9rRfJG5jcKOE0CLisYbojUjIrIEE7AGMzA/Sm4BslANhbS+cDMpgBdcPT91oJ7OuJ9hYJBx59RjbhxVnrF8Xg==,
       }
     engines: { node: '>=0.4.0' }
     hasBin: true
@@ -1381,7 +1381,7 @@ packages:
       postcss: ^8.1.0
     dependencies:
       browserslist: 4.22.2
-      caniuse-lite: 1.0.30001571
+      caniuse-lite: 1.0.30001572
       fraction.js: 4.3.7
       normalize-range: 0.1.2
       picocolors: 1.0.0
@@ -1493,7 +1493,7 @@ packages:
     engines: { node: ^6 || ^7 || ^8 || ^9 || ^10 || ^11 || ^12 || >=13.7 }
     hasBin: true
     dependencies:
-      caniuse-lite: 1.0.30001571
+      caniuse-lite: 1.0.30001572
       electron-to-chromium: 1.4.616
       node-releases: 2.0.14
       update-browserslist-db: 1.0.13(browserslist@4.22.2)
@@ -1593,10 +1593,10 @@ packages:
     engines: { node: '>=10' }
     dev: true
 
-  /caniuse-lite@1.0.30001571:
+  /caniuse-lite@1.0.30001572:
     resolution:
       {
-        integrity: sha512-tYq/6MoXhdezDLFZuCO/TKboTzuQ/xR5cFdgXPfDtM7/kchBO3b4VWghE/OAi/DV7tTdhmLjZiZBZi1fA/GheQ==,
+        integrity: sha512-1Pbh5FLmn5y4+QhNyJE9j3/7dK44dGB83/ZMjv/qJk86TvDbjk0LosiZo0i0WB0Vx607qMX9jYrn1VLHCkN4rw==,
       }
     dev: false
 
@@ -2722,8 +2722,8 @@ packages:
       }
     engines: { node: ^12.22.0 || ^14.17.0 || >=16.0.0 }
     dependencies:
-      acorn: 8.11.2
-      acorn-jsx: 5.3.2(acorn@8.11.2)
+      acorn: 8.11.3
+      acorn-jsx: 5.3.2(acorn@8.11.3)
       eslint-visitor-keys: 3.4.3
     dev: true
 
@@ -4740,7 +4740,7 @@ packages:
       '@next/env': 14.0.4
       '@swc/helpers': 0.5.2
       busboy: 1.6.0
-      caniuse-lite: 1.0.30001571
+      caniuse-lite: 1.0.30001572
       graceful-fs: 4.2.11
       postcss: 8.4.31
       react: 18.2.0
@@ -5411,10 +5411,10 @@ packages:
       typescript: 5.3.3
     dev: true
 
-  /prettier-plugin-tailwindcss@0.5.9(prettier-plugin-organize-imports@3.2.4)(prettier@3.1.1):
+  /prettier-plugin-tailwindcss@0.5.10(prettier-plugin-organize-imports@3.2.4)(prettier@3.1.1):
     resolution:
       {
-        integrity: sha512-9x3t1s2Cjbut2QiP+O0mDqV3gLXTe2CgRlQDgucopVkUdw26sQi53p/q4qvGxMLBDfk/dcTV57Aa/zYwz9l8Ew==,
+        integrity: sha512-9UGSejqFxGG6brYjFfTYlJ8zs4L/lvZg1AngFfaC5Fs1otSskASv5IWKmjPu5MlABQUtTKtMArKyYr/hWpXSUg==,
       }
     engines: { node: '>=14.21.3' }
     peerDependencies:

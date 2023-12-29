@@ -1,5 +1,5 @@
-import CardWrapper from '@/components/Card/CardWrapper'
-import PageTitle from '@/components/PageTitle'
+import CardWrapper from '@/app/_components/CardWrapper'
+import PageTitle from '@/app/_components/PageTitle'
 import { isRewindDisabled } from '@/utils/config'
 import { notFound } from 'next/navigation'
 

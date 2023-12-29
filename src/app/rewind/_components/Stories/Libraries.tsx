@@ -1,14 +1,14 @@
-import CardText from '@/components/Card/CardText'
-import StatListItem from '@/components/StatListItem'
 import { bytesToSize } from '@/utils/formatting'
+import { UserRewind } from '@/utils/types'
 import {
   FilmIcon,
   FolderIcon,
   MusicalNoteIcon,
   PlayCircleIcon,
 } from '@heroicons/react/24/outline'
-import { UserRewind } from '../RewindStories'
-import StoryWrapper from './Wrapper'
+import CardText from '../CardText'
+import StatListItem from '../StatListItem'
+import StoryWrapper from '../StoryWrapper'
 
 export default function StoryLibraries({
   userRewind,

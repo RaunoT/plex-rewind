@@ -1,11 +1,5 @@
 import qs from 'qs'
 
-export type TmdbItem = {
-  results: [{ id: number; vote_average: number; first_air_date: string }]
-}
-
-export type TmdbExternalId = { imdb_id: string }
-
 type QueryParams = {
   [key: string]: string | number
 }

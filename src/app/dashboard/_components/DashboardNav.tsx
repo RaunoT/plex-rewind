@@ -1,6 +1,6 @@
 'use client'
 
-import { Library } from '@/utils/fetchTautulli'
+import { Library } from '@/utils/types'
 import { snakeCase } from 'lodash'
 import Link from 'next/link'
 import { usePathname, useSearchParams } from 'next/navigation'

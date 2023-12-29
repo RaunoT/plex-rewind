@@ -1,9 +1,8 @@
 import PlexRewindIcon from '@/app/icon.svg'
-import CardText from '@/components/Card/CardText'
-import { ExtendedUser } from '@/utils/auth'
+import { ExtendedUser, UserRewind } from '@/utils/types'
 import Image from 'next/image'
-import { UserRewind } from '../RewindStories'
-import StoryWrapper from './Wrapper'
+import CardText from '../CardText'
+import StoryWrapper from '../StoryWrapper'
 
 type Props = Omit<UserRewind, 'userRewind'> & {
   user: ExtendedUser

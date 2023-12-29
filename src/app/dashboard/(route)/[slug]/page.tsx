@@ -1,4 +1,3 @@
-import Card from '@/components/Card/Card'
 import { ALLOWED_PERIODS } from '@/utils/constants'
 import { getLibraries, getServerId } from '@/utils/fetchTautulli'
 import { getItems, getTotalDuration, getTotalSize } from '@/utils/getDashboard'
@@ -6,6 +5,7 @@ import { DashboardParams } from '@/utils/types'
 import { snakeCase } from 'lodash'
 import { Metadata } from 'next'
 import { notFound } from 'next/navigation'
+import Dashboard from '../../_components/Dashboard'
 
 export async function generateMetadata({
   params,
@@ -61,7 +61,7 @@ export default async function Page({ params, searchParams }: DashboardParams) {
       : '/dashboard/users'
 
   return (
-    <Card
+    <Dashboard
       title={library.section_name}
       items={items}
       totalDuration={totalDuration}

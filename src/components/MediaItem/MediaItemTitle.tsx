@@ -1,6 +1,6 @@
 'use client'
 
-import { TautulliItemRow } from '@/utils/fetchTautulli'
+import { TautulliItemRow } from '@/utils/types'
 import { motion, useAnimation } from 'framer-motion'
 import { debounce } from 'lodash'
 import { useEffect, useRef } from 'react'
@@ -12,7 +12,7 @@ type Props = {
   parentRef: React.RefObject<HTMLDivElement>
 }
 
-export default function CardTitle({ i, data, type, parentRef }: Props) {
+export default function MediaItemTitle({ i, data, type, parentRef }: Props) {
   const titleRef = useRef<HTMLSpanElement>(null)
   const numberRef = useRef<HTMLSpanElement>(null)
   const controls = useAnimation()

@@ -1,8 +1,7 @@
-import { ExtendedUser, authOptions } from '@/utils/auth'
+import { authOptions } from '@/utils/auth'
 import { getLibraries, getServerId } from '@/utils/fetchTautulli'
 import { secondsToTime } from '@/utils/formatting'
 import {
-  RewindResponse,
   getLibrariesTotalDuration,
   getMediaUserTotalDuration,
   getRequestsTotals,
@@ -11,6 +10,7 @@ import {
   getUserTotalDuration,
   getlibrariesTotalSize,
 } from '@/utils/getRewind'
+import { ExtendedUser, RewindResponse } from '@/utils/types'
 import { Session, getServerSession } from 'next-auth'
 import RewindStories from './_components/RewindStories'
 

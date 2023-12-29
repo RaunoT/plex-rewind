@@ -1,5 +1,11 @@
-import fetchTautulli, { TautulliItem, TautulliItemRow } from './fetchTautulli'
-import fetchTmdb, { TmdbExternalId, TmdbItem } from './fetchTmdb'
+import fetchTautulli from './fetchTautulli'
+import fetchTmdb from './fetchTmdb'
+import {
+  TautulliItem,
+  TautulliItemRow,
+  TmdbExternalId,
+  TmdbItem,
+} from './types'
 
 export default async function getMediaAdditionalData(
   media: TautulliItemRow[],
