@@ -13,6 +13,12 @@
       }
     ],
     [
+      "@semantic-release/changelog",
+      {
+        "changelogFile": "CHANGELOG.md"
+      }
+    ],
+    [
       "@semantic-release/npm",
       {
         "npmPublish": false
@@ -22,12 +28,6 @@
       "@semantic-release/exec",
       {
         "prepareCmd": "pnpm build"
-      }
-    ],
-    [
-      "@semantic-release/changelog",
-      {
-        "changelogFile": "CHANGELOG.md"
       }
     ],
     [
