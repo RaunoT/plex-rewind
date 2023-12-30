@@ -13,10 +13,6 @@ module.exports = {
         protocol: 'https',
         hostname: 'plex.tv',
       },
-      {
-        protocol: 'https',
-        hostname: 'tautulli.rauno.eu', // TODO: read from NEXT_PUBLIC_TAUTULLI_URL
-      },
     ],
   },
   async headers() {
