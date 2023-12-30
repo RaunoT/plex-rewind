@@ -5,6 +5,7 @@ module.exports = {
   output: 'standalone',
   images: {
     remotePatterns: [
+      // TODO: get from NEXT_PUBLIC_TAUTULLI_URL
       {
         protocol: 'http',
         hostname: 'localhost',

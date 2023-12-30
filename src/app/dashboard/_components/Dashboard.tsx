@@ -13,7 +13,7 @@ type Props = {
   nextCard?: string
   items?: TautulliItemRow[]
   totalDuration?: string
-  totalSize?: string | number
+  totalSize?: string | null
   type?: string
   serverId?: string
   count?: string
