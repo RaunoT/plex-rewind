@@ -1,3 +1,9 @@
+## [1.0.2](https://github.com/RaunoT/plex-rewind/compare/v1.0.1...v1.0.2) (2023-12-30)
+
+### Bug Fixes
+
+- **dashboard:** don't show libraries size if 0 ([#51](https://github.com/RaunoT/plex-rewind/issues/51)) ([0cc9567](https://github.com/RaunoT/plex-rewind/commit/0cc95672bbef709df3effc6dac8d849e30c2baee))
+
 ## [1.0.1](https://github.com/RaunoT/plex-rewind/compare/v1.0.0...v1.0.1) (2023-12-29)
 
 ### Bug Fixes
