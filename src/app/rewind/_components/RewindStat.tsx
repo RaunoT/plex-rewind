@@ -1,6 +1,6 @@
 'use client'
 
-import { animateCardText, fadeIn } from '@/utils/motion'
+import { animateRewindStat, fadeIn } from '@/utils/motion'
 import clsx from 'clsx'
 import { motion } from 'framer-motion'
 import { useEffect, useState } from 'react'
@@ -16,7 +16,7 @@ type Props = {
   isPaused?: boolean
 }
 
-export default function CardText({
+export default function RewindStat({
   children,
   className,
   renderDelay = 0,
@@ -82,7 +82,7 @@ export default function CardText({
         'mb-4 text-3xl italic leading-tight last:mb-0 sm:text-4xl',
         className,
       )}
-      variants={animateCardText}
+      variants={animateRewindStat}
       initial='hidden'
       animate={noScale ? ['show'] : ['show', 'scaleDown']}
       style={{ originX: 0, originY: '100%' }}

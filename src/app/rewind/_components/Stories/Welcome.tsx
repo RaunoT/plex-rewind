@@ -1,7 +1,7 @@
 import PlexRewindIcon from '@/app/icon.svg'
 import { ExtendedUser, UserRewind } from '@/utils/types'
 import Image from 'next/image'
-import CardText from '../CardText'
+import RewindStat from '../RewindStat'
 import StoryWrapper from '../StoryWrapper'
 
 type Props = Omit<UserRewind, 'userRewind'> & {
@@ -11,7 +11,7 @@ type Props = Omit<UserRewind, 'userRewind'> & {
 export default function StoryWelcome({ user, isPaused, pause, resume }: Props) {
   return (
     <StoryWrapper isPaused={isPaused} pause={pause} resume={resume}>
-      <CardText noScale>
+      <RewindStat noScale>
         <p className='mb-4'>
           Welcome to your{' '}
           <span className='rewind-cat text-yellow-500'>
@@ -30,7 +30,7 @@ export default function StoryWelcome({ user, isPaused, pause, resume }: Props) {
           />
         </div>
         <p>Let&apos;s get started!</p>
-      </CardText>
+      </RewindStat>
     </StoryWrapper>
   )
 }

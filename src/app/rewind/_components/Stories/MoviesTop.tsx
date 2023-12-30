@@ -1,7 +1,7 @@
 import MediaItems from '@/components/MediaItem/MediaItems'
 import { UserRewind } from '@/utils/types'
 import { FilmIcon } from '@heroicons/react/24/outline'
-import CardText from '../CardText'
+import RewindStat from '../RewindStat'
 import StoryWrapper from '../StoryWrapper'
 
 export default function StoryMoviesTop({
@@ -12,7 +12,7 @@ export default function StoryMoviesTop({
 }: UserRewind) {
   return (
     <StoryWrapper isPaused={isPaused} pause={pause} resume={resume}>
-      <CardText noScale>
+      <RewindStat noScale>
         <p className='mb-2'>
           Here&apos;s your full{' '}
           <span className='rewind-cat'>
@@ -29,7 +29,7 @@ export default function StoryMoviesTop({
             rows
           />
         </div>
-      </CardText>
+      </RewindStat>
     </StoryWrapper>
   )
 }

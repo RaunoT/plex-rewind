@@ -1,7 +1,7 @@
 import MediaItems from '@/components/MediaItem/MediaItems'
 import { UserRewind } from '@/utils/types'
 import { FilmIcon, PlayCircleIcon } from '@heroicons/react/24/outline'
-import CardText from '../CardText'
+import RewindStat from '../RewindStat'
 import StoryWrapper from '../StoryWrapper'
 
 export default function StoryMovies({
@@ -14,7 +14,7 @@ export default function StoryMovies({
     <StoryWrapper isPaused={isPaused} pause={pause} resume={resume}>
       {userRewind.movies_total_duration ? (
         <>
-          <CardText isPaused={isPaused} scaleDelay={3}>
+          <RewindStat isPaused={isPaused} scaleDelay={3}>
             <p>
               <span className='rewind-stat'>
                 {userRewind.movies_total_duration}
@@ -26,9 +26,9 @@ export default function StoryMovies({
               </span>{' '}
               on <span className='text-yellow-500'>Plex</span>.
             </p>
-          </CardText>
+          </RewindStat>
 
-          <CardText isPaused={isPaused} renderDelay={3} noScale>
+          <RewindStat isPaused={isPaused} renderDelay={3} noScale>
             <p className='mb-2'>
               Your favorite was{' '}
               <span className='rewind-cat'>
@@ -45,10 +45,10 @@ export default function StoryMovies({
                 rows
               />
             </div>
-          </CardText>
+          </RewindStat>
         </>
       ) : (
-        <CardText noScale>
+        <RewindStat noScale>
           <p>
             You haven&apos;t watched any{' '}
             <span className='rewind-cat'>
@@ -58,7 +58,7 @@ export default function StoryMovies({
             on <span className='text-yellow-500'>Plex</span> this year{' '}
             <span className='not-italic'>😥</span>
           </p>
-        </CardText>
+        </RewindStat>
       )}
     </StoryWrapper>
   )
