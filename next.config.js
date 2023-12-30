@@ -5,6 +5,7 @@ module.exports = {
   output: 'standalone',
   images: {
     remotePatterns: [
+      // TODO: get from NEXT_PUBLIC_TAUTULLI_URL
       {
         protocol: 'http',
         hostname: 'localhost',
@@ -12,10 +13,6 @@ module.exports = {
       {
         protocol: 'https',
         hostname: 'plex.tv',
-      },
-      {
-        protocol: 'https',
-        hostname: 'tautulli.rauno.eu', // TODO: read from NEXT_PUBLIC_TAUTULLI_URL
       },
     ],
   },
