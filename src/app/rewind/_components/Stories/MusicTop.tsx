@@ -16,7 +16,7 @@ export default function StoryMusicTop({
         <p className='mb-2'>
           Here&apos;s your full{' '}
           <span className='rewind-cat'>
-            Top 5&nbsp;
+            Top {userRewind.music_top.length === 5 && '5'}
             <MusicalNoteIcon />
           </span>
         </p>

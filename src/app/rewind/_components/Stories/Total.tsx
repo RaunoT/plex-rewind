@@ -13,7 +13,7 @@ export default function StoryTotal({
     <StoryWrapper isPaused={isPaused} pause={pause} resume={resume}>
       {userRewind.total_duration ? (
         <>
-          <RewindStat scaleDelay={4}>
+          <RewindStat isPaused={isPaused} scaleDelay={4}>
             <p>
               You&apos;ve spent a{' '}
               <span className='rewind-cat'>
@@ -28,7 +28,7 @@ export default function StoryTotal({
             </p>
           </RewindStat>
 
-          <RewindStat renderDelay={4} noScale>
+          <RewindStat isPaused={isPaused} renderDelay={4} noScale>
             <p>
               That&apos;s{' '}
               <span className='rewind-cat'>

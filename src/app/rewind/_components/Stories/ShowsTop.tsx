@@ -16,7 +16,7 @@ export default function StoryShowsTop({
         <p className='mb-2'>
           Here&apos;s your full{' '}
           <span className='rewind-cat'>
-            Top 5&nbsp;
+            Top {userRewind.shows_top.length === 5 && '5'}
             <PlayCircleIcon />
           </span>
         </p>

@@ -41,9 +41,7 @@ export default function RewindStat({
   useTimer(hideAfter, () => setIsComponentShown(false), isPaused, !!hideAfter)
 
   useEffect(() => {
-    if (isPaused) {
-      setIsLoaderShown(false)
-    }
+    setIsLoaderShown(!isPaused)
   }, [isPaused])
 
   return isComponentShown ? (
@@ -60,17 +58,17 @@ export default function RewindStat({
       <div>{children}</div>
     </motion.div>
   ) : isLoaderShown ? (
-    <Loader isShown={isLoaderShown} />
+    <Loader />
   ) : null
 }
 
-function Loader({ isShown }: { isShown: boolean }) {
+function Loader() {
   return (
     <motion.div
       className='skeleton skeleton--no-animate flex w-fit items-center gap-2'
       variants={fadeIn}
       initial='hidden'
-      animate={isShown ? 'show' : 'hidden'}
+      animate='show'
     >
       <span className='size-1 animate-pulse rounded-full bg-white'></span>
       <span className='animation-delay-200 size-1 animate-pulse rounded-full bg-white'></span>
