@@ -1,3 +1,9 @@
+## [1.0.4](https://github.com/RaunoT/plex-rewind/compare/v1.0.3...v1.0.4) (2024-01-01)
+
+### Bug Fixes
+
+- rewind pausing ([#58](https://github.com/RaunoT/plex-rewind/issues/58)) ([e05d86a](https://github.com/RaunoT/plex-rewind/commit/e05d86af86b560a32afe4c8b7ed817117792d2c9))
+
 ## [1.0.3](https://github.com/RaunoT/plex-rewind/compare/v1.0.2...v1.0.3) (2024-01-01)
 
 ### Bug Fixes
