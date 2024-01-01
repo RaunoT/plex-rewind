@@ -83,7 +83,7 @@
     animation-delay: 0.6s;
   }
 
-  /* TODO: Can this be replaced with the new dvh, lvh, svh units? */
+  /* TODO: can this be replaced with the new dvh, lvh, svh units? */
   .min-height-screen {
     @apply min-h-screen;
 

@@ -20,7 +20,7 @@ export default function StoryLibraries({
     <StoryWrapper isPaused={isPaused} pause={pause} resume={resume}>
       <RewindStat isPaused={isPaused} scaleDelay={3}>
         <p>
-          Did you know the{' '}
+          But, did you know the{' '}
           <span className='rewind-cat'>
             Filesize
             <FolderIcon />
