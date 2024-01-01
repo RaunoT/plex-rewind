@@ -78,7 +78,7 @@ export default function Dashboard({
         </div>
       )}
 
-      <div className='mt-auto flex items-center justify-between pt-6 text-sm'>
+      <div className='mt-auto flex items-center justify-between pt-6 text-sm sm:pt-8'>
         <div className='flex-1'>
           {prevCard && (
             <Link

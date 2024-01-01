@@ -1,6 +1,7 @@
 'use client'
 
-import { animateCardText, fadeIn } from '@/utils/motion'
+import useTimer from '@/hooks/useTimer'
+import { animateRewindStat, fadeIn } from '@/utils/motion'
 import clsx from 'clsx'
 import { motion } from 'framer-motion'
 import { useEffect, useState } from 'react'
@@ -13,9 +14,10 @@ type Props = {
   scaleDelay?: number
   hideAfter?: number
   noScale?: boolean
+  isPaused?: boolean
 }
 
-export default function CardText({
+export default function RewindStat({
   children,
   className,
   renderDelay = 0,
@@ -23,37 +25,24 @@ export default function CardText({
   scaleDelay = 0,
   hideAfter = 0,
   noScale = false,
+  isPaused = false,
 }: Props) {
   const [isComponentShown, setIsComponentShown] = useState<boolean>(false)
   const [isLoaderShown, setIsLoaderShown] = useState<boolean>(false)
+  const scaleDelayTimer = useTimer(
+    scaleDelay,
+    undefined,
+    isPaused,
+    !!scaleDelay,
+  )
+
+  useTimer(renderDelay, () => setIsComponentShown(true), isPaused)
+  useTimer(loaderDelay, () => setIsLoaderShown(true), isPaused)
+  useTimer(hideAfter, () => setIsComponentShown(false), isPaused, !!hideAfter)
 
   useEffect(() => {
-    const renderTimer = setTimeout(() => {
-      setIsComponentShown(true)
-    }, renderDelay * 1000)
-
-    return () => clearTimeout(renderTimer)
-  }, [renderDelay])
-
-  useEffect(() => {
-    const loaderTimer = setTimeout(() => {
-      setIsLoaderShown(true)
-    }, loaderDelay * 1000)
-
-    return () => clearTimeout(loaderTimer)
-  }, [loaderDelay])
-
-  useEffect(() => {
-    let hideTimer: NodeJS.Timeout | number = hideAfter
-
-    if (hideTimer) {
-      hideTimer = setTimeout(() => {
-        setIsComponentShown(false)
-        setIsLoaderShown(false)
-      }, hideAfter * 1000)
-    }
-    return () => clearTimeout(hideTimer)
-  }, [hideAfter])
+    setIsLoaderShown(!isPaused)
+  }, [isPaused])
 
   return isComponentShown ? (
     <motion.div
@@ -61,11 +50,10 @@ export default function CardText({
         'mb-4 text-3xl italic leading-tight last:mb-0 sm:text-4xl',
         className,
       )}
-      variants={animateCardText}
+      variants={animateRewindStat}
       initial='hidden'
-      animate={noScale ? ['show'] : ['show', 'scaleDown']}
+      animate={noScale || scaleDelayTimer ? ['show'] : ['show', 'scaleDown']}
       style={{ originX: 0, originY: '100%' }}
-      custom={scaleDelay}
     >
       <div>{children}</div>
     </motion.div>

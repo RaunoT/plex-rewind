@@ -6,7 +6,7 @@ import {
   MusicalNoteIcon,
   PlayCircleIcon,
 } from '@heroicons/react/24/outline'
-import CardText from '../CardText'
+import RewindStat from '../RewindStat'
 import StatListItem from '../StatListItem'
 import StoryWrapper from '../StoryWrapper'
 
@@ -18,7 +18,7 @@ export default function StoryLibraries({
 }: UserRewind) {
   return (
     <StoryWrapper isPaused={isPaused} pause={pause} resume={resume}>
-      <CardText scaleDelay={3}>
+      <RewindStat isPaused={isPaused} scaleDelay={3}>
         <p>
           But, did you know the{' '}
           <span className='rewind-cat'>
@@ -32,9 +32,9 @@ export default function StoryLibraries({
           </span>
           !
         </p>
-      </CardText>
+      </RewindStat>
 
-      <CardText renderDelay={3} noScale>
+      <RewindStat isPaused={isPaused} renderDelay={3} noScale>
         <p>The current library consists of:</p>
         <ul className='list mt-2'>
           {userRewind.libraries.map((library) => {
@@ -65,7 +65,7 @@ export default function StoryLibraries({
             )
           })}
         </ul>
-      </CardText>
+      </RewindStat>
     </StoryWrapper>
   )
 }

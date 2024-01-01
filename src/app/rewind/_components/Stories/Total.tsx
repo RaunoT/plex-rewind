@@ -1,6 +1,6 @@
 import { UserRewind } from '@/utils/types'
 import { ChartPieIcon, ClockIcon } from '@heroicons/react/24/outline'
-import CardText from '../CardText'
+import RewindStat from '../RewindStat'
 import StoryWrapper from '../StoryWrapper'
 
 export default function StoryTotal({
@@ -13,7 +13,7 @@ export default function StoryTotal({
     <StoryWrapper isPaused={isPaused} pause={pause} resume={resume}>
       {userRewind.total_duration ? (
         <>
-          <CardText scaleDelay={4}>
+          <RewindStat isPaused={isPaused} scaleDelay={4}>
             <p>
               You&apos;ve spent a{' '}
               <span className='rewind-cat'>
@@ -26,9 +26,9 @@ export default function StoryTotal({
               </span>{' '}
               on <span className='text-yellow-500'>Plex</span> this year!
             </p>
-          </CardText>
+          </RewindStat>
 
-          <CardText renderDelay={4} noScale>
+          <RewindStat isPaused={isPaused} renderDelay={4} noScale>
             <p>
               That&apos;s{' '}
               <span className='rewind-cat'>
@@ -37,16 +37,16 @@ export default function StoryTotal({
               </span>{' '}
               of all plays.
             </p>
-          </CardText>
+          </RewindStat>
         </>
       ) : (
-        <CardText noScale>
+        <RewindStat noScale>
           <p>
             You haven&apos;t watched anything on{' '}
             <span className='text-yellow-500'>Plex</span> this year{' '}
             <span className='not-italic'>😫</span>
           </p>
-        </CardText>
+        </RewindStat>
       )}
     </StoryWrapper>
   )
