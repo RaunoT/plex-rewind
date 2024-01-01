@@ -64,7 +64,13 @@ export default function RewindStories({ userRewind, user }: Props) {
     createStory(StoryTotal, commonProps, 8000),
     createStory(StoryLibraries, commonProps, 9000),
     ...(process.env.NEXT_PUBLIC_OVERSEERR_URL
-      ? [createStory(StoryRequests, commonProps, 8000)]
+      ? [
+          createStory(
+            StoryRequests,
+            commonProps,
+            userRewind.requests?.total ? 8000 : 4000,
+          ),
+        ]
       : []),
     ...(userRewind.total_duration
       ? [createStory(StoryShows, commonProps, 8000)]

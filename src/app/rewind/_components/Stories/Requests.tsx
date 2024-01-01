@@ -4,7 +4,7 @@ import {
   PlayCircleIcon,
   QuestionMarkCircleIcon,
 } from '@heroicons/react/24/outline'
-import CardText from '../CardText'
+import RewindStat from '../RewindStat'
 import StatListItem from '../StatListItem'
 import StoryWrapper from '../StoryWrapper'
 
@@ -18,13 +18,13 @@ export default function StoryRequests({
     userRewind.requests && (
       <StoryWrapper isPaused={isPaused} pause={pause} resume={resume}>
         {userRewind.requests.total == 0 ? (
-          <CardText noScale>
+          <RewindStat noScale>
             <p>There haven&apos;t been any requests this year 😲</p>
-          </CardText>
+          </RewindStat>
         ) : (
           <>
             {userRewind.user_requests == 0 ? (
-              <CardText scaleDelay={3}>
+              <RewindStat isPaused={isPaused} scaleDelay={3}>
                 <p>
                   You haven&apos;t made any content{' '}
                   <span className='rewind-cat'>
@@ -41,9 +41,9 @@ export default function StoryRequests({
                     {process.env.NEXT_PUBLIC_OVERSEERR_URL!.split('//').pop()}
                   </a>
                 </p>
-              </CardText>
+              </RewindStat>
             ) : (
-              <CardText scaleDelay={3}>
+              <RewindStat isPaused={isPaused} scaleDelay={3}>
                 <p>
                   You&apos;ve made{' '}
                   <span className='rewind-stat'>
@@ -56,10 +56,10 @@ export default function StoryRequests({
                   </span>{' '}
                   this year.
                 </p>
-              </CardText>
+              </RewindStat>
             )}
 
-            <CardText renderDelay={3} scaleDelay={3}>
+            <RewindStat isPaused={isPaused} renderDelay={3} scaleDelay={3}>
               <p>
                 Altogether there have been{' '}
                 <span className='rewind-stat'>{userRewind.requests.total}</span>{' '}
@@ -69,9 +69,14 @@ export default function StoryRequests({
                 </span>{' '}
                 this year.
               </p>
-            </CardText>
+            </RewindStat>
 
-            <CardText renderDelay={6} noScale loaderDelay={3}>
+            <RewindStat
+              isPaused={isPaused}
+              renderDelay={6}
+              noScale
+              loaderDelay={3}
+            >
               <p>That includes:</p>
               <ul className='list'>
                 <StatListItem
@@ -87,7 +92,7 @@ export default function StoryRequests({
                   separator='for'
                 />
               </ul>
-            </CardText>
+            </RewindStat>
           </>
         )}
       </StoryWrapper>
