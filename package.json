@@ -1,6 +1,6 @@
 {
   "name": "plex-rewind",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "private": true,
   "packageManager": "pnpm@8.13.1",
   "scripts": {

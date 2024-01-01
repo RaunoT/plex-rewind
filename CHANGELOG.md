@@ -1,3 +1,9 @@
+## [1.0.3](https://github.com/RaunoT/plex-rewind/compare/v1.0.2...v1.0.3) (2024-01-01)
+
+### Bug Fixes
+
+- empty rewind handling ([dea3491](https://github.com/RaunoT/plex-rewind/commit/dea3491200025dd43bffefd0bec99a0dd3ca6cea))
+
 ## [1.0.2](https://github.com/RaunoT/plex-rewind/compare/v1.0.1...v1.0.2) (2023-12-30)
 
 ### Bug Fixes
