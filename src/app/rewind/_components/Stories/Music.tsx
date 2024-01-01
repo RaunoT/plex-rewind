@@ -57,7 +57,7 @@ export default function StoryMusic({
               <PlayCircleIcon />
             </span>{' '}
             on <span className='text-yellow-500'>Plex</span> this year{' '}
-            <span className='not-italic'>😥</span>
+            <span className='not-italic'>🥴</span>
           </p>
         </CardText>
       )}

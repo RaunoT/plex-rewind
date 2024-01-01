@@ -11,29 +11,43 @@ export default function StoryTotal({
 }: UserRewind) {
   return (
     <StoryWrapper isPaused={isPaused} pause={pause} resume={resume}>
-      <CardText scaleDelay={4}>
-        <p>
-          You&apos;ve spent a{' '}
-          <span className='rewind-cat'>
-            Total
-            <ClockIcon />
-          </span>{' '}
-          of <span className='rewind-stat'>
-            {userRewind.total_duration}
-          </span> on <span className='text-yellow-500'>Plex</span> this year!
-        </p>
-      </CardText>
+      {userRewind.total_duration ? (
+        <>
+          <CardText scaleDelay={4}>
+            <p>
+              You&apos;ve spent a{' '}
+              <span className='rewind-cat'>
+                Total
+                <ClockIcon />
+              </span>{' '}
+              of{' '}
+              <span className='rewind-stat'>
+                {userRewind.total_duration}
+              </span>{' '}
+              on <span className='text-yellow-500'>Plex</span> this year!
+            </p>
+          </CardText>
 
-      <CardText renderDelay={4} noScale>
-        <p>
-          That&apos;s{' '}
-          <span className='rewind-cat'>
-            {userRewind.total_duration_percentage}
-            <ChartPieIcon />
-          </span>{' '}
-          of all plays.
-        </p>
-      </CardText>
+          <CardText renderDelay={4} noScale>
+            <p>
+              That&apos;s{' '}
+              <span className='rewind-cat'>
+                {userRewind.total_duration_percentage}
+                <ChartPieIcon />
+              </span>{' '}
+              of all plays.
+            </p>
+          </CardText>
+        </>
+      ) : (
+        <CardText noScale>
+          <p>
+            You haven&apos;t watched anything on{' '}
+            <span className='text-yellow-500'>Plex</span> this year{' '}
+            <span className='not-italic'>😫</span>
+          </p>
+        </CardText>
+      )}
     </StoryWrapper>
   )
 }
