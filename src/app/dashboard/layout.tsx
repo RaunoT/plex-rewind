@@ -1,11 +1,11 @@
-import CardWrapper from '@/app/_components/CardWrapper'
-import PageTitle from '@/app/_components/PageTitle'
-import { isDashboardDisabled } from '@/utils/config'
-import { getLibraries } from '@/utils/fetchTautulli'
-import { notFound } from 'next/navigation'
-import { Suspense } from 'react'
-import DashboardNav from './_components/DashboardNav'
-import PeriodSelect from './_components/PeriodSelect'
+import CardWrapper from "@/app/_components/CardWrapper"
+import PageTitle from "@/app/_components/PageTitle"
+import { isDashboardDisabled } from "@/utils/config"
+import { getLibraries } from "@/utils/fetchTautulli"
+import { notFound } from "next/navigation"
+import { Suspense } from "react"
+import DashboardNav from "./_components/DashboardNav"
+import PeriodSelect from "./_components/PeriodSelect"
 
 type Props = {
   children: React.ReactNode

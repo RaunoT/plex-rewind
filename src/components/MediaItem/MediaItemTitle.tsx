@@ -1,9 +1,9 @@
-'use client'
+"use client"
 
-import { TautulliItemRow } from '@/utils/types'
-import { motion, useAnimation } from 'framer-motion'
-import { debounce } from 'lodash'
-import { useEffect, useRef } from 'react'
+import { TautulliItemRow } from "@/utils/types"
+import { motion, useAnimation } from "framer-motion"
+import { debounce } from "lodash"
+import { useEffect, useRef } from "react"
 
 type Props = {
   i: number
@@ -37,7 +37,7 @@ export default function MediaItemTitle({ i, data, type, parentRef }: Props) {
             transition: {
               repeat: Infinity,
               duration: totalDuration,
-              ease: 'linear',
+              ease: "linear",
               times: [
                 0,
                 pauseDuration / totalDuration,
@@ -62,12 +62,12 @@ export default function MediaItemTitle({ i, data, type, parentRef }: Props) {
 
     const debouncedRestartAnimation = debounce(restartAnimation, 250)
 
-    window.addEventListener('resize', debouncedRestartAnimation)
+    window.addEventListener("resize", debouncedRestartAnimation)
     checkWidth()
 
     return () => {
       controls.stop()
-      window.removeEventListener('resize', debouncedRestartAnimation)
+      window.removeEventListener("resize", debouncedRestartAnimation)
       debouncedRestartAnimation.cancel()
     }
   }, [controls, parentRef])
@@ -89,10 +89,10 @@ export default function MediaItemTitle({ i, data, type, parentRef }: Props) {
             <path
               className={
                 i === 0
-                  ? 'fill-yellow-300'
+                  ? "fill-yellow-300"
                   : i === 1
-                    ? 'fill-gray-300'
-                    : 'fill-yellow-700'
+                    ? "fill-gray-300"
+                    : "fill-yellow-700"
               }
               d='M154.914,93.887c57.271,0,103.276,46.005,103.276,103.276s-46.005,103.276-103.276,103.276
                 S51.638,254.434,51.638,197.163S97.643,93.887,154.914,93.887z'
@@ -100,10 +100,10 @@ export default function MediaItemTitle({ i, data, type, parentRef }: Props) {
             <path
               className={
                 i === 0
-                  ? 'fill-yellow-500'
+                  ? "fill-yellow-500"
                   : i === 1
-                    ? 'fill-gray-400'
-                    : 'fill-yellow-800'
+                    ? "fill-gray-400"
+                    : "fill-yellow-800"
               }
               d='M154.914,122.053c-41.31,0-75.11,33.799-75.11,75.11s33.799,75.11,75.11,75.11
                 s75.11-33.799,75.11-75.11S196.224,122.053,154.914,122.053z M154.914,253.495c-30.983,0-56.332-25.35-56.332-56.332
@@ -118,7 +118,7 @@ export default function MediaItemTitle({ i, data, type, parentRef }: Props) {
           animate={controls}
           ref={titleRef}
         >
-          {type === 'users' ? data.user : data.title}
+          {type === "users" ? data.user : data.title}
         </motion.span>
       </span>
     </h3>

@@ -1,8 +1,8 @@
-import MediaItems from '@/components/MediaItem/MediaItems'
-import { UserRewind } from '@/utils/types'
-import { FilmIcon } from '@heroicons/react/24/outline'
-import RewindStat from '../RewindStat'
-import StoryWrapper from '../StoryWrapper'
+import MediaItems from "@/components/MediaItem/MediaItems"
+import { UserRewind } from "@/utils/types"
+import { FilmIcon } from "@heroicons/react/24/outline"
+import RewindStat from "../RewindStat"
+import StoryWrapper from "../StoryWrapper"
 
 export default function StoryMoviesTop({
   userRewind,
@@ -14,9 +14,9 @@ export default function StoryMoviesTop({
     <StoryWrapper isPaused={isPaused} pause={pause} resume={resume}>
       <RewindStat noScale>
         <p className='mb-2'>
-          Here&apos;s your full{' '}
+          Here&apos;s your full{" "}
           <span className='rewind-cat'>
-            Top {userRewind.movies_top.length === 5 && '5'};
+            Top {userRewind.movies_top.length === 5 && "5"};
             <FilmIcon />
           </span>
         </p>

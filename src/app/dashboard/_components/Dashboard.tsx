@@ -1,10 +1,10 @@
-import MediaItems from '@/components/MediaItem/MediaItems'
-import { TautulliItemRow } from '@/utils/types'
+import MediaItems from "@/components/MediaItem/MediaItems"
+import { TautulliItemRow } from "@/utils/types"
 import {
   ArrowLongLeftIcon,
   ArrowLongRightIcon,
-} from '@heroicons/react/24/outline'
-import Link from 'next/link.js'
+} from "@heroicons/react/24/outline"
+import Link from "next/link.js"
 
 type Props = {
   title: string
@@ -28,10 +28,10 @@ export default function Dashboard({
   items,
   totalDuration,
   totalSize,
-  type = '',
-  serverId = '',
+  type = "",
+  serverId = "",
   count,
-  periodQuery = '',
+  periodQuery = "",
 }: Props) {
   return (
     <>
@@ -46,11 +46,11 @@ export default function Dashboard({
               </span>
               <span>{count}</span>&nbsp;
               <span>
-                {type === 'movie'
-                  ? 'movies'
-                  : type === 'show'
-                    ? 'episodes'
-                    : type === 'artist' && 'tracks'}
+                {type === "movie"
+                  ? "movies"
+                  : type === "show"
+                    ? "episodes"
+                    : type === "artist" && "tracks"}
               </span>
             </>
           )}

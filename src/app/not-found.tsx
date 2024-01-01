@@ -1,4 +1,4 @@
-import Link from 'next/link'
+import Link from "next/link"
 
 export default function NotFound() {
   return (
@@ -10,7 +10,7 @@ export default function NotFound() {
         <div>
           <p className='italic'>The requested page could not be found.</p>
           <p className='italic'>
-            Might be better to{' '}
+            Might be better to{" "}
             <Link href='/' className='link'>
               start over
             </Link>

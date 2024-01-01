@@ -1,8 +1,8 @@
-import MediaItems from '@/components/MediaItem/MediaItems'
-import { UserRewind } from '@/utils/types'
-import { PlayCircleIcon } from '@heroicons/react/24/outline'
-import RewindStat from '../RewindStat'
-import StoryWrapper from '../StoryWrapper'
+import MediaItems from "@/components/MediaItem/MediaItems"
+import { UserRewind } from "@/utils/types"
+import { PlayCircleIcon } from "@heroicons/react/24/outline"
+import RewindStat from "../RewindStat"
+import StoryWrapper from "../StoryWrapper"
 
 export default function StoryShows({
   userRewind,
@@ -19,18 +19,18 @@ export default function StoryShows({
               <span className='rewind-cat'>
                 TV Shows
                 <PlayCircleIcon />
-              </span>{' '}
-              took up{' '}
+              </span>{" "}
+              took up{" "}
               <span className='rewind-stat'>
                 {userRewind.shows_total_duration}
-              </span>{' '}
+              </span>{" "}
               of your year on <span className='text-yellow-500'>Plex</span>.
             </p>
           </RewindStat>
 
           <RewindStat isPaused={isPaused} renderDelay={3} noScale>
             <p className='mb-2'>
-              Your favorite was{' '}
+              Your favorite was{" "}
               <span className='rewind-cat'>
                 {userRewind.shows_top[0].title}
               </span>
@@ -50,12 +50,12 @@ export default function StoryShows({
       ) : (
         <RewindStat noScale>
           <p>
-            You haven&apos;t watched any{' '}
+            You haven&apos;t watched any{" "}
             <span className='rewind-cat'>
               TV Shows
               <PlayCircleIcon />
-            </span>{' '}
-            on <span className='text-yellow-500'>Plex</span> this year{' '}
+            </span>{" "}
+            on <span className='text-yellow-500'>Plex</span> this year{" "}
             <span className='not-italic'>😥</span>
           </p>
         </RewindStat>

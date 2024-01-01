@@ -59,8 +59,8 @@
   }
 
   .nav-link {
-    &[aria-selected='true'],
-    &[aria-current='page'] {
+    &[aria-selected="true"],
+    &[aria-current="page"] {
       @apply text-teal-300;
     }
 

@@ -1,15 +1,15 @@
-import fetchTautulli from './fetchTautulli'
-import fetchTmdb from './fetchTmdb'
+import fetchTautulli from "./fetchTautulli"
+import fetchTmdb from "./fetchTmdb"
 import {
   TautulliItem,
   TautulliItemRow,
   TmdbExternalId,
   TmdbItem,
-} from './types'
+} from "./types"
 
 export default async function getMediaAdditionalData(
   media: TautulliItemRow[],
-  type: 'movie' | 'tv',
+  type: "movie" | "tv",
   usersWatchedData?: TautulliItemRow[],
 ): Promise<TautulliItemRow[]> {
   const ratingKeys: number[] = []
@@ -21,7 +21,7 @@ export default async function getMediaAdditionalData(
   const additionalData = await Promise.all(
     ratingKeys.map(async (key, i) => {
       const mediaTautulli = await fetchTautulli<TautulliItem>(
-        'get_metadata',
+        "get_metadata",
         {
           rating_key: key,
         },
@@ -31,7 +31,7 @@ export default async function getMediaAdditionalData(
       // Tautulli doesn't return rating for removed items, so we're using TMDB
       const mediaTmdb = await fetchTmdb<TmdbItem>(`search/${type}`, {
         query: media[i].title,
-        first_air_date_year: type === 'tv' ? '' : media[i].year,
+        first_air_date_year: type === "tv" ? "" : media[i].year,
       })
       const tmdbId = mediaTmdb.results[0].id
       const imdbId = await fetchTmdb<TmdbExternalId>(
@@ -54,7 +54,7 @@ export default async function getMediaAdditionalData(
     mediaItem.tmdb_id = additionalData[i].tmdb_id
     mediaItem.imdb_id = additionalData[i].imdb_id
 
-    if (type === 'tv') {
+    if (type === "tv") {
       mediaItem.year = additionalData[i].year
 
       if (usersWatchedData) {

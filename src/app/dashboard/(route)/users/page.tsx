@@ -1,20 +1,20 @@
-import { ALLOWED_PERIODS, META_DESCRIPTION } from '@/utils/constants'
+import { ALLOWED_PERIODS, META_DESCRIPTION } from "@/utils/constants"
 import {
   fetchOverseerrUserId,
   fetchPaginatedOverseerrStats,
-} from '@/utils/fetchOverseerr'
+} from "@/utils/fetchOverseerr"
 import fetchTautulli, {
   getLibraries,
   getLibrariesByType,
-} from '@/utils/fetchTautulli'
-import { secondsToTime, timeToSeconds } from '@/utils/formatting'
-import { DashboardParams, TautulliItem } from '@/utils/types'
-import { snakeCase } from 'lodash'
-import { Metadata } from 'next'
-import Dashboard from '../../_components/Dashboard'
+} from "@/utils/fetchTautulli"
+import { secondsToTime, timeToSeconds } from "@/utils/formatting"
+import { DashboardParams, TautulliItem } from "@/utils/types"
+import { snakeCase } from "lodash"
+import { Metadata } from "next"
+import Dashboard from "../../_components/Dashboard"
 
 export const metadata: Metadata = {
-  title: 'Users | Plex rewind dashboard',
+  title: "Users | Plex rewind dashboard",
   description: META_DESCRIPTION,
 }
 
@@ -29,17 +29,17 @@ async function getUsers(
   requestsPeriod: string,
   periodString: string,
 ) {
-  const usersRes = await fetchTautulli<TautulliItem>('get_home_stats', {
-    stat_id: 'top_users',
+  const usersRes = await fetchTautulli<TautulliItem>("get_home_stats", {
+    stat_id: "top_users",
     stats_count: 6,
-    stats_type: 'duration',
+    stats_type: "duration",
     time_range: period,
   })
   const users = usersRes.response?.data?.rows
   const [moviesLib, showsLib, musicLib] = await Promise.all([
-    getLibrariesByType('movie'),
-    getLibrariesByType('show'),
-    getLibrariesByType('artist'),
+    getLibrariesByType("movie"),
+    getLibrariesByType("show"),
+    getLibrariesByType("artist"),
   ])
   let usersRequestsCounts: UserRequestCounts[] = []
 
@@ -76,7 +76,7 @@ async function getUsers(
 
       for (const movieLib of moviesLib) {
         const userMovies = await fetchTautulli<{ recordsFiltered: number }>(
-          'get_history',
+          "get_history",
           {
             user_id: user.user_id,
             after: periodString,
@@ -88,7 +88,7 @@ async function getUsers(
 
       for (const showLib of showsLib) {
         const userShows = await fetchTautulli<{ recordsFiltered: number }>(
-          'get_history',
+          "get_history",
           {
             user_id: user.user_id,
             after: periodString,
@@ -100,7 +100,7 @@ async function getUsers(
 
       for (const musicLibItem of musicLib) {
         const userMusic = await fetchTautulli<{ recordsFiltered: number }>(
-          'get_history',
+          "get_history",
           {
             user_id: user.user_id,
             after: periodString,
@@ -130,7 +130,7 @@ async function getUsers(
 
 async function getTotalDuration(period: string) {
   const totalDuration = await fetchTautulli<{ total_duration: string }>(
-    'get_history',
+    "get_history",
     {
       after: period,
       length: 0,
@@ -143,7 +143,7 @@ async function getTotalDuration(period: string) {
 }
 
 async function getUsersCount() {
-  const usersCount = await fetchTautulli<[]>('get_users')
+  const usersCount = await fetchTautulli<[]>("get_users")
 
   return usersCount.response?.data.slice(1).length
 }
@@ -153,7 +153,7 @@ export default async function Users({ searchParams }: DashboardParams) {
   const periodKey =
     periodSearchParams && ALLOWED_PERIODS[periodSearchParams]
       ? periodSearchParams
-      : '30days'
+      : "30days"
   const period = ALLOWED_PERIODS[periodKey]
   const [usersData, totalDuration, usersCount] = await Promise.all([
     getUsers(period.daysAgo, period.date, period.string),

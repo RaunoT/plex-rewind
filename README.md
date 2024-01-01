@@ -4,9 +4,9 @@ A Plex Rewind application in the spirit of [Spotify Wrapped](https://www.spotify
 
 Present user statistics and habits in a beautiful and organized manner - as a web application application powered by [Next.js](https://nextjs.org) and [Tailwind.css](https://tailwindcss.com), using data from [Tautulli](https://tautulli.com) and [Overseerr](https://overseerr.dev/). You can also disable the Rewind functionality and just use it as a sharable Dashboard for your Plex users or vice versa.
 
-![Dashboard](https://i.imgur.com/gSDRySM.png 'Dashboard')
+![Dashboard](https://i.imgur.com/gSDRySM.png "Dashboard")
 
-![Rewind](https://i.imgur.com/AfjFNFJ.png 'Rewind')
+![Rewind](https://i.imgur.com/AfjFNFJ.png "Rewind")
 
 ## Getting started
 

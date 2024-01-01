@@ -1,9 +1,9 @@
-'use client'
+"use client"
 
-import { Library } from '@/utils/types'
-import { snakeCase } from 'lodash'
-import Link from 'next/link'
-import { usePathname, useSearchParams } from 'next/navigation'
+import { Library } from "@/utils/types"
+import { snakeCase } from "lodash"
+import Link from "next/link"
+import { usePathname, useSearchParams } from "next/navigation"
 
 type Props = {
   libraries: Library[]
@@ -12,9 +12,9 @@ type Props = {
 export default function DashboardNav({ libraries }: Props) {
   const pathname = usePathname()
   const searchParams = useSearchParams()
-  const period = searchParams.get('period')
-    ? '?period=' + searchParams.get('period')
-    : ''
+  const period = searchParams.get("period")
+    ? "?period=" + searchParams.get("period")
+    : ""
 
   return (
     <nav>
@@ -26,7 +26,7 @@ export default function DashboardNav({ libraries }: Props) {
               className='nav-link'
               aria-current={
                 pathname === `/dashboard/${snakeCase(library.section_name)}` &&
-                'page'
+                "page"
               }
             >
               {library.section_name}
@@ -37,7 +37,7 @@ export default function DashboardNav({ libraries }: Props) {
           <Link
             href={`/dashboard/users${period}`}
             className='nav-link'
-            aria-current={pathname === '/dashboard/users' && 'page'}
+            aria-current={pathname === "/dashboard/users" && "page"}
           >
             Users
           </Link>

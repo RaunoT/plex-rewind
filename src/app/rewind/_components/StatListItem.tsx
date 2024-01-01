@@ -1,4 +1,4 @@
-import clsx from 'clsx'
+import clsx from "clsx"
 
 type Props = {
   count: number
@@ -12,7 +12,7 @@ export default function StatListItem({
   count,
   name,
   icon,
-  separator = '•',
+  separator = "•",
   library,
 }: Props) {
   return (
@@ -21,12 +21,12 @@ export default function StatListItem({
         <div className='mb-1 text-base text-black lg:text-lg'>{library}</div>
       )}
       <span className='font-semibold text-black'>
-        {count.toLocaleString('en-US')}
+        {count.toLocaleString("en-US")}
       </span>
       <span
         className={clsx(
-          'mx-2',
-          separator === '•' ? 'text-black' : 'text-white',
+          "mx-2",
+          separator === "•" ? "text-black" : "text-white",
         )}
       >
         {separator}

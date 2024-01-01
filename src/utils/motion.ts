@@ -29,7 +29,7 @@ export const animateRewindStat = {
   },
   scaleDown: {
     opacity: 0.5,
-    fontSize: '20px',
-    lineHeight: '22px',
+    fontSize: "20px",
+    lineHeight: "22px",
   },
 }

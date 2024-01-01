@@ -1,6 +1,6 @@
-import qs from 'qs'
-import { excludedLibraries } from './config'
-import { Library } from './types'
+import qs from "qs"
+import { excludedLibraries } from "./config"
+import { Library } from "./types"
 
 type TautulliResponse<T> = {
   response: {
@@ -21,18 +21,18 @@ export default async function fetchTautulli<T>(
   const apiKey = process.env.TAUTULLI_API_KEY
 
   if (!tautulliUrl) {
-    throw new Error('Tautulli URL is not configured!')
+    throw new Error("Tautulli URL is not configured!")
   }
 
   if (!apiKey) {
-    throw new Error('Tautulli API key is not configured!')
+    throw new Error("Tautulli API key is not configured!")
   }
 
   const apiUrl = `${tautulliUrl}/api/v2?apikey=${apiKey}`
 
   try {
     const res = await fetch(`${apiUrl}&cmd=${query}&${qs.stringify(params)}`, {
-      cache: cache ? 'force-cache' : 'no-store',
+      cache: cache ? "force-cache" : "no-store",
     })
 
     if (!res.ok) {
@@ -43,7 +43,7 @@ export default async function fetchTautulli<T>(
 
     return res.json()
   } catch (error) {
-    console.error('Error fetching from Tautulli API:', error)
+    console.error("Error fetching from Tautulli API:", error)
     throw error
   }
 }
@@ -54,7 +54,7 @@ export async function getServerId(): Promise<string> {
 
   if (plexHostname && plexPort) {
     const serverIdPromise = await fetchTautulli<{ identifier: string }>(
-      'get_server_id',
+      "get_server_id",
       {
         hostname: plexHostname,
         port: plexPort,
@@ -63,12 +63,12 @@ export async function getServerId(): Promise<string> {
     )
     return serverIdPromise.response?.data?.identifier
   } else {
-    throw new Error('Plex hostname and/or port are not configured!')
+    throw new Error("Plex hostname and/or port are not configured!")
   }
 }
 
 export async function getLibraries(): Promise<Library[]> {
-  const libraries = await fetchTautulli<Library[]>('get_libraries', {}, true)
+  const libraries = await fetchTautulli<Library[]>("get_libraries", {}, true)
   const filteredLibraries = libraries.response?.data.filter(
     (library) => !excludedLibraries.includes(library.section_name),
   )
@@ -77,7 +77,7 @@ export async function getLibraries(): Promise<Library[]> {
 }
 
 export async function getLibrariesByType(
-  type: 'movie' | 'show' | 'artist',
+  type: "movie" | "show" | "artist",
 ): Promise<Library[]> {
   const libraries = await getLibraries()
 

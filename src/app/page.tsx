@@ -1,18 +1,18 @@
-'use client'
+"use client"
 
-import plexSvg from '@/assets/plex.svg'
-import Loader from '@/components/Loader'
-import { createPlexAuthUrl, getPlexAuthToken } from '@/utils/auth'
-import { isDashboardDisabled, isRewindDisabled } from '@/utils/config'
-import { fadeIn } from '@/utils/motion'
-import { Library } from '@/utils/types'
-import { motion } from 'framer-motion'
-import { snakeCase } from 'lodash'
-import { signIn, signOut, useSession } from 'next-auth/react'
-import Image from 'next/image'
-import Link from 'next/link'
-import { useRouter, useSearchParams } from 'next/navigation'
-import { useEffect, useState } from 'react'
+import plexSvg from "@/assets/plex.svg"
+import Loader from "@/components/Loader"
+import { createPlexAuthUrl, getPlexAuthToken } from "@/utils/auth"
+import { isDashboardDisabled, isRewindDisabled } from "@/utils/config"
+import { fadeIn } from "@/utils/motion"
+import { Library } from "@/utils/types"
+import { motion } from "framer-motion"
+import { snakeCase } from "lodash"
+import { signIn, signOut, useSession } from "next-auth/react"
+import Image from "next/image"
+import Link from "next/link"
+import { useRouter, useSearchParams } from "next/navigation"
+import { useEffect, useState } from "react"
 
 export default function Page() {
   const [libraries, setLibraries] = useState<Library[]>([])
@@ -20,7 +20,7 @@ export default function Page() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const { data: session, status } = useSession()
-  const isLoggedIn = status === 'authenticated'
+  const isLoggedIn = status === "authenticated"
 
   const handleLogin = async () => {
     const plexUrl = await createPlexAuthUrl()
@@ -28,7 +28,7 @@ export default function Page() {
   }
 
   useEffect(() => {
-    const plexPinId = searchParams.get('plexPinId')
+    const plexPinId = searchParams.get("plexPinId")
 
     if (plexPinId) {
       const authUser = async () => {
@@ -36,17 +36,17 @@ export default function Page() {
         const plexAuthToken = await getPlexAuthToken(plexPinId)
 
         try {
-          const res = await signIn('plex', {
+          const res = await signIn("plex", {
             authToken: plexAuthToken,
-            callbackUrl: '/',
+            callbackUrl: "/",
           })
 
           if (res?.error) {
-            console.error('Failed to sign in:', res.error)
+            console.error("Failed to sign in:", res.error)
           }
           setIsLoading(false)
         } catch (error) {
-          console.error('Error during sign-in:', error)
+          console.error("Error during sign-in:", error)
           setIsLoading(false)
         }
       }
@@ -56,24 +56,24 @@ export default function Page() {
   }, [searchParams])
 
   useEffect(() => {
-    if (status === 'authenticated') {
+    if (status === "authenticated") {
       const getLibraries = async () => {
         setIsLoading(true)
 
         try {
-          const res = await fetch('/api/libraries')
+          const res = await fetch("/api/libraries")
           const data = await res.json()
 
           setLibraries(data)
         } catch (error) {
-          console.error('Error fetching libraries:', error)
+          console.error("Error fetching libraries:", error)
         }
 
         setIsLoading(false)
       }
 
       getLibraries()
-    } else if (status !== 'loading') {
+    } else if (status !== "loading") {
       setIsLoading(false)
     }
   }, [status])
@@ -137,7 +137,7 @@ export default function Page() {
         <Link
           href={`/dashboard/${snakeCase(libraries[0]?.section_name)}`}
           className={
-            isRewindDisabled ? 'button' : 'text-slate-300 hover:opacity-75'
+            isRewindDisabled ? "button" : "text-slate-300 hover:opacity-75"
           }
         >
           Dashboard

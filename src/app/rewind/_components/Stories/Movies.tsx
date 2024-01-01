@@ -1,8 +1,8 @@
-import MediaItems from '@/components/MediaItem/MediaItems'
-import { UserRewind } from '@/utils/types'
-import { FilmIcon, PlayCircleIcon } from '@heroicons/react/24/outline'
-import RewindStat from '../RewindStat'
-import StoryWrapper from '../StoryWrapper'
+import MediaItems from "@/components/MediaItem/MediaItems"
+import { UserRewind } from "@/utils/types"
+import { FilmIcon, PlayCircleIcon } from "@heroicons/react/24/outline"
+import RewindStat from "../RewindStat"
+import StoryWrapper from "../StoryWrapper"
 
 export default function StoryMovies({
   userRewind,
@@ -18,19 +18,19 @@ export default function StoryMovies({
             <p>
               <span className='rewind-stat'>
                 {userRewind.movies_total_duration}
-              </span>{' '}
-              of your time was spent watching{' '}
+              </span>{" "}
+              of your time was spent watching{" "}
               <span className='rewind-cat'>
                 Movies
                 <FilmIcon />
-              </span>{' '}
+              </span>{" "}
               on <span className='text-yellow-500'>Plex</span>.
             </p>
           </RewindStat>
 
           <RewindStat isPaused={isPaused} renderDelay={3} noScale>
             <p className='mb-2'>
-              Your favorite was{' '}
+              Your favorite was{" "}
               <span className='rewind-cat'>
                 {userRewind.movies_top[0].title}
               </span>
@@ -50,12 +50,12 @@ export default function StoryMovies({
       ) : (
         <RewindStat noScale>
           <p>
-            You haven&apos;t watched any{' '}
+            You haven&apos;t watched any{" "}
             <span className='rewind-cat'>
               Movies
               <PlayCircleIcon />
-            </span>{' '}
-            on <span className='text-yellow-500'>Plex</span> this year{' '}
+            </span>{" "}
+            on <span className='text-yellow-500'>Plex</span> this year{" "}
             <span className='not-italic'>😵‍💫</span>
           </p>
         </RewindStat>

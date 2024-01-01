@@ -1,18 +1,18 @@
 /** @type {import("prettier").Config} */
 /** https://prettier.io/docs/en/configuration.html */
 module.exports = {
-  singleQuote: true,
+  singleQuote: false,
   jsxSingleQuote: true,
   semi: false,
   tabWidth: 2,
   useTabs: false,
   overrides: [
     {
-      files: '*.svg',
+      files: "*.svg",
       options: {
-        parser: 'html',
+        parser: "html",
       },
     },
   ],
-  plugins: ['prettier-plugin-organize-imports', 'prettier-plugin-tailwindcss'],
+  plugins: ["prettier-plugin-organize-imports", "prettier-plugin-tailwindcss"],
 }

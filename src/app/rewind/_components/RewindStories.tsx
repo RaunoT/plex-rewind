@@ -1,16 +1,16 @@
-'use client'
+"use client"
 
-import { ExtendedUser, RewindResponse } from '@/utils/types'
-import Stories from 'stories-react'
-import 'stories-react/dist/index.css'
-import StoryLibraries from './Stories/Libraries'
-import StoryMoviesTop from './Stories/MoviesTop'
-import StoryMusicTop from './Stories/MusicTop'
-import StoryRequests from './Stories/Requests'
-import StoryShows from './Stories/Shows'
-import StoryShowsTop from './Stories/ShowsTop'
-import StoryTotal from './Stories/Total'
-import StoryWelcome from './Stories/Welcome'
+import { ExtendedUser, RewindResponse } from "@/utils/types"
+import Stories from "stories-react"
+import "stories-react/dist/index.css"
+import StoryLibraries from "./Stories/Libraries"
+import StoryMoviesTop from "./Stories/MoviesTop"
+import StoryMusicTop from "./Stories/MusicTop"
+import StoryRequests from "./Stories/Requests"
+import StoryShows from "./Stories/Shows"
+import StoryShowsTop from "./Stories/ShowsTop"
+import StoryTotal from "./Stories/Total"
+import StoryWelcome from "./Stories/Welcome"
 
 type Story = {
   isPaused: boolean
@@ -28,7 +28,7 @@ function createStory(
   duration: number,
 ) {
   return {
-    type: 'component',
+    type: "component",
     component: (story: Story) => (
       <Component
         {...props}
@@ -50,7 +50,7 @@ export default function RewindStories({ userRewind, user }: Props) {
   const commonProps = { userRewind }
   const stories = [
     {
-      type: 'component',
+      type: "component",
       component: (story: Story) => (
         <StoryWelcome
           user={user}
@@ -90,9 +90,9 @@ export default function RewindStories({ userRewind, user }: Props) {
     <Stories
       stories={stories}
       classNames={{
-        main: 'flex flex-1 flex-col !bg-transparent pt-10 sm:pt-8',
+        main: "flex flex-1 flex-col !bg-transparent pt-10 sm:pt-8",
         storyContainer:
-          '!bg-transparent flex flex-1 flex-col sm:justify-center',
+          "!bg-transparent flex flex-1 flex-col sm:justify-center",
       }}
     />
   )

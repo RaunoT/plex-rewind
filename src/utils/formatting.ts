@@ -1,10 +1,10 @@
 export function secondsToTime(seconds: number): string {
   const units = [
-    { label: 'month', duration: 2629746 },
-    { label: 'week', duration: 604800 },
-    { label: 'day', duration: 86400 },
-    { label: 'hr', duration: 3600 },
-    { label: 'min', duration: 60 },
+    { label: "month", duration: 2629746 },
+    { label: "week", duration: 604800 },
+    { label: "day", duration: 86400 },
+    { label: "hr", duration: 3600 },
+    { label: "min", duration: 60 },
   ]
   let remainingSeconds = seconds
   let unitCount = 0
@@ -12,7 +12,7 @@ export function secondsToTime(seconds: number): string {
   return units
     .map(({ label, duration }) => {
       if (unitCount >= 2) {
-        return ''
+        return ""
       }
 
       const value = Math.floor(remainingSeconds / duration)
@@ -22,19 +22,19 @@ export function secondsToTime(seconds: number): string {
         unitCount++
       }
 
-      return value > 0 ? `${value} ${value === 1 ? label : label + 's'} ` : ''
+      return value > 0 ? `${value} ${value === 1 ? label : label + "s"} ` : ""
     })
-    .join('')
+    .join("")
     .trim()
 }
 
 export function secondsToMinutes(seconds: number): string {
   const minutes = Math.floor(seconds / 60)
-  return `${minutes.toLocaleString('en-US')} minute${minutes !== 1 && 's'}`
+  return `${minutes.toLocaleString("en-US")} minute${minutes !== 1 && "s"}`
 }
 
 export function removeAfterMinutes(timeString: string): string {
-  return timeString.replace(/mins.*/, 'mins')
+  return timeString.replace(/mins.*/, "mins")
 }
 
 export function bytesToSize(bytes: number, decimals = 2): string | null {
@@ -42,7 +42,7 @@ export function bytesToSize(bytes: number, decimals = 2): string | null {
 
   const k = 1024
   const dm = decimals < 0 ? 0 : decimals
-  const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB']
+  const sizes = ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"]
 
   const i = Math.floor(Math.log(bytes) / Math.log(k))
 

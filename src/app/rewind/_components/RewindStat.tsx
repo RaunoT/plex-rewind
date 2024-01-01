@@ -1,10 +1,10 @@
-'use client'
+"use client"
 
-import useTimer from '@/hooks/useTimer'
-import { animateRewindStat, fadeIn } from '@/utils/motion'
-import clsx from 'clsx'
-import { motion } from 'framer-motion'
-import { useEffect, useState } from 'react'
+import useTimer from "@/hooks/useTimer"
+import { animateRewindStat, fadeIn } from "@/utils/motion"
+import clsx from "clsx"
+import { motion } from "framer-motion"
+import { useEffect, useState } from "react"
 
 type Props = {
   children: React.ReactNode
@@ -47,13 +47,13 @@ export default function RewindStat({
   return isComponentShown ? (
     <motion.div
       className={clsx(
-        'mb-4 text-3xl italic leading-tight last:mb-0 sm:text-4xl',
+        "mb-4 text-3xl italic leading-tight last:mb-0 sm:text-4xl",
         className,
       )}
       variants={animateRewindStat}
       initial='hidden'
-      animate={noScale || scaleDelayTimer ? ['show'] : ['show', 'scaleDown']}
-      style={{ originX: 0, originY: '100%' }}
+      animate={noScale || scaleDelayTimer ? ["show"] : ["show", "scaleDown"]}
+      style={{ originX: 0, originY: "100%" }}
     >
       <div>{children}</div>
     </motion.div>

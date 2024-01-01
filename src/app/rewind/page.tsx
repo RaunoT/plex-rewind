@@ -1,6 +1,6 @@
-import { authOptions } from '@/utils/auth'
-import { getLibraries, getServerId } from '@/utils/fetchTautulli'
-import { secondsToTime } from '@/utils/formatting'
+import { authOptions } from "@/utils/auth"
+import { getLibraries, getServerId } from "@/utils/fetchTautulli"
+import { secondsToTime } from "@/utils/formatting"
 import {
   getLibrariesTotalDuration,
   getMediaUserTotalDuration,
@@ -9,10 +9,10 @@ import {
   getUserRequestsTotal,
   getUserTotalDuration,
   getlibrariesTotalSize,
-} from '@/utils/getRewind'
-import { ExtendedUser, RewindResponse } from '@/utils/types'
-import { Session, getServerSession } from 'next-auth'
-import RewindStories from './_components/RewindStories'
+} from "@/utils/getRewind"
+import { ExtendedUser, RewindResponse } from "@/utils/types"
+import { Session, getServerSession } from "next-auth"
+import RewindStories from "./_components/RewindStories"
 
 export default async function Rewind() {
   const session = (await getServerSession(authOptions)) as Session & {
@@ -38,9 +38,9 @@ export default async function Rewind() {
     getUserTotalDuration(session.user.id),
     getlibrariesTotalSize(libraries),
     getLibrariesTotalDuration(),
-    getMediaUserTotalDuration(libraries, 'show', session.user.id),
-    getMediaUserTotalDuration(libraries, 'movie', session.user.id),
-    getMediaUserTotalDuration(libraries, 'artist', session.user.id),
+    getMediaUserTotalDuration(libraries, "show", session.user.id),
+    getMediaUserTotalDuration(libraries, "movie", session.user.id),
+    getMediaUserTotalDuration(libraries, "artist", session.user.id),
     getServerId(),
   ])
   const totalDurationPercentage = `${Math.round(

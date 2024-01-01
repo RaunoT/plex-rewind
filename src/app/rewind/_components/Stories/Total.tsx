@@ -1,7 +1,7 @@
-import { UserRewind } from '@/utils/types'
-import { ChartPieIcon, ClockIcon } from '@heroicons/react/24/outline'
-import RewindStat from '../RewindStat'
-import StoryWrapper from '../StoryWrapper'
+import { UserRewind } from "@/utils/types"
+import { ChartPieIcon, ClockIcon } from "@heroicons/react/24/outline"
+import RewindStat from "../RewindStat"
+import StoryWrapper from "../StoryWrapper"
 
 export default function StoryTotal({
   userRewind,
@@ -15,26 +15,26 @@ export default function StoryTotal({
         <>
           <RewindStat isPaused={isPaused} scaleDelay={4}>
             <p>
-              You&apos;ve spent a{' '}
+              You&apos;ve spent a{" "}
               <span className='rewind-cat'>
                 Total
                 <ClockIcon />
-              </span>{' '}
-              of{' '}
+              </span>{" "}
+              of{" "}
               <span className='rewind-stat'>
                 {userRewind.total_duration}
-              </span>{' '}
+              </span>{" "}
               on <span className='text-yellow-500'>Plex</span> this year!
             </p>
           </RewindStat>
 
           <RewindStat isPaused={isPaused} renderDelay={4} noScale>
             <p>
-              That&apos;s{' '}
+              That&apos;s{" "}
               <span className='rewind-cat'>
                 {userRewind.total_duration_percentage}
                 <ChartPieIcon />
-              </span>{' '}
+              </span>{" "}
               of all plays.
             </p>
           </RewindStat>
@@ -42,8 +42,8 @@ export default function StoryTotal({
       ) : (
         <RewindStat noScale>
           <p>
-            You haven&apos;t watched anything on{' '}
-            <span className='text-yellow-500'>Plex</span> this year{' '}
+            You haven&apos;t watched anything on{" "}
+            <span className='text-yellow-500'>Plex</span> this year{" "}
             <span className='not-italic'>😫</span>
           </p>
         </RewindStat>

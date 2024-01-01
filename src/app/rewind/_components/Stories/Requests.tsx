@@ -1,12 +1,12 @@
-import { UserRewind } from '@/utils/types'
+import { UserRewind } from "@/utils/types"
 import {
   FilmIcon,
   PlayCircleIcon,
   QuestionMarkCircleIcon,
-} from '@heroicons/react/24/outline'
-import RewindStat from '../RewindStat'
-import StatListItem from '../StatListItem'
-import StoryWrapper from '../StoryWrapper'
+} from "@heroicons/react/24/outline"
+import RewindStat from "../RewindStat"
+import StatListItem from "../StatListItem"
+import StoryWrapper from "../StoryWrapper"
 
 export default function StoryRequests({
   userRewind,
@@ -26,34 +26,34 @@ export default function StoryRequests({
             {userRewind.user_requests == 0 ? (
               <RewindStat isPaused={isPaused} scaleDelay={3}>
                 <p>
-                  You haven&apos;t made any content{' '}
+                  You haven&apos;t made any content{" "}
                   <span className='rewind-cat'>
                     Requests
                     <QuestionMarkCircleIcon />
-                  </span>{' '}
-                  this year! You can make them via{' '}
+                  </span>{" "}
+                  this year! You can make them via{" "}
                   <a
                     className='link'
                     href={process.env.NEXT_PUBLIC_OVERSEERR_URL}
                     target='_blank'
                     rel='noopener noreferrer'
                   >
-                    {process.env.NEXT_PUBLIC_OVERSEERR_URL!.split('//').pop()}
+                    {process.env.NEXT_PUBLIC_OVERSEERR_URL!.split("//").pop()}
                   </a>
                 </p>
               </RewindStat>
             ) : (
               <RewindStat isPaused={isPaused} scaleDelay={3}>
                 <p>
-                  You&apos;ve made{' '}
+                  You&apos;ve made{" "}
                   <span className='rewind-stat'>
                     {userRewind.user_requests}
-                  </span>{' '}
-                  content{' '}
+                  </span>{" "}
+                  content{" "}
                   <span className='rewind-cat'>
                     Requests
                     <QuestionMarkCircleIcon />
-                  </span>{' '}
+                  </span>{" "}
                   this year.
                 </p>
               </RewindStat>
@@ -61,12 +61,12 @@ export default function StoryRequests({
 
             <RewindStat isPaused={isPaused} renderDelay={3} scaleDelay={3}>
               <p>
-                Altogether there have been{' '}
-                <span className='rewind-stat'>{userRewind.requests.total}</span>{' '}
+                Altogether there have been{" "}
+                <span className='rewind-stat'>{userRewind.requests.total}</span>{" "}
                 <span className='rewind-cat'>
                   Requests
                   <QuestionMarkCircleIcon />
-                </span>{' '}
+                </span>{" "}
                 this year.
               </p>
             </RewindStat>

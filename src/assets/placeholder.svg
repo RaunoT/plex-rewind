@@ -53,7 +53,7 @@
       font-stretch: normal;
       font-size: 12px;
       line-height: 125%;
-      font-family: 'Trebuchet MS';
+      font-family: &quot;Trebuchet MS&quot;;
       text-align: start;
       writing-mode: lr-tb;
       text-anchor: start;

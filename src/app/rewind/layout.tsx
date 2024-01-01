@@ -1,7 +1,7 @@
-import CardWrapper from '@/app/_components/CardWrapper'
-import PageTitle from '@/app/_components/PageTitle'
-import { isRewindDisabled } from '@/utils/config'
-import { notFound } from 'next/navigation'
+import CardWrapper from "@/app/_components/CardWrapper"
+import PageTitle from "@/app/_components/PageTitle"
+import { isRewindDisabled } from "@/utils/config"
+import { notFound } from "next/navigation"
 
 type Props = {
   children: React.ReactNode

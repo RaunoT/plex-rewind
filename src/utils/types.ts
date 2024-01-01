@@ -1,5 +1,5 @@
-import { User } from 'next-auth'
-import { ALLOWED_PERIODS } from './constants'
+import { User } from "next-auth"
+import { ALLOWED_PERIODS } from "./constants"
 
 export type DashboardParams = {
   searchParams: {
@@ -75,7 +75,7 @@ export type Library = {
   count: string
   parent_count: string
   child_count: string
-  section_type: 'movie' | 'show' | 'artist'
+  section_type: "movie" | "show" | "artist"
   is_active: number
 }
 

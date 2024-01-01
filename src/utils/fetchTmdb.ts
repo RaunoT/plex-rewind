@@ -1,4 +1,4 @@
-import qs from 'qs'
+import qs from "qs"
 
 type QueryParams = {
   [key: string]: string | number
@@ -10,7 +10,7 @@ export default async function fetchTmdb<T>(
 ): Promise<T> {
   const apiKey = process.env.TMDB_API_KEY
   if (!apiKey) {
-    throw new Error('TMDB API key is not set!')
+    throw new Error("TMDB API key is not set!")
   }
 
   try {
@@ -27,7 +27,7 @@ export default async function fetchTmdb<T>(
 
     return res.json()
   } catch (error) {
-    console.error('Error fetching from TMDB API:', error)
+    console.error("Error fetching from TMDB API:", error)
     throw error
   }
 }

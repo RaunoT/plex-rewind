@@ -1,11 +1,11 @@
-import { ALLOWED_PERIODS } from '@/utils/constants'
-import { getLibraries, getServerId } from '@/utils/fetchTautulli'
-import { getItems, getTotalDuration, getTotalSize } from '@/utils/getDashboard'
-import { DashboardParams } from '@/utils/types'
-import { snakeCase } from 'lodash'
-import { Metadata } from 'next'
-import { notFound } from 'next/navigation'
-import Dashboard from '../../_components/Dashboard'
+import { ALLOWED_PERIODS } from "@/utils/constants"
+import { getLibraries, getServerId } from "@/utils/fetchTautulli"
+import { getItems, getTotalDuration, getTotalSize } from "@/utils/getDashboard"
+import { DashboardParams } from "@/utils/types"
+import { snakeCase } from "lodash"
+import { Metadata } from "next"
+import { notFound } from "next/navigation"
+import Dashboard from "../../_components/Dashboard"
 
 export async function generateMetadata({
   params,
@@ -42,7 +42,7 @@ export default async function Page({ params, searchParams }: DashboardParams) {
   const periodKey =
     periodSearchParams && ALLOWED_PERIODS[periodSearchParams]
       ? periodSearchParams
-      : '30days'
+      : "30days"
   const period = ALLOWED_PERIODS[periodKey]
   const [items, totalDuration, totalSize, serverId] = await Promise.all([
     getItems(library, period.daysAgo),
@@ -58,7 +58,7 @@ export default async function Page({ params, searchParams }: DashboardParams) {
   const nextCard =
     libraryIndex >= 0 && libraryIndex < libraries.length - 1
       ? `/dashboard/${snakeCase(libraries[libraryIndex + 1].section_name)}`
-      : '/dashboard/users'
+      : "/dashboard/users"
 
   return (
     <Dashboard
@@ -72,9 +72,9 @@ export default async function Page({ params, searchParams }: DashboardParams) {
       type={library.section_type}
       serverId={serverId}
       count={
-        library.section_type === 'movie'
-          ? Number(library.count).toLocaleString('en-US')
-          : Number(library.child_count).toLocaleString('en-US')
+        library.section_type === "movie"
+          ? Number(library.count).toLocaleString("en-US")
+          : Number(library.child_count).toLocaleString("en-US")
       }
       periodQuery={
         periodSearchParams ? `?period=${periodSearchParams}` : undefined

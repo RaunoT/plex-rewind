@@ -16,11 +16,11 @@ export default async function fetchOverseerr<T>(
   const apiKey = process.env.OVERSEERR_API_KEY
 
   if (!overseerrUrl) {
-    throw new Error('Overseerr URL is not configured!')
+    throw new Error("Overseerr URL is not configured!")
   }
 
   if (!apiKey) {
-    throw new Error('Overseerr API key is not configured!')
+    throw new Error("Overseerr API key is not configured!")
   }
 
   const apiUrl = `${overseerrUrl}/api/v1/${endpoint}`
@@ -28,9 +28,9 @@ export default async function fetchOverseerr<T>(
   try {
     const res = await fetch(apiUrl, {
       headers: {
-        'X-API-KEY': apiKey,
+        "X-API-KEY": apiKey,
       },
-      cache: cache ? 'force-cache' : 'no-store',
+      cache: cache ? "force-cache" : "no-store",
     })
     if (!res.ok) {
       throw new Error(
@@ -40,7 +40,7 @@ export default async function fetchOverseerr<T>(
 
     return res.json()
   } catch (error) {
-    console.error('Error fetching from Overseerr API:', error)
+    console.error("Error fetching from Overseerr API:", error)
     throw error
   }
 }
@@ -54,7 +54,7 @@ type User = {
 export async function fetchOverseerrUserId(
   plexId: string,
 ): Promise<number | null> {
-  const users = await fetchOverseerr<OverseerrResponse<User[]>>('user')
+  const users = await fetchOverseerr<OverseerrResponse<User[]>>("user")
   const user = users.results.find((user) => String(user.plexId) === plexId)
 
   return user ? user.id : null

@@ -1,4 +1,4 @@
-import { getLibraries } from '@/utils/fetchTautulli'
+import { getLibraries } from "@/utils/fetchTautulli"
 
 export async function GET() {
   const libraries = await getLibraries()

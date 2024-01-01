@@ -1,25 +1,25 @@
-import { AuthOptions, Session, User } from 'next-auth'
-import { JWT } from 'next-auth/jwt'
-import CredentialsProvider from 'next-auth/providers/credentials'
-import qs from 'qs'
-import { parseStringPromise } from 'xml2js'
+import { AuthOptions, Session, User } from "next-auth"
+import { JWT } from "next-auth/jwt"
+import CredentialsProvider from "next-auth/providers/credentials"
+import qs from "qs"
+import { parseStringPromise } from "xml2js"
 import {
   PLEX_API_ENDPOINT,
   PLEX_CLIENT_IDENTIFIER,
   PLEX_CLIENT_NAME,
-} from './constants'
-import fetchTautulli from './fetchTautulli'
-import { ExtendedUser } from './types'
+} from "./constants"
+import fetchTautulli from "./fetchTautulli"
+import { ExtendedUser } from "./types"
 
 export const authOptions: AuthOptions = {
   providers: [
     CredentialsProvider({
-      id: 'plex',
-      name: 'Plex',
+      id: "plex",
+      name: "Plex",
       credentials: {
         authToken: {
-          label: 'authToken',
-          type: 'string',
+          label: "authToken",
+          type: "string",
         },
       },
       async authorize(credentials) {
@@ -32,7 +32,7 @@ export const authOptions: AuthOptions = {
         try {
           const res = await fetch(`${PLEX_API_ENDPOINT}/user`, {
             headers: {
-              'X-Plex-Token': authToken,
+              "X-Plex-Token": authToken,
             },
           })
 
@@ -55,7 +55,7 @@ export const authOptions: AuthOptions = {
 
           if (res.ok && userData) {
             const checkUser = await fetchTautulli<{ email: string }>(
-              'get_user',
+              "get_user",
               {
                 user_id: userData.id,
               },
@@ -67,13 +67,13 @@ export const authOptions: AuthOptions = {
             if (userExists) {
               return userData
             } else {
-              throw new Error('User does not belong to this server!')
+              throw new Error("User does not belong to this server!")
             }
           }
 
           return null
         } catch (error) {
-          console.error('Error getting Plex user:', error)
+          console.error("Error getting Plex user:", error)
           throw error
         }
       },
@@ -81,7 +81,7 @@ export const authOptions: AuthOptions = {
   ],
   secret: process.env.NEXTAUTH_SECRET,
   pages: {
-    signIn: '/',
+    signIn: "/",
   },
   callbacks: {
     async session({ session, token }: { session: Session; token: JWT }) {
@@ -110,15 +110,15 @@ type PlexPinResponse = {
 async function fetchPlexPins(): Promise<PlexPinResponse> {
   try {
     const res = await fetch(`${PLEX_API_ENDPOINT}/pins`, {
-      method: 'POST',
+      method: "POST",
       headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/x-www-form-urlencoded',
+        Accept: "application/json",
+        "Content-Type": "application/x-www-form-urlencoded",
       },
       body: new URLSearchParams({
-        strong: 'true',
-        'X-Plex-Product': PLEX_CLIENT_NAME,
-        'X-Plex-Client-Identifier': PLEX_CLIENT_IDENTIFIER,
+        strong: "true",
+        "X-Plex-Product": PLEX_CLIENT_NAME,
+        "X-Plex-Client-Identifier": PLEX_CLIENT_IDENTIFIER,
       }),
     })
 
@@ -130,7 +130,7 @@ async function fetchPlexPins(): Promise<PlexPinResponse> {
 
     return res.json()
   } catch (error) {
-    console.error('Error generating Plex PIN:', error)
+    console.error("Error generating Plex PIN:", error)
     throw error
   }
 }
@@ -140,11 +140,11 @@ export async function createPlexAuthUrl() {
   const forwardUrl = `${process.env.NEXT_PUBLIC_SITE_URL}?plexPinId=${id}`
 
   if (!forwardUrl) {
-    throw new Error('Base url is not configured!')
+    throw new Error("Base url is not configured!")
   }
 
   const authAppUrl =
-    'https://app.plex.tv/auth#?' +
+    "https://app.plex.tv/auth#?" +
     qs.stringify({
       clientID: PLEX_CLIENT_IDENTIFIER,
       code,
@@ -162,10 +162,10 @@ export async function createPlexAuthUrl() {
 export async function getPlexAuthToken(pinId: string) {
   try {
     const res = await fetch(`${PLEX_API_ENDPOINT}/pins/${pinId}`, {
-      method: 'GET',
+      method: "GET",
       headers: {
-        Accept: 'application/json',
-        'X-Plex-Client-Identifier': PLEX_CLIENT_IDENTIFIER,
+        Accept: "application/json",
+        "X-Plex-Client-Identifier": PLEX_CLIENT_IDENTIFIER,
       },
     })
 
@@ -179,23 +179,23 @@ export async function getPlexAuthToken(pinId: string) {
 
     return data.authToken
   } catch (error) {
-    console.error('Error getting Plex auth token:', error)
+    console.error("Error getting Plex auth token:", error)
   }
 }
 
 export async function verifyPlexAuthToken(authToken: string) {
   try {
     const res = await fetch(`${PLEX_API_ENDPOINT}/user`, {
-      method: 'POST',
+      method: "POST",
       headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/x-www-form-urlencoded',
+        Accept: "application/json",
+        "Content-Type": "application/x-www-form-urlencoded",
       },
       body: new URLSearchParams({
-        strong: 'true',
-        'X-Plex-Product': PLEX_CLIENT_NAME,
-        'X-Plex-Client-Identifier': PLEX_CLIENT_IDENTIFIER,
-        'X-Plex-Token': authToken,
+        strong: "true",
+        "X-Plex-Product": PLEX_CLIENT_NAME,
+        "X-Plex-Client-Identifier": PLEX_CLIENT_IDENTIFIER,
+        "X-Plex-Token": authToken,
       }),
     })
 
@@ -211,6 +211,6 @@ export async function verifyPlexAuthToken(authToken: string) {
       return true
     }
   } catch (error) {
-    console.error('Error verifying Plex auth token:', error)
+    console.error("Error verifying Plex auth token:", error)
   }
 }

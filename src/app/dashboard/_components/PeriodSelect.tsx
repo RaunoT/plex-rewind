@@ -1,13 +1,13 @@
-'use client'
+"use client"
 
-import Link from 'next/link'
-import { usePathname, useSearchParams } from 'next/navigation'
-import { useEffect } from 'react'
+import Link from "next/link"
+import { usePathname, useSearchParams } from "next/navigation"
+import { useEffect } from "react"
 
 export default function PeriodSelect() {
   const pathname = usePathname()
   const searchParams = useSearchParams()
-  const period = searchParams.get('period')
+  const period = searchParams.get("period")
 
   useEffect(() => {
     window.scrollTo(0, 0)
@@ -19,7 +19,7 @@ export default function PeriodSelect() {
         <Link
           href={`${pathname}?period=7days`}
           className='nav-link'
-          aria-selected={period === '7days'}
+          aria-selected={period === "7days"}
         >
           7 days
         </Link>
@@ -33,7 +33,7 @@ export default function PeriodSelect() {
         <Link
           href={`${pathname}?period=thisYear`}
           className='nav-link'
-          aria-selected={period === 'thisYear'}
+          aria-selected={period === "thisYear"}
         >
           This year
         </Link>
@@ -42,7 +42,7 @@ export default function PeriodSelect() {
         <Link
           href={`${pathname}?period=allTime`}
           className='nav-link'
-          aria-selected={period === 'allTime'}
+          aria-selected={period === "allTime"}
         >
           All time
         </Link>
