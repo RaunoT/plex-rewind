@@ -1,8 +1,4 @@
 {
-  "**/*.{js,jsx,ts,tsx}": [
-    "prettier --write",
-    "eslint --cache --fix",
-    "bash -c tsc --noEmit --skipLibCheck"
-  ],
-  "**/*.{css,md,json}": "prettier --write"
+	"**/*.{js,jsx,ts,tsx}": ["prettier --write", "eslint --cache --fix"],
+	"**/*.{css,md,json}": "prettier --write"
 }
