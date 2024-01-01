@@ -1,5 +1,6 @@
 'use client'
 
+import useTimer from '@/hooks/useTimer'
 import { animateRewindStat, fadeIn } from '@/utils/motion'
 import clsx from 'clsx'
 import { motion } from 'framer-motion'
@@ -28,47 +29,16 @@ export default function RewindStat({
 }: Props) {
   const [isComponentShown, setIsComponentShown] = useState<boolean>(false)
   const [isLoaderShown, setIsLoaderShown] = useState<boolean>(false)
+  const scaleDelayTimer = useTimer(
+    scaleDelay,
+    undefined,
+    isPaused,
+    !!scaleDelay,
+  )
 
-  useEffect(() => {
-    const renderTimer = setTimeout(() => {
-      setIsComponentShown(true)
-    }, renderDelay * 1000)
-
-    if (isPaused) {
-      clearTimeout(renderTimer)
-    }
-
-    return () => clearTimeout(renderTimer)
-  }, [renderDelay, isPaused])
-
-  useEffect(() => {
-    const loaderTimer = setTimeout(() => {
-      setIsLoaderShown(true)
-    }, loaderDelay * 1000)
-
-    if (isPaused) {
-      clearTimeout(loaderTimer)
-    }
-
-    return () => clearTimeout(loaderTimer)
-  }, [loaderDelay, isPaused])
-
-  useEffect(() => {
-    let hideTimer: NodeJS.Timeout | number = hideAfter
-
-    if (hideTimer) {
-      hideTimer = setTimeout(() => {
-        setIsComponentShown(false)
-        setIsLoaderShown(false)
-      }, hideAfter * 1000)
-    }
-
-    if (isPaused) {
-      clearTimeout(hideTimer)
-    }
-
-    return () => clearTimeout(hideTimer)
-  }, [hideAfter, isPaused])
+  useTimer(renderDelay, () => setIsComponentShown(true), isPaused)
+  useTimer(loaderDelay, () => setIsLoaderShown(true), isPaused)
+  useTimer(hideAfter, () => setIsComponentShown(false), isPaused, !!hideAfter)
 
   useEffect(() => {
     if (isPaused) {
@@ -84,24 +54,23 @@ export default function RewindStat({
       )}
       variants={animateRewindStat}
       initial='hidden'
-      animate={noScale ? ['show'] : ['show', 'scaleDown']}
+      animate={noScale || scaleDelayTimer ? ['show'] : ['show', 'scaleDown']}
       style={{ originX: 0, originY: '100%' }}
-      custom={scaleDelay}
     >
       <div>{children}</div>
     </motion.div>
   ) : isLoaderShown ? (
-    <Loader />
+    <Loader isShown={isLoaderShown} />
   ) : null
 }
 
-function Loader() {
+function Loader({ isShown }: { isShown: boolean }) {
   return (
     <motion.div
       className='skeleton skeleton--no-animate flex w-fit items-center gap-2'
       variants={fadeIn}
       initial='hidden'
-      animate='show'
+      animate={isShown ? 'show' : 'hidden'}
     >
       <span className='size-1 animate-pulse rounded-full bg-white'></span>
       <span className='animation-delay-200 size-1 animate-pulse rounded-full bg-white'></span>

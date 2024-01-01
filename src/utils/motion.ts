@@ -27,12 +27,9 @@ export const animateRewindStat = {
     opacity: 1,
     y: 0,
   },
-  scaleDown: (scaleDelay: number) => ({
+  scaleDown: {
     opacity: 0.5,
     fontSize: '20px',
     lineHeight: '22px',
-    transition: {
-      delay: scaleDelay,
-    },
-  }),
+  },
 }
