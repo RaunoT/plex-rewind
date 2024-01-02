@@ -1,5 +1,5 @@
 import MediaItems from '@/components/MediaItem/MediaItems'
-import { UserRewind } from '@/utils/types'
+import { RewindStory } from '@/utils/types'
 import { PlayCircleIcon } from '@heroicons/react/24/outline'
 import RewindStat from '../RewindStat'
 import StoryWrapper from '../StoryWrapper'
@@ -9,14 +9,14 @@ export default function StoryShowsTop({
   isPaused,
   pause,
   resume,
-}: UserRewind) {
+}: RewindStory) {
   return (
     <StoryWrapper isPaused={isPaused} pause={pause} resume={resume}>
       <RewindStat noScale>
         <p className='mb-2'>
           Here&apos;s your full{' '}
           <span className='rewind-cat'>
-            Top {userRewind.shows_top.length === 5 && '5'}
+            Top {userRewind.shows.top.length === 5 && '5'}
             <PlayCircleIcon />
           </span>
         </p>
@@ -24,7 +24,7 @@ export default function StoryShowsTop({
         <div className='text-base not-italic'>
           <MediaItems
             type='show'
-            items={userRewind.shows_top}
+            items={userRewind.shows.top}
             serverId={userRewind.server_id}
             rows
           />

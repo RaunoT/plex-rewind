@@ -1,5 +1,5 @@
 import MediaItems from '@/components/MediaItem/MediaItems'
-import { UserRewind } from '@/utils/types'
+import { RewindStory } from '@/utils/types'
 import { PlayCircleIcon } from '@heroicons/react/24/outline'
 import RewindStat from '../RewindStat'
 import StoryWrapper from '../StoryWrapper'
@@ -9,12 +9,12 @@ export default function StoryShows({
   isPaused,
   pause,
   resume,
-}: UserRewind) {
+}: RewindStory) {
   return (
     <StoryWrapper isPaused={isPaused} pause={pause} resume={resume}>
-      {userRewind.shows_total_duration ? (
+      {userRewind.shows.duration ? (
         <>
-          <RewindStat isPaused={isPaused} scaleDelay={3}>
+          <RewindStat isPaused={isPaused} scaleDelay={3} hideAfter={6}>
             <p>
               <span className='rewind-cat'>
                 TV Shows
@@ -22,17 +22,30 @@ export default function StoryShows({
               </span>{' '}
               took up{' '}
               <span className='rewind-stat'>
-                {userRewind.shows_total_duration}
+                {userRewind.shows.duration}
               </span>{' '}
               of your year on <span className='text-yellow-500'>Plex</span>.
             </p>
           </RewindStat>
 
-          <RewindStat isPaused={isPaused} renderDelay={3} noScale>
+          <RewindStat isPaused={isPaused} renderDelay={3} scaleDelay={3}>
+            <p>
+              You watched{' '}
+              <span className='rewind-stat'>{userRewind.shows.count}</span>{' '}
+              <span className='rewind-cat'>episodes</span> in total!
+            </p>
+          </RewindStat>
+
+          <RewindStat
+            isPaused={isPaused}
+            renderDelay={6}
+            loaderDelay={3}
+            noScale
+          >
             <p className='mb-2'>
               Your favorite was{' '}
               <span className='rewind-cat'>
-                {userRewind.shows_top[0].title}
+                {userRewind.shows.top[0].title}
               </span>
               !
             </p>
@@ -40,7 +53,7 @@ export default function StoryShows({
             <div className='text-base not-italic'>
               <MediaItems
                 type='show'
-                items={Array(userRewind.shows_top[0])}
+                items={Array(userRewind.shows.top[0])}
                 serverId={userRewind.server_id}
                 rows
               />

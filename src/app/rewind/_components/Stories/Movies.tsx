@@ -1,5 +1,5 @@
 import MediaItems from '@/components/MediaItem/MediaItems'
-import { UserRewind } from '@/utils/types'
+import { RewindStory } from '@/utils/types'
 import { FilmIcon, PlayCircleIcon } from '@heroicons/react/24/outline'
 import RewindStat from '../RewindStat'
 import StoryWrapper from '../StoryWrapper'
@@ -9,16 +9,14 @@ export default function StoryMovies({
   isPaused,
   pause,
   resume,
-}: UserRewind) {
+}: RewindStory) {
   return (
     <StoryWrapper isPaused={isPaused} pause={pause} resume={resume}>
-      {userRewind.movies_total_duration ? (
+      {userRewind.movies.duration ? (
         <>
-          <RewindStat isPaused={isPaused} scaleDelay={3}>
+          <RewindStat isPaused={isPaused} scaleDelay={3} hideAfter={6}>
             <p>
-              <span className='rewind-stat'>
-                {userRewind.movies_total_duration}
-              </span>{' '}
+              <span className='rewind-stat'>{userRewind.movies.duration}</span>{' '}
               of your time was spent watching{' '}
               <span className='rewind-cat'>
                 Movies
@@ -28,11 +26,24 @@ export default function StoryMovies({
             </p>
           </RewindStat>
 
-          <RewindStat isPaused={isPaused} renderDelay={3} noScale>
+          <RewindStat isPaused={isPaused} renderDelay={3} scaleDelay={3}>
+            <p>
+              You watched{' '}
+              <span className='rewind-stat'>{userRewind.movies.count}</span>{' '}
+              <span className='rewind-cat'>movies</span> in total!
+            </p>
+          </RewindStat>
+
+          <RewindStat
+            isPaused={isPaused}
+            renderDelay={6}
+            loaderDelay={3}
+            noScale
+          >
             <p className='mb-2'>
               Your favorite was{' '}
               <span className='rewind-cat'>
-                {userRewind.movies_top[0].title}
+                {userRewind.movies.top[0].title}
               </span>
               !
             </p>
@@ -40,7 +51,7 @@ export default function StoryMovies({
             <div className='text-base not-italic'>
               <MediaItems
                 type='movie'
-                items={Array(userRewind.movies_top[0])}
+                items={Array(userRewind.movies.top[0])}
                 serverId={userRewind.server_id}
                 rows
               />

@@ -1,4 +1,4 @@
-import { UserRewind } from '@/utils/types'
+import { RewindStory } from '@/utils/types'
 import {
   FilmIcon,
   PlayCircleIcon,
@@ -13,13 +13,20 @@ export default function StoryRequests({
   isPaused,
   pause,
   resume,
-}: UserRewind) {
+}: RewindStory) {
   return (
     userRewind.requests && (
       <StoryWrapper isPaused={isPaused} pause={pause} resume={resume}>
         {userRewind.requests.total == 0 ? (
           <RewindStat noScale>
-            <p>There haven&apos;t been any requests this year 😲</p>
+            <p>
+              There haven&apos;t been any{' '}
+              <span className='rewind-cat'>
+                Requests
+                <QuestionMarkCircleIcon />
+              </span>{' '}
+              this year 😲
+            </p>
           </RewindStat>
         ) : (
           <>

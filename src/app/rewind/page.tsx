@@ -3,14 +3,14 @@ import { getLibraries, getServerId } from '@/utils/fetchTautulli'
 import { secondsToTime } from '@/utils/formatting'
 import {
   getLibrariesTotalDuration,
-  getMediaUserTotalDuration,
   getRequestsTotals,
-  getUserMediaRewind,
+  getTopMediaItems,
+  getTopMediaStats,
   getUserRequestsTotal,
   getUserTotalDuration,
   getlibrariesTotalSize,
 } from '@/utils/getRewind'
-import { ExtendedUser, RewindResponse } from '@/utils/types'
+import { ExtendedUser, UserRewind } from '@/utils/types'
 import { Session, getServerSession } from 'next-auth'
 import RewindStories from './_components/RewindStories'
 
@@ -26,38 +26,43 @@ export default async function Rewind() {
   const libraries = await getLibraries()
   const [
     topMediaItems,
+    topMediaStats,
     userTotalDuration,
     librariesTotalSize,
     librariesTotalDuration,
-    showsTotalDuration,
-    musicTotalDuration,
-    moviesTotalDuration,
     serverId,
   ] = await Promise.all([
-    getUserMediaRewind(session.user.id),
+    getTopMediaItems(session.user.id),
+    getTopMediaStats(session.user.id),
     getUserTotalDuration(session.user.id),
     getlibrariesTotalSize(libraries),
     getLibrariesTotalDuration(),
-    getMediaUserTotalDuration(libraries, 'show', session.user.id),
-    getMediaUserTotalDuration(libraries, 'movie', session.user.id),
-    getMediaUserTotalDuration(libraries, 'artist', session.user.id),
     getServerId(),
   ])
   const totalDurationPercentage = `${Math.round(
     (userTotalDuration * 100) / librariesTotalDuration,
   )}%`
-  const userRewind: RewindResponse = {
+  const userRewind: UserRewind = {
     total_duration: secondsToTime(userTotalDuration),
     total_duration_percentage: totalDurationPercentage,
     libraries: libraries,
     libraries_total_size: librariesTotalSize,
-    shows_total_duration: showsTotalDuration,
-    shows_top: topMediaItems.top_tv,
-    music_total_duration: musicTotalDuration,
-    music_top: topMediaItems.top_music,
-    movies_total_duration: moviesTotalDuration,
-    movies_top: topMediaItems.top_movies,
     server_id: serverId,
+    shows: {
+      top: topMediaItems.shows,
+      count: topMediaStats.shows.count,
+      duration: topMediaStats.shows.duration,
+    },
+    movies: {
+      top: topMediaItems.movies,
+      count: topMediaStats.movies.count,
+      duration: topMediaStats.movies.duration,
+    },
+    music: {
+      top: topMediaItems.music,
+      count: topMediaStats.music.count,
+      duration: topMediaStats.music.duration,
+    },
   }
 
   if (process.env.NEXT_PUBLIC_OVERSEERR_URL) {

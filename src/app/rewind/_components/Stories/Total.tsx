@@ -1,4 +1,4 @@
-import { UserRewind } from '@/utils/types'
+import { RewindStory } from '@/utils/types'
 import { ChartPieIcon, ClockIcon } from '@heroicons/react/24/outline'
 import RewindStat from '../RewindStat'
 import StoryWrapper from '../StoryWrapper'
@@ -8,7 +8,7 @@ export default function StoryTotal({
   isPaused,
   pause,
   resume,
-}: UserRewind) {
+}: RewindStory) {
   return (
     <StoryWrapper isPaused={isPaused} pause={pause} resume={resume}>
       {userRewind.total_duration ? (

@@ -10,14 +10,13 @@ export type DashboardParams = {
   }
 }
 
-export type UserRewind = {
-  userRewind: RewindResponse
-  isPaused: boolean
-  pause: () => void
-  resume: () => void
+type LibraryRewind = {
+  count: number
+  duration: string
+  top: TautulliItemRow[]
 }
 
-export type RewindResponse = {
+export type UserRewind = {
   total_duration: string
   total_duration_percentage: string
   libraries: Library[]
@@ -28,13 +27,17 @@ export type RewindResponse = {
     shows: number
   }
   user_requests?: number
-  shows_total_duration: string
-  shows_top: TautulliItemRow[]
-  music_total_duration: string
-  music_top: TautulliItemRow[]
-  movies_total_duration: string
-  movies_top: TautulliItemRow[]
   server_id: string
+  shows: LibraryRewind
+  movies: LibraryRewind
+  music: LibraryRewind
+}
+
+export type RewindStory = {
+  userRewind: UserRewind
+  isPaused: boolean
+  pause: () => void
+  resume: () => void
 }
 
 export type TmdbItem = {
