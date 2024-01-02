@@ -1,20 +1,20 @@
-name: Release
+name: Test
 
 on:
+  pull_request:
+    branches:
+      - '*'
   push:
     branches:
-      - main
+      - develop
 
 jobs:
-  release:
-    name: Tag and Release
+  test:
+    name: Lint & Test Build
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-          persist-credentials: false
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
@@ -23,7 +23,9 @@ jobs:
         uses: pnpm/action-setup@v2
       - name: Install dependencies
         run: pnpm install
-      - name: Run Semantic Release
-        env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
-        run: npx semantic-release
+      - name: Lint code
+        run: pnpm lint
+      - name: Check formatting
+        run: pnpm format:check
+      - name: Test build
+        run: pnpm build
