@@ -1,3 +1,14 @@
+## [1.2.0](https://github.com/RaunoT/plex-rewind/compare/v1.1.1...v1.2.0) (2024-01-02)
+
+### Features
+
+- show version on homepage ([750701c](https://github.com/RaunoT/plex-rewind/commit/750701c464ff599e6c9eb66e896b0981646dd794))
+
+### Bug Fixes
+
+- **rewind:** excluding libraries ([83386b0](https://github.com/RaunoT/plex-rewind/commit/83386b0be4700e347ce8573d3822740bf281753f))
+- **rewind:** stories visibility ([9d77610](https://github.com/RaunoT/plex-rewind/commit/9d776100a6f06946a391a20364f2be83ffe9a66d))
+
 ## [1.1.1](https://github.com/RaunoT/plex-rewind/compare/v1.1.0...v1.1.1) (2024-01-02)
 
 ### Bug Fixes
