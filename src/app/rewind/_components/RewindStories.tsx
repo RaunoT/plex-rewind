@@ -1,10 +1,12 @@
 'use client'
 
-import { ExtendedUser, RewindResponse } from '@/utils/types'
+import { ExtendedUser, UserRewind } from '@/utils/types'
 import Stories from 'stories-react'
 import 'stories-react/dist/index.css'
 import StoryLibraries from './Stories/Libraries'
+import StoryMovies from './Stories/Movies'
 import StoryMoviesTop from './Stories/MoviesTop'
+import StoryMusic from './Stories/Music'
 import StoryMusicTop from './Stories/MusicTop'
 import StoryRequests from './Stories/Requests'
 import StoryShows from './Stories/Shows'
@@ -19,12 +21,12 @@ type Story = {
 }
 
 type StoryComponent = {
-  userRewind: RewindResponse
+  userRewind: UserRewind
 } & Story
 
 function createStory(
   Component: React.FC<StoryComponent>,
-  props: { userRewind: RewindResponse },
+  props: { userRewind: UserRewind },
   duration: number,
 ) {
   return {
@@ -42,7 +44,7 @@ function createStory(
 }
 
 type Props = {
-  userRewind: RewindResponse
+  userRewind: UserRewind
   user: ExtendedUser
 }
 
@@ -73,15 +75,39 @@ export default function RewindStories({ userRewind, user }: Props) {
         ]
       : []),
     ...(userRewind.total_duration
-      ? [createStory(StoryShows, commonProps, 8000)]
+      ? [
+          createStory(
+            StoryShows,
+            commonProps,
+            userRewind.shows.count ? 10000 : 4000,
+          ),
+        ]
       : []),
-    ...(userRewind.shows_total_duration
+    ...(userRewind.shows.count
       ? [createStory(StoryShowsTop, commonProps, 8000)]
       : []),
-    ...(userRewind.movies_total_duration
+    ...(userRewind.total_duration
+      ? [
+          createStory(
+            StoryMovies,
+            commonProps,
+            userRewind.movies.count ? 10000 : 4000,
+          ),
+        ]
+      : []),
+    ...(userRewind.movies.count
       ? [createStory(StoryMoviesTop, commonProps, 8000)]
       : []),
-    ...(userRewind.music_total_duration
+    ...(userRewind.total_duration
+      ? [
+          createStory(
+            StoryMusic,
+            commonProps,
+            userRewind.music.count ? 10000 : 4000,
+          ),
+        ]
+      : []),
+    ...(userRewind.music.count
       ? [createStory(StoryMusicTop, commonProps, 8000)]
       : []),
   ]

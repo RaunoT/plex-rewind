@@ -4,33 +4,35 @@ import {
   fetchPaginatedOverseerrStats,
 } from './fetchOverseerr'
 import fetchTautulli from './fetchTautulli'
-import { secondsToTime, timeToSeconds } from './formatting'
+import { removeAfterMinutes, timeToSeconds } from './formatting'
 import getMediaAdditionalData from './getMediaAdditionalData'
 import { Library, TautulliItem, TautulliItemRow } from './types'
 
-export async function getMediaUserTotalDuration(
-  libraries: Library[],
-  mediaType: string,
-  userId: string,
-) {
-  const mediaLibraries = libraries.filter(
-    (library) => library.section_type === mediaType,
-  )
-  const totalDurationsPromises = mediaLibraries.map((library) =>
-    fetchTautulli<{ total_duration: string }>('get_history', {
+export async function getTopMediaStats(userId: string) {
+  async function fetchMediaStats(mediaType: string) {
+    const stats = await fetchTautulli<{
+      recordsFiltered: number
+      total_duration: string
+    }>('get_history', {
       user_id: userId,
-      section_id: library.section_id,
       after: ALLOWED_PERIODS.thisYear.string,
       length: 0,
-    }),
-  )
-  const totalDurationsResponses = await Promise.all(totalDurationsPromises)
-  const totalSeconds = totalDurationsResponses.reduce(
-    (acc, item) => acc + timeToSeconds(item.response?.data?.total_duration),
-    0,
-  )
+      media_type: mediaType,
+    })
 
-  return secondsToTime(totalSeconds)
+    return {
+      count: stats.response?.data?.recordsFiltered || 0,
+      duration: timeToSeconds(stats.response?.data?.total_duration)
+        ? removeAfterMinutes(stats.response?.data?.total_duration)
+        : '',
+    }
+  }
+
+  const shows = await fetchMediaStats('episode')
+  const movies = await fetchMediaStats('movie')
+  const music = await fetchMediaStats('track')
+
+  return { shows, movies, music }
 }
 
 export async function getlibrariesTotalSize(libraries: Library[]) {
@@ -96,7 +98,7 @@ export async function getUserRequestsTotal(userId: string) {
   return userRequestsTotal.length
 }
 
-export async function getUserMediaRewind(userId: string) {
+export async function getTopMediaItems(userId: string) {
   const topMedia = await fetchTautulli<TautulliItem[]>('get_home_stats', {
     user_id: userId,
     time_range: ALLOWED_PERIODS.thisYear.daysAgo,
@@ -107,11 +109,11 @@ export async function getUserMediaRewind(userId: string) {
 
   for (const item of topMedia.response?.data || []) {
     if (item.stat_id === 'top_tv') {
-      result[item.stat_id] = await getMediaAdditionalData(item.rows, 'tv')
+      result.shows = await getMediaAdditionalData(item.rows, 'tv')
     } else if (item.stat_id === 'top_movies') {
-      result[item.stat_id] = await getMediaAdditionalData(item.rows, 'movie')
-    } else {
-      result[item.stat_id] = item.rows
+      result.movies = await getMediaAdditionalData(item.rows, 'movie')
+    } else if (item.stat_id === 'top_music') {
+      result.music = item.rows
     }
   }
 

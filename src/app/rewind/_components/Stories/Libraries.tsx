@@ -1,5 +1,5 @@
 import { bytesToSize } from '@/utils/formatting'
-import { UserRewind } from '@/utils/types'
+import { RewindStory } from '@/utils/types'
 import {
   FilmIcon,
   FolderIcon,
@@ -15,7 +15,7 @@ export default function StoryLibraries({
   isPaused,
   pause,
   resume,
-}: UserRewind) {
+}: RewindStory) {
   return (
     <StoryWrapper isPaused={isPaused} pause={pause} resume={resume}>
       <RewindStat isPaused={isPaused} scaleDelay={3}>

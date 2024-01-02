@@ -29,20 +29,31 @@ export default function RewindStat({
 }: Props) {
   const [isComponentShown, setIsComponentShown] = useState<boolean>(false)
   const [isLoaderShown, setIsLoaderShown] = useState<boolean>(false)
-  const scaleDelayTimer = useTimer(
-    scaleDelay,
+  const scaleTimer = useTimer(
+    renderDelay ? renderDelay + scaleDelay : scaleDelay,
     undefined,
     isPaused,
     !!scaleDelay,
   )
-
-  useTimer(renderDelay, () => setIsComponentShown(true), isPaused)
-  useTimer(loaderDelay, () => setIsLoaderShown(true), isPaused)
+  const loaderTimer = useTimer(
+    loaderDelay,
+    () => setIsLoaderShown(true),
+    isPaused,
+  )
+  const renderTimer = useTimer(
+    renderDelay,
+    () => setIsComponentShown(true),
+    isPaused,
+  )
   useTimer(hideAfter, () => setIsComponentShown(false), isPaused, !!hideAfter)
 
   useEffect(() => {
-    setIsLoaderShown(!isPaused)
-  }, [isPaused])
+    if (!renderTimer || loaderTimer) {
+      setIsLoaderShown(false)
+    } else {
+      setIsLoaderShown(!isPaused)
+    }
+  }, [isPaused, renderTimer, loaderTimer])
 
   return isComponentShown ? (
     <motion.div
@@ -52,7 +63,7 @@ export default function RewindStat({
       )}
       variants={animateRewindStat}
       initial='hidden'
-      animate={noScale || scaleDelayTimer ? ['show'] : ['show', 'scaleDown']}
+      animate={noScale || scaleTimer ? ['show'] : ['show', 'scaleDown']}
       style={{ originX: 0, originY: '100%' }}
     >
       <div>{children}</div>

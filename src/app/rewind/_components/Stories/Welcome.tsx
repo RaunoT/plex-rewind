@@ -1,10 +1,10 @@
 import PlexRewindIcon from '@/app/icon.svg'
-import { ExtendedUser, UserRewind } from '@/utils/types'
+import { ExtendedUser, RewindStory } from '@/utils/types'
 import Image from 'next/image'
 import RewindStat from '../RewindStat'
 import StoryWrapper from '../StoryWrapper'
 
-type Props = Omit<UserRewind, 'userRewind'> & {
+type Props = Omit<RewindStory, 'userRewind'> & {
   user: ExtendedUser
 }
 
