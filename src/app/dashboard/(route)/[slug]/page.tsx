@@ -22,6 +22,7 @@ export async function generateMetadata({
 
 export async function generateStaticParams() {
   const libraries = await getLibraries()
+
   return libraries.map((library) => ({
     slug: snakeCase(library.section_name),
   }))

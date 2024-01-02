@@ -30,7 +30,9 @@ export default async function fetchOverseerr<T>(
       headers: {
         'X-API-KEY': apiKey,
       },
-      cache: cache ? 'force-cache' : 'no-store',
+      next: {
+        revalidate: cache ? 3600 : 0,
+      },
     })
     if (!res.ok) {
       throw new Error(

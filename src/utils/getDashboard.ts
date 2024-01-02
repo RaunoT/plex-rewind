@@ -31,7 +31,7 @@ export async function getItems(library: Library, period: number) {
   if (sectionType === 'show') {
     const usersWatched = await fetchTautulli<TautulliItem>('get_home_stats', {
       stat_id: 'popular_tv',
-      stats_count: 25, // https://github.com/Tautulli/Tautulli/issues/2103
+      stats_count: 50, // https://github.com/Tautulli/Tautulli/issues/2103
       time_range: period,
     })
     const usersWatchedData = usersWatched.response?.data?.rows
@@ -48,7 +48,7 @@ export async function getItems(library: Library, period: number) {
     const artists = itemsRes.response?.data?.rows
     const usersListened = await fetchTautulli<TautulliItem>('get_home_stats', {
       stat_id: 'popular_music',
-      stats_count: 25, // https://github.com/Tautulli/Tautulli/issues/2103
+      stats_count: 50, // https://github.com/Tautulli/Tautulli/issues/2103
       time_range: period,
     })
     const usersListenedData = usersListened.response?.data?.rows
