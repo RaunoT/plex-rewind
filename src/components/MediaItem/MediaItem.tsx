@@ -165,10 +165,10 @@ export default function MediaItem({ data, i, type, serverId }: Props) {
                   {pluralize(data.movies_plays_count, 'play')}
                 </li>
               )}
-              {data.music_plays_count > 0 && (
+              {data.audio_plays_count > 0 && (
                 <li className='flex items-center gap-1 sm:gap-2'>
                   <MusicalNoteIcon className='w-5 text-slate-900' />
-                  {pluralize(data.music_plays_count, 'play')}
+                  {pluralize(data.audio_plays_count, 'play')}
                 </li>
               )}
             </>

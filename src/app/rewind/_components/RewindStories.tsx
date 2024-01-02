@@ -3,11 +3,11 @@
 import { ExtendedUser, UserRewind } from '@/utils/types'
 import Stories from 'stories-react'
 import 'stories-react/dist/index.css'
+import StoryAudio from './Stories/Audio'
+import StoryAudioTop from './Stories/AudioTop'
 import StoryLibraries from './Stories/Libraries'
 import StoryMovies from './Stories/Movies'
 import StoryMoviesTop from './Stories/MoviesTop'
-import StoryMusic from './Stories/Music'
-import StoryMusicTop from './Stories/MusicTop'
 import StoryRequests from './Stories/Requests'
 import StoryShows from './Stories/Shows'
 import StoryShowsTop from './Stories/ShowsTop'
@@ -101,14 +101,14 @@ export default function RewindStories({ userRewind, user }: Props) {
     ...(userRewind.total_duration
       ? [
           createStory(
-            StoryMusic,
+            StoryAudio,
             commonProps,
-            userRewind.music.count ? 10000 : 4000,
+            userRewind.audio.count ? 10000 : 4000,
           ),
         ]
       : []),
-    ...(userRewind.music.count
-      ? [createStory(StoryMusicTop, commonProps, 8000)]
+    ...(userRewind.audio.count
+      ? [createStory(StoryAudioTop, commonProps, 8000)]
       : []),
   ]
 
