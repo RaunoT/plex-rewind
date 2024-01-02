@@ -1,6 +1,6 @@
 import MediaItems from '@/components/MediaItem/MediaItems'
 import { RewindStory } from '@/utils/types'
-import { MusicalNoteIcon, PlayCircleIcon } from '@heroicons/react/24/outline'
+import { MusicalNoteIcon } from '@heroicons/react/24/outline'
 import RewindStat from '../RewindStat'
 import StoryWrapper from '../StoryWrapper'
 
@@ -66,8 +66,8 @@ export default function StoryAudio({
           <p>
             You haven&apos;t listened to any{' '}
             <span className='rewind-cat'>
-              Music
-              <PlayCircleIcon />
+              Audio
+              <MusicalNoteIcon />
             </span>{' '}
             on <span className='text-yellow-500'>Plex</span> this year{' '}
             <span className='not-italic'>🥴</span>

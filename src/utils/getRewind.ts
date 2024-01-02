@@ -94,7 +94,7 @@ export async function getLibrariesTotalDuration(libraries: Library[]) {
   const fetchPromises = libraries.map((library) => {
     return fetchTautulli<{ total_duration: string }>('get_history', {
       section_id: library.section_id,
-      after: ALLOWED_PERIODS.thisYear.daysAgo,
+      after: ALLOWED_PERIODS.thisYear.string,
       length: 0,
     })
   })
@@ -116,7 +116,7 @@ export async function getUserTotalDuration(
     return fetchTautulli<{ total_duration: string }>('get_history', {
       user_id: userId,
       section_id: library.section_id,
-      after: ALLOWED_PERIODS.thisYear.daysAgo,
+      after: ALLOWED_PERIODS.thisYear.string,
       length: 0,
     })
   })

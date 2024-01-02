@@ -27,5 +27,6 @@ jobs:
         run: pnpm lint
       - name: Check formatting
         run: pnpm format:check
-      - name: Test build
-        run: pnpm build
+      # TODO: We need to alter the build pipeline to work without .env
+      # - name: Test build
+      #   run: pnpm build
