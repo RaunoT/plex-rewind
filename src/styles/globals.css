@@ -7,7 +7,7 @@
     @apply block w-fit rounded-2xl bg-gradient-to-r from-blue-800 to-teal-700 px-8 py-3 text-center font-semibold transition-all;
 
     &:hover {
-      @apply opacity-80;
+      @apply opacity-75;
     }
 
     &[disabled] {

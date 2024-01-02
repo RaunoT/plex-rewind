@@ -13,6 +13,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
+import pack from '../../package.json'
 
 export default function Page() {
   const [libraries, setLibraries] = useState<Library[]>([])
@@ -96,8 +97,7 @@ export default function Page() {
           />
         </div>
       )}
-
-      <h1 className='mb-6 flex items-center gap-4 text-4xl font-bold'>
+      <h1 className='flex items-center gap-4 text-4xl font-bold'>
         <motion.div
           initial={{ opacity: 0, x: -50 }}
           animate={{ opacity: 1, x: 0 }}
@@ -118,7 +118,9 @@ export default function Page() {
           rewind
         </motion.span>
       </h1>
-
+      <div className='mb-6 mt-2 font-mono text-xs opacity-25'>
+        v{pack.version}
+      </div>
       {!isLoggedIn && (
         <button
           className='button button-sm mx-auto from-yellow-500 via-yellow-600 to-neutral-700'
@@ -127,7 +129,6 @@ export default function Page() {
           Log in with Plex
         </button>
       )}
-
       {!isRewindDisabled && isLoggedIn && (
         <Link href='/rewind' className='button mb-4'>
           Get started
@@ -143,11 +144,10 @@ export default function Page() {
           Dashboard
         </Link>
       )}
-
       {isLoggedIn && (
         <button
           onClick={() => signOut()}
-          className='mt-16 block opacity-50 hover:opacity-40'
+          className='mt-16 block opacity-50 hover:opacity-25'
         >
           Sign out
         </button>
