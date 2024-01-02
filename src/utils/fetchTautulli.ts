@@ -32,7 +32,9 @@ export default async function fetchTautulli<T>(
 
   try {
     const res = await fetch(`${apiUrl}&cmd=${query}&${qs.stringify(params)}`, {
-      cache: cache ? 'force-cache' : 'no-store',
+      next: {
+        revalidate: cache ? 3600 : 0,
+      },
     })
 
     if (!res.ok) {
@@ -43,7 +45,10 @@ export default async function fetchTautulli<T>(
 
     return res.json()
   } catch (error) {
-    console.error('Error fetching from Tautulli API:', error)
+    console.error(
+      `Error fetching from Tautulli API. The query was '${query}'.\n`,
+      error,
+    )
     throw error
   }
 }
