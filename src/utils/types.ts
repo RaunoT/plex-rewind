@@ -30,7 +30,7 @@ export type UserRewind = {
   server_id: string
   shows: LibraryRewind
   movies: LibraryRewind
-  music: LibraryRewind
+  audio: LibraryRewind
 }
 
 export type RewindStory = {
@@ -66,7 +66,7 @@ export type TautulliItemRow = {
   user_thumb: string
   user: string
   requests: number
-  music_plays_count: number
+  audio_plays_count: number
   movies_plays_count: number
   shows_plays_count: number
   user_id: number

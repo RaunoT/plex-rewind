@@ -1,6 +1,6 @@
 import MediaItems from '@/components/MediaItem/MediaItems'
 import { RewindStory } from '@/utils/types'
-import { FilmIcon, PlayCircleIcon } from '@heroicons/react/24/outline'
+import { FilmIcon } from '@heroicons/react/24/outline'
 import RewindStat from '../RewindStat'
 import StoryWrapper from '../StoryWrapper'
 
@@ -64,7 +64,7 @@ export default function StoryMovies({
             You haven&apos;t watched any{' '}
             <span className='rewind-cat'>
               Movies
-              <PlayCircleIcon />
+              <FilmIcon />
             </span>{' '}
             on <span className='text-yellow-500'>Plex</span> this year{' '}
             <span className='not-italic'>😵‍💫</span>

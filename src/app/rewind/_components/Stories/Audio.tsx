@@ -1,10 +1,10 @@
 import MediaItems from '@/components/MediaItem/MediaItems'
 import { RewindStory } from '@/utils/types'
-import { MusicalNoteIcon, PlayCircleIcon } from '@heroicons/react/24/outline'
+import { MusicalNoteIcon } from '@heroicons/react/24/outline'
 import RewindStat from '../RewindStat'
 import StoryWrapper from '../StoryWrapper'
 
-export default function StoryMusic({
+export default function StoryAudio({
   userRewind,
   isPaused,
   pause,
@@ -12,17 +12,17 @@ export default function StoryMusic({
 }: RewindStory) {
   return (
     <StoryWrapper isPaused={isPaused} pause={pause} resume={resume}>
-      {userRewind.music.duration ? (
+      {userRewind.audio.duration ? (
         <>
           <RewindStat isPaused={isPaused} scaleDelay={3} hideAfter={6}>
             <p>
               And to top it all off, you listened to&nbsp;
               <span className='rewind-stat'>
-                {userRewind.music.duration}
+                {userRewind.audio.duration}
               </span>{' '}
               of{' '}
               <span className='rewind-cat'>
-                Music
+                Audio
                 <MusicalNoteIcon />
               </span>{' '}
               on <span className='text-yellow-500'>Plex</span>.
@@ -32,7 +32,7 @@ export default function StoryMusic({
           <RewindStat isPaused={isPaused} renderDelay={3} scaleDelay={3}>
             <p>
               You listened to{' '}
-              <span className='rewind-stat'>{userRewind.music.count}</span>{' '}
+              <span className='rewind-stat'>{userRewind.audio.count}</span>{' '}
               <span className='rewind-cat'>tracks</span> in total!
             </p>
           </RewindStat>
@@ -46,7 +46,7 @@ export default function StoryMusic({
             <p className='mb-2'>
               Your favorite was{' '}
               <span className='rewind-cat'>
-                {userRewind.music.top[0].title}
+                {userRewind.audio.top[0].title}
               </span>
               !
             </p>
@@ -54,7 +54,7 @@ export default function StoryMusic({
             <div className='text-base not-italic'>
               <MediaItems
                 type='artist'
-                items={Array(userRewind.music.top[0])}
+                items={Array(userRewind.audio.top[0])}
                 serverId={userRewind.server_id}
                 rows
               />
@@ -66,8 +66,8 @@ export default function StoryMusic({
           <p>
             You haven&apos;t listened to any{' '}
             <span className='rewind-cat'>
-              Music
-              <PlayCircleIcon />
+              Audio
+              <MusicalNoteIcon />
             </span>{' '}
             on <span className='text-yellow-500'>Plex</span> this year{' '}
             <span className='not-italic'>🥴</span>

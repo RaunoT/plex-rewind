@@ -32,11 +32,11 @@ export default async function Rewind() {
     librariesTotalDuration,
     serverId,
   ] = await Promise.all([
-    getTopMediaItems(session.user.id),
-    getTopMediaStats(session.user.id),
-    getUserTotalDuration(session.user.id),
+    getTopMediaItems(session.user.id, libraries),
+    getTopMediaStats(session.user.id, libraries),
+    getUserTotalDuration(session.user.id, libraries),
     getlibrariesTotalSize(libraries),
-    getLibrariesTotalDuration(),
+    getLibrariesTotalDuration(libraries),
     getServerId(),
   ])
   const totalDurationPercentage = `${Math.round(
@@ -58,10 +58,10 @@ export default async function Rewind() {
       count: topMediaStats.movies.count,
       duration: topMediaStats.movies.duration,
     },
-    music: {
-      top: topMediaItems.music,
-      count: topMediaStats.music.count,
-      duration: topMediaStats.music.duration,
+    audio: {
+      top: topMediaItems.audio,
+      count: topMediaStats.audio.count,
+      duration: topMediaStats.audio.duration,
     },
   }
 

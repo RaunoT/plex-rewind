@@ -2,6 +2,13 @@ name: 🐛 Bug report
 description: Report a problem
 labels: ['type:bug', 'awaiting-triage']
 body:
+  - type: input
+    id: version
+    attributes:
+      label: Plex Rewind Version
+      description: What version of Plex Rewind are you running?
+    validations:
+      required: true
   - type: textarea
     id: description
     attributes:

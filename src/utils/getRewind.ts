@@ -4,35 +4,73 @@ import {
   fetchPaginatedOverseerrStats,
 } from './fetchOverseerr'
 import fetchTautulli from './fetchTautulli'
-import { removeAfterMinutes, timeToSeconds } from './formatting'
+import { secondsToTime, timeToSeconds } from './formatting'
 import getMediaAdditionalData from './getMediaAdditionalData'
 import { Library, TautulliItem, TautulliItemRow } from './types'
 
-export async function getTopMediaStats(userId: string) {
-  async function fetchMediaStats(mediaType: string) {
-    const stats = await fetchTautulli<{
+export async function getTopMediaStats(userId: string, libraries: Library[]) {
+  const mediaTypeMap = {
+    movie: 'movie',
+    show: 'episode',
+    artist: 'track',
+  }
+  const fetchPromises = libraries.map(async (library) => {
+    const res = await fetchTautulli<{
       recordsFiltered: number
       total_duration: string
     }>('get_history', {
       user_id: userId,
       after: ALLOWED_PERIODS.thisYear.string,
       length: 0,
-      media_type: mediaType,
+      media_type: mediaTypeMap[library.section_type],
+      section_id: library.section_id,
     })
-
     return {
-      count: stats.response?.data?.recordsFiltered || 0,
-      duration: timeToSeconds(stats.response?.data?.total_duration)
-        ? removeAfterMinutes(stats.response?.data?.total_duration)
-        : '',
+      response: res.response.data,
+      type: library.section_type,
+    }
+  })
+  const results = await Promise.all(fetchPromises)
+  const combinedResult = {
+    shows: {
+      count: 0,
+      duration: '',
+    },
+    movies: {
+      count: 0,
+      duration: '',
+    },
+    audio: {
+      count: 0,
+      duration: '',
+    },
+  }
+
+  for (const library of results) {
+    const data = library.response
+
+    if (library.type === 'show') {
+      combinedResult.shows.count += data.recordsFiltered
+      combinedResult.shows.duration = secondsToTime(
+        timeToSeconds(combinedResult.shows.duration) +
+          timeToSeconds(data.total_duration),
+      )
+    } else if (library.type === 'movie') {
+      combinedResult.movies.count += data.recordsFiltered
+      combinedResult.movies.duration = secondsToTime(
+        timeToSeconds(combinedResult.movies.duration) +
+          timeToSeconds(data.total_duration),
+      )
+    } else if (library.type === 'artist') {
+      combinedResult.audio.count += data.recordsFiltered
+      combinedResult.audio.duration = secondsToTime(
+        timeToSeconds(combinedResult.audio.duration) +
+          timeToSeconds(data.total_duration),
+      )
     }
   }
 
-  const shows = await fetchMediaStats('episode')
-  const movies = await fetchMediaStats('movie')
-  const music = await fetchMediaStats('track')
-
-  return { shows, movies, music }
+  return combinedResult
 }
 
 export async function getlibrariesTotalSize(libraries: Library[]) {
@@ -51,28 +89,44 @@ export async function getlibrariesTotalSize(libraries: Library[]) {
   )
 }
 
-export async function getLibrariesTotalDuration() {
-  const librariesTotalDuration = await fetchTautulli<{
-    total_duration: string
-  }>('get_history', {
-    after: ALLOWED_PERIODS.thisYear.string,
-    length: 0,
-  })
-
-  return timeToSeconds(librariesTotalDuration.response?.data?.total_duration)
-}
-
-export async function getUserTotalDuration(userId: string) {
-  const userTotalDuration = await fetchTautulli<{ total_duration: string }>(
-    'get_history',
-    {
-      user_id: userId,
+export async function getLibrariesTotalDuration(libraries: Library[]) {
+  let totalDuration = 0
+  const fetchPromises = libraries.map((library) => {
+    return fetchTautulli<{ total_duration: string }>('get_history', {
+      section_id: library.section_id,
       after: ALLOWED_PERIODS.thisYear.string,
       length: 0,
-    },
-  )
+    })
+  })
+  const results = await Promise.all(fetchPromises)
 
-  return timeToSeconds(userTotalDuration.response?.data?.total_duration)
+  for (const library of results) {
+    totalDuration += timeToSeconds(library.response?.data?.total_duration)
+  }
+
+  return totalDuration
+}
+
+export async function getUserTotalDuration(
+  userId: string,
+  libraries: Library[],
+) {
+  let totalDuration = 0
+  const fetchPromises = libraries.map((library) => {
+    return fetchTautulli<{ total_duration: string }>('get_history', {
+      user_id: userId,
+      section_id: library.section_id,
+      after: ALLOWED_PERIODS.thisYear.string,
+      length: 0,
+    })
+  })
+  const results = await Promise.all(fetchPromises)
+
+  for (const library of results) {
+    totalDuration += timeToSeconds(library.response?.data?.total_duration)
+  }
+
+  return totalDuration
 }
 
 export async function getRequestsTotals() {
@@ -98,24 +152,48 @@ export async function getUserRequestsTotal(userId: string) {
   return userRequestsTotal.length
 }
 
-export async function getTopMediaItems(userId: string) {
-  const topMedia = await fetchTautulli<TautulliItem[]>('get_home_stats', {
-    user_id: userId,
-    time_range: ALLOWED_PERIODS.thisYear.daysAgo,
-    stats_count: 5,
-    stats_type: 'duration',
+export async function getTopMediaItems(userId: string, libraries: Library[]) {
+  const fetchPromises = libraries.map((library) => {
+    return fetchTautulli<TautulliItem[]>('get_home_stats', {
+      user_id: userId,
+      section_id: library.section_id,
+      time_range: ALLOWED_PERIODS.thisYear.daysAgo,
+      stats_count: 5,
+      stats_type: 'duration',
+    })
   })
-  const result: Record<string, TautulliItemRow[]> = {}
+  const results = await Promise.all(fetchPromises)
+  const combinedResult: Record<string, TautulliItemRow[]> = {
+    shows: [],
+    movies: [],
+    audio: [],
+  }
 
-  for (const item of topMedia.response?.data || []) {
-    if (item.stat_id === 'top_tv') {
-      result.shows = await getMediaAdditionalData(item.rows, 'tv')
-    } else if (item.stat_id === 'top_movies') {
-      result.movies = await getMediaAdditionalData(item.rows, 'movie')
-    } else if (item.stat_id === 'top_music') {
-      result.music = item.rows
+  for (const library of results) {
+    for (const topMedia of library.response?.data || []) {
+      if (topMedia.stat_id === 'top_tv') {
+        combinedResult.shows.push(
+          ...(await getMediaAdditionalData(topMedia.rows, 'tv')),
+        )
+      } else if (topMedia.stat_id === 'top_movies') {
+        combinedResult.movies.push(
+          ...(await getMediaAdditionalData(topMedia.rows, 'movie')),
+        )
+      } else if (topMedia.stat_id === 'top_music') {
+        combinedResult.audio.push(...topMedia.rows)
+      }
     }
   }
 
-  return result
+  combinedResult.shows = combinedResult.shows
+    .sort((a, b) => b.total_duration - a.total_duration)
+    .slice(0, 5)
+  combinedResult.movies = combinedResult.movies
+    .sort((a, b) => b.total_duration - a.total_duration)
+    .slice(0, 5)
+  combinedResult.audio = combinedResult.audio
+    .sort((a, b) => b.total_duration - a.total_duration)
+    .slice(0, 5)
+
+  return combinedResult
 }

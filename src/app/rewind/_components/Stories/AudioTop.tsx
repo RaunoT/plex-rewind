@@ -4,7 +4,7 @@ import { MusicalNoteIcon } from '@heroicons/react/24/outline'
 import RewindStat from '../RewindStat'
 import StoryWrapper from '../StoryWrapper'
 
-export default function StoryMusicTop({
+export default function StoryAudioTop({
   userRewind,
   isPaused,
   pause,
@@ -16,7 +16,7 @@ export default function StoryMusicTop({
         <p className='mb-2'>
           Here&apos;s your full{' '}
           <span className='rewind-cat'>
-            Top {userRewind.music.top.length === 5 && '5'}
+            Top {userRewind.audio.top.length === 5 && '5'}
             <MusicalNoteIcon />
           </span>
         </p>
@@ -24,7 +24,7 @@ export default function StoryMusicTop({
         <div className='text-base not-italic'>
           <MediaItems
             type='artist'
-            items={userRewind.music.top}
+            items={userRewind.audio.top}
             serverId={userRewind.server_id}
             rows
           />

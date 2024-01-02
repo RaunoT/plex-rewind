@@ -36,7 +36,7 @@ async function getUsers(
     time_range: period,
   })
   const users = usersRes.response?.data?.rows
-  const [moviesLib, showsLib, musicLib] = await Promise.all([
+  const [moviesLib, showsLib, audioLib] = await Promise.all([
     getLibrariesByType('movie'),
     getLibrariesByType('show'),
     getLibrariesByType('artist'),
@@ -72,7 +72,7 @@ async function getUsers(
     users.map(async (user) => {
       let moviesPlaysCount = 0
       let showsPlaysCount = 0
-      let musicPlaysCount = 0
+      let audioPlaysCount = 0
 
       for (const movieLib of moviesLib) {
         const userMovies = await fetchTautulli<{ recordsFiltered: number }>(
@@ -98,22 +98,22 @@ async function getUsers(
         showsPlaysCount += userShows.response?.data?.recordsFiltered || 0
       }
 
-      for (const musicLibItem of musicLib) {
-        const userMusic = await fetchTautulli<{ recordsFiltered: number }>(
+      for (const audioLibItem of audioLib) {
+        const userAudio = await fetchTautulli<{ recordsFiltered: number }>(
           'get_history',
           {
             user_id: user.user_id,
             after: periodString,
-            section_id: musicLibItem.section_id,
+            section_id: audioLibItem.section_id,
           },
         )
-        musicPlaysCount += userMusic.response?.data?.recordsFiltered || 0
+        audioPlaysCount += userAudio.response?.data?.recordsFiltered || 0
       }
 
       return {
         movies_plays_count: moviesPlaysCount,
         shows_plays_count: showsPlaysCount,
-        music_plays_count: musicPlaysCount,
+        audio_plays_count: audioPlaysCount,
       }
     }),
   )
@@ -122,7 +122,7 @@ async function getUsers(
     user.requests = usersRequestsCounts[i]?.requests || 0
     user.movies_plays_count = usersPlaysAndDurations[i].movies_plays_count
     user.shows_plays_count = usersPlaysAndDurations[i].shows_plays_count
-    user.music_plays_count = usersPlaysAndDurations[i].music_plays_count
+    user.audio_plays_count = usersPlaysAndDurations[i].audio_plays_count
   })
 
   return users

@@ -1,7 +1,6 @@
 {
   "name": "plex-rewind",
-  "version": "1.1.1",
-  "private": true,
+  "version": "1.0.0-dev",
   "packageManager": "pnpm@8.13.1",
   "scripts": {
     "dev": "next dev",
@@ -10,8 +9,9 @@
     "lint:types": "tsc --noEmit",
     "lint:css": "stylelint '**/*.css'",
     "lint": "next lint ; npm run lint:types ; npm run lint:css",
-    "format": "prettier --write .",
-    "postinstall": "husky install",
+    "format": "prettier --write --cache .",
+    "format:check": "prettier --check --cache .",
+    "prepare": "husky install",
     "commit": "git-cz"
   },
   "config": {
