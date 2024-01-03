@@ -13,7 +13,7 @@ type Period = {
   daysAgo: number
 }
 
-export const ALLOWED_PERIODS: { [key: string]: Period } = {
+export const PERIODS: { [key: string]: Period } = {
   '7days': {
     date: DAYS_AGO_7.toISOString(),
     string: DAYS_AGO_7.toISOString().split('T')[0],

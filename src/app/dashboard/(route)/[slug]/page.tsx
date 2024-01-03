@@ -1,4 +1,4 @@
-import { ALLOWED_PERIODS } from '@/utils/constants'
+import { PERIODS } from '@/utils/constants'
 import { getLibraries, getServerId } from '@/utils/fetchTautulli'
 import { getItems, getTotalDuration, getTotalSize } from '@/utils/getDashboard'
 import { DashboardParams } from '@/utils/types'
@@ -41,10 +41,10 @@ export default async function Page({ params, searchParams }: DashboardParams) {
 
   const periodSearchParams = searchParams?.period
   const periodKey =
-    periodSearchParams && ALLOWED_PERIODS[periodSearchParams]
+    periodSearchParams && PERIODS[periodSearchParams]
       ? periodSearchParams
       : '30days'
-  const period = ALLOWED_PERIODS[periodKey]
+  const period = PERIODS[periodKey]
   const [items, totalDuration, totalSize, serverId] = await Promise.all([
     getItems(library, period.daysAgo),
     getTotalDuration(library, period.string),

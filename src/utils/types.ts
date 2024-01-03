@@ -1,9 +1,9 @@
 import { User } from 'next-auth'
-import { ALLOWED_PERIODS } from './constants'
+import { PERIODS } from './constants'
 
 export type DashboardParams = {
   searchParams: {
-    period?: keyof typeof ALLOWED_PERIODS
+    period?: keyof typeof PERIODS
   }
   params: {
     slug: string
@@ -72,13 +72,17 @@ export type TautulliItemRow = {
   user_id: number
 }
 
+export type MediaType = 'movie' | 'show' | 'artist'
+
+export type MediaReturnType = 'shows' | 'movies' | 'audio'
+
 export type Library = {
   section_name: string
   section_id: string
   count: string
   parent_count: string
   child_count: string
-  section_type: 'movie' | 'show' | 'artist'
+  section_type: MediaType
   is_active: number
 }
 

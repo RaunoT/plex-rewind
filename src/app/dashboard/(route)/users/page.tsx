@@ -1,4 +1,4 @@
-import { ALLOWED_PERIODS, META_DESCRIPTION } from '@/utils/constants'
+import { META_DESCRIPTION, PERIODS } from '@/utils/constants'
 import {
   fetchOverseerrUserId,
   fetchPaginatedOverseerrStats,
@@ -151,10 +151,10 @@ async function getUsersCount() {
 export default async function Users({ searchParams }: DashboardParams) {
   const periodSearchParams = searchParams?.period
   const periodKey =
-    periodSearchParams && ALLOWED_PERIODS[periodSearchParams]
+    periodSearchParams && PERIODS[periodSearchParams]
       ? periodSearchParams
       : '30days'
-  const period = ALLOWED_PERIODS[periodKey]
+  const period = PERIODS[periodKey]
   const [usersData, totalDuration, usersCount] = await Promise.all([
     getUsers(period.daysAgo, period.date, period.string),
     getTotalDuration(period.string),

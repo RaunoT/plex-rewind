@@ -1,4 +1,4 @@
-import { authOptions } from '@/utils/auth'
+import { authOptions } from '@/lib/auth'
 import { getLibraries, getServerId } from '@/utils/fetchTautulli'
 import { secondsToTime } from '@/utils/formatting'
 import {

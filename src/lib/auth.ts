@@ -7,9 +7,9 @@ import {
   PLEX_API_ENDPOINT,
   PLEX_CLIENT_IDENTIFIER,
   PLEX_CLIENT_NAME,
-} from './constants'
-import fetchTautulli from './fetchTautulli'
-import { ExtendedUser } from './types'
+} from '../utils/constants'
+import fetchTautulli from '../utils/fetchTautulli'
+import { ExtendedUser } from '../utils/types'
 
 export const authOptions: AuthOptions = {
   providers: [

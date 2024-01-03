@@ -2,7 +2,7 @@
 
 import plexSvg from '@/assets/plex.svg'
 import Loader from '@/components/Loader'
-import { createPlexAuthUrl, getPlexAuthToken } from '@/utils/auth'
+import { createPlexAuthUrl, getPlexAuthToken } from '@/lib/auth'
 import { isDashboardDisabled, isRewindDisabled } from '@/utils/config'
 import { fadeIn } from '@/utils/motion'
 import { Library } from '@/utils/types'
