@@ -1,3 +1,9 @@
+## [1.2.1](https://github.com/RaunoT/plex-rewind/compare/v1.2.0...v1.2.1) (2024-01-03)
+
+### Bug Fixes
+
+- **rewind:** stat animation ([c7eedd0](https://github.com/RaunoT/plex-rewind/commit/c7eedd0b93b0a53eb69bff4249cb5844646df59e))
+
 ## [1.2.0](https://github.com/RaunoT/plex-rewind/compare/v1.1.1...v1.2.0) (2024-01-02)
 
 ### Features
