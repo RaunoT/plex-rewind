@@ -118,9 +118,13 @@ export default function Page() {
           rewind
         </motion.span>
       </h1>
-      <div className='mb-6 mt-2 font-mono text-xs opacity-25'>
+      <a
+        className='mb-6 mt-2 font-mono text-xs opacity-25'
+        href='https://github.com/RaunoT/plex-rewind/releases'
+        target='_blank'
+      >
         v{packageJson.version}
-      </div>
+      </a>
       {!isLoggedIn && (
         <button
           className='button button-sm mx-auto from-yellow-500 via-yellow-600 to-neutral-700'
