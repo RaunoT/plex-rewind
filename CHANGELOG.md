@@ -1,3 +1,9 @@
+## [1.3.0](https://github.com/RaunoT/plex-rewind/compare/v1.2.1...v1.3.0) (2024-01-03)
+
+### Features
+
+- add link to releases page ([e65f929](https://github.com/RaunoT/plex-rewind/commit/e65f9297e44d31e8a3e344f7c0cb36a135a1a6cd))
+
 ## [1.2.1](https://github.com/RaunoT/plex-rewind/compare/v1.2.0...v1.2.1) (2024-01-03)
 
 ### Bug Fixes
