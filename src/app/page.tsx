@@ -13,7 +13,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
-import pack from '../../package.json'
+import packageJson from '../../package.json'
 
 export default function Page() {
   const [libraries, setLibraries] = useState<Library[]>([])
@@ -119,7 +119,7 @@ export default function Page() {
         </motion.span>
       </h1>
       <div className='mb-6 mt-2 font-mono text-xs opacity-25'>
-        v{pack.version}
+        v{packageJson.version}
       </div>
       {!isLoggedIn && (
         <button
