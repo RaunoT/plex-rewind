@@ -20,7 +20,7 @@ export const fadeIn = {
 
 export const animateRewindStat = {
   hidden: {
-    opacity: 1, // TODO: opacity: 0 broken on initial render
+    opacity: 0,
     y: 50,
   },
   show: {
