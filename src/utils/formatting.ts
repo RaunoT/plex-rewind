@@ -15,8 +15,13 @@ export function secondsToTime(seconds: number): string {
         return ''
       }
 
-      const value = Math.floor(remainingSeconds / duration)
+      let value = Math.floor(remainingSeconds / duration)
       remainingSeconds %= duration
+
+      if (label === 'min' && remainingSeconds > 0) {
+        value += 1
+        remainingSeconds = 0
+      }
 
       if (value > 0) {
         unitCount++
