@@ -1,3 +1,9 @@
+## [1.3.1](https://github.com/RaunoT/plex-rewind/compare/v1.3.0...v1.3.1) (2024-01-03)
+
+### Bug Fixes
+
+- **dashboard:** round up leftover seconds to min ([bf33fb5](https://github.com/RaunoT/plex-rewind/commit/bf33fb5c7f3a064a830c75255035a895c4985b99))
+
 ## [1.3.0](https://github.com/RaunoT/plex-rewind/compare/v1.2.1...v1.3.0) (2024-01-03)
 
 ### Features
