@@ -11,5 +11,6 @@ installSerwist({
   skipWaiting: true,
   clientsClaim: true,
   navigationPreload: true,
+  disableDevLogs: true,
   runtimeCaching: defaultCache,
 })
