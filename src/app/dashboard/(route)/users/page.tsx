@@ -14,7 +14,7 @@ import { Metadata } from 'next'
 import Dashboard from '../../_components/Dashboard'
 
 export const metadata: Metadata = {
-  title: 'Users | Plex rewind dashboard',
+  title: 'Users | Plex Rewind Dashboard',
   description: META_DESCRIPTION,
 }
 
