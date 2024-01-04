@@ -42,7 +42,7 @@ export default function StoryTotal({
       ) : (
         <RewindStat noScale>
           <p>
-            You haven&apos;t watched anything on{' '}
+            You haven&apos;t played anything on{' '}
             <span className='text-yellow-500'>Plex</span> this year{' '}
             <span className='not-italic'>😫</span>
           </p>
