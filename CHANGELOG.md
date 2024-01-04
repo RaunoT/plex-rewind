@@ -3,7 +3,6 @@
 ### Features
 
 - pwa ([#17](https://github.com/RaunoT/plex-rewind/issues/17)) ([7fa7be6](https://github.com/RaunoT/plex-rewind/commit/7fa7be66ab3aba68545eed555f9ea35c633c0ece))
-- started pwa implementation ([9755ee3](https://github.com/RaunoT/plex-rewind/commit/9755ee39f049b70d73bf5d79eaa0e915950f8bfc))
 
 ## [1.3.1](https://github.com/RaunoT/plex-rewind/compare/v1.3.0...v1.3.1) (2024-01-03)
 
