@@ -1,5 +1,4 @@
-import { AuthOptions, Session, User } from 'next-auth'
-import { JWT } from 'next-auth/jwt'
+import { AuthOptions } from 'next-auth'
 import CredentialsProvider from 'next-auth/providers/credentials'
 import qs from 'qs'
 import { parseStringPromise } from 'xml2js'
@@ -9,7 +8,6 @@ import {
   PLEX_CLIENT_NAME,
 } from '../utils/constants'
 import fetchTautulli from '../utils/fetchTautulli'
-import { ExtendedUser } from '../utils/types'
 
 export const authOptions: AuthOptions = {
   providers: [
@@ -84,19 +82,18 @@ export const authOptions: AuthOptions = {
     signIn: '/',
   },
   callbacks: {
-    async session({ session, token }: { session: Session; token: JWT }) {
-      const extendedSession = session as Session & { user: ExtendedUser }
-
-      if (extendedSession.user) {
-        extendedSession.user.id = token.sub as string
+    async session({ session, token }) {
+      if (token) {
+        session.user.id = token.id
       }
 
-      return extendedSession
+      return session
     },
-    async jwt({ token, user }: { token: JWT; user: User }) {
+    async jwt({ token, user }) {
       if (user) {
-        token.sub = user.id
+        token.id = user?.id
       }
+
       return token
     },
   },

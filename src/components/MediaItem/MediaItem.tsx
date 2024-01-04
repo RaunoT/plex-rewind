@@ -1,9 +1,9 @@
 'use client'
 
 import placeholderPoster from '@/assets/placeholder.svg'
+import { TautulliItemRow } from '@/types'
 import { pluralize, secondsToTime } from '@/utils/formatting'
 import { slideDown } from '@/utils/motion'
-import { TautulliItemRow } from '@/utils/types'
 import {
   CalendarDaysIcon,
   ClockIcon,

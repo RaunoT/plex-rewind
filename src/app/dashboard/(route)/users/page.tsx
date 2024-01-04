@@ -1,4 +1,5 @@
-import { META_DESCRIPTION, PERIODS } from '@/utils/constants'
+import { DashboardParams, TautulliItem } from '@/types'
+import { PERIODS } from '@/utils/constants'
 import {
   fetchOverseerrUserId,
   fetchPaginatedOverseerrStats,
@@ -8,14 +9,12 @@ import fetchTautulli, {
   getLibrariesByType,
 } from '@/utils/fetchTautulli'
 import { secondsToTime, timeToSeconds } from '@/utils/formatting'
-import { DashboardParams, TautulliItem } from '@/utils/types'
 import { snakeCase } from 'lodash'
 import { Metadata } from 'next'
 import Dashboard from '../../_components/Dashboard'
 
 export const metadata: Metadata = {
-  title: 'Users | Plex rewind dashboard',
-  description: META_DESCRIPTION,
+  title: 'Users',
 }
 
 type UserRequestCounts =

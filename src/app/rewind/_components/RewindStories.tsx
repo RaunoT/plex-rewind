@@ -1,6 +1,7 @@
 'use client'
 
-import { ExtendedUser, UserRewind } from '@/utils/types'
+import { UserRewind } from '@/types'
+import { User } from 'next-auth'
 import Stories from 'stories-react'
 import 'stories-react/dist/index.css'
 import StoryAudio from './Stories/Audio'
@@ -45,7 +46,7 @@ function createStory(
 
 type Props = {
   userRewind: UserRewind
-  user: ExtendedUser
+  user: User
 }
 
 export default function RewindStories({ userRewind, user }: Props) {

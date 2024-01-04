@@ -1,4 +1,4 @@
-import { RewindStory } from '@/utils/types'
+import { RewindStory } from '@/types'
 import {
   FilmIcon,
   PlayCircleIcon,

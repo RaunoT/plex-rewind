@@ -1,11 +1,15 @@
-/** @type {import('next').NextConfig} */
-/** https://nextjs.org/docs/api-reference/next.config.js/introduction */
-module.exports = {
+import withSerwistInit from '@serwist/next'
+
+const withSerwist = withSerwistInit({
+  swSrc: 'src/lib/sw.ts',
+  swDest: 'public/sw.js',
+})
+const tautulliUrl = new URL(process.env.NEXT_PUBLIC_TAUTULLI_URL)
+const nextConfig = {
   reactStrictMode: true,
   output: 'standalone',
   images: {
     remotePatterns: [
-      // TODO: get from NEXT_PUBLIC_TAUTULLI_URL
       {
         protocol: 'http',
         hostname: 'localhost',
@@ -13,6 +17,10 @@ module.exports = {
       {
         protocol: 'https',
         hostname: 'plex.tv',
+      },
+      {
+        protocol: tautulliUrl.protocol.slice(0, -1),
+        hostname: tautulliUrl.host,
       },
     ],
   },
@@ -51,3 +59,5 @@ module.exports = {
     ]
   },
 }
+
+export default withSerwist(nextConfig)

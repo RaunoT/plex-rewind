@@ -1,7 +1,7 @@
+import { Library, TautulliItem } from '@/types'
 import fetchTautulli from './fetchTautulli'
 import { bytesToSize, secondsToTime, timeToSeconds } from './formatting'
 import getMediaAdditionalData from './getMediaAdditionalData'
-import { Library, TautulliItem } from './types'
 
 export async function getItems(library: Library, period: number) {
   let items = []
