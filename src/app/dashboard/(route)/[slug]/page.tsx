@@ -1,7 +1,7 @@
+import { DashboardParams } from '@/types'
 import { PERIODS } from '@/utils/constants'
 import { getLibraries, getServerId } from '@/utils/fetchTautulli'
 import { getItems, getTotalDuration, getTotalSize } from '@/utils/getDashboard'
-import { DashboardParams } from '@/utils/types'
 import { snakeCase } from 'lodash'
 import { Metadata } from 'next'
 import { notFound } from 'next/navigation'

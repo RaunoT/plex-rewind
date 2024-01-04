@@ -1,4 +1,4 @@
-import { TautulliItemRow } from '@/utils/types'
+import { TautulliItemRow } from '@/types'
 import clsx from 'clsx'
 import MediaItem from './MediaItem'
 

@@ -1,5 +1,5 @@
 import MediaItems from '@/components/MediaItem/MediaItems'
-import { TautulliItemRow } from '@/utils/types'
+import { TautulliItemRow } from '@/types'
 import {
   ArrowLongLeftIcon,
   ArrowLongRightIcon,

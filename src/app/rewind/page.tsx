@@ -1,4 +1,5 @@
 import { authOptions } from '@/lib/auth'
+import { UserRewind } from '@/types'
 import { getLibraries, getServerId } from '@/utils/fetchTautulli'
 import { secondsToTime } from '@/utils/formatting'
 import {
@@ -10,14 +11,11 @@ import {
   getUserTotalDuration,
   getlibrariesTotalSize,
 } from '@/utils/getRewind'
-import { ExtendedUser, UserRewind } from '@/utils/types'
-import { Session, getServerSession } from 'next-auth'
+import { getServerSession } from 'next-auth'
 import RewindStories from './_components/RewindStories'
 
 export default async function Rewind() {
-  const session = (await getServerSession(authOptions)) as Session & {
-    user: ExtendedUser
-  }
+  const session = await getServerSession(authOptions)
 
   if (!session?.user) {
     return

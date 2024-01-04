@@ -1,3 +1,4 @@
+import { DashboardParams, TautulliItem } from '@/types'
 import { META_DESCRIPTION, PERIODS } from '@/utils/constants'
 import {
   fetchOverseerrUserId,
@@ -8,7 +9,6 @@ import fetchTautulli, {
   getLibrariesByType,
 } from '@/utils/fetchTautulli'
 import { secondsToTime, timeToSeconds } from '@/utils/formatting'
-import { DashboardParams, TautulliItem } from '@/utils/types'
 import { snakeCase } from 'lodash'
 import { Metadata } from 'next'
 import Dashboard from '../../_components/Dashboard'

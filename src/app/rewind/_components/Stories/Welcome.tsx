@@ -1,11 +1,12 @@
 import PlexRewindIcon from '@/app/icon.svg'
-import { ExtendedUser, RewindStory } from '@/utils/types'
+import { RewindStory } from '@/types'
+import { User } from 'next-auth'
 import Image from 'next/image'
 import RewindStat from '../RewindStat'
 import StoryWrapper from '../StoryWrapper'
 
 type Props = Omit<RewindStory, 'userRewind'> & {
-  user: ExtendedUser
+  user: User
 }
 
 export default function StoryWelcome({ user, isPaused, pause, resume }: Props) {

@@ -1,5 +1,4 @@
-import { User } from 'next-auth'
-import { PERIODS } from './constants'
+import { PERIODS } from '../utils/constants'
 
 export type DashboardParams = {
   searchParams: {
@@ -84,8 +83,4 @@ export type Library = {
   child_count: string
   section_type: MediaType
   is_active: number
-}
-
-export type ExtendedUser = User & {
-  id: string
 }

@@ -1,5 +1,5 @@
+import { RewindStory } from '@/types'
 import { bytesToSize } from '@/utils/formatting'
-import { RewindStory } from '@/utils/types'
 import {
   FilmIcon,
   FolderIcon,

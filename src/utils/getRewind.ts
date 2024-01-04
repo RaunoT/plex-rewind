@@ -1,3 +1,10 @@
+import {
+  Library,
+  MediaReturnType,
+  MediaType,
+  TautulliItem,
+  TautulliItemRow,
+} from '../types'
 import { PERIODS } from './constants'
 import {
   fetchOverseerrUserId,
@@ -6,13 +13,6 @@ import {
 import fetchTautulli from './fetchTautulli'
 import { secondsToTime, timeToSeconds } from './formatting'
 import getMediaAdditionalData from './getMediaAdditionalData'
-import {
-  Library,
-  MediaReturnType,
-  MediaType,
-  TautulliItem,
-  TautulliItemRow,
-} from './types'
 
 export async function getTopMediaStats(userId: string, libraries: Library[]) {
   const mediaTypeMap: Record<MediaType, string> = {
