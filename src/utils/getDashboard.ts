@@ -1,4 +1,4 @@
-import { Library, TautulliItem } from '../types'
+import { Library, TautulliItem } from '@/types'
 import fetchTautulli from './fetchTautulli'
 import { bytesToSize, secondsToTime, timeToSeconds } from './formatting'
 import getMediaAdditionalData from './getMediaAdditionalData'

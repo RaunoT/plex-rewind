@@ -4,7 +4,7 @@ import {
   MediaType,
   TautulliItem,
   TautulliItemRow,
-} from '../types'
+} from '@/types'
 import { PERIODS } from './constants'
 import {
   fetchOverseerrUserId,

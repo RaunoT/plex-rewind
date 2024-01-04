@@ -1,5 +1,5 @@
+import { Library } from '@/types'
 import qs from 'qs'
-import { Library } from '../types'
 import { excludedLibraries } from './config'
 
 type TautulliResponse<T> = {

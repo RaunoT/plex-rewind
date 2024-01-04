@@ -3,7 +3,7 @@ import {
   TautulliItemRow,
   TmdbExternalId,
   TmdbItem,
-} from '../types'
+} from '@/types'
 import fetchTautulli from './fetchTautulli'
 import fetchTmdb from './fetchTmdb'
 
