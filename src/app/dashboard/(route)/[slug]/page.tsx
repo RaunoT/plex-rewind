@@ -16,7 +16,7 @@ export async function generateMetadata({
   )
 
   return {
-    title: `${library?.section_name} | Plex Rewind Dashboard`,
+    title: library?.section_name,
   }
 }
 

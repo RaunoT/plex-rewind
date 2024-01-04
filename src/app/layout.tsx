@@ -10,6 +10,7 @@ import AppProvider from './_components/AppProvider'
 import GoogleAnalytics from './_components/GoogleAnalytics'
 
 export const metadata: Metadata = {
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || ''),
   applicationName: META_TITLE,
   title: {
     default: META_TITLE,
@@ -18,9 +19,9 @@ export const metadata: Metadata = {
   description: META_DESCRIPTION,
   manifest: '/manifest.json',
   appleWebApp: {
+    title: META_TITLE,
     capable: true,
     statusBarStyle: 'default',
-    title: META_TITLE,
   },
   openGraph: {
     type: 'website',
@@ -42,7 +43,7 @@ export const metadata: Metadata = {
 }
 
 export const viewport: Viewport = {
-  themeColor: '#312e81',
+  themeColor: '#171717',
 }
 
 type Props = {
