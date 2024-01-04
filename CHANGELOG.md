@@ -1,3 +1,9 @@
+## [1.4.1](https://github.com/RaunoT/plex-rewind/compare/v1.4.0...v1.4.1) (2024-01-04)
+
+### Bug Fixes
+
+- analytics ([db8f295](https://github.com/RaunoT/plex-rewind/commit/db8f295f52aa4405f7d560c9a426f92c29fb0b56))
+
 ## [1.4.0](https://github.com/RaunoT/plex-rewind/compare/v1.3.1...v1.4.0) (2024-01-04)
 
 ### Features
