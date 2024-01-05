@@ -1,3 +1,9 @@
+## [1.5.0](https://github.com/RaunoT/plex-rewind/compare/v1.4.1...v1.5.0) (2024-01-05)
+
+### Features
+
+- **dashboard:** allow disabling individual stats and users page ([55fef07](https://github.com/RaunoT/plex-rewind/commit/55fef07d81297fd47401b37dcc319ca99eafbaba)), closes [#73](https://github.com/RaunoT/plex-rewind/issues/73)
+
 ## [1.4.1](https://github.com/RaunoT/plex-rewind/compare/v1.4.0...v1.4.1) (2024-01-04)
 
 ### Bug Fixes
