@@ -63,5 +63,3 @@ To learn more about some of the tools used in this project, take a look at the f
 - [Overseerr API reference](https://api-docs.overseerr.dev)
 - [Next.js docs](https://nextjs.org/docs)
 - [NextAuth.js docs](https://next-auth.js.org/getting-started/introduction)
-- [Tailwind.css docs](https://tailwindcss.com/docs)
-- [Framer Motion docs](https://www.framer.com/docs)
