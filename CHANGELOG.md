@@ -1,3 +1,9 @@
+## [1.5.1](https://github.com/RaunoT/plex-rewind/compare/v1.5.0...v1.5.1) (2024-01-05)
+
+### Bug Fixes
+
+- content size in mobile ([872154d](https://github.com/RaunoT/plex-rewind/commit/872154de2df0e28875d8292c9feccc4632079b64))
+
 ## [1.5.0](https://github.com/RaunoT/plex-rewind/compare/v1.4.1...v1.5.0) (2024-01-05)
 
 ### Features
