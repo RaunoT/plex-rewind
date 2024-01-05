@@ -2,6 +2,7 @@
 
 import placeholderPoster from '@/assets/placeholder.svg'
 import { TautulliItemRow } from '@/types'
+import { excludedDashboardStats } from '@/utils/config'
 import { pluralize, secondsToTime } from '@/utils/formatting'
 import { slideDown } from '@/utils/motion'
 import {
@@ -133,64 +134,71 @@ export default function MediaItem({ data, i, type, serverId }: Props) {
             </li>
           )}
           {/* Duration */}
-          <li className='flex items-center gap-1 sm:gap-2'>
-            {type === 'show' || type === 'movie' ? (
-              <EyeIcon className='w-5 text-slate-900' />
-            ) : type === 'artist' ? (
-              <SpeakerWaveIcon className='w-5 text-slate-900' />
-            ) : (
-              type === 'users' && <ClockIcon className='w-5 text-slate-900' />
-            )}
-            {secondsToTime(data.total_duration)}
-          </li>
-          {/* Users watched */}
-          {(type === 'show' || type === 'artist') && data.users_watched && (
+          {!excludedDashboardStats.includes('duration') && (
             <li className='flex items-center gap-1 sm:gap-2'>
-              <UserIcon className='w-5 text-slate-900' />
-              {pluralize(data.users_watched, 'user')}
-            </li>
-          )}
-          {/* Plays */}
-          {type === 'users' ? (
-            <>
-              {data.shows_plays_count > 0 && (
-                <li className='flex items-center gap-1 sm:gap-2'>
-                  <PlayCircleIcon className='w-5 text-slate-900' />
-                  {pluralize(data.shows_plays_count, 'play')}
-                </li>
-              )}
-              {data.movies_plays_count > 0 && (
-                <li className='flex items-center gap-1 sm:gap-2'>
-                  <FilmIcon className='w-5 text-slate-900' />
-                  {pluralize(data.movies_plays_count, 'play')}
-                </li>
-              )}
-              {data.audio_plays_count > 0 && (
-                <li className='flex items-center gap-1 sm:gap-2'>
-                  <MusicalNoteIcon className='w-5 text-slate-900' />
-                  {pluralize(data.audio_plays_count, 'play')}
-                </li>
-              )}
-            </>
-          ) : (
-            <li className='flex items-center gap-1 sm:gap-2'>
-              {type === 'artist' ? (
-                <MusicalNoteIcon className='w-5 text-slate-900' />
-              ) : type === 'movie' ? (
-                <FilmIcon className='w-5 text-slate-900' />
+              {type === 'show' || type === 'movie' ? (
+                <EyeIcon className='w-5 text-slate-900' />
+              ) : type === 'artist' ? (
+                <SpeakerWaveIcon className='w-5 text-slate-900' />
               ) : (
-                <PlayCircleIcon className='w-5 text-slate-900' />
+                type === 'users' && <ClockIcon className='w-5 text-slate-900' />
               )}
-              <span>{pluralize(data.total_plays, 'play')}</span>
+              {secondsToTime(data.total_duration)}
             </li>
           )}
+          {/* Users watched */}
+          {!excludedDashboardStats.includes('users') &&
+            (type === 'show' || type === 'artist') &&
+            data.users_watched && (
+              <li className='flex items-center gap-1 sm:gap-2'>
+                <UserIcon className='w-5 text-slate-900' />
+                {pluralize(data.users_watched, 'user')}
+              </li>
+            )}
+          {/* Plays */}
+          {!excludedDashboardStats.includes('plays') &&
+            (type === 'users' ? (
+              <>
+                {data.shows_plays_count > 0 && (
+                  <li className='flex items-center gap-1 sm:gap-2'>
+                    <PlayCircleIcon className='w-5 text-slate-900' />
+                    {pluralize(data.shows_plays_count, 'play')}
+                  </li>
+                )}
+                {data.movies_plays_count > 0 && (
+                  <li className='flex items-center gap-1 sm:gap-2'>
+                    <FilmIcon className='w-5 text-slate-900' />
+                    {pluralize(data.movies_plays_count, 'play')}
+                  </li>
+                )}
+                {data.audio_plays_count > 0 && (
+                  <li className='flex items-center gap-1 sm:gap-2'>
+                    <MusicalNoteIcon className='w-5 text-slate-900' />
+                    {pluralize(data.audio_plays_count, 'play')}
+                  </li>
+                )}
+              </>
+            ) : (
+              <li className='flex items-center gap-1 sm:gap-2'>
+                {type === 'artist' ? (
+                  <MusicalNoteIcon className='w-5 text-slate-900' />
+                ) : type === 'movie' ? (
+                  <FilmIcon className='w-5 text-slate-900' />
+                ) : (
+                  <PlayCircleIcon className='w-5 text-slate-900' />
+                )}
+                <span>{pluralize(data.total_plays, 'play')}</span>
+              </li>
+            ))}
           {/* Requests */}
-          {type === 'users' && data.requests > 0 && (
-            <li className='flex items-center gap-1 sm:gap-2'>
-              <QuestionMarkCircleIcon className='w-5 text-slate-900' />
-              {pluralize(data.requests, 'request')}
-            </li>
-          )}
+          {!excludedDashboardStats.includes('requests') &&
+            type === 'users' &&
+            data.requests > 0 && (
+              <li className='flex items-center gap-1 sm:gap-2'>
+                <QuestionMarkCircleIcon className='w-5 text-slate-900' />
+                {pluralize(data.requests, 'request')}
+              </li>
+            )}
         </ul>
       </div>
     </motion.li>

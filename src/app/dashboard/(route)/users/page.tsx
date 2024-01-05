@@ -1,4 +1,5 @@
 import { DashboardParams, TautulliItem } from '@/types'
+import { isDashboardUsersDisabled } from '@/utils/config'
 import { PERIODS } from '@/utils/constants'
 import {
   fetchOverseerrUserId,
@@ -11,6 +12,7 @@ import fetchTautulli, {
 import { secondsToTime, timeToSeconds } from '@/utils/formatting'
 import { snakeCase } from 'lodash'
 import { Metadata } from 'next'
+import { notFound } from 'next/navigation'
 import Dashboard from '../../_components/Dashboard'
 
 export const metadata: Metadata = {
@@ -148,6 +150,9 @@ async function getUsersCount() {
 }
 
 export default async function Users({ searchParams }: DashboardParams) {
+  // TODO: not redirecting to parent 404 boundary
+  isDashboardUsersDisabled && notFound()
+
   const periodSearchParams = searchParams?.period
   const periodKey =
     periodSearchParams && PERIODS[periodSearchParams]

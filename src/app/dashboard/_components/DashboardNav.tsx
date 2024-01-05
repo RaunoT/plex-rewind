@@ -1,6 +1,7 @@
 'use client'
 
 import { Library } from '@/types'
+import { isDashboardUsersDisabled } from '@/utils/config'
 import { snakeCase } from 'lodash'
 import Link from 'next/link'
 import { usePathname, useSearchParams } from 'next/navigation'
@@ -33,15 +34,17 @@ export default function DashboardNav({ libraries }: Props) {
             </Link>
           </li>
         ))}
-        <li>
-          <Link
-            href={`/dashboard/users${period}`}
-            className='nav-link'
-            aria-current={pathname === '/dashboard/users' && 'page'}
-          >
-            Users
-          </Link>
-        </li>
+        {!isDashboardUsersDisabled && (
+          <li>
+            <Link
+              href={`/dashboard/users${period}`}
+              className='nav-link'
+              aria-current={pathname === '/dashboard/users' && 'page'}
+            >
+              Users
+            </Link>
+          </li>
+        )}
       </ul>
     </nav>
   )
