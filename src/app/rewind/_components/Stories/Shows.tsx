@@ -14,7 +14,7 @@ export default function StoryShows({
     <StoryWrapper isPaused={isPaused} pause={pause} resume={resume}>
       {userRewind.shows.duration ? (
         <>
-          <RewindStat isPaused={isPaused} scaleDelay={3} hideAfter={6}>
+          <RewindStat isPaused={isPaused} scaleDelay={3}>
             <p>
               <span className='rewind-cat'>
                 TV Shows

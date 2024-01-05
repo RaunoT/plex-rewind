@@ -1,6 +1,12 @@
 export const isDashboardDisabled: boolean =
   process.env.NEXT_PUBLIC_IS_DASHBOARD_DISABLED === 'true'
 
+export const isDashboardUsersDisabled: boolean =
+  process.env.NEXT_PUBLIC_IS_DASHBOARD_USERS_DISABLED === 'true'
+
+export const excludedDashboardStats: string[] =
+  process.env.NEXT_PUBLIC_EXCLUDED_DASHBOARD_STATS?.split(',') || []
+
 export const isRewindDisabled: boolean =
   process.env.NEXT_PUBLIC_IS_REWIND_DISABLED === 'true'
 

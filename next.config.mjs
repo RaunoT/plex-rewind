@@ -1,10 +1,12 @@
 import withSerwistInit from '@serwist/next'
 
+const tautulliUrl = new URL(process.env.NEXT_PUBLIC_TAUTULLI_URL)
+const isDev = process.env.NODE_ENV !== 'production'
 const withSerwist = withSerwistInit({
   swSrc: 'src/lib/sw.ts',
   swDest: 'public/sw.js',
+  disable: isDev,
 })
-const tautulliUrl = new URL(process.env.NEXT_PUBLIC_TAUTULLI_URL)
 const nextConfig = {
   reactStrictMode: true,
   output: 'standalone',
