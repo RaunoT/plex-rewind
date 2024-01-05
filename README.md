@@ -1,10 +1,8 @@
 # Plex Rewind
 
-<p>
-  [<img src="https://github.com/raunot/plex-rewind/workflows/Release/badge.svg" alt="Plex Rewind release status" />](https://github.com/RaunoT/plex-rewind/actions/workflows/release.yml)
-  [<img src="https://github.com/raunot/plex-rewind/workflows/Tests/badge.svg" alt="Plex Rewind tests status">](https://github.com/RaunoT/plex-rewind/actions/workflows/tests.yml)
-  [<img src="https://img.shields.io/github/v/release/raunot/plex-rewind" alt="Plex Rewind latest release">](https://github.com/RaunoT/plex-rewind/releases)
-</p>
+[<img src="https://github.com/raunot/plex-rewind/workflows/Release/badge.svg" alt="Plex Rewind release status" />](https://github.com/RaunoT/plex-rewind/actions/workflows/release.yml)
+[<img src="https://github.com/raunot/plex-rewind/workflows/Tests/badge.svg" alt="Plex Rewind tests status">](https://github.com/RaunoT/plex-rewind/actions/workflows/tests.yml)
+[<img src="https://img.shields.io/github/v/release/raunot/plex-rewind" alt="Plex Rewind latest release">](https://github.com/RaunoT/plex-rewind/releases)
 
 A Plex Rewind application inspired by the likes of [Spotify Wrapped](https://www.spotify.com/us/wrapped) and [Tautulli](https://tautulli.com).
 
