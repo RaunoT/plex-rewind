@@ -1,3 +1,9 @@
+## [1.5.4](https://github.com/RaunoT/plex-rewind/compare/v1.5.3...v1.5.4) (2024-01-05)
+
+### Bug Fixes
+
+- **rewind:** card size on tablet ([77fad40](https://github.com/RaunoT/plex-rewind/commit/77fad40275dd057e949f102872c1b330a653700a))
+
 ## [1.5.3](https://github.com/RaunoT/plex-rewind/compare/v1.5.2...v1.5.3) (2024-01-05)
 
 ### Bug Fixes
