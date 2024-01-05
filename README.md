@@ -8,17 +8,18 @@
 
 A Plex Rewind application inspired by the likes of [Spotify Wrapped](https://www.spotify.com/us/wrapped) and [Tautulli](https://tautulli.com).
 
-Present [Plex](https://plex.tv) user statistics and habits in a beautiful and organized manner - as a web application application powered by [Next.js](https://nextjs.org) and [Tailwind.css](https://tailwindcss.com), using data from [Tautulli](https://tautulli.com) and [Overseerr](https://overseerr.dev). You can also disable the Rewind functionality and just use it as an easily sharable Dashboard for your Plex users or vice versa!
+Present [Plex](https://plex.tv) user statistics and habits in a beautiful and organized manner - as a web application application powered by [Next.js](https://nextjs.org) and [Tailwind.css](https://tailwindcss.com), using data from [Tautulli](https://tautulli.com), [Overseerr](https://overseerr.dev) and [Plex](https://plex.tv). You can also disable the Rewind functionality and just use it as an easily sharable Dashboard for your Plex users or vice versa!
 
 ## Features
 
-- 📱 Fully responsive - viewable on desktop, tablet and mobile.
-- 🔄 Fully dynamic - the data your viewing will always be the latest available.
+- 📱 Fully responsive - viewable, usable & enjoyable on desktop, tablet or mobile, courtesy of [Tailwind.css](https://tailwindcss.com).
+- 🔄 Fully dynamic - the data your're viewing will always be the latest available.
 - 📆 Rewind - allows your Plex users view their statistics and habits for a given year.
 - 👀 Dashboard - provides an easily glanceable overview of activity on your server for all your libraries.
-- 🔗 Integrates with [Overseerr](https://overseerr.dev) and [Tautulli](https://tautulli.com).
+- 🔗 Integrates with [Overseerr](https://overseerr.dev) & [Tautulli](https://tautulli.com).
 - 🔐 Log in with Plex - uses [NextAuth.js](https://next-auth.js.org) to allow securely logging in with your Plex account.
-- 🚀 PWA support - installable on mobile devices and desktops.
+- 🚀 PWA support - installable on mobile devices and desktops, powered by [serwist](https://github.com/serwist/serwist).
+- ⭐ All of this and more - Powered by [Next.js](https://nextjs.org).
 
 Keep an eye on our [issues page](https://github.com/RaunoT/plex-rewind/issues) to see what new features have already been requested or to make your own request!
 
