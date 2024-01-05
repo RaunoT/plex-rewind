@@ -117,9 +117,9 @@ export default function RewindStories({ userRewind, user }: Props) {
     <Stories
       stories={stories}
       classNames={{
-        main: 'flex flex-1 flex-col !bg-transparent pt-10 sm:pt-8',
+        main: '!bg-transparent pt-10 sm:pt-8 flex flex-1 justify-center flex-col',
         storyContainer:
-          '!bg-transparent flex flex-1 flex-col sm:justify-center',
+          '!bg-transparent *:sm:flex *:sm:flex-col *:sm:justify-center',
       }}
     />
   )
