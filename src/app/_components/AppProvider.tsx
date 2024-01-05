@@ -15,7 +15,7 @@ export default function AppProvider({ children }: Props) {
     <SessionProvider>
       <main
         className={clsx(
-          'min-height-screen flex flex-col items-center overflow-x-hidden px-4 py-8 sm:justify-center',
+          'flex min-h-dvh flex-col items-center overflow-x-hidden px-4 py-8 sm:justify-center',
           { 'justify-center': pathname === '/' },
         )}
       >

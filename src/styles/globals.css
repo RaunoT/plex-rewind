@@ -82,14 +82,4 @@
   .animation-delay-400 {
     animation-delay: 0.6s;
   }
-
-  /* TODO: can this be replaced with the new dvh, lvh, svh units? */
-  .min-height-screen {
-    @apply min-h-screen;
-
-    @supports (-webkit-touch-callout: none) {
-      /* stylelint-disable-next-line value-no-vendor-prefix */
-      min-height: -webkit-fill-available;
-    }
-  }
 }

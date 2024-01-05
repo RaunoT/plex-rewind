@@ -7,10 +7,10 @@ type Props = {
 
 export default function CardWrapper({ children, className }: Props) {
   return (
-    <div className='relative'>
+    <div className='relative flex flex-1'>
       <article
         className={clsx(
-          'bg-gradient-card flex min-h-[75vh] w-full flex-col rounded-3xl px-6 pb-4 pt-6 sm:px-8 sm:pt-8',
+          'bg-gradient-card flex w-full flex-col rounded-3xl px-6 pb-4 pt-6 sm:px-8 sm:pt-8',
           className,
         )}
       >
