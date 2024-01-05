@@ -1,9 +1,9 @@
 # Plex Rewind
 
 <p>
-  <img src="https://github.com/raunot/plex-rewind/workflows/Release/badge.svg" alt="Plex Rewind release status" />
-  <img src="https://github.com/raunot/plex-rewind/workflows/Tests/badge.svg" alt="Plex Rewind tests status">
-  <img src="https://img.shields.io/github/v/release/raunot/plex-rewind" alt="Plex Rewind latest release">
+  [<img src="https://github.com/raunot/plex-rewind/workflows/Release/badge.svg" alt="Plex Rewind release status" />](https://github.com/RaunoT/plex-rewind/actions/workflows/release.yml)
+  [<img src="https://github.com/raunot/plex-rewind/workflows/Tests/badge.svg" alt="Plex Rewind tests status">](https://github.com/RaunoT/plex-rewind/actions/workflows/tests.yml)
+  [<img src="https://img.shields.io/github/v/release/raunot/plex-rewind" alt="Plex Rewind latest release">](https://github.com/RaunoT/plex-rewind/releases)
 </p>
 
 A Plex Rewind application inspired by the likes of [Spotify Wrapped](https://www.spotify.com/us/wrapped) and [Tautulli](https://tautulli.com).
@@ -16,9 +16,9 @@ Present [Plex](https://plex.tv) user statistics and habits in a beautiful and or
 - 🔄 Fully dynamic - the data your're viewing will always be the latest available.
 - 📆 Rewind - allows your Plex users view their statistics and habits for a given year.
 - 👀 Dashboard - provides an easily glanceable overview of activity on your server for all your libraries.
-- ✨ Beautiful animations by [Framer Motion](https://www.framer.com/motion).
+- ✨ Beautiful animations with [Framer Motion](https://www.framer.com/motion).
 - 🔗 Integrates with [Overseerr](https://overseerr.dev) & [Tautulli](https://tautulli.com).
-- 🔐 Log in with Plex - uses [NextAuth.js](https://next-auth.js.org) to allow securely logging in with your Plex account.
+- 🔐 Log in with Plex - uses [NextAuth.js](https://next-auth.js.org) to enable secure login and session management with your Plex account.
 - 🚀 PWA support - installable on mobile devices and desktops, powered by [Serwist](https://github.com/serwist/serwist).
 - ⭐ All of this and more - Powered by [Next.js](https://nextjs.org).
 
@@ -32,25 +32,27 @@ Keep an eye on the [issues page](https://github.com/RaunoT/plex-rewind/issues) t
 
 ## Getting started
 
-1. Get the latest release from the [releases page](https://github.com/RaunoT/plex-rewind/releases) or clone the repository:
+1. Grab the latest release from the [releases page](https://github.com/RaunoT/plex-rewind/releases) or clone the repository:
 
 ```
 git clone https://github.com/RaunoT/plex-rewind.git --branch main
 ```
 
-2. Fill out the variables in the `.env` file. Check out the [variables reference](https://github.com/RaunoT/plex-rewind/wiki/Variables-reference) section in the Wiki for more information.
+2. Fill out the variables in the `.env` file.
 
-3. Run `docker compose build` to build the application and then `docker compose up -d` to start it.
+   Check out the [variables reference](https://github.com/RaunoT/plex-rewind/wiki/Variables-reference) in the wiki for more information.
 
-   To update, download the latest release, or if you cloned the repo, run `git pull` and then `docker compose up --build -d`.
+3. Run `docker compose up --build -d` to build and start the application.
+
+   To update, download the latest release, or if you cloned the repo, run `git pull` and then repeat the Docker command.
 
 4. The application should now be running on [http://localhost:8383](http://localhost:8383).
 
-5. (optional) You can expose the app to the internet using a reverse proxy of your choice. Or you can skip all of the above, fork this repository instead, and deploy it to [Vercel](https://vercel.com). You can set the env variables under "Settings > Environment Variables" for your project.
+5. (optional) You can expose the app to the internet using a reverse proxy of your choice. Or you can skip all of the above, fork this repository, and deploy it to [Vercel](https://vercel.com). You can set the env variables under "Settings > Environment Variables" for your project.
 
 ## Donate
 
-If you like this project and wish to support it, you can do so by donating via [Patreon](https://www.patreon.com/PlexRewind) or [PayPal](https://paypal.me/raunot). Thank you!
+If you like this project and wish to support it, you can do so by donating via [Patreon](https://www.patreon.com/PlexRewind) or [PayPal](https://paypal.me/raunot). Thank you! ❤️
 
 _Please note that supporting does not guarantee any support or future developments._
 
