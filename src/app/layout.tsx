@@ -53,7 +53,7 @@ type Props = {
 export default function RootLayout({ children }: Props) {
   return (
     <html lang='en'>
-      <body className='min-height-screen bg-gradient-to-br from-neutral-900 via-neutral-800 to-indigo-900 text-white'>
+      <body className='min-h-dvh bg-gradient-to-br from-neutral-900 via-neutral-800 to-indigo-900 text-white'>
         {googleAnalyticsId && <GoogleAnalytics id={googleAnalyticsId} />}
 
         <AppProvider>{children}</AppProvider>
