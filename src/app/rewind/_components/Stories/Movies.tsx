@@ -14,7 +14,7 @@ export default function StoryMovies({
     <StoryWrapper isPaused={isPaused} pause={pause} resume={resume}>
       {userRewind.movies.duration ? (
         <>
-          <RewindStat isPaused={isPaused} scaleDelay={3} hideAfter={6}>
+          <RewindStat isPaused={isPaused} scaleDelay={3}>
             <p>
               <span className='rewind-stat'>{userRewind.movies.duration}</span>{' '}
               of your time was spent watching{' '}

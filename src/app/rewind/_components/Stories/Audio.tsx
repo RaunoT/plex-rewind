@@ -14,7 +14,7 @@ export default function StoryAudio({
     <StoryWrapper isPaused={isPaused} pause={pause} resume={resume}>
       {userRewind.audio.duration ? (
         <>
-          <RewindStat isPaused={isPaused} scaleDelay={3} hideAfter={6}>
+          <RewindStat isPaused={isPaused} scaleDelay={3}>
             <p>
               To top it all off, you listened to&nbsp;
               <span className='rewind-stat'>
