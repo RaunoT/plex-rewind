@@ -58,7 +58,7 @@ export default function RewindStat({
   return isComponentShown ? (
     <motion.div
       className={clsx(
-        'mb-4 text-3xl italic leading-tight last:mb-0 sm:text-4xl',
+        'mb-4 text-3xl italic leading-tight last-of-type:mb-0 sm:text-4xl',
         className,
       )}
       variants={animateRewindStat}

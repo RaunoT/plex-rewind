@@ -11,9 +11,9 @@ export default function RewindLayout({ children }: Props) {
   isRewindDisabled && notFound()
 
   return (
-    <div className='flex w-full max-w-2xl flex-1 flex-col lg:flex-none'>
+    <div className='flex w-full max-w-2xl flex-1 flex-col sm:flex-none'>
       <PageTitle title={`Rewind ${new Date().getFullYear()}`} />
-      <CardWrapper className='lg:min-h-[80vh]'>{children}</CardWrapper>
+      <CardWrapper className='pb-6 sm:min-h-[80vh]'>{children}</CardWrapper>
     </div>
   )
 }
