@@ -40,7 +40,7 @@ git clone https://github.com/RaunoT/plex-rewind.git --branch main
 
 3. Run `docker compose build` to build the application and then `docker compose up -d` to start it.
 
-   To update, download the latest release, or if you cloned the repo, run `git pull` and repeat the docker compose commands.
+   To update, download the latest release, or if you cloned the repo, run `git pull` and then `docker compose up --build`.
 
 4. The application should now be running on [http://localhost:8383](http://localhost:8383).
 
