@@ -1,3 +1,9 @@
+## [1.5.3](https://github.com/RaunoT/plex-rewind/compare/v1.5.2...v1.5.3) (2024-01-05)
+
+### Bug Fixes
+
+- **rewind:** stat alignment on desktop ([ee6d67c](https://github.com/RaunoT/plex-rewind/commit/ee6d67cc668c549483b3e17de489ef6454f8f546))
+
 ## [1.5.2](https://github.com/RaunoT/plex-rewind/compare/v1.5.1...v1.5.2) (2024-01-05)
 
 ### Bug Fixes
