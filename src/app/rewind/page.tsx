@@ -7,7 +7,6 @@ import {
   getRequestsTotals,
   getTopMediaItems,
   getTopMediaStats,
-  getUserRequestsTotal,
   getUserTotalDuration,
   getlibrariesTotalSize,
 } from '@/utils/getRewind'
@@ -37,15 +36,14 @@ export default async function Rewind() {
     getLibrariesTotalDuration(libraries),
     getServerId(),
   ])
-  const totalDurationPercentage = `${Math.round(
-    (userTotalDuration * 100) / librariesTotalDuration,
-  )}%`
   const userRewind: UserRewind = {
-    total_duration: secondsToTime(userTotalDuration),
-    total_duration_percentage: totalDurationPercentage,
-    libraries: libraries,
-    libraries_total_size: librariesTotalSize,
-    server_id: serverId,
+    duration: {
+      user: secondsToTime(userTotalDuration),
+      user_percentage: `${Math.round(
+        (userTotalDuration * 100) / librariesTotalDuration,
+      )}%`,
+      total: secondsToTime(librariesTotalDuration),
+    },
     shows: {
       top: topMediaItems.shows,
       count: topMediaStats.shows.count,
@@ -61,16 +59,15 @@ export default async function Rewind() {
       count: topMediaStats.audio.count,
       duration: topMediaStats.audio.duration,
     },
+    libraries: libraries,
+    libraries_total_size: librariesTotalSize,
+    server_id: serverId,
   }
 
   if (process.env.NEXT_PUBLIC_OVERSEERR_URL) {
-    const [requestTotals, userRequestsTotal] = await Promise.all([
-      getRequestsTotals(),
-      getUserRequestsTotal(session.user.id),
-    ])
+    const requestTotals = await getRequestsTotals(session.user.id)
 
     userRewind.requests = requestTotals
-    userRewind.user_requests = userRequestsTotal
   }
 
   return <RewindStories userRewind={userRewind} user={session.user} />

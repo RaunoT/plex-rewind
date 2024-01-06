@@ -71,11 +71,11 @@ export default function RewindStories({ userRewind, user }: Props) {
           createStory(
             StoryRequests,
             commonProps,
-            userRewind.requests?.total ? 8000 : 4000,
+            userRewind.requests?.total ? 9000 : 4000,
           ),
         ]
       : []),
-    ...(userRewind.total_duration
+    ...(userRewind.duration.user
       ? [
           createStory(
             StoryShows,
@@ -87,7 +87,7 @@ export default function RewindStories({ userRewind, user }: Props) {
     ...(userRewind.shows.count
       ? [createStory(StoryShowsTop, commonProps, 8000)]
       : []),
-    ...(userRewind.total_duration
+    ...(userRewind.duration.user
       ? [
           createStory(
             StoryMovies,
@@ -99,7 +99,7 @@ export default function RewindStories({ userRewind, user }: Props) {
     ...(userRewind.movies.count
       ? [createStory(StoryMoviesTop, commonProps, 8000)]
       : []),
-    ...(userRewind.total_duration
+    ...(userRewind.duration.user
       ? [
           createStory(
             StoryAudio,

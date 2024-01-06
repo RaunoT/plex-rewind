@@ -15,6 +15,7 @@ type Props = {
   hideAfter?: number
   noScale?: boolean
   isPaused?: boolean
+  isAnimated?: boolean
 }
 
 export default function RewindStat({
@@ -26,6 +27,7 @@ export default function RewindStat({
   hideAfter = 0,
   noScale = false,
   isPaused = false,
+  isAnimated = true,
 }: Props) {
   const [isComponentShown, setIsComponentShown] = useState<boolean>(false)
   const [isLoaderShown, setIsLoaderShown] = useState<boolean>(false)
@@ -61,7 +63,7 @@ export default function RewindStat({
         'mb-4 text-3xl italic leading-tight last-of-type:mb-0 sm:text-4xl',
         className,
       )}
-      variants={animateRewindStat}
+      variants={isAnimated ? animateRewindStat : undefined}
       initial='hidden'
       animate={noScale || scaleTimer ? ['show'] : ['show', 'scaleDown']}
       style={{ originX: 0, originY: '100%' }}
@@ -82,8 +84,8 @@ function Loader() {
       animate='show'
     >
       <span className='size-1 animate-pulse rounded-full bg-white'></span>
-      <span className='animation-delay-200 size-1 animate-pulse rounded-full bg-white'></span>
-      <span className='animation-delay-400 size-1 animate-pulse rounded-full bg-white'></span>
+      <span className='animation-delay-300 size-1 animate-pulse rounded-full bg-white'></span>
+      <span className='animation-delay-600 size-1 animate-pulse rounded-full bg-white'></span>
     </motion.div>
   )
 }

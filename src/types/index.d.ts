@@ -16,20 +16,23 @@ type LibraryRewind = {
 }
 
 export type UserRewind = {
-  total_duration: string
-  total_duration_percentage: string
   libraries: Library[]
   libraries_total_size: number
   requests?: {
     total: number
     movies: number
     shows: number
+    user: number
   }
-  user_requests?: number
   server_id: string
   shows: LibraryRewind
   movies: LibraryRewind
   audio: LibraryRewind
+  duration: {
+    user: string
+    user_percentage: string
+    total: string
+  }
 }
 
 export type RewindStory = {

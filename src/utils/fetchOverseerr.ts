@@ -65,6 +65,9 @@ export async function fetchOverseerrUserId(
 type PaginatedRequestItem = {
   createdAt: string
   type: string
+  requestedBy: {
+    plexId: number
+  }
 }
 
 export async function fetchPaginatedOverseerrStats(
