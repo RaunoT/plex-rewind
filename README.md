@@ -17,8 +17,8 @@ Present [Plex](https://plex.tv) user statistics and habits in a beautiful and or
 - ✨ Beautiful animations with [Framer Motion](https://www.framer.com/motion).
 - 🔗 Integrates with [Overseerr](https://overseerr.dev) & [Tautulli](https://tautulli.com).
 - 🔐 Log in with Plex - uses [NextAuth.js](https://next-auth.js.org) to enable secure login and session management with your Plex account.
-- 🚀 PWA support - installable on mobile devices and desktops, powered by [Serwist](https://github.com/serwist/serwist).
-- ⭐ All of this and more - Powered by [Next.js](https://nextjs.org).
+- 🚀 PWA support - installable on mobile devices and desktops thanks to [Serwist](https://github.com/serwist/serwist).
+- ⭐ All of this and more - powered by [Next.js](https://nextjs.org).
 
 Keep an eye on the [issues page](https://github.com/RaunoT/plex-rewind/issues) to see what new features have already been requested or to make your own request!
 
