@@ -29,22 +29,22 @@ export default function Dashboard({
   return (
     <>
       <div>
-        <div className='flex items-start'>
+        <div className='flex items-center'>
           <span>
             {type === 'movie' ? (
-              <FilmIcon className='mr-2 size-10 text-black' />
+              <FilmIcon className='mr-2 size-16 stroke-1 text-black' />
             ) : type === 'show' ? (
-              <PlayCircleIcon className='mr-2 size-10 text-black' />
+              <PlayCircleIcon className='mr-2 size-16 stroke-1 text-black' />
             ) : type === 'artist' ? (
-              <MusicalNoteIcon className='mr-2 size-10 text-black' />
+              <MusicalNoteIcon className='mr-2 size-16 stroke-1 text-black' />
             ) : (
               type === 'users' && (
-                <UserIcon className='mr-2 size-10 text-black' />
+                <UserIcon className='mr-2 size-16 stroke-1 text-black' />
               )
             )}
           </span>
           <div>
-            <h2 className='flex items-center text-sm font-bold text-black sm:text-xl lg:text-2xl xl:text-3xl'>
+            <h2 className='flex items-center text-sm font-bold text-black sm:text-xl lg:text-2xl 2xl:text-3xl'>
               <span>{title}</span>
             </h2>
             <div className='font-medium text-black'>
@@ -64,7 +64,9 @@ export default function Dashboard({
                       ? 'movies'
                       : type === 'show'
                         ? 'episodes'
-                        : type === 'artist' && 'tracks'}
+                        : type === 'artist'
+                          ? 'tracks'
+                          : 'users'}
                   </span>
                 </>
               )}

@@ -60,7 +60,7 @@ export default function MediaItem({ data, i, type, serverId }: Props) {
       animate='show'
       transition={{ delay: i * 0.075 }}
     >
-      <div className='relative aspect-[2/3] w-20 flex-shrink-0 xl:w-24'>
+      <div className='relative aspect-[2/3] w-20 flex-shrink-0 2xl:w-24'>
         <Image
           fill
           className='object-cover object-top'
