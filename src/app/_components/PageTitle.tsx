@@ -21,7 +21,9 @@ export default function PageTitle({ title }: Props) {
         >
           <ArrowLeftIcon />
         </Link>
-        {title && <h1 className='text-xl font-bold sm:text-2xl'>{title}</h1>}
+        {title && (
+          <h1 className='text-xl font-bold sm:text-2xl xl:text-3xl'>{title}</h1>
+        )}
       </div>
     </div>
   )

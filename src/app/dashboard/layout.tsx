@@ -17,12 +17,12 @@ export default async function DashboardLayout({ children }: Props) {
   isDashboardDisabled && notFound()
 
   return (
-    <div className='flex w-full max-w-2xl flex-1 flex-col lg:max-w-5xl lg:flex-none 2xl:max-w-6xl'>
+    <div className='flex w-full max-w-2xl flex-1 flex-col lg:max-w-5xl lg:flex-none 2xl:max-w-[90rem]'>
       <PageTitle title='Dashboard' />
       <Suspense>
         <DashboardNav libraries={libraries} />
       </Suspense>
-      <CardWrapper className='lg:min-h-[572px]'>{children}</CardWrapper>
+      <CardWrapper>{children}</CardWrapper>
       <Suspense>
         <PeriodSelect />
       </Suspense>

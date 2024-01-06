@@ -135,7 +135,7 @@ export default function Page() {
       )}
       {!isRewindDisabled && isLoggedIn && (
         <Link href='/rewind' className='button mb-4'>
-          Get started
+          Start Rewind
         </Link>
       )}
       {!isDashboardDisabled && isLoggedIn && (

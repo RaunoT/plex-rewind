@@ -10,7 +10,7 @@ export default function CardWrapper({ children, className }: Props) {
     <div className='relative flex flex-1 lg:block'>
       <article
         className={clsx(
-          'flex w-full flex-col rounded-3xl bg-gradient-card px-6 pb-4 pt-6 sm:px-8 sm:pt-8',
+          'flex w-full flex-col rounded-3xl bg-teal-900 px-6 py-6 sm:p-8 lg:p-10',
           className,
         )}
       >

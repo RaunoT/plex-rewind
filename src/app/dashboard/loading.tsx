@@ -19,7 +19,7 @@ export default function Loading() {
 function ListItem() {
   return (
     <li className='flex items-center gap-3 last:hidden lg:last:flex'>
-      <div className='skeleton aspect-[2/3] w-20 flex-shrink-0 rounded-none'></div>
+      <div className='skeleton aspect-[2/3] w-20 flex-shrink-0 rounded-none xl:w-24'></div>
       <div className='w-full'>
         <h3 className='skeleton mb-2 w-2/3 sm:w-1/3'></h3>
         <ul className='flex flex-wrap items-center gap-2 text-xs italic sm:gap-3 sm:text-base'>

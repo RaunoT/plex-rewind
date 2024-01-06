@@ -12,7 +12,7 @@ module.exports = {
     },
     extend: {
       backgroundImage: {
-        'gradient-card': 'linear-gradient(120deg, #0f766e, #4338ca, #6b21a8)',
+        'gradient-card': 'linear-gradient(120deg, #0B5336, #211E1D, #16166F)',
       },
     },
   },
