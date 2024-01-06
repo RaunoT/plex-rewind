@@ -10,7 +10,11 @@ module.exports = {
       center: true,
       padding: '1rem',
     },
-    extend: {},
+    extend: {
+      backgroundImage: {
+        'gradient-card': 'linear-gradient(120deg, #0f766e, #4338ca, #6b21a8)',
+      },
+    },
   },
   plugins: [],
 }

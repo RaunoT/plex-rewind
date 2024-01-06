@@ -11,7 +11,7 @@ export default function StoryTotal({
 }: RewindStory) {
   return (
     <StoryWrapper isPaused={isPaused} pause={pause} resume={resume}>
-      {userRewind.total_duration ? (
+      {userRewind.duration.user ? (
         <>
           <RewindStat isPaused={isPaused} scaleDelay={4}>
             <p>
@@ -20,9 +20,8 @@ export default function StoryTotal({
                 Total
                 <ClockIcon />
               </span>{' '}
-              of{' '}
-              <span className='rewind-stat'>
-                {userRewind.total_duration}
+              of <span className='rewind-stat'>
+                {userRewind.duration.user}
               </span>{' '}
               on <span className='text-yellow-500'>Plex</span> this year!
             </p>
@@ -32,10 +31,12 @@ export default function StoryTotal({
             <p>
               That&apos;s{' '}
               <span className='rewind-cat'>
-                {userRewind.total_duration_percentage}
+                {userRewind.duration.user_percentage}
                 <ChartPieIcon />
               </span>{' '}
-              of all plays.
+              of all plays, which totalled{' '}
+              <span className='rewind-stat'>{userRewind.duration.total}</span>{' '}
+              over all users.
             </p>
           </RewindStat>
         </>

@@ -71,15 +71,32 @@
 }
 
 @layer utilities {
-  .bg-gradient-card {
-    background: linear-gradient(120deg, #0f766e, #4338ca, #6b21a8);
+  .animate-fade {
+    opacity: 0;
+    animation: fade-in 1s ease forwards;
+
+    @keyframes fade-in {
+      from {
+        transform: translateY(1rem);
+        opacity: 0;
+      }
+
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
   }
 
-  .animation-delay-200 {
+  .animation-delay-300 {
     animation-delay: 0.3s;
   }
 
-  .animation-delay-400 {
+  .animation-delay-600 {
     animation-delay: 0.6s;
+  }
+
+  .animation-delay-2000 {
+    animation-delay: 2s;
   }
 }

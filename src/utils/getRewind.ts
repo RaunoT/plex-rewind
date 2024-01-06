@@ -6,10 +6,7 @@ import {
   TautulliItemRow,
 } from '@/types'
 import { PERIODS } from './constants'
-import {
-  fetchOverseerrUserId,
-  fetchPaginatedOverseerrStats,
-} from './fetchOverseerr'
+import { fetchPaginatedOverseerrStats } from './fetchOverseerr'
 import fetchTautulli from './fetchTautulli'
 import { secondsToTime, timeToSeconds } from './formatting'
 import getMediaAdditionalData from './getMediaAdditionalData'
@@ -181,7 +178,7 @@ export async function getTopMediaItems(userId: string, libraries: Library[]) {
   return combinedResult
 }
 
-export async function getRequestsTotals() {
+export async function getRequestsTotals(userId: string) {
   const requests = await fetchPaginatedOverseerrStats(
     'request',
     PERIODS.thisYear.date,
@@ -191,15 +188,8 @@ export async function getRequestsTotals() {
     total: requests.length,
     movies: requests.filter((request) => request.type === 'movie').length,
     shows: requests.filter((request) => request.type === 'tv').length,
+    user: requests.filter(
+      (request) => request.requestedBy.plexId === Number(userId),
+    ).length,
   }
-}
-
-export async function getUserRequestsTotal(userId: string) {
-  const overseerrUserId = await fetchOverseerrUserId(userId)
-  const userRequestsTotal = await fetchPaginatedOverseerrStats(
-    `user/${overseerrUserId}/requests`,
-    PERIODS.thisYear.date,
-  )
-
-  return userRequestsTotal.length
 }

@@ -2,7 +2,7 @@ export default function Loading() {
   return (
     <div className='flex flex-1 animate-pulse flex-col'>
       <div className='skeleton sm:skeleton--large mb-2 w-2/3 sm:w-1/4'></div>
-      <div className='skeleton animation-delay-200 w-2/5 sm:w-1/5'></div>
+      <div className='skeleton animation-delay-300 w-2/5 sm:w-1/5'></div>
 
       <ul className='mt-4 grid gap-y-3 pb-10 sm:mt-6 sm:gap-y-5 lg:grid-cols-2 lg:grid-rows-3 lg:gap-x-8'>
         <ListItem />

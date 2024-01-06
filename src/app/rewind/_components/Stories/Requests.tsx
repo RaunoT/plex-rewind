@@ -30,7 +30,7 @@ export default function StoryRequests({
           </RewindStat>
         ) : (
           <>
-            {userRewind.user_requests == 0 ? (
+            {userRewind.requests.user == 0 ? (
               <RewindStat isPaused={isPaused} scaleDelay={3}>
                 <p>
                   You haven&apos;t made any content{' '}
@@ -54,7 +54,7 @@ export default function StoryRequests({
                 <p>
                   You&apos;ve made{' '}
                   <span className='rewind-stat'>
-                    {userRewind.user_requests}
+                    {userRewind.requests.user}
                   </span>{' '}
                   content{' '}
                   <span className='rewind-cat'>
