@@ -28,7 +28,7 @@ export default function AppProvider({ children }: Props) {
           midtoneColor: 0x211e1d,
           lowlightColor: 0x16166f,
           baseColor: 0x0,
-          speed: 0.5,
+          speed: 1,
         }),
       )
     }
@@ -41,7 +41,10 @@ export default function AppProvider({ children }: Props) {
 
   return (
     <SessionProvider>
-      <main ref={backgroundRef}>
+      <main
+        ref={backgroundRef}
+        className='after:absolute after:inset-0 after:bg-black after:opacity-50 after:content-[""]'
+      >
         <div
           className={clsx(
             'flex min-h-dvh flex-col items-center overflow-x-hidden px-4 py-8 sm:justify-center',
