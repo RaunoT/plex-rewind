@@ -83,7 +83,7 @@
     @apply flex items-center gap-1 italic sm:gap-2;
 
     > svg {
-      @apply size-5 text-neutral-900;
+      @apply size-5 text-black;
     }
   }
 }

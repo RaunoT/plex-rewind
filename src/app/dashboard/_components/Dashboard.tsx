@@ -40,7 +40,7 @@ export default function Dashboard({
         {getTitleIcon(type)}
         {title}
       </h2>
-      <ul className='icon-stats-container font-medium text-black'>
+      <ul className='icon-stats-container font-medium text-neutral-200'>
         {totalSize && (
           <li className='icon-stat-wrapper'>
             <FolderIcon />

@@ -48,8 +48,8 @@ dependencies:
     specifier: ^1.1.2
     version: 1.1.2(react-dom@18.2.0)(react@18.2.0)
   three:
-    specifier: 0.121.0
-    version: 0.121.0
+    specifier: ^0.151.0
+    version: 0.151.3
   vanta:
     specifier: ^0.5.24
     version: 0.5.24
@@ -6624,8 +6624,8 @@ packages:
       any-promise: 1.3.0
     dev: true
 
-  /three@0.121.0:
-    resolution: {integrity: sha512-12bkOFsSCsfHViuqDuxDccMBT8eJ/UH829P1J50f4mvI9pWNX4iurZq8Vbo+rs9rKkgrSBRq7ubE77dQ1Y1hzA==}
+  /three@0.151.3:
+    resolution: {integrity: sha512-+vbuqxFy8kzLeO5MgpBHUvP/EAiecaDwDuOPPDe6SbrZr96kccF0ktLngXc7xA7bzyd3N0t2f6mw3Z9y6JCojQ==}
     dev: false
 
   /through2@2.0.5:

@@ -6,7 +6,7 @@ import { SessionProvider } from 'next-auth/react'
 import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 import { useEffect, useRef, useState } from 'react'
-import * as THREE from 'three/build/three.module.js'
+import * as THREE from 'three'
 import FOG from 'vanta/dist/vanta.fog.min'
 
 type Props = {
@@ -15,7 +15,7 @@ type Props = {
 
 export default function AppProvider({ children }: Props) {
   const pathname = usePathname()
-  const [background, setBackground] = useState(0)
+  const [background, setBackground] = useState<VantaEffect>(null)
   const backgroundRef = useRef(null)
 
   useEffect(() => {
@@ -23,7 +23,7 @@ export default function AppProvider({ children }: Props) {
       setBackground(
         FOG({
           el: backgroundRef.current,
-          THREE: THREE,
+          THREE: THREE, // seems to not work properly > 0.151.3
           highlightColor: 0xb5336,
           midtoneColor: 0x211e1d,
           lowlightColor: 0x16166f,
@@ -32,11 +32,27 @@ export default function AppProvider({ children }: Props) {
         }),
       )
     }
+
     return () => {
       if (background) {
         background.destroy()
       }
     }
+  }, [background])
+
+  useEffect(() => {
+    const resizeObserver = new ResizeObserver((entries) => {
+      if (entries[0].target === backgroundRef.current && background) {
+        background.resize()
+      }
+    })
+    const currentBackgroundRef = backgroundRef.current
+
+    if (currentBackgroundRef) {
+      resizeObserver.observe(currentBackgroundRef)
+    }
+
+    return () => resizeObserver.disconnect()
   }, [background])
 
   return (

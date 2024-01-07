@@ -1,3 +1,8 @@
 declare module 'vanta/dist/vanta.fog.min'
 
-declare module 'three/build/three.module.js'
+declare module 'three'
+
+type VantaEffect = {
+  destroy: () => void
+  resize: () => void
+} | null

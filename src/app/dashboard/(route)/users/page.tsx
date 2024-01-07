@@ -168,9 +168,6 @@ export default async function Users({ searchParams }: DashboardParams) {
       totalDuration={totalDuration}
       count={String(usersCount)}
       type='users'
-      periodQuery={
-        periodSearchParams ? `?period=${periodSearchParams}` : undefined
-      }
     />
   )
 }
