@@ -8,7 +8,7 @@ type Props = {
 
 export default function PageTitle({ title }: Props) {
   return (
-    <div className='mb-4 w-full'>
+    <div className='mb-3 w-full 2xl:mb-4'>
       <div className='relative text-center uppercase'>
         <Link
           href='/'
@@ -21,7 +21,11 @@ export default function PageTitle({ title }: Props) {
         >
           <ArrowLeftIcon />
         </Link>
-        {title && <h1 className='text-xl font-bold sm:text-2xl'>{title}</h1>}
+        {title && (
+          <h1 className='text-xl font-bold sm:text-2xl 2xl:text-3xl'>
+            {title}
+          </h1>
+        )}
       </div>
     </div>
   )

@@ -51,15 +51,6 @@ export default async function Page({ params, searchParams }: DashboardParams) {
     getTotalSize(library),
     getServerId(),
   ])
-  const libraryIndex = libraries.findIndex((lib) => lib === library)
-  const prevCard =
-    libraryIndex > 0
-      ? `/dashboard/${snakeCase(libraries[libraryIndex - 1].section_name)}`
-      : undefined
-  const nextCard =
-    libraryIndex >= 0 && libraryIndex < libraries.length - 1
-      ? `/dashboard/${snakeCase(libraries[libraryIndex + 1].section_name)}`
-      : '/dashboard/users'
 
   return (
     <Dashboard
@@ -67,18 +58,12 @@ export default async function Page({ params, searchParams }: DashboardParams) {
       items={items}
       totalDuration={totalDuration}
       totalSize={totalSize}
-      prevCard={prevCard}
-      nextCard={nextCard}
-      page={`${libraryIndex + 1} / ${libraries.length + 1}`}
       type={library.section_type}
       serverId={serverId}
       count={
         library.section_type === 'movie'
           ? Number(library.count).toLocaleString('en-US')
           : Number(library.child_count).toLocaleString('en-US')
-      }
-      periodQuery={
-        periodSearchParams ? `?period=${periodSearchParams}` : undefined
       }
     />
   )

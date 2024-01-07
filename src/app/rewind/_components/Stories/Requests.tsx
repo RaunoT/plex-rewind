@@ -40,7 +40,7 @@ export default function StoryRequests({
                   </span>{' '}
                   this year! You can make them via{' '}
                   <a
-                    className='link'
+                    className='link link--dark relative z-10'
                     href={process.env.NEXT_PUBLIC_OVERSEERR_URL}
                     target='_blank'
                     rel='noopener noreferrer'

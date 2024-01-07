@@ -25,7 +25,7 @@ export default function PlexDeeplink({ ratingKey, serverId }: Props) {
       href={plexUrl}
       target='_blank'
       rel='noopener noreferrer'
-      className='button-card from-green-500 to-green-700'
+      className='button-card bg-green-600'
     >
       Available
     </a>
