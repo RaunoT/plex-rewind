@@ -27,10 +27,12 @@ export default function StoryLibraries({
           </span>{' '}
           of all the available content on{' '}
           <span className='text-yellow-500'>Plex</span> is{' '}
-          <span className='rewind-stat'>
-            {bytesToSize(userRewind.libraries_total_size)}
+          <span className='whitespace-nowrap'>
+            <span className='rewind-stat'>
+              {bytesToSize(userRewind.libraries_total_size)}
+            </span>
+            !
           </span>
-          !
         </p>
       </RewindStat>
 

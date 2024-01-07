@@ -13,9 +13,7 @@ export default function RewindLayout({ children }: Props) {
   return (
     <div className='flex w-full max-w-2xl flex-1 flex-col sm:flex-none'>
       <PageTitle title={`Rewind ${new Date().getFullYear()}`} />
-      <CardWrapper className='bg-gradient-card pb-6 sm:min-h-[80vh]'>
-        {children}
-      </CardWrapper>
+      <CardWrapper className='sm:min-h-[80vh]'>{children}</CardWrapper>
     </div>
   )
 }
