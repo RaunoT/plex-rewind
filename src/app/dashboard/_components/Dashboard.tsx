@@ -1,11 +1,19 @@
 import MediaItems from '@/components/MediaItem/MediaItems'
 import { TautulliItemRow } from '@/types'
 import {
+  ClockIcon,
   FilmIcon,
+  FolderIcon,
   MusicalNoteIcon,
   PlayCircleIcon,
   UserIcon,
 } from '@heroicons/react/24/outline'
+import {
+  FilmIcon as FilmIconSolid,
+  MusicalNoteIcon as MusicalNoteIconSolid,
+  PlayCircleIcon as PlayCircleIconSolid,
+  UserIcon as UserIconSolid,
+} from '@heroicons/react/24/solid'
 
 type Props = {
   title: string
@@ -28,60 +36,39 @@ export default function Dashboard({
 }: Props) {
   return (
     <>
-      <div>
-        <div className='flex items-center'>
-          <span>
-            {type === 'movie' ? (
-              <FilmIcon className='mr-2 size-16 stroke-1 text-black' />
-            ) : type === 'show' ? (
-              <PlayCircleIcon className='mr-2 size-16 stroke-1 text-black' />
-            ) : type === 'artist' ? (
-              <MusicalNoteIcon className='mr-2 size-16 stroke-1 text-black' />
-            ) : (
-              type === 'users' && (
-                <UserIcon className='mr-2 size-16 stroke-1 text-black' />
-              )
-            )}
-          </span>
-          <div>
-            <h2 className='flex items-center text-sm font-bold text-black sm:text-xl lg:text-2xl 2xl:text-3xl'>
-              <span>{title}</span>
-            </h2>
-            <div className='font-medium text-black'>
-              {totalSize && (
-                <>
-                  <span>{totalSize}</span>
-                  <span className='mx-1 sm:mx-2' aria-hidden>
-                    -
-                  </span>
-                </>
-              )}
-              {count && (
-                <>
-                  <span>{count}</span>&nbsp;
-                  <span>
-                    {type === 'movie'
-                      ? 'movies'
-                      : type === 'show'
-                        ? 'episodes'
-                        : type === 'artist'
-                          ? 'tracks'
-                          : 'users'}
-                  </span>
-                </>
-              )}
-              <span className='mx-1 sm:mx-2' aria-hidden>
-                -
-              </span>
-              {totalDuration && (
-                <>
-                  <span className='normal-case'>{totalDuration} played</span>
-                </>
-              )}
-            </div>
-          </div>
-        </div>
-      </div>
+      <h2 className='mb-2 flex items-center font-bold text-black sm:text-xl xl:text-2xl'>
+        {getTitleIcon(type)}
+        {title}
+      </h2>
+      <ul className='flex flex-wrap items-center gap-2 text-xs font-medium text-black sm:gap-3 sm:text-sm lg:text-base'>
+        {totalSize && (
+          <li className='flex items-center'>
+            <FolderIcon className='mr-1 size-5' />
+            {totalSize}
+          </li>
+        )}
+        {count && (
+          <li className='flex items-center'>
+            {getCountIcon(type)}
+            <span>{count}</span>&nbsp;
+            <span>
+              {type === 'movie'
+                ? 'movies'
+                : type === 'show'
+                  ? 'episodes'
+                  : type === 'artist'
+                    ? 'tracks'
+                    : 'users'}
+            </span>
+          </li>
+        )}
+        {totalDuration && (
+          <li className='flex items-center'>
+            <ClockIcon className='mr-1 size-5' />
+            {totalDuration}
+          </li>
+        )}
+      </ul>
 
       {items?.length ? (
         <MediaItems items={items} type={type} serverId={serverId} />
@@ -94,4 +81,34 @@ export default function Dashboard({
       )}
     </>
   )
+}
+
+function getTitleIcon(type: string) {
+  const className = 'mr-2 size-8 sm:size-10 stroke-1 text-black'
+
+  switch (type) {
+    case 'movie':
+      return <FilmIconSolid className={className} />
+    case 'show':
+      return <PlayCircleIconSolid className={className} />
+    case 'artist':
+      return <MusicalNoteIconSolid className={className} />
+    default:
+      return <UserIconSolid className={className} />
+  }
+}
+
+function getCountIcon(type: string) {
+  const className = 'mr-1 size-5'
+
+  switch (type) {
+    case 'movie':
+      return <FilmIcon className={className} />
+    case 'show':
+      return <PlayCircleIcon className={className} />
+    case 'artist':
+      return <MusicalNoteIcon className={className} />
+    default:
+      return <UserIcon className={className} />
+  }
 }

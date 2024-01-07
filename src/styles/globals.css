@@ -20,7 +20,7 @@
   }
 
   .button-card {
-    @apply block w-fit rounded-sm bg-gradient-to-r px-1 text-[0.65rem] font-semibold uppercase leading-normal;
+    @apply block w-fit rounded-sm px-1 text-[0.65rem] font-semibold uppercase leading-normal;
   }
 
   .skeleton {
@@ -61,11 +61,11 @@
   .nav-link {
     &[aria-selected='true'],
     &[aria-current='page'] {
-      @apply opacity-40;
+      @apply opacity-50;
     }
 
     &:hover {
-      @apply opacity-40;
+      @apply opacity-50;
     }
   }
 }

@@ -8,12 +8,10 @@ import { slideDown } from '@/utils/motion'
 import {
   CalendarDaysIcon,
   ClockIcon,
-  EyeIcon,
   FilmIcon,
   MusicalNoteIcon,
   PlayCircleIcon,
   QuestionMarkCircleIcon,
-  SpeakerWaveIcon,
   StarIcon,
   UserIcon,
 } from '@heroicons/react/24/outline'
@@ -86,9 +84,7 @@ export default function MediaItem({ data, i, type, serverId }: Props) {
           <div className='relative z-10 mb-2 flex items-center gap-2'>
             {data.is_deleted ? (
               <>
-                <div className='button-card from-red-500 to-red-700'>
-                  Deleted
-                </div>
+                <div className='button-card bg-red-500'>Deleted</div>
               </>
             ) : (
               serverId && (
@@ -100,7 +96,7 @@ export default function MediaItem({ data, i, type, serverId }: Props) {
                 href={`https://www.imdb.com/title/${data.imdb_id}`}
                 target='_blank'
                 rel='noopener noreferrer'
-                className='button-card from-yellow-300 to-yellow-600 text-black'
+                className='button-card bg-yellow-500 text-black'
               >
                 IMDB
               </a>
@@ -112,7 +108,7 @@ export default function MediaItem({ data, i, type, serverId }: Props) {
                 }/${data.tmdb_id}`}
                 target='_blank'
                 rel='noopener noreferrer'
-                className='button-card from-purple-400 to-purple-700'
+                className='button-card bg-purple-500'
               >
                 Request
               </a>
@@ -136,13 +132,7 @@ export default function MediaItem({ data, i, type, serverId }: Props) {
           {/* Duration */}
           {!excludedDashboardStats.includes('duration') && (
             <li className='flex items-center gap-1 sm:gap-2'>
-              {type === 'show' || type === 'movie' ? (
-                <EyeIcon className='w-5 text-slate-900' />
-              ) : type === 'artist' ? (
-                <SpeakerWaveIcon className='w-5 text-slate-900' />
-              ) : (
-                type === 'users' && <ClockIcon className='w-5 text-slate-900' />
-              )}
+              <ClockIcon className='w-5 text-slate-900' />
               {secondsToTime(data.total_duration)}
             </li>
           )}
