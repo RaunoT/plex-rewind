@@ -1,3 +1,10 @@
+## [1.6.0](https://github.com/RaunoT/plex-rewind/compare/v1.5.4...v1.6.0) (2024-01-07)
+
+### Features
+
+- **rewind:** add total libraries duration copy ([aa8f1c9](https://github.com/RaunoT/plex-rewind/commit/aa8f1c913a1471b73e5fbfd108c1e2d7571581e8))
+- visual overhaul ([c7beb1e](https://github.com/RaunoT/plex-rewind/commit/c7beb1ed7b687ad79ec7211432e8acf751f5123c))
+
 ## [1.5.4](https://github.com/RaunoT/plex-rewind/compare/v1.5.3...v1.5.4) (2024-01-05)
 
 ### Bug Fixes
