@@ -25,7 +25,7 @@ export default function StoryRequests({
                 Requests
                 <QuestionMarkCircleIcon />
               </span>{' '}
-              this year 😲
+              this year <span className='not-italic'>😲</span>
             </p>
           </RewindStat>
         ) : (
