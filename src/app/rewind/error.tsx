@@ -17,10 +17,7 @@ export default function Error({ error, reset }: Props) {
       <h1 className='mb-4 text-3xl italic leading-tight sm:text-4xl'>
         Uh oh.. something went wrong!
       </h1>
-      <button
-        className='mx-auto w-fit text-slate-300 hover:opacity-75'
-        onClick={() => reset()}
-      >
+      <button className='link mx-auto w-fit' onClick={() => reset()}>
         Try again
       </button>
     </div>

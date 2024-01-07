@@ -36,35 +36,37 @@ export default function Dashboard({
 }: Props) {
   return (
     <>
-      <h2 className='mb-2 flex items-center font-bold text-black sm:text-xl xl:text-2xl'>
+      <h2 className='mb-1 flex items-center font-bold text-black sm:text-xl xl:text-2xl'>
         {getTitleIcon(type)}
         {title}
       </h2>
-      <ul className='flex flex-wrap items-center gap-2 text-xs font-medium text-black sm:gap-3 sm:text-sm lg:text-base'>
+      <ul className='icon-stats-container font-medium text-black'>
         {totalSize && (
-          <li className='flex items-center'>
-            <FolderIcon className='mr-1 size-5' />
+          <li className='icon-stat-wrapper'>
+            <FolderIcon />
             {totalSize}
           </li>
         )}
         {count && (
-          <li className='flex items-center'>
+          <li className='icon-stat-wrapper'>
             {getCountIcon(type)}
-            <span>{count}</span>&nbsp;
             <span>
-              {type === 'movie'
-                ? 'movies'
-                : type === 'show'
-                  ? 'episodes'
-                  : type === 'artist'
-                    ? 'tracks'
-                    : 'users'}
+              <span>{count}</span>&nbsp;
+              <span>
+                {type === 'movie'
+                  ? 'movies'
+                  : type === 'show'
+                    ? 'episodes'
+                    : type === 'artist'
+                      ? 'tracks'
+                      : 'users'}
+              </span>
             </span>
           </li>
         )}
         {totalDuration && (
-          <li className='flex items-center'>
-            <ClockIcon className='mr-1 size-5' />
+          <li className='icon-stat-wrapper'>
+            <ClockIcon />
             {totalDuration}
           </li>
         )}
@@ -73,7 +75,7 @@ export default function Dashboard({
       {items?.length ? (
         <MediaItems items={items} type={type} serverId={serverId} />
       ) : (
-        <div className='flex flex-1 flex-col justify-center text-center text-neutral-200'>
+        <div className='flex flex-1 flex-col justify-center text-center text-neutral-300'>
           <h2 className='mb-4 py-32 text-2xl italic leading-tight last:mb-0 sm:text-3xl'>
             No activity during this period.. 😴
           </h2>
@@ -84,7 +86,7 @@ export default function Dashboard({
 }
 
 function getTitleIcon(type: string) {
-  const className = 'mr-2 size-8 sm:size-10 stroke-1 text-black'
+  const className = 'mr-2 size-8 sm:size-10 stroke-1'
 
   switch (type) {
     case 'movie':
@@ -99,7 +101,7 @@ function getTitleIcon(type: string) {
 }
 
 function getCountIcon(type: string) {
-  const className = 'mr-1 size-5'
+  const className = 'size-5 icon-stat'
 
   switch (type) {
     case 'movie':

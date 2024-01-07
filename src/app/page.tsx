@@ -141,18 +141,13 @@ export default function Page() {
       {!isDashboardDisabled && isLoggedIn && (
         <Link
           href={`/dashboard/${snakeCase(libraries[0]?.section_name)}`}
-          className={
-            isRewindDisabled ? 'button' : 'text-slate-300 hover:opacity-75'
-          }
+          className={isRewindDisabled ? 'button' : 'link'}
         >
           Dashboard
         </Link>
       )}
       {isLoggedIn && (
-        <button
-          onClick={() => signOut()}
-          className='mt-16 block opacity-50 hover:opacity-25'
-        >
+        <button onClick={() => signOut()} className='link mt-16 block'>
           Sign out
         </button>
       )}
