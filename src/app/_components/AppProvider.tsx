@@ -71,7 +71,7 @@ export default function AppProvider({ children }: Props) {
             <Image
               src={githubSvg}
               alt='GitHub'
-              className='absolute right-4 top-4 size-4 lg:size-6'
+              className='absolute right-4 top-4 size-4 sm:size-6'
             />
           </a>
 
