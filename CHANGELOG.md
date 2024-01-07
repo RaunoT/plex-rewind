@@ -1,10 +1,5 @@
 ## [1.7.0](https://github.com/RaunoT/plex-rewind/compare/v1.6.0...v1.7.0) (2024-01-07)
 
-### Features
-
-- **rewind:** add total libraries duration copy ([164b292](https://github.com/RaunoT/plex-rewind/commit/164b292c33712fc0fa4bf2bff70e1b6c5b1a29e8))
-- visual overhaul ([7b574c1](https://github.com/RaunoT/plex-rewind/commit/7b574c1e8e372bbcbfba065c839960f40b1e21ac))
-
 ### Bug Fixes
 
 - italic emoji ([c5c0f76](https://github.com/RaunoT/plex-rewind/commit/c5c0f76fd7639099837985f641088852b4f96261))
