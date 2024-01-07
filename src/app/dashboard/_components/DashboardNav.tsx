@@ -19,7 +19,7 @@ export default function DashboardNav({ libraries }: Props) {
 
   return (
     <nav>
-      <ul className='nav -mt-2 mb-2 sm:text-base'>
+      <ul className='nav'>
         {libraries.map((library) => (
           <li key={library.section_id}>
             <Link

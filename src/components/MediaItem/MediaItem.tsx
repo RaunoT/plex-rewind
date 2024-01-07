@@ -8,12 +8,10 @@ import { slideDown } from '@/utils/motion'
 import {
   CalendarDaysIcon,
   ClockIcon,
-  EyeIcon,
   FilmIcon,
   MusicalNoteIcon,
   PlayCircleIcon,
   QuestionMarkCircleIcon,
-  SpeakerWaveIcon,
   StarIcon,
   UserIcon,
 } from '@heroicons/react/24/outline'
@@ -60,7 +58,7 @@ export default function MediaItem({ data, i, type, serverId }: Props) {
       animate='show'
       transition={{ delay: i * 0.075 }}
     >
-      <div className='relative aspect-[2/3] w-20 flex-shrink-0'>
+      <div className='relative aspect-[2/3] w-[4.5rem] flex-shrink-0 sm:w-20 2xl:w-24'>
         <Image
           fill
           className='object-cover object-top'
@@ -86,9 +84,7 @@ export default function MediaItem({ data, i, type, serverId }: Props) {
           <div className='relative z-10 mb-2 flex items-center gap-2'>
             {data.is_deleted ? (
               <>
-                <div className='button-card from-red-500 to-red-700'>
-                  Deleted
-                </div>
+                <div className='button-card bg-red-500'>Deleted</div>
               </>
             ) : (
               serverId && (
@@ -100,7 +96,7 @@ export default function MediaItem({ data, i, type, serverId }: Props) {
                 href={`https://www.imdb.com/title/${data.imdb_id}`}
                 target='_blank'
                 rel='noopener noreferrer'
-                className='button-card from-yellow-300 to-yellow-600 text-black'
+                className='button-card bg-yellow-500 text-black'
               >
                 IMDB
               </a>
@@ -112,37 +108,31 @@ export default function MediaItem({ data, i, type, serverId }: Props) {
                 }/${data.tmdb_id}`}
                 target='_blank'
                 rel='noopener noreferrer'
-                className='button-card from-purple-400 to-purple-700'
+                className='button-card bg-purple-500'
               >
                 Request
               </a>
             )}
           </div>
         )}
-        <ul className='flex flex-wrap items-center gap-2 text-xs italic sm:gap-x-3 sm:text-base'>
+        <ul className='icon-stats-container'>
           {data.year && (type === 'movie' || type === 'show') && (
-            <li className='flex items-center gap-1 sm:gap-2'>
-              <CalendarDaysIcon className='w-5 text-slate-900' />
+            <li className='icon-stat-wrapper'>
+              <CalendarDaysIcon />
               {data.year}
             </li>
           )}
           {/* Ratings */}
           {(type === 'movie' || type === 'show') && data.rating && (
-            <li className='flex items-center gap-1 sm:gap-2'>
-              <StarIcon className='w-5 text-slate-900' />
+            <li className='icon-stat-wrapper'>
+              <StarIcon />
               {data.rating}
             </li>
           )}
           {/* Duration */}
           {!excludedDashboardStats.includes('duration') && (
-            <li className='flex items-center gap-1 sm:gap-2'>
-              {type === 'show' || type === 'movie' ? (
-                <EyeIcon className='w-5 text-slate-900' />
-              ) : type === 'artist' ? (
-                <SpeakerWaveIcon className='w-5 text-slate-900' />
-              ) : (
-                type === 'users' && <ClockIcon className='w-5 text-slate-900' />
-              )}
+            <li className='icon-stat-wrapper'>
+              <ClockIcon />
               {secondsToTime(data.total_duration)}
             </li>
           )}
@@ -150,8 +140,8 @@ export default function MediaItem({ data, i, type, serverId }: Props) {
           {!excludedDashboardStats.includes('users') &&
             (type === 'show' || type === 'artist') &&
             data.users_watched && (
-              <li className='flex items-center gap-1 sm:gap-2'>
-                <UserIcon className='w-5 text-slate-900' />
+              <li className='icon-stat-wrapper'>
+                <UserIcon />
                 {pluralize(data.users_watched, 'user')}
               </li>
             )}
@@ -160,32 +150,32 @@ export default function MediaItem({ data, i, type, serverId }: Props) {
             (type === 'users' ? (
               <>
                 {data.shows_plays_count > 0 && (
-                  <li className='flex items-center gap-1 sm:gap-2'>
-                    <PlayCircleIcon className='w-5 text-slate-900' />
+                  <li className='icon-stat-wrapper'>
+                    <PlayCircleIcon />
                     {pluralize(data.shows_plays_count, 'play')}
                   </li>
                 )}
                 {data.movies_plays_count > 0 && (
-                  <li className='flex items-center gap-1 sm:gap-2'>
-                    <FilmIcon className='w-5 text-slate-900' />
+                  <li className='icon-stat-wrapper'>
+                    <FilmIcon />
                     {pluralize(data.movies_plays_count, 'play')}
                   </li>
                 )}
                 {data.audio_plays_count > 0 && (
-                  <li className='flex items-center gap-1 sm:gap-2'>
-                    <MusicalNoteIcon className='w-5 text-slate-900' />
+                  <li className='icon-stat-wrapper'>
+                    <MusicalNoteIcon />
                     {pluralize(data.audio_plays_count, 'play')}
                   </li>
                 )}
               </>
             ) : (
-              <li className='flex items-center gap-1 sm:gap-2'>
+              <li className='icon-stat-wrapper'>
                 {type === 'artist' ? (
-                  <MusicalNoteIcon className='w-5 text-slate-900' />
+                  <MusicalNoteIcon />
                 ) : type === 'movie' ? (
-                  <FilmIcon className='w-5 text-slate-900' />
+                  <FilmIcon />
                 ) : (
-                  <PlayCircleIcon className='w-5 text-slate-900' />
+                  <PlayCircleIcon />
                 )}
                 <span>{pluralize(data.total_plays, 'play')}</span>
               </li>
@@ -194,8 +184,8 @@ export default function MediaItem({ data, i, type, serverId }: Props) {
           {!excludedDashboardStats.includes('requests') &&
             type === 'users' &&
             data.requests > 0 && (
-              <li className='flex items-center gap-1 sm:gap-2'>
-                <QuestionMarkCircleIcon className='w-5 text-slate-900' />
+              <li className='icon-stat-wrapper'>
+                <QuestionMarkCircleIcon />
                 {pluralize(data.requests, 'request')}
               </li>
             )}

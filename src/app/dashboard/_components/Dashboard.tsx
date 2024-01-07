@@ -1,106 +1,116 @@
 import MediaItems from '@/components/MediaItem/MediaItems'
 import { TautulliItemRow } from '@/types'
 import {
-  ArrowLongLeftIcon,
-  ArrowLongRightIcon,
+  ClockIcon,
+  FilmIcon,
+  FolderIcon,
+  MusicalNoteIcon,
+  PlayCircleIcon,
+  UserIcon,
 } from '@heroicons/react/24/outline'
-import Link from 'next/link.js'
+import {
+  FilmIcon as FilmIconSolid,
+  MusicalNoteIcon as MusicalNoteIconSolid,
+  PlayCircleIcon as PlayCircleIconSolid,
+  UserIcon as UserIconSolid,
+} from '@heroicons/react/24/solid'
 
 type Props = {
   title: string
-  page?: string
-  prevCard?: string
-  nextCard?: string
   items?: TautulliItemRow[]
   totalDuration?: string
   totalSize?: string | null
   type?: string
   serverId?: string
   count?: string
-  periodQuery?: string | undefined
 }
 
 export default function Dashboard({
   title,
-  page,
-  prevCard,
-  nextCard,
   items,
   totalDuration,
   totalSize,
   type = '',
   serverId = '',
   count,
-  periodQuery = '',
 }: Props) {
   return (
     <>
-      <div>
-        <h2 className='flex items-center text-sm font-bold uppercase text-black sm:text-xl'>
-          <span>{title}</span>
-          {totalSize && <span>&nbsp;({totalSize})</span>}
-          {count && (
-            <>
-              <span className='mx-1 sm:mx-2' aria-hidden>
-                -
-              </span>
+      <h2 className='mb-1 flex items-center font-bold text-black sm:text-xl xl:text-2xl'>
+        {getTitleIcon(type)}
+        {title}
+      </h2>
+      <ul className='icon-stats-container font-medium text-neutral-200'>
+        {totalSize && (
+          <li className='icon-stat-wrapper'>
+            <FolderIcon />
+            {totalSize}
+          </li>
+        )}
+        {count && (
+          <li className='icon-stat-wrapper'>
+            {getCountIcon(type)}
+            <span>
               <span>{count}</span>&nbsp;
               <span>
                 {type === 'movie'
                   ? 'movies'
                   : type === 'show'
                     ? 'episodes'
-                    : type === 'artist' && 'tracks'}
+                    : type === 'artist'
+                      ? 'tracks'
+                      : 'users'}
               </span>
-            </>
-          )}
-        </h2>
-        <div className='text-xs font-medium uppercase text-slate-900 sm:text-sm'>
-          {totalDuration && (
-            <>
-              Total plays
-              <span className='mx-1 sm:mx-2' aria-hidden>
-                -
-              </span>
-              <span className='normal-case'>{totalDuration}</span>
-            </>
-          )}
-        </div>
-      </div>
+            </span>
+          </li>
+        )}
+        {totalDuration && (
+          <li className='icon-stat-wrapper'>
+            <ClockIcon />
+            {totalDuration}
+          </li>
+        )}
+      </ul>
 
       {items?.length ? (
         <MediaItems items={items} type={type} serverId={serverId} />
       ) : (
-        <div className='flex flex-1 flex-col justify-center text-center text-neutral-200'>
+        <div className='flex flex-1 flex-col justify-center text-center text-neutral-300'>
           <h2 className='mb-4 py-32 text-2xl italic leading-tight last:mb-0 sm:text-3xl'>
             No activity during this period.. 😴
           </h2>
         </div>
       )}
-
-      <div className='mt-auto flex items-center justify-between pt-6 text-sm sm:pt-8'>
-        <div className='flex-1'>
-          {prevCard && (
-            <Link
-              href={prevCard + periodQuery}
-              className='block w-5 transition-transform hover:translate-x-0.5 hover:opacity-75'
-            >
-              <ArrowLongLeftIcon className='text-teal-300' />
-            </Link>
-          )}
-        </div>
-        <span className='flex-1 text-center text-gray-400'>{page}</span>
-        <div className='flex-1 text-right'>
-          {nextCard && (
-            <Link
-              href={nextCard + periodQuery}
-              className='ml-auto block w-5 transition-transform hover:-translate-x-0.5 hover:opacity-75'
-            >
-              <ArrowLongRightIcon className='text-teal-300' />
-            </Link>
-          )}
-        </div>
-      </div>
     </>
   )
+}
+
+function getTitleIcon(type: string) {
+  const className = 'mr-2 size-8 sm:size-10 stroke-1'
+
+  switch (type) {
+    case 'movie':
+      return <FilmIconSolid className={className} />
+    case 'show':
+      return <PlayCircleIconSolid className={className} />
+    case 'artist':
+      return <MusicalNoteIconSolid className={className} />
+    default:
+      return <UserIconSolid className={className} />
+  }
+}
+
+function getCountIcon(type: string) {
+  const className = 'size-5 icon-stat'
+
+  switch (type) {
+    case 'movie':
+      return <FilmIcon className={className} />
+    case 'show':
+      return <PlayCircleIcon className={className} />
+    case 'artist':
+      return <MusicalNoteIcon className={className} />
+    default:
+      return <UserIcon className={className} />
+  }
 }

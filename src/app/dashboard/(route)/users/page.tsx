@@ -5,12 +5,8 @@ import {
   fetchOverseerrUserId,
   fetchPaginatedOverseerrStats,
 } from '@/utils/fetchOverseerr'
-import fetchTautulli, {
-  getLibraries,
-  getLibrariesByType,
-} from '@/utils/fetchTautulli'
+import fetchTautulli, { getLibrariesByType } from '@/utils/fetchTautulli'
 import { secondsToTime, timeToSeconds } from '@/utils/formatting'
-import { snakeCase } from 'lodash'
 import { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import Dashboard from '../../_components/Dashboard'
@@ -164,8 +160,6 @@ export default async function Users({ searchParams }: DashboardParams) {
     getTotalDuration(period.string),
     getUsersCount(),
   ])
-  const libraries = await getLibraries()
-  const prevCard = `/dashboard/${snakeCase(libraries.at(-1)?.section_name)}`
 
   return (
     <Dashboard
@@ -173,12 +167,7 @@ export default async function Users({ searchParams }: DashboardParams) {
       items={usersData}
       totalDuration={totalDuration}
       count={String(usersCount)}
-      prevCard={prevCard}
-      page={`${libraries.length + 1} / ${libraries.length + 1}`}
       type='users'
-      periodQuery={
-        periodSearchParams ? `?period=${periodSearchParams}` : undefined
-      }
     />
   )
 }
