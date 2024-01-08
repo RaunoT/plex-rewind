@@ -59,7 +59,7 @@ export default function AppProvider({ children }: Props) {
     <SessionProvider>
       <main
         ref={backgroundRef}
-        className='after:absolute after:inset-0 after:bg-black after:opacity-25 after:content-[""]'
+        className='after:absolute after:inset-0 after:bg-black/25 after:content-[""]'
       >
         <div
           className={clsx(

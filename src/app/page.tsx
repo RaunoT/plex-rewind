@@ -126,7 +126,7 @@ export default function Page() {
           <span>rewind</span>
         </h1>
         <a
-          className='mt-2 font-mono text-xs opacity-25'
+          className='mt-2 font-mono text-xs text-white/25'
           href='https://github.com/RaunoT/plex-rewind/releases'
           target='_blank'
         >

@@ -36,7 +36,7 @@ export default function Dashboard({
 }: Props) {
   return (
     <>
-      <h2 className='mb-1 flex items-center font-bold uppercase text-black sm:text-xl xl:text-2xl'>
+      <h2 className='mb-1 flex items-center text-xl font-bold text-neutral-200 sm:text-2xl xl:text-3xl'>
         {getTitleIcon(type)}
         {title}
       </h2>
@@ -86,7 +86,7 @@ export default function Dashboard({
 }
 
 function getTitleIcon(type: string) {
-  const className = 'mr-1 sm:mr-2 size-8 sm:size-10 stroke-1'
+  const className = 'mr-1 sm:mr-2 size-8 sm:size-10 stroke-1 text-black'
 
   switch (type) {
     case 'movie':
@@ -101,16 +101,14 @@ function getTitleIcon(type: string) {
 }
 
 function getCountIcon(type: string) {
-  const className = 'size-5 icon-stat'
-
   switch (type) {
     case 'movie':
-      return <FilmIcon className={className} />
+      return <FilmIcon />
     case 'show':
-      return <PlayCircleIcon className={className} />
+      return <PlayCircleIcon />
     case 'artist':
-      return <MusicalNoteIcon className={className} />
+      return <MusicalNoteIcon />
     default:
-      return <UserIcon className={className} />
+      return <UserIcon />
   }
 }
