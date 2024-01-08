@@ -1,3 +1,9 @@
+## [1.8.5](https://github.com/RaunoT/plex-rewind/compare/v1.8.4...v1.8.5) (2024-01-08)
+
+### Bug Fixes
+
+- **rewind:** play/pause button positioning ([c033e02](https://github.com/RaunoT/plex-rewind/commit/c033e02ab0e3b35a0ee80f7327f64ab2ec084a8c))
+
 ## [1.8.4](https://github.com/RaunoT/plex-rewind/compare/v1.8.3...v1.8.4) (2024-01-08)
 
 ### Bug Fixes
