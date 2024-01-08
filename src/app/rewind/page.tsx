@@ -1,5 +1,5 @@
 import { authOptions } from '@/lib/auth'
-import { UserRewind } from '@/types'
+import { TautulliUser, UserRewind } from '@/types'
 import { getLibraries, getServerId } from '@/utils/fetchTautulli'
 import { secondsToTime } from '@/utils/formatting'
 import {
@@ -13,11 +13,38 @@ import {
 import { getServerSession } from 'next-auth'
 import RewindStories from './_components/RewindStories'
 
-export default async function Rewind() {
+type Props = {
+  searchParams: {
+    userId?: string
+  }
+}
+
+export default async function Rewind({ searchParams }: Props) {
   const session = await getServerSession(authOptions)
 
   if (!session?.user) {
     return
+  }
+
+  let user = session.user
+  const managedUserId = searchParams?.userId
+
+  if (managedUserId) {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_SITE_URL}/api/managed-users?userId=${session.user.id}`,
+    )
+    const data: TautulliUser[] = await res.json()
+    const managedUser = data?.find(
+      (user) => user.user_id === Number(managedUserId),
+    )
+
+    if (managedUser) {
+      user = {
+        image: managedUser.thumb,
+        name: managedUser.friendly_name,
+        id: managedUserId,
+      }
+    }
   }
 
   const libraries = await getLibraries()
@@ -29,9 +56,9 @@ export default async function Rewind() {
     librariesTotalDuration,
     serverId,
   ] = await Promise.all([
-    getTopMediaItems(session.user.id, libraries),
-    getTopMediaStats(session.user.id, libraries),
-    getUserTotalDuration(session.user.id, libraries),
+    getTopMediaItems(user.id, libraries),
+    getTopMediaStats(user.id, libraries),
+    getUserTotalDuration(user.id, libraries),
     getlibrariesTotalSize(libraries),
     getLibrariesTotalDuration(libraries),
     getServerId(),
@@ -62,13 +89,14 @@ export default async function Rewind() {
     libraries: libraries,
     libraries_total_size: librariesTotalSize,
     server_id: serverId,
+    user: user,
   }
 
   if (process.env.NEXT_PUBLIC_OVERSEERR_URL) {
-    const requestTotals = await getRequestsTotals(session.user.id)
+    const requestTotals = await getRequestsTotals(user.id)
 
     userRewind.requests = requestTotals
   }
 
-  return <RewindStories userRewind={userRewind} user={session.user} />
+  return <RewindStories userRewind={userRewind} />
 }
