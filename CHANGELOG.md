@@ -1,3 +1,10 @@
+## [1.8.2](https://github.com/RaunoT/plex-rewind/compare/v1.8.1...v1.8.2) (2024-01-08)
+
+### Bug Fixes
+
+- add missing og image ([7983da5](https://github.com/RaunoT/plex-rewind/commit/7983da546133891731fe61c1d74b785a0b2a2345))
+- **rewind:** add "is_active" check for managed users ([f0e4a5c](https://github.com/RaunoT/plex-rewind/commit/f0e4a5cb462a483c15dd78479dcefed1ac1e5c1b))
+
 ## [1.8.1](https://github.com/RaunoT/plex-rewind/compare/v1.8.0...v1.8.1) (2024-01-08)
 
 ### Bug Fixes
