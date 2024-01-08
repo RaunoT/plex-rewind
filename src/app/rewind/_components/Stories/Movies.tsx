@@ -17,7 +17,7 @@ export default function StoryMovies({
           <RewindStat isPaused={isPaused} scaleDelay={3}>
             <p>
               <span className='rewind-stat'>{userRewind.movies.duration}</span>{' '}
-              of your time was spent watching{' '}
+              of your time has been spent watching{' '}
               <span className='rewind-cat'>
                 Movies
                 <FilmIcon />
@@ -28,7 +28,7 @@ export default function StoryMovies({
 
           <RewindStat isPaused={isPaused} renderDelay={3} scaleDelay={3}>
             <p>
-              You watched{' '}
+              You&apos;ve watched{' '}
               <span className='rewind-stat'>{userRewind.movies.count}</span>{' '}
               <span className='rewind-cat'>movies</span> in total!
             </p>
@@ -41,7 +41,7 @@ export default function StoryMovies({
             noScale
           >
             <p className='mb-2'>
-              Your favorite was{' '}
+              Your favorite has been{' '}
               <span className='rewind-cat'>
                 {userRewind.movies.top[0].title}
               </span>
@@ -66,7 +66,7 @@ export default function StoryMovies({
               Movies
               <FilmIcon />
             </span>{' '}
-            on <span className='text-yellow-500'>Plex</span> this year{' '}
+            on <span className='text-yellow-500'>Plex</span> in the past year{' '}
             <span className='not-italic'>😵‍💫</span>
           </p>
         </RewindStat>

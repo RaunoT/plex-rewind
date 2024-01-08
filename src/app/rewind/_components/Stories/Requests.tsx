@@ -25,7 +25,7 @@ export default function StoryRequests({
                 Requests
                 <QuestionMarkCircleIcon />
               </span>{' '}
-              this year <span className='not-italic'>😲</span>
+              in the past year <span className='not-italic'>😲</span>
             </p>
           </RewindStat>
         ) : (
@@ -38,7 +38,7 @@ export default function StoryRequests({
                     Requests
                     <QuestionMarkCircleIcon />
                   </span>{' '}
-                  this year! You can make them via{' '}
+                  in the past year! You can make them via{' '}
                   <a
                     className='link link--dark relative z-10'
                     href={process.env.NEXT_PUBLIC_OVERSEERR_URL}
@@ -61,7 +61,7 @@ export default function StoryRequests({
                     Requests
                     <QuestionMarkCircleIcon />
                   </span>{' '}
-                  this year.
+                  in the past year.
                 </p>
               </RewindStat>
             )}
@@ -74,7 +74,7 @@ export default function StoryRequests({
                   Requests
                   <QuestionMarkCircleIcon />
                 </span>{' '}
-                this year.
+                during the same period.
               </p>
             </RewindStat>
 
