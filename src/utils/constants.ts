@@ -5,6 +5,9 @@ const DAYS_AGO_30: Date = new Date(
   new Date().setDate(new Date().getDate() - 30),
 )
 const CURRENT_YEAR: Date = new Date(new Date().getFullYear(), 0, 1)
+const PAST_YEAR: Date = new Date(
+  new Date().setFullYear(new Date().getFullYear() - 1),
+)
 const ALL_TIME: Date = new Date(statisticsStartDate)
 
 type Period = {
@@ -29,6 +32,13 @@ export const PERIODS: { [key: string]: Period } = {
     string: CURRENT_YEAR.toISOString().split('T')[0],
     daysAgo: Math.ceil(
       (new Date().getTime() - CURRENT_YEAR.getTime()) / (1000 * 3600 * 24),
+    ),
+  },
+  pastYear: {
+    date: PAST_YEAR.toISOString(),
+    string: PAST_YEAR.toISOString().split('T')[0],
+    daysAgo: Math.ceil(
+      (new Date().getTime() - PAST_YEAR.getTime()) / (1000 * 3600 * 24),
     ),
   },
   allTime: {

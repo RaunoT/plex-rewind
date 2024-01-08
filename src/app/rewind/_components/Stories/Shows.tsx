@@ -20,17 +20,17 @@ export default function StoryShows({
                 TV Shows
                 <PlayCircleIcon />
               </span>{' '}
-              took up{' '}
+              have taken up{' '}
               <span className='rewind-stat'>
                 {userRewind.shows.duration}
               </span>{' '}
-              of your year on <span className='text-yellow-500'>Plex</span>.
+              of your time on <span className='text-yellow-500'>Plex</span>.
             </p>
           </RewindStat>
 
           <RewindStat isPaused={isPaused} renderDelay={3} scaleDelay={3}>
             <p>
-              You watched{' '}
+              You&apos;ve watched{' '}
               <span className='rewind-stat'>{userRewind.shows.count}</span>{' '}
               <span className='rewind-cat'>episodes</span> in total!
             </p>
@@ -43,7 +43,7 @@ export default function StoryShows({
             noScale
           >
             <p className='mb-2'>
-              Your favorite was{' '}
+              Your favorite has been{' '}
               <span className='rewind-cat'>
                 {userRewind.shows.top[0].title}
               </span>
@@ -68,7 +68,7 @@ export default function StoryShows({
               TV Shows
               <PlayCircleIcon />
             </span>{' '}
-            on <span className='text-yellow-500'>Plex</span> this year{' '}
+            on <span className='text-yellow-500'>Plex</span> in the past year{' '}
             <span className='not-italic'>😥</span>
           </p>
         </RewindStat>

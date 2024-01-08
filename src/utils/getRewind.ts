@@ -29,7 +29,7 @@ export async function getTopMediaStats(userId: string, libraries: Library[]) {
       total_duration: string
     }>('get_history', {
       user_id: userId,
-      after: PERIODS.thisYear.string,
+      after: PERIODS.pastYear.string,
       length: 0,
       media_type: mediaTypeMap[library.section_type],
       section_id: library.section_id,
@@ -97,7 +97,7 @@ export async function getLibrariesTotalDuration(libraries: Library[]) {
     libraries.map((library) => {
       return fetchTautulli<{ total_duration: string }>('get_history', {
         section_id: library.section_id,
-        after: PERIODS.thisYear.string,
+        after: PERIODS.pastYear.string,
         length: 0,
       })
     }),
@@ -120,7 +120,7 @@ export async function getUserTotalDuration(
       return fetchTautulli<{ total_duration: string }>('get_history', {
         user_id: userId,
         section_id: library.section_id,
-        after: PERIODS.thisYear.string,
+        after: PERIODS.pastYear.string,
         length: 0,
       })
     }),
@@ -139,7 +139,7 @@ export async function getTopMediaItems(userId: string, libraries: Library[]) {
       return fetchTautulli<TautulliItem[]>('get_home_stats', {
         user_id: userId,
         section_id: library.section_id,
-        time_range: PERIODS.thisYear.daysAgo,
+        time_range: PERIODS.pastYear.daysAgo,
         stats_count: 5,
         stats_type: 'duration',
       })
@@ -181,7 +181,7 @@ export async function getTopMediaItems(userId: string, libraries: Library[]) {
 export async function getRequestsTotals(userId: string) {
   const requests = await fetchPaginatedOverseerrStats(
     'request',
-    PERIODS.thisYear.date,
+    PERIODS.pastYear.date,
   )
 
   return {

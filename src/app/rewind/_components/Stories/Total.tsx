@@ -23,7 +23,7 @@ export default function StoryTotal({
               of <span className='rewind-stat'>
                 {userRewind.duration.user}
               </span>{' '}
-              on <span className='text-yellow-500'>Plex</span> this year!
+              on <span className='text-yellow-500'>Plex</span> in the past year!
             </p>
           </RewindStat>
 
@@ -34,7 +34,7 @@ export default function StoryTotal({
                 {userRewind.duration.user_percentage}
                 <ChartPieIcon />
               </span>{' '}
-              of all plays, which totalled{' '}
+              of all plays, which total{' '}
               <span className='rewind-stat'>{userRewind.duration.total}</span>{' '}
               over all users.
             </p>
@@ -44,7 +44,7 @@ export default function StoryTotal({
         <RewindStat noScale>
           <p>
             You haven&apos;t played anything on{' '}
-            <span className='text-yellow-500'>Plex</span> this year{' '}
+            <span className='text-yellow-500'>Plex</span> in the past year{' '}
             <span className='not-italic'>😫</span>
           </p>
         </RewindStat>

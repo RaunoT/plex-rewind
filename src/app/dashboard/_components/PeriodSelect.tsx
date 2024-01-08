@@ -31,11 +31,11 @@ export default function PeriodSelect() {
       </li>
       <li>
         <Link
-          href={`${pathname}?period=thisYear`}
+          href={`${pathname}?period=pastYear`}
           className='nav-link'
-          aria-selected={period === 'thisYear'}
+          aria-selected={period === 'pastYear'}
         >
-          This year
+          Past year
         </Link>
       </li>
       <li>
