@@ -1,3 +1,9 @@
+## [1.8.0](https://github.com/RaunoT/plex-rewind/compare/v1.7.1...v1.8.0) (2024-01-08)
+
+### Features
+
+- **rewind:** enable seeing managed users' rewind ([#37](https://github.com/RaunoT/plex-rewind/issues/37)) ([4841fbc](https://github.com/RaunoT/plex-rewind/commit/4841fbcbfb98e2cd5de80b06e5099c90d54a9ebb))
+
 ## [1.7.1](https://github.com/RaunoT/plex-rewind/compare/v1.7.0...v1.7.1) (2024-01-08)
 
 ### Bug Fixes
