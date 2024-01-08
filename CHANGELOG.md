@@ -1,3 +1,9 @@
+## [1.8.1](https://github.com/RaunoT/plex-rewind/compare/v1.8.0...v1.8.1) (2024-01-08)
+
+### Bug Fixes
+
+- **dashboard:** loading state height ([d96a99a](https://github.com/RaunoT/plex-rewind/commit/d96a99aa8b82782c1af26f76927d6f1b6fb0d915))
+
 ## [1.8.0](https://github.com/RaunoT/plex-rewind/compare/v1.7.1...v1.8.0) (2024-01-08)
 
 ### Features
