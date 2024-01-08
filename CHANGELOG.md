@@ -1,3 +1,10 @@
+## [1.7.1](https://github.com/RaunoT/plex-rewind/compare/v1.7.0...v1.7.1) (2024-01-08)
+
+### Bug Fixes
+
+- **ui:** various small tweaks to clean up new design language ([5a1233e](https://github.com/RaunoT/plex-rewind/commit/5a1233e358e63c5805866d45471cfd00f9b17492))
+- use past 365 days instead of astronomical year ([#55](https://github.com/RaunoT/plex-rewind/issues/55)) ([4d5017f](https://github.com/RaunoT/plex-rewind/commit/4d5017f52037a1a7d47ae152270c7ec06234921b))
+
 ## [1.7.0](https://github.com/RaunoT/plex-rewind/compare/v1.6.0...v1.7.0) (2024-01-07)
 
 ### Bug Fixes
