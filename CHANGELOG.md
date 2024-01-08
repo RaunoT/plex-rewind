@@ -1,3 +1,9 @@
+## [1.8.4](https://github.com/RaunoT/plex-rewind/compare/v1.8.3...v1.8.4) (2024-01-08)
+
+### Bug Fixes
+
+- **home:** constant refresh ([b2e5b9d](https://github.com/RaunoT/plex-rewind/commit/b2e5b9dbc233eb3a4985828ea6c5eb8c8bb7f3b1))
+
 ## [1.8.3](https://github.com/RaunoT/plex-rewind/compare/v1.8.2...v1.8.3) (2024-01-08)
 
 ### Bug Fixes
