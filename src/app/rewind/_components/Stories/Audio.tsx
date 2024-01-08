@@ -16,7 +16,7 @@ export default function StoryAudio({
         <>
           <RewindStat isPaused={isPaused} scaleDelay={3}>
             <p>
-              To top it all off, you&apos;ve listened to&nbsp;
+              To finish it off, you&apos;ve listened to&nbsp;
               <span className='rewind-stat'>
                 {userRewind.audio.duration}
               </span>{' '}

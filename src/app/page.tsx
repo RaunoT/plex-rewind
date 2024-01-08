@@ -3,9 +3,10 @@
 import plexSvg from '@/assets/plex.svg'
 import Loader from '@/components/Loader'
 import { createPlexAuthUrl, getPlexAuthToken } from '@/lib/auth'
-import { Library } from '@/types'
+import { Library, TautulliUser } from '@/types'
 import { isDashboardDisabled, isRewindDisabled } from '@/utils/config'
 import { fadeIn } from '@/utils/motion'
+import clsx from 'clsx'
 import { motion } from 'framer-motion'
 import { snakeCase } from 'lodash'
 import { signIn, signOut, useSession } from 'next-auth/react'
@@ -17,6 +18,7 @@ import packageJson from '../../package.json'
 
 export default function Page() {
   const [libraries, setLibraries] = useState<Library[]>([])
+  const [managedUsers, setManagedUsers] = useState<TautulliUser[] | null>(null)
   const [isLoading, setIsLoading] = useState<boolean>(true)
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -72,12 +74,29 @@ export default function Page() {
 
         setIsLoading(false)
       }
+      const getManagedUsers = async () => {
+        setIsLoading(true)
+
+        try {
+          const res = await fetch(
+            `/api/managed-users?userId=${session.user.id}`,
+          )
+          const data = await res.json()
+
+          setManagedUsers(data)
+        } catch (error) {
+          console.error('Error fetching libraries:', error)
+        }
+
+        setIsLoading(false)
+      }
 
       getLibraries()
+      getManagedUsers()
     } else if (status !== 'loading') {
       setIsLoading(false)
     }
-  }, [status])
+  }, [status, session])
 
   if (isLoading) {
     return <Loader />
@@ -133,15 +152,32 @@ export default function Page() {
           Log in with Plex
         </button>
       )}
-      {!isRewindDisabled && isLoggedIn && (
-        <Link href='/rewind' className='button mb-4'>
-          Start Rewind
-        </Link>
-      )}
+      {!isRewindDisabled &&
+        isLoggedIn &&
+        (managedUsers ? (
+          <>
+            <Link href='/rewind' className='button button-sm mb-2 last:mb-0'>
+              Start Rewind
+            </Link>
+            {managedUsers.map((user, i) => (
+              <Link
+                key={i}
+                href={`/rewind?userId=${user.user_id}`}
+                className='button button-sm mb-2 last:mb-0'
+              >
+                Rewind for {user.friendly_name}
+              </Link>
+            ))}
+          </>
+        ) : (
+          <Link href='/rewind' className='button'>
+            Start Rewind
+          </Link>
+        ))}
       {!isDashboardDisabled && isLoggedIn && (
         <Link
           href={`/dashboard/${snakeCase(libraries[0]?.section_name)}`}
-          className={isRewindDisabled ? 'button' : 'link'}
+          className={clsx('mt-4', isRewindDisabled ? 'button' : 'link')}
         >
           Dashboard
         </Link>

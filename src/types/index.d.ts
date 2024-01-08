@@ -1,3 +1,4 @@
+import { User } from 'next-auth'
 import { PERIODS } from '../utils/constants'
 
 export type DashboardParams = {
@@ -33,6 +34,7 @@ export type UserRewind = {
     user_percentage: string
     total: string
   }
+  user: User
 }
 
 export type RewindStory = {
@@ -86,4 +88,12 @@ export type Library = {
   child_count: string
   section_type: MediaType
   is_active: number
+}
+
+export type TautulliUser = {
+  is_admin: 0 | 1
+  is_restricted: 0 | 1
+  user_id: number
+  friendly_name: string
+  thumb: string
 }

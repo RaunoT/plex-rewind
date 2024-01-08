@@ -1,7 +1,6 @@
 'use client'
 
 import { UserRewind } from '@/types'
-import { User } from 'next-auth'
 import Stories from 'stories-react'
 import 'stories-react/dist/index.css'
 import StoryAudio from './Stories/Audio'
@@ -25,52 +24,35 @@ type StoryComponent = {
   userRewind: UserRewind
 } & Story
 
-function createStory(
-  Component: React.FC<StoryComponent>,
-  props: { userRewind: UserRewind },
-  duration: number,
-) {
-  return {
-    type: 'component',
-    component: (story: Story) => (
-      <Component
-        {...props}
-        isPaused={story.isPaused}
-        pause={story.pause}
-        resume={story.resume}
-      />
-    ),
-    duration,
-  }
-}
-
 type Props = {
   userRewind: UserRewind
-  user: User
 }
 
-export default function RewindStories({ userRewind, user }: Props) {
-  const commonProps = { userRewind }
-  const stories = [
-    {
+export default function RewindStories({ userRewind }: Props) {
+  function createStory(Component: React.FC<StoryComponent>, duration: number) {
+    return {
       type: 'component',
       component: (story: Story) => (
-        <StoryWelcome
-          user={user}
+        <Component
+          userRewind={userRewind}
           isPaused={story.isPaused}
           pause={story.pause}
           resume={story.resume}
         />
       ),
-      duration: 5000,
-    },
-    createStory(StoryTotal, commonProps, 8000),
-    createStory(StoryLibraries, commonProps, 9000),
+      duration,
+    }
+  }
+
+  const stories = [
+    createStory(StoryWelcome, 5000),
+    createStory(StoryTotal, 8000),
+    createStory(StoryLibraries, 9000),
     ...(process.env.NEXT_PUBLIC_OVERSEERR_URL
       ? [
           createStory(
             StoryRequests,
-            commonProps,
+
             userRewind.requests?.total ? 9000 : 4000,
           ),
         ]
@@ -79,38 +61,32 @@ export default function RewindStories({ userRewind, user }: Props) {
       ? [
           createStory(
             StoryShows,
-            commonProps,
+
             userRewind.shows.count ? 10000 : 4000,
           ),
         ]
       : []),
-    ...(userRewind.shows.count
-      ? [createStory(StoryShowsTop, commonProps, 8000)]
-      : []),
+    ...(userRewind.shows.count ? [createStory(StoryShowsTop, 8000)] : []),
     ...(userRewind.duration.user
       ? [
           createStory(
             StoryMovies,
-            commonProps,
+
             userRewind.movies.count ? 10000 : 4000,
           ),
         ]
       : []),
-    ...(userRewind.movies.count
-      ? [createStory(StoryMoviesTop, commonProps, 8000)]
-      : []),
+    ...(userRewind.movies.count ? [createStory(StoryMoviesTop, 8000)] : []),
     ...(userRewind.duration.user
       ? [
           createStory(
             StoryAudio,
-            commonProps,
+
             userRewind.audio.count ? 10000 : 4000,
           ),
         ]
       : []),
-    ...(userRewind.audio.count
-      ? [createStory(StoryAudioTop, commonProps, 8000)]
-      : []),
+    ...(userRewind.audio.count ? [createStory(StoryAudioTop, 8000)] : []),
   ]
 
   return (
