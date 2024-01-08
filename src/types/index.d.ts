@@ -93,6 +93,7 @@ export type Library = {
 export type TautulliUser = {
   is_admin: 0 | 1
   is_restricted: 0 | 1
+  is_active: 0 | 1
   user_id: number
   friendly_name: string
   thumb: string
