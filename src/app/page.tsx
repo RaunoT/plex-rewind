@@ -45,6 +45,7 @@ export default function Page() {
           if (res?.error) {
             console.error('Failed to sign in:', res.error)
           }
+
           setIsLoading(false)
         } catch (error) {
           console.error('Error during sign-in:', error)
@@ -77,7 +78,7 @@ export default function Page() {
 
         try {
           const res = await fetch(
-            `/api/managed-users?userId=${session.user.id}`,
+            `/api/managed-users?userId=${session?.user.id}`,
           )
           const data = await res.json()
 
@@ -94,7 +95,7 @@ export default function Page() {
     } else if (status !== 'loading') {
       setIsLoading(false)
     }
-  }, [status, session])
+  }, [status, session?.user.id])
 
   if (isLoading) {
     return <Loader />
