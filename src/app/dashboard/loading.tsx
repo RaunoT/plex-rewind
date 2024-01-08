@@ -5,7 +5,7 @@ export default function Loading() {
         <div className='skeleton mr-2 size-8 stroke-1 sm:size-10'></div>
         <div className='skeleton w-48'></div>
       </div>
-      <ul className='flex h-5 flex-wrap items-center gap-2 text-xs italic sm:gap-3 sm:text-base lg:h-6'>
+      <ul className='mb-1 flex h-5 flex-wrap items-center gap-2 text-xs italic sm:gap-3 sm:text-base lg:h-6'>
         <li className='icon-stat-wrapper'>
           <div className='skeleton p-2'></div>
           <div className='skeleton w-20'></div>
