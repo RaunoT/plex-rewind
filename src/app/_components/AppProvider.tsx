@@ -40,43 +40,27 @@ export default function AppProvider({ children }: Props) {
     }
   }, [background])
 
-  useEffect(() => {
-    const resizeObserver = new ResizeObserver((entries) => {
-      if (entries[0].target === backgroundRef.current && background) {
-        background.resize()
-      }
-    })
-    const currentBackgroundRef = backgroundRef.current
-
-    if (currentBackgroundRef) {
-      resizeObserver.observe(currentBackgroundRef)
-    }
-
-    return () => resizeObserver.disconnect()
-  }, [background])
-
   return (
     <SessionProvider>
       <main
-        ref={backgroundRef}
-        className='after:absolute after:inset-0 after:bg-black after:opacity-25 after:content-[""]'
+        className={clsx(
+          'flex min-h-dvh flex-col items-center overflow-x-hidden px-4 py-8 sm:justify-center',
+          { 'justify-center': pathname === '/' },
+        )}
       >
         <div
-          className={clsx(
-            'flex min-h-dvh flex-col items-center overflow-x-hidden px-4 py-8 sm:justify-center',
-            { 'justify-center': pathname === '/' },
-          )}
-        >
-          <a href='https://github.com/RaunoT/plex-rewind' target='_blank'>
-            <Image
-              src={githubSvg}
-              alt='GitHub'
-              className='absolute right-4 top-4 size-4 sm:size-6'
-            />
-          </a>
+          ref={backgroundRef}
+          className='fixed inset-0 -z-10 after:absolute after:inset-0 after:bg-black/25 after:content-[""]'
+        />
+        <a href='https://github.com/RaunoT/plex-rewind' target='_blank'>
+          <Image
+            src={githubSvg}
+            alt='GitHub'
+            className='absolute right-4 top-4 size-4 sm:size-6'
+          />
+        </a>
 
-          {children}
-        </div>
+        {children}
       </main>
     </SessionProvider>
   )

@@ -10,10 +10,6 @@
       @apply opacity-75;
     }
 
-    &[disabled] {
-      @apply cursor-not-allowed select-none opacity-25;
-    }
-
     &-sm {
       @apply rounded-xl px-4 py-1 text-sm;
     }
@@ -51,14 +47,14 @@
   }
 
   .link {
-    @apply text-neutral-300 hover:opacity-75;
+    @apply text-neutral-300 hover:text-neutral-500;
 
     &--light {
-      @apply text-neutral-200;
+      @apply text-neutral-200 hover:text-neutral-400;
     }
 
     &--dark {
-      @apply text-neutral-400;
+      @apply text-neutral-400 hover:text-neutral-600;
     }
   }
 
@@ -71,7 +67,7 @@
 
     &[aria-selected='true'],
     &[aria-current='page'] {
-      @apply opacity-50;
+      @apply text-neutral-500;
     }
   }
 
@@ -89,11 +85,11 @@
 }
 
 @layer utilities {
-  .animate-fade {
+  .animate-fade-up {
     opacity: 0;
-    animation: fade-in 1s ease forwards;
+    animation: fade-up 0.5s ease forwards;
 
-    @keyframes fade-in {
+    @keyframes fade-up {
       from {
         transform: translateY(1rem);
         opacity: 0;
@@ -101,6 +97,21 @@
 
       to {
         transform: translateY(0);
+        opacity: 1;
+      }
+    }
+  }
+
+  .animate-fade-in {
+    opacity: 0;
+    animation: fade-in 0.5s ease forwards;
+
+    @keyframes fade-in {
+      from {
+        opacity: 0;
+      }
+
+      to {
         opacity: 1;
       }
     }
