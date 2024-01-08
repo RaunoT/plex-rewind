@@ -13,7 +13,7 @@ export default function StoryWelcome({
   return (
     <StoryWrapper isPaused={isPaused} pause={pause} resume={resume}>
       <RewindStat noScale isAnimated={false}>
-        <div className='animate-fade relative mb-8 size-24'>
+        <div className='animate-fade-up relative mb-8 size-24'>
           <Image
             src={userRewind.user.image || ''}
             alt={`${userRewind.user.name} profile picture`}
@@ -23,7 +23,7 @@ export default function StoryWelcome({
             priority
           />
         </div>
-        <p className='animate-fade animation-delay-600 mb-4'>
+        <p className='animate-fade-up animation-delay-600 mb-4'>
           Welcome to your{' '}
           <span className='whitespace-nowrap'>
             <span className='rewind-cat text-yellow-500'>
@@ -36,7 +36,7 @@ export default function StoryWelcome({
           </span>
         </p>
         {/* TODO: animate in a second later */}
-        <p className='animate-fade animation-delay-2000'>
+        <p className='animate-fade-up animation-delay-2000'>
           Let&apos;s get started!
         </p>
       </RewindStat>

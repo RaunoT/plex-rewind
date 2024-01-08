@@ -5,9 +5,7 @@ import Loader from '@/components/Loader'
 import { createPlexAuthUrl, getPlexAuthToken } from '@/lib/auth'
 import { Library, TautulliUser } from '@/types'
 import { isDashboardDisabled, isRewindDisabled } from '@/utils/config'
-import { fadeIn } from '@/utils/motion'
 import clsx from 'clsx'
-import { motion } from 'framer-motion'
 import { snakeCase } from 'lodash'
 import { signIn, signOut, useSession } from 'next-auth/react'
 import Image from 'next/image'
@@ -105,7 +103,7 @@ export default function Page() {
   return (
     <div className='flex flex-col items-center text-center'>
       {session?.user?.image && (
-        <div className='relative mb-5 size-24'>
+        <div className='animate-fade-up relative mb-5 size-24'>
           <Image
             src={session?.user?.image}
             alt={`${session?.user?.name} profile picture`}
@@ -116,34 +114,26 @@ export default function Page() {
           />
         </div>
       )}
-      <h1 className='flex items-center gap-4 text-4xl font-bold'>
-        <motion.div
-          initial={{ opacity: 0, x: -50 }}
-          animate={{ opacity: 1, x: 0 }}
-        >
+
+      <div className='animate-fade-up animation-delay-300 mb-6'>
+        <h1 className='flex items-center gap-4 text-4xl font-bold'>
           <Image
             src={plexSvg}
             className='h-12 w-auto'
             alt='Plex logo'
             priority
           />
-        </motion.div>
-        <motion.span
-          variants={fadeIn}
-          initial='hidden'
-          animate='show'
-          transition={{ delay: 0.4 }}
+          <span>rewind</span>
+        </h1>
+        <a
+          className='mt-2 font-mono text-xs opacity-25'
+          href='https://github.com/RaunoT/plex-rewind/releases'
+          target='_blank'
         >
-          rewind
-        </motion.span>
-      </h1>
-      <a
-        className='mb-6 mt-2 font-mono text-xs opacity-25'
-        href='https://github.com/RaunoT/plex-rewind/releases'
-        target='_blank'
-      >
-        v{packageJson.version}
-      </a>
+          v{packageJson.version}
+        </a>
+      </div>
+
       {!isLoggedIn && (
         <button
           className='button button-sm mx-auto from-yellow-500 via-yellow-600 to-neutral-700'
@@ -152,41 +142,46 @@ export default function Page() {
           Log in with Plex
         </button>
       )}
-      {!isRewindDisabled &&
-        isLoggedIn &&
-        (managedUsers ? (
-          <>
-            <Link href='/rewind' className='button button-sm mb-2 last:mb-0'>
+
+      <div className='animate-fade-in animation-delay-600'>
+        {!isRewindDisabled &&
+          isLoggedIn &&
+          (managedUsers ? (
+            <>
+              <Link href='/rewind' className='button button-sm mb-2 last:mb-0'>
+                Start Rewind
+              </Link>
+              {managedUsers.map((user, i) => (
+                <Link
+                  key={i}
+                  href={`/rewind?userId=${user.user_id}`}
+                  className='button button-sm mb-2 last:mb-0'
+                >
+                  Rewind for {user.friendly_name}
+                </Link>
+              ))}
+            </>
+          ) : (
+            <Link href='/rewind' className='button'>
               Start Rewind
             </Link>
-            {managedUsers.map((user, i) => (
-              <Link
-                key={i}
-                href={`/rewind?userId=${user.user_id}`}
-                className='button button-sm mb-2 last:mb-0'
-              >
-                Rewind for {user.friendly_name}
-              </Link>
-            ))}
-          </>
-        ) : (
-          <Link href='/rewind' className='button'>
-            Start Rewind
+          ))}
+
+        {!isDashboardDisabled && isLoggedIn && (
+          <Link
+            href={`/dashboard/${snakeCase(libraries[0]?.section_name)}`}
+            className={clsx('mt-4 block', isRewindDisabled ? 'button' : 'link')}
+          >
+            Dashboard
           </Link>
-        ))}
-      {!isDashboardDisabled && isLoggedIn && (
-        <Link
-          href={`/dashboard/${snakeCase(libraries[0]?.section_name)}`}
-          className={clsx('mt-4', isRewindDisabled ? 'button' : 'link')}
-        >
-          Dashboard
-        </Link>
-      )}
-      {isLoggedIn && (
-        <button onClick={() => signOut()} className='link mt-16 block'>
-          Sign out
-        </button>
-      )}
+        )}
+
+        {isLoggedIn && (
+          <button onClick={() => signOut()} className='link mt-16'>
+            Sign out
+          </button>
+        )}
+      </div>
     </div>
   )
 }
