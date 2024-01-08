@@ -1,3 +1,13 @@
+## [1.8.3](https://github.com/RaunoT/plex-rewind/compare/v1.8.2...v1.8.3) (2024-01-08)
+
+### Bug Fixes
+
+- background jumping and flickering ([e03614b](https://github.com/RaunoT/plex-rewind/commit/e03614b2ec9cff3419f9b86bc85f50cfab86cdcd))
+
+### Performance Improvements
+
+- don't use motion on homepage ([8ffd547](https://github.com/RaunoT/plex-rewind/commit/8ffd547f20877ec81b4efb77f61d573ad397b21b))
+
 ## [1.8.2](https://github.com/RaunoT/plex-rewind/compare/v1.8.1...v1.8.2) (2024-01-08)
 
 ### Bug Fixes
