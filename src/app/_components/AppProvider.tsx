@@ -50,7 +50,7 @@ export default function AppProvider({ children }: Props) {
       >
         <div
           ref={backgroundRef}
-          className='fixed inset-0 -z-10 after:absolute after:inset-0 after:bg-black/25 after:content-[""]'
+          className='fixed inset-0 -z-10 h-screen after:absolute after:inset-0 after:bg-black/25 after:content-[""]'
         />
         <a href='https://github.com/RaunoT/plex-rewind' target='_blank'>
           <Image
