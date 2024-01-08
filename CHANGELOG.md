@@ -1,3 +1,10 @@
+## [1.8.6](https://github.com/RaunoT/plex-rewind/compare/v1.8.5...v1.8.6) (2024-01-08)
+
+### Bug Fixes
+
+- background on safari ([e9e1c26](https://github.com/RaunoT/plex-rewind/commit/e9e1c260550ecf4514bc2f2d49a896e032009324))
+- **rewind:** play controls positioning again ([f487fee](https://github.com/RaunoT/plex-rewind/commit/f487fee157ad8e7a8dff11b798d3e588ba22889f))
+
 ## [1.8.5](https://github.com/RaunoT/plex-rewind/compare/v1.8.4...v1.8.5) (2024-01-08)
 
 ### Bug Fixes
