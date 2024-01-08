@@ -9,12 +9,11 @@ export async function GET(request: Request) {
     (user) => user.user_id === Number(userId),
   )
   const isAdmin = thisUser?.is_admin
+  const managedUsers = users.response.data.filter(
+    (user) => user.is_restricted && user.is_active,
+  )
 
-  if (isAdmin) {
-    const managedUsers = users.response.data.filter(
-      (user) => user.is_restricted,
-    )
-
+  if (isAdmin && managedUsers.length) {
     return Response.json(managedUsers)
   }
 
