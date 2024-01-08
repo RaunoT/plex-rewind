@@ -10,13 +10,15 @@ export default function StoryMoviesTop({
   pause,
   resume,
 }: RewindStory) {
+  const hasTop5 = userRewind.movies.top.length === 5
+
   return (
     <StoryWrapper isPaused={isPaused} pause={pause} resume={resume}>
       <RewindStat noScale>
         <p className='mb-2'>
-          Here&apos;s your full{' '}
+          Here&apos;s your {hasTop5 ? '' : 'full '}
           <span className='rewind-cat'>
-            Top {userRewind.movies.top.length === 5 && '5'}
+            Top {hasTop5 && '5'}
             <FilmIcon />
           </span>
         </p>

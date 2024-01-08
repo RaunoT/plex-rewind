@@ -13,7 +13,7 @@ export default function Error({ error, reset }: Props) {
   }, [error])
 
   return (
-    <div className='flex flex-1 flex-col justify-center text-center lg:min-h-[492px] 2xl:min-h-[564px]'>
+    <div className='flex flex-1 flex-col justify-center text-center lg:min-h-[496px] 2xl:min-h-[568px]'>
       <h1 className='mb-4 text-3xl italic leading-tight sm:text-4xl'>
         Uh oh.. something went wrong!
       </h1>

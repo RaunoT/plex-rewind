@@ -36,11 +36,11 @@ export default function Dashboard({
 }: Props) {
   return (
     <>
-      <h2 className='mb-1 flex items-center font-bold text-black sm:text-xl xl:text-2xl'>
+      <h2 className='mb-1 flex items-center font-bold uppercase text-black sm:text-xl xl:text-2xl'>
         {getTitleIcon(type)}
         {title}
       </h2>
-      <ul className='icon-stats-container font-medium text-neutral-200'>
+      <ul className='icon-stats-container mb-1 font-medium text-neutral-200'>
         {totalSize && (
           <li className='icon-stat-wrapper'>
             <FolderIcon />
@@ -86,7 +86,7 @@ export default function Dashboard({
 }
 
 function getTitleIcon(type: string) {
-  const className = 'mr-2 size-8 sm:size-10 stroke-1'
+  const className = 'mr-1 sm:mr-2 size-8 sm:size-10 stroke-1'
 
   switch (type) {
     case 'movie':
