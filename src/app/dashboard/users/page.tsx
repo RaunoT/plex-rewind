@@ -9,7 +9,7 @@ import fetchTautulli, { getLibrariesByType } from '@/utils/fetchTautulli'
 import { secondsToTime, timeToSeconds } from '@/utils/formatting'
 import { Metadata } from 'next'
 import { notFound } from 'next/navigation'
-import Dashboard from '../../_components/Dashboard'
+import Dashboard from '../_components/Dashboard'
 
 export const metadata: Metadata = {
   title: 'Users',

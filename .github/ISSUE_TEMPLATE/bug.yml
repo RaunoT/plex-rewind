@@ -6,7 +6,7 @@ body:
     id: version
     attributes:
       label: Plex Rewind Version
-      description: What version of Plex Rewind are you running?
+      description: What version of Plex Rewind are you running? You can find this at the bottom of the settings page.
     validations:
       required: true
   - type: textarea

@@ -1,12 +1,13 @@
 'use client'
 
+import { CogIcon } from '@heroicons/react/24/outline'
 import clsx from 'clsx'
 import { SessionProvider } from 'next-auth/react'
+import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useEffect, useRef, useState } from 'react'
 import * as THREE from 'three'
 import FOG from 'vanta/dist/vanta.fog.min'
-import Settings from './Settings/Settings'
 
 type Props = {
   children: React.ReactNode
@@ -50,7 +51,12 @@ export default function AppProvider({ children }: Props) {
         )}
       >
         <div ref={backgroundRef} className='fixed inset-0 -z-10 h-screen' />
-        <Settings />
+        <Link
+          href='/settings'
+          className='absolute right-3 top-3 sm:right-4 sm:top-4'
+        >
+          {pathname !== '/settings' && <CogIcon className='size-5 lg:size-6' />}
+        </Link>
 
         {children}
       </main>

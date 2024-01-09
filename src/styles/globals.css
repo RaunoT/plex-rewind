@@ -75,12 +75,16 @@
     @apply rounded-3xl bg-neutral-200/20 p-4 backdrop-blur-lg sm:p-8 2xl:p-10;
   }
 
-  .form {
-    @apply flex flex-col gap-4;
+  .input {
+    @apply block w-full rounded-xl border-transparent bg-neutral-200/20 focus:border-neutral-300 focus:ring-0;
   }
 
-  .input {
-    @apply mt-1 block w-full rounded-xl border-transparent bg-neutral-200/20 focus:border-neutral-300 focus:ring-0;
+  .input-wrapper {
+    @apply flex flex-col gap-1;
+  }
+
+  .label {
+    @apply text-xs font-medium uppercase text-neutral-300 sm:text-sm;
   }
 }
 

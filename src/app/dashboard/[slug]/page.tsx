@@ -5,7 +5,7 @@ import { getItems, getTotalDuration, getTotalSize } from '@/utils/getDashboard'
 import { snakeCase } from 'lodash'
 import { Metadata } from 'next'
 import { notFound } from 'next/navigation'
-import Dashboard from '../../_components/Dashboard'
+import Dashboard from '../_components/Dashboard'
 
 export async function generateMetadata({
   params,
