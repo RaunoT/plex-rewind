@@ -82,6 +82,10 @@
       @apply size-5 text-black;
     }
   }
+
+  .glass-sheet {
+    @apply rounded-3xl bg-neutral-200/20 p-4 backdrop-blur-lg sm:p-8 2xl:p-10;
+  }
 }
 
 @layer utilities {

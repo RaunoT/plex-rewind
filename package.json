@@ -21,6 +21,7 @@
   },
   "dependencies": {
     "@heroicons/react": "^2.1.1",
+    "@radix-ui/react-dialog": "^1.0.5",
     "@serwist/next": "^8.3.0",
     "@serwist/precaching": "^8.3.0",
     "@serwist/sw": "^8.3.0",
@@ -34,7 +35,7 @@
     "react-dom": "^18.2.0",
     "sharp": "^0.33.1",
     "stories-react": "^1.1.2",
-    "three": "^0.151.0",
+    "three": "^0.160.0",
     "vanta": "^0.5.24",
     "xml2js": "^0.6.2"
   },
