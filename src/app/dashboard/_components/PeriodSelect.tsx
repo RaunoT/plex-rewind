@@ -18,21 +18,21 @@ export default function PeriodSelect() {
       <li>
         <Link
           href={`${pathname}?period=7days`}
-          className='nav-link'
+          className='link'
           aria-selected={period === '7days'}
         >
           7 days
         </Link>
       </li>
       <li>
-        <Link href={`${pathname}`} className='nav-link' aria-selected={!period}>
+        <Link href={`${pathname}`} className='link' aria-selected={!period}>
           30 days
         </Link>
       </li>
       <li>
         <Link
           href={`${pathname}?period=pastYear`}
-          className='nav-link'
+          className='link'
           aria-selected={period === 'pastYear'}
         >
           Past year
@@ -41,7 +41,7 @@ export default function PeriodSelect() {
       <li>
         <Link
           href={`${pathname}?period=allTime`}
-          className='nav-link'
+          className='link'
           aria-selected={period === 'allTime'}
         >
           All time

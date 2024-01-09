@@ -22,9 +22,12 @@
   "dependencies": {
     "@heroicons/react": "^2.1.1",
     "@radix-ui/react-dialog": "^1.0.5",
+    "@radix-ui/react-switch": "^1.0.3",
+    "@radix-ui/react-tabs": "^1.0.4",
     "@serwist/next": "^8.3.0",
     "@serwist/precaching": "^8.3.0",
     "@serwist/sw": "^8.3.0",
+    "@tailwindcss/forms": "^0.5.7",
     "clsx": "^2.1.0",
     "framer-motion": "^10.17.0",
     "lodash": "^4.17.21",

@@ -6,7 +6,7 @@ import { usePathname } from 'next/navigation'
 import { useEffect, useRef, useState } from 'react'
 import * as THREE from 'three'
 import FOG from 'vanta/dist/vanta.fog.min'
-import Settings from './Settings'
+import Settings from './Settings/Settings'
 
 type Props = {
   children: React.ReactNode

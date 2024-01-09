@@ -17,7 +17,7 @@ export default function Error({ error, reset }: Props) {
       <h1 className='mb-4 text-3xl italic leading-tight sm:text-4xl'>
         Uh oh.. something went wrong!
       </h1>
-      <button className='link link--dark mx-auto w-fit' onClick={() => reset()}>
+      <button className='link mx-auto w-fit' onClick={() => reset()}>
         Try again
       </button>
     </div>

@@ -47,28 +47,16 @@
   }
 
   .link {
-    @apply text-neutral-300 hover:text-neutral-500;
+    @apply text-neutral-500 hover:text-neutral-300;
 
-    &--light {
-      @apply text-neutral-200 hover:text-neutral-400;
-    }
-
-    &--dark {
-      @apply text-neutral-400 hover:text-neutral-600;
+    &[aria-selected='true'],
+    &[aria-current='page'] {
+      @apply text-neutral-300;
     }
   }
 
   .nav {
     @apply flex flex-wrap items-center justify-center gap-3 gap-y-1 text-xs font-medium uppercase sm:gap-4 sm:text-sm 2xl:text-base;
-  }
-
-  .nav-link {
-    @apply link link--light;
-
-    &[aria-selected='true'],
-    &[aria-current='page'] {
-      @apply text-neutral-500;
-    }
   }
 
   .icon-stats-container {
@@ -85,6 +73,14 @@
 
   .glass-sheet {
     @apply rounded-3xl bg-neutral-200/20 p-4 backdrop-blur-lg sm:p-8 2xl:p-10;
+  }
+
+  .form {
+    @apply flex flex-col gap-4;
+  }
+
+  .input {
+    @apply mt-1 block w-full rounded-xl border-transparent bg-neutral-200/20 focus:border-neutral-300 focus:ring-0;
   }
 }
 

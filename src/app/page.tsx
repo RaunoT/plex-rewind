@@ -12,7 +12,6 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
-import packageJson from '../../package.json'
 
 export default function Page() {
   const [libraries, setLibraries] = useState<Library[]>([])
@@ -126,13 +125,6 @@ export default function Page() {
           />
           <span>rewind</span>
         </h1>
-        <a
-          className='mt-2 font-mono text-xs text-white/25'
-          href='https://github.com/RaunoT/plex-rewind/releases'
-          target='_blank'
-        >
-          v{packageJson.version}
-        </a>
       </div>
 
       {!isLoggedIn && (

@@ -6,8 +6,8 @@ import {
   META_TITLE_TEMPLATE,
 } from '@/utils/constants'
 import { Metadata, Viewport } from 'next'
-import AppProvider from './_components/AppProvider'
-import GoogleAnalytics from './_components/GoogleAnalytics'
+import AppProvider from '../components/AppProvider'
+import GoogleAnalytics from '../components/GoogleAnalytics'
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || ''),
