@@ -19,7 +19,9 @@ export default async function DashboardLayout({ children }: Props) {
     <div className='flex w-full max-w-2xl flex-1 flex-col lg:max-w-7xl lg:flex-none 2xl:max-w-[90rem]'>
       <PageTitle title='Dashboard' />
       <DashboardNav libraries={libraries} />
-      <CardWrapper className='my-3'>{children}</CardWrapper>
+      <CardWrapper className='my-3 lg:min-h-[560px] 2xl:min-h-[648px]'>
+        {children}
+      </CardWrapper>
       <PeriodSelect />
     </div>
   )

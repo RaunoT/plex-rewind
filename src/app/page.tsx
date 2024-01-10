@@ -127,16 +127,16 @@ export default function Page() {
         </h1>
       </div>
 
-      {!isLoggedIn && (
-        <button
-          className='button button-sm mx-auto from-yellow-500 via-yellow-600 to-neutral-700'
-          onClick={() => handleLogin()}
-        >
-          Log in with Plex
-        </button>
-      )}
-
       <div className='animate-fade-in animation-delay-600'>
+        {!isLoggedIn && (
+          <button
+            className='button button-sm mx-auto from-yellow-500 via-yellow-600 to-neutral-700'
+            onClick={() => handleLogin()}
+          >
+            Log in with Plex
+          </button>
+        )}
+
         {!isRewindDisabled &&
           isLoggedIn &&
           (managedUsers ? (

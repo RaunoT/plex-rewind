@@ -47,16 +47,20 @@
   }
 
   .link {
-    @apply text-neutral-500 hover:text-neutral-300;
-
-    &[aria-selected='true'],
-    &[aria-current='page'] {
-      @apply text-neutral-300;
-    }
+    @apply text-neutral-400 hover:text-neutral-500;
   }
 
   .nav {
     @apply flex flex-wrap items-center justify-center gap-3 gap-y-1 text-xs font-medium uppercase sm:gap-4 sm:text-sm 2xl:text-base;
+  }
+
+  .nav-link {
+    @apply text-neutral-400 hover:text-white;
+
+    &[aria-selected='true'],
+    &[aria-current='page'] {
+      @apply text-white;
+    }
   }
 
   .icon-stats-container {
@@ -76,22 +80,26 @@
   }
 
   .input {
-    @apply block w-full rounded-xl border-transparent bg-neutral-200/20 focus:border-neutral-300 focus:ring-0;
+    @apply block w-full rounded-xl border-none bg-neutral-500 px-3 py-2 placeholder:text-neutral-400 focus-within:bg-neutral-400;
+
+    &:focus {
+      @apply bg-neutral-400 ring-neutral-300 placeholder:text-neutral-300;
+    }
   }
 
   .input-wrapper {
-    @apply flex flex-col gap-1;
+    @apply flex flex-col gap-2 sm:flex-row sm:items-center;
   }
 
   .label {
-    @apply text-xs font-medium uppercase text-neutral-300 sm:text-sm;
+    @apply shrink-0 text-xs font-medium uppercase text-neutral-300 sm:w-48 sm:text-right sm:text-sm;
   }
 
   .switch {
-    @apply label flex items-center gap-2;
+    @apply flex w-fit items-center justify-end gap-2 sm:flex-row-reverse;
 
     .indicator {
-      @apply relative h-6 w-12 cursor-pointer rounded-full bg-neutral-400;
+      @apply relative h-6 w-12 cursor-pointer rounded-full bg-neutral-500;
 
       &::after {
         @apply absolute inset-y-0 left-0.5 my-auto size-5 rounded-full bg-white transition content-[''];
@@ -99,8 +107,24 @@
     }
 
     &[data-selected='true'] .indicator {
-      @apply bg-neutral-500 after:translate-x-6;
+      @apply bg-neutral-400 after:translate-x-6;
     }
+  }
+
+  .datefield {
+    @apply input flex w-fit gap-1;
+  }
+
+  .checkbox-wrapper {
+    @apply flex cursor-pointer items-center gap-1;
+
+    &[data-selected='true'] .checkbox::after {
+      @apply absolute inset-0 text-center text-white content-['\2713'];
+    }
+  }
+
+  .checkbox {
+    @apply relative size-6 rounded-lg bg-neutral-500;
   }
 }
 

@@ -36,11 +36,11 @@ export default function Dashboard({
 }: Props) {
   return (
     <>
-      <h2 className='mb-1 flex items-center text-xl font-bold text-neutral-200 sm:text-2xl xl:text-3xl'>
+      <h2 className='mb-1 flex items-center text-xl font-bold sm:text-2xl xl:text-3xl'>
         {getTitleIcon(type)}
         {title}
       </h2>
-      <ul className='icon-stats-container mb-1 font-medium text-neutral-200'>
+      <ul className='icon-stats-container mb-1 font-medium text-neutral-300'>
         {totalSize && (
           <li className='icon-stat-wrapper'>
             <FolderIcon />

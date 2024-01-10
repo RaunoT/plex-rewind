@@ -24,7 +24,7 @@ export default function DashboardNav({ libraries }: Props) {
           <li key={library.section_id}>
             <Link
               href={`/dashboard/${snakeCase(library.section_name)}${period}`}
-              className='link'
+              className='nav-link'
               aria-current={
                 pathname === `/dashboard/${snakeCase(library.section_name)}` &&
                 'page'
@@ -38,7 +38,7 @@ export default function DashboardNav({ libraries }: Props) {
           <li>
             <Link
               href={`/dashboard/users${period}`}
-              className='link'
+              className='nav-link'
               aria-current={pathname === '/dashboard/users' && 'page'}
             >
               Users
