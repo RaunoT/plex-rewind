@@ -21,9 +21,6 @@
   },
   "dependencies": {
     "@heroicons/react": "^2.1.1",
-    "@radix-ui/react-dialog": "^1.0.5",
-    "@radix-ui/react-switch": "^1.0.3",
-    "@radix-ui/react-tabs": "^1.0.4",
     "@serwist/next": "^8.3.0",
     "@serwist/precaching": "^8.3.0",
     "@serwist/sw": "^8.3.0",
@@ -35,6 +32,7 @@
     "next-auth": "^4.24.5",
     "qs": "^6.11.2",
     "react": "^18.2.0",
+    "react-aria-components": "^1.0.1",
     "react-dom": "^18.2.0",
     "sharp": "^0.33.1",
     "stories-react": "^1.1.2",

@@ -1,9 +1,8 @@
 'use client'
 
 import githubSvg from '@/assets/github.svg'
-import Switch from '@/components/Switch'
-import * as Tabs from '@radix-ui/react-tabs'
 import Image from 'next/image'
+import { Switch, Tab, TabList, TabPanel, Tabs } from 'react-aria-components'
 import packageJson from '../../../package.json'
 import PageTitle from '../_components/PageTitle'
 
@@ -12,18 +11,18 @@ export default function Page() {
     <div className='mb-auto w-full max-w-screen-sm'>
       <PageTitle title='Settings' />
 
-      <Tabs.Root defaultValue='configuration'>
-        <Tabs.List aria-label='Manage your application' className='nav'>
-          <Tabs.Trigger className='link uppercase' value='configuration'>
+      <Tabs defaultSelectedKey='configuration'>
+        <TabList aria-label='Manage your application' className='nav'>
+          <Tab className='link cursor-pointer uppercase' id='configuration'>
             Configuration
-          </Tabs.Trigger>
-          <Tabs.Trigger className='link uppercase' value='features'>
+          </Tab>
+          <Tab className='link cursor-pointer uppercase' id='features'>
             Features
-          </Tabs.Trigger>
-        </Tabs.List>
+          </Tab>
+        </TabList>
 
         <div className='my-3'>
-          <Tabs.Content value='configuration'>
+          <TabPanel id='configuration'>
             <div className='glass-sheet grid gap-4'>
               <label className='input-wrapper' htmlFor='application_url'>
                 <span className='label'>Application URL</span>
@@ -122,25 +121,26 @@ export default function Page() {
                 />
               </label>
             </div>
-          </Tabs.Content>
-          <Tabs.Content value='features'>
+          </TabPanel>
+          <TabPanel id='features'>
             <div className='glass-sheet grid gap-4'>
               <div className='flex gap-4'>
-                <label className='input-wrapper' htmlFor='rewind'>
-                  <span className='label'>Rewind</span>
-                  <Switch id='rewind' name='rewind' />
-                </label>
-                <label className='input-wrapper' htmlFor='dashboard'>
-                  <span className='label'>Dashboard</span>
-                  <Switch id='dashboard' name='dashboard' />
-                </label>
-                <label className='input-wrapper' htmlFor='dashboard_users_page'>
-                  <span className='label'>Users page</span>
-                  <Switch
-                    id='dashboard_users_page'
-                    name='dashboard_users_page'
-                  />
-                </label>
+                <Switch className='switch' name='rewind' defaultSelected>
+                  <div className='indicator'></div>
+                  Rewind
+                </Switch>
+                <Switch className='switch' name='dashboard' defaultSelected>
+                  <div className='indicator'></div>
+                  Dashboard
+                </Switch>
+                <Switch
+                  className='switch'
+                  name='dashboard_users_page'
+                  defaultSelected
+                >
+                  <div className='indicator'></div>
+                  Users page
+                </Switch>
               </div>
               <label className='input-wrapper' htmlFor='google_analytics_id'>
                 <span className='label'>Google Analytics ID</span>
@@ -182,9 +182,9 @@ export default function Page() {
                 />
               </label>
             </div>
-          </Tabs.Content>
+          </TabPanel>
         </div>
-      </Tabs.Root>
+      </Tabs>
 
       <button className='button ml-auto w-full sm:w-fit' type='submit'>
         Save

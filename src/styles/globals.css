@@ -86,6 +86,22 @@
   .label {
     @apply text-xs font-medium uppercase text-neutral-300 sm:text-sm;
   }
+
+  .switch {
+    @apply label flex items-center gap-2;
+
+    .indicator {
+      @apply relative h-6 w-12 cursor-pointer rounded-full bg-neutral-400;
+
+      &::after {
+        @apply absolute inset-y-0 left-0.5 my-auto size-5 rounded-full bg-white transition content-[''];
+      }
+    }
+
+    &[data-selected='true'] .indicator {
+      @apply bg-neutral-500 after:translate-x-6;
+    }
+  }
 }
 
 @layer utilities {
