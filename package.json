@@ -1,7 +1,7 @@
 {
   "name": "plex-rewind",
-  "version": "1.8.7",
-  "packageManager": "pnpm@8.13.1",
+  "version": "1.0.0-dev",
+  "packageManager": "pnpm@8.14.0",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
