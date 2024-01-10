@@ -66,6 +66,7 @@ export async function getServerId(): Promise<string> {
       },
       true,
     )
+
     return serverIdPromise.response?.data?.identifier
   } else {
     throw new Error('Plex hostname and/or port are not configured!')

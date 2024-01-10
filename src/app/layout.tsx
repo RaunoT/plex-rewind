@@ -21,7 +21,7 @@ export const metadata: Metadata = {
   appleWebApp: {
     title: META_TITLE,
     capable: true,
-    statusBarStyle: 'black-translucent',
+    statusBarStyle: 'default',
   },
   openGraph: {
     type: 'website',

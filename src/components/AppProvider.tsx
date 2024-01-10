@@ -52,7 +52,7 @@ export default function AppProvider({ children }: Props) {
       >
         <div ref={backgroundRef} className='fixed inset-0 -z-10 h-screen' />
         <Link
-          href='/settings'
+          href='/settings/connection'
           className='absolute right-3 top-3 sm:right-4 sm:top-4'
         >
           {pathname !== '/settings' && <CogIcon className='size-5 lg:size-6' />}
