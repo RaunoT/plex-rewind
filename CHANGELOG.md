@@ -1,3 +1,9 @@
+## [1.8.7](https://github.com/RaunoT/plex-rewind/compare/v1.8.6...v1.8.7) (2024-01-10)
+
+### Bug Fixes
+
+- **dependencies:** sharp ([#92](https://github.com/RaunoT/plex-rewind/issues/92)) ([9dcc248](https://github.com/RaunoT/plex-rewind/commit/9dcc24847dc85605ad77074d29c6e71a9eb4f3e8))
+
 ## [1.8.6](https://github.com/RaunoT/plex-rewind/compare/v1.8.5...v1.8.6) (2024-01-08)
 
 ### Bug Fixes
