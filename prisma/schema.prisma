@@ -1,5 +1,3 @@
-// Learn more in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -10,7 +8,7 @@ datasource db {
 }
 
 model Settings {
-  id                        Int     @id @default(autoincrement())
+  id                        Int       @id @default(autoincrement())
   applicationUrl            String?
   nextAuthSecret            String?
   tautulliUrl               String?
@@ -20,9 +18,9 @@ model Settings {
   tmdbApiKey                String?
   plexHostname              String?
   plexPort                  String?
-  isRewindActive            Boolean? @default(true)
-  isDashboardActive         Boolean? @default(true)
-  isUsersPageActive         Boolean? @default(true)
+  isRewindActive            Boolean?  @default(true)
+  isDashboardActive         Boolean?  @default(true)
+  isUsersPageActive         Boolean?  @default(true)
   activeLibraries           String?
   activeDashboardStatistics String?
   statisticsStartDate       DateTime?

@@ -1,14 +1,10 @@
 'use server'
 
+import { db } from '@/lib/db'
 import { FormState } from '@/types'
-import { PrismaClient } from '@prisma/client'
 import { revalidatePath } from 'next/cache'
 import { z } from 'zod'
 
-const prisma = new PrismaClient({
-  // log: ['query', 'info', 'warn', 'error'],
-  log: ['warn', 'error'],
-})
 const connectionSettingsSchema = z
   .object({
     applicationUrl: z.string().url(),
@@ -49,7 +45,7 @@ export async function saveConnectionSettings(
   })
 
   try {
-    await prisma.settings.update({
+    await db.settings.update({
       data: validatedFields,
       where: {
         id: 1,
@@ -78,7 +74,7 @@ export async function saveFeaturesSettings(
   })
 
   try {
-    await prisma.settings.update({
+    await db.settings.update({
       data: {
         isRewindActive: validatedFields.isRewindActive,
         isDashboardActive: validatedFields.isDashboardActive,
@@ -101,8 +97,8 @@ export async function saveFeaturesSettings(
   }
 }
 
-export async function getConnectionSettings() {
-  const settings = await prisma.settings.findFirst({
+export async function getSettings() {
+  const settings = await db.settings.findFirst({
     where: {
       id: 1,
     },

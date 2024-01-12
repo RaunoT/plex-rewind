@@ -103,3 +103,23 @@ export type FormState = {
   message: string
   status: string
 }
+
+export type Settings = {
+  id: number
+  applicationUrl?: string | null
+  nextAuthSecret?: string | null
+  tautulliUrl?: string | null
+  tautulliApiKey?: string | null
+  overseerrUrl?: string | null
+  overseerrApiKey?: string | null
+  tmdbApiKey?: string | null
+  plexHostname?: string | null
+  plexPort?: string | null
+  isRewindActive?: boolean | null
+  isDashboardActive?: boolean | null
+  isUsersPageActive?: boolean | null
+  activeLibraries?: string | null
+  activeDashboardStatistics?: string | null
+  statisticsStartDate?: Date | null
+  googleAnalyticsId?: string | null
+}
