@@ -12,7 +12,9 @@
     "format": "prettier --write --cache .",
     "format:check": "prettier --check --cache .",
     "prepare": "husky install",
-    "commit": "git-cz"
+    "commit": "git-cz",
+    "db:studio": "npx prisma studio --browser none",
+    "db:push": "npx prisma db push"
   },
   "config": {
     "commitizen": {
@@ -22,12 +24,13 @@
   "dependencies": {
     "@heroicons/react": "^2.1.1",
     "@internationalized/date": "^3.5.1",
-    "@serwist/next": "^8.3.0",
-    "@serwist/precaching": "^8.3.0",
-    "@serwist/sw": "^8.3.0",
+    "@prisma/client": "5.8.0",
+    "@serwist/next": "^8.4.2",
+    "@serwist/precaching": "^8.4.2",
+    "@serwist/sw": "^8.4.2",
     "@tailwindcss/forms": "^0.5.7",
     "clsx": "^2.1.0",
-    "framer-motion": "^10.17.0",
+    "framer-motion": "^10.18.0",
     "lodash": "^4.17.21",
     "next": "^14.0.4",
     "next-auth": "^4.24.5",
@@ -39,21 +42,22 @@
     "stories-react": "^1.1.2",
     "three": "^0.160.0",
     "vanta": "^0.5.24",
-    "xml2js": "^0.6.2"
+    "xml2js": "^0.6.2",
+    "zod": "^3.22.4"
   },
   "devDependencies": {
-    "@commitlint/cli": "^18.4.3",
-    "@commitlint/config-conventional": "^18.4.3",
+    "@commitlint/cli": "^18.4.4",
+    "@commitlint/config-conventional": "^18.4.4",
     "@semantic-release/changelog": "^6.0.3",
     "@semantic-release/git": "^10.0.1",
     "@types/lodash": "^4.14.202",
-    "@types/node": "^20.10.6",
+    "@types/node": "^20.11.0",
     "@types/qs": "^6.9.11",
-    "@types/react": "^18.2.46",
+    "@types/react": "^18.2.47",
     "@types/react-dom": "^18.2.18",
     "@types/xml2js": "^0.4.14",
-    "@typescript-eslint/eslint-plugin": "^6.17.0",
-    "@typescript-eslint/parser": "^6.17.0",
+    "@typescript-eslint/eslint-plugin": "^6.18.1",
+    "@typescript-eslint/parser": "^6.18.1",
     "autoprefixer": "^10.4.16",
     "commitizen": "^4.3.0",
     "cz-conventional-changelog": "^3.3.0",
@@ -62,14 +66,15 @@
     "eslint-config-prettier": "^9.1.0",
     "husky": "^8.0.3",
     "lint-staged": "^15.2.0",
-    "postcss": "^8.4.32",
+    "postcss": "^8.4.33",
     "prettier": "^3.1.1",
     "prettier-plugin-organize-imports": "^3.2.4",
-    "prettier-plugin-tailwindcss": "^0.5.10",
+    "prettier-plugin-tailwindcss": "^0.5.11",
+    "prisma": "^5.8.0",
     "semantic-release": "^22.0.12",
     "stylelint": "^15.11.0",
     "stylelint-config-standard": "^34.0.0",
-    "tailwindcss": "^3.4.0",
+    "tailwindcss": "^3.4.1",
     "typescript": "^5.3.3"
   }
 }

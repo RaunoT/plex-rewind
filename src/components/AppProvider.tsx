@@ -5,12 +5,12 @@ import clsx from 'clsx'
 import { SessionProvider } from 'next-auth/react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { useEffect, useRef, useState } from 'react'
+import { ReactNode, useEffect, useRef, useState } from 'react'
 import * as THREE from 'three'
 import FOG from 'vanta/dist/vanta.fog.min'
 
 type Props = {
-  children: React.ReactNode
+  children: ReactNode
 }
 
 export default function AppProvider({ children }: Props) {

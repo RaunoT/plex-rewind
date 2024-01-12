@@ -1,11 +1,12 @@
 import githubSvg from '@/assets/github.svg'
 import Image from 'next/image'
+import { ReactNode } from 'react'
 import packageJson from '../../../package.json'
 import PageTitle from '../_components/PageTitle'
 import SettingsNav from './_components/SettingsNav'
 
 type Props = {
-  children: React.ReactNode
+  children: ReactNode
 }
 
 export default function Page({ children }: Props) {

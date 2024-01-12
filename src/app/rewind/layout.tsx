@@ -2,9 +2,10 @@ import CardWrapper from '@/app/_components/CardWrapper'
 import PageTitle from '@/app/_components/PageTitle'
 import { isRewindDisabled } from '@/utils/config'
 import { notFound } from 'next/navigation'
+import { ReactNode } from 'react'
 
 type Props = {
-  children: React.ReactNode
+  children: ReactNode
 }
 
 export default function RewindLayout({ children }: Props) {

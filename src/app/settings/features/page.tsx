@@ -1,5 +1,7 @@
 'use client'
 
+import { FormState } from '@/types'
+import { saveFeaturesSettings } from '@/utils/settings'
 import { parseDate } from '@internationalized/date'
 import { useState } from 'react'
 import {
@@ -11,33 +13,30 @@ import {
   Label,
   Switch,
 } from 'react-aria-components'
+import { useFormState, useFormStatus } from 'react-dom'
+
+const initialState: FormState = {
+  message: '',
+  status: '',
+}
+
+export function SaveButton() {
+  const { pending } = useFormStatus()
+
+  return (
+    <button className='button w-full sm:w-fit' type='submit' disabled={pending}>
+      Save
+    </button>
+  )
+}
 
 export default function FeaturesSettings() {
+  const [state, formAction] = useFormState(saveFeaturesSettings, initialState)
   const [formData, setFormData] = useState({
-    rewind: 'true',
-    dashboard: 'true',
-    dashboard_users_page: 'true',
-    google_analytics_id: '',
-    dashboard_statistics: 'duration,plays,users,requests',
-    libraries: '',
-    statistics_start_date: parseDate('2018-01-01'),
+    isRewindActive: 'true',
+    isDashboardActive: 'true',
+    isUsersPageActive: 'true',
   })
-
-  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault()
-    console.log(JSON.stringify(formData))
-
-    // const res = await fetch('/api/settings', {
-    //   method: 'POST',
-    //   headers: {
-    //     'Content-Type': 'application/json',
-    //   },
-    //   body: JSON.stringify(formData),
-    // })
-
-    // const data = await res.json()
-    // console.log(data)
-  }
 
   function handleSwitchChange(name: string, isSelected: boolean) {
     setFormData({
@@ -46,69 +45,63 @@ export default function FeaturesSettings() {
     })
   }
 
-  function handleCheckboxGroupChange(values: string[]) {
-    setFormData({
-      ...formData,
-      dashboard_statistics: values.join(','),
-    })
-  }
-
-  function handleInputChange(event: React.ChangeEvent<HTMLInputElement>) {
-    setFormData({
-      ...formData,
-      [event.target.name]: event.target.value,
-    })
-  }
-
   return (
-    <form className='glass-sheet pb-6' onSubmit={handleSubmit}>
+    <form className='glass-sheet pb-6' action={formAction}>
       <div className='grid gap-4'>
         <Switch
           className='switch'
-          name='rewind'
+          name='isRewindActive'
           defaultSelected
-          value={formData.rewind}
-          onChange={(isSelected) => handleSwitchChange('rewind', isSelected)}
+          value={formData.isRewindActive}
+          onChange={(isSelected) =>
+            handleSwitchChange('isRewindActive', isSelected)
+          }
         >
           <div className='indicator' />
           <span className='label'>Rewind</span>
         </Switch>
         <Switch
           className='switch'
-          name='dashboard'
+          name='isDashboardActive'
           defaultSelected
-          value={formData.dashboard}
-          onChange={(isSelected) => handleSwitchChange('dashboard', isSelected)}
+          value={formData.isDashboardActive}
+          onChange={(isSelected) =>
+            handleSwitchChange('isDashboardActive', isSelected)
+          }
         >
           <div className='indicator'></div>
           <span className='label'>Dashboard</span>
         </Switch>
         <Switch
           className='switch'
-          name='dashboard_users_page'
+          name='isUsersPageActive'
           defaultSelected
-          value={formData.dashboard_users_page}
+          value={formData.isUsersPageActive}
           onChange={(isSelected) =>
-            handleSwitchChange('dashboard_users_page', isSelected)
+            handleSwitchChange('isUsersPageActive', isSelected)
           }
         >
           <div className='indicator'></div>
           <span className='label'>Users page</span>
         </Switch>
-        <label className='input-wrapper'>
-          <input
-            type='text'
-            className='input'
-            name='libraries'
-            value={formData.libraries}
-            onChange={handleInputChange}
-          />
-          <span className='label'>Libraries</span>
-        </label>
+        <CheckboxGroup className='input-wrapper' name='activeLibraries'>
+          <div className='mr-auto flex flex-wrap gap-2'>
+            <Checkbox value='movies' className='checkbox-wrapper'>
+              <div className='checkbox' aria-hidden='true'></div>
+              Movies
+            </Checkbox>
+            <Checkbox value='tv_shows' className='checkbox-wrapper'>
+              <div className='checkbox' aria-hidden='true'></div>
+              TV Shows
+            </Checkbox>
+          </div>
+          <Label className='label'>Libraries</Label>
+        </CheckboxGroup>
         <CheckboxGroup
           className='input-wrapper'
-          onChange={handleCheckboxGroupChange}
-          value={formData.dashboard_statistics.split(',')}
+          name='activeDashboardStatistics'
+          // onChange={handleCheckboxGroupChange}
+          // value={formData.dashboard_statistics.split(',')}
         >
           <div className='mr-auto flex flex-wrap gap-2'>
             <Checkbox value='duration' className='checkbox-wrapper'>
@@ -132,8 +125,8 @@ export default function FeaturesSettings() {
         </CheckboxGroup>
         <DateField
           className='input-wrapper'
-          // value={formData.statistics_start_date}
-          defaultValue={formData.statistics_start_date}
+          defaultValue={parseDate('2018-01-01')}
+          name='statisticsStartDate'
         >
           <DateInput className='datefield'>
             {(segment) => (
@@ -143,20 +136,24 @@ export default function FeaturesSettings() {
           <Label className='label'>Statistics start date</Label>
         </DateField>
         <label className='input-wrapper'>
-          <input
-            type='text'
-            className='input'
-            name='google_analytics_id'
-            value={formData.google_analytics_id}
-            onChange={handleInputChange}
-          />
+          <input type='text' className='input' name='googleAnalyticsId' />
           <span className='label'>Google Analytics ID</span>
         </label>
       </div>
 
-      <button className='button ml-auto mt-6 w-full sm:w-fit' type='submit'>
-        Save
-      </button>
+      <div className='mt-6 flex flex-col items-center justify-end gap-3 sm:flex-row sm:gap-4'>
+        <p
+          aria-live='polite'
+          role='status'
+          className={
+            state?.status === 'success' ? 'text-green-500' : 'text-red-500'
+          }
+        >
+          {state?.message}
+        </p>
+
+        <SaveButton />
+      </div>
     </form>
   )
 }

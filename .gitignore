@@ -39,3 +39,6 @@ next-env.d.ts
 
 # pwa
 public/sw.js
+
+# prisma
+prisma/dev.db

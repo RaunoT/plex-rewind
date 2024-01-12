@@ -1,0 +1,30 @@
+// Learn more in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Settings {
+  id                        Int     @id @default(autoincrement())
+  applicationUrl            String?
+  nextAuthSecret            String?
+  tautulliUrl               String?
+  tautulliApiKey            String?
+  overseerrUrl              String?
+  overseerrApiKey           String?
+  tmdbApiKey                String?
+  plexHostname              String?
+  plexPort                  String?
+  isRewindActive            Boolean? @default(true)
+  isDashboardActive         Boolean? @default(true)
+  isUsersPageActive         Boolean? @default(true)
+  activeLibraries           String?
+  activeDashboardStatistics String?
+  statisticsStartDate       String?
+  googleAnalyticsId         String?
+}

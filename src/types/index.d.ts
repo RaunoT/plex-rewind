@@ -98,3 +98,8 @@ export type TautulliUser = {
   friendly_name: string
   thumb: string
 }
+
+export type FormState = {
+  message: string
+  status: string
+}

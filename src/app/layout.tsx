@@ -6,6 +6,7 @@ import {
   META_TITLE_TEMPLATE,
 } from '@/utils/constants'
 import { Metadata, Viewport } from 'next'
+import { ReactNode } from 'react'
 import AppProvider from '../components/AppProvider'
 import GoogleAnalytics from '../components/GoogleAnalytics'
 
@@ -47,7 +48,7 @@ export const viewport: Viewport = {
 }
 
 type Props = {
-  children: React.ReactNode
+  children: ReactNode
 }
 
 export default function RootLayout({ children }: Props) {

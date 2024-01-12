@@ -3,11 +3,12 @@ import PageTitle from '@/app/_components/PageTitle'
 import { isDashboardDisabled } from '@/utils/config'
 import { getLibraries } from '@/utils/fetchTautulli'
 import { notFound } from 'next/navigation'
+import { ReactNode } from 'react'
 import DashboardNav from './_components/DashboardNav'
 import PeriodSelect from './_components/PeriodSelect'
 
 type Props = {
-  children: React.ReactNode
+  children: ReactNode
 }
 
 export default async function DashboardLayout({ children }: Props) {

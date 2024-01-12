@@ -1,6 +1,7 @@
 'use client'
 
 import { UserRewind } from '@/types'
+import { FC } from 'react'
 import Stories from 'stories-react'
 import 'stories-react/dist/index.css'
 import StoryAudio from './Stories/Audio'
@@ -29,7 +30,7 @@ type Props = {
 }
 
 export default function RewindStories({ userRewind }: Props) {
-  function createStory(Component: React.FC<StoryComponent>, duration: number) {
+  function createStory(Component: FC<StoryComponent>, duration: number) {
     return {
       type: 'component',
       component: (story: Story) => (

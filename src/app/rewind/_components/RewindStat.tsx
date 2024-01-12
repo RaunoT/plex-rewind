@@ -4,10 +4,10 @@ import useTimer from '@/hooks/useTimer'
 import { animateRewindStat, fadeIn } from '@/utils/motion'
 import clsx from 'clsx'
 import { motion } from 'framer-motion'
-import { useEffect, useState } from 'react'
+import { ReactNode, useEffect, useState } from 'react'
 
 type Props = {
-  children: React.ReactNode
+  children: ReactNode
   className?: string
   renderDelay?: number
   loaderDelay?: number

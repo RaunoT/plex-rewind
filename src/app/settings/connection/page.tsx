@@ -1,45 +1,29 @@
 'use client'
 
-import { useState } from 'react'
+import { FormState } from '@/types'
+import { saveConnectionSettings } from '@/utils/settings'
+import { useFormState, useFormStatus } from 'react-dom'
 
-export default function ConnectionSettings() {
-  const [formData, setFormData] = useState({
-    application_url: 'http://localhost:8383',
-    next_auth_secret: '',
-    tautulli_url: '',
-    tautulli_api_key: '',
-    overseerr_url: '',
-    overseerr_api_key: '',
-    tmdb_api_key: '',
-    plex_hostname: 'localhost',
-    plex_port: '32400',
-  })
+const initialState: FormState = {
+  message: '',
+  status: '',
+}
 
-  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault()
-    console.log(JSON.stringify(formData))
-
-    // const res = await fetch('/api/settings', {
-    //   method: 'POST',
-    //   headers: {
-    //     'Content-Type': 'application/json',
-    //   },
-    //   body: JSON.stringify(formData),
-    // })
-
-    // const data = await res.json()
-    // console.log(data)
-  }
-
-  function handleInputChange(event: React.ChangeEvent<HTMLInputElement>) {
-    setFormData({
-      ...formData,
-      [event.target.name]: event.target.value,
-    })
-  }
+export function SaveButton() {
+  const { pending } = useFormStatus()
 
   return (
-    <form className='glass-sheet pb-6' onSubmit={handleSubmit}>
+    <button className='button w-full sm:w-fit' type='submit' disabled={pending}>
+      Save
+    </button>
+  )
+}
+
+export default function ConnectionSettings() {
+  const [state, formAction] = useFormState(saveConnectionSettings, initialState)
+
+  return (
+    <form className='glass-sheet pb-6' action={formAction}>
       <div className='grid gap-4'>
         <label className='input-wrapper'>
           <input
@@ -47,9 +31,7 @@ export default function ConnectionSettings() {
             className='input'
             placeholder='http://localhost:8383'
             required
-            name='application_url'
-            value={formData.application_url}
-            onChange={handleInputChange}
+            name='applicationUrl'
           />
           <span className='label'>Application URL</span>
         </label>
@@ -57,10 +39,8 @@ export default function ConnectionSettings() {
           <input
             type='password'
             className='input'
-            name='next_auth_secret'
+            name='nextAuthSecret'
             required
-            value={formData.next_auth_secret}
-            onChange={handleInputChange}
           />
           <span className='label'>Next Auth secret</span>
         </label>
@@ -69,10 +49,8 @@ export default function ConnectionSettings() {
             type='url'
             className='input'
             placeholder='http://192.168.1.2:8181'
-            name='tautulli_url'
+            name='tautulliUrl'
             required
-            value={formData.tautulli_url}
-            onChange={handleInputChange}
           />
           <span className='label'>Tautulli URL</span>
         </label>
@@ -80,10 +58,8 @@ export default function ConnectionSettings() {
           <input
             type='password'
             className='input'
-            name='tautulli_api_key'
+            name='tautulliApiKey'
             required
-            value={formData.tautulli_api_key}
-            onChange={handleInputChange}
           />
           <span className='label'>Tautulli API key</span>
         </label>
@@ -92,10 +68,8 @@ export default function ConnectionSettings() {
             type='url'
             className='input'
             placeholder='http://192.168.1.2:5055'
-            name='overseerr_url'
+            name='overseerrUrl'
             required
-            value={formData.overseerr_url}
-            onChange={handleInputChange}
           />
           <span className='label'>Overseerr URL</span>
         </label>
@@ -103,22 +77,13 @@ export default function ConnectionSettings() {
           <input
             type='password'
             className='input'
-            name='overseerr_api_key'
+            name='overseerrApiKey'
             required
-            value={formData.overseerr_api_key}
-            onChange={handleInputChange}
           />
           <span className='label'>Overseerr API key</span>
         </label>
         <label className='input-wrapper'>
-          <input
-            type='password'
-            className='input'
-            name='tmdb_api_key'
-            required
-            value={formData.tmdb_api_key}
-            onChange={handleInputChange}
-          />
+          <input type='password' className='input' name='tmdbApiKey' required />
           <span className='label'>TMDB API key</span>
         </label>
         <label className='input-wrapper'>
@@ -126,30 +91,36 @@ export default function ConnectionSettings() {
             type='text'
             className='input'
             placeholder='localhost'
-            name='plex_hostname'
+            name='plexHostname'
             required
-            value={formData.plex_hostname}
-            onChange={handleInputChange}
           />
           <span className='label'>Plex hostname</span>
         </label>
         <label className='input-wrapper'>
           <input
-            type='text'
+            type='number'
             className='input'
             placeholder='32400'
-            name='plex_port'
+            name='plexPort'
             required
-            value={formData.plex_port}
-            onChange={handleInputChange}
           />
           <span className='label'>Plex port</span>
         </label>
       </div>
 
-      <button className='button ml-auto mt-6 w-full sm:w-fit' type='submit'>
-        Save
-      </button>
+      <div className='mt-6 flex flex-col items-center justify-end gap-3 sm:flex-row sm:gap-4'>
+        <p
+          aria-live='polite'
+          role='status'
+          className={
+            state?.status === 'success' ? 'text-green-500' : 'text-red-500'
+          }
+        >
+          {state?.message}
+        </p>
+
+        <SaveButton />
+      </div>
     </form>
   )
 }
