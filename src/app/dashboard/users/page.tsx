@@ -145,7 +145,9 @@ async function getUsersCount() {
   return usersCount.response?.data.slice(1).length
 }
 
-export default async function Users({ searchParams }: DashboardParams) {
+export default async function DashboardUsersPage({
+  searchParams,
+}: DashboardParams) {
   // TODO: not redirecting to parent 404 boundary
   isDashboardUsersDisabled && notFound()
 

@@ -9,7 +9,7 @@ type Props = {
   children: ReactNode
 }
 
-export default function Page({ children }: Props) {
+export default function SettingsLayout({ children }: Props) {
   return (
     <div className='mb-auto w-full max-w-screen-sm'>
       <PageTitle title='Settings' />

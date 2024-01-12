@@ -28,7 +28,10 @@ export async function generateStaticParams() {
   }))
 }
 
-export default async function Page({ params, searchParams }: DashboardParams) {
+export default async function DashboardPage({
+  params,
+  searchParams,
+}: DashboardParams) {
   const libraries = await getLibraries()
   const library = libraries.find(
     (library) => snakeCase(library.section_name) === params.slug,

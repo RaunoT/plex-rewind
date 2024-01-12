@@ -1,7 +1,7 @@
 'use client'
 
+import { saveConnectionSettings } from '@/actions/update-settings'
 import { FormState, Settings } from '@/types'
-import { saveConnectionSettings } from '@/utils/settings'
 import { useFormState, useFormStatus } from 'react-dom'
 
 type Props = {

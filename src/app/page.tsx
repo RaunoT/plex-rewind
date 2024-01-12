@@ -13,7 +13,7 @@ import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
 
-export default function Page() {
+export default function HomePage() {
   const [libraries, setLibraries] = useState<Library[]>([])
   const [managedUsers, setManagedUsers] = useState<TautulliUser[] | null>(null)
   const [isLoading, setIsLoading] = useState<boolean>(true)

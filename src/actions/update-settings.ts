@@ -96,13 +96,3 @@ export async function saveFeaturesSettings(
     return { message: 'Something went wrong!', status: 'error' }
   }
 }
-
-export async function getSettings() {
-  const settings = await db.settings.findFirst({
-    where: {
-      id: 1,
-    },
-  })
-
-  return settings
-}
