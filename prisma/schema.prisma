@@ -25,6 +25,6 @@ model Settings {
   isUsersPageActive         Boolean? @default(true)
   activeLibraries           String?
   activeDashboardStatistics String?
-  statisticsStartDate       String?
+  statisticsStartDate       DateTime?
   googleAnalyticsId         String?
 }

@@ -3,10 +3,7 @@
 import { FormState } from '@/types'
 import { saveFeaturesSettings } from '@/utils/settings'
 import { parseDate } from '@internationalized/date'
-import { useState } from 'react'
 import {
-  Checkbox,
-  CheckboxGroup,
   DateField,
   DateInput,
   DateSegment,
@@ -32,59 +29,23 @@ export function SaveButton() {
 
 export default function FeaturesSettings() {
   const [state, formAction] = useFormState(saveFeaturesSettings, initialState)
-  const [formData, setFormData] = useState({
-    isRewindActive: 'true',
-    isDashboardActive: 'true',
-    isUsersPageActive: 'true',
-  })
-
-  function handleSwitchChange(name: string, isSelected: boolean) {
-    setFormData({
-      ...formData,
-      [name]: String(isSelected),
-    })
-  }
 
   return (
     <form className='glass-sheet pb-6' action={formAction}>
       <div className='grid gap-4'>
-        <Switch
-          className='switch'
-          name='isRewindActive'
-          defaultSelected
-          value={formData.isRewindActive}
-          onChange={(isSelected) =>
-            handleSwitchChange('isRewindActive', isSelected)
-          }
-        >
+        <Switch className='switch' name='isRewindActive' defaultSelected>
           <div className='indicator' />
           <span className='label'>Rewind</span>
         </Switch>
-        <Switch
-          className='switch'
-          name='isDashboardActive'
-          defaultSelected
-          value={formData.isDashboardActive}
-          onChange={(isSelected) =>
-            handleSwitchChange('isDashboardActive', isSelected)
-          }
-        >
+        <Switch className='switch' name='isDashboardActive' defaultSelected>
           <div className='indicator'></div>
           <span className='label'>Dashboard</span>
         </Switch>
-        <Switch
-          className='switch'
-          name='isUsersPageActive'
-          defaultSelected
-          value={formData.isUsersPageActive}
-          onChange={(isSelected) =>
-            handleSwitchChange('isUsersPageActive', isSelected)
-          }
-        >
+        <Switch className='switch' name='isUsersPageActive' defaultSelected>
           <div className='indicator'></div>
           <span className='label'>Users page</span>
         </Switch>
-        <CheckboxGroup className='input-wrapper' name='activeLibraries'>
+        {/* <CheckboxGroup className='input-wrapper' name='activeLibraries'>
           <div className='mr-auto flex flex-wrap gap-2'>
             <Checkbox value='movies' className='checkbox-wrapper'>
               <div className='checkbox' aria-hidden='true'></div>
@@ -100,8 +61,6 @@ export default function FeaturesSettings() {
         <CheckboxGroup
           className='input-wrapper'
           name='activeDashboardStatistics'
-          // onChange={handleCheckboxGroupChange}
-          // value={formData.dashboard_statistics.split(',')}
         >
           <div className='mr-auto flex flex-wrap gap-2'>
             <Checkbox value='duration' className='checkbox-wrapper'>
@@ -122,7 +81,7 @@ export default function FeaturesSettings() {
             </Checkbox>
           </div>
           <Label className='label'>Dashboard statistics</Label>
-        </CheckboxGroup>
+        </CheckboxGroup> */}
         <DateField
           className='input-wrapper'
           defaultValue={parseDate('2018-01-01')}

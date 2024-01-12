@@ -5,7 +5,9 @@ import { PrismaClient } from '@prisma/client'
 import { revalidatePath } from 'next/cache'
 import { z } from 'zod'
 
-const prisma = new PrismaClient()
+const prisma = new PrismaClient({
+  log: ['query', 'info', 'warn', 'error'],
+})
 const connectionSettingsSchema = z
   .object({
     applicationUrl: z.string().url(),
@@ -20,12 +22,12 @@ const connectionSettingsSchema = z
   })
   .required()
 const featuresSettingsSchema = z.object({
-  isRewindActive: z.string(),
-  isDashboardActive: z.string(),
-  isUsersPageActive: z.string(),
-  activeLibraries: z.array(z.string()),
-  activeDashboardStatistics: z.array(z.string()),
-  statisticsStartDate: z.string(),
+  isRewindActive: z.preprocess((value) => value === 'on', z.boolean()),
+  isDashboardActive: z.preprocess((value) => value === 'on', z.boolean()),
+  isUsersPageActive: z.preprocess((value) => value === 'on', z.boolean()),
+  // activeLibraries: z.array(z.string()),
+  // activeDashboardStatistics: z.array(z.string()),
+  statisticsStartDate: z.coerce.date(),
   googleAnalyticsId: z.string(),
 })
 
@@ -64,16 +66,18 @@ export async function saveFeaturesSettings(
   currentState: FormState,
   formData: FormData,
 ) {
-  console.log(formData.getAll('activeDashboardStatistics'))
+  console.log(formData)
   const validatedFields = featuresSettingsSchema.parse({
     isRewindActive: formData.get('isRewindActive'),
     isDashboardActive: formData.get('isDashboardActive'),
     isUsersPageActive: formData.get('isUsersPageActive'),
-    activeLibraries: formData.getAll('activeLibraries'),
-    activeDashboardStatistics: formData.getAll('activeDashboardStatistics'),
+    // activeLibraries: formData.getAll('activeLibraries'),
+    // activeDashboardStatistics: formData.getAll('activeDashboardStatistics'),
     statisticsStartDate: formData.get('statisticsStartDate'),
     googleAnalyticsId: formData.get('googleAnalyticsId'),
   })
+
+  console.log('Date value', validatedFields.statisticsStartDate)
 
   try {
     await prisma.settings.update({
@@ -81,8 +85,8 @@ export async function saveFeaturesSettings(
         isRewindActive: validatedFields.isRewindActive,
         isDashboardActive: validatedFields.isDashboardActive,
         isUsersPageActive: validatedFields.isUsersPageActive,
-        activeLibraries: validatedFields.activeLibraries,
-        activeDashboardStatistics: validatedFields.activeDashboardStatistics,
+        // activeLibraries: validatedFields.activeLibraries,
+        // activeDashboardStatistics: validatedFields.activeDashboardStatistics,
         statisticsStartDate: validatedFields.statisticsStartDate,
         googleAnalyticsId: validatedFields.googleAnalyticsId,
       },

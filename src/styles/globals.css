@@ -6,6 +6,10 @@
   .button {
     @apply block w-fit rounded-2xl bg-gradient-to-r from-blue-800 to-teal-700 px-8 py-3 text-center font-semibold transition-all;
 
+    &[disabled] {
+      @apply cursor-not-allowed opacity-50;
+    }
+
     &:hover {
       @apply opacity-75;
     }
