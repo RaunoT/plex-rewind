@@ -41,4 +41,4 @@ next-env.d.ts
 public/sw.js
 
 # prisma
-prisma/dev.db
+prisma/database.db

@@ -4,6 +4,8 @@ import { FormState } from '@/types'
 import { saveFeaturesSettings } from '@/utils/settings'
 import { parseDate } from '@internationalized/date'
 import {
+  Checkbox,
+  CheckboxGroup,
   DateField,
   DateInput,
   DateSegment,
@@ -45,7 +47,7 @@ export default function FeaturesSettings() {
           <div className='indicator'></div>
           <span className='label'>Users page</span>
         </Switch>
-        {/* <CheckboxGroup className='input-wrapper' name='activeLibraries'>
+        <CheckboxGroup className='input-wrapper' name='activeLibraries'>
           <div className='mr-auto flex flex-wrap gap-2'>
             <Checkbox value='movies' className='checkbox-wrapper'>
               <div className='checkbox' aria-hidden='true'></div>
@@ -81,7 +83,7 @@ export default function FeaturesSettings() {
             </Checkbox>
           </div>
           <Label className='label'>Dashboard statistics</Label>
-        </CheckboxGroup> */}
+        </CheckboxGroup>
         <DateField
           className='input-wrapper'
           defaultValue={parseDate('2018-01-01')}
