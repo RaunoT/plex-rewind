@@ -1,8 +1,8 @@
-import { getSettings } from '@/actions/get-settings'
+import { getSettings } from '@/utils/settings'
 import ConnectionSettingsForm from './_components/ConnectionSettingsForm'
 
 export default async function ConnectionSettingsPage() {
-  const formData = await getSettings()
+  const settings = await getSettings()
 
-  return <ConnectionSettingsForm formInitialState={formData} />
+  return <ConnectionSettingsForm settings={settings?.connection} />
 }

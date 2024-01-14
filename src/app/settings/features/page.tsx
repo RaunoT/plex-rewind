@@ -1,8 +1,12 @@
-import { getSettings } from '@/actions/get-settings'
+import { getLibraries } from '@/utils/fetchTautulli'
+import { getSettings } from '@/utils/settings'
 import FeaturesSettingsForm from './_components/FeaturesSettingsForm'
 
 export default async function FeaturesSettingsPage() {
-  const formData = await getSettings()
+  const settings = await getSettings()
+  const libraries = await getLibraries()
 
-  return <FeaturesSettingsForm formInitialState={formData} />
+  return (
+    <FeaturesSettingsForm settings={settings?.features} libraries={libraries} />
+  )
 }

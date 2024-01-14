@@ -111,6 +111,10 @@
 
   .label {
     @apply shrink-0 text-xs font-medium uppercase text-neutral-300 sm:w-48 sm:text-right sm:text-sm;
+
+    &--start {
+      @apply mt-0.5 self-start;
+    }
   }
 
   .switch {

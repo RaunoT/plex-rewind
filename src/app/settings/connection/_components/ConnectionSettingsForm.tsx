@@ -1,31 +1,24 @@
 'use client'
 
-import { saveConnectionSettings } from '@/actions/update-settings'
-import { FormState, Settings } from '@/types'
+import { saveConnectionSettings } from '@/actions/update-connection-settings'
+import Loader from '@/components/Loader'
+import { ConnectionSettings } from '@/types'
 import { useFormState, useFormStatus } from 'react-dom'
 
 type Props = {
-  formInitialState: Settings | null
+  settings: ConnectionSettings
 }
 
-const initialState: FormState = {
-  message: '',
-  status: '',
-}
-
-function SaveButton() {
-  const { pending } = useFormStatus()
-
-  return (
-    <button className='button w-full sm:w-fit' type='submit' disabled={pending}>
-      Save
-    </button>
+export default function settingsForm({ settings }: Props) {
+  const initialState = {
+    message: '',
+    status: '',
+    fields: settings,
+  }
+  const [formState, formAction] = useFormState(
+    saveConnectionSettings,
+    initialState,
   )
-}
-
-export default function ConnectionSettingsForm({ formInitialState }: Props) {
-  const [state, formAction] = useFormState(saveConnectionSettings, initialState)
-  console.log(formInitialState)
 
   return (
     <form className='glass-sheet pb-6' action={formAction}>
@@ -37,18 +30,20 @@ export default function ConnectionSettingsForm({ formInitialState }: Props) {
             placeholder='http://localhost:8383'
             required
             name='applicationUrl'
+            defaultValue={settings?.applicationUrl || 'http://localhost:8383'}
           />
           <span className='label'>Application URL</span>
         </label>
-        <label className='input-wrapper'>
+        {/* <label className='input-wrapper'>
           <input
             type='password'
             className='input'
             name='nextAuthSecret'
             required
+            defaultValue={settings?.nextAuthSecret}
           />
           <span className='label'>Next Auth secret</span>
-        </label>
+        </label> */}
         <label className='input-wrapper'>
           <input
             type='url'
@@ -56,6 +51,7 @@ export default function ConnectionSettingsForm({ formInitialState }: Props) {
             placeholder='http://192.168.1.2:8181'
             name='tautulliUrl'
             required
+            defaultValue={settings?.tautulliUrl}
           />
           <span className='label'>Tautulli URL</span>
         </label>
@@ -65,6 +61,7 @@ export default function ConnectionSettingsForm({ formInitialState }: Props) {
             className='input'
             name='tautulliApiKey'
             required
+            defaultValue={settings?.tautulliApiKey}
           />
           <span className='label'>Tautulli API key</span>
         </label>
@@ -74,7 +71,7 @@ export default function ConnectionSettingsForm({ formInitialState }: Props) {
             className='input'
             placeholder='http://192.168.1.2:5055'
             name='overseerrUrl'
-            required
+            defaultValue={settings?.overseerrUrl}
           />
           <span className='label'>Overseerr URL</span>
         </label>
@@ -83,12 +80,17 @@ export default function ConnectionSettingsForm({ formInitialState }: Props) {
             type='password'
             className='input'
             name='overseerrApiKey'
-            required
+            defaultValue={settings?.overseerrApiKey}
           />
           <span className='label'>Overseerr API key</span>
         </label>
         <label className='input-wrapper'>
-          <input type='password' className='input' name='tmdbApiKey' required />
+          <input
+            type='password'
+            className='input'
+            name='tmdbApiKey'
+            defaultValue={settings?.tmdbApiKey}
+          />
           <span className='label'>TMDB API key</span>
         </label>
         <label className='input-wrapper'>
@@ -98,6 +100,7 @@ export default function ConnectionSettingsForm({ formInitialState }: Props) {
             placeholder='localhost'
             name='plexHostname'
             required
+            defaultValue={settings?.plexHostname || 'localhost'}
           />
           <span className='label'>Plex hostname</span>
         </label>
@@ -108,6 +111,7 @@ export default function ConnectionSettingsForm({ formInitialState }: Props) {
             placeholder='32400'
             name='plexPort'
             required
+            defaultValue={settings?.plexPort || '32400'}
           />
           <span className='label'>Plex port</span>
         </label>
@@ -118,14 +122,28 @@ export default function ConnectionSettingsForm({ formInitialState }: Props) {
           aria-live='polite'
           role='status'
           className={
-            state?.status === 'success' ? 'text-green-500' : 'text-red-500'
+            formState.status === 'success' ? 'text-green-500' : 'text-red-500'
           }
         >
-          {state?.message}
+          {formState.message}
         </p>
 
         <SaveButton />
       </div>
     </form>
+  )
+}
+
+function SaveButton() {
+  const { pending } = useFormStatus()
+
+  return (
+    <button
+      className='button flex w-full min-w-28 justify-center sm:w-fit'
+      type='submit'
+      disabled={pending}
+    >
+      {pending ? <Loader size={6} /> : 'Save'}
+    </button>
   )
 }

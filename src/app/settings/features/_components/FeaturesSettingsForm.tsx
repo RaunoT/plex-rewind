@@ -1,8 +1,9 @@
 'use client'
 
-import { saveFeaturesSettings } from '@/actions/update-settings'
-import { FormState, Settings } from '@/types'
+import { saveFeaturesSettings } from '@/actions/update-feature-settings'
+import { FeaturesSettings, Library } from '@/types'
 import { parseDate } from '@internationalized/date'
+import { snakeCase } from 'lodash'
 import {
   Checkbox,
   CheckboxGroup,
@@ -15,12 +16,8 @@ import {
 import { useFormState, useFormStatus } from 'react-dom'
 
 type Props = {
-  formInitialState: Settings | null
-}
-
-const initialState: FormState = {
-  message: '',
-  status: '',
+  settings: FeaturesSettings
+  libraries: Library[]
 }
 
 export function SaveButton() {
@@ -33,41 +30,64 @@ export function SaveButton() {
   )
 }
 
-export default function FeaturesSettings({ formInitialState }: Props) {
+export default function FeaturesSettings({ settings, libraries }: Props) {
+  const initialState = {
+    message: '',
+    status: '',
+    fields: settings,
+  }
   const [state, formAction] = useFormState(saveFeaturesSettings, initialState)
-  console.log(formInitialState)
 
   return (
     <form className='glass-sheet pb-6' action={formAction}>
       <div className='grid gap-4'>
-        <Switch className='switch' name='isRewindActive' defaultSelected>
+        <Switch
+          className='switch'
+          name='isRewindActive'
+          defaultSelected={settings?.isRewindActive}
+        >
           <div className='indicator' />
           <span className='label'>Rewind</span>
         </Switch>
-        <Switch className='switch' name='isDashboardActive' defaultSelected>
+        <Switch
+          className='switch'
+          name='isDashboardActive'
+          defaultSelected={settings?.isDashboardActive}
+        >
           <div className='indicator'></div>
           <span className='label'>Dashboard</span>
         </Switch>
-        <Switch className='switch' name='isUsersPageActive' defaultSelected>
+        <Switch
+          className='switch'
+          name='isUsersPageActive'
+          defaultSelected={settings?.isUsersPageActive}
+        >
           <div className='indicator'></div>
           <span className='label'>Users page</span>
         </Switch>
-        <CheckboxGroup className='input-wrapper' name='activeLibraries'>
+        <CheckboxGroup
+          className='input-wrapper'
+          name='activeLibraries'
+          defaultValue={settings?.activeLibraries}
+        >
           <div className='mr-auto flex flex-wrap gap-2'>
-            <Checkbox value='movies' className='checkbox-wrapper'>
-              <div className='checkbox' aria-hidden='true'></div>
-              Movies
-            </Checkbox>
-            <Checkbox value='tv_shows' className='checkbox-wrapper'>
-              <div className='checkbox' aria-hidden='true'></div>
-              TV Shows
-            </Checkbox>
+            {libraries.map((library) => (
+              <Checkbox
+                key={library.section_id}
+                value={snakeCase(library.section_name)}
+                className='checkbox-wrapper'
+              >
+                <div className='checkbox' aria-hidden='true'></div>
+                {library.section_name}
+              </Checkbox>
+            ))}
           </div>
-          <Label className='label'>Libraries</Label>
+          <Label className='label label--start'>Libraries</Label>
         </CheckboxGroup>
         <CheckboxGroup
           className='input-wrapper'
           name='activeDashboardStatistics'
+          defaultValue={settings?.activeDashboardStatistics}
         >
           <div className='mr-auto flex flex-wrap gap-2'>
             <Checkbox value='duration' className='checkbox-wrapper'>
@@ -87,11 +107,15 @@ export default function FeaturesSettings({ formInitialState }: Props) {
               Requests
             </Checkbox>
           </div>
-          <Label className='label'>Dashboard statistics</Label>
+          <Label className='label label--start'>Dashboard statistics</Label>
         </CheckboxGroup>
         <DateField
           className='input-wrapper'
-          defaultValue={parseDate('2018-01-01')}
+          defaultValue={
+            settings?.statisticsStartDate
+              ? parseDate(settings.statisticsStartDate)
+              : parseDate('2018-01-01')
+          }
           name='statisticsStartDate'
         >
           <DateInput className='datefield'>
@@ -102,7 +126,12 @@ export default function FeaturesSettings({ formInitialState }: Props) {
           <Label className='label'>Statistics start date</Label>
         </DateField>
         <label className='input-wrapper'>
-          <input type='text' className='input' name='googleAnalyticsId' />
+          <input
+            type='text'
+            className='input'
+            name='googleAnalyticsId'
+            defaultValue={settings?.googleAnalyticsId}
+          />
           <span className='label'>Google Analytics ID</span>
         </label>
       </div>

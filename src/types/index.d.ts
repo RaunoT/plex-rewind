@@ -99,27 +99,35 @@ export type TautulliUser = {
   thumb: string
 }
 
-export type FormState = {
+export type FormInitialState = {
   message: string
   status: string
+  fields: Settings | undefined
+}
+
+export type ConnectionSettings = {
+  applicationUrl?: string
+  nextAuthSecret?: string
+  tautulliUrl?: string
+  tautulliApiKey?: string
+  overseerrUrl?: string
+  overseerrApiKey?: string
+  tmdbApiKey?: string
+  plexHostname?: string
+  plexPort?: number
+}
+
+export type FeaturesSettings = {
+  isRewindActive?: boolean
+  isDashboardActive?: boolean
+  isUsersPageActive?: boolean
+  activeLibraries?: string[]
+  activeDashboardStatistics?: string[]
+  statisticsStartDate?: string
+  googleAnalyticsId?: string
 }
 
 export type Settings = {
-  id: number
-  applicationUrl?: string | null
-  nextAuthSecret?: string | null
-  tautulliUrl?: string | null
-  tautulliApiKey?: string | null
-  overseerrUrl?: string | null
-  overseerrApiKey?: string | null
-  tmdbApiKey?: string | null
-  plexHostname?: string | null
-  plexPort?: string | null
-  isRewindActive?: boolean | null
-  isDashboardActive?: boolean | null
-  isUsersPageActive?: boolean | null
-  activeLibraries?: string | null
-  activeDashboardStatistics?: string | null
-  statisticsStartDate?: Date | null
-  googleAnalyticsId?: string | null
+  connection?: ConnectionSettings
+  features?: FeaturesSettings
 }
