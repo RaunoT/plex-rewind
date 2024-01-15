@@ -1,9 +1,10 @@
 'use client'
 
 import { saveConnectionSettings } from '@/actions/update-connection-settings'
-import Loader from '@/components/Loader'
 import { ConnectionSettings } from '@/types'
-import { useFormState, useFormStatus } from 'react-dom'
+import { useEffect, useState } from 'react'
+import { useFormState } from 'react-dom'
+import SettingsSaveButton from '../../_components/SaveButton'
 
 type Props = {
   settings: ConnectionSettings
@@ -19,6 +20,16 @@ export default function ConnectionSettingsForm({ settings }: Props) {
     saveConnectionSettings,
     initialState,
   )
+  const [statusMessage, setStatusMessage] = useState<string>('')
+
+  useEffect(() => {
+    setStatusMessage(formState?.message)
+    const timeout = setTimeout(() => {
+      setStatusMessage('')
+    }, 2500)
+
+    return () => clearTimeout(timeout)
+  }, [formState])
 
   return (
     <form className='glass-sheet pb-6' action={formAction}>
@@ -125,25 +136,11 @@ export default function ConnectionSettingsForm({ settings }: Props) {
             formState.status === 'success' ? 'text-green-500' : 'text-red-500'
           }
         >
-          {formState.message}
+          {statusMessage}
         </p>
 
-        <SaveButton />
+        <SettingsSaveButton />
       </div>
     </form>
-  )
-}
-
-function SaveButton() {
-  const { pending } = useFormStatus()
-
-  return (
-    <button
-      className='button flex w-full min-w-28 justify-center sm:w-fit'
-      type='submit'
-      disabled={pending}
-    >
-      {pending ? <Loader size={6} /> : 'Save'}
-    </button>
   )
 }

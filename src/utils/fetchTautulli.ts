@@ -1,4 +1,7 @@
+'use server'
+
 import { Library } from '@/types'
+import { snakeCase } from 'lodash'
 import qs from 'qs'
 import { getSettings } from './settings'
 
@@ -34,6 +37,7 @@ export default async function fetchTautulli<T>(
     const res = await fetch(`${apiUrl}&cmd=${query}&${qs.stringify(params)}`, {
       next: {
         revalidate: cache ? 3600 : 0,
+        tags: ['tautulli'],
       },
     })
 
@@ -80,7 +84,7 @@ export async function getLibraries(excludeInactive = true): Promise<Library[]> {
 
   if (excludeInactive) {
     const filteredLibraries = libraries.response?.data.filter((library) =>
-      activeLibraries.includes(library.section_name),
+      activeLibraries.includes(snakeCase(library.section_name)),
     )
 
     return filteredLibraries

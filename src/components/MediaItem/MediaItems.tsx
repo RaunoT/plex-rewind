@@ -1,4 +1,5 @@
 import { TautulliItemRow } from '@/types'
+import { getSettings } from '@/utils/settings'
 import clsx from 'clsx'
 import MediaItem from './MediaItem'
 
@@ -9,7 +10,14 @@ type Props = {
   rows?: boolean
 }
 
-export default function MediaItems({ items, type, serverId, rows }: Props) {
+export default async function MediaItems({
+  items,
+  type,
+  serverId,
+  rows,
+}: Props) {
+  const settings = await getSettings()
+
   return (
     <ul
       className={clsx(
@@ -27,6 +35,7 @@ export default function MediaItems({ items, type, serverId, rows }: Props) {
           key={i}
           type={type}
           serverId={serverId}
+          activeStats={settings?.features?.activeDashboardStatistics}
         />
       ))}
     </ul>

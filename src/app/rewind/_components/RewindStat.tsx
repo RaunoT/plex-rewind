@@ -47,6 +47,7 @@ export default function RewindStat({
     () => setIsComponentShown(true),
     isPaused,
   )
+
   useTimer(hideAfter, () => setIsComponentShown(false), isPaused, !!hideAfter)
 
   useEffect(() => {

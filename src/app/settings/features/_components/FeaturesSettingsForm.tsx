@@ -1,10 +1,10 @@
 'use client'
 
 import { saveFeaturesSettings } from '@/actions/update-feature-settings'
-import Loader from '@/components/Loader'
 import { FeaturesSettings, Library } from '@/types'
 import { parseDate } from '@internationalized/date'
 import { snakeCase } from 'lodash'
+import { useEffect, useState } from 'react'
 import {
   Checkbox,
   CheckboxGroup,
@@ -14,7 +14,8 @@ import {
   Label,
   Switch,
 } from 'react-aria-components'
-import { useFormState, useFormStatus } from 'react-dom'
+import { useFormState } from 'react-dom'
+import SettingsSaveButton from '../../_components/SaveButton'
 
 type Props = {
   settings: FeaturesSettings
@@ -27,7 +28,20 @@ export default function FeaturesSettingsForm({ settings, libraries }: Props) {
     status: '',
     fields: settings,
   }
-  const [state, formAction] = useFormState(saveFeaturesSettings, initialState)
+  const [formState, formAction] = useFormState(
+    saveFeaturesSettings,
+    initialState,
+  )
+  const [statusMessage, setStatusMessage] = useState<string>('')
+
+  useEffect(() => {
+    setStatusMessage(formState?.message)
+    const timeout = setTimeout(() => {
+      setStatusMessage('')
+    }, 2500)
+
+    return () => clearTimeout(timeout)
+  }, [formState])
 
   return (
     <form className='glass-sheet pb-6' action={formAction}>
@@ -132,28 +146,14 @@ export default function FeaturesSettingsForm({ settings, libraries }: Props) {
           aria-live='polite'
           role='status'
           className={
-            state?.status === 'success' ? 'text-green-500' : 'text-red-500'
+            formState?.status === 'success' ? 'text-green-500' : 'text-red-500'
           }
         >
-          {state?.message}
+          {statusMessage}
         </p>
 
-        <SaveButton />
+        <SettingsSaveButton />
       </div>
     </form>
-  )
-}
-
-function SaveButton() {
-  const { pending } = useFormStatus()
-
-  return (
-    <button
-      className='button flex w-full min-w-28 justify-center sm:w-fit'
-      type='submit'
-      disabled={pending}
-    >
-      {pending ? <Loader size={6} /> : 'Save'}
-    </button>
   )
 }

@@ -4,6 +4,7 @@ import { SettingsFormInitialState } from '@/types'
 import { settingsPath } from '@/utils/config'
 import { getSettings } from '@/utils/settings'
 import { promises as fs } from 'fs'
+import { revalidateTag } from 'next/cache'
 import { z } from 'zod'
 
 const schema = z.object({
@@ -46,7 +47,7 @@ export async function saveConnectionSettings(
       'utf8',
     )
 
-    // revalidatePath('/settings/connection')
+    revalidateTag('tautulli')
     return {
       message: 'Settings saved!',
       status: 'success',

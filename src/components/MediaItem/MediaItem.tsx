@@ -1,8 +1,7 @@
 'use client'
 
 import placeholderPoster from '@/assets/placeholder.svg'
-import { TautulliItemRow } from '@/types'
-import { excludedDashboardStats } from '@/utils/config'
+import { Statistics, TautulliItemRow } from '@/types'
 import { pluralize, secondsToTime } from '@/utils/formatting'
 import { slideDown } from '@/utils/motion'
 import {
@@ -26,11 +25,18 @@ type Props = {
   data: TautulliItemRow
   i: number
   type: string
-  serverId?: string
+  serverId: string
+  activeStats: Statistics[]
 }
 
 // TODO: split into smaller pieces to reduce client rendered part
-export default function MediaItem({ data, i, type, serverId }: Props) {
+export default function MediaItem({
+  data,
+  i,
+  type,
+  serverId,
+  activeStats,
+}: Props) {
   const tautulliUrl = process.env.NEXT_PUBLIC_TAUTULLI_URL
   const [posterSrc, setPosterSrc] = useState<string>(
     `${tautulliUrl}/pms_image_proxy?img=${
@@ -130,14 +136,14 @@ export default function MediaItem({ data, i, type, serverId }: Props) {
             </li>
           )}
           {/* Duration */}
-          {!excludedDashboardStats.includes('duration') && (
+          {activeStats.includes('duration') && (
             <li className='icon-stat-wrapper'>
               <ClockIcon />
               {secondsToTime(data.total_duration)}
             </li>
           )}
           {/* Users watched */}
-          {!excludedDashboardStats.includes('users') &&
+          {activeStats.includes('users') &&
             (type === 'show' || type === 'artist') &&
             data.users_watched && (
               <li className='icon-stat-wrapper'>
@@ -146,7 +152,7 @@ export default function MediaItem({ data, i, type, serverId }: Props) {
               </li>
             )}
           {/* Plays */}
-          {!excludedDashboardStats.includes('plays') &&
+          {activeStats.includes('plays') &&
             (type === 'users' ? (
               <>
                 {data.shows_plays_count > 0 && (
@@ -181,7 +187,7 @@ export default function MediaItem({ data, i, type, serverId }: Props) {
               </li>
             ))}
           {/* Requests */}
-          {!excludedDashboardStats.includes('requests') &&
+          {activeStats.includes('requests') &&
             type === 'users' &&
             data.requests > 0 && (
               <li className='icon-stat-wrapper'>

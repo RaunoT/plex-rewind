@@ -105,6 +105,8 @@ export type SettingsFormInitialState = {
   fields: ConnectionSettings | FeaturesSettings
 }
 
+export type Statistics = 'duration' | 'plays' | 'users' | 'requests'
+
 export type ConnectionSettings = {
   applicationUrl: string
   // nextAuthSecret?: string
@@ -122,7 +124,7 @@ export type FeaturesSettings = {
   isDashboardActive: boolean
   isUsersPageActive: boolean
   activeLibraries: string[]
-  activeDashboardStatistics: string[]
+  activeDashboardStatistics: Statistics[]
   statisticsStartDate: string
   googleAnalyticsId: string
 }

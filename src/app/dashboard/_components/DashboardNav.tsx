@@ -1,16 +1,16 @@
 'use client'
 
 import { Library } from '@/types'
-import { isDashboardUsersDisabled } from '@/utils/config'
 import { snakeCase } from 'lodash'
 import Link from 'next/link'
 import { usePathname, useSearchParams } from 'next/navigation'
 
 type Props = {
   libraries: Library[]
+  isUsersPageActive: boolean
 }
 
-export default function DashboardNav({ libraries }: Props) {
+export default function DashboardNav({ libraries, isUsersPageActive }: Props) {
   const pathname = usePathname()
   const searchParams = useSearchParams()
   const period = searchParams.get('period')
@@ -34,7 +34,7 @@ export default function DashboardNav({ libraries }: Props) {
             </Link>
           </li>
         ))}
-        {!isDashboardUsersDisabled && (
+        {!isUsersPageActive && (
           <li>
             <Link
               href={`/dashboard/users${period}`}

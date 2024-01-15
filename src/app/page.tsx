@@ -3,8 +3,8 @@
 import plexSvg from '@/assets/plex.svg'
 import Loader from '@/components/Loader'
 import { createPlexAuthUrl, getPlexAuthToken } from '@/lib/auth'
+import settings from '@/settings.json'
 import { Library, TautulliUser } from '@/types'
-import { isDashboardDisabled, isRewindDisabled } from '@/utils/config'
 import clsx from 'clsx'
 import { snakeCase } from 'lodash'
 import { signIn, signOut, useSession } from 'next-auth/react'
@@ -137,7 +137,7 @@ export default function HomePage() {
           </button>
         )}
 
-        {!isRewindDisabled &&
+        {settings?.features?.isRewindActive &&
           isLoggedIn &&
           (managedUsers ? (
             <>
@@ -160,10 +160,13 @@ export default function HomePage() {
             </Link>
           ))}
 
-        {!isDashboardDisabled && isLoggedIn && (
+        {settings?.features?.isDashboardActive && isLoggedIn && (
           <Link
             href={`/dashboard/${snakeCase(libraries[0]?.section_name)}`}
-            className={clsx('mt-4 block', isRewindDisabled ? 'button' : 'link')}
+            className={clsx(
+              'mt-4 block',
+              !settings?.features?.isRewindActive ? 'button' : 'link',
+            )}
           >
             Dashboard
           </Link>

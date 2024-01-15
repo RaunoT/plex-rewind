@@ -1,9 +1,10 @@
 'use server'
 
-import { SettingsFormInitialState } from '@/types'
+import { SettingsFormInitialState, Statistics } from '@/types'
 import { settingsPath } from '@/utils/config'
 import { getSettings } from '@/utils/settings'
 import { promises as fs } from 'fs'
+import { revalidatePath, revalidateTag } from 'next/cache'
 import { z } from 'zod'
 
 const schema = z.object({
@@ -29,7 +30,7 @@ export async function saveFeaturesSettings(
     activeLibraries: formData.getAll('activeLibraries') as string[],
     activeDashboardStatistics: formData.getAll(
       'activeDashboardStatistics',
-    ) as string[],
+    ) as Statistics[],
     statisticsStartDate: formData.get('statisticsStartDate') as string,
     googleAnalyticsId: formData.get('googleAnalyticsId') as string,
   }
@@ -44,7 +45,8 @@ export async function saveFeaturesSettings(
       'utf8',
     )
 
-    // revalidatePath('/settings/features')
+    revalidatePath('/')
+    revalidateTag('tautulli')
     return {
       message: 'Settings saved!',
       status: 'success',
