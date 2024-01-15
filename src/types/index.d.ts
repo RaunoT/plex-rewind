@@ -105,7 +105,13 @@ export type SettingsFormInitialState = {
   fields: ConnectionSettings | FeaturesSettings
 }
 
-export type Statistics = 'duration' | 'plays' | 'users' | 'requests'
+export type Statistics =
+  | 'duration'
+  | 'plays'
+  | 'users'
+  | 'requests'
+  | 'year'
+  | 'rating'
 
 export type ConnectionSettings = {
   applicationUrl: string

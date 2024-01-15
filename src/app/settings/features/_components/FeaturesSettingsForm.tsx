@@ -92,9 +92,26 @@ export default function FeaturesSettingsForm({ settings, libraries }: Props) {
         <CheckboxGroup
           className='input-wrapper'
           name='activeDashboardStatistics'
-          defaultValue={settings?.activeDashboardStatistics}
+          defaultValue={
+            settings?.activeDashboardStatistics || [
+              'year',
+              'rating',
+              'duration',
+              'plays',
+              'users',
+              'requests',
+            ]
+          }
         >
           <div className='mr-auto flex flex-wrap gap-2'>
+            <Checkbox value='year' className='checkbox-wrapper'>
+              <div className='checkbox' aria-hidden='true'></div>
+              Year
+            </Checkbox>
+            <Checkbox value='rating' className='checkbox-wrapper'>
+              <div className='checkbox' aria-hidden='true'></div>
+              Rating
+            </Checkbox>
             <Checkbox value='duration' className='checkbox-wrapper'>
               <div className='checkbox' aria-hidden='true'></div>
               Duration

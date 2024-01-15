@@ -122,19 +122,23 @@ export default function MediaItem({
           </div>
         )}
         <ul className='icon-stats-container'>
-          {data.year && (type === 'movie' || type === 'show') && (
-            <li className='icon-stat-wrapper'>
-              <CalendarDaysIcon />
-              {data.year}
-            </li>
-          )}
+          {(type === 'movie' || type === 'show') &&
+            data.year &&
+            activeStats.includes('year') && (
+              <li className='icon-stat-wrapper'>
+                <CalendarDaysIcon />
+                {data.year}
+              </li>
+            )}
           {/* Ratings */}
-          {(type === 'movie' || type === 'show') && data.rating && (
-            <li className='icon-stat-wrapper'>
-              <StarIcon />
-              {data.rating}
-            </li>
-          )}
+          {(type === 'movie' || type === 'show') &&
+            data.rating &&
+            activeStats.includes('rating') && (
+              <li className='icon-stat-wrapper'>
+                <StarIcon />
+                {data.rating}
+              </li>
+            )}
           {/* Duration */}
           {activeStats.includes('duration') && (
             <li className='icon-stat-wrapper'>
