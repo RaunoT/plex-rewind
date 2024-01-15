@@ -1,6 +1,6 @@
 'use server'
 
-import { FormInitialState } from '@/types'
+import { SettingsFormInitialState } from '@/types'
 import { settingsPath } from '@/utils/config'
 import { getSettings } from '@/utils/settings'
 import { promises as fs } from 'fs'
@@ -17,7 +17,7 @@ const schema = z.object({
 })
 
 export async function saveFeaturesSettings(
-  prevState: FormInitialState,
+  prevState: SettingsFormInitialState,
   formData: FormData,
 ) {
   const settings = await getSettings()

@@ -1,10 +1,10 @@
 import '@/styles/globals.css'
-import { googleAnalyticsId } from '@/utils/config'
 import {
   META_DESCRIPTION,
   META_TITLE,
   META_TITLE_TEMPLATE,
 } from '@/utils/constants'
+import { getSettings } from '@/utils/settings'
 import { Metadata, Viewport } from 'next'
 import { ReactNode } from 'react'
 import AppProvider from '../components/AppProvider'
@@ -51,7 +51,10 @@ type Props = {
   children: ReactNode
 }
 
-export default function RootLayout({ children }: Props) {
+export default async function RootLayout({ children }: Props) {
+  const settings = await getSettings()
+  const googleAnalyticsId = settings?.features?.googleAnalyticsId
+
   return (
     <html lang='en'>
       <body className='min-h-dvh bg-black text-white'>

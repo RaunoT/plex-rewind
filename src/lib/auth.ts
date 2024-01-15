@@ -71,7 +71,7 @@ export const authOptions: AuthOptions = {
 
           return null
         } catch (error) {
-          console.error('Error getting Plex user:', error)
+          console.error('Error getting Plex user!', error)
           throw error
         }
       },
@@ -127,7 +127,7 @@ async function fetchPlexPins(): Promise<PlexPinResponse> {
 
     return res.json()
   } catch (error) {
-    console.error('Error generating Plex PIN:', error)
+    console.error('Error generating Plex PIN!', error)
     throw error
   }
 }
@@ -176,7 +176,7 @@ export async function getPlexAuthToken(pinId: string) {
 
     return data.authToken
   } catch (error) {
-    console.error('Error getting Plex auth token:', error)
+    console.error('Error getting Plex auth token!', error)
   }
 }
 
@@ -208,6 +208,6 @@ export async function verifyPlexAuthToken(authToken: string) {
       return true
     }
   } catch (error) {
-    console.error('Error verifying Plex auth token:', error)
+    console.error('Error verifying Plex auth token!', error)
   }
 }

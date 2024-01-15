@@ -99,32 +99,32 @@ export type TautulliUser = {
   thumb: string
 }
 
-export type FormInitialState = {
+export type SettingsFormInitialState = {
   message: string
   status: string
-  fields: Settings | undefined
+  fields: ConnectionSettings | FeaturesSettings
 }
 
 export type ConnectionSettings = {
-  applicationUrl?: string
-  nextAuthSecret?: string
-  tautulliUrl?: string
-  tautulliApiKey?: string
-  overseerrUrl?: string
-  overseerrApiKey?: string
-  tmdbApiKey?: string
-  plexHostname?: string
-  plexPort?: number
+  applicationUrl: string
+  // nextAuthSecret?: string
+  tautulliUrl: string
+  tautulliApiKey: string
+  overseerrUrl: string
+  overseerrApiKey: string
+  tmdbApiKey: string
+  plexHostname: string
+  plexPort: number
 }
 
 export type FeaturesSettings = {
-  isRewindActive?: boolean
-  isDashboardActive?: boolean
-  isUsersPageActive?: boolean
-  activeLibraries?: string[]
-  activeDashboardStatistics?: string[]
-  statisticsStartDate?: string
-  googleAnalyticsId?: string
+  isRewindActive: boolean
+  isDashboardActive: boolean
+  isUsersPageActive: boolean
+  activeLibraries: string[]
+  activeDashboardStatistics: string[]
+  statisticsStartDate: string
+  googleAnalyticsId: string
 }
 
 export type Settings = {

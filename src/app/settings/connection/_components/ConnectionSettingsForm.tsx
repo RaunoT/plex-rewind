@@ -9,7 +9,7 @@ type Props = {
   settings: ConnectionSettings
 }
 
-export default function settingsForm({ settings }: Props) {
+export default function ConnectionSettingsForm({ settings }: Props) {
   const initialState = {
     message: '',
     status: '',

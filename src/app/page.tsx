@@ -42,12 +42,12 @@ export default function HomePage() {
           })
 
           if (res?.error) {
-            console.error('Failed to sign in:', res.error)
+            console.error('Failed to sign in!', res.error)
           }
 
           setIsLoading(false)
         } catch (error) {
-          console.error('Error during sign-in:', error)
+          console.error('Error during sign-in!', error)
           setIsLoading(false)
         }
       }
@@ -67,7 +67,7 @@ export default function HomePage() {
 
           setLibraries(data)
         } catch (error) {
-          console.error('Error fetching libraries:', error)
+          console.error('Error fetching libraries!', error)
         }
 
         setIsLoading(false)
@@ -83,7 +83,7 @@ export default function HomePage() {
 
           setManagedUsers(data)
         } catch (error) {
-          console.error('Error fetching libraries:', error)
+          console.error('Error fetching libraries!', error)
         }
 
         setIsLoading(false)

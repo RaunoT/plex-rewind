@@ -42,7 +42,7 @@ export default async function fetchOverseerr<T>(
 
     return res.json()
   } catch (error) {
-    console.error('Error fetching from Overseerr API:', error)
+    console.error('Error fetching from Overseerr API!', error)
     throw error
   }
 }

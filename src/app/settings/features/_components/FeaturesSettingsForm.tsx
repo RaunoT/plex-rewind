@@ -1,6 +1,7 @@
 'use client'
 
 import { saveFeaturesSettings } from '@/actions/update-feature-settings'
+import Loader from '@/components/Loader'
 import { FeaturesSettings, Library } from '@/types'
 import { parseDate } from '@internationalized/date'
 import { snakeCase } from 'lodash'
@@ -20,17 +21,7 @@ type Props = {
   libraries: Library[]
 }
 
-export function SaveButton() {
-  const { pending } = useFormStatus()
-
-  return (
-    <button className='button w-full sm:w-fit' type='submit' disabled={pending}>
-      Save
-    </button>
-  )
-}
-
-export default function FeaturesSettings({ settings, libraries }: Props) {
+export default function FeaturesSettingsForm({ settings, libraries }: Props) {
   const initialState = {
     message: '',
     status: '',
@@ -150,5 +141,19 @@ export default function FeaturesSettings({ settings, libraries }: Props) {
         <SaveButton />
       </div>
     </form>
+  )
+}
+
+function SaveButton() {
+  const { pending } = useFormStatus()
+
+  return (
+    <button
+      className='button flex w-full min-w-28 justify-center sm:w-fit'
+      type='submit'
+      disabled={pending}
+    >
+      {pending ? <Loader size={6} /> : 'Save'}
+    </button>
   )
 }

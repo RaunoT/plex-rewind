@@ -1,6 +1,6 @@
 import { Library } from '@/types'
 import qs from 'qs'
-import { excludedLibraries } from './config'
+import { getSettings } from './settings'
 
 type TautulliResponse<T> = {
   response: {
@@ -46,7 +46,7 @@ export default async function fetchTautulli<T>(
     return res.json()
   } catch (error) {
     console.error(
-      `Error fetching from Tautulli API. The query was '${query}'.\n`,
+      `Error fetching from Tautulli API! The query was '${query}'.\n`,
       error,
     )
     throw error
@@ -73,13 +73,20 @@ export async function getServerId(): Promise<string> {
   }
 }
 
-export async function getLibraries(): Promise<Library[]> {
+export async function getLibraries(excludeInactive = true): Promise<Library[]> {
+  const settings = await getSettings()
+  const activeLibraries = settings?.features?.activeLibraries
   const libraries = await fetchTautulli<Library[]>('get_libraries', {}, true)
-  const filteredLibraries = libraries.response?.data.filter(
-    (library) => !excludedLibraries.includes(library.section_name),
-  )
 
-  return filteredLibraries
+  if (excludeInactive) {
+    const filteredLibraries = libraries.response?.data.filter((library) =>
+      activeLibraries.includes(library.section_name),
+    )
+
+    return filteredLibraries
+  } else {
+    return libraries.response?.data
+  }
 }
 
 export async function getLibrariesByType(

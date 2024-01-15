@@ -1,6 +1,6 @@
 'use server'
 
-import { FormInitialState } from '@/types'
+import { SettingsFormInitialState } from '@/types'
 import { settingsPath } from '@/utils/config'
 import { getSettings } from '@/utils/settings'
 import { promises as fs } from 'fs'
@@ -11,7 +11,7 @@ const schema = z.object({
   // nextAuthSecret: z.string(),
   tautulliUrl: z.string().url(),
   tautulliApiKey: z.string(),
-  overseerrUrl: z.string().url().optional(),
+  overseerrUrl: z.string().url().optional().or(z.literal('')),
   overseerrApiKey: z.string().optional(),
   tmdbApiKey: z.string().optional(),
   plexHostname: z.string(),
@@ -19,7 +19,7 @@ const schema = z.object({
 })
 
 export async function saveConnectionSettings(
-  prevState: FormInitialState,
+  prevState: SettingsFormInitialState,
   formData: FormData,
 ) {
   const settings = await getSettings()

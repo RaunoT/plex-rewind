@@ -27,7 +27,7 @@ export default async function fetchTmdb<T>(
 
     return res.json()
   } catch (error) {
-    console.error('Error fetching from TMDB API:', error)
+    console.error('Error fetching from TMDB API!', error)
     throw error
   }
 }
