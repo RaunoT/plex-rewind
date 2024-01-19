@@ -105,17 +105,9 @@ export type SettingsFormInitialState = {
   fields: ConnectionSettings | FeaturesSettings
 }
 
-export type Statistics =
-  | 'duration'
-  | 'plays'
-  | 'users'
-  | 'requests'
-  | 'year'
-  | 'rating'
-
 export type ConnectionSettings = {
   applicationUrl: string
-  // nextAuthSecret?: string
+  // nextAuthSecret: string
   tautulliUrl: string
   tautulliApiKey: string
   overseerrUrl: string
@@ -130,12 +122,12 @@ export type FeaturesSettings = {
   isDashboardActive: boolean
   isUsersPageActive: boolean
   activeLibraries: string[]
-  activeDashboardStatistics: Statistics[]
+  activeDashboardStatistics: string[]
   statisticsStartDate: string
   googleAnalyticsId: string
 }
 
 export type Settings = {
-  connection?: ConnectionSettings
-  features?: FeaturesSettings
+  connection: ConnectionSettings
+  features: FeaturesSettings
 }

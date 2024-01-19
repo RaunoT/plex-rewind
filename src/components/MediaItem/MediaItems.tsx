@@ -1,5 +1,5 @@
+import { settings } from '@/config/config'
 import { TautulliItemRow } from '@/types'
-import { getSettings } from '@/utils/settings'
 import clsx from 'clsx'
 import MediaItem from './MediaItem'
 
@@ -16,8 +16,6 @@ export default async function MediaItems({
   serverId,
   rows,
 }: Props) {
-  const settings = await getSettings()
-
   return (
     <ul
       className={clsx(
@@ -35,7 +33,7 @@ export default async function MediaItems({
           key={i}
           type={type}
           serverId={serverId}
-          activeStats={settings?.features?.activeDashboardStatistics}
+          activeStats={settings.features?.activeDashboardStatistics}
         />
       ))}
     </ul>

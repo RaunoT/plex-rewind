@@ -1,8 +1,7 @@
 'use server'
 
-import { SettingsFormInitialState, Statistics } from '@/types'
-import { settingsPath } from '@/utils/config'
-import { getSettings } from '@/utils/settings'
+import { settings, settingsPath } from '@/config/config'
+import { SettingsFormInitialState } from '@/types'
 import { promises as fs } from 'fs'
 import { revalidatePath, revalidateTag } from 'next/cache'
 import { z } from 'zod'
@@ -21,8 +20,6 @@ export async function saveFeaturesSettings(
   prevState: SettingsFormInitialState,
   formData: FormData,
 ) {
-  const settings = await getSettings()
-
   const data = {
     isRewindActive: formData.get('isRewindActive') === 'on',
     isDashboardActive: formData.get('isDashboardActive') === 'on',
@@ -30,7 +27,7 @@ export async function saveFeaturesSettings(
     activeLibraries: formData.getAll('activeLibraries') as string[],
     activeDashboardStatistics: formData.getAll(
       'activeDashboardStatistics',
-    ) as Statistics[],
+    ) as string[],
     statisticsStartDate: formData.get('statisticsStartDate') as string,
     googleAnalyticsId: formData.get('googleAnalyticsId') as string,
   }

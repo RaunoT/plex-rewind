@@ -1,3 +1,4 @@
+import { settings } from '@/config/config'
 import { DashboardParams, TautulliItem } from '@/types'
 import { PERIODS } from '@/utils/constants'
 import {
@@ -6,7 +7,6 @@ import {
 } from '@/utils/fetchOverseerr'
 import fetchTautulli, { getLibrariesByType } from '@/utils/fetchTautulli'
 import { secondsToTime, timeToSeconds } from '@/utils/formatting'
-import { getSettings } from '@/utils/settings'
 import { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import Dashboard from '../_components/Dashboard'
@@ -40,7 +40,7 @@ async function getUsers(
   ])
   let usersRequestsCounts: UserRequestCounts[] = []
 
-  if (process.env.NEXT_PUBLIC_OVERSEERR_URL) {
+  if (settings.connection.overseerrUrl) {
     const overseerrUserIds = await Promise.all(
       users.map(async (user) => {
         const overseerrId = await fetchOverseerrUserId(String(user.user_id))
@@ -149,8 +149,9 @@ export default async function DashboardUsersPage({
   searchParams,
 }: DashboardParams) {
   // TODO: not redirecting to parent 404 boundary
-  const settings = await getSettings()
-  settings?.features?.isUsersPageActive && notFound()
+  if (!settings.features?.isUsersPageActive) {
+    return notFound()
+  }
 
   const periodSearchParams = searchParams?.period
   const periodKey =

@@ -1,7 +1,8 @@
 'use client'
 
 import placeholderPoster from '@/assets/placeholder.svg'
-import { Statistics, TautulliItemRow } from '@/types'
+import { settings } from '@/config/config'
+import { TautulliItemRow } from '@/types'
 import { pluralize, secondsToTime } from '@/utils/formatting'
 import { slideDown } from '@/utils/motion'
 import {
@@ -26,7 +27,7 @@ type Props = {
   i: number
   type: string
   serverId: string
-  activeStats: Statistics[]
+  activeStats: string[]
 }
 
 // TODO: split into smaller pieces to reduce client rendered part
@@ -37,7 +38,7 @@ export default function MediaItem({
   serverId,
   activeStats,
 }: Props) {
-  const tautulliUrl = process.env.NEXT_PUBLIC_TAUTULLI_URL
+  const tautulliUrl = settings.connection.tautulliUrl
   const [posterSrc, setPosterSrc] = useState<string>(
     `${tautulliUrl}/pms_image_proxy?img=${
       type === 'users' ? data.user_thumb : data.thumb
@@ -107,9 +108,9 @@ export default function MediaItem({
                 IMDB
               </a>
             )}
-            {data.is_deleted && process.env.NEXT_PUBLIC_OVERSEERR_URL && (
+            {data.is_deleted && settings.connection.overseerrUrl && (
               <a
-                href={`${process.env.NEXT_PUBLIC_OVERSEERR_URL}/${
+                href={`${settings.connection.overseerrUrl}/${
                   type === 'movie' ? 'movie' : 'tv'
                 }/${data.tmdb_id}`}
                 target='_blank'

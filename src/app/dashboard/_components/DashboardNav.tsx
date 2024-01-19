@@ -34,7 +34,7 @@ export default function DashboardNav({ libraries, isUsersPageActive }: Props) {
             </Link>
           </li>
         ))}
-        {!isUsersPageActive && (
+        {isUsersPageActive && (
           <li>
             <Link
               href={`/dashboard/users${period}`}

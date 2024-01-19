@@ -1,5 +1,5 @@
+import { settings } from '@/config/config'
 import '@/styles/globals.css'
-import { googleAnalyticsId } from '@/utils/config'
 import {
   META_DESCRIPTION,
   META_TITLE,
@@ -7,11 +7,11 @@ import {
 } from '@/utils/constants'
 import { Metadata, Viewport } from 'next'
 import { ReactNode } from 'react'
-import AppProvider from '../components/AppProvider'
-import GoogleAnalytics from '../components/GoogleAnalytics'
+import AppProvider from './_components/AppProvider'
+import GoogleAnalytics from './_components/GoogleAnalytics'
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || ''),
+  metadataBase: new URL(settings.connection.applicationUrl),
   applicationName: META_TITLE,
   title: {
     default: META_TITLE,
@@ -55,7 +55,9 @@ export default function RootLayout({ children }: Props) {
   return (
     <html lang='en'>
       <body className='min-h-dvh bg-black text-white'>
-        {googleAnalyticsId && <GoogleAnalytics id={googleAnalyticsId} />}
+        {settings.features.googleAnalyticsId && (
+          <GoogleAnalytics id={settings.features.googleAnalyticsId} />
+        )}
 
         <AppProvider>{children}</AppProvider>
       </body>

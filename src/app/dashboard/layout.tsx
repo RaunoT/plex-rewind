@@ -1,7 +1,7 @@
 import CardWrapper from '@/app/_components/CardWrapper'
 import PageTitle from '@/app/_components/PageTitle'
+import { settings } from '@/config/config'
 import { getLibraries } from '@/utils/fetchTautulli'
-import { getSettings } from '@/utils/settings'
 import { notFound } from 'next/navigation'
 import { ReactNode } from 'react'
 import DashboardNav from './_components/DashboardNav'
@@ -12,8 +12,9 @@ type Props = {
 }
 
 export default async function DashboardLayout({ children }: Props) {
-  const settings = await getSettings()
-  !settings?.features?.isDashboardActive && notFound()
+  if (!settings.features?.isDashboardActive) {
+    return notFound()
+  }
 
   const libraries = await getLibraries()
 
@@ -22,7 +23,7 @@ export default async function DashboardLayout({ children }: Props) {
       <PageTitle title='Dashboard' />
       <DashboardNav
         libraries={libraries}
-        isUsersPageActive={settings?.features?.isUsersPageActive}
+        isUsersPageActive={settings.features?.isUsersPageActive}
       />
       <CardWrapper className='my-3 lg:min-h-[560px] 2xl:min-h-[648px]'>
         {children}

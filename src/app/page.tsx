@@ -2,8 +2,8 @@
 
 import plexSvg from '@/assets/plex.svg'
 import Loader from '@/components/Loader'
+import { settings } from '@/config/config'
 import { createPlexAuthUrl, getPlexAuthToken } from '@/lib/auth'
-import settings from '@/settings.json'
 import { Library, TautulliUser } from '@/types'
 import clsx from 'clsx'
 import { snakeCase } from 'lodash'
@@ -137,7 +137,7 @@ export default function HomePage() {
           </button>
         )}
 
-        {settings?.features?.isRewindActive &&
+        {settings.features?.isRewindActive &&
           isLoggedIn &&
           (managedUsers ? (
             <>
@@ -160,9 +160,15 @@ export default function HomePage() {
             </Link>
           ))}
 
-        {settings?.features?.isDashboardActive && isLoggedIn && (
+        {settings.features?.isDashboardActive && isLoggedIn && (
           <Link
-            href={`/dashboard/${snakeCase(libraries[0]?.section_name)}`}
+            href={`/dashboard/${snakeCase(
+              libraries[0]
+                ? libraries[0].section_name
+                : settings.features.isUsersPageActive
+                  ? 'users'
+                  : '',
+            )}`}
             className={clsx(
               'mt-4 block',
               !settings?.features?.isRewindActive ? 'button' : 'link',

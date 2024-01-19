@@ -1,0 +1,28 @@
+{
+  "connection": {
+    "applicationUrl": "http://localhost:8383",
+    "tautulliUrl": "",
+    "tautulliApiKey": "",
+    "overseerrUrl": "",
+    "overseerrApiKey": "",
+    "tmdbApiKey": "",
+    "plexHostname": "localhost",
+    "plexPort": 32400
+  },
+  "features": {
+    "isRewindActive": true,
+    "isDashboardActive": true,
+    "isUsersPageActive": true,
+    "activeLibraries": [],
+    "activeDashboardStatistics": [
+      "year",
+      "rating",
+      "duration",
+      "plays",
+      "users",
+      "requests"
+    ],
+    "statisticsStartDate": "2018-01-01",
+    "googleAnalyticsId": ""
+  }
+}

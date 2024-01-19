@@ -1,3 +1,4 @@
+import { settings } from '@/config/config'
 import qs from 'qs'
 
 type QueryParams = {
@@ -8,7 +9,7 @@ export default async function fetchTmdb<T>(
   endpoint: string,
   params?: QueryParams,
 ): Promise<T> {
-  const apiKey = process.env.TMDB_API_KEY
+  const apiKey = settings.connection.tmdbApiKey
   if (!apiKey) {
     throw new Error('TMDB API key is not set!')
   }

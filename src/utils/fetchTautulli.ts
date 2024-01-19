@@ -1,9 +1,9 @@
 'use server'
 
+import { settings } from '@/config/config'
 import { Library } from '@/types'
 import { snakeCase } from 'lodash'
 import qs from 'qs'
-import { getSettings } from './settings'
 
 type TautulliResponse<T> = {
   response: {
@@ -20,8 +20,8 @@ export default async function fetchTautulli<T>(
   params?: QueryParams,
   cache: boolean = false,
 ): Promise<TautulliResponse<T>> {
-  const tautulliUrl = process.env.NEXT_PUBLIC_TAUTULLI_URL
-  const apiKey = process.env.TAUTULLI_API_KEY
+  const tautulliUrl = settings.connection.tautulliUrl
+  const apiKey = settings.connection.tautulliApiKey
 
   if (!tautulliUrl) {
     throw new Error('Tautulli URL is not configured!')
@@ -58,8 +58,8 @@ export default async function fetchTautulli<T>(
 }
 
 export async function getServerId(): Promise<string> {
-  const plexHostname = process.env.PLEX_HOSTNAME
-  const plexPort = process.env.PLEX_PORT
+  const plexHostname = settings.connection.plexHostname
+  const plexPort = settings.connection.plexPort
 
   if (plexHostname && plexPort) {
     const serverIdPromise = await fetchTautulli<{ identifier: string }>(
@@ -78,8 +78,7 @@ export async function getServerId(): Promise<string> {
 }
 
 export async function getLibraries(excludeInactive = true): Promise<Library[]> {
-  const settings = await getSettings()
-  const activeLibraries = settings?.features?.activeLibraries
+  const activeLibraries = settings.features?.activeLibraries
   const libraries = await fetchTautulli<Library[]>('get_libraries', {}, true)
 
   if (excludeInactive) {

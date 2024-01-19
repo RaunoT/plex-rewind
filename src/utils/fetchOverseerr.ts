@@ -1,3 +1,5 @@
+import { settings } from '@/config/config'
+
 type OverseerrResponse<T> = {
   pageInfo: {
     pages: number
@@ -12,8 +14,8 @@ export default async function fetchOverseerr<T>(
   endpoint: string,
   cache: boolean = true,
 ): Promise<T> {
-  const overseerrUrl = process.env.NEXT_PUBLIC_OVERSEERR_URL
-  const apiKey = process.env.OVERSEERR_API_KEY
+  const overseerrUrl = settings.connection.overseerrUrl
+  const apiKey = settings.connection.overseerrApiKey
 
   if (!overseerrUrl) {
     throw new Error('Overseerr URL is not configured!')

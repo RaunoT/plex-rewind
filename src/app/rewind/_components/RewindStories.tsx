@@ -1,5 +1,6 @@
 'use client'
 
+import { settings } from '@/config/config'
 import { UserRewind } from '@/types'
 import { FC } from 'react'
 import Stories from 'stories-react'
@@ -48,44 +49,22 @@ export default function RewindStories({ userRewind }: Props) {
   const stories = [
     createStory(StoryWelcome, 5000),
     createStory(StoryTotal, 8000),
-    createStory(StoryLibraries, 9000),
-    ...(process.env.NEXT_PUBLIC_OVERSEERR_URL
-      ? [
-          createStory(
-            StoryRequests,
-
-            userRewind.requests?.total ? 9000 : 4000,
-          ),
-        ]
+    ...(userRewind.libraries_total_size
+      ? [createStory(StoryLibraries, 9000)]
+      : []),
+    ...(settings.connection.overseerrUrl
+      ? [createStory(StoryRequests, userRewind.requests?.total ? 9000 : 4000)]
       : []),
     ...(userRewind.duration.user
-      ? [
-          createStory(
-            StoryShows,
-
-            userRewind.shows.count ? 10000 : 4000,
-          ),
-        ]
+      ? [createStory(StoryShows, userRewind.shows.count ? 10000 : 4000)]
       : []),
     ...(userRewind.shows.count ? [createStory(StoryShowsTop, 8000)] : []),
     ...(userRewind.duration.user
-      ? [
-          createStory(
-            StoryMovies,
-
-            userRewind.movies.count ? 10000 : 4000,
-          ),
-        ]
+      ? [createStory(StoryMovies, userRewind.movies.count ? 10000 : 4000)]
       : []),
     ...(userRewind.movies.count ? [createStory(StoryMoviesTop, 8000)] : []),
     ...(userRewind.duration.user
-      ? [
-          createStory(
-            StoryAudio,
-
-            userRewind.audio.count ? 10000 : 4000,
-          ),
-        ]
+      ? [createStory(StoryAudio, userRewind.audio.count ? 10000 : 4000)]
       : []),
     ...(userRewind.audio.count ? [createStory(StoryAudioTop, 8000)] : []),
   ]

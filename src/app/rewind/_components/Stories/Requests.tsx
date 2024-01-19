@@ -1,3 +1,4 @@
+import { settings } from '@/config/config'
 import { RewindStory } from '@/types'
 import {
   FilmIcon,
@@ -41,11 +42,11 @@ export default function StoryRequests({
                   in the past year! You can make them via{' '}
                   <a
                     className='link relative z-10'
-                    href={process.env.NEXT_PUBLIC_OVERSEERR_URL}
+                    href={settings.connection.overseerrUrl}
                     target='_blank'
                     rel='noopener noreferrer'
                   >
-                    {process.env.NEXT_PUBLIC_OVERSEERR_URL!.split('//').pop()}
+                    {settings.connection.overseerrUrl.split('//').pop()}
                   </a>
                 </p>
               </RewindStat>

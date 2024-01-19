@@ -1,8 +1,7 @@
 'use server'
 
+import { settings, settingsPath } from '@/config/config'
 import { SettingsFormInitialState } from '@/types'
-import { settingsPath } from '@/utils/config'
-import { getSettings } from '@/utils/settings'
 import { promises as fs } from 'fs'
 import { revalidateTag } from 'next/cache'
 import { z } from 'zod'
@@ -23,8 +22,6 @@ export async function saveConnectionSettings(
   prevState: SettingsFormInitialState,
   formData: FormData,
 ) {
-  const settings = await getSettings()
-
   const data = {
     applicationUrl: formData.get('applicationUrl') as string,
     // nextAuthSecret: formData.get('nextAuthSecret') as string,

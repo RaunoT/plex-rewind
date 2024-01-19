@@ -1,6 +1,6 @@
 import CardWrapper from '@/app/_components/CardWrapper'
 import PageTitle from '@/app/_components/PageTitle'
-import { getSettings } from '@/utils/settings'
+import { settings } from '@/config/config'
 import { notFound } from 'next/navigation'
 import { ReactNode } from 'react'
 
@@ -9,8 +9,9 @@ type Props = {
 }
 
 export default async function RewindLayout({ children }: Props) {
-  const settings = await getSettings()
-  !settings?.features?.isRewindActive && notFound()
+  if (!settings.features?.isRewindActive) {
+    return notFound()
+  }
 
   return (
     <div className='flex w-full max-w-2xl flex-1 flex-col sm:flex-none'>
