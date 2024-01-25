@@ -107,7 +107,6 @@ export type SettingsFormInitialState = {
 
 export type ConnectionSettings = {
   applicationUrl: string
-  // nextAuthSecret: string
   tautulliUrl: string
   tautulliApiKey: string
   overseerrUrl: string

@@ -61,7 +61,7 @@
   }
 
   .nav-link {
-    @apply text-neutral-400 hover:text-white;
+    @apply text-neutral-400 hover:text-white aria-disabled:pointer-events-none aria-disabled:cursor-not-allowed;
 
     &[aria-selected='true'],
     &[aria-current='page'] {

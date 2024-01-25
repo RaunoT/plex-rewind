@@ -1,6 +1,7 @@
 import withSerwistInit from '@serwist/next'
+import settings from './src/config/settings.json' assert { type: 'json' }
 
-const tautulliUrl = new URL(process.env.NEXT_PUBLIC_TAUTULLI_URL)
+const tautulliUrl = new URL(settings.connection.tautulliUrl)
 const isDev = process.env.NODE_ENV !== 'production'
 const withSerwist = withSerwistInit({
   swSrc: 'src/lib/sw.ts',
@@ -26,11 +27,11 @@ const nextConfig = {
       },
     ],
   },
-  // logging: {
-  //   fetches: {
-  //     fullUrl: true,
-  //   },
-  // },
+  logging: {
+    fetches: {
+      fullUrl: true,
+    },
+  },
   async headers() {
     return [
       {

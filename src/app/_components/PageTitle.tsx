@@ -1,3 +1,4 @@
+import { settings } from '@/config/config'
 import { ArrowLeftIcon } from '@heroicons/react/24/solid'
 import clsx from 'clsx'
 import Link from 'next/link'
@@ -13,11 +14,12 @@ export default function PageTitle({ title }: Props) {
         <Link
           href='/'
           className={clsx(
-            'ml-5 block w-5 transition-transform hover:translate-x-0.5 hover:opacity-75',
+            'ml-5 block w-5 transition-transform hover:translate-x-0.5 hover:opacity-75 aria-disabled:pointer-events-none aria-disabled:opacity-75',
             {
               'absolute left-0 top-1/2 my-auto -translate-y-1/2': title,
             },
           )}
+          aria-disabled={!settings.test}
         >
           <ArrowLeftIcon />
         </Link>

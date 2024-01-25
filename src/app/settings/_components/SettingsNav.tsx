@@ -1,5 +1,6 @@
 'use client'
 
+import { settings } from '@/config/config'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 
@@ -23,6 +24,7 @@ export default function SettingsNav() {
             href='/settings/features'
             className='nav-link'
             aria-current={pathname === '/settings/features' && 'page'}
+            aria-disabled={!settings.test}
           >
             Features
           </Link>

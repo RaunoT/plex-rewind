@@ -22,7 +22,6 @@ export async function saveConnectionSettings(
 ) {
   const data = {
     applicationUrl: formData.get('applicationUrl') as string,
-    // nextAuthSecret: formData.get('nextAuthSecret') as string,
     tautulliUrl: formData.get('tautulliUrl') as string,
     tautulliApiKey: formData.get('tautulliApiKey') as string,
     overseerrUrl: formData.get('overseerrUrl') as string,
