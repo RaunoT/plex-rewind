@@ -5,9 +5,7 @@
     "tautulliApiKey": "",
     "overseerrUrl": "",
     "overseerrApiKey": "",
-    "tmdbApiKey": "",
-    "plexHostname": "localhost",
-    "plexPort": 32400
+    "tmdbApiKey": ""
   },
   "features": {
     "isRewindActive": true,
@@ -24,5 +22,6 @@
     ],
     "statisticsStartDate": "2018-01-01",
     "googleAnalyticsId": ""
-  }
+  },
+  "test": false
 }

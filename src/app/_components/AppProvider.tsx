@@ -1,10 +1,11 @@
 'use client'
 
+import { settings } from '@/config/config'
 import { CogIcon } from '@heroicons/react/24/outline'
 import clsx from 'clsx'
 import { SessionProvider } from 'next-auth/react'
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
+import { redirect, usePathname } from 'next/navigation'
 import { ReactNode, useEffect, useRef, useState } from 'react'
 import * as THREE from 'three'
 import FOG from 'vanta/dist/vanta.fog.min'
@@ -41,6 +42,10 @@ export default function AppProvider({ children }: Props) {
       }
     }
   }, [background])
+
+  if (!settings.test && pathname !== '/settings/connection') {
+    redirect('/settings/connection')
+  }
 
   return (
     <SessionProvider>

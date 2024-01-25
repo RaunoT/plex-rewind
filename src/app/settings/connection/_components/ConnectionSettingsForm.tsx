@@ -2,7 +2,6 @@
 
 import { saveConnectionSettings } from '@/actions/update-connection-settings'
 import { ConnectionSettings } from '@/types'
-import { useEffect, useState } from 'react'
 import { useFormState } from 'react-dom'
 import SettingsSaveButton from '../../_components/SaveButton'
 
@@ -10,6 +9,7 @@ type Props = {
   settings: ConnectionSettings
 }
 
+// TODO: clear form status only if dirty
 export default function ConnectionSettingsForm({ settings }: Props) {
   const initialState = {
     message: '',
@@ -20,16 +20,6 @@ export default function ConnectionSettingsForm({ settings }: Props) {
     saveConnectionSettings,
     initialState,
   )
-  const [statusMessage, setStatusMessage] = useState<string>('')
-
-  useEffect(() => {
-    setStatusMessage(formState?.message)
-    const timeout = setTimeout(() => {
-      setStatusMessage('')
-    }, 2500)
-
-    return () => clearTimeout(timeout)
-  }, [formState])
 
   return (
     <form className='glass-sheet pb-6' action={formAction}>
@@ -104,28 +94,6 @@ export default function ConnectionSettingsForm({ settings }: Props) {
           />
           <span className='label'>TMDB API key</span>
         </label>
-        <label className='input-wrapper'>
-          <input
-            type='text'
-            className='input'
-            placeholder='localhost'
-            name='plexHostname'
-            required
-            defaultValue={settings?.plexHostname || 'localhost'}
-          />
-          <span className='label'>Plex hostname</span>
-        </label>
-        <label className='input-wrapper'>
-          <input
-            type='number'
-            className='input'
-            placeholder='32400'
-            name='plexPort'
-            required
-            defaultValue={settings?.plexPort || '32400'}
-          />
-          <span className='label'>Plex port</span>
-        </label>
       </div>
 
       <div className='mt-6 flex flex-col items-center justify-end gap-3 sm:flex-row sm:gap-4'>
@@ -136,7 +104,7 @@ export default function ConnectionSettingsForm({ settings }: Props) {
             formState.status === 'success' ? 'text-green-500' : 'text-red-500'
           }
         >
-          {statusMessage}
+          {formState.message}
         </p>
 
         <SettingsSaveButton />

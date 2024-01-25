@@ -39,6 +39,3 @@ next-env.d.ts
 
 # pwa
 public/sw.js
-
-# config
-/config

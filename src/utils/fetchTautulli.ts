@@ -37,7 +37,7 @@ export default async function fetchTautulli<T>(
     const res = await fetch(`${apiUrl}&cmd=${query}&${qs.stringify(params)}`, {
       next: {
         revalidate: cache ? 3600 : 0,
-        tags: ['tautulli'],
+        tags: ['settings:connection'],
       },
     })
 
@@ -58,23 +58,16 @@ export default async function fetchTautulli<T>(
 }
 
 export async function getServerId(): Promise<string> {
-  const plexHostname = settings.connection.plexHostname
-  const plexPort = settings.connection.plexPort
+  const serverIdPromise = await fetchTautulli<{ identifier: string }>(
+    'get_server_id',
+    {
+      hostname: 'localhost',
+      port: 32400,
+    },
+    true,
+  )
 
-  if (plexHostname && plexPort) {
-    const serverIdPromise = await fetchTautulli<{ identifier: string }>(
-      'get_server_id',
-      {
-        hostname: plexHostname,
-        port: plexPort,
-      },
-      true,
-    )
-
-    return serverIdPromise.response?.data?.identifier
-  } else {
-    throw new Error('Plex hostname and/or port are not configured!')
-  }
+  return serverIdPromise.response?.data?.identifier
 }
 
 export async function getLibraries(excludeInactive = true): Promise<Library[]> {

@@ -113,8 +113,6 @@ export type ConnectionSettings = {
   overseerrUrl: string
   overseerrApiKey: string
   tmdbApiKey: string
-  plexHostname: string
-  plexPort: number
 }
 
 export type FeaturesSettings = {
@@ -130,4 +128,5 @@ export type FeaturesSettings = {
 export type Settings = {
   connection: ConnectionSettings
   features: FeaturesSettings
+  test: boolean
 }
