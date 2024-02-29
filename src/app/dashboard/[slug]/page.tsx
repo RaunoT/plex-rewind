@@ -2,7 +2,7 @@ import { DashboardParams } from '@/types'
 import { PERIODS } from '@/utils/constants'
 import { getLibraries, getServerId } from '@/utils/fetchTautulli'
 import { getItems, getTotalDuration, getTotalSize } from '@/utils/getDashboard'
-import { snakeCase } from 'lodash'
+import { kebabCase } from 'lodash'
 import { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import Dashboard from '../_components/Dashboard'
@@ -12,7 +12,7 @@ export async function generateMetadata({
 }: DashboardParams): Promise<Metadata> {
   const libraries = await getLibraries()
   const library = libraries.find(
-    (library) => snakeCase(library.section_name) === params.slug,
+    (library) => kebabCase(library.section_name) === params.slug,
   )
 
   return {
@@ -24,7 +24,7 @@ export async function generateStaticParams() {
   const libraries = await getLibraries()
 
   return libraries.map((library) => ({
-    slug: snakeCase(library.section_name),
+    slug: kebabCase(library.section_name),
   }))
 }
 
@@ -34,7 +34,7 @@ export default async function DashboardPage({
 }: DashboardParams) {
   const libraries = await getLibraries()
   const library = libraries.find(
-    (library) => snakeCase(library.section_name) === params.slug,
+    (library) => kebabCase(library.section_name) === params.slug,
   )
 
   // TODO: not redirecting to parent 404 boundary

@@ -22,7 +22,7 @@ export default function SettingsLayout({ children }: Props) {
           className='link inline-flex gap-2'
         >
           <Image src={githubSvg} alt='GitHub' className='size-6' />
-          If you encounter any issues, please report them on GitHub.
+          Report an issue on GitHub
         </a>
 
         <a

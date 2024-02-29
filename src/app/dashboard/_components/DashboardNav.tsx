@@ -1,7 +1,7 @@
 'use client'
 
 import { Library } from '@/types'
-import { snakeCase } from 'lodash'
+import { kebabCase } from 'lodash'
 import Link from 'next/link'
 import { usePathname, useSearchParams } from 'next/navigation'
 
@@ -23,10 +23,10 @@ export default function DashboardNav({ libraries, isUsersPageActive }: Props) {
         {libraries.map((library) => (
           <li key={library.section_id}>
             <Link
-              href={`/dashboard/${snakeCase(library.section_name)}${period}`}
+              href={`/dashboard/${kebabCase(library.section_name)}${period}`}
               className='nav-link'
               aria-current={
-                pathname === `/dashboard/${snakeCase(library.section_name)}` &&
+                pathname === `/dashboard/${kebabCase(library.section_name)}` &&
                 'page'
               }
             >

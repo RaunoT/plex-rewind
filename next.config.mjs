@@ -1,7 +1,26 @@
 import withSerwistInit from '@serwist/next'
 import settings from './src/config/settings.json' assert { type: 'json' }
 
-const tautulliUrl = new URL(settings.connection.tautulliUrl)
+const remotePatterns = [
+  {
+    protocol: 'http',
+    hostname: 'localhost',
+  },
+  {
+    protocol: 'https',
+    hostname: 'plex.tv',
+  },
+]
+
+if (settings.connection?.tautulliUrl) {
+  const tautulliUrl = new URL(settings.connection.tautulliUrl)
+
+  remotePatterns.push({
+    protocol: tautulliUrl.protocol.slice(0, -1),
+    hostname: tautulliUrl.host,
+  })
+}
+
 const isDev = process.env.NODE_ENV !== 'production'
 const withSerwist = withSerwistInit({
   swSrc: 'src/lib/sw.ts',
@@ -12,20 +31,7 @@ const nextConfig = {
   reactStrictMode: true,
   output: 'standalone',
   images: {
-    remotePatterns: [
-      {
-        protocol: 'http',
-        hostname: 'localhost',
-      },
-      {
-        protocol: 'https',
-        hostname: 'plex.tv',
-      },
-      {
-        protocol: tautulliUrl.protocol.slice(0, -1),
-        hostname: tautulliUrl.host,
-      },
-    ],
+    remotePatterns,
   },
   logging: {
     fetches: {

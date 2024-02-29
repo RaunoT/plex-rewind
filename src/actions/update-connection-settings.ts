@@ -8,7 +8,6 @@ import { z } from 'zod'
 
 const schema = z.object({
   applicationUrl: z.string().url(),
-  // nextAuthSecret: z.string(),
   tautulliUrl: z.string().url(),
   tautulliApiKey: z.string(),
   overseerrUrl: z.string().url().optional().or(z.literal('')),
@@ -38,7 +37,7 @@ export async function saveConnectionSettings(
     } catch (error) {
       console.error('Error testing application URL!', error)
       return {
-        message: 'Unable to connect to application URL!',
+        message: 'Unable to connect to application!',
         status: 'error',
         fields: data,
       }

@@ -2,7 +2,7 @@
 
 import { settings } from '@/config/config'
 import { Library } from '@/types'
-import { snakeCase } from 'lodash'
+import { kebabCase } from 'lodash'
 import qs from 'qs'
 
 type TautulliResponse<T> = {
@@ -76,7 +76,7 @@ export async function getLibraries(excludeInactive = true): Promise<Library[]> {
 
   if (excludeInactive) {
     const filteredLibraries = libraries.response?.data.filter((library) =>
-      activeLibraries.includes(snakeCase(library.section_name)),
+      activeLibraries.includes(kebabCase(library.section_name)),
     )
 
     return filteredLibraries

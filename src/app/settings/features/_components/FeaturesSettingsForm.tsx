@@ -3,13 +3,14 @@
 import { saveFeaturesSettings } from '@/actions/update-feature-settings'
 import { FeaturesSettings, Library } from '@/types'
 import { parseDate } from '@internationalized/date'
-import { snakeCase } from 'lodash'
+import { kebabCase } from 'lodash'
 import {
   Checkbox,
   CheckboxGroup,
   DateField,
   DateInput,
   DateSegment,
+  I18nProvider,
   Label,
   Switch,
 } from 'react-aria-components'
@@ -56,7 +57,7 @@ export default function FeaturesSettingsForm({ settings, libraries }: Props) {
           {libraries.map((library) => (
             <Checkbox
               key={library.section_id}
-              value={snakeCase(library.section_name)}
+              value={kebabCase(library.section_name)}
               className='checkbox-wrapper'
             >
               <div className='checkbox' aria-hidden='true'></div>
@@ -108,22 +109,24 @@ export default function FeaturesSettingsForm({ settings, libraries }: Props) {
         </div>
         <Label className='label label--start'>Dashboard statistics</Label>
       </CheckboxGroup>
-      <DateField
-        className='input-wrapper'
-        defaultValue={
-          settings?.statisticsStartDate
-            ? parseDate(settings.statisticsStartDate)
-            : parseDate('2018-01-01')
-        }
-        name='statisticsStartDate'
-      >
-        <DateInput className='datefield'>
-          {(segment) => (
-            <DateSegment segment={segment} className='datefield-segment' />
-          )}
-        </DateInput>
-        <Label className='label'>Statistics start date</Label>
-      </DateField>
+      <I18nProvider locale='en-GB'>
+        <DateField
+          className='input-wrapper'
+          defaultValue={
+            settings?.statisticsStartDate
+              ? parseDate(settings.statisticsStartDate)
+              : parseDate('2018-01-01')
+          }
+          name='statisticsStartDate'
+        >
+          <DateInput className='datefield'>
+            {(segment) => (
+              <DateSegment segment={segment} className='datefield-segment' />
+            )}
+          </DateInput>
+          <Label className='label'>Statistics start date</Label>
+        </DateField>
+      </I18nProvider>
       <label className='input-wrapper'>
         <input
           type='text'

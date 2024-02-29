@@ -6,7 +6,7 @@ import { settings } from '@/config/config'
 import { createPlexAuthUrl, getPlexAuthToken } from '@/lib/auth'
 import { Library, TautulliUser } from '@/types'
 import clsx from 'clsx'
-import { snakeCase } from 'lodash'
+import { kebabCase } from 'lodash'
 import { signIn, signOut, useSession } from 'next-auth/react'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -162,7 +162,7 @@ export default function HomePage() {
 
         {settings.features?.isDashboardActive && isLoggedIn && (
           <Link
-            href={`/dashboard/${snakeCase(
+            href={`/dashboard/${kebabCase(
               libraries[0]
                 ? libraries[0].section_name
                 : settings.features.isUsersPageActive

@@ -90,9 +90,20 @@ export default function MediaItem({
         {(type === 'movie' || type === 'show') && (
           <div className='relative z-10 mb-2 flex items-center gap-2'>
             {data.is_deleted ? (
-              <>
+              settings.connection.overseerrUrl ? (
+                <a
+                  href={`${settings.connection.overseerrUrl}/${
+                    type === 'movie' ? 'movie' : 'tv'
+                  }/${data.tmdb_id}`}
+                  target='_blank'
+                  rel='noopener noreferrer'
+                  className='button-card bg-purple-500'
+                >
+                  Request
+                </a>
+              ) : (
                 <div className='button-card bg-red-500'>Deleted</div>
-              </>
+              )
             ) : (
               serverId && (
                 <PlexDeeplink serverId={serverId} ratingKey={data.rating_key} />
@@ -106,18 +117,6 @@ export default function MediaItem({
                 className='button-card bg-yellow-500 text-black'
               >
                 IMDB
-              </a>
-            )}
-            {data.is_deleted && settings.connection.overseerrUrl && (
-              <a
-                href={`${settings.connection.overseerrUrl}/${
-                  type === 'movie' ? 'movie' : 'tv'
-                }/${data.tmdb_id}`}
-                target='_blank'
-                rel='noopener noreferrer'
-                className='button-card bg-purple-500'
-              >
-                Request
               </a>
             )}
           </div>

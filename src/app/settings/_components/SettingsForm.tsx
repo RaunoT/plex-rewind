@@ -8,6 +8,8 @@ import SettingsSaveButton from './SaveButton'
 type Props = {
   children: ReactNode
   settings: ConnectionSettings | FeaturesSettings
+  // TODO: define action type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   action: any
 }
 
