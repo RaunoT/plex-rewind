@@ -11,8 +11,9 @@ import { signIn, signOut, useSession } from 'next-auth/react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import packageJson from '../../package.json'
+import { AuthTokenContext } from './_components/AppProvider'
 
 export default function Page() {
   const [libraries, setLibraries] = useState<Library[]>([])
@@ -22,10 +23,30 @@ export default function Page() {
   const searchParams = useSearchParams()
   const { data: session, status } = useSession()
   const isLoggedIn = status === 'authenticated'
+  const authToken = useContext(AuthTokenContext)
 
   const handleLogin = async () => {
     const plexUrl = await createPlexAuthUrl()
     router.push(plexUrl)
+  }
+
+  const authenticate = async (plexAuthToken: string, redirect = true) => {
+    try {
+      const res = await signIn('plex', {
+        authToken: plexAuthToken,
+        callbackUrl: '/',
+        redirect,
+      })
+
+      if (res?.error) {
+        console.error('Failed to sign in:', res.error)
+      }
+
+      setIsLoading(false)
+    } catch (error) {
+      console.error('Error during sign-in:', error)
+      setIsLoading(false)
+    }
   }
 
   useEffect(() => {
@@ -35,22 +56,7 @@ export default function Page() {
       const authUser = async () => {
         setIsLoading(true)
         const plexAuthToken = await getPlexAuthToken(plexPinId)
-
-        try {
-          const res = await signIn('plex', {
-            authToken: plexAuthToken,
-            callbackUrl: '/',
-          })
-
-          if (res?.error) {
-            console.error('Failed to sign in:', res.error)
-          }
-
-          setIsLoading(false)
-        } catch (error) {
-          console.error('Error during sign-in:', error)
-          setIsLoading(false)
-        }
+        authenticate(plexAuthToken)
       }
 
       authUser()
@@ -94,8 +100,12 @@ export default function Page() {
       getManagedUsers()
     } else if (status !== 'loading') {
       setIsLoading(false)
+    } else if (authToken) {
+      console.log('authToken', authToken)
+      setIsLoading(true)
+      authenticate(authToken, false)
     }
-  }, [status, session?.user.id])
+  }, [status, session?.user.id, authToken])
 
   if (isLoading) {
     return <Loader />
