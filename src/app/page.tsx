@@ -101,7 +101,6 @@ export default function Page() {
     } else if (status !== 'loading') {
       setIsLoading(false)
     } else if (authToken) {
-      console.log('authToken', authToken)
       setIsLoading(true)
       authenticate(authToken, false)
     }
