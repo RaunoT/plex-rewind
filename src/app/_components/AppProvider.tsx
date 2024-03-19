@@ -5,15 +5,18 @@ import clsx from 'clsx'
 import { SessionProvider } from 'next-auth/react'
 import Image from 'next/image'
 import { usePathname } from 'next/navigation'
-import { useEffect, useRef, useState } from 'react'
+import { createContext, useEffect, useRef, useState } from 'react'
 import * as THREE from 'three'
 import FOG from 'vanta/dist/vanta.fog.min'
 
 type Props = {
   children: React.ReactNode
+  authToken?: string
 }
 
-export default function AppProvider({ children }: Props) {
+export const AuthTokenContext = createContext<string | undefined>(undefined)
+
+export default function AppProvider({ children, authToken }: Props) {
   const pathname = usePathname()
   const [background, setBackground] = useState<VantaEffect>(null)
   const backgroundRef = useRef(null)
@@ -60,7 +63,9 @@ export default function AppProvider({ children }: Props) {
           />
         </a>
 
-        {children}
+        <AuthTokenContext.Provider value={authToken}>
+          {children}
+        </AuthTokenContext.Provider>
       </main>
     </SessionProvider>
   )

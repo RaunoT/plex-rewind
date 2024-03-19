@@ -6,6 +6,7 @@ import {
   META_TITLE_TEMPLATE,
 } from '@/utils/constants'
 import { Metadata, Viewport } from 'next'
+import { cookies } from 'next/headers'
 import AppProvider from './_components/AppProvider'
 import GoogleAnalytics from './_components/GoogleAnalytics'
 
@@ -51,12 +52,14 @@ type Props = {
 }
 
 export default function RootLayout({ children }: Props) {
+  const cookieStore = cookies()
+  const authToken = cookieStore.get('authToken')?.value
   return (
     <html lang='en'>
       <body className='min-h-dvh bg-black text-white'>
         {googleAnalyticsId && <GoogleAnalytics id={googleAnalyticsId} />}
 
-        <AppProvider>{children}</AppProvider>
+        <AppProvider authToken={authToken}>{children}</AppProvider>
       </body>
     </html>
   )
