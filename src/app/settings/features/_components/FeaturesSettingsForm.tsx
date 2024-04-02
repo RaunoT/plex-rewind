@@ -1,6 +1,7 @@
 'use client'
 
 import { saveFeaturesSettings } from '@/actions/update-feature-settings'
+import { settings as allSettings } from '@/config/config'
 import { FeaturesSettings, Library } from '@/types'
 import { parseDate } from '@internationalized/date'
 import { kebabCase } from 'lodash'
@@ -102,10 +103,13 @@ export default function FeaturesSettingsForm({ settings, libraries }: Props) {
             <div className='checkbox' aria-hidden='true'></div>
             Users
           </Checkbox>
-          <Checkbox value='requests' className='checkbox-wrapper'>
-            <div className='checkbox' aria-hidden='true'></div>
-            Requests
-          </Checkbox>
+          {allSettings.connection.overseerrUrl &&
+            allSettings.connection.overseerrApiKey && (
+              <Checkbox value='requests' className='checkbox-wrapper'>
+                <div className='checkbox' aria-hidden='true'></div>
+                Requests
+              </Checkbox>
+            )}
         </div>
         <Label className='label label--start'>Dashboard statistics</Label>
       </CheckboxGroup>

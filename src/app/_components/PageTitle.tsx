@@ -11,18 +11,19 @@ export default function PageTitle({ title }: Props) {
   return (
     <div className='mb-3 w-full 2xl:mb-4'>
       <div className='relative text-center uppercase'>
-        <Link
-          href='/'
-          className={clsx(
-            'ml-5 block w-5 transition-transform hover:translate-x-0.5 hover:opacity-75 aria-disabled:pointer-events-none aria-disabled:opacity-75',
-            {
-              'absolute left-0 top-1/2 my-auto -translate-y-1/2': title,
-            },
-          )}
-          aria-disabled={!settings.test}
-        >
-          <ArrowLeftIcon />
-        </Link>
+        {settings.test && (
+          <Link
+            href='/'
+            className={clsx(
+              'ml-5 block w-5 transition-transform hover:translate-x-0.5 hover:opacity-75 aria-disabled:pointer-events-none aria-disabled:opacity-75',
+              {
+                'absolute left-0 top-1/2 my-auto -translate-y-1/2': title,
+              },
+            )}
+          >
+            <ArrowLeftIcon />
+          </Link>
+        )}
         {title && (
           <h1 className='text-xl font-bold sm:text-2xl 2xl:text-3xl'>
             {title}

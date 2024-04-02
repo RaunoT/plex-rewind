@@ -68,6 +68,7 @@ export default function ConnectionSettingsForm({ settings }: Props) {
           className='input'
           name='tmdbApiKey'
           defaultValue={settings?.tmdbApiKey}
+          required
         />
         <span className='label'>TMDB API key</span>
       </label>

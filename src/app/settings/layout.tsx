@@ -1,4 +1,5 @@
 import githubSvg from '@/assets/github.svg'
+import { settings } from '@/config/config'
 import Image from 'next/image'
 import { ReactNode } from 'react'
 import packageJson from '../../../package.json'
@@ -12,8 +13,8 @@ type Props = {
 export default function SettingsLayout({ children }: Props) {
   return (
     <div className='mb-auto w-full max-w-screen-sm'>
-      <PageTitle title='Settings' />
-      <SettingsNav />
+      <PageTitle title={settings.test ? 'Settings' : "Let's get started"} />
+      {settings.test && <SettingsNav />}
       {children}
       <div className='mt-8 flex flex-col gap-2 sm:items-center'>
         <a
