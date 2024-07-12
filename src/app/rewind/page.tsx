@@ -1,4 +1,4 @@
-import { settings } from '@/config/config'
+import { APP_URL, settings } from '@/config/config'
 import { authOptions } from '@/lib/auth'
 import { TautulliUser, UserRewind } from '@/types'
 import { getLibraries, getServerId } from '@/utils/fetchTautulli'
@@ -32,7 +32,7 @@ export default async function RewindPage({ searchParams }: Props) {
 
   if (managedUserId) {
     const res = await fetch(
-      `${settings.connection.applicationUrl}/api/managed-users?userId=${session.user.id}`,
+      `${APP_URL}/api/managed-users?userId=${session.user.id}`,
     )
     const data: TautulliUser[] = await res.json()
     const managedUser = data?.find(

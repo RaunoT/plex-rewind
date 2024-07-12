@@ -11,17 +11,17 @@ type Props = {
 export default function ConnectionSettingsForm({ settings }: Props) {
   return (
     <SettingsForm settings={settings} action={saveConnectionSettings}>
-      <label className='input-wrapper'>
+      {/* <label className='input-wrapper'>
         <input
           type='url'
           className='input'
           placeholder='http://localhost:8383'
           required
           name='applicationUrl'
-          defaultValue={settings?.applicationUrl || 'http://localhost:8383'}
+          defaultValue={process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:8383'}
         />
         <span className='label'>Application URL</span>
-      </label>
+      </label> */}
       <label className='input-wrapper'>
         <input
           type='url'

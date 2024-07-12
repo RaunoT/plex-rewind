@@ -7,7 +7,7 @@ import { revalidateTag } from 'next/cache'
 import { z } from 'zod'
 
 const schema = z.object({
-  applicationUrl: z.string().url(),
+  // applicationUrl: z.string().url(),
   tautulliUrl: z.string().url(),
   tautulliApiKey: z.string(),
   overseerrUrl: z.string().url().optional().or(z.literal('')),
@@ -20,7 +20,7 @@ export async function saveConnectionSettings(
   formData: FormData,
 ) {
   const data = {
-    applicationUrl: formData.get('applicationUrl') as string,
+    // applicationUrl: formData.get('applicationUrl') as string,
     tautulliUrl: formData.get('tautulliUrl') as string,
     tautulliApiKey: formData.get('tautulliApiKey') as string,
     overseerrUrl: formData.get('overseerrUrl') as string,
@@ -30,18 +30,18 @@ export async function saveConnectionSettings(
 
   try {
     // Test application URL
-    try {
-      await fetch(`${data.applicationUrl}/api/status`, {
-        cache: 'no-store',
-      })
-    } catch (error) {
-      console.error('Error testing application URL!', error)
-      return {
-        message: 'Unable to connect to application!',
-        status: 'error',
-        fields: data,
-      }
-    }
+    // try {
+    //   await fetch(`${data.applicationUrl}/api/status`, {
+    //     cache: 'no-store',
+    //   })
+    // } catch (error) {
+    //   console.error('Error testing application URL!', error)
+    //   return {
+    //     message: 'Unable to connect to application!',
+    //     status: 'error',
+    //     fields: data,
+    //   }
+    // }
 
     // Test Tautulli
     try {

@@ -3,7 +3,7 @@
 import { settings } from '@/config/config'
 import { CogIcon } from '@heroicons/react/24/outline'
 import clsx from 'clsx'
-import { SessionProvider } from 'next-auth/react'
+import { useSession } from 'next-auth/react'
 import Link from 'next/link'
 import { redirect, usePathname } from 'next/navigation'
 import { ReactNode, useEffect, useRef, useState } from 'react'
@@ -18,6 +18,7 @@ export default function AppProvider({ children }: Props) {
   const pathname = usePathname()
   const [background, setBackground] = useState<VantaEffect>(null)
   const backgroundRef = useRef(null)
+  const { data: session } = useSession()
 
   useEffect(() => {
     if (!background) {
@@ -48,27 +49,23 @@ export default function AppProvider({ children }: Props) {
   }
 
   return (
-    <SessionProvider>
-      <main
-        className={clsx(
-          'flex min-h-dvh flex-col items-center overflow-x-hidden px-4 py-8 sm:justify-center',
-          { 'justify-center': pathname === '/' },
-        )}
-      >
-        <div ref={backgroundRef} className='fixed inset-0 -z-10 h-screen' />
-        {settings.test && (
-          <Link
-            href='/settings/connection'
-            className='absolute right-3 top-3 sm:right-4 sm:top-4'
-          >
-            {pathname !== '/settings' && (
-              <CogIcon className='size-5 lg:size-6' />
-            )}
-          </Link>
-        )}
+    <main
+      className={clsx(
+        'flex min-h-dvh flex-col items-center overflow-x-hidden px-4 py-8 sm:justify-center',
+        { 'justify-center': pathname === '/' },
+      )}
+    >
+      <div ref={backgroundRef} className='fixed inset-0 -z-10 h-screen' />
+      {settings.test && session && (
+        <Link
+          href='/settings/connection'
+          className='absolute right-3 top-3 sm:right-4 sm:top-4'
+        >
+          {pathname !== '/settings' && <CogIcon className='size-5 lg:size-6' />}
+        </Link>
+      )}
 
-        {children}
-      </main>
-    </SessionProvider>
+      {children}
+    </main>
   )
 }

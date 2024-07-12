@@ -17,6 +17,10 @@
     &-sm {
       @apply rounded-xl px-4 py-1 text-sm;
     }
+
+    &--plex {
+      @apply from-yellow-500 via-yellow-600 to-neutral-700;
+    }
   }
 
   .button-card {

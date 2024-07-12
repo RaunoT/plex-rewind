@@ -1,4 +1,4 @@
-import { settings } from '@/config/config'
+import { APP_URL } from '@/config/config'
 import { AuthOptions } from 'next-auth'
 import CredentialsProvider from 'next-auth/providers/credentials'
 import qs from 'qs'
@@ -51,7 +51,6 @@ export const authOptions: AuthOptions = {
             email: email,
             image: thumb,
           }
-          console.log(data)
 
           if (res.ok && userData) {
             const checkUser = await fetchTautulli<{ email: string }>(
@@ -136,7 +135,7 @@ async function fetchPlexPins(): Promise<PlexPinResponse> {
 
 export async function createPlexAuthUrl() {
   const { id, code } = await fetchPlexPins()
-  const forwardUrl = `${settings.connection.applicationUrl}?plexPinId=${id}`
+  const forwardUrl = `${APP_URL}?plexPinId=${id}`
 
   if (!forwardUrl) {
     throw new Error('Base url is not configured!')

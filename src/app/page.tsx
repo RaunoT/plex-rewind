@@ -130,7 +130,7 @@ export default function HomePage() {
       <div className='animate-fade-in animation-delay-600'>
         {!isLoggedIn && (
           <button
-            className='button button-sm mx-auto from-yellow-500 via-yellow-600 to-neutral-700'
+            className='button button-sm button--plex mx-auto'
             onClick={() => handleLogin()}
           >
             Log in with Plex

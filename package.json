@@ -2,7 +2,7 @@
   "name": "plex-rewind",
   "version": "1.0.0-dev",
   "scripts": {
-    "dev": "next dev --turbo",
+    "dev": "next dev",
     "build": "next build",
     "lint:types": "tsc --noEmit",
     "lint:css": "stylelint --cache '**/*.css'",
@@ -20,9 +20,9 @@
   "dependencies": {
     "@heroicons/react": "^2.1.5",
     "@internationalized/date": "^3.5.4",
-    "@serwist/next": "9.0.3",
-    "@serwist/precaching": "9.0.3",
-    "@serwist/sw": "9.0.3",
+    "@serwist/next": "^8.3.0",
+    "@serwist/precaching": "^8.3.0",
+    "@serwist/sw": "^8.3.0",
     "@tailwindcss/forms": "^0.5.7",
     "clsx": "^2.1.1",
     "framer-motion": "^11.3.2",

@@ -106,7 +106,7 @@ export type SettingsFormInitialState = {
 }
 
 export type ConnectionSettings = {
-  applicationUrl: string
+  // applicationUrl: string
   tautulliUrl: string
   tautulliApiKey: string
   overseerrUrl: string

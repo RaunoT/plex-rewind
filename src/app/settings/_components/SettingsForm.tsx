@@ -1,6 +1,8 @@
 'use client'
 
+import { settings as allSettings } from '@/config/config'
 import { ConnectionSettings, FeaturesSettings } from '@/types'
+import Link from 'next/link'
 import { ReactNode } from 'react'
 import { useFormState } from 'react-dom'
 import SettingsSaveButton from './SaveButton'
@@ -38,6 +40,11 @@ export default function SettingsForm({ children, settings, action }: Props) {
           </p>
 
           <SettingsSaveButton />
+          {allSettings.test && (
+            <Link className='button button--plex' href='/'>
+              Go to app
+            </Link>
+          )}
         </div>
       </div>
     </form>

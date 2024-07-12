@@ -1,6 +1,5 @@
 {
   "connection": {
-    "applicationUrl": "http://localhost:8383",
     "tautulliUrl": "",
     "tautulliApiKey": "",
     "overseerrUrl": "",
