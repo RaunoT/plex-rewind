@@ -5,15 +5,15 @@ export async function GET(request: Request) {
   const { searchParams } = new URL(request.url)
   const userId = searchParams.get('userId')
   const users = await fetchTautulli<TautulliUser[]>('get_users')
-  const thisUser = users.response.data.find(
+  const thisUser = users?.response.data.find(
     (user) => user.user_id === Number(userId),
   )
   const isAdmin = thisUser?.is_admin
-  const managedUsers = users.response.data.filter(
+  const managedUsers = users?.response.data.filter(
     (user) => user.is_restricted && user.is_active,
   )
 
-  if (isAdmin && managedUsers.length) {
+  if (isAdmin && managedUsers?.length) {
     return Response.json(managedUsers)
   }
 

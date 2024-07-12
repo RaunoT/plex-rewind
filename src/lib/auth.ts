@@ -36,7 +36,7 @@ export const authOptions: AuthOptions = {
           })
 
           if (!res.ok) {
-            throw new Error(
+            console.error(
               `Failed to fetch user: ${res.status} ${res.statusText}`,
             )
           }
@@ -62,19 +62,19 @@ export const authOptions: AuthOptions = {
             )
 
             const userExists =
-              checkUser.response?.data?.email === userData.email
+              checkUser?.response?.data?.email === userData.email
 
             if (userExists) {
               return userData
             } else {
-              throw new Error('User does not belong to this server!')
+              console.error('User does not belong to this server!')
             }
           }
 
           return null
         } catch (error) {
           console.error('Error getting Plex user!', error)
-          throw error
+          return null
         }
       },
     }),
@@ -124,7 +124,7 @@ async function fetchPlexPins(): Promise<PlexPinResponse> {
     })
 
     if (!res.ok) {
-      throw new Error(
+      console.error(
         `Plex PIN generation failed: ${res.status} ${res.statusText}`,
       )
     }
@@ -141,7 +141,7 @@ export async function createPlexAuthUrl() {
   const forwardUrl = `${APP_URL}?plexPinId=${id}`
 
   if (!forwardUrl) {
-    throw new Error('Base url is not configured!')
+    console.error('Base url is not configured!')
   }
 
   const authAppUrl =
@@ -171,7 +171,7 @@ export async function getPlexAuthToken(pinId: string) {
     })
 
     if (!res.ok) {
-      throw new Error(
+      console.error(
         `Getting Plex auth token failed: ${res.status} ${res.statusText}`,
       )
     }
@@ -201,7 +201,7 @@ export async function verifyPlexAuthToken(authToken: string) {
     })
 
     if (!res.ok) {
-      throw new Error(
+      console.error(
         `Plex auth token verification failed: ${res.status} ${res.statusText}`,
       )
     }

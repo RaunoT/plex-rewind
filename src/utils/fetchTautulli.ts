@@ -19,16 +19,18 @@ export default async function fetchTautulli<T>(
   query: string,
   params?: QueryParams,
   cache: boolean = false,
-): Promise<TautulliResponse<T>> {
+): Promise<TautulliResponse<T> | null> {
   const tautulliUrl = settings.connection.tautulliUrl
   const apiKey = settings.connection.tautulliApiKey
 
   if (!tautulliUrl) {
-    throw new Error('Tautulli URL is not configured!')
+    console.error('Tautulli URL is not configured! Skipping request.')
+    return null
   }
 
   if (!apiKey) {
-    throw new Error('Tautulli API key is not configured!')
+    console.error('Tautulli API key is not configured! Skipping request.')
+    return null
   }
 
   const apiUrl = `${tautulliUrl}/api/v2?apikey=${apiKey}`
@@ -42,7 +44,7 @@ export default async function fetchTautulli<T>(
     })
 
     if (!res.ok) {
-      throw new Error(
+      console.error(
         `Tautulli API request failed: ${res.status} ${res.statusText}`,
       )
     }
@@ -53,7 +55,7 @@ export default async function fetchTautulli<T>(
       `Error fetching from Tautulli API! The query was '${query}'.\n`,
       error,
     )
-    throw error
+    return null
   }
 }
 
@@ -67,21 +69,25 @@ export async function getServerId(): Promise<string> {
     true,
   )
 
-  return serverIdPromise.response?.data?.identifier
+  return serverIdPromise?.response?.data?.identifier || ''
 }
 
 export async function getLibraries(excludeInactive = true): Promise<Library[]> {
   const activeLibraries = settings.features?.activeLibraries
   const libraries = await fetchTautulli<Library[]>('get_libraries', {}, true)
 
+  if (!libraries) {
+    return []
+  }
+
   if (excludeInactive) {
-    const filteredLibraries = libraries.response?.data.filter((library) =>
+    const filteredLibraries = libraries.response.data.filter((library) =>
       activeLibraries.includes(kebabCase(library.section_name)),
     )
 
     return filteredLibraries
   } else {
-    return libraries.response?.data
+    return libraries.response.data
   }
 }
 

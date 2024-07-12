@@ -32,7 +32,12 @@ async function getUsers(
     stats_type: 'duration',
     time_range: period,
   })
-  const users = usersRes.response?.data?.rows
+  const users = usersRes?.response?.data?.rows
+
+  if (!users) {
+    return
+  }
+
   const [moviesLib, showsLib, audioLib] = await Promise.all([
     getLibrariesByType('movie'),
     getLibrariesByType('show'),
@@ -40,7 +45,7 @@ async function getUsers(
   ])
   let usersRequestsCounts: UserRequestCounts[] = []
 
-  if (settings.connection.overseerrUrl) {
+  if (settings.connection?.overseerrUrl) {
     const overseerrUserIds = await Promise.all(
       users.map(async (user) => {
         const overseerrId = await fetchOverseerrUserId(String(user.user_id))
@@ -80,7 +85,7 @@ async function getUsers(
             section_id: movieLib.section_id,
           },
         )
-        moviesPlaysCount += userMovies.response?.data?.recordsFiltered || 0
+        moviesPlaysCount += userMovies?.response?.data?.recordsFiltered || 0
       }
 
       for (const showLib of showsLib) {
@@ -92,7 +97,7 @@ async function getUsers(
             section_id: showLib.section_id,
           },
         )
-        showsPlaysCount += userShows.response?.data?.recordsFiltered || 0
+        showsPlaysCount += userShows?.response?.data?.recordsFiltered || 0
       }
 
       for (const audioLibItem of audioLib) {
@@ -104,7 +109,7 @@ async function getUsers(
             section_id: audioLibItem.section_id,
           },
         )
-        audioPlaysCount += userAudio.response?.data?.recordsFiltered || 0
+        audioPlaysCount += userAudio?.response?.data?.recordsFiltered || 0
       }
 
       return {
@@ -135,14 +140,14 @@ async function getTotalDuration(period: string) {
   )
 
   return secondsToTime(
-    timeToSeconds(totalDuration.response?.data?.total_duration),
+    timeToSeconds(totalDuration?.response?.data?.total_duration || '0'),
   )
 }
 
 async function getUsersCount() {
   const usersCount = await fetchTautulli<[]>('get_users')
 
-  return usersCount.response?.data.slice(1).length
+  return usersCount?.response?.data.slice(1).length || 0
 }
 
 export default async function DashboardUsersPage({

@@ -26,6 +26,5 @@ jobs:
         run: pnpm lint
       - name: Check formatting
         run: pnpm format:check
-      # TODO: We need to alter the build pipeline to work without .env
-      # - name: Test build
-      #   run: pnpm build
+      - name: Build Docker image
+        run: docker build -t plex-rewind .

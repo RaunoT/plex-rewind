@@ -13,16 +13,18 @@ type OverseerrResponse<T> = {
 export default async function fetchOverseerr<T>(
   endpoint: string,
   cache: boolean = true,
-): Promise<T> {
+): Promise<T | null> {
   const overseerrUrl = settings.connection.overseerrUrl
   const apiKey = settings.connection.overseerrApiKey
 
   if (!overseerrUrl) {
-    throw new Error('Overseerr URL is not configured!')
+    console.error('Overseerr URL is not configured! Skipping request.')
+    return null
   }
 
   if (!apiKey) {
-    throw new Error('Overseerr API key is not configured!')
+    console.error('Overseerr API key is not configured! Skipping request.')
+    return null
   }
 
   const apiUrl = `${overseerrUrl}/api/v1/${endpoint}`
@@ -37,7 +39,7 @@ export default async function fetchOverseerr<T>(
       },
     })
     if (!res.ok) {
-      throw new Error(
+      console.error(
         `Overseerr API request failed: ${res.status} ${res.statusText}`,
       )
     }
@@ -45,7 +47,7 @@ export default async function fetchOverseerr<T>(
     return res.json()
   } catch (error) {
     console.error('Error fetching from Overseerr API!', error)
-    throw error
+    return null
   }
 }
 
@@ -59,7 +61,7 @@ export async function fetchOverseerrUserId(
   plexId: string,
 ): Promise<number | null> {
   const users = await fetchOverseerr<OverseerrResponse<User[]>>('user')
-  const user = users.results.find((user) => String(user.plexId) === plexId)
+  const user = users?.results.find((user) => String(user.plexId) === plexId)
 
   return user ? user.id : null
 }
@@ -84,13 +86,16 @@ export async function fetchPaginatedOverseerrStats(
   do {
     const requestsData =
       await fetchOverseerr<OverseerrResponse<PaginatedRequestItem[]>>(reqUrl)
-    const requestsDataFiltered = requestsData.results?.filter(
-      (request) => request.createdAt > timeframe,
-    )
-    requestsArr = [...requestsDataFiltered, ...requestsArr]
-    totalPages = requestsData.pageInfo.pages
-    currentPage = requestsData.pageInfo.page
-    reqUrl = `${req}?skip=${requestsData.pageInfo.pageSize * currentPage}`
+
+    if (requestsData) {
+      const requestsDataFiltered = requestsData.results?.filter(
+        (request) => request.createdAt > timeframe,
+      )
+      requestsArr = [...requestsDataFiltered, ...requestsArr]
+      totalPages = requestsData.pageInfo.pages
+      currentPage = requestsData.pageInfo.page
+      reqUrl = `${req}?skip=${requestsData.pageInfo.pageSize * currentPage}`
+    }
   } while (currentPage < totalPages)
 
   return requestsArr
