@@ -44,12 +44,13 @@ export const authOptions: AuthOptions = {
           const xmlData = await res.text()
           const jsonData = await parseStringPromise(xmlData)
           const data = jsonData.user.$
-          const { title, id, thumb, email } = data
+          const { title, id, thumb, email, homeAdmin } = data
           const userData = {
             id: id,
             name: title,
             email: email,
             image: thumb,
+            admin: homeAdmin === '1',
           }
 
           if (res.ok && userData) {
@@ -86,13 +87,15 @@ export const authOptions: AuthOptions = {
     async session({ session, token }) {
       if (token) {
         session.user.id = token.id
+        session.user.admin = token.admin
       }
 
       return session
     },
     async jwt({ token, user }) {
       if (user) {
-        token.id = user?.id
+        token.id = user.id
+        token.admin = user.admin
       }
 
       return token

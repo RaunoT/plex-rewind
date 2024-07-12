@@ -44,6 +44,7 @@ export default async function RewindPage({ searchParams }: Props) {
         image: managedUser.thumb,
         name: managedUser.friendly_name,
         id: managedUserId,
+        admin: false,
       }
     }
   }

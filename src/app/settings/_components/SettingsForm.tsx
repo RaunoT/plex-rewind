@@ -41,7 +41,7 @@ export default function SettingsForm({ children, settings, action }: Props) {
 
           <SettingsSaveButton />
           {allSettings.test && (
-            <Link className='button button--plex' href='/'>
+            <Link className='button button--plex w-full sm:w-fit' href='/'>
               Go to app
             </Link>
           )}
