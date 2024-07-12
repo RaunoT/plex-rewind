@@ -56,7 +56,7 @@ export default function AppProvider({ children }: Props) {
       )}
     >
       <div ref={backgroundRef} className='fixed inset-0 -z-10 h-screen' />
-      {settings.test && session?.user?.admin && (
+      {settings.test && session?.user?.isAdmin && (
         <Link
           href='/settings/connection'
           className='absolute right-3 top-3 sm:right-4 sm:top-4'

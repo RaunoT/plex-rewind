@@ -50,7 +50,7 @@ export const authOptions: AuthOptions = {
             name: title,
             email: email,
             image: thumb,
-            admin: homeAdmin === '1',
+            isAdmin: homeAdmin === '1',
           }
 
           if (res.ok && userData) {
@@ -87,7 +87,7 @@ export const authOptions: AuthOptions = {
     async session({ session, token }) {
       if (token) {
         session.user.id = token.id
-        session.user.admin = token.admin
+        session.user.isAdmin = token.isAdmin
       }
 
       return session
@@ -95,7 +95,7 @@ export const authOptions: AuthOptions = {
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id
-        token.admin = user.admin
+        token.isAdmin = user.isAdmin
       }
 
       return token

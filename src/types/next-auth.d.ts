@@ -7,7 +7,7 @@ type UserAdmin = boolean
 declare module 'next-auth/jwt' {
   interface JWT {
     id: UserId
-    admin: UserAdmin
+    isAdmin: UserAdmin
   }
 }
 
@@ -15,12 +15,12 @@ declare module 'next-auth' {
   interface Session {
     user: User & {
       id: UserId
-      admin: UserAdmin
+      isAdmin: UserAdmin
     } & NextAuthUser
   }
 
   interface User {
     id: UserId
-    admin: UserAdmin
+    isAdmin: UserAdmin
   }
 }
