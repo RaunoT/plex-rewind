@@ -16,7 +16,7 @@ type Props = {
 export default async function SettingsLayout({ children }: Props) {
   const session = await getServerSession(authOptions)
 
-  if (!session?.user?.isAdmin) {
+  if (!session?.user?.isAdmin && settings.test) {
     redirect('/')
   }
 
