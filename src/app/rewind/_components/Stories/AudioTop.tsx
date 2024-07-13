@@ -9,6 +9,7 @@ export default function StoryAudioTop({
   isPaused,
   pause,
   resume,
+  settings,
 }: RewindStory) {
   const hasTop5 = userRewind.audio.top.length === 5
 
@@ -29,6 +30,7 @@ export default function StoryAudioTop({
             items={userRewind.audio.top}
             serverId={userRewind.server_id}
             rows
+            settings={settings}
           />
         </div>
       </RewindStat>

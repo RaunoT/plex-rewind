@@ -1,13 +1,10 @@
-version: '3'
-
 services:
   plex-rewind:
-    container_name: plex-rewind
     build:
       context: .
       dockerfile: Dockerfile
-    env_file:
-      - .env
     restart: unless-stopped
     ports:
       - 8383:8383
+    volumes:
+      - ./config:/app/config

@@ -1,16 +1,19 @@
 import '@/styles/globals.css'
-import { googleAnalyticsId } from '@/utils/config'
 import {
+  APP_URL,
   META_DESCRIPTION,
   META_TITLE,
   META_TITLE_TEMPLATE,
 } from '@/utils/constants'
+import getSettings from '@/utils/getSettings'
 import { Metadata, Viewport } from 'next'
+import { ReactNode } from 'react'
 import AppProvider from './_components/AppProvider'
 import GoogleAnalytics from './_components/GoogleAnalytics'
+import SessionProviderWrapper from './_components/SessionProvider'
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || ''),
+  metadataBase: new URL(APP_URL),
   applicationName: META_TITLE,
   title: {
     default: META_TITLE,
@@ -21,7 +24,7 @@ export const metadata: Metadata = {
   appleWebApp: {
     title: META_TITLE,
     capable: true,
-    statusBarStyle: 'black-translucent',
+    statusBarStyle: 'default',
   },
   openGraph: {
     type: 'website',
@@ -47,16 +50,21 @@ export const viewport: Viewport = {
 }
 
 type Props = {
-  children: React.ReactNode
+  children: ReactNode
 }
 
-export default function RootLayout({ children }: Props) {
+export default async function RootLayout({ children }: Props) {
+  const settings = await getSettings()
+
   return (
     <html lang='en'>
       <body className='min-h-dvh bg-black text-white'>
-        {googleAnalyticsId && <GoogleAnalytics id={googleAnalyticsId} />}
-
-        <AppProvider>{children}</AppProvider>
+        {settings.features.googleAnalyticsId && (
+          <GoogleAnalytics id={settings.features.googleAnalyticsId} />
+        )}
+        <SessionProviderWrapper>
+          <AppProvider settings={settings}>{children}</AppProvider>
+        </SessionProviderWrapper>
       </body>
     </html>
   )

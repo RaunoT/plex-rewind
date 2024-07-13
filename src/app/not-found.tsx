@@ -11,7 +11,7 @@ export default function NotFound() {
           <p className='italic'>The requested page could not be found.</p>
           <p className='italic'>
             Might be better to{' '}
-            <Link href='/' className='link link--dark'>
+            <Link href='/' className='link'>
               start over
             </Link>
             .

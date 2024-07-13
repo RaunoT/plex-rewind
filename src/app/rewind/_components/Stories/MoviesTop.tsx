@@ -9,6 +9,7 @@ export default function StoryMoviesTop({
   isPaused,
   pause,
   resume,
+  settings,
 }: RewindStory) {
   const hasTop5 = userRewind.movies.top.length === 5
 
@@ -29,6 +30,7 @@ export default function StoryMoviesTop({
             items={userRewind.movies.top}
             serverId={userRewind.server_id}
             rows
+            settings={settings}
           />
         </div>
       </RewindStat>

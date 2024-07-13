@@ -42,6 +42,7 @@ export type RewindStory = {
   isPaused: boolean
   pause: () => void
   resume: () => void
+  settings: Settings
 }
 
 export type TmdbItem = {
@@ -97,4 +98,34 @@ export type TautulliUser = {
   user_id: number
   friendly_name: string
   thumb: string
+}
+
+export type SettingsFormInitialState = {
+  message: string
+  status: string
+  fields: ConnectionSettings | FeaturesSettings
+}
+
+export type ConnectionSettings = {
+  // applicationUrl: string
+  tautulliUrl: string
+  tautulliApiKey: string
+  overseerrUrl: string
+  overseerrApiKey: string
+  tmdbApiKey: string
+}
+
+export type FeaturesSettings = {
+  isRewindActive: boolean
+  isDashboardActive: boolean
+  isUsersPageActive: boolean
+  activeLibraries: string[]
+  activeDashboardStatistics: string[]
+  googleAnalyticsId: string
+}
+
+export type Settings = {
+  connection: ConnectionSettings
+  features: FeaturesSettings
+  test: boolean
 }
