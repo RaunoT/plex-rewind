@@ -46,7 +46,7 @@ async function getUsers(
   ])
   let usersRequestsCounts: UserRequestCounts[] = []
 
-  if (settings.connection?.overseerrUrl) {
+  if (settings.connection.overseerrUrl) {
     const overseerrUserIds = await Promise.all(
       users.map(async (user) => {
         const overseerrId = await fetchOverseerrUserId(String(user.user_id))
@@ -157,7 +157,7 @@ export default async function DashboardUsersPage({
   const settings = await getSettings()
 
   // TODO: not redirecting to parent 404 boundary
-  if (!settings.features?.isUsersPageActive) {
+  if (!settings.features.isUsersPageActive) {
     return notFound()
   }
 

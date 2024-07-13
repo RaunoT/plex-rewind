@@ -7,6 +7,7 @@ import {
 } from '@/utils/constants'
 import getSettings from '@/utils/getSettings'
 import { Metadata, Viewport } from 'next'
+import { PublicEnvScript } from 'next-runtime-env'
 import { ReactNode } from 'react'
 import AppProvider from './_components/AppProvider'
 import GoogleAnalytics from './_components/GoogleAnalytics'
@@ -58,6 +59,9 @@ export default async function RootLayout({ children }: Props) {
 
   return (
     <html lang='en'>
+      <head>
+        <PublicEnvScript />
+      </head>
       <body className='min-h-dvh bg-black text-white'>
         {settings.features.googleAnalyticsId && (
           <GoogleAnalytics id={settings.features.googleAnalyticsId} />

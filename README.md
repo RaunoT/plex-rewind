@@ -1,8 +1,9 @@
 # Plex Rewind
 
 [<img src="https://github.com/raunot/plex-rewind/workflows/Release/badge.svg" alt="Plex Rewind release status" />](https://github.com/RaunoT/plex-rewind/actions/workflows/release.yml)
-[<img src="https://github.com/raunot/plex-rewind/workflows/Tests/badge.svg" alt="Plex Rewind tests status">](https://github.com/RaunoT/plex-rewind/actions/workflows/tests.yml)
 [<img src="https://img.shields.io/github/v/release/raunot/plex-rewind" alt="Plex Rewind latest release">](https://github.com/RaunoT/plex-rewind/releases)
+[<img src="https://github.com/raunot/plex-rewind/workflows/CI/badge.svg" alt="Plex Rewind tests status">](https://github.com/RaunoT/plex-rewind/actions/workflows/ci.yml)
+[<img src="https://github.com/raunot/plex-rewind/workflows/Tests/badge.svg" alt="Plex Rewind CI status">](https://github.com/RaunoT/plex-rewind/actions/workflows/tests.yml)
 
 A Plex Rewind application inspired by the likes of [Spotify Wrapped](https://www.spotify.com/us/wrapped) and [Tautulli](https://tautulli.com).
 
@@ -39,10 +40,10 @@ services:
     image: ghcr.io/raunot/plex-rewind:main # :develop for the latest development version
     container_name: plex-rewind
     environment:
-      - NEXTAUTH_SECRET= # (optional) setting manually will allow persisting login sessions between updates
+      - NEXTAUTH_SECRET= # (required) used to encrypt auth JWT token, generate one with `openssl rand -base64 32`
       - NEXTAUTH_URL=http://localhost:8383 # change to your domain if you are exposing the app to the internet
       - NEXT_PUBLIC_SITE_URL=http://localhost:8383 # change to your domain if you are exposing the app to the internet
-      - NEXT_PUBLIC_STATISTICS_START_DATE=2023-01-01 # starting date for "all time" option (YYYY-MM-DD)
+      - NEXT_PUBLIC_STATISTICS_START_DATE=2018-01-01 # starting date for "all time" option (YYYY-MM-DD)
     volumes:
       - ./config:/app/config
     ports:
@@ -64,7 +65,6 @@ _Please note that supporting does not guarantee any support or future developmen
 
 To learn more about some of the tools used in this project, take a look at the following resources:
 
-- [Plex Rewind wiki](https://github.com/RaunoT/plex-rewind/wiki)
 - [Tautulli API reference](https://github.com/Tautulli/Tautulli/wiki/Tautulli-API-Reference)
 - [Overseerr API reference](https://api-docs.overseerr.dev)
 - [Next.js docs](https://nextjs.org/docs)
