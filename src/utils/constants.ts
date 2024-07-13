@@ -64,5 +64,4 @@ export const PLEX_CLIENT_IDENTIFIER = 'plex-rewind'
 export const APP_URL =
   process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:8383'
 
-const baseDir = process.env.BASE_DIR || process.cwd()
-export const SETTINGS_PATH = path.join(baseDir, 'src/config/settings.json')
+export const SETTINGS_PATH = path.join(process.cwd(), 'config/settings.json')

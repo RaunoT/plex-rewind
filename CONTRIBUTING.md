@@ -8,13 +8,13 @@ Please follow the guidelines below.
 
 ### Tools
 
-- [Git](https://git-scm.com)
-- [NodeJS](https://nodejs.org) (18.x or higher)
-- [VSCode](https://code.visualstudio.com) is highly recommended.
+- [Git](https://git-scm.com) for source control
+- [NodeJS](https://nodejs.org) (20.x or higher)
+- [VSCode](https://code.visualstudio.com) is highly recommended as an editor
 
-  Upon opening the project, a few extensions will be automatically recommended for install.
+  > Upon opening the project, a few extensions will be automatically recommended for install. These are highly recommended to install and will make development easier. You can find the list in `.vscode/extensions.json`.
 
-- [pnpm](https://pnpm.io)
+- [pnpm](https://pnpm.io) as a package manager
 
 ### Getting Started
 
@@ -25,29 +25,35 @@ Please follow the guidelines below.
    cd plex-rewind
    ```
 
-2. Install the project dependencies:
+2. Create `.env.local` file in the root of the project from the `.env.example` file:
+
+   ```bash
+   cp .env.example .env.local
+   ```
+
+3. Install the project dependencies:
 
    ```bash
    pnpm i
    ```
 
-3. Create a new branch:
+4. Create a new branch:
 
    ```bash
-   git checkout -b BRANCH_NAME develop
+   git checkout -b <YOUR_BRANCH_NAME> develop
    ```
 
-4. Run the development environment:
+   > You can read about how to name your branch under the [code guidelines](#code-guidelines).
+
+5. Run the development environment:
 
    ```bash
    pnpm dev
    ```
 
-   Alternatively, you can use [Docker](https://www.docker.com) with `docker compose up --build -d`. This method does not require installing NodeJS or pnpm on your machine directly, but will be slower to start up and check for changes.
+6. Create your patch and test your changes. Be sure to follow the [code](#code-guidelines) guidelines.
 
-5. Create your patch and test your changes. Be sure to follow the [code](#contributing-code) guidelines.
-
-6. Should you need to update your fork, you can do so by rebasing from `upstream`:
+7. Should you need to update your fork, you can do so by rebasing from `upstream`:
 
    ```bash
    git fetch upstream
@@ -55,33 +61,34 @@ Please follow the guidelines below.
    git push origin BRANCH_NAME -f
    ```
 
-### Contributing Code
+### Code guidelines
 
 - If you are taking on an existing bug or feature ticket, please comment on the [issue](https://github.com/RaunoT/plex-rewind/issues) to avoid multiple people working on the same thing.
+
 - All commits must follow [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) rules.
 
-  Pull requests with commits not following this standard will **not** be merged.
+  > Please make meaningful commits, or squash them prior to opening a pull request.
 
 - Do your best to check for spelling errors and grammatical mistakes.
 
+- Make sure to test your changes on different screen sizes to ensure responsiveness.
+
+- Do your research and follow the best practices for whatever tool or library you're using.
+
 - Use the appropriate Unicode characters for ellipses, arrows, and other special characters/symbols
 
-- Please make meaningful commits, or squash them prior to opening a pull request.
+- Branch and PR naming should follow [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) logic. If there's an issue linked to the PR, it should be included in the scope.
 
-  Do **not** squash commits once people have begun reviewing your changes.
+  > Example branch name: `feat(#123)/new-feature` or `fix/bug`
+
+  > Example pull request name: `feat(#123): new feature` or `fix: bug`
 
 - Always rebase your commit to the latest `develop` branch.
 
   Do **not** merge `develop` into your branch.
 
-- It is your responsibility to keep your branch up-to-date.
-
-  Your work will **not** be merged unless it is rebased off the latest `develop` branch.
+- Make sure to keep your branch up-to-date.
 
 - Only open pull requests to `develop`, never `main`.
 
   Any pull requests opened to `main` will be closed.
-
-## Attribution
-
-This contribution guide was inspired by [Overseerr's](https://github.com/sct/overseerr) contribution guide.
