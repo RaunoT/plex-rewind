@@ -1,5 +1,4 @@
 import { DashboardParams, TautulliItem } from '@/types'
-import { isDashboardUsersDisabled } from '@/utils/config'
 import { PERIODS } from '@/utils/constants'
 import {
   fetchOverseerrUserId,
@@ -7,9 +6,10 @@ import {
 } from '@/utils/fetchOverseerr'
 import fetchTautulli, { getLibrariesByType } from '@/utils/fetchTautulli'
 import { secondsToTime, timeToSeconds } from '@/utils/formatting'
+import getSettings from '@/utils/getSettings'
 import { Metadata } from 'next'
 import { notFound } from 'next/navigation'
-import Dashboard from '../../_components/Dashboard'
+import Dashboard from '../_components/Dashboard'
 
 export const metadata: Metadata = {
   title: 'Users',
@@ -32,7 +32,13 @@ async function getUsers(
     stats_type: 'duration',
     time_range: period,
   })
-  const users = usersRes.response?.data?.rows
+  const users = usersRes?.response?.data?.rows
+  const settings = await getSettings()
+
+  if (!users) {
+    return
+  }
+
   const [moviesLib, showsLib, audioLib] = await Promise.all([
     getLibrariesByType('movie'),
     getLibrariesByType('show'),
@@ -40,7 +46,7 @@ async function getUsers(
   ])
   let usersRequestsCounts: UserRequestCounts[] = []
 
-  if (process.env.NEXT_PUBLIC_OVERSEERR_URL) {
+  if (settings.connection?.overseerrUrl) {
     const overseerrUserIds = await Promise.all(
       users.map(async (user) => {
         const overseerrId = await fetchOverseerrUserId(String(user.user_id))
@@ -80,7 +86,7 @@ async function getUsers(
             section_id: movieLib.section_id,
           },
         )
-        moviesPlaysCount += userMovies.response?.data?.recordsFiltered || 0
+        moviesPlaysCount += userMovies?.response?.data?.recordsFiltered || 0
       }
 
       for (const showLib of showsLib) {
@@ -92,7 +98,7 @@ async function getUsers(
             section_id: showLib.section_id,
           },
         )
-        showsPlaysCount += userShows.response?.data?.recordsFiltered || 0
+        showsPlaysCount += userShows?.response?.data?.recordsFiltered || 0
       }
 
       for (const audioLibItem of audioLib) {
@@ -104,7 +110,7 @@ async function getUsers(
             section_id: audioLibItem.section_id,
           },
         )
-        audioPlaysCount += userAudio.response?.data?.recordsFiltered || 0
+        audioPlaysCount += userAudio?.response?.data?.recordsFiltered || 0
       }
 
       return {
@@ -135,19 +141,25 @@ async function getTotalDuration(period: string) {
   )
 
   return secondsToTime(
-    timeToSeconds(totalDuration.response?.data?.total_duration),
+    timeToSeconds(totalDuration?.response?.data?.total_duration || '0'),
   )
 }
 
 async function getUsersCount() {
   const usersCount = await fetchTautulli<[]>('get_users')
 
-  return usersCount.response?.data.slice(1).length
+  return usersCount?.response?.data.slice(1).length || 0
 }
 
-export default async function Users({ searchParams }: DashboardParams) {
+export default async function DashboardUsersPage({
+  searchParams,
+}: DashboardParams) {
+  const settings = await getSettings()
+
   // TODO: not redirecting to parent 404 boundary
-  isDashboardUsersDisabled && notFound()
+  if (!settings.features?.isUsersPageActive) {
+    return notFound()
+  }
 
   const periodSearchParams = searchParams?.period
   const periodKey =
@@ -168,6 +180,7 @@ export default async function Users({ searchParams }: DashboardParams) {
       totalDuration={totalDuration}
       count={String(usersCount)}
       type='users'
+      settings={settings}
     />
   )
 }

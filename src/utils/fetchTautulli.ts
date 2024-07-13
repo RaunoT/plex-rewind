@@ -1,6 +1,9 @@
+'use server'
+
 import { Library } from '@/types'
+import { kebabCase } from 'lodash'
 import qs from 'qs'
-import { excludedLibraries } from './config'
+import getSettings from './getSettings'
 
 type TautulliResponse<T> = {
   response: {
@@ -16,16 +19,19 @@ export default async function fetchTautulli<T>(
   query: string,
   params?: QueryParams,
   cache: boolean = false,
-): Promise<TautulliResponse<T>> {
-  const tautulliUrl = process.env.NEXT_PUBLIC_TAUTULLI_URL
-  const apiKey = process.env.TAUTULLI_API_KEY
+): Promise<TautulliResponse<T> | null> {
+  const settings = await getSettings()
+  const tautulliUrl = settings.connection.tautulliUrl
+  const apiKey = settings.connection.tautulliApiKey
 
   if (!tautulliUrl) {
-    throw new Error('Tautulli URL is not configured!')
+    console.error('Tautulli URL is not configured! Skipping request.')
+    return null
   }
 
   if (!apiKey) {
-    throw new Error('Tautulli API key is not configured!')
+    console.error('Tautulli API key is not configured! Skipping request.')
+    return null
   }
 
   const apiUrl = `${tautulliUrl}/api/v2?apikey=${apiKey}`
@@ -38,7 +44,7 @@ export default async function fetchTautulli<T>(
     })
 
     if (!res.ok) {
-      throw new Error(
+      console.error(
         `Tautulli API request failed: ${res.status} ${res.statusText}`,
       )
     }
@@ -46,39 +52,44 @@ export default async function fetchTautulli<T>(
     return res.json()
   } catch (error) {
     console.error(
-      `Error fetching from Tautulli API. The query was '${query}'.\n`,
+      `Error fetching from Tautulli API! The query was '${query}'.\n`,
       error,
     )
-    throw error
+    return null
   }
 }
 
 export async function getServerId(): Promise<string> {
-  const plexHostname = process.env.PLEX_HOSTNAME
-  const plexPort = process.env.PLEX_PORT
-
-  if (plexHostname && plexPort) {
-    const serverIdPromise = await fetchTautulli<{ identifier: string }>(
-      'get_server_id',
-      {
-        hostname: plexHostname,
-        port: plexPort,
-      },
-      true,
-    )
-    return serverIdPromise.response?.data?.identifier
-  } else {
-    throw new Error('Plex hostname and/or port are not configured!')
-  }
-}
-
-export async function getLibraries(): Promise<Library[]> {
-  const libraries = await fetchTautulli<Library[]>('get_libraries', {}, true)
-  const filteredLibraries = libraries.response?.data.filter(
-    (library) => !excludedLibraries.includes(library.section_name),
+  const serverIdPromise = await fetchTautulli<{ identifier: string }>(
+    'get_server_id',
+    {
+      hostname: 'localhost',
+      port: 32400,
+    },
+    true,
   )
 
-  return filteredLibraries
+  return serverIdPromise?.response?.data?.identifier || ''
+}
+
+export async function getLibraries(excludeInactive = true): Promise<Library[]> {
+  const settings = await getSettings()
+  const activeLibraries = settings.features?.activeLibraries
+  const libraries = await fetchTautulli<Library[]>('get_libraries')
+
+  if (!libraries) {
+    return []
+  }
+
+  if (excludeInactive) {
+    const filteredLibraries = libraries.response.data.filter((library) =>
+      activeLibraries.includes(kebabCase(library.section_name)),
+    )
+
+    return filteredLibraries
+  } else {
+    return libraries.response.data
+  }
 }
 
 export async function getLibrariesByType(

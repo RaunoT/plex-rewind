@@ -1,5 +1,6 @@
 import { authOptions } from '@/lib/auth'
 import { TautulliUser, UserRewind } from '@/types'
+import { APP_URL } from '@/utils/constants'
 import { getLibraries, getServerId } from '@/utils/fetchTautulli'
 import { secondsToTime } from '@/utils/formatting'
 import {
@@ -10,6 +11,7 @@ import {
   getUserTotalDuration,
   getlibrariesTotalSize,
 } from '@/utils/getRewind'
+import getSettings from '@/utils/getSettings'
 import { getServerSession } from 'next-auth'
 import RewindStories from './_components/RewindStories'
 
@@ -19,8 +21,9 @@ type Props = {
   }
 }
 
-export default async function Rewind({ searchParams }: Props) {
+export default async function RewindPage({ searchParams }: Props) {
   const session = await getServerSession(authOptions)
+  const settings = await getSettings()
 
   if (!session?.user) {
     return
@@ -31,7 +34,7 @@ export default async function Rewind({ searchParams }: Props) {
 
   if (managedUserId) {
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_SITE_URL}/api/managed-users?userId=${session.user.id}`,
+      `${APP_URL}/api/managed-users?userId=${session.user.id}`,
     )
     const data: TautulliUser[] = await res.json()
     const managedUser = data?.find(
@@ -43,6 +46,7 @@ export default async function Rewind({ searchParams }: Props) {
         image: managedUser.thumb,
         name: managedUser.friendly_name,
         id: managedUserId,
+        isAdmin: false,
       }
     }
   }
@@ -92,11 +96,11 @@ export default async function Rewind({ searchParams }: Props) {
     user: user,
   }
 
-  if (process.env.NEXT_PUBLIC_OVERSEERR_URL) {
+  if (settings.connection.overseerrUrl) {
     const requestTotals = await getRequestsTotals(user.id)
 
     userRewind.requests = requestTotals
   }
 
-  return <RewindStories userRewind={userRewind} />
+  return <RewindStories userRewind={userRewind} settings={settings} />
 }

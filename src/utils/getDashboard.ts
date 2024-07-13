@@ -19,13 +19,17 @@ export async function getItems(library: Library, period: number) {
     section_id: library.section_id,
   })
 
+  if (!itemsRes?.response?.data?.rows) {
+    return []
+  }
+
   if (sectionType === 'movie' || sectionType === 'show') {
     items = await getMediaAdditionalData(
-      itemsRes.response?.data?.rows,
+      itemsRes.response.data.rows,
       sectionType === 'movie' ? 'movie' : 'tv',
     )
   } else {
-    items = itemsRes.response?.data?.rows
+    items = itemsRes.response.data.rows
   }
 
   if (sectionType === 'show') {
@@ -34,7 +38,7 @@ export async function getItems(library: Library, period: number) {
       stats_count: 50, // https://github.com/Tautulli/Tautulli/issues/2103
       time_range: period,
     })
-    const usersWatchedData = usersWatched.response?.data?.rows
+    const usersWatchedData = usersWatched?.response?.data?.rows
     const shows = await getMediaAdditionalData(
       itemsRes.response?.data?.rows,
       'tv',
@@ -51,10 +55,10 @@ export async function getItems(library: Library, period: number) {
       stats_count: 50, // https://github.com/Tautulli/Tautulli/issues/2103
       time_range: period,
     })
-    const usersListenedData = usersListened.response?.data?.rows
+    const usersListenedData = usersListened?.response?.data?.rows
 
     artists.map((artist) => {
-      const listenedData = usersListenedData.find(
+      const listenedData = usersListenedData?.find(
         (uw) => uw.rating_key === artist.rating_key,
       )
 
@@ -78,7 +82,7 @@ export async function getTotalDuration(library: Library, period: string) {
   )
 
   return secondsToTime(
-    timeToSeconds(totalDuration.response?.data?.total_duration),
+    timeToSeconds(totalDuration?.response?.data?.total_duration || '0'),
   )
 }
 
@@ -91,5 +95,5 @@ export async function getTotalSize(library: Library) {
     },
   )
 
-  return bytesToSize(totalSize.response?.data.total_file_size)
+  return bytesToSize(totalSize?.response?.data.total_file_size || 0)
 }
