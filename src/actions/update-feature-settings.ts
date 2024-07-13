@@ -4,7 +4,7 @@ import { settingsPath } from '@/config/config'
 import { SettingsFormInitialState } from '@/types'
 import getSettings from '@/utils/getSettings'
 import { promises as fs } from 'fs'
-import { revalidateTag } from 'next/cache'
+import { revalidatePath } from 'next/cache'
 import { z } from 'zod'
 
 const schema = z.object({
@@ -41,7 +41,8 @@ export async function saveFeaturesSettings(
 
     await fs.writeFile(settingsPath, JSON.stringify(settings), 'utf8')
 
-    revalidateTag('settings:features')
+    revalidatePath('/')
+
     return {
       message: 'Settings saved!',
       status: 'success',

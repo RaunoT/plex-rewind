@@ -102,10 +102,5 @@ export default async function RewindPage({ searchParams }: Props) {
     userRewind.requests = requestTotals
   }
 
-  return (
-    <RewindStories
-      userRewind={userRewind}
-      isOverseerr={!!settings.connection.overseerrUrl}
-    />
-  )
+  return <RewindStories userRewind={userRewind} settings={settings} />
 }

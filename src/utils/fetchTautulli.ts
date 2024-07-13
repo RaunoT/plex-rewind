@@ -40,7 +40,6 @@ export default async function fetchTautulli<T>(
     const res = await fetch(`${apiUrl}&cmd=${query}&${qs.stringify(params)}`, {
       next: {
         revalidate: cache ? 3600 : 0,
-        tags: ['settings:connection'],
       },
     })
 
@@ -76,7 +75,7 @@ export async function getServerId(): Promise<string> {
 export async function getLibraries(excludeInactive = true): Promise<Library[]> {
   const settings = await getSettings()
   const activeLibraries = settings.features?.activeLibraries
-  const libraries = await fetchTautulli<Library[]>('get_libraries', {}, true)
+  const libraries = await fetchTautulli<Library[]>('get_libraries')
 
   if (!libraries) {
     return []

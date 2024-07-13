@@ -53,11 +53,6 @@ const nextConfig = {
             key: 'Permissions-Policy',
             value: '',
           },
-          {
-            key: 'Content-Security-Policy',
-            value:
-              "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.googletagmanager.com; style-src 'self' 'unsafe-inline'; img-src * 'self' data:; font-src 'self' data:; connect-src 'self' https://plex.tv https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com;",
-          },
         ],
       },
     ]

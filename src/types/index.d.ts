@@ -42,6 +42,7 @@ export type RewindStory = {
   isPaused: boolean
   pause: () => void
   resume: () => void
+  settings: Settings
 }
 
 export type TmdbItem = {

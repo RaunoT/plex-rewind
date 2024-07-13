@@ -180,6 +180,7 @@ export default async function DashboardUsersPage({
       totalDuration={totalDuration}
       count={String(usersCount)}
       type='users'
+      settings={settings}
     />
   )
 }

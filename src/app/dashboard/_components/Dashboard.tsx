@@ -1,5 +1,5 @@
 import MediaItems from '@/components/MediaItem/MediaItems'
-import { TautulliItemRow } from '@/types'
+import { Settings, TautulliItemRow } from '@/types'
 import {
   ClockIcon,
   FilmIcon,
@@ -23,6 +23,7 @@ type Props = {
   type?: string
   serverId?: string
   count?: string
+  settings: Settings
 }
 
 export default function Dashboard({
@@ -33,6 +34,7 @@ export default function Dashboard({
   type = '',
   serverId = '',
   count,
+  settings,
 }: Props) {
   return (
     <>
@@ -73,7 +75,12 @@ export default function Dashboard({
       </ul>
 
       {items?.length ? (
-        <MediaItems items={items} type={type} serverId={serverId} />
+        <MediaItems
+          items={items}
+          type={type}
+          serverId={serverId}
+          settings={settings}
+        />
       ) : (
         <div className='flex flex-1 flex-col justify-center text-center text-neutral-300'>
           <h2 className='mb-4 py-32 text-2xl italic leading-tight last:mb-0 sm:text-3xl'>

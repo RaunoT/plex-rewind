@@ -1,5 +1,4 @@
-import { TautulliItemRow } from '@/types'
-import getSettings from '@/utils/getSettings'
+import { Settings, TautulliItemRow } from '@/types'
 import clsx from 'clsx'
 import MediaItem from './MediaItem'
 
@@ -8,16 +7,16 @@ type Props = {
   type: string
   serverId: string
   rows?: boolean
+  settings: Settings
 }
 
-export default async function MediaItems({
+export default function MediaItems({
   items,
   type,
   serverId,
   rows,
+  settings,
 }: Props) {
-  const settings = await getSettings()
-
   return (
     <ul
       className={clsx(
