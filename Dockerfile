@@ -59,6 +59,9 @@ RUN chown nextjs:nodejs .next
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 
+# Copy the settings.json file
+COPY --from=builder --chown=nextjs:nodejs /app/config/settings.json ./config/settings.json
+
 # Copy the entrypoint script and set permissions while still root
 COPY docker-entrypoint.sh /usr/local/bin/
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh
