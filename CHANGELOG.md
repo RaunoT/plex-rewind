@@ -1,3 +1,64 @@
+## [1.8.7](https://github.com/RaunoT/plex-rewind/compare/v1.8.6...v1.8.7) (2024-01-10)
+
+### Bug Fixes
+
+- **dependencies:** sharp ([#92](https://github.com/RaunoT/plex-rewind/issues/92)) ([9dcc248](https://github.com/RaunoT/plex-rewind/commit/9dcc24847dc85605ad77074d29c6e71a9eb4f3e8))
+
+## [1.8.6](https://github.com/RaunoT/plex-rewind/compare/v1.8.5...v1.8.6) (2024-01-08)
+
+### Bug Fixes
+
+- background on safari ([e9e1c26](https://github.com/RaunoT/plex-rewind/commit/e9e1c260550ecf4514bc2f2d49a896e032009324))
+- **rewind:** play controls positioning again ([f487fee](https://github.com/RaunoT/plex-rewind/commit/f487fee157ad8e7a8dff11b798d3e588ba22889f))
+
+## [1.8.5](https://github.com/RaunoT/plex-rewind/compare/v1.8.4...v1.8.5) (2024-01-08)
+
+### Bug Fixes
+
+- **rewind:** play/pause button positioning ([c033e02](https://github.com/RaunoT/plex-rewind/commit/c033e02ab0e3b35a0ee80f7327f64ab2ec084a8c))
+
+## [1.8.4](https://github.com/RaunoT/plex-rewind/compare/v1.8.3...v1.8.4) (2024-01-08)
+
+### Bug Fixes
+
+- **home:** constant refresh ([b2e5b9d](https://github.com/RaunoT/plex-rewind/commit/b2e5b9dbc233eb3a4985828ea6c5eb8c8bb7f3b1))
+
+## [1.8.3](https://github.com/RaunoT/plex-rewind/compare/v1.8.2...v1.8.3) (2024-01-08)
+
+### Bug Fixes
+
+- background jumping and flickering ([e03614b](https://github.com/RaunoT/plex-rewind/commit/e03614b2ec9cff3419f9b86bc85f50cfab86cdcd))
+
+### Performance Improvements
+
+- don't use motion on homepage ([8ffd547](https://github.com/RaunoT/plex-rewind/commit/8ffd547f20877ec81b4efb77f61d573ad397b21b))
+
+## [1.8.2](https://github.com/RaunoT/plex-rewind/compare/v1.8.1...v1.8.2) (2024-01-08)
+
+### Bug Fixes
+
+- add missing og image ([7983da5](https://github.com/RaunoT/plex-rewind/commit/7983da546133891731fe61c1d74b785a0b2a2345))
+- **rewind:** add "is_active" check for managed users ([f0e4a5c](https://github.com/RaunoT/plex-rewind/commit/f0e4a5cb462a483c15dd78479dcefed1ac1e5c1b))
+
+## [1.8.1](https://github.com/RaunoT/plex-rewind/compare/v1.8.0...v1.8.1) (2024-01-08)
+
+### Bug Fixes
+
+- **dashboard:** loading state height ([d96a99a](https://github.com/RaunoT/plex-rewind/commit/d96a99aa8b82782c1af26f76927d6f1b6fb0d915))
+
+## [1.8.0](https://github.com/RaunoT/plex-rewind/compare/v1.7.1...v1.8.0) (2024-01-08)
+
+### Features
+
+- **rewind:** enable seeing managed users' rewind ([#37](https://github.com/RaunoT/plex-rewind/issues/37)) ([4841fbc](https://github.com/RaunoT/plex-rewind/commit/4841fbcbfb98e2cd5de80b06e5099c90d54a9ebb))
+
+## [1.7.1](https://github.com/RaunoT/plex-rewind/compare/v1.7.0...v1.7.1) (2024-01-08)
+
+### Bug Fixes
+
+- **ui:** various small tweaks to clean up new design language ([5a1233e](https://github.com/RaunoT/plex-rewind/commit/5a1233e358e63c5805866d45471cfd00f9b17492))
+- use past 365 days instead of astronomical year ([#55](https://github.com/RaunoT/plex-rewind/issues/55)) ([4d5017f](https://github.com/RaunoT/plex-rewind/commit/4d5017f52037a1a7d47ae152270c7ec06234921b))
+
 ## [1.7.0](https://github.com/RaunoT/plex-rewind/compare/v1.6.0...v1.7.0) (2024-01-07)
 
 ### Bug Fixes
