@@ -1,24 +1,25 @@
 {
   "connection": {
-    "tautulliUrl": "https://tautulli.rauno.eu",
-    "tautulliApiKey": "1CCbI3KUctDcVbryFfLbBhMPLc14poZG",
+    "tautulliUrl": "",
+    "tautulliApiKey": "",
     "overseerrUrl": "",
     "overseerrApiKey": "",
-    "tmdbApiKey": "4675b5b5d8cd1463ff16adca2680157b"
+    "tmdbApiKey": ""
   },
   "features": {
     "isRewindActive": true,
     "isDashboardActive": true,
     "isUsersPageActive": true,
-    "activeLibraries": ["movies", "tv-shows", "music"],
+    "activeLibraries": [],
     "activeDashboardStatistics": [
       "year",
       "rating",
       "duration",
       "plays",
-      "users"
+      "users",
+      "requests"
     ],
     "googleAnalyticsId": ""
   },
-  "test": true
+  "test": false
 }
