@@ -1,0 +1,25 @@
+{
+  "connection": {
+    "tautulliUrl": "",
+    "tautulliApiKey": "",
+    "overseerrUrl": "",
+    "overseerrApiKey": "",
+    "tmdbApiKey": ""
+  },
+  "features": {
+    "isRewindActive": true,
+    "isDashboardActive": true,
+    "isUsersPageActive": true,
+    "activeLibraries": [],
+    "activeDashboardStatistics": [
+      "year",
+      "rating",
+      "duration",
+      "plays",
+      "users",
+      "requests"
+    ],
+    "googleAnalyticsId": ""
+  },
+  "test": false
+}

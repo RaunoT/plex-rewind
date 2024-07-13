@@ -1,9 +1,13 @@
-export default function Loader() {
+type Props = {
+  size?: number
+}
+
+export default function Loader({ size = 8 }: Props) {
   return (
     <div role='status'>
       <svg
         aria-hidden='true'
-        className='size-8 animate-spin fill-blue-800 text-slate-300'
+        className={`animate-spin fill-blue-800 text-slate-300 size-${size}`}
         viewBox='0 0 100 101'
         fill='none'
         xmlns='http://www.w3.org/2000/svg'

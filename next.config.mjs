@@ -1,6 +1,16 @@
 import withSerwistInit from '@serwist/next'
 
-const tautulliUrl = new URL(process.env.NEXT_PUBLIC_TAUTULLI_URL)
+const remotePatterns = [
+  {
+    protocol: 'http',
+    hostname: 'localhost',
+  },
+  {
+    protocol: 'https',
+    hostname: 'plex.tv',
+  },
+]
+
 const isDev = process.env.NODE_ENV !== 'production'
 const withSerwist = withSerwistInit({
   swSrc: 'src/lib/sw.ts',
@@ -11,20 +21,12 @@ const nextConfig = {
   reactStrictMode: true,
   output: 'standalone',
   images: {
-    remotePatterns: [
-      {
-        protocol: 'http',
-        hostname: 'localhost',
-      },
-      {
-        protocol: 'https',
-        hostname: 'plex.tv',
-      },
-      {
-        protocol: tautulliUrl.protocol.slice(0, -1),
-        hostname: tautulliUrl.host,
-      },
-    ],
+    remotePatterns,
+  },
+  logging: {
+    fetches: {
+      fullUrl: true,
+    },
   },
   async headers() {
     return [
@@ -50,11 +52,6 @@ const nextConfig = {
           {
             key: 'Permissions-Policy',
             value: '',
-          },
-          {
-            key: 'Content-Security-Policy',
-            value:
-              "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.googletagmanager.com; style-src 'self' 'unsafe-inline'; img-src 'self'; font-src 'self' data:; connect-src 'self' https://plex.tv https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com;",
           },
         ],
       },

@@ -27,35 +27,39 @@ export default async function getMediaAdditionalData(
         },
         true,
       )
-      const mediaTautulliData = mediaTautulli.response?.data
+      const mediaTautulliData = mediaTautulli?.response?.data
       // Tautulli doesn't return rating for removed items, so we're using TMDB
       const mediaTmdb = await fetchTmdb<TmdbItem>(`search/${type}`, {
         query: media[i].title,
         first_air_date_year: type === 'tv' ? '' : media[i].year,
       })
-      const tmdbId = mediaTmdb.results[0].id
+      const tmdbId = mediaTmdb?.results[0].id
       const imdbId = await fetchTmdb<TmdbExternalId>(
         `${type}/${tmdbId}/external_ids`,
       )
 
       return {
-        year: new Date(mediaTmdb.results[0].first_air_date).getFullYear(),
-        is_deleted: Object.keys(mediaTautulliData).length === 0,
-        rating: mediaTmdb.results[0].vote_average.toFixed(1),
+        year: mediaTmdb?.results[0].first_air_date
+          ? new Date(mediaTmdb.results[0].first_air_date).getFullYear()
+          : null,
+        is_deleted: mediaTautulliData
+          ? Object.keys(mediaTautulliData).length === 0
+          : false,
+        rating: mediaTmdb?.results[0].vote_average.toFixed(1),
         tmdb_id: tmdbId,
-        imdb_id: imdbId.imdb_id,
+        imdb_id: imdbId?.imdb_id,
       }
     }),
   )
 
   media.map((mediaItem, i) => {
     mediaItem.is_deleted = additionalData[i].is_deleted
-    mediaItem.rating = additionalData[i].rating
-    mediaItem.tmdb_id = additionalData[i].tmdb_id
-    mediaItem.imdb_id = additionalData[i].imdb_id
+    mediaItem.rating = additionalData[i].rating || '0'
+    mediaItem.tmdb_id = additionalData[i].tmdb_id || 0
+    mediaItem.imdb_id = additionalData[i].imdb_id || '0'
 
     if (type === 'tv') {
-      mediaItem.year = additionalData[i].year
+      mediaItem.year = additionalData[i].year || 0
 
       if (usersWatchedData) {
         const watchedData = usersWatchedData.find(

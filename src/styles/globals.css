@@ -6,6 +6,10 @@
   .button {
     @apply block w-fit rounded-2xl bg-gradient-to-r from-blue-800 to-teal-700 px-8 py-3 text-center font-semibold transition-all;
 
+    &[disabled] {
+      @apply cursor-not-allowed opacity-50;
+    }
+
     &:hover {
       @apply opacity-75;
     }
@@ -13,10 +17,16 @@
     &-sm {
       @apply rounded-xl px-4 py-1 text-sm;
     }
+
+    &--plex {
+      @apply from-yellow-500 via-yellow-600 to-neutral-700;
+    }
   }
 
   .button-card {
-    @apply block w-fit rounded-sm px-1 text-[0.65rem] font-semibold uppercase leading-normal;
+    @apply block w-fit rounded-sm px-1 font-semibold uppercase leading-normal;
+
+    font-size: 0.65rem;
   }
 
   .skeleton {
@@ -47,15 +57,7 @@
   }
 
   .link {
-    @apply text-neutral-300 hover:text-neutral-500;
-
-    &--light {
-      @apply text-neutral-200 hover:text-neutral-400;
-    }
-
-    &--dark {
-      @apply text-neutral-400 hover:text-neutral-600;
-    }
+    @apply text-neutral-400 hover:text-neutral-500;
   }
 
   .nav {
@@ -63,11 +65,11 @@
   }
 
   .nav-link {
-    @apply link link--light;
+    @apply text-neutral-400 hover:text-white aria-disabled:pointer-events-none aria-disabled:cursor-not-allowed;
 
     &[aria-selected='true'],
     &[aria-current='page'] {
-      @apply text-neutral-500;
+      @apply text-white;
     }
   }
 
@@ -82,11 +84,129 @@
       @apply size-5 text-black;
     }
   }
+
+  .glass-sheet {
+    @apply rounded-3xl bg-neutral-200/20 p-4 backdrop-blur-lg sm:p-8 2xl:p-10;
+  }
+
+  .focus-ring {
+    @apply ring-1 ring-neutral-300;
+  }
+
+  .input {
+    @apply block w-full rounded-xl border-none bg-neutral-500 px-3 py-2 placeholder:text-neutral-400 focus-within:bg-neutral-400;
+
+    &:focus {
+      @apply focus-ring bg-neutral-400 placeholder:text-neutral-300;
+
+      + .label {
+        @apply text-white;
+      }
+    }
+
+    &[required] + .label::after {
+      @apply ml-1 align-text-bottom text-red-500 content-['*'];
+    }
+  }
+
+  .input-wrapper {
+    @apply flex flex-col-reverse gap-2 sm:flex-row-reverse sm:items-center;
+  }
+
+  .label {
+    @apply shrink-0 text-xs font-medium uppercase text-neutral-300 sm:w-48 sm:text-right sm:text-sm;
+
+    &--start {
+      @apply mt-0.5 self-start;
+    }
+  }
+
+  .switch {
+    @apply flex w-fit items-center justify-end gap-2 sm:flex-row-reverse;
+
+    .indicator {
+      @apply relative h-6 w-12 cursor-pointer rounded-full bg-neutral-500;
+
+      &::after {
+        @apply absolute inset-y-0 left-0.5 my-auto size-5 rounded-full bg-white transition content-[''];
+      }
+    }
+
+    &[data-selected='true'] .indicator {
+      @apply bg-neutral-400 after:translate-x-6;
+    }
+
+    &:focus-within {
+      .indicator {
+        @apply focus-ring;
+      }
+
+      .label {
+        @apply text-white;
+      }
+    }
+  }
+
+  .datefield {
+    @apply input mr-auto flex w-fit gap-1;
+
+    .datefield-segment {
+      @apply px-1.5;
+
+      &[data-type='literal'] {
+        @apply p-0 text-neutral-400;
+      }
+
+      &[data-placeholder] {
+        @apply text-neutral-400;
+      }
+
+      &:focus {
+        @apply rounded-lg bg-neutral-500 outline-none;
+      }
+    }
+
+    &:focus-within {
+      .datefield-segment {
+        &[data-placeholder],
+        &[data-type='literal'] {
+          @apply text-neutral-300;
+        }
+      }
+
+      ~ .label {
+        @apply text-white;
+      }
+    }
+  }
+
+  .checkbox-wrapper {
+    @apply flex cursor-pointer items-center gap-1;
+
+    &[data-selected='true'] .checkbox::after {
+      @apply absolute inset-0 text-center text-white content-['\2713'];
+    }
+
+    &:focus-within {
+      .checkbox {
+        @apply focus-ring;
+      }
+
+      ~ .label {
+        @apply text-white;
+      }
+    }
+  }
+
+  .checkbox {
+    @apply relative size-6 rounded-lg bg-neutral-500;
+  }
 }
 
 @layer utilities {
   .animate-fade-up {
-    opacity: 0;
+    @apply opacity-0;
+
     animation: fade-up 0.5s ease forwards;
 
     @keyframes fade-up {
@@ -103,7 +223,8 @@
   }
 
   .animate-fade-in {
-    opacity: 0;
+    @apply opacity-0;
+
     animation: fade-in 0.5s ease forwards;
 
     @keyframes fade-in {

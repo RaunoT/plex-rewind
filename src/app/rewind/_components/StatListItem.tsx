@@ -1,9 +1,10 @@
 import clsx from 'clsx'
+import { ReactNode } from 'react'
 
 type Props = {
   count: number
   name: string
-  icon: React.ReactNode
+  icon: ReactNode
   separator?: string
   library?: string
 }

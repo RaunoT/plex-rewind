@@ -9,6 +9,7 @@ export default function StoryMovies({
   isPaused,
   pause,
   resume,
+  settings,
 }: RewindStory) {
   return (
     <StoryWrapper isPaused={isPaused} pause={pause} resume={resume}>
@@ -54,6 +55,7 @@ export default function StoryMovies({
                 items={Array(userRewind.movies.top[0])}
                 serverId={userRewind.server_id}
                 rows
+                settings={settings}
               />
             </div>
           </RewindStat>

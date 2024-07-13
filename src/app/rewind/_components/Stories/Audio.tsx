@@ -9,6 +9,7 @@ export default function StoryAudio({
   isPaused,
   pause,
   resume,
+  settings,
 }: RewindStory) {
   return (
     <StoryWrapper isPaused={isPaused} pause={pause} resume={resume}>
@@ -57,6 +58,7 @@ export default function StoryAudio({
                 items={Array(userRewind.audio.top[0])}
                 serverId={userRewind.server_id}
                 rows
+                settings={settings}
               />
             </div>
           </RewindStat>

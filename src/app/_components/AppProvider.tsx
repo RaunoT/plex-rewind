@@ -1,33 +1,38 @@
 'use client'
 
-import githubSvg from '@/assets/github.svg'
+import { Settings } from '@/types'
+import { CogIcon } from '@heroicons/react/24/outline'
 import clsx from 'clsx'
-import { SessionProvider } from 'next-auth/react'
-import Image from 'next/image'
-import { usePathname } from 'next/navigation'
-import { useEffect, useRef, useState } from 'react'
+import { useSession } from 'next-auth/react'
+import Link from 'next/link'
+import { redirect, usePathname } from 'next/navigation'
+import { ReactNode, useEffect, useRef, useState } from 'react'
 import * as THREE from 'three'
 import FOG from 'vanta/dist/vanta.fog.min'
 
 type Props = {
-  children: React.ReactNode
+  children: ReactNode
+  settings: Settings
 }
 
-export default function AppProvider({ children }: Props) {
+export default function AppProvider({ children, settings }: Props) {
   const pathname = usePathname()
   const [background, setBackground] = useState<VantaEffect>(null)
   const backgroundRef = useRef(null)
+  const { data: session } = useSession()
 
   useEffect(() => {
     if (!background) {
       setBackground(
         FOG({
           el: backgroundRef.current,
-          THREE: THREE, // seems to not work properly > 0.151.3
-          highlightColor: 0xb5336,
-          midtoneColor: 0x211e1d,
+          THREE: THREE,
           lowlightColor: 0x16166f,
-          baseColor: 0x0,
+          midtoneColor: 0x211e1d,
+          highlightColor: 0x0b5336,
+          baseColor: 0x000000,
+          blurFactor: 0.6,
+          zoom: 1,
           speed: 1,
         }),
       )
@@ -40,28 +45,28 @@ export default function AppProvider({ children }: Props) {
     }
   }, [background])
 
-  return (
-    <SessionProvider>
-      <main
-        className={clsx(
-          'flex min-h-dvh flex-col items-center overflow-x-hidden px-4 py-8 sm:justify-center',
-          { 'justify-center': pathname === '/' },
-        )}
-      >
-        <div
-          ref={backgroundRef}
-          className='fixed inset-0 -z-10 h-screen after:absolute after:inset-0 after:bg-black/25 after:content-[""]'
-        />
-        <a href='https://github.com/RaunoT/plex-rewind' target='_blank'>
-          <Image
-            src={githubSvg}
-            alt='GitHub'
-            className='absolute right-4 top-4 size-4 sm:size-6'
-          />
-        </a>
+  if (!settings.test && pathname !== '/settings/connection') {
+    redirect('/settings/connection')
+  }
 
-        {children}
-      </main>
-    </SessionProvider>
+  return (
+    <main
+      className={clsx(
+        'flex min-h-dvh flex-col items-center overflow-x-hidden px-4 py-8 sm:justify-center',
+        { 'justify-center': pathname === '/' },
+      )}
+    >
+      <div ref={backgroundRef} className='fixed inset-0 -z-10 h-screen' />
+      {settings.test && session?.user?.isAdmin && (
+        <Link
+          href='/settings/connection'
+          className='absolute right-3 top-3 sm:right-4 sm:top-4'
+        >
+          {pathname !== '/settings' && <CogIcon className='size-5 lg:size-6' />}
+        </Link>
+      )}
+
+      {children}
+    </main>
   )
 }

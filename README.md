@@ -36,17 +36,17 @@ Keep an eye on the [issues page](https://github.com/RaunoT/plex-rewind/issues) t
 git clone https://github.com/RaunoT/plex-rewind.git --branch main
 ```
 
-2. Fill out the variables in the `.env` file.
+2. (optional) Update buildtime variables in the `.env` file. A rebuild is required when changing these variables.
 
-   Check out the [variables reference](https://github.com/RaunoT/plex-rewind/wiki/Variables-reference) in the wiki for more information.
+- `NEXTAUTH_URL` and `NEXT_PUBLIC_SITE_URL` - The URL of the application, change to your domain if you are exposing the app to the internet.
+- `NEXT_PUBLIC_STATISTICS_START_DATE` - The starting date for the "all time" option in Dashboard. Expects YYYY-MM-DD format and will default to 2018-01-01.
+- `NEXTAUTH_SECRET` - Can be generated with `openssl rand -base64 32`. This is done automatically if the variable is not set, but setting it manually will allow you to persist user login sessions between updates.
 
 3. Run `docker compose up --build -d` to build and start the application.
 
    To update, download the latest release, or if you cloned the repo, run `git pull` and then repeat the Docker command.
 
 4. The application should now be running on [http://localhost:8383](http://localhost:8383).
-
-5. (optional) You can expose the app to the internet using a reverse proxy of your choice. Or you can skip all of the above, fork this repository, and deploy it to [Vercel](https://vercel.com). You can set the env variables under "Settings > Environment Variables" for your project.
 
 ## Donate
 
