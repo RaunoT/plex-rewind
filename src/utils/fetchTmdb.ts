@@ -1,4 +1,7 @@
+'use server'
+
 import qs from 'qs'
+import getSettings from './getSettings'
 
 type QueryParams = {
   [key: string]: string | number
@@ -7,10 +10,12 @@ type QueryParams = {
 export default async function fetchTmdb<T>(
   endpoint: string,
   params?: QueryParams,
-): Promise<T> {
-  const apiKey = process.env.TMDB_API_KEY
+): Promise<T | null> {
+  const settings = await getSettings()
+  const apiKey = settings.connection.tmdbApiKey
   if (!apiKey) {
-    throw new Error('TMDB API key is not set!')
+    console.error('TMDB API key is not set! Skipping request.')
+    return null
   }
 
   try {
@@ -20,14 +25,12 @@ export default async function fetchTmdb<T>(
     const res = await fetch(apiUrl)
 
     if (!res.ok) {
-      throw new Error(
-        `TMDB API request failed: ${res.status} ${res.statusText}`,
-      )
+      console.error(`TMDB API request failed: ${res.status} ${res.statusText}`)
     }
 
     return res.json()
   } catch (error) {
-    console.error('Error fetching from TMDB API:', error)
-    throw error
+    console.error('Error fetching from TMDB API!', error)
+    return null
   }
 }

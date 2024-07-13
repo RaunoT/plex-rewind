@@ -1,7 +1,8 @@
 import { PauseIcon, PlayIcon } from '@heroicons/react/24/outline'
+import { ReactNode } from 'react'
 
 type Props = {
-  children: React.ReactNode
+  children: ReactNode
   isPaused: boolean
   pause: () => void
   resume: () => void

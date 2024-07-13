@@ -36,7 +36,7 @@ export async function getTopMediaStats(userId: string, libraries: Library[]) {
     })
 
     return {
-      response: res.response.data,
+      response: res?.response.data,
       type: library.section_type,
     }
   }
@@ -61,7 +61,7 @@ export async function getTopMediaStats(userId: string, libraries: Library[]) {
     const data = library.response
     const resultType = typeToResultMap[library.type]
 
-    if (resultType) {
+    if (resultType && data) {
       combinedResult[resultType].count += data.recordsFiltered
       combinedResult[resultType].duration = secondsToTime(
         timeToSeconds(combinedResult[resultType].duration) +
@@ -85,7 +85,11 @@ export async function getlibrariesTotalSize(libraries: Library[]) {
   )
 
   for (const library of res) {
-    totalSize += library.response?.data?.total_file_size
+    const librarySize = library?.response?.data?.total_file_size
+
+    if (librarySize) {
+      totalSize += librarySize
+    }
   }
 
   return totalSize
@@ -104,7 +108,11 @@ export async function getLibrariesTotalDuration(libraries: Library[]) {
   )
 
   for (const library of res) {
-    totalDuration += timeToSeconds(library.response?.data?.total_duration)
+    const duration = library?.response?.data?.total_duration
+
+    if (duration) {
+      totalDuration += timeToSeconds(duration)
+    }
   }
 
   return totalDuration
@@ -127,7 +135,11 @@ export async function getUserTotalDuration(
   )
 
   for (const library of res) {
-    totalDuration += timeToSeconds(library.response?.data?.total_duration)
+    const duration = library?.response?.data?.total_duration
+
+    if (duration) {
+      totalDuration += timeToSeconds(duration)
+    }
   }
 
   return totalDuration
@@ -152,7 +164,7 @@ export async function getTopMediaItems(userId: string, libraries: Library[]) {
   }
 
   for (const library of res) {
-    for (const topMedia of library.response?.data || []) {
+    for (const topMedia of library?.response?.data || []) {
       if (topMedia.stat_id === 'top_tv') {
         combinedResult.shows.push(
           ...(await getMediaAdditionalData(topMedia.rows, 'tv')),

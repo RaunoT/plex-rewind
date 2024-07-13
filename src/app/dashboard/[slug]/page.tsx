@@ -2,17 +2,18 @@ import { DashboardParams } from '@/types'
 import { PERIODS } from '@/utils/constants'
 import { getLibraries, getServerId } from '@/utils/fetchTautulli'
 import { getItems, getTotalDuration, getTotalSize } from '@/utils/getDashboard'
-import { snakeCase } from 'lodash'
+import getSettings from '@/utils/getSettings'
+import { kebabCase } from 'lodash'
 import { Metadata } from 'next'
 import { notFound } from 'next/navigation'
-import Dashboard from '../../_components/Dashboard'
+import Dashboard from '../_components/Dashboard'
 
 export async function generateMetadata({
   params,
 }: DashboardParams): Promise<Metadata> {
   const libraries = await getLibraries()
   const library = libraries.find(
-    (library) => snakeCase(library.section_name) === params.slug,
+    (library) => kebabCase(library.section_name) === params.slug,
   )
 
   return {
@@ -20,19 +21,15 @@ export async function generateMetadata({
   }
 }
 
-export async function generateStaticParams() {
-  const libraries = await getLibraries()
-
-  return libraries.map((library) => ({
-    slug: snakeCase(library.section_name),
-  }))
-}
-
-export default async function Page({ params, searchParams }: DashboardParams) {
+export default async function DashboardPage({
+  params,
+  searchParams,
+}: DashboardParams) {
   const libraries = await getLibraries()
   const library = libraries.find(
-    (library) => snakeCase(library.section_name) === params.slug,
+    (library) => kebabCase(library.section_name) === params.slug,
   )
+  const settings = await getSettings()
 
   // TODO: not redirecting to parent 404 boundary
   if (!library || !library.is_active) {
@@ -65,6 +62,7 @@ export default async function Page({ params, searchParams }: DashboardParams) {
           ? Number(library.count).toLocaleString('en-US')
           : Number(library.child_count).toLocaleString('en-US')
       }
+      settings={settings}
     />
   )
 }

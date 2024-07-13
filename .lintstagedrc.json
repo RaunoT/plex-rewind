@@ -4,5 +4,6 @@
     "eslint --cache --fix",
     "bash -c tsc --noEmit --skipLibCheck"
   ],
+  "**/*.css": "stylelint --cache --fix",
   "**/*.{css,md,json}": "prettier --write"
 }

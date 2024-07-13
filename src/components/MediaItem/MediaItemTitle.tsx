@@ -3,13 +3,13 @@
 import { TautulliItemRow } from '@/types'
 import { motion, useAnimation } from 'framer-motion'
 import { debounce } from 'lodash'
-import { useEffect, useRef } from 'react'
+import { RefObject, useEffect, useRef } from 'react'
 
 type Props = {
   i: number
   data: TautulliItemRow
   type: string
-  parentRef: React.RefObject<HTMLDivElement>
+  parentRef: RefObject<HTMLDivElement>
 }
 
 export default function MediaItemTitle({ i, data, type, parentRef }: Props) {

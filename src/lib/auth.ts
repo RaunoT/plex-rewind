@@ -3,6 +3,7 @@ import CredentialsProvider from 'next-auth/providers/credentials'
 import qs from 'qs'
 import { parseStringPromise } from 'xml2js'
 import {
+  APP_URL,
   PLEX_API_ENDPOINT,
   PLEX_CLIENT_IDENTIFIER,
   PLEX_CLIENT_NAME,
@@ -35,7 +36,7 @@ export const authOptions: AuthOptions = {
           })
 
           if (!res.ok) {
-            throw new Error(
+            console.error(
               `Failed to fetch user: ${res.status} ${res.statusText}`,
             )
           }
@@ -43,12 +44,13 @@ export const authOptions: AuthOptions = {
           const xmlData = await res.text()
           const jsonData = await parseStringPromise(xmlData)
           const data = jsonData.user.$
-          const { title, id, thumb, email } = data
+          const { title, id, thumb, email, homeAdmin } = data
           const userData = {
             id: id,
             name: title,
             email: email,
             image: thumb,
+            isAdmin: homeAdmin === '1',
           }
 
           if (res.ok && userData) {
@@ -60,19 +62,19 @@ export const authOptions: AuthOptions = {
             )
 
             const userExists =
-              checkUser.response?.data?.email === userData.email
+              checkUser?.response?.data?.email === userData.email
 
             if (userExists) {
               return userData
             } else {
-              throw new Error('User does not belong to this server!')
+              console.error('User does not belong to this server!')
             }
           }
 
           return null
         } catch (error) {
-          console.error('Error getting Plex user:', error)
-          throw error
+          console.error('Error getting Plex user!', error)
+          return null
         }
       },
     }),
@@ -85,13 +87,15 @@ export const authOptions: AuthOptions = {
     async session({ session, token }) {
       if (token) {
         session.user.id = token.id
+        session.user.isAdmin = token.isAdmin
       }
 
       return session
     },
     async jwt({ token, user }) {
       if (user) {
-        token.id = user?.id
+        token.id = user.id
+        token.isAdmin = user.isAdmin
       }
 
       return token
@@ -120,24 +124,24 @@ async function fetchPlexPins(): Promise<PlexPinResponse> {
     })
 
     if (!res.ok) {
-      throw new Error(
+      console.error(
         `Plex PIN generation failed: ${res.status} ${res.statusText}`,
       )
     }
 
     return res.json()
   } catch (error) {
-    console.error('Error generating Plex PIN:', error)
+    console.error('Error generating Plex PIN!', error)
     throw error
   }
 }
 
 export async function createPlexAuthUrl() {
   const { id, code } = await fetchPlexPins()
-  const forwardUrl = `${process.env.NEXT_PUBLIC_SITE_URL}?plexPinId=${id}`
+  const forwardUrl = `${APP_URL}?plexPinId=${id}`
 
   if (!forwardUrl) {
-    throw new Error('Base url is not configured!')
+    console.error('Base url is not configured!')
   }
 
   const authAppUrl =
@@ -167,7 +171,7 @@ export async function getPlexAuthToken(pinId: string) {
     })
 
     if (!res.ok) {
-      throw new Error(
+      console.error(
         `Getting Plex auth token failed: ${res.status} ${res.statusText}`,
       )
     }
@@ -176,7 +180,7 @@ export async function getPlexAuthToken(pinId: string) {
 
     return data.authToken
   } catch (error) {
-    console.error('Error getting Plex auth token:', error)
+    console.error('Error getting Plex auth token!', error)
   }
 }
 
@@ -197,7 +201,7 @@ export async function verifyPlexAuthToken(authToken: string) {
     })
 
     if (!res.ok) {
-      throw new Error(
+      console.error(
         `Plex auth token verification failed: ${res.status} ${res.statusText}`,
       )
     }
@@ -208,6 +212,6 @@ export async function verifyPlexAuthToken(authToken: string) {
       return true
     }
   } catch (error) {
-    console.error('Error verifying Plex auth token:', error)
+    console.error('Error verifying Plex auth token!', error)
   }
 }
