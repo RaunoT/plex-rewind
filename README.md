@@ -64,7 +64,6 @@ _Please note that supporting does not guarantee any support or future developmen
 
 To learn more about some of the tools used in this project, take a look at the following resources:
 
-- [Plex Rewind wiki](https://github.com/RaunoT/plex-rewind/wiki)
 - [Tautulli API reference](https://github.com/Tautulli/Tautulli/wiki/Tautulli-API-Reference)
 - [Overseerr API reference](https://api-docs.overseerr.dev)
 - [Next.js docs](https://nextjs.org/docs)
