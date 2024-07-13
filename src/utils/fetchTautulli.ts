@@ -1,9 +1,9 @@
 'use server'
 
-import { settings } from '@/config/config'
 import { Library } from '@/types'
 import { kebabCase } from 'lodash'
 import qs from 'qs'
+import getSettings from './getSettings'
 
 type TautulliResponse<T> = {
   response: {
@@ -20,6 +20,7 @@ export default async function fetchTautulli<T>(
   params?: QueryParams,
   cache: boolean = false,
 ): Promise<TautulliResponse<T> | null> {
+  const settings = await getSettings()
   const tautulliUrl = settings.connection.tautulliUrl
   const apiKey = settings.connection.tautulliApiKey
 
@@ -73,6 +74,7 @@ export async function getServerId(): Promise<string> {
 }
 
 export async function getLibraries(excludeInactive = true): Promise<Library[]> {
+  const settings = await getSettings()
   const activeLibraries = settings.features?.activeLibraries
   const libraries = await fetchTautulli<Library[]>('get_libraries', {}, true)
 

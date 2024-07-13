@@ -1,10 +1,13 @@
+import getSettings from '@/utils/getSettings'
 import { Suspense } from 'react'
 import Home from './_components/Home'
 
-export default function HomePage() {
+export default async function HomePage() {
+  const settings = await getSettings()
+
   return (
     <Suspense>
-      <Home />
+      <Home settings={settings} />
     </Suspense>
   )
 }

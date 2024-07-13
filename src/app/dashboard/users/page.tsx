@@ -1,4 +1,3 @@
-import { settings } from '@/config/config'
 import { DashboardParams, TautulliItem } from '@/types'
 import { PERIODS } from '@/utils/constants'
 import {
@@ -7,6 +6,7 @@ import {
 } from '@/utils/fetchOverseerr'
 import fetchTautulli, { getLibrariesByType } from '@/utils/fetchTautulli'
 import { secondsToTime, timeToSeconds } from '@/utils/formatting'
+import getSettings from '@/utils/getSettings'
 import { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import Dashboard from '../_components/Dashboard'
@@ -33,6 +33,7 @@ async function getUsers(
     time_range: period,
   })
   const users = usersRes?.response?.data?.rows
+  const settings = await getSettings()
 
   if (!users) {
     return
@@ -153,6 +154,8 @@ async function getUsersCount() {
 export default async function DashboardUsersPage({
   searchParams,
 }: DashboardParams) {
+  const settings = await getSettings()
+
   // TODO: not redirecting to parent 404 boundary
   if (!settings.features?.isUsersPageActive) {
     return notFound()

@@ -1,8 +1,7 @@
 'use client'
 
 import { saveFeaturesSettings } from '@/actions/update-feature-settings'
-import { settings as allSettings } from '@/config/config'
-import { FeaturesSettings, Library } from '@/types'
+import { Library, Settings } from '@/types'
 import { parseDate } from '@internationalized/date'
 import { kebabCase } from 'lodash'
 import {
@@ -18,17 +17,19 @@ import {
 import SettingsForm from '../../_components/SettingsForm'
 
 type Props = {
-  settings: FeaturesSettings
+  settings: Settings
   libraries: Library[]
 }
 
 export default function FeaturesSettingsForm({ settings, libraries }: Props) {
+  const featuresSettings = settings.features
+
   return (
     <SettingsForm settings={settings} action={saveFeaturesSettings}>
       <Switch
         className='switch'
         name='isRewindActive'
-        defaultSelected={settings?.isRewindActive}
+        defaultSelected={featuresSettings?.isRewindActive}
       >
         <div className='indicator' />
         <span className='label'>Rewind</span>
@@ -36,7 +37,7 @@ export default function FeaturesSettingsForm({ settings, libraries }: Props) {
       <Switch
         className='switch'
         name='isDashboardActive'
-        defaultSelected={settings?.isDashboardActive}
+        defaultSelected={featuresSettings?.isDashboardActive}
       >
         <div className='indicator'></div>
         <span className='label'>Dashboard</span>
@@ -44,7 +45,7 @@ export default function FeaturesSettingsForm({ settings, libraries }: Props) {
       <Switch
         className='switch'
         name='isUsersPageActive'
-        defaultSelected={settings?.isUsersPageActive}
+        defaultSelected={featuresSettings?.isUsersPageActive}
       >
         <div className='indicator'></div>
         <span className='label'>Users page</span>
@@ -52,7 +53,7 @@ export default function FeaturesSettingsForm({ settings, libraries }: Props) {
       <CheckboxGroup
         className='input-wrapper'
         name='activeLibraries'
-        defaultValue={settings?.activeLibraries}
+        defaultValue={featuresSettings?.activeLibraries}
       >
         <div className='mr-auto flex flex-wrap gap-2'>
           {libraries.map((library) => (
@@ -72,7 +73,7 @@ export default function FeaturesSettingsForm({ settings, libraries }: Props) {
         className='input-wrapper'
         name='activeDashboardStatistics'
         defaultValue={
-          settings?.activeDashboardStatistics || [
+          featuresSettings?.activeDashboardStatistics || [
             'year',
             'rating',
             'duration',
@@ -103,8 +104,8 @@ export default function FeaturesSettingsForm({ settings, libraries }: Props) {
             <div className='checkbox' aria-hidden='true'></div>
             Users
           </Checkbox>
-          {allSettings.connection.overseerrUrl &&
-            allSettings.connection.overseerrApiKey && (
+          {settings.connection.overseerrUrl &&
+            settings.connection.overseerrApiKey && (
               <Checkbox value='requests' className='checkbox-wrapper'>
                 <div className='checkbox' aria-hidden='true'></div>
                 Requests
@@ -117,8 +118,8 @@ export default function FeaturesSettingsForm({ settings, libraries }: Props) {
         <DateField
           className='input-wrapper'
           defaultValue={
-            settings?.statisticsStartDate
-              ? parseDate(settings.statisticsStartDate)
+            featuresSettings?.statisticsStartDate
+              ? parseDate(featuresSettings.statisticsStartDate)
               : parseDate('2018-01-01')
           }
           name='statisticsStartDate'
@@ -136,7 +137,7 @@ export default function FeaturesSettingsForm({ settings, libraries }: Props) {
           type='text'
           className='input'
           name='googleAnalyticsId'
-          defaultValue={settings?.googleAnalyticsId}
+          defaultValue={featuresSettings?.googleAnalyticsId}
         />
         <span className='label'>Google Analytics ID</span>
       </label>

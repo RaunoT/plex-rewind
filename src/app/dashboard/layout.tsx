@@ -1,7 +1,7 @@
 import CardWrapper from '@/app/_components/CardWrapper'
 import PageTitle from '@/app/_components/PageTitle'
-import { settings } from '@/config/config'
 import { getLibraries } from '@/utils/fetchTautulli'
+import getSettings from '@/utils/getSettings'
 import { notFound } from 'next/navigation'
 import { ReactNode } from 'react'
 import DashboardNav from './_components/DashboardNav'
@@ -12,6 +12,8 @@ type Props = {
 }
 
 export default async function DashboardLayout({ children }: Props) {
+  const settings = await getSettings()
+
   if (!settings.features?.isDashboardActive) {
     return notFound()
   }

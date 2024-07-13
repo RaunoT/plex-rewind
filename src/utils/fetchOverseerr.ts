@@ -1,4 +1,6 @@
-import { settings } from '@/config/config'
+'use server'
+
+import getSettings from './getSettings'
 
 type OverseerrResponse<T> = {
   pageInfo: {
@@ -14,6 +16,8 @@ export default async function fetchOverseerr<T>(
   endpoint: string,
   cache: boolean = true,
 ): Promise<T | null> {
+  const settings = await getSettings()
+
   const overseerrUrl = settings.connection.overseerrUrl
   const apiKey = settings.connection.overseerrApiKey
 

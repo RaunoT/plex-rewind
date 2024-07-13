@@ -1,8 +1,6 @@
 'use client'
 
-import placeholderPoster from '@/assets/placeholder.svg'
-import { settings } from '@/config/config'
-import { TautulliItemRow } from '@/types'
+import { Settings, TautulliItemRow } from '@/types'
 import { pluralize, secondsToTime } from '@/utils/formatting'
 import { slideDown } from '@/utils/motion'
 import {
@@ -17,7 +15,6 @@ import {
 } from '@heroicons/react/24/outline'
 import clsx from 'clsx'
 import { motion } from 'framer-motion'
-import Image from 'next/image'
 import { useEffect, useRef, useState } from 'react'
 import MediaItemTitle from './MediaItemTitle'
 import PlexDeeplink from './PlexDeeplink'
@@ -28,6 +25,7 @@ type Props = {
   type: string
   serverId: string
   activeStats: string[]
+  settings: Settings
 }
 
 // TODO: split into smaller pieces to reduce client rendered part
@@ -37,24 +35,18 @@ export default function MediaItem({
   type,
   serverId,
   activeStats,
+  settings,
 }: Props) {
   const tautulliUrl = settings.connection.tautulliUrl
-  const [posterSrc, setPosterSrc] = useState<string>(
-    `${tautulliUrl}/pms_image_proxy?img=${
-      type === 'users' ? data.user_thumb : data.thumb
-    }&width=300`,
-  )
+  const posterSrc = `${tautulliUrl}/pms_image_proxy?img=${
+    type === 'users' ? data.user_thumb : data.thumb
+  }&width=300`
   const [dataKey, setDataKey] = useState<number>(0)
   const titleContainerRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    setPosterSrc(
-      `${tautulliUrl}/pms_image_proxy?img=${
-        type === 'users' ? data.user_thumb : data.thumb
-      }&width=300`,
-    )
     setDataKey((prevDataKey) => prevDataKey + 1)
-  }, [data, type, tautulliUrl])
+  }, [data, type])
 
   return (
     <motion.li
@@ -66,18 +58,13 @@ export default function MediaItem({
       transition={{ delay: i * 0.075 }}
     >
       <div className='relative aspect-[2/3] w-[4.5rem] flex-shrink-0 sm:w-20 2xl:w-24'>
-        <Image
-          fill
-          className='object-cover object-top'
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          className='h-full w-full object-cover object-top'
           alt={
             type === 'users' ? data.user + ' avatar' : data.title + ' poster'
           }
           src={posterSrc}
-          sizes='10rem'
-          onError={() => {
-            setPosterSrc(placeholderPoster)
-          }}
-          priority
         />
       </div>
       <div className='overflow-hidden' ref={titleContainerRef}>

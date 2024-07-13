@@ -1,5 +1,5 @@
-import { settings } from '@/config/config'
 import { RewindStory } from '@/types'
+import getSettings from '@/utils/getSettings'
 import {
   FilmIcon,
   PlayCircleIcon,
@@ -9,12 +9,14 @@ import RewindStat from '../RewindStat'
 import StatListItem from '../StatListItem'
 import StoryWrapper from '../StoryWrapper'
 
-export default function StoryRequests({
+export default async function StoryRequests({
   userRewind,
   isPaused,
   pause,
   resume,
 }: RewindStory) {
+  const settings = await getSettings()
+
   return (
     userRewind.requests && (
       <StoryWrapper isPaused={isPaused} pause={pause} resume={resume}>

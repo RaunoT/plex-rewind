@@ -6,3 +6,5 @@ services:
     restart: unless-stopped
     ports:
       - 8383:8383
+    volumes:
+      - ./src/config/settings.json:/app/src/config/settings.json

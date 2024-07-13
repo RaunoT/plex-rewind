@@ -1,6 +1,6 @@
 import githubSvg from '@/assets/github.svg'
-import { settings } from '@/config/config'
 import { authOptions } from '@/lib/auth'
+import getSettings from '@/utils/getSettings'
 import { getServerSession } from 'next-auth'
 import Image from 'next/image'
 import { redirect } from 'next/navigation'
@@ -15,6 +15,7 @@ type Props = {
 
 export default async function SettingsLayout({ children }: Props) {
   const session = await getServerSession(authOptions)
+  const settings = await getSettings()
 
   if (!session?.user?.isAdmin && settings.test) {
     redirect('/')
@@ -22,7 +23,10 @@ export default async function SettingsLayout({ children }: Props) {
 
   return (
     <div className='mb-auto w-full max-w-screen-sm'>
-      <PageTitle title={settings.test ? 'Settings' : "Let's get started"} />
+      <PageTitle
+        title={settings.test ? 'Settings' : "Let's get started"}
+        noBack={!settings.test}
+      />
       {settings.test && <SettingsNav />}
       {children}
       <div className='mt-8 flex flex-col items-center gap-2'>

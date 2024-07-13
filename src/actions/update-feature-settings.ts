@@ -1,7 +1,8 @@
 'use server'
 
-import { settings, settingsPath } from '@/config/config'
+import { settingsPath } from '@/config/config'
 import { SettingsFormInitialState } from '@/types'
+import getSettings from '@/utils/getSettings'
 import { promises as fs } from 'fs'
 import { revalidateTag } from 'next/cache'
 import { z } from 'zod'
@@ -32,15 +33,13 @@ export async function saveFeaturesSettings(
     googleAnalyticsId: formData.get('googleAnalyticsId') as string,
   }
 
+  // Save settings
   try {
+    const settings = await getSettings()
     schema.parse(data)
     settings.features = data
 
-    await fs.writeFile(
-      process.cwd() + settingsPath,
-      JSON.stringify(settings),
-      'utf8',
-    )
+    await fs.writeFile(settingsPath, JSON.stringify(settings), 'utf8')
 
     revalidateTag('settings:features')
     return {

@@ -1,6 +1,6 @@
 'use client'
 
-import { settings } from '@/config/config'
+import { Settings } from '@/types'
 import { CogIcon } from '@heroicons/react/24/outline'
 import clsx from 'clsx'
 import { useSession } from 'next-auth/react'
@@ -12,9 +12,10 @@ import FOG from 'vanta/dist/vanta.fog.min'
 
 type Props = {
   children: ReactNode
+  settings: Settings
 }
 
-export default function AppProvider({ children }: Props) {
+export default function AppProvider({ children, settings }: Props) {
   const pathname = usePathname()
   const [background, setBackground] = useState<VantaEffect>(null)
   const backgroundRef = useRef(null)

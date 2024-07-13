@@ -1,10 +1,11 @@
-import { APP_URL, settings } from '@/config/config'
+import { APP_URL } from '@/config/config'
 import '@/styles/globals.css'
 import {
   META_DESCRIPTION,
   META_TITLE,
   META_TITLE_TEMPLATE,
 } from '@/utils/constants'
+import getSettings from '@/utils/getSettings'
 import { Metadata, Viewport } from 'next'
 import { ReactNode } from 'react'
 import AppProvider from './_components/AppProvider'
@@ -52,7 +53,9 @@ type Props = {
   children: ReactNode
 }
 
-export default function RootLayout({ children }: Props) {
+export default async function RootLayout({ children }: Props) {
+  const settings = await getSettings()
+
   return (
     <html lang='en'>
       <body className='min-h-dvh bg-black text-white'>
@@ -60,7 +63,7 @@ export default function RootLayout({ children }: Props) {
           <GoogleAnalytics id={settings.features.googleAnalyticsId} />
         )}
         <SessionProviderWrapper>
-          <AppProvider>{children}</AppProvider>
+          <AppProvider settings={settings}>{children}</AppProvider>
         </SessionProviderWrapper>
       </body>
     </html>

@@ -2,9 +2,8 @@
 
 import plexSvg from '@/assets/plex.svg'
 import Loader from '@/components/Loader'
-import { settings } from '@/config/config'
 import { createPlexAuthUrl, getPlexAuthToken } from '@/lib/auth'
-import { Library, TautulliUser } from '@/types'
+import { Library, Settings, TautulliUser } from '@/types'
 import clsx from 'clsx'
 import { kebabCase } from 'lodash'
 import { signIn, signOut, useSession } from 'next-auth/react'
@@ -13,7 +12,11 @@ import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
 
-export default function Home() {
+type Props = {
+  settings: Settings
+}
+
+export default function Home({ settings }: Props) {
   const [libraries, setLibraries] = useState<Library[]>([])
   const [managedUsers, setManagedUsers] = useState<TautulliUser[] | null>(null)
   const [isLoading, setIsLoading] = useState<boolean>(true)

@@ -1,5 +1,4 @@
 import withSerwistInit from '@serwist/next'
-import settings from './src/config/settings.json' assert { type: 'json' }
 
 const remotePatterns = [
   {
@@ -11,15 +10,6 @@ const remotePatterns = [
     hostname: 'plex.tv',
   },
 ]
-
-if (settings.connection?.tautulliUrl) {
-  const tautulliUrl = new URL(settings.connection.tautulliUrl)
-
-  remotePatterns.push({
-    protocol: tautulliUrl.protocol.slice(0, -1),
-    hostname: tautulliUrl.host,
-  })
-}
 
 const isDev = process.env.NODE_ENV !== 'production'
 const withSerwist = withSerwistInit({
@@ -66,7 +56,7 @@ const nextConfig = {
           {
             key: 'Content-Security-Policy',
             value:
-              "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.googletagmanager.com; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:; connect-src 'self' https://plex.tv https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com;",
+              "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.googletagmanager.com; style-src 'self' 'unsafe-inline'; img-src * 'self' data:; font-src 'self' data:; connect-src 'self' https://plex.tv https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com;",
           },
         ],
       },

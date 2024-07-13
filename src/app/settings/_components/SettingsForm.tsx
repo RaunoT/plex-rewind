@@ -1,15 +1,13 @@
 'use client'
 
-import { settings as allSettings } from '@/config/config'
-import { ConnectionSettings, FeaturesSettings } from '@/types'
-import Link from 'next/link'
+import { Settings } from '@/types'
 import { ReactNode } from 'react'
 import { useFormState } from 'react-dom'
 import SettingsSaveButton from './SaveButton'
 
 type Props = {
   children: ReactNode
-  settings: ConnectionSettings | FeaturesSettings
+  settings: Settings
   // TODO: define action type
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   action: any
@@ -40,11 +38,6 @@ export default function SettingsForm({ children, settings, action }: Props) {
           </p>
 
           <SettingsSaveButton />
-          {allSettings.test && (
-            <Link className='button button--plex w-full sm:w-fit' href='/'>
-              Go to app
-            </Link>
-          )}
         </div>
       </div>
     </form>

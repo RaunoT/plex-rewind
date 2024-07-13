@@ -1,4 +1,4 @@
-import { settings } from '@/config/config'
+import getSettings from '@/utils/getSettings'
 import { Metadata } from 'next'
 import ConnectionSettingsForm from './_components/ConnectionSettingsForm'
 
@@ -7,5 +7,7 @@ export const metadata: Metadata = {
 }
 
 export default async function ConnectionSettingsPage() {
-  return <ConnectionSettingsForm settings={settings.connection} />
+  const settings = await getSettings()
+
+  return <ConnectionSettingsForm settings={settings} />
 }

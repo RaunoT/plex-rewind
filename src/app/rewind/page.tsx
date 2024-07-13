@@ -1,4 +1,4 @@
-import { APP_URL, settings } from '@/config/config'
+import { APP_URL } from '@/config/config'
 import { authOptions } from '@/lib/auth'
 import { TautulliUser, UserRewind } from '@/types'
 import { getLibraries, getServerId } from '@/utils/fetchTautulli'
@@ -11,6 +11,7 @@ import {
   getUserTotalDuration,
   getlibrariesTotalSize,
 } from '@/utils/getRewind'
+import getSettings from '@/utils/getSettings'
 import { getServerSession } from 'next-auth'
 import RewindStories from './_components/RewindStories'
 
@@ -22,6 +23,7 @@ type Props = {
 
 export default async function RewindPage({ searchParams }: Props) {
   const session = await getServerSession(authOptions)
+  const settings = await getSettings()
 
   if (!session?.user) {
     return
@@ -100,5 +102,10 @@ export default async function RewindPage({ searchParams }: Props) {
     userRewind.requests = requestTotals
   }
 
-  return <RewindStories userRewind={userRewind} />
+  return (
+    <RewindStories
+      userRewind={userRewind}
+      isOverseerr={!!settings.connection.overseerrUrl}
+    />
+  )
 }

@@ -1,13 +1,13 @@
 'use server'
 
-import { settings, settingsPath } from '@/config/config'
+import { settingsPath } from '@/config/config'
 import { SettingsFormInitialState } from '@/types'
+import getSettings from '@/utils/getSettings'
 import { promises as fs } from 'fs'
 import { revalidateTag } from 'next/cache'
 import { z } from 'zod'
 
 const schema = z.object({
-  // applicationUrl: z.string().url(),
   tautulliUrl: z.string().url(),
   tautulliApiKey: z.string(),
   overseerrUrl: z.string().url().optional().or(z.literal('')),
@@ -20,7 +20,6 @@ export async function saveConnectionSettings(
   formData: FormData,
 ) {
   const data = {
-    // applicationUrl: formData.get('applicationUrl') as string,
     tautulliUrl: formData.get('tautulliUrl') as string,
     tautulliApiKey: formData.get('tautulliApiKey') as string,
     overseerrUrl: formData.get('overseerrUrl') as string,
@@ -29,20 +28,6 @@ export async function saveConnectionSettings(
   }
 
   try {
-    // Test application URL
-    // try {
-    //   await fetch(`${data.applicationUrl}/api/status`, {
-    //     cache: 'no-store',
-    //   })
-    // } catch (error) {
-    //   console.error('Error testing application URL!', error)
-    //   return {
-    //     message: 'Unable to connect to application!',
-    //     status: 'error',
-    //     fields: data,
-    //   }
-    // }
-
     // Test Tautulli
     try {
       await fetch(
@@ -115,15 +100,12 @@ export async function saveConnectionSettings(
 
   // Save settings
   try {
+    const settings = await getSettings()
     schema.parse(data)
     settings.connection = data
     settings.test = true
 
-    await fs.writeFile(
-      process.cwd() + settingsPath,
-      JSON.stringify(settings),
-      'utf8',
-    )
+    await fs.writeFile(settingsPath, JSON.stringify(settings), 'utf8')
 
     revalidateTag('settings:connection')
     return {

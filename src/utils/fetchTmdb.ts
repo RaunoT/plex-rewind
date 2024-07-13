@@ -1,5 +1,7 @@
-import { settings } from '@/config/config'
+'use server'
+
 import qs from 'qs'
+import getSettings from './getSettings'
 
 type QueryParams = {
   [key: string]: string | number
@@ -9,6 +11,7 @@ export default async function fetchTmdb<T>(
   endpoint: string,
   params?: QueryParams,
 ): Promise<T | null> {
+  const settings = await getSettings()
   const apiKey = settings.connection.tmdbApiKey
   if (!apiKey) {
     console.error('TMDB API key is not set! Skipping request.')

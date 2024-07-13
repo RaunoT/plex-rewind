@@ -41,6 +41,7 @@ WORKDIR /app
 RUN apk add --no-cache openssl
 
 ENV NODE_ENV production
+ENV BASE_DIR /app
 # Uncomment the following line in case you want to disable telemetry during runtime.
 ENV NEXT_TELEMETRY_DISABLED 1
 

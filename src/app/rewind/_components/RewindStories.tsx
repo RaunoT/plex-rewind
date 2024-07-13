@@ -1,6 +1,5 @@
 'use client'
 
-import { settings } from '@/config/config'
 import { UserRewind } from '@/types'
 import { FC } from 'react'
 import Stories from 'stories-react'
@@ -28,9 +27,10 @@ type StoryComponent = {
 
 type Props = {
   userRewind: UserRewind
+  isOverseerr: boolean
 }
 
-export default function RewindStories({ userRewind }: Props) {
+export default function RewindStories({ userRewind, isOverseerr }: Props) {
   function createStory(Component: FC<StoryComponent>, duration: number) {
     return {
       type: 'component',
@@ -52,7 +52,7 @@ export default function RewindStories({ userRewind }: Props) {
     ...(userRewind.libraries_total_size
       ? [createStory(StoryLibraries, 9000)]
       : []),
-    ...(settings.connection.overseerrUrl
+    ...(isOverseerr
       ? [createStory(StoryRequests, userRewind.requests?.total ? 9000 : 4000)]
       : []),
     ...(userRewind.duration.user

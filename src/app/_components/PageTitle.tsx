@@ -1,17 +1,17 @@
-import { settings } from '@/config/config'
 import { ArrowLeftIcon } from '@heroicons/react/24/solid'
 import clsx from 'clsx'
 import Link from 'next/link'
 
 type Props = {
   title?: string
+  noBack?: boolean
 }
 
-export default function PageTitle({ title }: Props) {
+export default function PageTitle({ title, noBack }: Props) {
   return (
     <div className='mb-3 w-full 2xl:mb-4'>
       <div className='relative text-center uppercase'>
-        {settings.test && (
+        {!noBack && (
           <Link
             href='/'
             className={clsx(
