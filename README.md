@@ -42,7 +42,7 @@ services:
       - NEXTAUTH_SECRET= # (optional) setting manually will allow persisting login sessions between updates
       - NEXTAUTH_URL=http://localhost:8383 # change to your domain if you are exposing the app to the internet
       - NEXT_PUBLIC_SITE_URL=http://localhost:8383 # change to your domain if you are exposing the app to the internet
-      - NEXT_PUBLIC_STATISTICS_START_DATE=2023-01-01 # starting date for "all time" option (YYYY-MM-DD)
+      - NEXT_PUBLIC_STATISTICS_START_DATE=2018-01-01 # starting date for "all time" option (YYYY-MM-DD)
     volumes:
       - ./config:/app/config
     ports:
