@@ -2,18 +2,8 @@
 
 import { saveFeaturesSettings } from '@/actions/update-feature-settings'
 import { Library, Settings } from '@/types'
-import { parseDate } from '@internationalized/date'
 import { kebabCase } from 'lodash'
-import {
-  Checkbox,
-  CheckboxGroup,
-  DateField,
-  DateInput,
-  DateSegment,
-  I18nProvider,
-  Label,
-  Switch,
-} from 'react-aria-components'
+import { Checkbox, CheckboxGroup, Label, Switch } from 'react-aria-components'
 import SettingsForm from '../../_components/SettingsForm'
 
 type Props = {
