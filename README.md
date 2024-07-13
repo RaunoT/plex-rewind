@@ -18,6 +18,7 @@ Present [Plex](https://plex.tv) user statistics and habits in a beautiful and or
 - 🔗 Integrates with [Overseerr](https://overseerr.dev) & [Tautulli](https://tautulli.com).
 - 🔐 Log in with Plex - uses [NextAuth.js](https://next-auth.js.org) to enable secure login and session management with your Plex account.
 - 🚀 PWA support - installable on mobile devices and desktops thanks to [Serwist](https://github.com/serwist/serwist).
+- 🐳 Easy deployment - run the application in a containerized environment with [Docker](https://www.docker.com).
 - ⭐ All of this and more - powered by [Next.js](https://nextjs.org).
 
 Keep an eye on the [issues page](https://github.com/RaunoT/plex-rewind/issues) to see what new features have already been requested or to make your own request!
@@ -30,23 +31,28 @@ Keep an eye on the [issues page](https://github.com/RaunoT/plex-rewind/issues) t
 
 ## Getting started
 
-1. Grab the latest release from the [releases page](https://github.com/RaunoT/plex-rewind/releases) or clone the repository:
+1. Create a `docker-compose.yml` in your location of choice and run `docker compose up -d`. The app will be available at `http://localhost:8383`.
 
+```yml
+services:
+  plex-rewind:
+    image: ghcr.io/raunot/plex-rewind:main # :develop for the latest development version
+    container_name: plex-rewind
+    environment:
+      - NEXTAUTH_SECRET= # (optional) setting manually will allow persisting login sessions between updates
+      - NEXTAUTH_URL=http://localhost:8383 # change to your domain if you are exposing the app to the internet
+      - NEXT_PUBLIC_SITE_URL=http://localhost:8383 # change to your domain if you are exposing the app to the internet
+      - NEXT_PUBLIC_STATISTICS_START_DATE=2023-01-01 # starting date for "all time" option (YYYY-MM-DD)
+    volumes:
+      - ./config:/app/config
+    ports:
+      - 8383:8383
+    restart: unless-stopped
 ```
-git clone https://github.com/RaunoT/plex-rewind.git --branch main
-```
 
-2. (optional) Update buildtime variables in the `.env` file. A rebuild is required when changing these variables.
+## Updating
 
-- `NEXTAUTH_URL` and `NEXT_PUBLIC_SITE_URL` - The URL of the application, change to your domain if you are exposing the app to the internet.
-- `NEXT_PUBLIC_STATISTICS_START_DATE` - The starting date for the "all time" option in Dashboard. Expects YYYY-MM-DD format and will default to 2018-01-01.
-- `NEXTAUTH_SECRET` - Can be generated with `openssl rand -base64 32`. This is done automatically if the variable is not set, but setting it manually will allow you to persist user login sessions between updates.
-
-3. Run `docker compose up --build -d` to build and start the application.
-
-   To update, download the latest release, or if you cloned the repo, run `git pull` and then repeat the Docker command.
-
-4. The application should now be running on [http://localhost:8383](http://localhost:8383).
+To update, run `docker compose pull` and then `docker compose up -d`.
 
 ## Donate
 
