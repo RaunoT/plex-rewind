@@ -114,24 +114,6 @@ export default function FeaturesSettingsForm({ settings, libraries }: Props) {
         </div>
         <Label className='label label--start'>Dashboard statistics</Label>
       </CheckboxGroup>
-      <I18nProvider locale='en-GB'>
-        <DateField
-          className='input-wrapper'
-          defaultValue={
-            featuresSettings?.statisticsStartDate
-              ? parseDate(featuresSettings.statisticsStartDate)
-              : parseDate('2018-01-01')
-          }
-          name='statisticsStartDate'
-        >
-          <DateInput className='datefield'>
-            {(segment) => (
-              <DateSegment segment={segment} className='datefield-segment' />
-            )}
-          </DateInput>
-          <Label className='label'>Statistics start date</Label>
-        </DateField>
-      </I18nProvider>
       <label className='input-wrapper'>
         <input
           type='text'

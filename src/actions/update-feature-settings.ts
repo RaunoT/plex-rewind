@@ -13,7 +13,6 @@ const schema = z.object({
   isUsersPageActive: z.boolean(),
   activeLibraries: z.array(z.string()),
   activeDashboardStatistics: z.array(z.string()),
-  statisticsStartDate: z.coerce.date(),
   googleAnalyticsId: z.string(),
 })
 
@@ -29,7 +28,6 @@ export async function saveFeaturesSettings(
     activeDashboardStatistics: formData.getAll(
       'activeDashboardStatistics',
     ) as string[],
-    statisticsStartDate: formData.get('statisticsStartDate') as string,
     googleAnalyticsId: formData.get('googleAnalyticsId') as string,
   }
 
