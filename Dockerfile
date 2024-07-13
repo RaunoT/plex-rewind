@@ -49,6 +49,7 @@ RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
 COPY --from=builder /app/public ./public
+COPY --from=builder /app/config ./config
 
 # Set the correct permission for prerender cache
 RUN mkdir .next
@@ -58,9 +59,6 @@ RUN chown nextjs:nodejs .next
 # https://nextjs.org/docs/advanced-features/output-file-tracing
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
-
-# Copy the settings.json file
-COPY --from=builder --chown=nextjs:nodejs /app/config/settings.json ./config/settings.json
 
 # Copy the entrypoint script and set permissions while still root
 COPY docker-entrypoint.sh /usr/local/bin/
