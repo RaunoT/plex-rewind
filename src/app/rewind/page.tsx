@@ -1,6 +1,6 @@
-import { APP_URL } from '@/config/config'
 import { authOptions } from '@/lib/auth'
 import { TautulliUser, UserRewind } from '@/types'
+import { APP_URL } from '@/utils/constants'
 import { getLibraries, getServerId } from '@/utils/fetchTautulli'
 import { secondsToTime } from '@/utils/formatting'
 import {

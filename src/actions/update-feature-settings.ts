@@ -1,7 +1,7 @@
 'use server'
 
-import { settingsPath } from '@/config/config'
 import { SettingsFormInitialState } from '@/types'
+import { SETTINGS_PATH } from '@/utils/constants'
 import getSettings from '@/utils/getSettings'
 import { promises as fs } from 'fs'
 import { revalidatePath } from 'next/cache'
@@ -39,7 +39,7 @@ export async function saveFeaturesSettings(
     schema.parse(data)
     settings.features = data
 
-    await fs.writeFile(settingsPath, JSON.stringify(settings), 'utf8')
+    await fs.writeFile(SETTINGS_PATH, JSON.stringify(settings), 'utf8')
 
     revalidatePath('/')
 

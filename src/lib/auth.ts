@@ -1,9 +1,9 @@
-import { APP_URL } from '@/config/config'
 import { AuthOptions } from 'next-auth'
 import CredentialsProvider from 'next-auth/providers/credentials'
 import qs from 'qs'
 import { parseStringPromise } from 'xml2js'
 import {
+  APP_URL,
   PLEX_API_ENDPOINT,
   PLEX_CLIENT_IDENTIFIER,
   PLEX_CLIENT_NAME,

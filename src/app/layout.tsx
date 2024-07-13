@@ -1,6 +1,6 @@
-import { APP_URL } from '@/config/config'
 import '@/styles/globals.css'
 import {
+  APP_URL,
   META_DESCRIPTION,
   META_TITLE,
   META_TITLE_TEMPLATE,
