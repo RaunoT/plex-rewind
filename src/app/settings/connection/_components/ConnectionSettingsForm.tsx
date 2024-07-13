@@ -9,7 +9,7 @@ type Props = {
 }
 
 export default function ConnectionSettingsForm({ settings }: Props) {
-  const connectionSettings = settings?.connection
+  const connectionSettings = settings.connection
 
   return (
     <SettingsForm settings={settings} action={saveConnectionSettings}>
@@ -20,7 +20,7 @@ export default function ConnectionSettingsForm({ settings }: Props) {
           placeholder='http://192.168.1.2:8181'
           name='tautulliUrl'
           required
-          defaultValue={connectionSettings?.tautulliUrl}
+          defaultValue={connectionSettings.tautulliUrl}
         />
         <span className='label'>Tautulli URL</span>
       </label>
@@ -30,7 +30,7 @@ export default function ConnectionSettingsForm({ settings }: Props) {
           className='input'
           name='tautulliApiKey'
           required
-          defaultValue={connectionSettings?.tautulliApiKey}
+          defaultValue={connectionSettings.tautulliApiKey}
         />
         <span className='label'>Tautulli API key</span>
       </label>
@@ -40,7 +40,7 @@ export default function ConnectionSettingsForm({ settings }: Props) {
           className='input'
           placeholder='http://192.168.1.2:5055'
           name='overseerrUrl'
-          defaultValue={connectionSettings?.overseerrUrl}
+          defaultValue={connectionSettings.overseerrUrl}
         />
         <span className='label'>Overseerr URL</span>
       </label>
@@ -49,7 +49,7 @@ export default function ConnectionSettingsForm({ settings }: Props) {
           type='password'
           className='input'
           name='overseerrApiKey'
-          defaultValue={connectionSettings?.overseerrApiKey}
+          defaultValue={connectionSettings.overseerrApiKey}
         />
         <span className='label'>Overseerr API key</span>
       </label>
@@ -58,7 +58,7 @@ export default function ConnectionSettingsForm({ settings }: Props) {
           type='password'
           className='input'
           name='tmdbApiKey'
-          defaultValue={connectionSettings?.tmdbApiKey}
+          defaultValue={connectionSettings.tmdbApiKey}
           required
         />
         <span className='label'>TMDB API key</span>

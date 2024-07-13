@@ -11,7 +11,7 @@ type Props = {
 export default async function RewindLayout({ children }: Props) {
   const settings = await getSettings()
 
-  if (!settings.features?.isRewindActive) {
+  if (!settings.features.isRewindActive) {
     return notFound()
   }
 
