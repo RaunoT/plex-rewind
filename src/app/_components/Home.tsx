@@ -140,7 +140,7 @@ export default function Home({ settings }: Props) {
           </button>
         )}
 
-        {settings.features?.isRewindActive &&
+        {settings.features.isRewindActive &&
           isLoggedIn &&
           (managedUsers ? (
             <>
@@ -163,7 +163,7 @@ export default function Home({ settings }: Props) {
             </Link>
           ))}
 
-        {settings.features?.isDashboardActive && isLoggedIn && (
+        {settings.features.isDashboardActive && isLoggedIn && (
           <Link
             href={`/dashboard/${kebabCase(
               libraries[0]
@@ -174,7 +174,7 @@ export default function Home({ settings }: Props) {
             )}`}
             className={clsx(
               'mt-4 block',
-              !settings?.features?.isRewindActive ? 'button' : 'link',
+              !settings.features.isRewindActive ? 'button' : 'link',
             )}
           >
             Dashboard
