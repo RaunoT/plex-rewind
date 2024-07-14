@@ -14,7 +14,7 @@ type Props = {
 export default async function DashboardLayout({ children }: Props) {
   const settings = await getSettings()
 
-  if (!settings.features?.isDashboardActive) {
+  if (!settings.features.isDashboardActive) {
     return notFound()
   }
 
@@ -25,7 +25,7 @@ export default async function DashboardLayout({ children }: Props) {
       <PageTitle title='Dashboard' />
       <DashboardNav
         libraries={libraries}
-        isUsersPageActive={settings.features?.isUsersPageActive}
+        isUsersPageActive={settings.features.isUsersPageActive}
       />
       <CardWrapper className='my-3 lg:min-h-[560px] 2xl:min-h-[648px]'>
         {children}

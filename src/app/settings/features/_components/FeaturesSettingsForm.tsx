@@ -19,7 +19,7 @@ export default function FeaturesSettingsForm({ settings, libraries }: Props) {
       <Switch
         className='switch'
         name='isRewindActive'
-        defaultSelected={featuresSettings?.isRewindActive}
+        defaultSelected={featuresSettings.isRewindActive}
       >
         <div className='indicator' />
         <span className='label'>Rewind</span>
@@ -27,7 +27,7 @@ export default function FeaturesSettingsForm({ settings, libraries }: Props) {
       <Switch
         className='switch'
         name='isDashboardActive'
-        defaultSelected={featuresSettings?.isDashboardActive}
+        defaultSelected={featuresSettings.isDashboardActive}
       >
         <div className='indicator'></div>
         <span className='label'>Dashboard</span>
@@ -35,7 +35,7 @@ export default function FeaturesSettingsForm({ settings, libraries }: Props) {
       <Switch
         className='switch'
         name='isUsersPageActive'
-        defaultSelected={featuresSettings?.isUsersPageActive}
+        defaultSelected={featuresSettings.isUsersPageActive}
       >
         <div className='indicator'></div>
         <span className='label'>Users page</span>
@@ -43,7 +43,7 @@ export default function FeaturesSettingsForm({ settings, libraries }: Props) {
       <CheckboxGroup
         className='input-wrapper'
         name='activeLibraries'
-        defaultValue={featuresSettings?.activeLibraries}
+        defaultValue={featuresSettings.activeLibraries}
       >
         <div className='mr-auto flex flex-wrap gap-2'>
           {libraries.map((library) => (
@@ -63,7 +63,7 @@ export default function FeaturesSettingsForm({ settings, libraries }: Props) {
         className='input-wrapper'
         name='activeDashboardStatistics'
         defaultValue={
-          featuresSettings?.activeDashboardStatistics || [
+          featuresSettings.activeDashboardStatistics || [
             'year',
             'rating',
             'duration',
@@ -109,7 +109,7 @@ export default function FeaturesSettingsForm({ settings, libraries }: Props) {
           type='text'
           className='input'
           name='googleAnalyticsId'
-          defaultValue={featuresSettings?.googleAnalyticsId}
+          defaultValue={featuresSettings.googleAnalyticsId}
         />
         <span className='label'>Google Analytics ID</span>
       </label>
