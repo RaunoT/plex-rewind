@@ -1,3 +1,4 @@
+import { env } from 'next-runtime-env'
 import path from 'path'
 
 const DAYS_AGO_7: Date = new Date(new Date().setDate(new Date().getDate() - 7))
@@ -9,7 +10,7 @@ const PAST_YEAR: Date = new Date(
   new Date().setFullYear(new Date().getFullYear() - 1),
 )
 const ALL_TIME: Date = new Date(
-  process.env.NEXT_PUBLIC_STATISTICS_START_DATE || '2018-01-01',
+  env('NEXT_PUBLIC_STATISTICS_START_DATE') || '2018-01-01',
 )
 
 type Period = {
@@ -61,7 +62,6 @@ export const PLEX_API_ENDPOINT = 'https://plex.tv/api/v2'
 export const PLEX_CLIENT_NAME = 'Plex Rewind'
 export const PLEX_CLIENT_IDENTIFIER = 'plex-rewind'
 
-export const APP_URL =
-  process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:8383'
+export const APP_URL = env('NEXT_PUBLIC_SITE_URL') || 'http://localhost:8383'
 
 export const SETTINGS_PATH = path.join(process.cwd(), 'config/settings.json')
