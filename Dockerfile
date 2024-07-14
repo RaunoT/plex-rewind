@@ -49,8 +49,7 @@ RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
 COPY --from=builder /app/public ./public
-# Include a default settings.json inside the Docker image
-COPY --from=builder /app/defaults/settings.json ./config/settings.json
+COPY --from=builder /app/config ./config
 
 # Set the correct permission for prerender cache
 RUN mkdir .next
@@ -67,7 +66,6 @@ EXPOSE 8383
 
 ENV PORT=8383
 
-# Command to copy default settings.json if not present and start the server
 # server.js is created by next build from the standalone output
 # https://nextjs.org/docs/pages/api-reference/next-config-js/output
-CMD ["sh", "-c", "if [ ! -f /app/config/settings.json ]; then cp /app/defaults/settings.json /app/config/settings.json; fi && HOSTNAME='0.0.0.0' node server.js"]
+CMD HOSTNAME="0.0.0.0" node server.js

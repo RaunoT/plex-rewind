@@ -65,3 +65,28 @@ export const PLEX_CLIENT_IDENTIFIER = 'plex-rewind'
 export const APP_URL = env('NEXT_PUBLIC_SITE_URL') || 'http://localhost:8383'
 
 export const SETTINGS_PATH = path.join(process.cwd(), 'config/settings.json')
+export const DEFAULT_SETTINGS = {
+  connection: {
+    tautulliUrl: '',
+    tautulliApiKey: '',
+    overseerrUrl: '',
+    overseerrApiKey: '',
+    tmdbApiKey: '',
+  },
+  features: {
+    isRewindActive: true,
+    isDashboardActive: true,
+    isUsersPageActive: true,
+    activeLibraries: [],
+    activeDashboardStatistics: [
+      'year',
+      'rating',
+      'duration',
+      'plays',
+      'users',
+      'requests',
+    ],
+    googleAnalyticsId: '',
+  },
+  test: false,
+}
