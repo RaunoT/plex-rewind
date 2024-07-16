@@ -15,7 +15,7 @@
     "main",
     {
       "name": "develop",
-      "prerelease": true
+      "prerelease": "dev"
     }
   ]
 }

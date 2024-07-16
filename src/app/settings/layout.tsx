@@ -2,7 +2,6 @@ import githubSvg from '@/assets/github.svg'
 import { authOptions } from '@/lib/auth'
 import getSettings from '@/utils/getSettings'
 import { getServerSession } from 'next-auth'
-import { env } from 'next-runtime-env'
 import Image from 'next/image'
 import { redirect } from 'next/navigation'
 import { ReactNode } from 'react'
@@ -44,7 +43,7 @@ export default async function SettingsLayout({ children }: Props) {
           href='https://github.com/RaunoT/plex-rewind/releases'
           target='_blank'
         >
-          {env('NEXT_PUBLIC_VERSION_TAG') || 'local'}
+          {process.env.VERSION_TAG || 'local'}
         </a>
       </div>
     </div>
