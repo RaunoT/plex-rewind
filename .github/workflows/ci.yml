@@ -54,4 +54,4 @@ jobs:
             ghcr.io/raunot/plex-rewind:dev
             ghcr.io/raunot/plex-rewind:${{ env.NEXT_VERSION_TAG }}-dev
           build-args: |
-            NEXT_PUBLIC_VERSION_TAG=${{ env.NEXT_VERSION_TAG }}
+            NEXT_PUBLIC_VERSION_TAG=${{ env.NEXT_VERSION_TAG }}-dev
