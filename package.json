@@ -69,5 +69,10 @@
     "stylelint-config-standard": "^36.0.1",
     "tailwindcss": "^3.4.4",
     "typescript": "^5.5.3"
+  },
+  "pnpm": {
+    "overrides": {
+      "conventional-changelog-conventionalcommits": ">= 8.0.0"
+    }
   }
 }
