@@ -6,7 +6,7 @@
     [
       "@semantic-release/exec",
       {
-        "publishCmd": "echo ::set-output name=nextVer::${nextRelease.version}"
+        "publishCmd": "echo NEXT_VERSION_TAG=${nextRelease.version} >> $GITHUB_ENV"
       }
     ]
   ],
@@ -15,8 +15,7 @@
     "main",
     {
       "name": "develop",
-      "prerelease": true,
-      "channel": "develop"
+      "prerelease": true
     }
   ]
 }
