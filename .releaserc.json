@@ -2,15 +2,20 @@
   "plugins": [
     "@semantic-release/commit-analyzer",
     "@semantic-release/release-notes-generator",
-    "@semantic-release/github"
+    "@semantic-release/github",
+    [
+      "@semantic-release/exec",
+      {
+        "publishCmd": "echo NEXT_VERSION_TAG=${nextRelease.version} >> $GITHUB_ENV"
+      }
+    ]
   ],
   "preset": "conventionalcommits",
   "branches": [
     "main",
     {
       "name": "develop",
-      "prerelease": true,
-      "tag": "develop"
+      "prerelease": true
     }
   ]
 }
