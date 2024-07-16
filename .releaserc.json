@@ -8,6 +8,12 @@
       {
         "publishCmd": "echo NEXT_VERSION_TAG=${nextRelease.version} >> $GITHUB_ENV"
       }
+    ],
+    [
+      "@saithodev/semantic-release-backmerge",
+      {
+        "branches": ["develop"]
+      }
     ]
   ],
   "preset": "conventionalcommits",
