@@ -42,8 +42,6 @@ WORKDIR /app
 # Install openssl in the runner stage
 RUN apk add --no-cache openssl
 
-ARG NEXT_PUBLIC_VERSION_TAG
-ENV NEXT_PUBLIC_VERSION_TAG=${NEXT_PUBLIC_VERSION_TAG}
 ENV NODE_ENV=production
 ENV BASE_DIR=/app
 # Uncomment the following line in case you want to disable telemetry during runtime.
