@@ -37,7 +37,7 @@ Keep an eye on the [issues page](https://github.com/RaunoT/plex-rewind/issues) t
 ```yml
 services:
   plex-rewind:
-    image: ghcr.io/raunot/plex-rewind:latest # :develop for the latest development version
+    image: ghcr.io/raunot/plex-rewind:latest # :dev for the latest development version
     container_name: plex-rewind
     environment:
       - NEXTAUTH_SECRET= # (required) used to encrypt auth JWT token, generate one with `openssl rand -base64 32`
