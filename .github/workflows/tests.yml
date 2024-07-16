@@ -26,8 +26,12 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
-      - name: Lint code
-        run: pnpm lint
+      - name: Lint code and check formatting
+        run: |
+          pnpm lint
+          pnpm lint:css
+          pnpm lint:types
+          pnpm format:check
 
       - name: Check formatting
         run: pnpm format:check
