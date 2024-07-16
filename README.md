@@ -37,7 +37,7 @@ Keep an eye on the [issues page](https://github.com/RaunoT/plex-rewind/issues) t
 ```yml
 services:
   plex-rewind:
-    image: ghcr.io/raunot/plex-rewind:main # :develop for the latest development version
+    image: ghcr.io/raunot/plex-rewind:latest # :develop for the latest development version
     container_name: plex-rewind
     environment:
       - NEXTAUTH_SECRET= # (required) used to encrypt auth JWT token, generate one with `openssl rand -base64 32`
@@ -50,6 +50,8 @@ services:
       - 8383:8383
     restart: unless-stopped
 ```
+
+> _NOTE: If you run into authentication issues, try setting `NEXTAUTH_URL` and `NEXT_PUBLIC_SITE_URL` to your internal Docker IP, instead of localhost. For example `http://172.168.1.1:8383`._
 
 ## Updating
 

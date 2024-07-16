@@ -2,23 +2,15 @@
   "plugins": [
     "@semantic-release/commit-analyzer",
     "@semantic-release/release-notes-generator",
-    [
-      "@semantic-release/changelog",
-      {
-        "changelogFile": "CHANGELOG.md"
-      }
-    ],
-    "@semantic-release/npm",
-    [
-      "@semantic-release/git",
-      {
-        "assets": ["package.json", "CHANGELOG.md"],
-        "message": "chore(release): ${nextRelease.version}"
-      }
-    ],
     "@semantic-release/github"
   ],
   "preset": "conventionalcommits",
-  "branches": ["main"],
-  "npmPublish": false
+  "branches": [
+    "main",
+    {
+      "name": "develop",
+      "prerelease": true,
+      "tag": "develop"
+    }
+  ]
 }

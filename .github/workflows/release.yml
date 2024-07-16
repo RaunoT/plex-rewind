@@ -7,7 +7,7 @@ on:
 
 jobs:
   release:
-    name: Tag, release and publish image
+    name: Publish image and release
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -30,6 +30,7 @@ jobs:
         run: pnpm install
 
       - name: Run Semantic Release
+        id: semantic_release
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
         run: npx semantic-release
@@ -45,8 +46,13 @@ jobs:
           password: ${{ secrets.GH_TOKEN }}
 
       - name: Build and Push Docker image
+        if: steps.semantic_release.outputs.nextRelease != null
         uses: docker/build-push-action@v6
         with:
           context: .
           push: true
-          tags: ghcr.io/raunot/plex-rewind:main
+          tags: |
+            ghcr.io/raunot/plex-rewind:latest
+            ghcr.io/raunot/plex-rewind:${{ steps.semantic_release.outputs.nextRelease.version }}
+          build-args: |
+            NEXT_PUBLIC_VERSION_TAG=${{ steps.semantic_release.outputs.nextRelease.version }}
