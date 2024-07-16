@@ -16,23 +16,23 @@ jobs:
           fetch-depth: 0
           persist-credentials: false
 
-      # - name: Setup Node.js
-      #   uses: actions/setup-node@v4
-      #   with:
-      #     node-version: 20
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
 
-      # - name: Setup pnpm
-      #   uses: pnpm/action-setup@v4
-      #   with:
-      #     version: 9
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
 
-      # - name: Install dependencies
-      #   run: pnpm install
+      - name: Install dependencies
+        run: pnpm install
 
-      # - name: Run Semantic Release
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
-      #   run: npx semantic-release --branches develop
+      - name: Run Semantic Release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+        run: npx semantic-release --branches develop
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
