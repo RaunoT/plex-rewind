@@ -7,7 +7,7 @@ on:
 
 jobs:
   ci:
-    name: Build and publish image
+    name: Build and publish test image
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
