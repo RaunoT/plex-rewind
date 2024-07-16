@@ -46,6 +46,7 @@ jobs:
           password: ${{ secrets.GH_TOKEN }}
 
       - name: Build and Push Docker image
+        if: steps.semantic_release.outputs.nextRelease != null
         uses: docker/build-push-action@v6
         with:
           context: .
