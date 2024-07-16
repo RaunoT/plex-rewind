@@ -26,11 +26,12 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
-      - name: Lint code
-        run: pnpm lint
-
-      - name: Check formatting
-        run: pnpm format:check
+      - name: Lint code and check formatting
+        run: |
+          pnpm lint
+          pnpm lint:css
+          pnpm lint:types
+          pnpm format:check
 
       - name: Build Docker image
         run: docker build -t plex-rewind .
