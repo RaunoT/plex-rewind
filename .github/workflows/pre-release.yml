@@ -45,7 +45,7 @@ jobs:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GH_TOKEN }}
 
-      - name: Build and Push Docker image
+      - name: Build and push Docker image
         if: env.NEXT_VERSION_TAG
         uses: docker/build-push-action@v6
         with:

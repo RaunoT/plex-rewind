@@ -7,7 +7,7 @@ on:
 
 jobs:
   test:
-    name: Lint & test build
+    name: Lint build
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -32,6 +32,3 @@ jobs:
           pnpm lint:css
           pnpm lint:types
           pnpm format:check
-
-      - name: Build Docker image
-        run: docker build -t plex-rewind .
