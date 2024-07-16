@@ -13,6 +13,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
+          ref: develop
           fetch-depth: 0
           persist-credentials: false
 
@@ -32,7 +33,7 @@ jobs:
       - name: Run Semantic Release
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
-        run: npx semantic-release --branches develop
+        run: npx semantic-release
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -52,6 +53,6 @@ jobs:
           push: true
           tags: |
             ghcr.io/raunot/plex-rewind:dev
-            ghcr.io/raunot/plex-rewind:${{ env.NEXT_VERSION_TAG }}-dev
+            ghcr.io/raunot/plex-rewind:${{ env.NEXT_VERSION_TAG }}
           build-args: |
-            NEXT_PUBLIC_VERSION_TAG=${{ env.NEXT_VERSION_TAG }}-dev
+            NEXT_PUBLIC_VERSION_TAG=${{ env.NEXT_VERSION_TAG }}
