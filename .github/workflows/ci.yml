@@ -34,4 +34,4 @@ jobs:
           tags: |
             ghcr.io/raunot/plex-rewind:${{ github.sha }}
           build-args: |
-            "NEXT_PUBLIC_VERSION_TAG=${{ github.sha }}"
+            NEXT_PUBLIC_VERSION_TAG=${{ github.sha }}
