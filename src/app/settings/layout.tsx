@@ -44,7 +44,7 @@ export default async function SettingsLayout({ children }: Props) {
           href='https://github.com/RaunoT/plex-rewind/releases'
           target='_blank'
         >
-          v{env('NEXT_PUBLIC_VERSION_TAG') || 'local'}
+          {env('NEXT_PUBLIC_VERSION_TAG') || 'local'}
         </a>
       </div>
     </div>
