@@ -51,7 +51,7 @@ services:
     restart: unless-stopped
 ```
 
-> _NOTE: If you run into authentication issues, try setting `NEXTAUTH_URL` and `NEXT_PUBLIC_SITE_URL` to your internal Docker IP, instead of localhost. For example `http://172.168.1.1:8383`._
+> _NOTE: If you run into authentication issues, try setting `NEXTAUTH_URL` and `NEXT_PUBLIC_SITE_URL` to your external Docker IP, instead of localhost. For example `http://192.168.1.1:8383`._
 
 ## Updating
 
