@@ -42,6 +42,7 @@ RUN apk add --no-cache openssl
 
 ENV NODE_ENV=production
 ENV BASE_DIR=/app
+ENV NEXT_PUBLIC_VERSION_TAG=${NEXT_PUBLIC_VERSION_TAG}
 # Uncomment the following line in case you want to disable telemetry during runtime.
 ENV NEXT_TELEMETRY_DISABLED=1
 
