@@ -42,7 +42,7 @@ jobs:
         with:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
-          password: ${{ secrets.GH_TOKEN }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build and push Docker image
         if: env.NEXT_VERSION_TAG
@@ -50,6 +50,7 @@ jobs:
         with:
           context: .
           push: true
+          platforms: linux/amd64,linux/arm64
           tags: |
             ghcr.io/raunot/plex-rewind:latest
             ghcr.io/raunot/plex-rewind:${{ env.NEXT_VERSION_TAG }}

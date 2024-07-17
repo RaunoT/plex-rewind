@@ -1,27 +1,20 @@
 import withSerwistInit from '@serwist/next'
 
-const remotePatterns = [
-  {
-    protocol: 'http',
-    hostname: 'localhost',
-  },
-  {
-    protocol: 'https',
-    hostname: 'plex.tv',
-  },
-]
-
 const isDev = process.env.NODE_ENV !== 'production'
-const withSerwist = withSerwistInit({
-  swSrc: 'src/lib/sw.ts',
-  swDest: 'public/sw.js',
-  disable: isDev,
-})
 const nextConfig = {
   reactStrictMode: true,
   output: 'standalone',
   images: {
-    remotePatterns,
+    remotePatterns: [
+      {
+        protocol: 'http',
+        hostname: 'localhost',
+      },
+      {
+        protocol: 'https',
+        hostname: 'plex.tv',
+      },
+    ],
   },
   logging: {
     fetches: {
@@ -58,5 +51,13 @@ const nextConfig = {
     ]
   },
 }
+const revision = crypto.randomUUID()
+const withSerwist = withSerwistInit({
+  cacheOnNavigation: true,
+  swSrc: 'src/lib/sw.ts',
+  swDest: 'public/sw.js',
+  disable: isDev,
+  additionalPrecacheEntries: [{ url: '/~offline', revision }],
+})
 
 export default withSerwist(nextConfig)

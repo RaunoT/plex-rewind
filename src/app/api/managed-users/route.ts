@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic'
+
 import { TautulliUser } from '@/types'
 import fetchTautulli from '@/utils/fetchTautulli'
 
