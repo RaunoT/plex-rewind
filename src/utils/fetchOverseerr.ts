@@ -66,9 +66,8 @@ export async function fetchOverseerrUserId(
 ): Promise<number | null> {
   const users = await fetchOverseerr<OverseerrResponse<User[]>>('user')
   const user = users?.results.find((user) => String(user.plexId) === plexId)
-  console.log("Here's the Overseerr user.id", user?.id)
 
-  return user?.id ? user.id : null
+  return user ? user.id : null
 }
 
 type PaginatedRequestItem = {
