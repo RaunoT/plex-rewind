@@ -40,4 +40,7 @@ next-env.d.ts
 
 # pwa
 public/sw.js
-public/swe-worker-development.js
+public/swe-worker-*.js
+
+#config
+config/settings.json
