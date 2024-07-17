@@ -1,9 +1,9 @@
 # Plex Rewind
 
-[<img src="https://github.com/raunot/plex-rewind/workflows/Release/badge.svg" alt="Plex Rewind release status" />](https://github.com/RaunoT/plex-rewind/actions/workflows/release.yml)
-[<img src="https://img.shields.io/github/v/release/raunot/plex-rewind" alt="Plex Rewind latest release">](https://github.com/RaunoT/plex-rewind/releases)
-[<img src="https://github.com/raunot/plex-rewind/workflows/CI/badge.svg" alt="Plex Rewind tests status">](https://github.com/RaunoT/plex-rewind/actions/workflows/ci.yml)
-[<img src="https://github.com/raunot/plex-rewind/workflows/Tests/badge.svg" alt="Plex Rewind CI status">](https://github.com/RaunoT/plex-rewind/actions/workflows/tests.yml)
+[![Plex Rewind release status](https://img.shields.io/github/actions/workflow/status/RaunoT/plex-rewind/release.yml?label=Release)](https://github.com/RaunoT/plex-rewind/actions/workflows/release.yml)
+[<img src="https://img.shields.io/github/v/release/raunot/plex-rewind?label=latest" alt="Plex Rewind latest release">](https://github.com/RaunoT/plex-rewind/releases)
+[![Plex Rewind pre-release status](https://img.shields.io/github/actions/workflow/status/RaunoT/plex-rewind/pre-release.yml?include_prereleases=true&label=Pre-release)](https://github.com/RaunoT/plex-rewind/actions/workflows/pre-release.yml)
+[<img src="https://img.shields.io/github/v/release/RaunoT/plex-rewind?include_prereleases&label=develop" alt="Plex Rewind develop release">](https://github.com/RaunoT/plex-rewind/releases)
 
 A Plex Rewind application inspired by the likes of [Spotify Wrapped](https://www.spotify.com/us/wrapped) and [Tautulli](https://tautulli.com).
 
