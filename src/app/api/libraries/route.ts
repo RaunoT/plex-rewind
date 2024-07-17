@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic'
+
 import { getLibraries } from '@/utils/fetchTautulli'
 
 export async function GET() {
