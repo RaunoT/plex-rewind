@@ -34,6 +34,7 @@ export default async function getMediaAdditionalData(
         first_air_date_year: type === 'tv' ? '' : media[i].year,
       })
       const tmdbId = mediaTmdb?.results[0].id
+      console.log('Fetched tmdbId', mediaTmdb?.results[0].id)
       const imdbId = await fetchTmdb<TmdbExternalId>(
         `${type}/${tmdbId}/external_ids`,
       )
