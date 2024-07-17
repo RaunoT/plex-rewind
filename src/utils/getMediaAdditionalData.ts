@@ -33,21 +33,28 @@ export default async function getMediaAdditionalData(
         query: media[i].title,
         first_air_date_year: type === 'tv' ? '' : media[i].year,
       })
-      const tmdbId = mediaTmdb?.results[0].id
-      const imdbId = await fetchTmdb<TmdbExternalId>(
-        `${type}/${tmdbId}/external_ids`,
-      )
+      const tmdbResult = mediaTmdb?.results?.[0]
+      const tmdbId = tmdbResult?.id
+      let imdbId = null
+
+      if (tmdbId) {
+        imdbId = await fetchTmdb<TmdbExternalId>(
+          `${type}/${tmdbId}/external_ids`,
+        )
+      }
 
       return {
-        year: mediaTmdb?.results[0].first_air_date
-          ? new Date(mediaTmdb.results[0].first_air_date).getFullYear()
+        year: tmdbResult?.first_air_date
+          ? new Date(tmdbResult.first_air_date).getFullYear()
           : null,
         is_deleted: mediaTautulliData
           ? Object.keys(mediaTautulliData).length === 0
           : false,
-        rating: mediaTmdb?.results[0].vote_average.toFixed(1),
-        tmdb_id: tmdbId,
-        imdb_id: imdbId?.imdb_id,
+        rating: tmdbResult?.vote_average
+          ? tmdbResult.vote_average.toFixed(1)
+          : null,
+        tmdb_id: tmdbId || null,
+        imdb_id: imdbId?.imdb_id || null,
       }
     }),
   )
