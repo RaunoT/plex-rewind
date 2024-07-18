@@ -83,10 +83,6 @@ Please follow the guidelines below.
 
   > Example pull request name: `feat(#123): new feature` or `fix: bug`
 
-- Always rebase your commit to the latest `develop` branch.
-
-  Do **not** merge `develop` into your branch.
-
 - Make sure to keep your branch up-to-date.
 
 - Only open pull requests to `develop`, never `main`.
