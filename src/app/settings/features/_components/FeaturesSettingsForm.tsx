@@ -119,6 +119,8 @@ export default function FeaturesSettingsForm({ settings, libraries }: Props) {
             name='dashboardDefaultPeriod'
             defaultValue={featuresSettings.dashboardDefaultPeriod}
             placeholder='30'
+            min='1'
+            max='3000'
           />
           <span className='label'>Default period</span>
         </label>
