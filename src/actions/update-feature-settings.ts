@@ -13,7 +13,16 @@ const schema = z.object({
   isUsersPageActive: z.boolean(),
   activeLibraries: z.array(z.string()),
   activeDashboardStatistics: z.array(z.string()),
-  dashboardDefaultPeriod: z.string(),
+  dashboardDefaultPeriod: z.string().refine(
+    (value) => {
+      const number = parseFloat(value)
+
+      return number > 1 && number <= 3000
+    },
+    {
+      message: 'Dashboard default period must be > 1 and <= 3000',
+    },
+  ),
   googleAnalyticsId: z.string(),
 })
 
