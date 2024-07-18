@@ -25,7 +25,7 @@ export default async function SettingsLayout({ children }: Props) {
     <div className='mb-auto w-full max-w-screen-sm'>
       <PageTitle
         title={settings.test ? 'Settings' : "Let's get started"}
-        noBack={!settings.test}
+        noBack
       />
       {settings.test && <SettingsNav />}
       {children}

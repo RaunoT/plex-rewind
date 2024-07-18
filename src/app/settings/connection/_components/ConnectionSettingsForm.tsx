@@ -36,6 +36,16 @@ export default function ConnectionSettingsForm({ settings }: Props) {
       </label>
       <label className='input-wrapper'>
         <input
+          type='password'
+          className='input'
+          name='tmdbApiKey'
+          defaultValue={connectionSettings.tmdbApiKey}
+          required
+        />
+        <span className='label'>TMDB API key</span>
+      </label>
+      <label className='input-wrapper'>
+        <input
           type='url'
           className='input'
           placeholder='http://192.168.1.2:5055'
@@ -52,16 +62,6 @@ export default function ConnectionSettingsForm({ settings }: Props) {
           defaultValue={connectionSettings.overseerrApiKey}
         />
         <span className='label'>Overseerr API key</span>
-      </label>
-      <label className='input-wrapper'>
-        <input
-          type='password'
-          className='input'
-          name='tmdbApiKey'
-          defaultValue={connectionSettings.tmdbApiKey}
-          required
-        />
-        <span className='label'>TMDB API key</span>
       </label>
     </SettingsForm>
   )

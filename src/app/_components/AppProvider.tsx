@@ -1,7 +1,7 @@
 'use client'
 
 import { Settings } from '@/types'
-import { CogIcon } from '@heroicons/react/24/outline'
+import { CogIcon, XCircleIcon } from '@heroicons/react/24/outline'
 import clsx from 'clsx'
 import { useSession } from 'next-auth/react'
 import Link from 'next/link'
@@ -20,6 +20,11 @@ export default function AppProvider({ children, settings }: Props) {
   const [background, setBackground] = useState<VantaEffect>(null)
   const backgroundRef = useRef(null)
   const { data: session } = useSession()
+  const [isSettings, setIsSettings] = useState(pathname.startsWith('/settings'))
+
+  useEffect(() => {
+    setIsSettings(pathname.startsWith('/settings'))
+  }, [pathname])
 
   useEffect(() => {
     if (!background) {
@@ -59,10 +64,15 @@ export default function AppProvider({ children, settings }: Props) {
       <div ref={backgroundRef} className='fixed inset-0 -z-10 h-screen' />
       {settings.test && session?.user?.isAdmin && (
         <Link
-          href='/settings/connection'
+          href={isSettings ? '/' : '/settings/features'}
           className='absolute right-3 top-3 sm:right-4 sm:top-4'
+          aria-label={isSettings ? 'Close settings' : 'Open settings'}
         >
-          {pathname !== '/settings' && <CogIcon className='size-5 lg:size-6' />}
+          {isSettings ? (
+            <XCircleIcon className='size-5 lg:size-6' />
+          ) : (
+            <CogIcon className='size-5 lg:size-6' />
+          )}
         </Link>
       )}
 
