@@ -59,7 +59,8 @@ export const META_TITLE: string = 'Plex Rewind'
 export const META_TITLE_TEMPLATE: string = '%s | Plex Rewind'
 
 export const PLEX_API_ENDPOINT = 'https://plex.tv/api/v2'
-export const PLEX_PRODUCT_NAME = 'Plex Rewind'
+export const PLEX_CLIENT_NAME = 'Plex Rewind'
+export const PLEX_CLIENT_IDENTIFIER = 'plex-rewind'
 
 export const APP_URL = env('NEXT_PUBLIC_SITE_URL') || 'http://localhost:8383'
 
