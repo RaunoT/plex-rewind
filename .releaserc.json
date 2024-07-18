@@ -16,7 +16,6 @@
       }
     ]
   ],
-  "preset": "conventionalcommits",
   "branches": [
     "main",
     {
