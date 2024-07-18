@@ -217,6 +217,30 @@
       content: 'image not found';
     }
   }
+
+  @keyframes move-bg {
+    from {
+      transform: translate3d(0, 0, 0);
+    }
+
+    to {
+      transform: translate3d(1000px, 0, 0);
+    }
+  }
+
+  .bg-twinkling {
+    @apply absolute inset-y-0 right-0 w-[10000px];
+
+    background: transparent url('/twinkling.png') repeat;
+    animation: move-bg 50s linear infinite;
+  }
+
+  .bg-clouds {
+    @apply absolute inset-y-0 right-0 w-[10000px];
+
+    background: transparent url('/clouds.png') repeat;
+    animation: move-bg 100s linear infinite;
+  }
 }
 
 @layer utilities {
