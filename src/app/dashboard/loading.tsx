@@ -6,11 +6,11 @@ export default function Loading() {
         <div className='skeleton w-48'></div>
       </div>
       <ul className='mb-1 flex h-5 flex-wrap items-center gap-2 text-xs italic sm:gap-3 sm:text-base lg:h-6'>
-        <li className='icon-stat-wrapper'>
+        <li className='icon-stat-wrapper icon-stat-wrapper icon-stat-wrapper--clean'>
           <div className='skeleton p-2'></div>
           <div className='skeleton w-20'></div>
         </li>
-        <li className='icon-stat-wrapper'>
+        <li className='icon-stat-wrapper icon-stat-wrapper icon-stat-wrapper--clean'>
           <div className='skeleton p-2'></div>
           <div className='skeleton w-20'></div>
         </li>
@@ -35,11 +35,11 @@ function ListItem() {
       <div className='w-full'>
         <h3 className='skeleton mb-2 w-2/3 sm:w-1/3'></h3>
         <ul className='flex flex-wrap items-center gap-2 text-xs italic sm:gap-3 sm:text-base'>
-          <li className='icon-stat-wrapper'>
+          <li className='icon-stat-wrapper icon-stat-wrapper icon-stat-wrapper--clean'>
             <div className='skeleton p-2'></div>
             <div className='skeleton w-10'></div>
           </li>
-          <li className='icon-stat-wrapper'>
+          <li className='icon-stat-wrapper icon-stat-wrapper icon-stat-wrapper--clean'>
             <div className='skeleton p-2'></div>
             <div className='skeleton w-10'></div>
           </li>

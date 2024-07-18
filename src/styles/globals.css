@@ -74,14 +74,18 @@
   }
 
   .icon-stats-container {
-    @apply flex flex-wrap items-center gap-2 text-xs sm:gap-3 sm:text-sm lg:text-base;
+    @apply flex flex-wrap items-center gap-2 text-xs sm:text-sm lg:text-base;
   }
 
   .icon-stat-wrapper {
-    @apply flex items-center gap-1 italic sm:gap-2;
+    @apply flex items-center gap-1 rounded-full bg-neutral-600/50 py-0.5 pl-2 pr-3 italic sm:gap-2;
 
     > svg {
       @apply size-5 text-black;
+    }
+
+    &--clean {
+      @apply bg-transparent p-0 not-italic;
     }
   }
 
