@@ -198,7 +198,6 @@
     @apply relative size-6 rounded-lg bg-neutral-500;
   }
 
-
   .heading-settings {
     @apply border-b border-neutral-500 pb-2 text-right font-medium uppercase text-neutral-500 group-hover:text-white sm:w-48;
   }
@@ -206,7 +205,7 @@
   .group-settings {
     @apply grid gap-4;
   }
-    
+
   .img-w-fallback {
     &::before {
       @apply absolute inset-0 bg-neutral-800 content-[''];
