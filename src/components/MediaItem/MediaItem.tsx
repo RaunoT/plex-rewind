@@ -60,7 +60,7 @@ export default function MediaItem({
       <div className='relative aspect-[2/3] w-[4.5rem] flex-shrink-0 sm:w-20 2xl:w-24'>
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
-          className='img-w-fallback h-full w-full object-cover object-top'
+          className='h-full w-full object-cover object-top'
           alt={
             type === 'users' ? data.user + ' avatar' : data.title + ' poster'
           }
