@@ -53,6 +53,9 @@ RUN adduser --system --uid 1001 nextjs
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/config ./config
 
+# Ensure nextjs user has necessary permissions for the config directory
+RUN chown -R nextjs:nodejs ./config
+
 # Set the correct permission for prerender cache
 RUN mkdir .next
 RUN chown nextjs:nodejs .next
