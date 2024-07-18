@@ -27,7 +27,7 @@ export default async function DashboardLayout({ children }: Props) {
         libraries={libraries}
         isUsersPageActive={settings.features.isUsersPageActive}
       />
-      <CardWrapper className='my-3 lg:min-h-[583px] 2xl:min-h-[648px]'>
+      <CardWrapper className='my-3 lg:min-h-[585px] 2xl:min-h-[648px]'>
         {children}
       </CardWrapper>
       <PeriodSelect settings={settings} />

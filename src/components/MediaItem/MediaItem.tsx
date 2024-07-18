@@ -57,7 +57,7 @@ export default function MediaItem({
       animate='show'
       transition={{ delay: i * 0.075 }}
     >
-      <div className='w-20 flex-shrink-0 sm:w-[5.25rem] 2xl:w-24'>
+      <div className='w-20 flex-shrink-0 sm:w-[5.35rem] 2xl:w-24'>
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           className='img-w-fallback aspect-[2/3] w-full object-cover object-top'
