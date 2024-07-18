@@ -75,7 +75,7 @@ export default function MediaItem({
           parentRef={titleContainerRef}
         />
         {(type === 'movie' || type === 'show') && (
-          <div className='relative z-10 mb-3 flex items-center gap-2'>
+          <div className='relative z-10 mb-2 flex items-center gap-2'>
             {data.is_deleted ? (
               settings.connection.overseerrUrl ? (
                 <a
