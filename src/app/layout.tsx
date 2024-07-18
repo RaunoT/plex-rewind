@@ -62,7 +62,7 @@ export default async function RootLayout({ children }: Props) {
       <head>
         <PublicEnvScript />
       </head>
-      <body className='min-h-dvh bg-black text-white'>
+      <body className='h-full min-h-dvh bg-black text-white'>
         {settings.features.googleAnalyticsId && (
           <GoogleAnalytics id={settings.features.googleAnalyticsId} />
         )}

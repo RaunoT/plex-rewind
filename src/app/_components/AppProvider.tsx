@@ -31,7 +31,7 @@ export default function AppProvider({ children, settings }: Props) {
   return (
     <main
       className={clsx(
-        'flex min-h-dvh flex-col items-center overflow-x-hidden px-4 py-8 sm:justify-center',
+        'flex h-full min-h-dvh flex-col items-center overflow-x-hidden px-4 py-8 sm:justify-center',
         { 'justify-center': pathname === '/' },
       )}
     >
