@@ -197,6 +197,18 @@
   .checkbox {
     @apply relative size-6 rounded-lg bg-neutral-500;
   }
+
+  .img-w-fallback {
+    &::before {
+      @apply absolute inset-0 bg-neutral-800 content-[''];
+    }
+
+    &::after {
+      @apply absolute inset-2 text-xs text-neutral-500;
+
+      content: 'image not found';
+    }
+  }
 }
 
 @layer utilities {
