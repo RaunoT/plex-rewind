@@ -85,7 +85,6 @@ export const DEFAULT_SETTINGS = {
       'users',
       'requests',
     ],
-    dashboardDefaultPeriod: '30',
     googleAnalyticsId: '',
   },
   test: false,

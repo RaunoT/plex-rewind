@@ -8,7 +8,6 @@ export default function SettingsNav() {
 
   return (
     <nav className='mb-3'>
-      <h2 className='sr-only'>Settings navigation</h2>
       <ul className='nav'>
         <li>
           <Link

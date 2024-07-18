@@ -121,7 +121,6 @@ export type FeaturesSettings = {
   isUsersPageActive: boolean
   activeLibraries: string[]
   activeDashboardStatistics: string[]
-  dashboardDefaultPeriod: string
   googleAnalyticsId: string
 }
 

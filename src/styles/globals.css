@@ -114,7 +114,7 @@
   }
 
   .label {
-    @apply shrink-0 text-xs text-neutral-300 peer-focus-within:text-white sm:w-48 sm:text-right sm:text-sm;
+    @apply shrink-0 text-xs font-medium text-neutral-300 peer-focus-within:text-white sm:w-48 sm:text-right sm:text-sm;
 
     &--start {
       @apply mt-0.5 self-start;
@@ -196,14 +196,6 @@
 
   .checkbox {
     @apply relative size-6 rounded-lg bg-neutral-500;
-  }
-
-  .heading-settings {
-    @apply border-b border-neutral-500 pb-2 text-right font-medium uppercase text-neutral-500 group-hover:text-white sm:w-48;
-  }
-
-  .group-settings {
-    @apply grid gap-4;
   }
 
   .img-w-fallback {

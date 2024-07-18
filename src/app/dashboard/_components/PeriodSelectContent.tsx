@@ -1,20 +1,13 @@
 'use client'
 
-import { Settings } from '@/types'
-import { pluralize } from '@/utils/formatting'
 import Link from 'next/link'
 import { usePathname, useSearchParams } from 'next/navigation'
 import { useEffect } from 'react'
 
-type Props = {
-  settings: Settings
-}
-
-export default function PeriodSelectContent({ settings }: Props) {
+export default function PeriodSelectContent() {
   const pathname = usePathname()
   const searchParams = useSearchParams()
   const period = searchParams.get('period')
-  const customPeriod = parseInt(settings.features.dashboardDefaultPeriod)
 
   useEffect(() => {
     window.scrollTo(0, 0)
@@ -33,7 +26,7 @@ export default function PeriodSelectContent({ settings }: Props) {
       </li>
       <li>
         <Link href={`${pathname}`} className='nav-link' aria-selected={!period}>
-          {customPeriod ? `${pluralize(customPeriod, 'day')}` : '30 days'}
+          30 days
         </Link>
       </li>
       <li>
