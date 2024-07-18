@@ -4,11 +4,11 @@ import { Settings } from '@/types'
 import { CogIcon, XCircleIcon } from '@heroicons/react/24/outline'
 import clsx from 'clsx'
 import { useSession } from 'next-auth/react'
-import Image from 'next/image'
 import Link from 'next/link'
 import { redirect, usePathname } from 'next/navigation'
-import { ReactNode, useEffect, useState } from 'react'
-import stars from '../_assets/stars.png'
+import { ReactNode, useEffect, useRef, useState } from 'react'
+import * as THREE from 'three'
+import FOG from 'vanta/dist/vanta.fog.min'
 
 type Props = {
   children: ReactNode
@@ -17,12 +17,38 @@ type Props = {
 
 export default function AppProvider({ children, settings }: Props) {
   const pathname = usePathname()
+  const [background, setBackground] = useState<VantaEffect>(null)
+  const backgroundRef = useRef(null)
   const { data: session } = useSession()
   const [isSettings, setIsSettings] = useState(pathname.startsWith('/settings'))
 
   useEffect(() => {
     setIsSettings(pathname.startsWith('/settings'))
   }, [pathname])
+
+  useEffect(() => {
+    if (!background) {
+      setBackground(
+        FOG({
+          el: backgroundRef.current,
+          THREE: THREE,
+          lowlightColor: 0x16166f,
+          midtoneColor: 0x211e1d,
+          highlightColor: 0x0b5336,
+          baseColor: 0x000000,
+          blurFactor: 0.6,
+          zoom: 1,
+          speed: 1,
+        }),
+      )
+    }
+
+    return () => {
+      if (background) {
+        background.destroy()
+      }
+    }
+  }, [background])
 
   if (!settings.test && pathname !== '/settings/connection') {
     redirect('/settings/connection')
@@ -35,20 +61,7 @@ export default function AppProvider({ children, settings }: Props) {
         { 'justify-center': pathname === '/' },
       )}
     >
-      <div className='fixed inset-0 -z-10 overflow-hidden bg-black after:absolute after:inset-0 after:bg-black/50 after:content-[""]'>
-        <div className='relative h-screen w-screen'>
-          <Image
-            src={stars}
-            alt='Stars background layer'
-            className='object-cover'
-            fill
-            priority
-          />
-        </div>
-        <div className='bg-twinkling' />
-        <div className='bg-clouds sm:opacity-50' />
-      </div>
-
+      <div ref={backgroundRef} className='fixed inset-0 -z-10 h-screen' />
       {settings.test && session?.user?.isAdmin && (
         <Link
           href={isSettings ? '/' : '/settings/features'}
