@@ -8,12 +8,6 @@ import {
   PlayCircleIcon,
   UserIcon,
 } from '@heroicons/react/24/outline'
-import {
-  FilmIcon as FilmIconSolid,
-  MusicalNoteIcon as MusicalNoteIconSolid,
-  PlayCircleIcon as PlayCircleIconSolid,
-  UserIcon as UserIconSolid,
-} from '@heroicons/react/24/solid'
 
 type Props = {
   title: string
@@ -42,15 +36,15 @@ export default function Dashboard({
         {getTitleIcon(type)}
         {title}
       </h2>
-      <ul className='icon-stats-container mb-1 font-medium text-neutral-300'>
+      <ul className='icon-stats-container mb-1 gap-3'>
         {totalSize && (
-          <li className='icon-stat-wrapper'>
+          <li className='icon-stat-wrapper icon-stat-wrapper--clean'>
             <FolderIcon />
             {totalSize}
           </li>
         )}
         {count && (
-          <li className='icon-stat-wrapper'>
+          <li className='icon-stat-wrapper icon-stat-wrapper--clean'>
             {getCountIcon(type)}
             <span>
               <span>{count}</span>&nbsp;
@@ -67,7 +61,7 @@ export default function Dashboard({
           </li>
         )}
         {totalDuration && (
-          <li className='icon-stat-wrapper'>
+          <li className='icon-stat-wrapper icon-stat-wrapper--clean'>
             <ClockIcon />
             {totalDuration}
           </li>
@@ -97,13 +91,13 @@ function getTitleIcon(type: string) {
 
   switch (type) {
     case 'movie':
-      return <FilmIconSolid className={className} />
+      return <FilmIcon className={className} />
     case 'show':
-      return <PlayCircleIconSolid className={className} />
+      return <PlayCircleIcon className={className} />
     case 'artist':
-      return <MusicalNoteIconSolid className={className} />
+      return <MusicalNoteIcon className={className} />
     default:
-      return <UserIconSolid className={className} />
+      return <UserIcon className={className} />
   }
 }
 
