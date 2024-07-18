@@ -1,14 +1,21 @@
 import { AuthOptions } from 'next-auth'
 import CredentialsProvider from 'next-auth/providers/credentials'
 import qs from 'qs'
+import { v4 as uuidv4 } from 'uuid'
 import { parseStringPromise } from 'xml2js'
 import {
   APP_URL,
   PLEX_API_ENDPOINT,
-  PLEX_CLIENT_IDENTIFIER,
-  PLEX_CLIENT_NAME,
+  PLEX_PRODUCT_NAME,
 } from '../utils/constants'
 import fetchTautulli from '../utils/fetchTautulli'
+
+function getClientIdentifier(): string {
+  const clientId = localStorage.getItem('plexClientId') || uuidv4()
+  localStorage.setItem('plexClientId', clientId)
+
+  return clientId
+}
 
 export const authOptions: AuthOptions = {
   providers: [
@@ -109,18 +116,16 @@ type PlexPinResponse = {
 }
 
 async function fetchPlexPins(): Promise<PlexPinResponse> {
+  const clientIdentifier = getClientIdentifier()
+
   try {
-    const res = await fetch(`${PLEX_API_ENDPOINT}/pins`, {
+    const res = await fetch(`${PLEX_API_ENDPOINT}/pins?strong=true`, {
       method: 'POST',
       headers: {
         Accept: 'application/json',
-        'Content-Type': 'application/x-www-form-urlencoded',
+        'X-Plex-Product': PLEX_PRODUCT_NAME,
+        'X-Plex-Client-Identifier': clientIdentifier,
       },
-      body: new URLSearchParams({
-        strong: 'true',
-        'X-Plex-Product': PLEX_CLIENT_NAME,
-        'X-Plex-Client-Identifier': PLEX_CLIENT_IDENTIFIER,
-      }),
     })
 
     if (!res.ok) {
@@ -139,6 +144,7 @@ async function fetchPlexPins(): Promise<PlexPinResponse> {
 export async function createPlexAuthUrl() {
   const { id, code } = await fetchPlexPins()
   const forwardUrl = `${APP_URL}?plexPinId=${id}`
+  const clientIdentifier = getClientIdentifier()
 
   if (!forwardUrl) {
     console.error('Base url is not configured!')
@@ -147,12 +153,12 @@ export async function createPlexAuthUrl() {
   const authAppUrl =
     'https://app.plex.tv/auth#?' +
     qs.stringify({
-      clientID: PLEX_CLIENT_IDENTIFIER,
+      clientID: clientIdentifier,
       code,
       forwardUrl,
       context: {
         device: {
-          product: PLEX_CLIENT_NAME,
+          product: PLEX_PRODUCT_NAME,
         },
       },
     })
@@ -161,12 +167,14 @@ export async function createPlexAuthUrl() {
 }
 
 export async function getPlexAuthToken(pinId: string) {
+  const clientIdentifier = getClientIdentifier()
+
   try {
     const res = await fetch(`${PLEX_API_ENDPOINT}/pins/${pinId}`, {
       method: 'GET',
       headers: {
         Accept: 'application/json',
-        'X-Plex-Client-Identifier': PLEX_CLIENT_IDENTIFIER,
+        'X-Plex-Client-Identifier': clientIdentifier,
       },
     })
 
@@ -185,19 +193,17 @@ export async function getPlexAuthToken(pinId: string) {
 }
 
 export async function verifyPlexAuthToken(authToken: string) {
+  const clientIdentifier = getClientIdentifier()
+
   try {
-    const res = await fetch(`${PLEX_API_ENDPOINT}/user`, {
+    const res = await fetch(`${PLEX_API_ENDPOINT}/user?strong=true`, {
       method: 'POST',
       headers: {
         Accept: 'application/json',
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
-      body: new URLSearchParams({
-        strong: 'true',
-        'X-Plex-Product': PLEX_CLIENT_NAME,
-        'X-Plex-Client-Identifier': PLEX_CLIENT_IDENTIFIER,
         'X-Plex-Token': authToken,
-      }),
+        'X-Plex-Product': PLEX_PRODUCT_NAME,
+        'X-Plex-Client-Identifier': clientIdentifier,
+      },
     })
 
     if (!res.ok) {
