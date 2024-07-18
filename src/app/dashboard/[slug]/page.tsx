@@ -37,11 +37,22 @@ export default async function DashboardPage({
   }
 
   const periodSearchParams = searchParams?.period
-  const periodKey =
-    periodSearchParams && PERIODS[periodSearchParams]
-      ? periodSearchParams
-      : '30days'
-  const period = PERIODS[periodKey]
+  const customPeriod = parseInt(settings.features.dashboardDefaultPeriod)
+  let period = PERIODS['30days']
+
+  if (periodSearchParams && PERIODS[periodSearchParams]) {
+    period = PERIODS[periodSearchParams]
+  } else if (customPeriod) {
+    const DAYS_AGO_CUSTOM: Date = new Date(
+      new Date().setDate(new Date().getDate() - customPeriod),
+    )
+    period = {
+      date: DAYS_AGO_CUSTOM.toISOString(),
+      string: DAYS_AGO_CUSTOM.toISOString().split('T')[0],
+      daysAgo: customPeriod,
+    }
+  }
+
   const [items, totalDuration, totalSize, serverId] = await Promise.all([
     getItems(library, period.daysAgo),
     getTotalDuration(library, period.string),

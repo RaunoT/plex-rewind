@@ -17,6 +17,7 @@ export default function DashboardNavContent({
 
   return (
     <nav>
+      <h2 className='sr-only'>Dashboard navigation</h2>
       <ul className='nav'>
         {libraries.map((library) => (
           <li key={library.section_id}>
