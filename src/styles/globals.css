@@ -114,7 +114,7 @@
   }
 
   .label {
-    @apply shrink-0 text-xs font-medium text-neutral-300 peer-focus-within:text-white sm:w-48 sm:text-right sm:text-sm;
+    @apply shrink-0 text-xs font-medium uppercase text-neutral-300 sm:w-48 sm:text-right sm:text-sm;
 
     &--start {
       @apply mt-0.5 self-start;
@@ -189,7 +189,11 @@
 
     &:focus-within {
       .checkbox {
-        @apply focus-ring bg-neutral-400;
+        @apply focus-ring;
+      }
+
+      ~ .label {
+        @apply text-white;
       }
     }
   }
