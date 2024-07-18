@@ -1,10 +1,15 @@
+import { Settings } from '@/types'
 import { Suspense } from 'react'
 import PeriodSelectContent from './PeriodSelectContent'
 
-export default function PeriodSelect() {
+type Props = {
+  settings: Settings
+}
+
+export default function PeriodSelect({ settings }: Props) {
   return (
     <Suspense>
-      <PeriodSelectContent />
+      <PeriodSelectContent settings={settings} />
     </Suspense>
   )
 }

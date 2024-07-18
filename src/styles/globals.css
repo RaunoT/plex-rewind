@@ -74,14 +74,18 @@
   }
 
   .icon-stats-container {
-    @apply flex flex-wrap items-center gap-2 text-xs sm:gap-3 sm:text-sm lg:text-base;
+    @apply flex flex-wrap items-center gap-2 text-xs sm:text-sm lg:text-base;
   }
 
   .icon-stat-wrapper {
-    @apply flex items-center gap-1 italic sm:gap-2;
+    @apply flex items-center gap-1 rounded-full bg-neutral-600/50 py-0.5 pl-2 pr-3 italic sm:gap-2;
 
     > svg {
       @apply size-5 text-black;
+    }
+
+    &--clean {
+      @apply bg-transparent p-0 not-italic;
     }
   }
 
@@ -114,7 +118,7 @@
   }
 
   .label {
-    @apply shrink-0 text-xs font-medium uppercase text-neutral-300 sm:w-48 sm:text-right sm:text-sm;
+    @apply shrink-0 text-xs text-neutral-300 peer-focus-within:text-white sm:w-48 sm:text-right sm:text-sm;
 
     &--start {
       @apply mt-0.5 self-start;
@@ -189,17 +193,57 @@
 
     &:focus-within {
       .checkbox {
-        @apply focus-ring;
-      }
-
-      ~ .label {
-        @apply text-white;
+        @apply focus-ring bg-neutral-400;
       }
     }
   }
 
   .checkbox {
     @apply relative size-6 rounded-lg bg-neutral-500;
+  }
+
+  .heading-settings {
+    @apply border-b border-neutral-500 pb-2 text-right font-medium uppercase text-neutral-500 group-hover:text-white sm:w-48;
+  }
+
+  .group-settings {
+    @apply grid gap-4;
+  }
+
+  .img-w-fallback {
+    &::before {
+      @apply absolute inset-0 bg-neutral-800 content-[''];
+    }
+
+    &::after {
+      @apply absolute inset-2 text-xs text-neutral-500;
+
+      content: 'image not found';
+    }
+  }
+
+  @keyframes move-bg {
+    from {
+      transform: translate3d(0, 0, 0);
+    }
+
+    to {
+      transform: translate3d(1000px, 0, 0);
+    }
+  }
+
+  .bg-twinkling {
+    @apply absolute inset-y-0 right-0 w-[10000px];
+
+    background: transparent url('/twinkling.png') repeat;
+    animation: move-bg 50s linear infinite;
+  }
+
+  .bg-clouds {
+    @apply absolute inset-y-0 right-0 w-[10000px];
+
+    background: transparent url('/clouds.png') repeat;
+    animation: move-bg 100s linear infinite;
   }
 }
 

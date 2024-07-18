@@ -32,3 +32,6 @@ jobs:
           pnpm lint:css
           pnpm lint:types
           pnpm format:check
+
+      - name: Build
+        run: pnpm build

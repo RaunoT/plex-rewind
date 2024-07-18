@@ -60,7 +60,7 @@ export default function MediaItem({
       <div className='relative aspect-[2/3] w-[4.5rem] flex-shrink-0 sm:w-20 2xl:w-24'>
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
-          className='h-full w-full object-cover object-top'
+          className='img-w-fallback h-full w-full object-cover object-top'
           alt={
             type === 'users' ? data.user + ' avatar' : data.title + ' poster'
           }
@@ -75,7 +75,7 @@ export default function MediaItem({
           parentRef={titleContainerRef}
         />
         {(type === 'movie' || type === 'show') && (
-          <div className='relative z-10 mb-2 flex items-center gap-2'>
+          <div className='relative z-10 mb-3 flex items-center gap-2'>
             {data.is_deleted ? (
               settings.connection.overseerrUrl ? (
                 <a
