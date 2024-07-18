@@ -56,9 +56,9 @@ export default function AppProvider({ children, settings }: Props) {
           aria-label={isSettings ? 'Close settings' : 'Open settings'}
         >
           {isSettings ? (
-            <XCircleIcon className='size-5 lg:size-6' />
+            <XCircleIcon className='size-6' />
           ) : (
-            <CogIcon className='size-5 lg:size-6' />
+            <CogIcon className='size-6' />
           )}
         </Link>
       )}
