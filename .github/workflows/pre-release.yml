@@ -28,10 +28,10 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
-      - name: Run Semantic Release dry run
+      - name: Run Semantic Release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: npx semantic-release --dry-run
+        run: npx semantic-release
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -55,8 +55,3 @@ jobs:
             ghcr.io/raunot/plex-rewind:${{ env.NEXT_VERSION_TAG }}
           build-args: |
             NEXT_PUBLIC_VERSION_TAG=${{ env.NEXT_VERSION_TAG }}
-
-      - name: Run Semantic Release publish
-        env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
-        run: npx semantic-release
