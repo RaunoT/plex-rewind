@@ -45,7 +45,7 @@ export default function FeaturesSettingsForm({ settings, libraries }: Props) {
         name='activeLibraries'
         defaultValue={featuresSettings.activeLibraries}
       >
-        <div className='mr-auto flex flex-wrap gap-2'>
+        <div className='peer mr-auto flex flex-wrap gap-2'>
           {libraries.map((library) => (
             <Checkbox
               key={library.section_id}
@@ -73,7 +73,7 @@ export default function FeaturesSettingsForm({ settings, libraries }: Props) {
           ]
         }
       >
-        <div className='mr-auto flex flex-wrap gap-2'>
+        <div className='peer mr-auto flex flex-wrap gap-2'>
           <Checkbox value='year' className='checkbox-wrapper'>
             <div className='checkbox' aria-hidden='true'></div>
             Year
@@ -110,6 +110,7 @@ export default function FeaturesSettingsForm({ settings, libraries }: Props) {
           className='input'
           name='googleAnalyticsId'
           defaultValue={featuresSettings.googleAnalyticsId}
+          placeholder='G-XXXXXXXXXX'
         />
         <span className='label'>Google Analytics ID</span>
       </label>
