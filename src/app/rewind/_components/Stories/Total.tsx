@@ -36,7 +36,7 @@ export default function StoryTotal({
               </span>{' '}
               of all plays, which total{' '}
               <span className='rewind-stat'>{userRewind.duration.total}</span>{' '}
-              across all users.
+              over all users.
             </p>
           </RewindStat>
         </>
