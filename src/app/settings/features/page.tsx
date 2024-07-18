@@ -4,7 +4,7 @@ import { Metadata } from 'next'
 import FeaturesSettingsForm from './_components/FeaturesSettingsForm'
 
 export const metadata: Metadata = {
-  title: 'Features Settings',
+  title: 'Features settings',
 }
 
 export default async function FeaturesSettingsPage() {

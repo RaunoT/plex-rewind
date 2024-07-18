@@ -211,6 +211,8 @@
   }
 
   .img-w-fallback {
+    @apply relative;
+
     &::before {
       @apply absolute inset-0 bg-neutral-800 content-[''];
     }
