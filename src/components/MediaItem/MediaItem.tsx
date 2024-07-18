@@ -51,22 +51,23 @@ export default function MediaItem({
   return (
     <motion.li
       key={dataKey}
-      className={clsx('flex items-center gap-3', i > 4 && 'hidden lg:flex')}
+      className={clsx('flex gap-3 2xl:items-center', i > 4 && 'hidden lg:flex')}
       variants={slideDown}
       initial='hidden'
       animate='show'
       transition={{ delay: i * 0.075 }}
     >
-      <div className='relative aspect-[2/3] w-[4.5rem] flex-shrink-0 sm:w-20 2xl:w-24'>
+      <div className='w-20 flex-shrink-0 sm:w-[5.35rem] 2xl:w-24'>
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
-          className='img-w-fallback h-full w-full object-cover object-top'
+          className='img-w-fallback aspect-[2/3] w-full object-cover object-top'
           alt={
             type === 'users' ? data.user + ' avatar' : data.title + ' poster'
           }
           src={posterSrc}
         />
       </div>
+
       <div className='overflow-hidden' ref={titleContainerRef}>
         <MediaItemTitle
           i={i}

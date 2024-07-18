@@ -65,7 +65,7 @@ export async function fetchOverseerrUserId(
   plexId: string,
 ): Promise<number | null> {
   const users = await fetchOverseerr<OverseerrResponse<User[]>>('user')
-  const user = users?.results.find((user) => String(user.plexId) === plexId)
+  const user = users?.results?.find((user) => String(user.plexId) === plexId)
 
   return user ? user.id : null
 }
