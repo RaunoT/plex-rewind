@@ -30,7 +30,7 @@ export default async function DashboardLayout({ children }: Props) {
       <CardWrapper className='my-3 lg:min-h-[560px] 2xl:min-h-[648px]'>
         {children}
       </CardWrapper>
-      <PeriodSelect />
+      <PeriodSelect settings={settings} />
     </div>
   )
 }
