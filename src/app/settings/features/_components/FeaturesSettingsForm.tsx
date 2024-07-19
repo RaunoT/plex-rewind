@@ -117,10 +117,11 @@ export default function FeaturesSettingsForm({ settings, libraries }: Props) {
             type='number'
             className='input'
             name='dashboardDefaultPeriod'
-            defaultValue={featuresSettings.dashboardDefaultPeriod}
+            defaultValue={featuresSettings.dashboardDefaultPeriod || '30'}
             placeholder='30'
             min='1'
             max='3000'
+            required
           />
           <span className='label'>Default period</span>
         </label>
