@@ -11,7 +11,7 @@ import { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { Suspense } from 'react'
 import Dashboard from '../_components/Dashboard'
-import DashboardLoader from '../_components/Loader'
+import DashboardLoader from '../_components/DashboardLoader'
 
 export const metadata: Metadata = {
   title: 'Users',

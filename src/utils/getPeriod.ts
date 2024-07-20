@@ -15,6 +15,7 @@ export default function getPeriod(
     const DAYS_AGO_CUSTOM: Date = new Date(
       new Date().setDate(new Date().getDate() - customPeriod),
     )
+
     period = {
       date: DAYS_AGO_CUSTOM.toISOString(),
       string: DAYS_AGO_CUSTOM.toISOString().split('T')[0],
