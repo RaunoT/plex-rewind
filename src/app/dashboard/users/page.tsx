@@ -1,15 +1,17 @@
-import { DashboardParams, TautulliItem } from '@/types'
-import { PERIODS } from '@/utils/constants'
+import { SearchParams, TautulliItem } from '@/types'
 import {
   fetchOverseerrUserId,
   fetchPaginatedOverseerrStats,
 } from '@/utils/fetchOverseerr'
 import fetchTautulli, { getLibrariesByType } from '@/utils/fetchTautulli'
 import { secondsToTime, timeToSeconds } from '@/utils/formatting'
+import getPeriod from '@/utils/getPeriod'
 import getSettings from '@/utils/getSettings'
 import { Metadata } from 'next'
 import { notFound } from 'next/navigation'
+import { Suspense } from 'react'
 import Dashboard from '../_components/Dashboard'
+import DashboardLoader from '../_components/Loader'
 
 export const metadata: Metadata = {
   title: 'Users',
@@ -151,22 +153,18 @@ async function getUsersCount() {
   return usersCount?.response?.data.slice(1).length || 0
 }
 
-export default async function DashboardUsersPage({
-  searchParams,
-}: DashboardParams) {
+type Props = {
+  searchParams: SearchParams
+}
+
+async function DashboardUsersContent({ searchParams }: Props) {
   const settings = await getSettings()
 
-  // TODO: not redirecting to parent 404 boundary
   if (!settings.features.isUsersPageActive) {
     return notFound()
   }
 
-  const periodSearchParams = searchParams?.period
-  const periodKey =
-    periodSearchParams && PERIODS[periodSearchParams]
-      ? periodSearchParams
-      : '30days'
-  const period = PERIODS[periodKey]
+  const period = getPeriod(searchParams, settings)
   const [usersData, totalDuration, usersCount] = await Promise.all([
     getUsers(period.daysAgo, period.date, period.string),
     getTotalDuration(period.string),
@@ -182,5 +180,13 @@ export default async function DashboardUsersPage({
       type='users'
       settings={settings}
     />
+  )
+}
+
+export default function DashboardUsersPage({ searchParams }: Props) {
+  return (
+    <Suspense fallback={<DashboardLoader />} key={searchParams.period}>
+      <DashboardUsersContent searchParams={searchParams} />
+    </Suspense>
   )
 }

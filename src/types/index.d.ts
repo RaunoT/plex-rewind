@@ -1,13 +1,8 @@
 import { User } from 'next-auth'
 import { PERIODS } from '../utils/constants'
 
-export type DashboardParams = {
-  searchParams: {
-    period?: keyof typeof PERIODS
-  }
-  params: {
-    slug: string
-  }
+export type SearchParams = {
+  period?: keyof typeof PERIODS
 }
 
 type LibraryRewind = {
@@ -107,7 +102,6 @@ export type SettingsFormInitialState = {
 }
 
 export type ConnectionSettings = {
-  // applicationUrl: string
   tautulliUrl: string
   tautulliApiKey: string
   overseerrUrl: string
