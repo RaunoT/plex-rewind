@@ -5,7 +5,7 @@ import { SETTINGS_PATH } from '@/utils/constants'
 import getSettings from '@/utils/getSettings'
 import { promises as fs } from 'fs'
 import { revalidatePath } from 'next/cache'
-import { z } from 'zod'
+import { z, ZodError } from 'zod'
 
 const schema = z.object({
   tautulliUrl: z.string().url(),
@@ -115,7 +115,16 @@ export async function saveConnectionSettings(
       fields: data,
     }
   } catch (error) {
-    console.error('Error writing settings file!', error)
+    console.error('Error writing to settings file!', error)
+
+    if (error instanceof ZodError) {
+      return {
+        message: error.errors[0].message,
+        status: 'error',
+        fields: data,
+      }
+    }
+
     return {
       message: 'Something went wrong!',
       status: 'error',

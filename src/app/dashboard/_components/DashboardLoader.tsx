@@ -1,4 +1,4 @@
-export default function Loading() {
+export default function DashboardLoader() {
   return (
     <div className='flex flex-1 animate-pulse flex-col'>
       <div className='mb-1 flex items-center'>
