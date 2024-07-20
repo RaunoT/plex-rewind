@@ -53,9 +53,16 @@ RUN adduser --system --uid 1001 nextjs
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/config ./config
 
+RUN ls -ld config | awk '{print "Owner: "$3", Group: "$4}'
+RUN ls -ld public | awk '{print "Owner: "$3", Group: "$4}'
+
 # Set the correct permission for prerender cache
 RUN mkdir .next
 RUN chown nextjs:nodejs .next
+RUN chown nextjs:nodejs .config
+
+RUN ls -ld config | awk '{print "Owner: "$3", Group: "$4}'
+RUN ls -ld public | awk '{print "Owner: "$3", Group: "$4}'
 
 # Automatically leverage output traces to reduce image size
 # https://nextjs.org/docs/advanced-features/output-file-tracing
