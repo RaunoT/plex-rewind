@@ -30,16 +30,25 @@ export async function saveConnectionSettings(
   try {
     // Test Tautulli
     try {
-      await fetch(
+      const res = await fetch(
         `${data.tautulliUrl}/api/v2?apikey=${data.tautulliApiKey}&cmd=status`,
         {
           cache: 'no-store',
         },
       )
+
+      if (!res.ok) {
+        console.error('Error testing Tautulli connection!', res.status)
+        return {
+          message: 'Tautulli - invalid API key!',
+          status: 'error',
+          fields: data,
+        }
+      }
     } catch (error) {
       console.error('Error testing Tautulli connection!', error)
       return {
-        message: 'Unable to connect to Tautulli!',
+        message: 'Tautulli - unable to connect!',
         status: 'error',
         fields: data,
       }
@@ -48,16 +57,25 @@ export async function saveConnectionSettings(
     // Test Overseerr
     if (data.overseerrUrl && data.overseerrApiKey) {
       try {
-        await fetch(`${data.overseerrUrl}/api/v1/status`, {
+        const res = await fetch(`${data.overseerrUrl}/api/v1/user`, {
           headers: {
             'X-API-KEY': data.overseerrApiKey,
           },
           cache: 'no-store',
         })
+
+        if (!res.ok) {
+          console.error('Error testing Overseerr connection!', res.status)
+          return {
+            message: 'Overseerr - invalid API key!',
+            status: 'error',
+            fields: data,
+          }
+        }
       } catch (error) {
         console.error('Error testing Overseerr connection!', error)
         return {
-          message: 'Unable to connect to Overseerr!',
+          message: 'Overseerr - unable to connect!',
           status: 'error',
           fields: data,
         }
@@ -76,7 +94,7 @@ export async function saveConnectionSettings(
       if (!res.ok) {
         console.error('Error testing TMDB connection!', res.status)
         return {
-          message: 'Invalid TMDB API key!',
+          message: 'TMDB - invalid API key!',
           status: 'error',
           fields: data,
         }
@@ -84,7 +102,7 @@ export async function saveConnectionSettings(
     } catch (error) {
       console.error('Error testing TMDB connection!', error)
       return {
-        message: 'Error testing TMDB connection!',
+        message: 'TMDB - unable to connect!',
         status: 'error',
         fields: data,
       }
@@ -92,7 +110,7 @@ export async function saveConnectionSettings(
   } catch (error) {
     console.error('Error testing connection!', error)
     return {
-      message: 'Unable to connect!',
+      message: 'Something went wrong!',
       status: 'error',
       fields: data,
     }

@@ -124,3 +124,9 @@ export type Settings = {
   features: FeaturesSettings
   test: boolean
 }
+
+export type Version = {
+  hasUpdate: boolean
+  latestVersion: string
+  currentVersion: string
+}

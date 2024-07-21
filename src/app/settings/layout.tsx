@@ -1,8 +1,9 @@
 import githubSvg from '@/assets/github.svg'
 import { authOptions } from '@/lib/auth'
 import getSettings from '@/utils/getSettings'
+import getVersion from '@/utils/getVersion'
+import { CurrencyEuroIcon, HeartIcon } from '@heroicons/react/24/outline'
 import { getServerSession } from 'next-auth'
-import { env } from 'next-runtime-env'
 import Image from 'next/image'
 import { redirect } from 'next/navigation'
 import { ReactNode } from 'react'
@@ -16,6 +17,7 @@ type Props = {
 export default async function SettingsLayout({ children }: Props) {
   const session = await getServerSession(authOptions)
   const settings = await getSettings()
+  const version = await getVersion()
 
   if (!session?.user?.isAdmin && settings.test) {
     redirect('/')
@@ -29,24 +31,44 @@ export default async function SettingsLayout({ children }: Props) {
       />
       {settings.test && <SettingsNav />}
       {children}
-      <div className='mt-8 flex flex-col items-center gap-2'>
+
+      <div className='glass-sheet mt-4 flex flex-col flex-wrap justify-between gap-3 py-4 sm:flex-row'>
+        <a
+          href='https://www.paypal.com/paypalme/raunot'
+          target='_blank'
+          className='link-light inline-flex items-center gap-2'
+        >
+          <CurrencyEuroIcon className='size-6 text-yellow-500' />
+          Buy me a coffee
+        </a>
+        <a
+          href='https://www.patreon.com/PlexRewind'
+          target='_blank'
+          className='link-light inline-flex items-center gap-2'
+        >
+          <HeartIcon className='size-6 text-red-500' />
+          Become a sponsor
+        </a>
         <a
           href='https://github.com/RaunoT/plex-rewind/issues'
           target='_blank'
-          className='link inline-flex gap-2'
+          className='link-light inline-flex items-center gap-2'
         >
-          <Image src={githubSvg} alt='GitHub' className='size-6' />
-          Report an issue on GitHub
-        </a>
-
-        <a
-          className='w-fit font-mono text-xs text-white/25'
-          href='https://github.com/RaunoT/plex-rewind/releases'
-          target='_blank'
-        >
-          {env('NEXT_PUBLIC_VERSION_TAG') || 'local'}
+          <Image src={githubSvg} alt='GitHub' className='size-[24px] p-0.5' />
+          Report an issue
         </a>
       </div>
+      <a
+        className='link mx-auto mt-4 block w-fit text-center text-sm'
+        href='https://github.com/RaunoT/plex-rewind/releases'
+        target='_blank'
+      >
+        {version.hasUpdate && <span className='block'>Update available</span>}
+        <span className='font-mono text-xs'>
+          {version.currentVersion}
+          {version.hasUpdate && ` → ${version.latestVersion}`}
+        </span>
+      </a>
     </div>
   )
 }

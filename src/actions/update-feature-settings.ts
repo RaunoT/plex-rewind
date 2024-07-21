@@ -20,7 +20,7 @@ const schema = z.object({
       return number > 1 && number <= 3000
     },
     {
-      message: 'Dashboard: default period must be > 1 and <= 3000',
+      message: 'Dashboard - default period must be > 1 and <= 3000',
     },
   ),
   googleAnalyticsId: z.string(),
@@ -45,6 +45,7 @@ export async function saveFeaturesSettings(
   // Save settings
   try {
     const settings = await getSettings()
+
     schema.parse(data)
     settings.features = data
 

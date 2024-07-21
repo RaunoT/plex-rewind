@@ -1,7 +1,11 @@
 'use client'
 
-import { Settings } from '@/types'
-import { CogIcon, XCircleIcon } from '@heroicons/react/24/outline'
+import { Settings, Version } from '@/types'
+import {
+  ArrowPathIcon,
+  CogIcon,
+  XCircleIcon,
+} from '@heroicons/react/24/outline'
 import clsx from 'clsx'
 import { useSession } from 'next-auth/react'
 import Image from 'next/image'
@@ -13,9 +17,10 @@ import stars from '../_assets/stars.png'
 type Props = {
   children: ReactNode
   settings: Settings
+  version: Version
 }
 
-export default function AppProvider({ children, settings }: Props) {
+export default function AppProvider({ children, settings, version }: Props) {
   const pathname = usePathname()
   const { data: session } = useSession()
   const [isSettings, setIsSettings] = useState(pathname.startsWith('/settings'))
@@ -49,19 +54,31 @@ export default function AppProvider({ children, settings }: Props) {
         <div className='bg-clouds sm:opacity-50' />
       </div>
 
-      {settings.test && session?.user?.isAdmin && (
-        <Link
-          href={isSettings ? '/' : '/settings/features'}
-          className='absolute right-3 top-3 sm:right-4 sm:top-4'
-          aria-label={isSettings ? 'Close settings' : 'Open settings'}
-        >
-          {isSettings ? (
-            <XCircleIcon className='size-6' />
-          ) : (
-            <CogIcon className='size-6' />
-          )}
-        </Link>
-      )}
+      <div className='absolute right-3 top-3 flex items-center gap-3 sm:right-4 sm:top-4'>
+        {version.hasUpdate && (
+          <a
+            href='https://github.com/RaunoT/plex-rewind/releases'
+            aria-label='Update available'
+            target='_blank'
+            className='link-light'
+          >
+            <ArrowPathIcon className='size-6' />
+          </a>
+        )}
+        {settings.test && session?.user?.isAdmin && (
+          <Link
+            href={isSettings ? '/' : '/settings/features'}
+            aria-label={isSettings ? 'Close settings' : 'Open settings'}
+            className='link-light'
+          >
+            {isSettings ? (
+              <XCircleIcon className='size-6' />
+            ) : (
+              <CogIcon className='size-6' />
+            )}
+          </Link>
+        )}
+      </div>
 
       {children}
     </main>
