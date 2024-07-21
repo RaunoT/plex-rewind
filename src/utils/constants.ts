@@ -54,7 +54,7 @@ export const PERIODS: { [key: string]: Period } = {
 }
 
 export const META_DESCRIPTION: string =
-  'Present user statistics and habits in a beautiful and organized manner'
+  "Plex users' statistics and habits in a beautiful and organized manner"
 export const META_TITLE: string = 'Plex Rewind'
 export const META_TITLE_TEMPLATE: string = '%s | Plex Rewind'
 

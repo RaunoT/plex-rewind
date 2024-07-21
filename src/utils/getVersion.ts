@@ -20,7 +20,7 @@ export default async function getVersion(): Promise<Version> {
         'https://api.github.com/repos/RaunoT/plex-rewind/releases',
         {
           next: {
-            revalidate: 3600,
+            revalidate: 600,
           },
         },
       )
