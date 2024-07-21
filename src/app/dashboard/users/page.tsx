@@ -35,12 +35,12 @@ async function getUsers(
     time_range: period,
   })
   const users = usersRes?.response?.data?.rows
-  const settings = await getSettings()
 
   if (!users) {
     return
   }
 
+  const settings = await getSettings()
   const [moviesLib, showsLib, audioLib] = await Promise.all([
     getLibrariesByType('movie'),
     getLibrariesByType('show'),
@@ -153,6 +153,12 @@ async function getUsersCount() {
   return usersCount?.response?.data.slice(1).length || 0
 }
 
+async function getTotalRequests(period: string) {
+  const requests = await fetchPaginatedOverseerrStats('request', period)
+
+  return requests.length
+}
+
 type Props = {
   searchParams: SearchParams
 }
@@ -165,11 +171,13 @@ async function DashboardUsersContent({ searchParams }: Props) {
   }
 
   const period = getPeriod(searchParams, settings)
-  const [usersData, totalDuration, usersCount] = await Promise.all([
-    getUsers(period.daysAgo, period.date, period.string),
-    getTotalDuration(period.string),
-    getUsersCount(),
-  ])
+  const [usersData, totalDuration, usersCount, totalRequests] =
+    await Promise.all([
+      getUsers(period.daysAgo, period.date, period.string),
+      getTotalDuration(period.string),
+      getUsersCount(),
+      getTotalRequests(period.date),
+    ])
 
   return (
     <Dashboard
@@ -179,6 +187,7 @@ async function DashboardUsersContent({ searchParams }: Props) {
       count={String(usersCount)}
       type='users'
       settings={settings}
+      totalRequests={totalRequests}
     />
   )
 }
