@@ -1,6 +1,5 @@
 'use client'
 
-import githubSvg from '@/assets/github.svg'
 import { Settings, Version } from '@/types'
 import {
   ArrowPathIcon,
@@ -61,17 +60,16 @@ export default function AppProvider({ children, settings, version }: Props) {
             href='https://github.com/RaunoT/plex-rewind/releases'
             aria-label='Update available'
             target='_blank'
+            className='link-light'
           >
             <ArrowPathIcon className='size-6' />
           </a>
         )}
-        <a href='https://github.com/RaunoT/plex-rewind' target='_blank'>
-          <Image src={githubSvg} alt='GitHub' className='size-5' />
-        </a>
         {settings.test && session?.user?.isAdmin && (
           <Link
             href={isSettings ? '/' : '/settings/features'}
             aria-label={isSettings ? 'Close settings' : 'Open settings'}
+            className='link-light'
           >
             {isSettings ? (
               <XCircleIcon className='size-6' />

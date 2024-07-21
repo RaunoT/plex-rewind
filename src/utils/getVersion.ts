@@ -18,6 +18,11 @@ export default async function getVersion(): Promise<Version> {
     try {
       const res = await fetch(
         'https://api.github.com/repos/RaunoT/plex-rewind/releases',
+        {
+          next: {
+            revalidate: 3600,
+          },
+        },
       )
       const data = await res.json()
 
@@ -27,12 +32,14 @@ export default async function getVersion(): Promise<Version> {
         )
       }
 
-      const latestRelease = data.find(
-        (release: GitHubRelease) =>
-          !release.draft && (!isDevelop ? !release.prerelease : true),
-      )
+      if (data) {
+        const latestRelease = data.find(
+          (release: GitHubRelease) =>
+            !release.draft && (!isDevelop ? !release.prerelease : true),
+        )
 
-      latestVersion = latestRelease.tag_name
+        latestVersion = latestRelease.tag_name
+      }
     } catch (error) {
       console.error('Error fetching latest version:', error)
     }
