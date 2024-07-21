@@ -6,6 +6,7 @@ import {
   META_TITLE_TEMPLATE,
 } from '@/utils/constants'
 import getSettings from '@/utils/getSettings'
+import getVersion from '@/utils/getVersion'
 import { Metadata, Viewport } from 'next'
 import { PublicEnvScript } from 'next-runtime-env'
 import { ReactNode } from 'react'
@@ -56,6 +57,7 @@ type Props = {
 
 export default async function RootLayout({ children }: Props) {
   const settings = await getSettings()
+  const version = await getVersion()
 
   return (
     <html lang='en'>
@@ -67,7 +69,9 @@ export default async function RootLayout({ children }: Props) {
           <GoogleAnalytics id={settings.features.googleAnalyticsId} />
         )}
         <SessionProviderWrapper>
-          <AppProvider settings={settings}>{children}</AppProvider>
+          <AppProvider settings={settings} version={version}>
+            {children}
+          </AppProvider>
         </SessionProviderWrapper>
       </body>
     </html>
