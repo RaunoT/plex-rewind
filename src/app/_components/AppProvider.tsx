@@ -55,7 +55,7 @@ export default function AppProvider({ children, settings, version }: Props) {
       </div>
 
       <div className='absolute right-3 top-3 flex items-center gap-3 sm:right-4 sm:top-4'>
-        {version.hasUpdate && (
+        {version.hasUpdate && session?.user?.isAdmin && (
           <a
             href='https://github.com/RaunoT/plex-rewind/releases'
             aria-label='Update available'
