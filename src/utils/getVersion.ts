@@ -8,13 +8,13 @@ type GitHubRelease = {
 }
 
 export default async function getVersion(): Promise<Version> {
-  const currentVersion = env('NEXT_PUBLIC_VERSION_TAG')
-    ? `v${env('NEXT_PUBLIC_VERSION_TAG')}`
-    : 'local'
+  const tag = env('NEXT_PUBLIC_VERSION_TAG') || ''
+  const isSHA = /^[0-9a-f]{40}$/i.test(tag) // Check if tag is a 40-character SHA
+  const currentVersion = tag ? (isSHA ? tag : `v${tag}`) : 'local' // Prefix with 'v' if not a SHA
   const isDevelop = currentVersion.includes('develop')
   let latestVersion = currentVersion
 
-  if (currentVersion !== 'local') {
+  if (currentVersion !== 'local' && !isSHA) {
     try {
       const res = await fetch(
         'https://api.github.com/repos/RaunoT/plex-rewind/releases',
