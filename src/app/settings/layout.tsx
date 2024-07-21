@@ -1,9 +1,7 @@
-import githubSvg from '@/assets/github.svg'
 import { authOptions } from '@/lib/auth'
 import getSettings from '@/utils/getSettings'
+import getVersion from '@/utils/getVersion'
 import { getServerSession } from 'next-auth'
-import { env } from 'next-runtime-env'
-import Image from 'next/image'
 import { redirect } from 'next/navigation'
 import { ReactNode } from 'react'
 import PageTitle from '../_components/PageTitle'
@@ -16,6 +14,7 @@ type Props = {
 export default async function SettingsLayout({ children }: Props) {
   const session = await getServerSession(authOptions)
   const settings = await getSettings()
+  const version = await getVersion()
 
   if (!session?.user?.isAdmin && settings.test) {
     redirect('/')
@@ -29,24 +28,18 @@ export default async function SettingsLayout({ children }: Props) {
       />
       {settings.test && <SettingsNav />}
       {children}
-      <div className='mt-8 flex flex-col items-center gap-2'>
-        <a
-          href='https://github.com/RaunoT/plex-rewind/issues'
-          target='_blank'
-          className='link inline-flex gap-2'
-        >
-          <Image src={githubSvg} alt='GitHub' className='size-6' />
-          Report an issue on GitHub
-        </a>
 
-        <a
-          className='w-fit font-mono text-xs text-white/25'
-          href='https://github.com/RaunoT/plex-rewind/releases'
-          target='_blank'
-        >
-          {env('NEXT_PUBLIC_VERSION_TAG') || 'local'}
-        </a>
-      </div>
+      <a
+        className='mx-auto mt-4 block w-fit text-center text-sm text-white/25'
+        href='https://github.com/RaunoT/plex-rewind/releases'
+        target='_blank'
+      >
+        {version.hasUpdate && <span className='block'>Update available</span>}
+        <span className='font-mono text-xs'>
+          {version.currentVersion}
+          {version.hasUpdate && ` → ${version.latestVersion}`}
+        </span>
+      </a>
     </div>
   )
 }
