@@ -60,6 +60,10 @@
     @apply text-neutral-400 hover:text-neutral-500;
   }
 
+  .link-light {
+    @apply hover:opacity-80;
+  }
+
   .nav {
     @apply flex flex-wrap items-center justify-center gap-3 gap-y-1 text-xs font-medium uppercase sm:gap-4 sm:text-sm 2xl:text-base;
   }
