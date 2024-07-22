@@ -60,7 +60,10 @@ export default function MediaItem({
       <div className='w-20 flex-shrink-0 sm:w-[5.35rem] 2xl:w-24'>
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
-          className='img-w-fallback aspect-[2/3] w-full object-cover object-top'
+          className='aspect-[2/3] w-full object-cover object-top'
+          onError={(e) => {
+            e.currentTarget.src = '/placeholder.svg'
+          }}
           alt={
             type === 'users' ? data.user + ' avatar' : data.title + ' poster'
           }
