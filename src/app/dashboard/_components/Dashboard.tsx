@@ -69,7 +69,7 @@ export default function Dashboard({
             {totalDuration}
           </li>
         )}
-        {totalRequests && (
+        {!!totalRequests && (
           <li className='icon-stat-wrapper icon-stat-wrapper--clean'>
             <QuestionMarkCircleIcon />
             {totalRequests} requests
