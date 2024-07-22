@@ -26,7 +26,7 @@ export default function StoryAudio({
                 Audio
                 <MusicalNoteIcon />
               </span>{' '}
-              on <span className='text-yellow-500'>Plex</span>.
+              on <span className='gradient-plex'>Plex</span>.
             </p>
           </RewindStat>
 
@@ -71,7 +71,7 @@ export default function StoryAudio({
               Audio
               <MusicalNoteIcon />
             </span>{' '}
-            on <span className='text-yellow-500'>Plex</span> in the past year{' '}
+            on <span className='gradient-plex'>Plex</span> in the past year{' '}
             <span className='not-italic'>🥴</span>
           </p>
         </RewindStat>

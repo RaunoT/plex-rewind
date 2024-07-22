@@ -19,7 +19,7 @@
     }
 
     &--plex {
-      @apply from-yellow-500 via-yellow-600 to-neutral-700;
+      @apply from-yellow-500 to-yellow-700;
     }
   }
 
@@ -41,18 +41,24 @@
     }
   }
 
-  .rewind-stat {
-    @apply inline-block font-semibold text-black;
+  .gradient-rewind {
+    @apply bg-gradient-to-r from-blue-500 to-teal-400 bg-clip-text text-transparent;
+  }
 
-    font-size: 80%;
+  .gradient-plex {
+    @apply bg-gradient-to-r from-yellow-500 to-yellow-700 bg-clip-text text-transparent;
+  }
+
+  .rewind-stat {
+    @apply gradient-rewind inline-block;
   }
 
   .rewind-cat {
-    @apply inline-flex items-center text-teal-300;
+    @apply gradient-rewind inline-flex items-center;
 
     > img,
     > svg {
-      @apply ml-1 w-8;
+      @apply ml-1 w-8 text-[#2DACC8];
     }
   }
 
@@ -212,20 +218,6 @@
 
   .group-settings {
     @apply grid gap-4;
-  }
-
-  .img-w-fallback {
-    @apply relative;
-
-    &::before {
-      @apply absolute inset-0 bg-neutral-800 content-[''];
-    }
-
-    &::after {
-      @apply absolute inset-2 text-xs text-neutral-500;
-
-      content: 'image not found';
-    }
   }
 
   @keyframes move-bg {

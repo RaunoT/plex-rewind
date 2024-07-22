@@ -25,7 +25,7 @@ export default function StoryShows({
               <span className='rewind-stat'>
                 {userRewind.shows.duration}
               </span>{' '}
-              of your time on <span className='text-yellow-500'>Plex</span>.
+              of your time on <span className='gradient-plex'>Plex</span>.
             </p>
           </RewindStat>
 
@@ -70,7 +70,7 @@ export default function StoryShows({
               TV Shows
               <PlayCircleIcon />
             </span>{' '}
-            on <span className='text-yellow-500'>Plex</span> in the past year{' '}
+            on <span className='gradient-plex'>Plex</span> in the past year{' '}
             <span className='not-italic'>😥</span>
           </p>
         </RewindStat>

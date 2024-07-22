@@ -1,4 +1,3 @@
-import PlexRewindIcon from '@/app/icon.svg'
 import { RewindStory } from '@/types'
 import Image from 'next/image'
 import RewindStat from '../RewindStat'
@@ -26,10 +25,7 @@ export default function StoryWelcome({
         <p className='animate-fade-up animation-delay-600 mb-4'>
           Welcome to your{' '}
           <span className='whitespace-nowrap'>
-            <span className='rewind-cat text-yellow-500'>
-              Plex Rewind <Image src={PlexRewindIcon} alt='Plex Rewind icon' />
-            </span>
-            ,
+            <span className='gradient-plex'>Plex Rewind</span>,
           </span>{' '}
           <span className='whitespace-nowrap'>
             <span className='rewind-cat'>{userRewind.user.name}</span>!

@@ -6,6 +6,7 @@ import {
   FolderIcon,
   MusicalNoteIcon,
   PlayCircleIcon,
+  QuestionMarkCircleIcon,
   UserIcon,
 } from '@heroicons/react/24/outline'
 
@@ -14,6 +15,7 @@ type Props = {
   items?: TautulliItemRow[]
   totalDuration?: string
   totalSize?: string | null
+  totalRequests?: number
   type?: string
   serverId?: string
   count?: string
@@ -25,6 +27,7 @@ export default function Dashboard({
   items,
   totalDuration,
   totalSize,
+  totalRequests,
   type = '',
   serverId = '',
   count,
@@ -36,7 +39,7 @@ export default function Dashboard({
         {getTitleIcon(type)}
         {title}
       </h2>
-      <ul className='icon-stats-container mb-1 gap-3'>
+      <ul className='icon-stats-container mb-1 sm:gap-x-3'>
         {totalSize && (
           <li className='icon-stat-wrapper icon-stat-wrapper--clean'>
             <FolderIcon />
@@ -64,6 +67,12 @@ export default function Dashboard({
           <li className='icon-stat-wrapper icon-stat-wrapper--clean'>
             <ClockIcon />
             {totalDuration}
+          </li>
+        )}
+        {!!totalRequests && (
+          <li className='icon-stat-wrapper icon-stat-wrapper--clean'>
+            <QuestionMarkCircleIcon />
+            {totalRequests} requests
           </li>
         )}
       </ul>
