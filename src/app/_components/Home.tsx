@@ -118,7 +118,7 @@ export default function Home({ settings }: Props) {
         </div>
       )}
 
-      <div className='animate-fade-up animation-delay-300 mb-6'>
+      <div className='animate-fade-up animation-delay-300 mb-4'>
         <h1 className='flex items-center gap-3 text-[2.5rem] font-bold'>
           <Image
             src={plexSvg}

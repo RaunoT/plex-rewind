@@ -26,7 +26,7 @@ export default function StoryLibraries({
             <FolderIcon />
           </span>{' '}
           of all the available content on{' '}
-          <span className='text-yellow-500'>Plex</span> is{' '}
+          <span className='gradient-plex'>Plex</span> is{' '}
           <span className='whitespace-nowrap'>
             <span className='rewind-stat'>
               {bytesToSize(userRewind.libraries_total_size)}

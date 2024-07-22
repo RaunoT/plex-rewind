@@ -23,7 +23,7 @@ export default function StoryTotal({
               of <span className='rewind-stat'>
                 {userRewind.duration.user}
               </span>{' '}
-              on <span className='text-yellow-500'>Plex</span> in the past year!
+              on <span className='gradient-plex'>Plex</span> in the past year!
             </p>
           </RewindStat>
 
@@ -44,7 +44,7 @@ export default function StoryTotal({
         <RewindStat noScale>
           <p>
             You haven&apos;t played anything on{' '}
-            <span className='text-yellow-500'>Plex</span> in the past year{' '}
+            <span className='gradient-plex'>Plex</span> in the past year{' '}
             <span className='not-italic'>😫</span>
           </p>
         </RewindStat>
