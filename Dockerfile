@@ -58,8 +58,8 @@ RUN mkdir .next
 RUN mkdir .next/cache
 RUN chown -R nextjs:nodejs .next
 RUN chown -R nextjs:nodejs config
-RUN chmod -R 775 .next/cache
-RUN chmod -R 775 config
+RUN chmod -R 777 .next/cache
+RUN chmod -R 777 config
 
 # Automatically leverage output traces to reduce image size
 # https://nextjs.org/docs/advanced-features/output-file-tracing
