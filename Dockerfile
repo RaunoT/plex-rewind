@@ -53,13 +53,10 @@ RUN adduser --system --uid 1001 nextjs
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/config ./config
 
-# Set the correct permission for the config directory
-RUN chown -R nextjs:nodejs config
-RUN chmod -R 755 config
-
-# Set the correct permission for prerender cache
+# Set the correct permission for prerender cache and config
 RUN mkdir .next
-RUN chown nextjs:nodejs .next
+RUN chown -R nextjs:nodejs .next
+RUN chown -R nextjs:nodejs config
 
 # Automatically leverage output traces to reduce image size
 # https://nextjs.org/docs/advanced-features/output-file-tracing
