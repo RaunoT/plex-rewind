@@ -1,3 +1,4 @@
+import { Settings } from '@/types'
 import { env } from 'next-runtime-env'
 import path from 'path'
 
@@ -64,7 +65,7 @@ export const PLEX_PRODUCT_NAME = 'Plex Rewind'
 export const APP_URL = env('NEXT_PUBLIC_SITE_URL') || 'http://localhost:8383'
 
 export const SETTINGS_PATH = path.join(process.cwd(), 'config/settings.json')
-export const DEFAULT_SETTINGS = {
+export const DEFAULT_SETTINGS: Settings = {
   connection: {
     tautulliUrl: '',
     tautulliApiKey: '',
@@ -77,7 +78,7 @@ export const DEFAULT_SETTINGS = {
     isDashboardActive: true,
     isUsersPageActive: true,
     activeLibraries: [],
-    activeDashboardStatistics: [
+    activeDashboardItemStatistics: [
       'year',
       'rating',
       'duration',
@@ -85,6 +86,7 @@ export const DEFAULT_SETTINGS = {
       'users',
       'requests',
     ],
+    activeDashboardTotalStatistics: ['size', 'duration', 'count', 'requests'],
     dashboardDefaultPeriod: '30',
     googleAnalyticsId: '',
   },

@@ -95,8 +95,10 @@ export default async function RewindPage({ searchParams }: Props) {
     server_id: serverId,
     user: user,
   }
+  const isOverseerrActive =
+    settings.connection.overseerrUrl && settings.connection.overseerrApiKey
 
-  if (settings.connection.overseerrUrl) {
+  if (isOverseerrActive) {
     const requestTotals = await getRequestsTotals(user.id)
 
     userRewind.requests = requestTotals

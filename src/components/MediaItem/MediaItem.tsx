@@ -43,6 +43,8 @@ export default function MediaItem({
   }&width=300`
   const [dataKey, setDataKey] = useState<number>(0)
   const titleContainerRef = useRef<HTMLDivElement>(null)
+  const isOverseerrActive =
+    settings.connection.overseerrUrl && settings.connection.overseerrApiKey
 
   useEffect(() => {
     setDataKey((prevDataKey) => prevDataKey + 1)
@@ -81,7 +83,7 @@ export default function MediaItem({
         {(type === 'movie' || type === 'show') && (
           <div className='relative z-10 mb-3 flex items-center gap-2'>
             {data.is_deleted ? (
-              settings.connection.overseerrUrl ? (
+              isOverseerrActive ? (
                 <a
                   href={`${settings.connection.overseerrUrl}/${
                     type === 'movie' ? 'movie' : 'tv'

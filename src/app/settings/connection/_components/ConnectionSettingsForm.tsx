@@ -24,7 +24,7 @@ export default function ConnectionSettingsForm({ settings }: Props) {
             required
             defaultValue={connectionSettings.tautulliUrl}
           />
-          <span className='label'>Tautulli URL</span>
+          <span className='label'>URL</span>
         </label>
         <label className='input-wrapper'>
           <input
@@ -34,7 +34,7 @@ export default function ConnectionSettingsForm({ settings }: Props) {
             required
             defaultValue={connectionSettings.tautulliApiKey}
           />
-          <span className='label'>Tautulli API key</span>
+          <span className='label'>API key</span>
         </label>
       </section>
       <section className='group-settings group'>
@@ -47,7 +47,7 @@ export default function ConnectionSettingsForm({ settings }: Props) {
             defaultValue={connectionSettings.tmdbApiKey}
             required
           />
-          <span className='label'>TMDB API key</span>
+          <span className='label'>API key</span>
         </label>
       </section>
       <section className='group-settings group'>
@@ -60,7 +60,7 @@ export default function ConnectionSettingsForm({ settings }: Props) {
             name='overseerrUrl'
             defaultValue={connectionSettings.overseerrUrl}
           />
-          <span className='label'>Overseerr URL</span>
+          <span className='label'>URL</span>
         </label>
         <label className='input-wrapper'>
           <input
@@ -69,7 +69,7 @@ export default function ConnectionSettingsForm({ settings }: Props) {
             name='overseerrApiKey'
             defaultValue={connectionSettings.overseerrApiKey}
           />
-          <span className='label'>Overseerr API key</span>
+          <span className='label'>API key</span>
         </label>
       </section>
     </SettingsForm>

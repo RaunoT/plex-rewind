@@ -109,12 +109,29 @@ export type ConnectionSettings = {
   tmdbApiKey: string
 }
 
+// Define the allowed strings for each type
+export type DashboardItemStatistics = (
+  | 'year'
+  | 'rating'
+  | 'duration'
+  | 'plays'
+  | 'users'
+  | 'requests'
+)[]
+export type DashboardTotalStatistics = (
+  | 'size'
+  | 'duration'
+  | 'count'
+  | 'requests'
+)[]
+
 export type FeaturesSettings = {
   isRewindActive: boolean
   isDashboardActive: boolean
   isUsersPageActive: boolean
   activeLibraries: string[]
-  activeDashboardStatistics: string[]
+  activeDashboardItemStatistics: DashboardItemStatistics
+  activeDashboardTotalStatistics: DashboardTotalStatistics
   dashboardDefaultPeriod: string
   googleAnalyticsId: string
 }
