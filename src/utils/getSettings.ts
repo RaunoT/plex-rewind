@@ -25,12 +25,10 @@ export default async function getSettings(): Promise<Settings> {
 
         return DEFAULT_SETTINGS
       } else {
-        console.error('Error reading settings file:', error)
         throw new Error('Could not read settings file')
       }
     }
   } catch (error) {
-    console.error('Failed to handle settings file:', error)
     throw new Error('Unexpected error handling settings file')
   }
 }
