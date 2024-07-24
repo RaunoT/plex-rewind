@@ -1,3 +1,4 @@
+import { DashboardItemStatistics, DashboardTotalStatistics } from '@/types'
 import { env } from 'next-runtime-env'
 import path from 'path'
 
@@ -77,14 +78,20 @@ export const DEFAULT_SETTINGS = {
     isDashboardActive: true,
     isUsersPageActive: true,
     activeLibraries: [],
-    activeDashboardStatistics: [
+    activeDashboardItemStatistics: [
       'year',
       'rating',
       'duration',
       'plays',
       'users',
       'requests',
-    ],
+    ] as DashboardItemStatistics,
+    activeDashboardTotalStatistics: [
+      'size',
+      'duration',
+      'count',
+      'requests',
+    ] as DashboardTotalStatistics,
     dashboardDefaultPeriod: '30',
     googleAnalyticsId: '',
   },

@@ -42,8 +42,8 @@ export function removeAfterMinutes(timeString: string): string {
   return timeString.replace(/mins.*/, 'mins')
 }
 
-export function bytesToSize(bytes: number, decimals = 2): string | null {
-  if (!+bytes) return null
+export function bytesToSize(bytes: number, decimals = 2): string | undefined {
+  if (!+bytes) return
 
   const k = 1024
   const dm = decimals < 0 ? 0 : decimals

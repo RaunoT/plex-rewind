@@ -13,6 +13,8 @@ type Props = {
 
 export default function FeaturesSettingsForm({ settings, libraries }: Props) {
   const featuresSettings = settings.features
+  const isOverseerrActive =
+    settings.connection.overseerrUrl && settings.connection.overseerrApiKey
 
   return (
     <SettingsForm settings={settings} action={saveFeaturesSettings}>
@@ -69,9 +71,9 @@ export default function FeaturesSettingsForm({ settings, libraries }: Props) {
         </Switch>
         <CheckboxGroup
           className='input-wrapper'
-          name='activeDashboardStatistics'
+          name='activeDashboardItemStatistics'
           defaultValue={
-            featuresSettings.activeDashboardStatistics || [
+            featuresSettings.activeDashboardItemStatistics || [
               'year',
               'rating',
               'duration',
@@ -102,15 +104,48 @@ export default function FeaturesSettingsForm({ settings, libraries }: Props) {
               <div className='checkbox' aria-hidden='true'></div>
               Users
             </Checkbox>
-            {settings.connection.overseerrUrl &&
-              settings.connection.overseerrApiKey && (
-                <Checkbox value='requests' className='checkbox-wrapper'>
-                  <div className='checkbox' aria-hidden='true'></div>
-                  Requests
-                </Checkbox>
-              )}
+            {isOverseerrActive && (
+              <Checkbox value='requests' className='checkbox-wrapper'>
+                <div className='checkbox' aria-hidden='true'></div>
+                Requests
+              </Checkbox>
+            )}
           </div>
-          <Label className='label label--start'>Statistics</Label>
+          <Label className='label label--start'>Item statistics</Label>
+        </CheckboxGroup>
+        <CheckboxGroup
+          className='input-wrapper'
+          name='activeDashboardTotalStatistics'
+          defaultValue={
+            featuresSettings.activeDashboardTotalStatistics || [
+              'size',
+              'duration',
+              'count',
+              'requests',
+            ]
+          }
+        >
+          <div className='peer mr-auto flex flex-wrap gap-2'>
+            <Checkbox value='size' className='checkbox-wrapper'>
+              <div className='checkbox' aria-hidden='true'></div>
+              Size
+            </Checkbox>
+            <Checkbox value='duration' className='checkbox-wrapper'>
+              <div className='checkbox' aria-hidden='true'></div>
+              Duration
+            </Checkbox>
+            <Checkbox value='count' className='checkbox-wrapper'>
+              <div className='checkbox' aria-hidden='true'></div>
+              Count
+            </Checkbox>
+            {isOverseerrActive && (
+              <Checkbox value='requests' className='checkbox-wrapper'>
+                <div className='checkbox' aria-hidden='true'></div>
+                Requests
+              </Checkbox>
+            )}
+          </div>
+          <Label className='label label--start'>Totals statistics</Label>
         </CheckboxGroup>
         <label className='input-wrapper'>
           <input

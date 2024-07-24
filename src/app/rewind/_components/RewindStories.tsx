@@ -48,13 +48,15 @@ export default function RewindStories({ userRewind, settings }: Props) {
     }
   }
 
+  const isOverseerrActive =
+    settings.connection.overseerrUrl && settings.connection.overseerrApiKey
   const stories = [
     createStory(StoryWelcome, 5000),
     createStory(StoryTotal, 8000),
     ...(userRewind.libraries_total_size
       ? [createStory(StoryLibraries, 9000)]
       : []),
-    ...(settings.connection.overseerrUrl
+    ...(isOverseerrActive
       ? [createStory(StoryRequests, userRewind.requests?.total ? 9000 : 4000)]
       : []),
     ...(userRewind.duration.user
