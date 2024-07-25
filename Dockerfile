@@ -56,7 +56,6 @@ COPY --from=builder /app/config ./config
 # Set the correct permission for prerender cache and config
 RUN mkdir .next
 RUN chown -R nextjs:nodejs .next
-RUN chown -R nextjs:nodejs config
 
 # Automatically leverage output traces to reduce image size
 # https://nextjs.org/docs/advanced-features/output-file-tracing
