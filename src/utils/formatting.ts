@@ -75,20 +75,3 @@ export function pluralize(value: number, string: string): string {
     return `${value} ${string}`
   }
 }
-
-export function getPeriodValue(period: string, customPeriod: number): number {
-  switch (period) {
-    case '7days':
-      return 7
-    case '30days':
-      return 30
-    case 'pastYear':
-      return 365
-    case 'allTime':
-      return Infinity
-    case 'customPeriod':
-      return customPeriod
-    default:
-      return 0
-  }
-}
