@@ -18,7 +18,8 @@ const schema = z.object({
   activeLibraries: z.array(z.string()),
   activeDashboardItemStatistics: z.array(z.string()),
   activeDashboardTotalStatistics: z.array(z.string()),
-  dashboardDefaultPeriod: z.string().refine(
+  dashboardDefaultPeriod: z.string(),
+  dashboardCustomPeriod: z.string().refine(
     (value) => {
       const number = parseFloat(value)
 
@@ -47,6 +48,7 @@ export async function saveFeaturesSettings(
       'activeDashboardTotalStatistics',
     ) as DashboardTotalStatistics,
     dashboardDefaultPeriod: formData.get('dashboardDefaultPeriod') as string,
+    dashboardCustomPeriod: formData.get('dashboardCustomPeriod') as string,
     googleAnalyticsId: formData.get('googleAnalyticsId') as string,
   }
 

@@ -124,7 +124,13 @@
   }
 
   .input-wrapper {
-    @apply flex flex-col-reverse gap-2 sm:flex-row-reverse sm:items-center;
+    @apply relative flex flex-col-reverse gap-2 sm:flex-row-reverse sm:items-center;
+
+    &--select::after {
+      @apply absolute inset-y-2 right-12 -mr-px h-auto w-px bg-neutral-300;
+
+      content: '';
+    }
   }
 
   .label {
@@ -291,4 +297,21 @@
   .animation-delay-2000 {
     animation-delay: 2s;
   }
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  @apply appearance-none;
+}
+
+input[type='number'] {
+  appearance: textfield;
+}
+
+select.input {
+  @apply relative cursor-pointer appearance-none bg-no-repeat pr-12;
+
+  background-image: url('data:image/svg+xml;charset=US-ASCII,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23D4D4D4"><path d="M7 10l5 5 5-5z"/></svg>');
+  background-position: right 12px center;
+  background-size: 24px;
 }
