@@ -107,6 +107,10 @@
     @apply ring-1 ring-neutral-300;
   }
 
+  .required::after {
+    @apply ml-1 align-text-bottom text-red-500 content-['*'];
+  }
+
   .input {
     @apply block w-full rounded-xl border-none bg-neutral-500 px-3 py-2 placeholder:text-neutral-400 focus-within:bg-neutral-400;
 
@@ -118,15 +122,19 @@
       }
     }
 
-    &[required] + .label::after {
-      @apply ml-1 align-text-bottom text-red-500 content-['*'];
+    &[required] + .label {
+      @apply required;
     }
   }
 
   .input-wrapper {
     @apply relative flex flex-col-reverse gap-2 sm:flex-row-reverse sm:items-center;
+  }
 
-    &--select::after {
+  .select-wrapper {
+    @apply relative w-full;
+
+    &::after {
       @apply absolute inset-y-2 right-12 -mr-px h-auto w-px bg-neutral-300;
 
       content: '';

@@ -147,19 +147,21 @@ export default function FeaturesSettingsForm({ settings, libraries }: Props) {
           </div>
           <Label className='label label--start'>Totals statistics</Label>
         </CheckboxGroup>
-        <div className='input-wrapper input-wrapper--select'>
-          <select
-            className='input'
-            name='dashboardDefaultPeriod'
-            defaultValue={featuresSettings.dashboardDefaultPeriod || 'custom'}
-            required
-          >
-            <option value='7days'>7 days</option>
-            <option value='custom'>Custom period</option>
-            <option value='pastYear'>Past year</option>
-            <option value='allTime'>All time</option>
-          </select>
-          <span className='label'>Default period</span>
+        <div className='input-wrapper'>
+          <div className='select-wrapper'>
+            <select
+              className='input'
+              name='dashboardDefaultPeriod'
+              defaultValue={featuresSettings.dashboardDefaultPeriod || 'custom'}
+              required
+            >
+              <option value='7days'>7 days</option>
+              <option value='custom'>Custom period</option>
+              <option value='pastYear'>Past year</option>
+              <option value='allTime'>All time</option>
+            </select>
+          </div>
+          <span className='label required'>Default period</span>
         </div>
         <label className='input-wrapper'>
           <input
