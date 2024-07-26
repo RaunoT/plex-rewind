@@ -6,20 +6,20 @@ export default function getPeriod(
   settings: Settings,
 ) {
   const periodSearchParams = searchParams?.period
-  const customPeriod = parseInt(settings.features.dashboardDefaultPeriod)
+  const defaultPeriod = parseInt(settings.features.dashboardDefaultPeriod)
   let period = PERIODS['30days']
 
   if (periodSearchParams && PERIODS[periodSearchParams]) {
     period = PERIODS[periodSearchParams]
-  } else if (customPeriod) {
+  } else if (defaultPeriod) {
     const DAYS_AGO_CUSTOM: Date = new Date(
-      new Date().setDate(new Date().getDate() - customPeriod),
+      new Date().setDate(new Date().getDate() - defaultPeriod),
     )
 
     period = {
       date: DAYS_AGO_CUSTOM.toISOString(),
       string: DAYS_AGO_CUSTOM.toISOString().split('T')[0],
-      daysAgo: customPeriod,
+      daysAgo: defaultPeriod,
     }
   }
 

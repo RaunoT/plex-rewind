@@ -133,6 +133,7 @@ export type FeaturesSettings = {
   activeDashboardItemStatistics: DashboardItemStatistics
   activeDashboardTotalStatistics: DashboardTotalStatistics
   dashboardDefaultPeriod: string
+  dashboardCustomPeriod: string
   googleAnalyticsId: string
 }
 
