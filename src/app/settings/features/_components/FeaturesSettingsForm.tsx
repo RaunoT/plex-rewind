@@ -147,7 +147,7 @@ export default function FeaturesSettingsForm({ settings, libraries }: Props) {
           </div>
           <Label className='label label--start'>Totals statistics</Label>
         </CheckboxGroup>
-        <div className='input-wrapper'>
+        <div className='input-wrapper input-wrapper--select'>
           <select
             className='input'
             name='dashboardDefaultPeriod'
