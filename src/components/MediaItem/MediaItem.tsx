@@ -15,9 +15,11 @@ import {
 } from '@heroicons/react/24/outline'
 import clsx from 'clsx'
 import { motion } from 'framer-motion'
+import Image from 'next/image'
 import { useEffect, useRef, useState } from 'react'
 import MediaItemTitle from './MediaItemTitle'
 import PlexDeeplink from './PlexDeeplink'
+import placeholderSvg from './placeholder.svg'
 
 type Props = {
   data: TautulliItemRow
@@ -45,6 +47,9 @@ export default function MediaItem({
   const titleContainerRef = useRef<HTMLDivElement>(null)
   const isOverseerrActive =
     settings.connection.overseerrUrl && settings.connection.overseerrApiKey
+  const [imageSrc, setImageSrc] = useState(
+    `/api/image?url=${encodeURIComponent(posterSrc)}`,
+  )
 
   useEffect(() => {
     setDataKey((prevDataKey) => prevDataKey + 1)
@@ -59,20 +64,19 @@ export default function MediaItem({
       animate='show'
       transition={{ delay: i * 0.075 }}
     >
-      <div className='w-20 flex-shrink-0 sm:w-[5.35rem] 2xl:w-24'>
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          className='aspect-[2/3] w-full object-cover object-top'
-          onError={(e) => {
-            e.currentTarget.src = '/placeholder.svg'
-          }}
+      <div className='relative aspect-[2/3] h-full w-20 flex-shrink-0 sm:w-[5.35rem] 2xl:w-24'>
+        <Image
+          fill
+          className='object-cover object-top'
           alt={
             type === 'users' ? data.user + ' avatar' : data.title + ' poster'
           }
-          src={posterSrc}
+          src={imageSrc}
+          sizes='10rem'
+          onError={() => setImageSrc(placeholderSvg)}
+          priority
         />
       </div>
-
       <div className='overflow-hidden' ref={titleContainerRef}>
         <MediaItemTitle
           i={i}
