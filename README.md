@@ -54,6 +54,12 @@ services:
 
 > _NOTE: If you run into authentication issues, try setting `NEXTAUTH_URL` and `NEXT_PUBLIC_SITE_URL` to your external Docker IP, instead of localhost. For example `http://192.168.1.1:8383`._
 
+### Unraid
+
+Plex Rewind is available in the Community Apps store for Unraid. Search for "Plex Rewind" and install it from grtgbln's repository.
+
+As noted in the installation instructions, you will need to download a copy of "settings.json" into the associated settings path **before** running the application. To download the file, you can open a terminal, enter the directory and run `curl -o settings.json https://raw.githubusercontent.com/RaunoT/plex-rewind/main/config/settings.json.sample`.
+
 ## Updating
 
 To update, run `docker compose pull` and then `docker compose up -d`.
