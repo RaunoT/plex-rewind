@@ -14,13 +14,17 @@ const nextConfig = {
         protocol: 'https',
         hostname: 'plex.tv',
       },
+      {
+        protocol: 'https',
+        hostname: 'image.tmdb.org',
+      },
     ],
   },
-  logging: {
-    fetches: {
-      fullUrl: true,
-    },
-  },
+  // logging: {
+  //   fetches: {
+  //     fullUrl: true,
+  //   },
+  // },
   async headers() {
     return [
       {
