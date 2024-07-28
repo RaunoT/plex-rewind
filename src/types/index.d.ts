@@ -41,7 +41,13 @@ export type RewindStory = {
 }
 
 export type TmdbItem = {
-  results: [{ id: number; vote_average: number; first_air_date: string }]
+  results: [
+    {
+      id: number
+      vote_average: number
+      first_air_date: number
+    },
+  ]
 }
 
 export type TmdbExternalId = { imdb_id: string }
@@ -53,16 +59,16 @@ export type TautulliItem = {
 
 export type TautulliItemRow = {
   title: string
-  year: number
+  year: number | null
   total_plays: number
   total_duration: number
   users_watched: number | undefined
   rating_key: number
   thumb: string
   is_deleted: boolean
-  rating: string
-  tmdb_id: number
-  imdb_id: string
+  rating: string | null
+  tmdb_id: number | null
+  imdb_id: string | null
   user_thumb: string
   user: string
   requests: number

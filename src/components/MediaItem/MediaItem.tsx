@@ -40,16 +40,19 @@ export default function MediaItem({
   settings,
 }: Props) {
   const tautulliUrl = settings.connection.tautulliUrl
-  const posterSrc = `${tautulliUrl}/pms_image_proxy?img=${
-    type === 'users' ? data.user_thumb : data.thumb
-  }&width=300`
+  const isTmdbPoster = data.thumb?.startsWith('https://image.tmdb.org')
+  const posterSrc = isTmdbPoster
+    ? data.thumb
+    : `/api/image?url=${encodeURIComponent(
+        `${tautulliUrl}/pms_image_proxy?img=${
+          type === 'users' ? data.user_thumb : data.thumb
+        }&width=300`,
+      )}`
   const [dataKey, setDataKey] = useState<number>(0)
   const titleContainerRef = useRef<HTMLDivElement>(null)
   const isOverseerrActive =
     settings.connection.overseerrUrl && settings.connection.overseerrApiKey
-  const [imageSrc, setImageSrc] = useState(
-    `/api/image?url=${encodeURIComponent(posterSrc)}`,
-  )
+  const [imageSrc, setImageSrc] = useState(posterSrc)
 
   useEffect(() => {
     setDataKey((prevDataKey) => prevDataKey + 1)

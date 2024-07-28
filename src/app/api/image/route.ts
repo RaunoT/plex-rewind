@@ -7,26 +7,19 @@ export async function GET(request: Request) {
       return new Response('URL parameter is missing', { status: 400 })
     }
 
-    const response = await fetch(url)
+    const res = await fetch(url)
 
-    if (!response.ok) {
+    if (!res.ok) {
       return new Response('Failed to fetch the image', {
-        status: response.status,
+        status: res.status,
       })
     }
 
-    const contentType = response.headers.get('Content-Type')
-    if (!contentType || !contentType.startsWith('image/')) {
-      return new Response('The requested resource is not a valid image', {
-        status: 400,
-      })
-    }
-
-    const headers = new Headers(response.headers)
-    const body = await response.arrayBuffer()
+    const headers = new Headers(res.headers)
+    const body = await res.arrayBuffer()
 
     return new Response(body, {
-      status: response.status,
+      status: res.status,
       headers: headers,
     })
   } catch (error) {
