@@ -48,7 +48,8 @@ export default function FeaturesSettingsForm({ settings, libraries }: Props) {
           <span className='label'>
             TMDB only posters
             <small>
-              Ignore Plex posters for tv/movies. Otherwise TMDB is a fallback.
+              Ignore Plex posters for tv/movies.
+              <br /> By default, TMDB is a fallback.
             </small>
           </span>
         </Switch>
