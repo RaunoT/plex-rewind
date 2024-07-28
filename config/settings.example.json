@@ -23,7 +23,8 @@
     "dashboardDefaultPeriod": "custom",
     "dashboardCustomPeriod": "30",
     "googleAnalyticsId": "",
-    "isPostersTmdbOnly": false
+    "isPostersTmdbOnly": false,
+    "isRewindLibrariesSizeAndCountActive": true
   },
   "test": false
 }

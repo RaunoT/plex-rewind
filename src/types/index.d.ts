@@ -142,6 +142,7 @@ export type FeaturesSettings = {
   dashboardCustomPeriod: string
   googleAnalyticsId: string
   isPostersTmdbOnly: boolean
+  isRewindLibrariesSizeAndCountActive: boolean
 }
 
 export type Settings = {
