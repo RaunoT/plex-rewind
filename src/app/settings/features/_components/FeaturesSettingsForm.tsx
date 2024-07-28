@@ -73,7 +73,7 @@ export default function FeaturesSettingsForm({ settings, libraries }: Props) {
           <span className='label'>
             Libraries size & count card
             <small>
-              Disable, if you don&apos;t want to rely on Tautulli for these
+              Disable if you don&apos;t want to rely on Tautulli for these
               stats.
             </small>
           </span>
