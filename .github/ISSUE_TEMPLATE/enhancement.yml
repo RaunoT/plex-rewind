@@ -1,6 +1,6 @@
 name: ✨ Feature request
 description: Suggest an enhancement, improvement or idea
-labels: ['type:enhancement', 'awaiting-triage']
+labels: ['type:enhancement', 'awaiting triage']
 body:
   - type: textarea
     id: description
