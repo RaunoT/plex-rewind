@@ -43,18 +43,16 @@ export default function MediaItem({
   const isTmdbPoster = data.thumb?.startsWith('https://image.tmdb.org')
   const posterSrc = isTmdbPoster
     ? data.thumb
-    : `${tautulliUrl}/pms_image_proxy?img=${
-        type === 'users' ? data.user_thumb : data.thumb
-      }&width=300`
+    : `/api/image?url=${encodeURIComponent(
+        `${tautulliUrl}/pms_image_proxy?img=${
+          type === 'users' ? data.user_thumb : data.thumb
+        }&width=300`,
+      )}`
   const [dataKey, setDataKey] = useState<number>(0)
   const titleContainerRef = useRef<HTMLDivElement>(null)
   const isOverseerrActive =
     settings.connection.overseerrUrl && settings.connection.overseerrApiKey
-  const [imageSrc, setImageSrc] = useState(
-    isTmdbPoster
-      ? posterSrc
-      : `/api/image?url=${encodeURIComponent(posterSrc)}`,
-  )
+  const [imageSrc, setImageSrc] = useState(posterSrc)
 
   useEffect(() => {
     setDataKey((prevDataKey) => prevDataKey + 1)

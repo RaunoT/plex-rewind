@@ -64,7 +64,7 @@ export type TautulliItemRow = {
   total_duration: number
   users_watched: number | undefined
   rating_key: number
-  thumb: string | undefined
+  thumb: string
   is_deleted: boolean
   rating: string | null
   tmdb_id: number | null
