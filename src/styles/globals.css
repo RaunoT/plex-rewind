@@ -142,10 +142,14 @@
   }
 
   .label {
-    @apply shrink-0 text-xs text-neutral-300 peer-focus-within:text-white sm:w-48 sm:text-right sm:text-sm;
+    @apply text-xs text-neutral-300 peer-focus-within:text-white sm:w-48 sm:shrink-0 sm:text-right sm:text-sm;
 
     &--start {
       @apply mt-0.5 self-start;
+    }
+
+    > small {
+      @apply block text-xs text-neutral-400;
     }
   }
 
@@ -153,7 +157,7 @@
     @apply flex w-fit items-center justify-end gap-2 sm:flex-row-reverse;
 
     .indicator {
-      @apply relative h-6 w-12 cursor-pointer rounded-full bg-neutral-500;
+      @apply relative h-6 w-12 shrink-0 cursor-pointer rounded-full bg-neutral-500;
 
       &::after {
         @apply absolute inset-y-0 left-0.5 my-auto size-5 rounded-full bg-white transition content-[''];

@@ -30,6 +30,7 @@ const schema = z.object({
     },
   ),
   googleAnalyticsId: z.string(),
+  isPostersTmdbOnly: z.boolean(),
 })
 
 export async function saveFeaturesSettings(
@@ -50,6 +51,7 @@ export async function saveFeaturesSettings(
     dashboardDefaultPeriod: formData.get('dashboardDefaultPeriod') as string,
     dashboardCustomPeriod: formData.get('dashboardCustomPeriod') as string,
     googleAnalyticsId: formData.get('googleAnalyticsId') as string,
+    isPostersTmdbOnly: formData.get('isPostersTmdbOnly') === 'on',
   }
 
   // Save settings
