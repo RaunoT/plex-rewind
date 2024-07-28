@@ -1,4 +1,4 @@
-import { SearchParams, TautulliItem } from '@/types'
+import { SearchParams, Settings, TautulliItem } from '@/types'
 import {
   fetchOverseerrUserId,
   fetchPaginatedOverseerrStats,
@@ -47,8 +47,10 @@ async function getUsers(
     getLibrariesByType('artist'),
   ])
   let usersRequestsCounts: UserRequestCounts[] = []
+  const isOverseerrActive =
+    settings.connection.overseerrUrl && settings.connection.overseerrApiKey
 
-  if (settings.connection.overseerrUrl) {
+  if (isOverseerrActive) {
     const overseerrUserIds = await Promise.all(
       users.map(async (user) => {
         const overseerrId = await fetchOverseerrUserId(String(user.user_id))
@@ -133,30 +135,48 @@ async function getUsers(
   return users
 }
 
-async function getTotalDuration(period: string) {
-  const totalDuration = await fetchTautulli<{ total_duration: string }>(
-    'get_history',
-    {
-      after: period,
-      length: 0,
-    },
-  )
+async function getTotalDuration(period: string, settings: Settings) {
+  if (settings.features.activeDashboardTotalStatistics.includes('duration')) {
+    const totalDuration = await fetchTautulli<{ total_duration: string }>(
+      'get_history',
+      {
+        after: period,
+        length: 0,
+      },
+    )
 
-  return secondsToTime(
-    timeToSeconds(totalDuration?.response?.data?.total_duration || '0'),
-  )
+    return secondsToTime(
+      timeToSeconds(totalDuration?.response?.data?.total_duration || '0'),
+    )
+  }
+
+  return undefined
 }
 
-async function getUsersCount() {
-  const usersCount = await fetchTautulli<[]>('get_users')
+async function getUsersCount(settings: Settings) {
+  if (settings.features.activeDashboardTotalStatistics.includes('count')) {
+    const usersCount = await fetchTautulli<[]>('get_users')
 
-  return usersCount?.response?.data.slice(1).length || 0
+    return usersCount?.response?.data.slice(1).length
+  }
+
+  return undefined
 }
 
-async function getTotalRequests(period: string) {
-  const requests = await fetchPaginatedOverseerrStats('request', period)
+async function getTotalRequests(period: string, settings: Settings) {
+  const isOverseerrActive =
+    settings.connection.overseerrUrl && settings.connection.overseerrApiKey
 
-  return requests.length
+  if (
+    settings.features.activeDashboardTotalStatistics.includes('requests') &&
+    isOverseerrActive
+  ) {
+    const requests = await fetchPaginatedOverseerrStats('request', period)
+
+    return requests.length.toString()
+  }
+
+  return undefined
 }
 
 type Props = {
@@ -174,9 +194,9 @@ async function DashboardUsersContent({ searchParams }: Props) {
   const [usersData, totalDuration, usersCount, totalRequests] =
     await Promise.all([
       getUsers(period.daysAgo, period.date, period.string),
-      getTotalDuration(period.string),
-      getUsersCount(),
-      getTotalRequests(period.date),
+      getTotalDuration(period.string, settings),
+      getUsersCount(settings),
+      getTotalRequests(period.date, settings),
     ])
 
   return (
@@ -184,10 +204,10 @@ async function DashboardUsersContent({ searchParams }: Props) {
       title='Users'
       items={usersData}
       totalDuration={totalDuration}
-      count={String(usersCount)}
+      totalSize={usersCount}
       type='users'
       settings={settings}
-      totalRequests={totalRequests}
+      count={totalRequests}
     />
   )
 }

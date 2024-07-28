@@ -106,7 +106,7 @@ export default function Home({ settings }: Props) {
   return (
     <div className='flex flex-col items-center text-center'>
       {session?.user?.image && (
-        <div className='animate-fade-up relative mb-5 size-24'>
+        <div className='animate-fade-up relative mb-6 size-24'>
           <Image
             src={session?.user?.image}
             alt={`${session?.user?.name} profile picture`}
@@ -118,17 +118,15 @@ export default function Home({ settings }: Props) {
         </div>
       )}
 
-      <div className='animate-fade-up animation-delay-300 mb-4'>
-        <h1 className='flex items-center gap-3 text-[2.5rem] font-bold'>
-          <Image
-            src={plexSvg}
-            className='-mb-1.5 h-[2.3rem] w-auto sm:-mb-2'
-            alt='Plex logo'
-            priority
-          />
-          <span>rewind</span>
-        </h1>
-      </div>
+      <h1 className='animate-fade-up animation-delay-300 mb-6 text-[2.5rem] font-bold leading-none'>
+        <Image
+          src={plexSvg}
+          className='mb-0.5 mr-3 inline h-[2.25rem] w-auto'
+          alt='Plex logo'
+          priority
+        />
+        <span>rewind</span>
+      </h1>
 
       <div className='animate-fade-in animation-delay-600'>
         {!isLoggedIn && (

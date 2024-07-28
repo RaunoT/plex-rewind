@@ -14,9 +14,8 @@ type Props = {
   title: string
   items?: TautulliItemRow[]
   totalDuration?: string
-  totalSize?: string | null
-  totalRequests?: number
-  type?: string
+  totalSize?: string | number
+  type: 'movie' | 'show' | 'artist' | 'users'
   serverId?: string
   count?: string
   settings: Settings
@@ -27,8 +26,7 @@ export default function Dashboard({
   items,
   totalDuration,
   totalSize,
-  totalRequests,
-  type = '',
+  type,
   serverId = '',
   count,
   settings,
@@ -42,8 +40,9 @@ export default function Dashboard({
       <ul className='icon-stats-container mb-1 sm:gap-x-3'>
         {totalSize && (
           <li className='icon-stat-wrapper icon-stat-wrapper--clean'>
-            <FolderIcon />
+            {type === 'users' ? <UserIcon /> : <FolderIcon />}
             {totalSize}
+            {type === 'users' && ' users'}
           </li>
         )}
         {count && (
@@ -58,7 +57,7 @@ export default function Dashboard({
                     ? 'episodes'
                     : type === 'artist'
                       ? 'tracks'
-                      : 'users'}
+                      : 'requests'}
               </span>
             </span>
           </li>
@@ -67,12 +66,6 @@ export default function Dashboard({
           <li className='icon-stat-wrapper icon-stat-wrapper--clean'>
             <ClockIcon />
             {totalDuration}
-          </li>
-        )}
-        {!!totalRequests && (
-          <li className='icon-stat-wrapper icon-stat-wrapper--clean'>
-            <QuestionMarkCircleIcon />
-            {totalRequests} requests
           </li>
         )}
       </ul>
@@ -105,7 +98,7 @@ function getTitleIcon(type: string) {
       return <PlayCircleIcon className={className} />
     case 'artist':
       return <MusicalNoteIcon className={className} />
-    default:
+    case 'users':
       return <UserIcon className={className} />
   }
 }
@@ -118,7 +111,7 @@ function getCountIcon(type: string) {
       return <PlayCircleIcon />
     case 'artist':
       return <MusicalNoteIcon />
-    default:
-      return <UserIcon />
+    case 'users':
+      return <QuestionMarkCircleIcon />
   }
 }

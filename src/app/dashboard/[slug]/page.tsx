@@ -42,10 +42,17 @@ async function DashboardContent({ params, searchParams }: Props) {
   const period = getPeriod(searchParams, settings)
   const [items, totalDuration, totalSize, serverId] = await Promise.all([
     getItems(library, period.daysAgo),
-    getTotalDuration(library, period.string),
-    getTotalSize(library),
+    getTotalDuration(library, period.string, settings),
+    getTotalSize(library, settings),
     getServerId(),
   ])
+  const isCountActive =
+    settings.features.activeDashboardTotalStatistics.includes('count')
+  const countValue =
+    library.section_type === 'movie'
+      ? Number(library.count)
+      : Number(library.child_count)
+  const count = isCountActive ? countValue.toLocaleString('en-US') : undefined
 
   return (
     <Dashboard
@@ -55,11 +62,7 @@ async function DashboardContent({ params, searchParams }: Props) {
       totalSize={totalSize}
       type={library.section_type}
       serverId={serverId}
-      count={
-        library.section_type === 'movie'
-          ? Number(library.count).toLocaleString('en-US')
-          : Number(library.child_count).toLocaleString('en-US')
-      }
+      count={count}
       settings={settings}
     />
   )

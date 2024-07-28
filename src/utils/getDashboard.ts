@@ -1,4 +1,4 @@
-import { Library, TautulliItem } from '@/types'
+import { Library, Settings, TautulliItem } from '@/types'
 import fetchTautulli from './fetchTautulli'
 import { bytesToSize, secondsToTime, timeToSeconds } from './formatting'
 import getMediaAdditionalData from './getMediaAdditionalData'
@@ -71,29 +71,41 @@ export async function getItems(library: Library, period: number) {
   return items
 }
 
-export async function getTotalDuration(library: Library, period: string) {
-  const totalDuration = await fetchTautulli<{ total_duration: string }>(
-    'get_history',
-    {
-      section_id: library.section_id,
-      after: period,
-      length: 0,
-    },
-  )
+export async function getTotalDuration(
+  library: Library,
+  period: string,
+  settings: Settings,
+) {
+  if (settings.features.activeDashboardTotalStatistics.includes('duration')) {
+    const totalDuration = await fetchTautulli<{ total_duration: string }>(
+      'get_history',
+      {
+        section_id: library.section_id,
+        after: period,
+        length: 0,
+      },
+    )
 
-  return secondsToTime(
-    timeToSeconds(totalDuration?.response?.data?.total_duration || '0'),
-  )
+    return secondsToTime(
+      timeToSeconds(totalDuration?.response?.data?.total_duration || '0'),
+    )
+  }
+
+  return undefined
 }
 
-export async function getTotalSize(library: Library) {
-  const totalSize = await fetchTautulli<{ total_file_size: number }>(
-    'get_library_media_info',
-    {
-      section_id: library.section_id,
-      length: 0,
-    },
-  )
+export async function getTotalSize(library: Library, settings: Settings) {
+  if (settings.features.activeDashboardTotalStatistics.includes('size')) {
+    const totalSize = await fetchTautulli<{ total_file_size: number }>(
+      'get_library_media_info',
+      {
+        section_id: library.section_id,
+        length: 0,
+      },
+    )
 
-  return bytesToSize(totalSize?.response?.data.total_file_size || 0)
+    return bytesToSize(totalSize?.response?.data.total_file_size || 0)
+  }
+
+  return undefined
 }

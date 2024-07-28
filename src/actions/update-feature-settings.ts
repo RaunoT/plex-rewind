@@ -1,6 +1,10 @@
 'use server'
 
-import { SettingsFormInitialState } from '@/types'
+import {
+  DashboardItemStatistics,
+  DashboardTotalStatistics,
+  SettingsFormInitialState,
+} from '@/types'
 import { SETTINGS_PATH } from '@/utils/constants'
 import getSettings from '@/utils/getSettings'
 import { promises as fs } from 'fs'
@@ -12,8 +16,10 @@ const schema = z.object({
   isDashboardActive: z.boolean(),
   isUsersPageActive: z.boolean(),
   activeLibraries: z.array(z.string()),
-  activeDashboardStatistics: z.array(z.string()),
-  dashboardDefaultPeriod: z.string().refine(
+  activeDashboardItemStatistics: z.array(z.string()),
+  activeDashboardTotalStatistics: z.array(z.string()),
+  dashboardDefaultPeriod: z.string(),
+  dashboardCustomPeriod: z.string().refine(
     (value) => {
       const number = parseFloat(value)
 
@@ -35,10 +41,14 @@ export async function saveFeaturesSettings(
     isDashboardActive: formData.get('isDashboardActive') === 'on',
     isUsersPageActive: formData.get('isUsersPageActive') === 'on',
     activeLibraries: formData.getAll('activeLibraries') as string[],
-    activeDashboardStatistics: formData.getAll(
-      'activeDashboardStatistics',
-    ) as string[],
+    activeDashboardItemStatistics: formData.getAll(
+      'activeDashboardItemStatistics',
+    ) as DashboardItemStatistics,
+    activeDashboardTotalStatistics: formData.getAll(
+      'activeDashboardTotalStatistics',
+    ) as DashboardTotalStatistics,
     dashboardDefaultPeriod: formData.get('dashboardDefaultPeriod') as string,
+    dashboardCustomPeriod: formData.get('dashboardCustomPeriod') as string,
     googleAnalyticsId: formData.get('googleAnalyticsId') as string,
   }
 

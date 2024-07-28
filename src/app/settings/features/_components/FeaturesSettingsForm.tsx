@@ -13,6 +13,8 @@ type Props = {
 
 export default function FeaturesSettingsForm({ settings, libraries }: Props) {
   const featuresSettings = settings.features
+  const isOverseerrActive =
+    settings.connection.overseerrUrl && settings.connection.overseerrApiKey
 
   return (
     <SettingsForm settings={settings} action={saveFeaturesSettings}>
@@ -69,9 +71,9 @@ export default function FeaturesSettingsForm({ settings, libraries }: Props) {
         </Switch>
         <CheckboxGroup
           className='input-wrapper'
-          name='activeDashboardStatistics'
+          name='activeDashboardItemStatistics'
           defaultValue={
-            featuresSettings.activeDashboardStatistics || [
+            featuresSettings.activeDashboardItemStatistics || [
               'year',
               'rating',
               'duration',
@@ -102,28 +104,77 @@ export default function FeaturesSettingsForm({ settings, libraries }: Props) {
               <div className='checkbox' aria-hidden='true'></div>
               Users
             </Checkbox>
-            {settings.connection.overseerrUrl &&
-              settings.connection.overseerrApiKey && (
-                <Checkbox value='requests' className='checkbox-wrapper'>
-                  <div className='checkbox' aria-hidden='true'></div>
-                  Requests
-                </Checkbox>
-              )}
+            {isOverseerrActive && (
+              <Checkbox value='requests' className='checkbox-wrapper'>
+                <div className='checkbox' aria-hidden='true'></div>
+                Requests
+              </Checkbox>
+            )}
           </div>
-          <Label className='label label--start'>Statistics</Label>
+          <Label className='label label--start'>Item statistics</Label>
         </CheckboxGroup>
+        <CheckboxGroup
+          className='input-wrapper'
+          name='activeDashboardTotalStatistics'
+          defaultValue={
+            featuresSettings.activeDashboardTotalStatistics || [
+              'size',
+              'duration',
+              'count',
+              'requests',
+            ]
+          }
+        >
+          <div className='peer mr-auto flex flex-wrap gap-2'>
+            <Checkbox value='size' className='checkbox-wrapper'>
+              <div className='checkbox' aria-hidden='true'></div>
+              Size
+            </Checkbox>
+            <Checkbox value='duration' className='checkbox-wrapper'>
+              <div className='checkbox' aria-hidden='true'></div>
+              Duration
+            </Checkbox>
+            <Checkbox value='count' className='checkbox-wrapper'>
+              <div className='checkbox' aria-hidden='true'></div>
+              Count
+            </Checkbox>
+            {isOverseerrActive && (
+              <Checkbox value='requests' className='checkbox-wrapper'>
+                <div className='checkbox' aria-hidden='true'></div>
+                Requests
+              </Checkbox>
+            )}
+          </div>
+          <Label className='label label--start'>Totals statistics</Label>
+        </CheckboxGroup>
+        <div className='input-wrapper'>
+          <div className='select-wrapper'>
+            <select
+              className='input'
+              name='dashboardDefaultPeriod'
+              defaultValue={featuresSettings.dashboardDefaultPeriod || 'custom'}
+              required
+            >
+              <option value='7days'>7 days</option>
+              <option value='custom'>Custom period</option>
+              <option value='pastYear'>Past year</option>
+              <option value='allTime'>All time</option>
+            </select>
+          </div>
+          <span className='label required'>Default period</span>
+        </div>
         <label className='input-wrapper'>
           <input
             type='number'
             className='input'
-            name='dashboardDefaultPeriod'
-            defaultValue={featuresSettings.dashboardDefaultPeriod || '30'}
+            name='dashboardCustomPeriod'
+            defaultValue={featuresSettings.dashboardCustomPeriod || '30'}
             placeholder='30'
             min='1'
             max='3000'
             required
           />
-          <span className='label'>Default period</span>
+          <span className='label'>Custom period</span>
         </label>
       </section>
       <section className='group-settings group'>

@@ -1,0 +1,28 @@
+{
+  "connection": {
+    "tautulliUrl": "",
+    "tautulliApiKey": "",
+    "overseerrUrl": "",
+    "overseerrApiKey": "",
+    "tmdbApiKey": ""
+  },
+  "features": {
+    "isRewindActive": true,
+    "isDashboardActive": true,
+    "isUsersPageActive": true,
+    "activeLibraries": [],
+    "activeDashboardItemStatistics": [
+      "year",
+      "rating",
+      "duration",
+      "plays",
+      "users",
+      "requests"
+    ],
+    "activeDashboardTotalStatistics": ["size", "duration", "count", "requests"],
+    "dashboardDefaultPeriod": "custom",
+    "dashboardCustomPeriod": "30",
+    "googleAnalyticsId": ""
+  },
+  "test": false
+}
