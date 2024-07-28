@@ -10,6 +10,7 @@ type QueryParams = {
 export default async function fetchTmdb<T>(
   endpoint: string,
   params?: QueryParams,
+  cache: boolean = true,
 ): Promise<T | null> {
   const settings = await getSettings()
   const apiKey = settings.connection.tmdbApiKey
@@ -22,7 +23,11 @@ export default async function fetchTmdb<T>(
     const apiUrl = `https://api.themoviedb.org/3/${endpoint}?api_key=${apiKey}&${qs.stringify(
       params,
     )}`
-    const res = await fetch(apiUrl)
+    const res = await fetch(apiUrl, {
+      next: {
+        revalidate: cache ? 3600 : 0,
+      },
+    })
 
     if (!res.ok) {
       console.error(`TMDB API request failed: ${res.status} ${res.statusText}`)

@@ -66,6 +66,7 @@ export const authOptions: AuthOptions = {
               {
                 user_id: userData.id,
               },
+              true,
             )
 
             const userExists =
