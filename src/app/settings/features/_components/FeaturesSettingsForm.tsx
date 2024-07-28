@@ -2,8 +2,11 @@
 
 import { saveFeaturesSettings } from '@/actions/update-feature-settings'
 import { Library, Settings } from '@/types'
+import { Bars2Icon } from '@heroicons/react/24/outline'
 import { kebabCase } from 'lodash'
+import { useState } from 'react'
 import { Checkbox, CheckboxGroup, Label, Switch } from 'react-aria-components'
+import { ReactSortable } from 'react-sortablejs'
 import SettingsForm from '../../_components/SettingsForm'
 
 type Props = {
@@ -15,6 +18,7 @@ export default function FeaturesSettingsForm({ settings, libraries }: Props) {
   const featuresSettings = settings.features
   const isOverseerrActive =
     settings.connection.overseerrUrl && settings.connection.overseerrApiKey
+  const [librariesState, setLibrariesState] = useState(libraries)
 
   return (
     <SettingsForm settings={settings} action={saveFeaturesSettings}>
@@ -25,18 +29,23 @@ export default function FeaturesSettingsForm({ settings, libraries }: Props) {
           name='activeLibraries'
           defaultValue={featuresSettings.activeLibraries}
         >
-          <div className='peer mr-auto flex flex-wrap gap-2'>
-            {libraries.map((library) => (
+          <ReactSortable
+            list={librariesState}
+            setList={setLibrariesState}
+            className='checkbox-group peer'
+          >
+            {librariesState.map((library) => (
               <Checkbox
                 key={library.section_id}
                 value={kebabCase(library.section_name)}
                 className='checkbox-wrapper'
               >
+                <Bars2Icon className='size-4' />
                 <div className='checkbox' aria-hidden='true'></div>
                 {library.section_name}
               </Checkbox>
             ))}
-          </div>
+          </ReactSortable>
           <Label className='label label--start'>Libraries</Label>
         </CheckboxGroup>
         <Switch

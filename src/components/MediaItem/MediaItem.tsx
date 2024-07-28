@@ -52,7 +52,7 @@ export default function MediaItem({
   const titleContainerRef = useRef<HTMLDivElement>(null)
   const isOverseerrActive =
     settings.connection.overseerrUrl && settings.connection.overseerrApiKey
-  const [imageSrc, setImageSrc] = useState(posterSrc)
+  const [imageSrc, setImageSrc] = useState<string>(posterSrc)
 
   useEffect(() => {
     setDataKey((prevDataKey) => prevDataKey + 1)

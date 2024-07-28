@@ -212,6 +212,10 @@
     }
   }
 
+  .checkbox-group {
+    @apply mr-auto flex flex-wrap gap-2;
+  }
+
   .checkbox-wrapper {
     @apply flex cursor-pointer items-center gap-1;
 

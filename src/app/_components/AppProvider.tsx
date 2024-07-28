@@ -23,7 +23,9 @@ type Props = {
 export default function AppProvider({ children, settings, version }: Props) {
   const pathname = usePathname()
   const { data: session } = useSession()
-  const [isSettings, setIsSettings] = useState(pathname.startsWith('/settings'))
+  const [isSettings, setIsSettings] = useState<boolean>(
+    pathname.startsWith('/settings'),
+  )
 
   useEffect(() => {
     setIsSettings(pathname.startsWith('/settings'))
