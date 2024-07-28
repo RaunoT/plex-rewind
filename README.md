@@ -58,7 +58,7 @@ services:
 
 Plex Rewind is available in the Community Apps store for Unraid. Search for "Plex Rewind" and install it from grtgbln's repository.
 
-As noted in the installation instructions, you will need to download a copy of "settings.json" into the associated settings path **before** running the application. To download the file, you can open a terminal, enter the directory and run `curl -o settings.json https://raw.githubusercontent.com/RaunoT/plex-rewind/main/config/settings.json.sample`.
+As noted in the installation instructions, you will need to download a copy of "settings.json" into the associated settings path **before** running the application. To download the file, you can open a terminal, enter the directory and run `curl -o settings.json https://raw.githubusercontent.com/RaunoT/plex-rewind/main/config/settings.example.json`.
 
 ## Updating
 

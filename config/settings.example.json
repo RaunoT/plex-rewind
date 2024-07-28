@@ -11,7 +11,7 @@
     "isDashboardActive": true,
     "isUsersPageActive": true,
     "activeLibraries": [],
-    "activeDashboardStatistics": [
+    "activeDashboardItemStatistics": [
       "year",
       "rating",
       "duration",
@@ -19,6 +19,9 @@
       "users",
       "requests"
     ],
+    "activeDashboardTotalStatistics": ["size", "duration", "count", "requests"],
+    "dashboardDefaultPeriod": "custom",
+    "dashboardCustomPeriod": "30",
     "googleAnalyticsId": ""
   },
   "test": false
