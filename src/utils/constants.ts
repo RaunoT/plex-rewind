@@ -90,7 +90,7 @@ export const DEFAULT_SETTINGS: Settings = {
     dashboardDefaultPeriod: 'custom',
     dashboardCustomPeriod: '30',
     googleAnalyticsId: '',
-    isPostersTmdb: false,
+    isPostersTmdbOnly: false,
   },
   test: false,
 }

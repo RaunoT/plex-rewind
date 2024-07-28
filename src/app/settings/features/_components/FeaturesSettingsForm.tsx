@@ -41,13 +41,15 @@ export default function FeaturesSettingsForm({ settings, libraries }: Props) {
         </CheckboxGroup>
         <Switch
           className='switch items-start'
-          name='isPostersTmdb'
-          defaultSelected={featuresSettings.isPostersTmdb}
+          name='isPostersTmdbOnly'
+          defaultSelected={featuresSettings.isPostersTmdbOnly}
         >
           <div className='indicator'></div>
           <span className='label'>
-            TMDB posters
-            <small>Ignore Plex posters and fetch all from TMDB</small>
+            TMDB only posters
+            <small>
+              Ignore Plex posters for tv/movies. Otherwise TMDB is a fallback.
+            </small>
           </span>
         </Switch>
       </section>
