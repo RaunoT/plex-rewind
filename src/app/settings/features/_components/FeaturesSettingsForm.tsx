@@ -64,6 +64,20 @@ export default function FeaturesSettingsForm({ settings, libraries }: Props) {
           <div className='indicator' />
           <span className='label'>Enabled</span>
         </Switch>
+        <Switch
+          className='switch items-start'
+          name='isRewindLibrariesSizeAndCountActive'
+          defaultSelected={featuresSettings.isRewindLibrariesSizeAndCountActive}
+        >
+          <div className='indicator' />
+          <span className='label'>
+            Libraries size & count card
+            <small>
+              Disable, if you don&apos;t want to rely on Tautulli for these
+              stats.
+            </small>
+          </span>
+        </Switch>
       </section>
       <section className='group-settings group'>
         <h2 className='heading-settings'>Dashboard</h2>

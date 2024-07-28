@@ -91,6 +91,7 @@ export const DEFAULT_SETTINGS: Settings = {
     dashboardCustomPeriod: '30',
     googleAnalyticsId: '',
     isPostersTmdbOnly: false,
+    isRewindLibrariesSizeAndCountActive: true,
   },
   test: false,
 }

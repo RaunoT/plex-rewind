@@ -31,6 +31,7 @@ const schema = z.object({
   ),
   googleAnalyticsId: z.string(),
   isPostersTmdbOnly: z.boolean(),
+  isRewindLibrariesSizeAndCountActive: z.boolean(),
 })
 
 export async function saveFeaturesSettings(
@@ -52,6 +53,8 @@ export async function saveFeaturesSettings(
     dashboardCustomPeriod: formData.get('dashboardCustomPeriod') as string,
     googleAnalyticsId: formData.get('googleAnalyticsId') as string,
     isPostersTmdbOnly: formData.get('isPostersTmdbOnly') === 'on',
+    isRewindLibrariesSizeAndCountActive:
+      formData.get('isRewindLibrariesSizeAndCountActive') === 'on',
   }
 
   // Save settings

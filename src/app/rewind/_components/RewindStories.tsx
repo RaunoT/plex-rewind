@@ -50,10 +50,12 @@ export default function RewindStories({ userRewind, settings }: Props) {
 
   const isOverseerrActive =
     settings.connection.overseerrUrl && settings.connection.overseerrApiKey
+  const isRewindLibrariesSizeAndCountActive =
+    settings.features.isRewindLibrariesSizeAndCountActive
   const stories = [
     createStory(StoryWelcome, 5000),
     createStory(StoryTotal, 8000),
-    ...(userRewind.libraries_total_size
+    ...(userRewind.libraries_total_size && isRewindLibrariesSizeAndCountActive
       ? [createStory(StoryLibraries, 9000)]
       : []),
     ...(isOverseerrActive
