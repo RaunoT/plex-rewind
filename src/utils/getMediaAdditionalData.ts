@@ -44,9 +44,10 @@ export default async function getMediaAdditionalData(
 
       const settings = await getSettings()
       const tautulliUrl = settings.connection.tautulliUrl
+      const isPostersTmdb = settings.features.isPostersTmdb
 
       // Test if thumb exists, if not, fetch from TMDB
-      if (!poster && tautulliUrl) {
+      if ((!poster || isPostersTmdb) && tautulliUrl) {
         const tmdbImage = await fetchTmdb<{ poster_path: string }>(
           `${type}/${tmdbId}`,
         )

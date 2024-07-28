@@ -141,6 +141,7 @@ export type FeaturesSettings = {
   dashboardDefaultPeriod: string
   dashboardCustomPeriod: string
   googleAnalyticsId: string
+  isPostersTmdb: boolean
 }
 
 export type Settings = {

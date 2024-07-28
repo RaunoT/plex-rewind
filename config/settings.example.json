@@ -22,7 +22,8 @@
     "activeDashboardTotalStatistics": ["size", "duration", "count", "requests"],
     "dashboardDefaultPeriod": "custom",
     "dashboardCustomPeriod": "30",
-    "googleAnalyticsId": ""
+    "googleAnalyticsId": "",
+    "isPostersTmdb": false
   },
   "test": false
 }

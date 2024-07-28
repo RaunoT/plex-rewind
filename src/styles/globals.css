@@ -147,6 +147,10 @@
     &--start {
       @apply mt-0.5 self-start;
     }
+
+    > small {
+      @apply block text-xs text-neutral-400;
+    }
   }
 
   .switch {
