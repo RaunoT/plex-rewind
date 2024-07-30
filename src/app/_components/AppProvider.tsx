@@ -40,7 +40,7 @@ export default function AppProvider({ children, settings, version }: Props) {
         { 'justify-center': pathname === '/' },
       )}
     >
-      <div className='fixed inset-0 -z-10 overflow-hidden bg-black after:absolute after:inset-0 after:bg-black/50 after:content-[""]'>
+      <div className='fixed inset-0 -z-10 select-none overflow-hidden bg-black after:absolute after:inset-0 after:bg-black/50 after:content-[""]'>
         <div className='relative h-screen w-screen'>
           <Image
             src={stars}
