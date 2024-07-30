@@ -52,6 +52,15 @@ export default function RewindStories({ userRewind, settings }: Props) {
     settings.connection.overseerrUrl && settings.connection.overseerrApiKey
   const isRewindLibrariesSizeAndCountActive =
     settings.features.isRewindLibrariesSizeAndCountActive
+  const hasMovieLibraries = userRewind.libraries.some(
+    (library) => library.section_type === 'movie',
+  )
+  const hasShowLibraries = userRewind.libraries.some(
+    (library) => library.section_type === 'show',
+  )
+  const hasAudioLibraries = userRewind.libraries.some(
+    (library) => library.section_type === 'artist',
+  )
   const stories = [
     createStory(StoryWelcome, 5000),
     createStory(StoryTotal, 8000),
@@ -61,18 +70,24 @@ export default function RewindStories({ userRewind, settings }: Props) {
     ...(isOverseerrActive
       ? [createStory(StoryRequests, userRewind.requests?.total ? 9000 : 4000)]
       : []),
-    ...(userRewind.duration.user
+    ...(userRewind.duration.user && hasShowLibraries
       ? [createStory(StoryShows, userRewind.shows.count ? 10000 : 4000)]
       : []),
-    ...(userRewind.shows.count ? [createStory(StoryShowsTop, 8000)] : []),
-    ...(userRewind.duration.user
+    ...(userRewind.shows.count && hasShowLibraries
+      ? [createStory(StoryShowsTop, 8000)]
+      : []),
+    ...(userRewind.duration.user && hasMovieLibraries
       ? [createStory(StoryMovies, userRewind.movies.count ? 10000 : 4000)]
       : []),
-    ...(userRewind.movies.count ? [createStory(StoryMoviesTop, 8000)] : []),
-    ...(userRewind.duration.user
+    ...(userRewind.movies.count && hasMovieLibraries
+      ? [createStory(StoryMoviesTop, 8000)]
+      : []),
+    ...(userRewind.duration.user && hasAudioLibraries
       ? [createStory(StoryAudio, userRewind.audio.count ? 10000 : 4000)]
       : []),
-    ...(userRewind.audio.count ? [createStory(StoryAudioTop, 8000)] : []),
+    ...(userRewind.audio.count && hasAudioLibraries
+      ? [createStory(StoryAudioTop, 8000)]
+      : []),
   ]
 
   return (
