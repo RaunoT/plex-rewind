@@ -41,6 +41,9 @@ export const authOptions: AuthOptions = {
               'X-Plex-Token': authToken,
             },
           })
+          console.log(
+            `[AUTH] - Plex API call: ${PLEX_API_ENDPOINT}/user?X-Plex-Token=${authToken}`,
+          )
 
           if (!res.ok) {
             console.error(
