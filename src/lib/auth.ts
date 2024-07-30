@@ -53,13 +53,13 @@ export const authOptions: AuthOptions = {
           const xmlData = await res.text()
           const jsonData = await parseStringPromise(xmlData)
           const data = jsonData.user.$
-          const { title, id, thumb, email, homeAdmin } = data
+          const { title, id, thumb, email, homeAdmin, homeSize } = data
           const userData = {
             id: id,
             name: title,
             email: email,
             image: thumb,
-            isAdmin: homeAdmin === '1',
+            isAdmin: homeAdmin === '1' || homeSize === '1',
           }
           console.log('[AUTH] - User logged in with data:', userData)
 
