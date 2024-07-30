@@ -3,8 +3,7 @@
     "tautulliUrl": "",
     "tautulliApiKey": "",
     "overseerrUrl": "",
-    "overseerrApiKey": "",
-    "tmdbApiKey": ""
+    "overseerrApiKey": ""
   },
   "features": {
     "isRewindActive": true,

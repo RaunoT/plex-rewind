@@ -38,19 +38,6 @@ export default function ConnectionSettingsForm({ settings }: Props) {
         </label>
       </section>
       <section className='group-settings group'>
-        <h2 className='heading-settings'>TMDB</h2>
-        <label className='input-wrapper'>
-          <input
-            type='password'
-            className='input'
-            name='tmdbApiKey'
-            defaultValue={connectionSettings.tmdbApiKey}
-            required
-          />
-          <span className='label'>API key</span>
-        </label>
-      </section>
-      <section className='group-settings group'>
         <h2 className='heading-settings'>Overseerr</h2>
         <label className='input-wrapper'>
           <input

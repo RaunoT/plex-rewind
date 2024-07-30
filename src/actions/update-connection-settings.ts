@@ -1,7 +1,7 @@
 'use server'
 
 import { SettingsFormInitialState } from '@/types'
-import { SETTINGS_PATH } from '@/utils/constants'
+import { SETTINGS_PATH, TMDB_API_KEY } from '@/utils/constants'
 import getSettings from '@/utils/getSettings'
 import { promises as fs } from 'fs'
 import { revalidatePath } from 'next/cache'
@@ -12,7 +12,6 @@ const schema = z.object({
   tautulliApiKey: z.string(),
   overseerrUrl: z.string().url().optional().or(z.literal('')),
   overseerrApiKey: z.string().optional(),
-  tmdbApiKey: z.string().optional(),
 })
 
 export async function saveConnectionSettings(
@@ -24,7 +23,6 @@ export async function saveConnectionSettings(
     tautulliApiKey: formData.get('tautulliApiKey') as string,
     overseerrUrl: formData.get('overseerrUrl') as string,
     overseerrApiKey: formData.get('overseerrApiKey') as string,
-    tmdbApiKey: formData.get('tmdbApiKey') as string,
   }
 
   try {
@@ -85,7 +83,7 @@ export async function saveConnectionSettings(
     // Test TMDB
     try {
       const res = await fetch(
-        `https://api.themoviedb.org/3/authentication?api_key=${data.tmdbApiKey}`,
+        `https://api.themoviedb.org/3/authentication?api_key=${TMDB_API_KEY}`,
         {
           cache: 'no-store',
         },

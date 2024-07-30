@@ -71,7 +71,6 @@ export const DEFAULT_SETTINGS: Settings = {
     tautulliApiKey: '',
     overseerrUrl: '',
     overseerrApiKey: '',
-    tmdbApiKey: '',
   },
   features: {
     isRewindActive: true,
@@ -95,3 +94,5 @@ export const DEFAULT_SETTINGS: Settings = {
   },
   test: false,
 }
+
+export const TMDB_API_KEY = '4675b5b5d8cd1463ff16adca2680157b'
