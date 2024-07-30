@@ -1,7 +1,7 @@
 'use server'
 
 import { SettingsFormInitialState } from '@/types'
-import { SETTINGS_PATH, TMDB_API_KEY } from '@/utils/constants'
+import { SETTINGS_PATH } from '@/utils/constants'
 import getSettings from '@/utils/getSettings'
 import { promises as fs } from 'fs'
 import { revalidatePath } from 'next/cache'
@@ -36,7 +36,11 @@ export async function saveConnectionSettings(
       )
 
       if (!res.ok) {
-        console.error('Error testing Tautulli connection!', res.status)
+        console.error(
+          '[CONFIG] - Error testing Tautulli connection!',
+          res.status,
+          res.statusText,
+        )
         return {
           message: 'Tautulli - invalid API key!',
           status: 'error',
@@ -44,7 +48,7 @@ export async function saveConnectionSettings(
         }
       }
     } catch (error) {
-      console.error('Error testing Tautulli connection!', error)
+      console.error('[CONFIG] - Error testing Tautulli connection!', error)
       return {
         message: 'Tautulli - unable to connect!',
         status: 'error',
@@ -63,7 +67,11 @@ export async function saveConnectionSettings(
         })
 
         if (!res.ok) {
-          console.error('Error testing Overseerr connection!', res.status)
+          console.error(
+            '[CONFIG] - Error testing Overseerr connection!',
+            res.status,
+            res.statusText,
+          )
           return {
             message: 'Overseerr - invalid API key!',
             status: 'error',
@@ -71,7 +79,7 @@ export async function saveConnectionSettings(
           }
         }
       } catch (error) {
-        console.error('Error testing Overseerr connection!', error)
+        console.error('[CONFIG] - Error testing Overseerr connection!', error)
         return {
           message: 'Overseerr - unable to connect!',
           status: 'error',
@@ -79,34 +87,8 @@ export async function saveConnectionSettings(
         }
       }
     }
-
-    // Test TMDB
-    try {
-      const res = await fetch(
-        `https://api.themoviedb.org/3/authentication?api_key=${TMDB_API_KEY}`,
-        {
-          cache: 'no-store',
-        },
-      )
-
-      if (!res.ok) {
-        console.error('Error testing TMDB connection!', res.status)
-        return {
-          message: 'TMDB - invalid API key!',
-          status: 'error',
-          fields: data,
-        }
-      }
-    } catch (error) {
-      console.error('Error testing TMDB connection!', error)
-      return {
-        message: 'TMDB - unable to connect!',
-        status: 'error',
-        fields: data,
-      }
-    }
   } catch (error) {
-    console.error('Error testing connection!', error)
+    console.error('[CONFIG] - Error testing connection!', error)
     return {
       message: 'Something went wrong!',
       status: 'error',
@@ -131,7 +113,7 @@ export async function saveConnectionSettings(
       fields: data,
     }
   } catch (error) {
-    console.error('Error writing to settings file!', error)
+    console.error('[CONFIG] - Error writing to settings file!', error)
 
     if (error instanceof ZodError) {
       return {

@@ -44,7 +44,9 @@ export const authOptions: AuthOptions = {
 
           if (!res.ok) {
             console.error(
-              `Failed to fetch user: ${res.status} ${res.statusText}`,
+              '[AUTH] - Failed to fetch user!',
+              res.status,
+              res.statusText,
             )
           }
 
@@ -59,6 +61,7 @@ export const authOptions: AuthOptions = {
             image: thumb,
             isAdmin: homeAdmin === '1',
           }
+          console.log('[AUTH] - User logged in with data:', userData)
 
           if (res.ok && userData) {
             const checkUser = await fetchTautulli<{ email: string }>(
@@ -75,13 +78,13 @@ export const authOptions: AuthOptions = {
             if (userExists) {
               return userData
             } else {
-              console.error('User does not belong to this server!')
+              console.error('[AUTH] - User does not belong to this server!')
             }
           }
 
           return null
         } catch (error) {
-          console.error('Error getting Plex user!', error)
+          console.error('[AUTH] - Error getting Plex user!', error)
           return null
         }
       },
@@ -131,13 +134,15 @@ async function fetchPlexPins(): Promise<PlexPinResponse> {
 
     if (!res.ok) {
       console.error(
-        `Plex PIN generation failed: ${res.status} ${res.statusText}`,
+        '[AUTH] - Plex PIN generation failed!',
+        res.status,
+        res.statusText,
       )
     }
 
     return res.json()
   } catch (error) {
-    console.error('Error generating Plex PIN!', error)
+    console.error('[AUTH] - Error generating Plex PIN!', error)
     throw error
   }
 }
@@ -148,7 +153,7 @@ export async function createPlexAuthUrl() {
   const clientIdentifier = getClientIdentifier()
 
   if (!forwardUrl) {
-    console.error('Base url is not configured!')
+    console.error('[AUTH] - Base url is not configured!')
   }
 
   const authAppUrl =
@@ -181,7 +186,9 @@ export async function getPlexAuthToken(pinId: string) {
 
     if (!res.ok) {
       console.error(
-        `Getting Plex auth token failed: ${res.status} ${res.statusText}`,
+        '[AUTH] - Getting Plex auth token failed!',
+        res.status,
+        res.statusText,
       )
     }
 
@@ -189,7 +196,7 @@ export async function getPlexAuthToken(pinId: string) {
 
     return data.authToken
   } catch (error) {
-    console.error('Error getting Plex auth token!', error)
+    console.error('[AUTH] - Error getting Plex auth token!', error)
   }
 }
 
@@ -209,7 +216,9 @@ export async function verifyPlexAuthToken(authToken: string) {
 
     if (!res.ok) {
       console.error(
-        `Plex auth token verification failed: ${res.status} ${res.statusText}`,
+        '[AUTH] - Plex auth token verification failed!',
+        res.status,
+        res.statusText,
       )
     }
 
@@ -219,6 +228,6 @@ export async function verifyPlexAuthToken(authToken: string) {
       return true
     }
   } catch (error) {
-    console.error('Error verifying Plex auth token!', error)
+    console.error('[AUTH] - Error verifying Plex auth token!', error)
   }
 }

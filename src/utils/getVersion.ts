@@ -28,7 +28,9 @@ export default async function getVersion(): Promise<Version> {
 
       if (!res.ok) {
         console.error(
-          `GitHub API request failed: ${res.status} ${res.statusText}`,
+          '[GITHUB] - API request failed',
+          res.status,
+          res.statusText,
         )
       }
 
@@ -41,7 +43,7 @@ export default async function getVersion(): Promise<Version> {
         latestVersion = latestRelease.tag_name
       }
     } catch (error) {
-      console.error('Error fetching latest version:', error)
+      console.error('[GITHUB] - Error fetching latest release!', error)
     }
   }
 

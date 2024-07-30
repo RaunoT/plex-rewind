@@ -45,12 +45,12 @@ export default function Home({ settings }: Props) {
           })
 
           if (res?.error) {
-            console.error('Failed to sign in!', res.error)
+            console.error('[AUTH] - Failed to sign in!', res.error)
           }
 
           setIsLoading(false)
         } catch (error) {
-          console.error('Error during sign-in!', error)
+          console.error('[AUTH] - Error during sign-in!', error)
           setIsLoading(false)
         }
       }
@@ -70,7 +70,7 @@ export default function Home({ settings }: Props) {
 
           setLibraries(data)
         } catch (error) {
-          console.error('Error fetching libraries!', error)
+          console.error('[HOME] - Error fetching libraries!', error)
         }
 
         setIsLoading(false)
@@ -86,7 +86,7 @@ export default function Home({ settings }: Props) {
 
           setManagedUsers(data)
         } catch (error) {
-          console.error('Error fetching libraries!', error)
+          console.error('[HOME] - Error fetching managed users!', error)
         }
 
         setIsLoading(false)

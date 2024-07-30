@@ -74,7 +74,7 @@ export async function saveFeaturesSettings(
       fields: data,
     }
   } catch (error) {
-    console.error('Error writing to settings file!', error)
+    console.error('[CONFIG] - Error writing to settings file!', error)
 
     if (error instanceof ZodError) {
       return {

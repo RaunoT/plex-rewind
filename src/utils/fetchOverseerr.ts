@@ -22,12 +22,12 @@ export default async function fetchOverseerr<T>(
   const apiKey = settings.connection.overseerrApiKey
 
   if (!overseerrUrl) {
-    console.error('Overseerr URL is not configured! Skipping request.')
+    console.error('[OVERSEERR] - URL is not configured! Skipping request.')
     return null
   }
 
   if (!apiKey) {
-    console.error('Overseerr API key is not configured! Skipping request.')
+    console.error('[OVERSEERR] - API key is not configured! Skipping request.')
     return null
   }
 
@@ -44,13 +44,18 @@ export default async function fetchOverseerr<T>(
     })
     if (!res.ok) {
       console.error(
-        `Overseerr API request failed: ${res.status} ${res.statusText}`,
+        `[OVERSEERR] - API request failed! The endpoint was '${endpoint}'.\n`,
+        res.status,
+        res.statusText,
       )
     }
 
     return res.json()
   } catch (error) {
-    console.error('Error fetching from Overseerr API!', error)
+    console.error(
+      `[OVERSEERR] - Error fetching from API! The endpoint was '${endpoint}'.\n`,
+      error,
+    )
     return null
   }
 }

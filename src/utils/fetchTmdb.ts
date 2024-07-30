@@ -23,12 +23,19 @@ export default async function fetchTmdb<T>(
     })
 
     if (!res.ok) {
-      console.error(`TMDB API request failed: ${res.status} ${res.statusText}`)
+      console.error(
+        `[TMDB] - API request failed. The endpoint was '${endpoint}'.\n`,
+        res.status,
+        res.statusText,
+      )
     }
 
     return res.json()
   } catch (error) {
-    console.error('Error fetching from TMDB API!', error)
+    console.error(
+      `[TMDB] - Error fetching from API! The endpoint was '${endpoint}'.\n`,
+      error,
+    )
     return null
   }
 }
