@@ -118,7 +118,7 @@ export default function Home({ settings }: Props) {
         </div>
       )}
 
-      <h1 className='animate-fade-up animation-delay-300 mb-6 text-[2.5rem] font-bold leading-none'>
+      <h1 className='animate-fade-up mb-6 text-[2.5rem] font-bold leading-none animation-delay-300'>
         <Image
           src={plexSvg}
           className='mb-0.5 mr-3 inline h-[2.25rem] w-auto'
@@ -128,7 +128,7 @@ export default function Home({ settings }: Props) {
         <span>rewind</span>
       </h1>
 
-      <div className='animate-fade-in animation-delay-600'>
+      <div className='animate-fade-in animation-delay-700'>
         {!isLoggedIn && (
           <button
             className='button button-sm button--plex mx-auto'

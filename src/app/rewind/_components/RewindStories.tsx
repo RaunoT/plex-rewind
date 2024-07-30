@@ -6,6 +6,7 @@ import Stories from 'stories-react'
 import 'stories-react/dist/index.css'
 import StoryAudio from './Stories/Audio'
 import StoryAudioTop from './Stories/AudioTop'
+import StoryGoodbye from './Stories/Goodbye'
 import StoryLibraries from './Stories/Libraries'
 import StoryMovies from './Stories/Movies'
 import StoryMoviesTop from './Stories/MoviesTop'
@@ -88,6 +89,7 @@ export default function RewindStories({ userRewind, settings }: Props) {
     ...(userRewind.audio.count && hasAudioLibraries
       ? [createStory(StoryAudioTop, 8000)]
       : []),
+    createStory(StoryGoodbye, 11000),
   ]
 
   return (

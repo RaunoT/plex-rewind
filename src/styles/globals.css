@@ -267,7 +267,10 @@
   .animate-fade-up {
     @apply opacity-0;
 
-    animation: fade-up 0.5s ease forwards;
+    animation-name: fade-up;
+    animation-duration: 0.5s;
+    animation-timing-function: ease;
+    animation-fill-mode: forwards;
 
     @keyframes fade-up {
       from {
@@ -296,18 +299,6 @@
         opacity: 1;
       }
     }
-  }
-
-  .animation-delay-300 {
-    animation-delay: 0.3s;
-  }
-
-  .animation-delay-600 {
-    animation-delay: 0.6s;
-  }
-
-  .animation-delay-2000 {
-    animation-delay: 2s;
   }
 }
 

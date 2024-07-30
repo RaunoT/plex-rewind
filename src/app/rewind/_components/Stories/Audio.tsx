@@ -26,7 +26,7 @@ export default function StoryAudio({
                 Audio
                 <MusicalNoteIcon />
               </span>{' '}
-              on <span className='gradient-plex'>Plex</span>.
+              on <span className='gradient-plex'>Plex.</span>
             </p>
           </RewindStat>
 
@@ -49,7 +49,6 @@ export default function StoryAudio({
               <span className='rewind-cat'>
                 {userRewind.audio.top[0].title}
               </span>
-              !
             </p>
 
             <div className='text-base not-italic'>
