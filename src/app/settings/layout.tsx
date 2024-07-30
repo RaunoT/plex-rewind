@@ -20,7 +20,7 @@ export default async function SettingsLayout({ children }: Props) {
   const settings = getSettings()
   const version = await getVersion()
 
-  if (!session?.user?.isAdmin && settings.test) {
+  if (!session?.user?.isAdmin && checkRequiredSettings(settings)) {
     redirect('/')
   }
 
