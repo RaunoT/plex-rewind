@@ -2,9 +2,9 @@
   "connection": {
     "tautulliUrl": "",
     "tautulliApiKey": "",
+    "plexUrl": "",
     "overseerrUrl": "",
-    "overseerrApiKey": "",
-    "tmdbApiKey": ""
+    "overseerrApiKey": ""
   },
   "features": {
     "isRewindActive": true,
@@ -22,7 +22,9 @@
     "activeDashboardTotalStatistics": ["size", "duration", "count", "requests"],
     "dashboardDefaultPeriod": "custom",
     "dashboardCustomPeriod": "30",
-    "googleAnalyticsId": ""
+    "googleAnalyticsId": "",
+    "isPostersTmdbOnly": false,
+    "isRewindLibrariesSizeAndCountActive": true
   },
   "test": false
 }

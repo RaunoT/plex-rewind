@@ -1,6 +1,6 @@
 name: 🐛 Bug report
 description: Report a problem
-labels: ['type:bug', 'awaiting-triage']
+labels: ['type:bug', 'awaiting triage']
 body:
   - type: input
     id: version

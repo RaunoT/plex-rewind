@@ -30,6 +30,8 @@ const schema = z.object({
     },
   ),
   googleAnalyticsId: z.string(),
+  isPostersTmdbOnly: z.boolean(),
+  isRewindLibrariesSizeAndCountActive: z.boolean(),
 })
 
 export async function saveFeaturesSettings(
@@ -50,11 +52,14 @@ export async function saveFeaturesSettings(
     dashboardDefaultPeriod: formData.get('dashboardDefaultPeriod') as string,
     dashboardCustomPeriod: formData.get('dashboardCustomPeriod') as string,
     googleAnalyticsId: formData.get('googleAnalyticsId') as string,
+    isPostersTmdbOnly: formData.get('isPostersTmdbOnly') === 'on',
+    isRewindLibrariesSizeAndCountActive:
+      formData.get('isRewindLibrariesSizeAndCountActive') === 'on',
   }
 
   // Save settings
   try {
-    const settings = await getSettings()
+    const settings = getSettings()
 
     schema.parse(data)
     settings.features = data
@@ -69,7 +74,7 @@ export async function saveFeaturesSettings(
       fields: data,
     }
   } catch (error) {
-    console.error('Error writing to settings file!', error)
+    console.error('[CONFIG] - Error writing to settings file!', error)
 
     if (error instanceof ZodError) {
       return {

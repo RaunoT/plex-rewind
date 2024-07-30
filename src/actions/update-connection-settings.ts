@@ -12,7 +12,7 @@ const schema = z.object({
   tautulliApiKey: z.string(),
   overseerrUrl: z.string().url().optional().or(z.literal('')),
   overseerrApiKey: z.string().optional(),
-  tmdbApiKey: z.string().optional(),
+  plexUrl: z.string().url(),
 })
 
 export async function saveConnectionSettings(
@@ -24,7 +24,7 @@ export async function saveConnectionSettings(
     tautulliApiKey: formData.get('tautulliApiKey') as string,
     overseerrUrl: formData.get('overseerrUrl') as string,
     overseerrApiKey: formData.get('overseerrApiKey') as string,
-    tmdbApiKey: formData.get('tmdbApiKey') as string,
+    plexUrl: formData.get('plexUrl') as string,
   }
 
   try {
@@ -38,7 +38,11 @@ export async function saveConnectionSettings(
       )
 
       if (!res.ok) {
-        console.error('Error testing Tautulli connection!', res.status)
+        console.error(
+          '[CONFIG] - Error testing Tautulli connection!',
+          res.status,
+          res.statusText,
+        )
         return {
           message: 'Tautulli - invalid API key!',
           status: 'error',
@@ -46,7 +50,7 @@ export async function saveConnectionSettings(
         }
       }
     } catch (error) {
-      console.error('Error testing Tautulli connection!', error)
+      console.error('[CONFIG] - Error testing Tautulli connection!', error)
       return {
         message: 'Tautulli - unable to connect!',
         status: 'error',
@@ -65,7 +69,11 @@ export async function saveConnectionSettings(
         })
 
         if (!res.ok) {
-          console.error('Error testing Overseerr connection!', res.status)
+          console.error(
+            '[CONFIG] - Error testing Overseerr connection!',
+            res.status,
+            res.statusText,
+          )
           return {
             message: 'Overseerr - invalid API key!',
             status: 'error',
@@ -73,7 +81,7 @@ export async function saveConnectionSettings(
           }
         }
       } catch (error) {
-        console.error('Error testing Overseerr connection!', error)
+        console.error('[CONFIG] - Error testing Overseerr connection!', error)
         return {
           message: 'Overseerr - unable to connect!',
           status: 'error',
@@ -82,33 +90,21 @@ export async function saveConnectionSettings(
       }
     }
 
-    // Test TMDB
+    // Test Plex
     try {
-      const res = await fetch(
-        `https://api.themoviedb.org/3/authentication?api_key=${data.tmdbApiKey}`,
-        {
-          cache: 'no-store',
-        },
-      )
-
-      if (!res.ok) {
-        console.error('Error testing TMDB connection!', res.status)
-        return {
-          message: 'TMDB - invalid API key!',
-          status: 'error',
-          fields: data,
-        }
-      }
+      await fetch(data.plexUrl, {
+        cache: 'no-store',
+      })
     } catch (error) {
-      console.error('Error testing TMDB connection!', error)
+      console.error('[CONFIG] - Error testing Plex connection!', error)
       return {
-        message: 'TMDB - unable to connect!',
+        message: 'Plex - unable to connect!',
         status: 'error',
         fields: data,
       }
     }
   } catch (error) {
-    console.error('Error testing connection!', error)
+    console.error('[CONFIG] - Error testing connection!', error)
     return {
       message: 'Something went wrong!',
       status: 'error',
@@ -118,7 +114,7 @@ export async function saveConnectionSettings(
 
   // Save settings
   try {
-    const settings = await getSettings()
+    const settings = getSettings()
     schema.parse(data)
     settings.connection = data
     settings.test = true
@@ -133,7 +129,7 @@ export async function saveConnectionSettings(
       fields: data,
     }
   } catch (error) {
-    console.error('Error writing to settings file!', error)
+    console.error('[CONFIG] - Error writing to settings file!', error)
 
     if (error instanceof ZodError) {
       return {

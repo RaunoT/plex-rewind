@@ -12,7 +12,7 @@ type Props = {
 }
 
 export default async function DashboardLayout({ children }: Props) {
-  const settings = await getSettings()
+  const settings = getSettings()
 
   if (!settings.features.isDashboardActive) {
     return notFound()

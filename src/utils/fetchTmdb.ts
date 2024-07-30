@@ -1,7 +1,7 @@
 'use server'
 
 import qs from 'qs'
-import getSettings from './getSettings'
+import { TMDB_API_KEY } from './constants'
 
 type QueryParams = {
   [key: string]: string | number
@@ -10,27 +10,32 @@ type QueryParams = {
 export default async function fetchTmdb<T>(
   endpoint: string,
   params?: QueryParams,
+  cache: boolean = true,
 ): Promise<T | null> {
-  const settings = await getSettings()
-  const apiKey = settings.connection.tmdbApiKey
-  if (!apiKey) {
-    console.error('TMDB API key is not set! Skipping request.')
-    return null
-  }
-
   try {
-    const apiUrl = `https://api.themoviedb.org/3/${endpoint}?api_key=${apiKey}&${qs.stringify(
+    const apiUrl = `https://api.themoviedb.org/3/${endpoint}?api_key=${TMDB_API_KEY}&${qs.stringify(
       params,
     )}`
-    const res = await fetch(apiUrl)
+    const res = await fetch(apiUrl, {
+      next: {
+        revalidate: cache ? 3600 : 0,
+      },
+    })
 
     if (!res.ok) {
-      console.error(`TMDB API request failed: ${res.status} ${res.statusText}`)
+      console.error(
+        `[TMDB] - API request failed. The endpoint was '${endpoint}'.\n`,
+        res.status,
+        res.statusText,
+      )
     }
 
     return res.json()
   } catch (error) {
-    console.error('Error fetching from TMDB API!', error)
+    console.error(
+      `[TMDB] - Error fetching from API! The endpoint was '${endpoint}'.\n`,
+      error,
+    )
     return null
   }
 }

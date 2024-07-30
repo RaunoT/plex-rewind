@@ -42,9 +42,9 @@ services:
     container_name: plex-rewind
     environment:
       - NEXTAUTH_SECRET= # (required) used to encrypt auth JWT token, generate one with `openssl rand -base64 32`
-      - NEXTAUTH_URL=http://localhost:8383 # change to your domain if you are exposing the app to the internet
-      - NEXT_PUBLIC_SITE_URL=http://localhost:8383 # change to your domain if you are exposing the app to the internet
-      - NEXT_PUBLIC_STATISTICS_START_DATE=2018-01-01 # starting date for "all time" option (YYYY-MM-DD)
+      - NEXTAUTH_URL=http://localhost:8383 # (required) change to your domain if you are exposing the app to the internet
+      - NEXT_PUBLIC_SITE_URL=http://localhost:8383 # (required) change to your domain if you are exposing the app to the internet
+      - NEXT_PUBLIC_STATISTICS_START_DATE=2018-01-01 # (optional) starting date for "all time" option (YYYY-MM-DD)
     volumes:
       - ./config:/app/config
     ports:
@@ -58,7 +58,11 @@ services:
 
 Plex Rewind is available in the Community Apps store for Unraid. Search for "Plex Rewind" and install it from grtgbln's repository.
 
-As noted in the installation instructions, you will need to download a copy of "settings.json" into the associated settings path **before** running the application. To download the file, you can open a terminal, enter the directory and run `curl -o settings.json https://raw.githubusercontent.com/RaunoT/plex-rewind/main/config/settings.example.json`.
+As noted in the installation instructions, you will need to download a copy of `settings.json` into the associated settings path **before** running the application. To download the file, you can open a terminal, enter the directory and run the following command:
+
+```sh
+curl -o settings.json https://raw.githubusercontent.com/RaunoT/plex-rewind/main/config/settings.example.json
+```
 
 ## Updating
 

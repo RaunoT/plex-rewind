@@ -2,6 +2,7 @@ import githubSvg from '@/assets/github.svg'
 import { authOptions } from '@/lib/auth'
 import getSettings from '@/utils/getSettings'
 import getVersion from '@/utils/getVersion'
+import { checkRequiredSettings } from '@/utils/helpers'
 import { CurrencyEuroIcon, HeartIcon } from '@heroicons/react/24/outline'
 import { getServerSession } from 'next-auth'
 import Image from 'next/image'
@@ -16,20 +17,22 @@ type Props = {
 
 export default async function SettingsLayout({ children }: Props) {
   const session = await getServerSession(authOptions)
-  const settings = await getSettings()
+  const settings = getSettings()
   const version = await getVersion()
 
-  if (!session?.user?.isAdmin && settings.test) {
+  if (!session?.user?.isAdmin && checkRequiredSettings(settings)) {
     redirect('/')
   }
 
   return (
     <div className='mb-auto w-full max-w-screen-sm'>
       <PageTitle
-        title={settings.test ? 'Settings' : "Let's get started"}
+        title={
+          checkRequiredSettings(settings) ? 'Settings' : "Let's get started"
+        }
         noBack
       />
-      {settings.test && <SettingsNav />}
+      {checkRequiredSettings(settings) && <SettingsNav />}
       {children}
 
       <div className='glass-sheet mt-4 flex flex-col flex-wrap justify-between gap-3 py-4 sm:flex-row'>

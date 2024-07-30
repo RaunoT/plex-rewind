@@ -6,8 +6,8 @@ export const metadata: Metadata = {
   title: 'Connection settings',
 }
 
-export default async function ConnectionSettingsPage() {
-  const settings = await getSettings()
+export default function ConnectionSettingsPage() {
+  const settings = getSettings()
 
   return <ConnectionSettingsForm settings={settings} />
 }

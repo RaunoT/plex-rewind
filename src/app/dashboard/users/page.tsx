@@ -40,7 +40,7 @@ async function getUsers(
     return
   }
 
-  const settings = await getSettings()
+  const settings = getSettings()
   const [moviesLib, showsLib, audioLib] = await Promise.all([
     getLibrariesByType('movie'),
     getLibrariesByType('show'),
@@ -184,7 +184,7 @@ type Props = {
 }
 
 async function DashboardUsersContent({ searchParams }: Props) {
-  const settings = await getSettings()
+  const settings = getSettings()
 
   if (!settings.features.isUsersPageActive) {
     return notFound()

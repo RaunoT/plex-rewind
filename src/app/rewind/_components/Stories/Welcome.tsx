@@ -22,17 +22,16 @@ export default function StoryWelcome({
             priority
           />
         </div>
-        <p className='animate-fade-up animation-delay-600 mb-4'>
+        <p className='animate-fade-up mb-4 animation-delay-500'>
           Welcome to your{' '}
           <span className='whitespace-nowrap'>
             <span className='gradient-plex'>Plex Rewind</span>,
           </span>{' '}
           <span className='whitespace-nowrap'>
-            <span className='rewind-cat'>{userRewind.user.name}</span>!
+            <span className='rewind-cat'>{userRewind.user.name}!</span>
           </span>
         </p>
-        {/* TODO: animate in a second later */}
-        <p className='animate-fade-up animation-delay-2000'>
+        <p className='animate-fade-up animation-delay-[2000ms]'>
           Let&apos;s get started!
         </p>
       </RewindStat>

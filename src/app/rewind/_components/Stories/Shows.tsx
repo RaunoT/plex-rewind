@@ -25,7 +25,7 @@ export default function StoryShows({
               <span className='rewind-stat'>
                 {userRewind.shows.duration}
               </span>{' '}
-              of your time on <span className='gradient-plex'>Plex</span>.
+              of your time on <span className='gradient-plex'>Plex.</span>
             </p>
           </RewindStat>
 
@@ -48,7 +48,6 @@ export default function StoryShows({
               <span className='rewind-cat'>
                 {userRewind.shows.top[0].title}
               </span>
-              !
             </p>
 
             <div className='text-base not-italic'>

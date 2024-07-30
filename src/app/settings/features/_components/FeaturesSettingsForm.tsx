@@ -39,6 +39,20 @@ export default function FeaturesSettingsForm({ settings, libraries }: Props) {
           </div>
           <Label className='label label--start'>Libraries</Label>
         </CheckboxGroup>
+        <Switch
+          className='switch items-start'
+          name='isPostersTmdbOnly'
+          defaultSelected={featuresSettings.isPostersTmdbOnly}
+        >
+          <div className='indicator'></div>
+          <span className='label'>
+            TMDB only posters
+            <small>
+              Ignore Plex posters for tv/movies.
+              <br /> By default, TMDB is a fallback.
+            </small>
+          </span>
+        </Switch>
       </section>
       <section className='group-settings group'>
         <h2 className='heading-settings'>Rewind</h2>
@@ -49,6 +63,20 @@ export default function FeaturesSettingsForm({ settings, libraries }: Props) {
         >
           <div className='indicator' />
           <span className='label'>Enabled</span>
+        </Switch>
+        <Switch
+          className='switch items-start'
+          name='isRewindLibrariesSizeAndCountActive'
+          defaultSelected={featuresSettings.isRewindLibrariesSizeAndCountActive}
+        >
+          <div className='indicator' />
+          <span className='label'>
+            Libraries size & count card
+            <small>
+              Disable if you don&apos;t want to rely on Tautulli for these
+              stats.
+            </small>
+          </span>
         </Switch>
       </section>
       <section className='group-settings group'>

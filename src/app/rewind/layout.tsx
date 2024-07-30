@@ -8,8 +8,8 @@ type Props = {
   children: ReactNode
 }
 
-export default async function RewindLayout({ children }: Props) {
-  const settings = await getSettings()
+export default function RewindLayout({ children }: Props) {
+  const settings = getSettings()
 
   if (!settings.features.isRewindActive) {
     return notFound()

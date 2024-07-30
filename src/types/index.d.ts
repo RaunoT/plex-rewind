@@ -112,7 +112,7 @@ export type ConnectionSettings = {
   tautulliApiKey: string
   overseerrUrl: string
   overseerrApiKey: string
-  tmdbApiKey: string
+  plexUrl: string
 }
 
 // Define the allowed strings for each type
@@ -141,6 +141,8 @@ export type FeaturesSettings = {
   dashboardDefaultPeriod: string
   dashboardCustomPeriod: string
   googleAnalyticsId: string
+  isPostersTmdbOnly: boolean
+  isRewindLibrariesSizeAndCountActive: boolean
 }
 
 export type Settings = {

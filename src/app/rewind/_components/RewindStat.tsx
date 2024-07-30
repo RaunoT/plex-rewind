@@ -85,8 +85,8 @@ function Loader() {
       animate='show'
     >
       <span className='size-1 animate-pulse rounded-full bg-white'></span>
-      <span className='animation-delay-300 size-1 animate-pulse rounded-full bg-white'></span>
-      <span className='animation-delay-600 size-1 animate-pulse rounded-full bg-white'></span>
+      <span className='size-1 animate-pulse rounded-full bg-white animation-delay-300'></span>
+      <span className='size-1 animate-pulse rounded-full bg-white animation-delay-700'></span>
     </motion.div>
   )
 }

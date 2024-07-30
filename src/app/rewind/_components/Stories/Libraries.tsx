@@ -29,9 +29,8 @@ export default function StoryLibraries({
           <span className='gradient-plex'>Plex</span> is{' '}
           <span className='whitespace-nowrap'>
             <span className='rewind-stat'>
-              {bytesToSize(userRewind.libraries_total_size)}
+              {bytesToSize(userRewind.libraries_total_size)}!
             </span>
-            !
           </span>
         </p>
       </RewindStat>

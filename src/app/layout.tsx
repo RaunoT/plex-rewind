@@ -56,7 +56,7 @@ type Props = {
 }
 
 export default async function RootLayout({ children }: Props) {
-  const settings = await getSettings()
+  const settings = getSettings()
   const version = await getVersion()
 
   return (

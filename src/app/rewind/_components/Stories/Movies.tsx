@@ -23,7 +23,7 @@ export default function StoryMovies({
                 Movies
                 <FilmIcon />
               </span>{' '}
-              on <span className='gradient-plex'>Plex</span>.
+              on <span className='gradient-plex'>Plex.</span>
             </p>
           </RewindStat>
 
@@ -46,7 +46,6 @@ export default function StoryMovies({
               <span className='rewind-cat'>
                 {userRewind.movies.top[0].title}
               </span>
-              !
             </p>
 
             <div className='text-base not-italic'>

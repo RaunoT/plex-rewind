@@ -33,7 +33,7 @@ async function DashboardContent({ params, searchParams }: Props) {
   const library = libraries.find(
     (library) => kebabCase(library.section_name) === params.slug,
   )
-  const settings = await getSettings()
+  const settings = getSettings()
 
   if (!library || !library.is_active) {
     return notFound()

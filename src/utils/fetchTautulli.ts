@@ -20,17 +20,17 @@ export default async function fetchTautulli<T>(
   params?: QueryParams,
   cache: boolean = false,
 ): Promise<TautulliResponse<T> | null> {
-  const settings = await getSettings()
+  const settings = getSettings()
   const tautulliUrl = settings.connection.tautulliUrl
   const apiKey = settings.connection.tautulliApiKey
 
   if (!tautulliUrl) {
-    console.error('Tautulli URL is not configured! Skipping request.')
+    console.error('[TAUTULLI] - URL is not configured! Skipping request.')
     return null
   }
 
   if (!apiKey) {
-    console.error('Tautulli API key is not configured! Skipping request.')
+    console.error('[TAUTULLI] - API key is not configured! Skipping request.')
     return null
   }
 
@@ -45,14 +45,16 @@ export default async function fetchTautulli<T>(
 
     if (!res.ok) {
       console.error(
-        `Tautulli API request failed: ${res.status} ${res.statusText}`,
+        `[TAUTULLI] - API request failed! The query was '${query}'.\n`,
+        res.status,
+        res.statusText,
       )
     }
 
     return res.json()
   } catch (error) {
     console.error(
-      `Error fetching from Tautulli API! The query was '${query}'.\n`,
+      `[TAUTULLI] - Error fetching from API! The query was '${query}'.\n`,
       error,
     )
     return null
@@ -60,24 +62,37 @@ export default async function fetchTautulli<T>(
 }
 
 export async function getServerId(): Promise<string> {
+  const settings = getSettings()
+  const plexUrl = new URL(settings.connection.plexUrl)
+  const plexHost = plexUrl.hostname
+  const plexPort = plexUrl.port
   const serverIdPromise = await fetchTautulli<{ identifier: string }>(
     'get_server_id',
     {
-      hostname: 'localhost',
-      port: 32400,
+      hostname: plexHost,
+      port: plexPort,
     },
     true,
   )
+  const serverId = serverIdPromise?.response?.data?.identifier
 
-  return serverIdPromise?.response?.data?.identifier || ''
+  if (serverId) {
+    return serverId
+  } else {
+    console.error(
+      `[TAUTULLI] - Couldn't find server ID for Plex server with hostname ${plexUrl} and port ${plexPort}`,
+    )
+    return ''
+  }
 }
 
 export async function getLibraries(excludeInactive = true): Promise<Library[]> {
-  const settings = await getSettings()
+  const settings = getSettings()
   const activeLibraries = settings.features.activeLibraries
   const libraries = await fetchTautulli<Library[]>('get_libraries')
 
   if (!libraries) {
+    console.warn('[TAUTULLI] - No libraries found!')
     return []
   }
 
