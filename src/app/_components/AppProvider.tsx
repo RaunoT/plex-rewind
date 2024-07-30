@@ -1,6 +1,7 @@
 'use client'
 
 import { Settings, Version } from '@/types'
+import { checkRequiredSettings } from '@/utils/helpers'
 import {
   ArrowPathIcon,
   CogIcon,
@@ -29,7 +30,7 @@ export default function AppProvider({ children, settings, version }: Props) {
     setIsSettings(pathname.startsWith('/settings'))
   }, [pathname])
 
-  if (!settings.test && pathname !== '/settings/connection') {
+  if (!checkRequiredSettings(settings) && pathname !== '/settings/connection') {
     redirect('/settings/connection')
   }
 
@@ -65,7 +66,7 @@ export default function AppProvider({ children, settings, version }: Props) {
             <ArrowPathIcon className='size-6' />
           </a>
         )}
-        {settings.test && session?.user?.isAdmin && (
+        {checkRequiredSettings(settings) && session?.user?.isAdmin && (
           <Link
             href={isSettings ? '/' : '/settings/features'}
             aria-label={isSettings ? 'Close settings' : 'Open settings'}

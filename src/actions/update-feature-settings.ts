@@ -59,7 +59,7 @@ export async function saveFeaturesSettings(
 
   // Save settings
   try {
-    const settings = await getSettings()
+    const settings = getSettings()
 
     schema.parse(data)
     settings.features = data

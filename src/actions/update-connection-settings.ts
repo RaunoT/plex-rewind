@@ -114,7 +114,7 @@ export async function saveConnectionSettings(
 
   // Save settings
   try {
-    const settings = await getSettings()
+    const settings = getSettings()
     schema.parse(data)
     settings.connection = data
     settings.test = true

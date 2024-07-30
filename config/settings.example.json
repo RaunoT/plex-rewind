@@ -2,6 +2,7 @@
   "connection": {
     "tautulliUrl": "",
     "tautulliApiKey": "",
+    "plexUrl": "",
     "overseerrUrl": "",
     "overseerrApiKey": ""
   },

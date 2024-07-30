@@ -42,7 +42,7 @@ export default async function getMediaAdditionalData(
         )
       }
 
-      const settings = await getSettings()
+      const settings = getSettings()
       const tautulliUrl = settings.connection.tautulliUrl
       const isPostersTmdbOnly = settings.features.isPostersTmdbOnly
 

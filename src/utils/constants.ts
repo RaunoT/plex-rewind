@@ -95,5 +95,11 @@ export const DEFAULT_SETTINGS: Settings = {
   },
   test: false,
 }
+export const REQUIRED_SETTINGS = [
+  'connection.tautulliUrl',
+  'connection.tautulliApiKey',
+  'connection.plexUrl',
+  'test',
+]
 
 export const TMDB_API_KEY = '4675b5b5d8cd1463ff16adca2680157b'

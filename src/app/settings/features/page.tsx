@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 
 export default async function FeaturesSettingsPage() {
   const libraries = await getLibraries(false)
-  const settings = await getSettings()
+  const settings = getSettings()
 
   return <FeaturesSettingsForm settings={settings} libraries={libraries} />
 }

@@ -20,7 +20,7 @@ export default async function fetchTautulli<T>(
   params?: QueryParams,
   cache: boolean = false,
 ): Promise<TautulliResponse<T> | null> {
-  const settings = await getSettings()
+  const settings = getSettings()
   const tautulliUrl = settings.connection.tautulliUrl
   const apiKey = settings.connection.tautulliApiKey
 
@@ -62,7 +62,7 @@ export default async function fetchTautulli<T>(
 }
 
 export async function getServerId(): Promise<string> {
-  const settings = await getSettings()
+  const settings = getSettings()
   const plexUrl = new URL(settings.connection.plexUrl)
   const plexHost = plexUrl.hostname
   const plexPort = plexUrl.port
@@ -87,7 +87,7 @@ export async function getServerId(): Promise<string> {
 }
 
 export async function getLibraries(excludeInactive = true): Promise<Library[]> {
-  const settings = await getSettings()
+  const settings = getSettings()
   const activeLibraries = settings.features.activeLibraries
   const libraries = await fetchTautulli<Library[]>('get_libraries')
 

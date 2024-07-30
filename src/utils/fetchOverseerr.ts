@@ -16,7 +16,7 @@ export default async function fetchOverseerr<T>(
   endpoint: string,
   cache: boolean = false,
 ): Promise<T | null> {
-  const settings = await getSettings()
+  const settings = getSettings()
 
   const overseerrUrl = settings.connection.overseerrUrl
   const apiKey = settings.connection.overseerrApiKey
