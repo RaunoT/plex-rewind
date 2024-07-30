@@ -69,6 +69,7 @@ export const DEFAULT_SETTINGS: Settings = {
   connection: {
     tautulliUrl: '',
     tautulliApiKey: '',
+    plexUrl: '',
     overseerrUrl: '',
     overseerrApiKey: '',
   },

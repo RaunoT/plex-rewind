@@ -12,6 +12,7 @@ const schema = z.object({
   tautulliApiKey: z.string(),
   overseerrUrl: z.string().url().optional().or(z.literal('')),
   overseerrApiKey: z.string().optional(),
+  plexUrl: z.string().url(),
 })
 
 export async function saveConnectionSettings(
@@ -23,6 +24,7 @@ export async function saveConnectionSettings(
     tautulliApiKey: formData.get('tautulliApiKey') as string,
     overseerrUrl: formData.get('overseerrUrl') as string,
     overseerrApiKey: formData.get('overseerrApiKey') as string,
+    plexUrl: formData.get('plexUrl') as string,
   }
 
   try {
@@ -85,6 +87,20 @@ export async function saveConnectionSettings(
           status: 'error',
           fields: data,
         }
+      }
+    }
+
+    // Test Plex
+    try {
+      await fetch(data.plexUrl, {
+        cache: 'no-store',
+      })
+    } catch (error) {
+      console.error('[CONFIG] - Error testing Plex connection!', error)
+      return {
+        message: 'Plex - unable to connect!',
+        status: 'error',
+        fields: data,
       }
     }
   } catch (error) {

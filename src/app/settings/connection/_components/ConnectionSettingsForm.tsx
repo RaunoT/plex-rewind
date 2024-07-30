@@ -38,6 +38,20 @@ export default function ConnectionSettingsForm({ settings }: Props) {
         </label>
       </section>
       <section className='group-settings group'>
+        <h2 className='heading-settings'>Plex</h2>
+        <label className='input-wrapper'>
+          <input
+            type='url'
+            className='input'
+            placeholder='http://192.168.1.2:32400'
+            name='plexUrl'
+            required
+            defaultValue={connectionSettings.plexUrl}
+          />
+          <span className='label'>URL</span>
+        </label>
+      </section>
+      <section className='group-settings group'>
         <h2 className='heading-settings'>Overseerr</h2>
         <label className='input-wrapper'>
           <input

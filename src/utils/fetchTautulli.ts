@@ -62,16 +62,28 @@ export default async function fetchTautulli<T>(
 }
 
 export async function getServerId(): Promise<string> {
+  const settings = await getSettings()
+  const plexUrl = new URL(settings.connection.plexUrl)
+  const plexHost = plexUrl.hostname
+  const plexPort = plexUrl.port
   const serverIdPromise = await fetchTautulli<{ identifier: string }>(
     'get_server_id',
     {
-      hostname: 'localhost',
-      port: 32400,
+      hostname: plexHost,
+      port: plexPort,
     },
     true,
   )
+  const serverId = serverIdPromise?.response?.data?.identifier
 
-  return serverIdPromise?.response?.data?.identifier || ''
+  if (serverId) {
+    return serverId
+  } else {
+    console.error(
+      `[TAUTULLI] - Couldn't find server ID for Plex server with hostname ${plexUrl} and port ${plexPort}`,
+    )
+    return ''
+  }
 }
 
 export async function getLibraries(excludeInactive = true): Promise<Library[]> {

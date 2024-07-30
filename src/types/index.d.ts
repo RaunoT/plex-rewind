@@ -112,6 +112,7 @@ export type ConnectionSettings = {
   tautulliApiKey: string
   overseerrUrl: string
   overseerrApiKey: string
+  plexUrl: string
 }
 
 // Define the allowed strings for each type
