@@ -83,16 +83,28 @@ export default async function getMediaAdditionalData(
 
     if (type === 'tv') {
       mediaItem.year = additionalData[i].year
+    }
 
-      if (usersWatchedData) {
-        const watchedData = usersWatchedData.find(
-          (uw) => uw.rating_key === mediaItem.rating_key,
-        )
+    if (usersWatchedData) {
+      const usersWatchedMapped = mapWatchedDataByRatingKey(
+        usersWatchedData,
+        mediaItem,
+      )
 
-        mediaItem.users_watched = watchedData?.users_watched
-      }
+      mediaItem.users_watched = usersWatchedMapped
     }
   })
 
   return media
+}
+
+export function mapWatchedDataByRatingKey(
+  watchedData: TautulliItemRow[],
+  mediaItem: TautulliItemRow,
+) {
+  const usersWatchedMapped = watchedData.find(
+    (item) => item.rating_key === mediaItem.rating_key,
+  )
+
+  return usersWatchedMapped?.users_watched
 }

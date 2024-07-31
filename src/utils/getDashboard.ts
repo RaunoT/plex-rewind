@@ -1,7 +1,9 @@
 import { Library, Settings, TautulliItem } from '@/types'
 import fetchTautulli from './fetchTautulli'
 import { bytesToSize, secondsToTime, timeToSeconds } from './formatting'
-import getMediaAdditionalData from './getMediaAdditionalData'
+import getMediaAdditionalData, {
+  mapWatchedDataByRatingKey,
+} from './getMediaAdditionalData'
 
 export async function getItems(
   library: Library,
@@ -15,6 +17,11 @@ export async function getItems(
     show: 'top_tv',
     artist: 'top_music',
   }
+  const popularIdMap = {
+    movie: 'popular_movies',
+    show: 'popular_tv',
+    artist: 'popular_music',
+  }
   const itemsRes = await fetchTautulli<TautulliItem>('get_home_stats', {
     stat_id: statIdMap[sectionType],
     stats_count: 6,
@@ -24,61 +31,46 @@ export async function getItems(
     user_id: userId ? userId : '',
   })
 
-  if (!itemsRes?.response?.data?.rows) {
-    return []
-  }
+  items = itemsRes?.response?.data?.rows || []
 
-  if (sectionType === 'movie' || sectionType === 'show') {
-    items = await getMediaAdditionalData(
-      itemsRes.response.data.rows,
-      sectionType === 'movie' ? 'movie' : 'tv',
-    )
-  } else {
-    items = itemsRes.response.data.rows
-  }
-
-  if (sectionType === 'show') {
+  if (items.length) {
     const usersWatched = await fetchTautulli<TautulliItem>('get_home_stats', {
-      stat_id: 'popular_tv',
-      stats_count: 50, // https://github.com/Tautulli/Tautulli/issues/2103
+      stat_id: popularIdMap[sectionType],
+      stats_count: 100, // https://github.com/Tautulli/Tautulli/issues/2103
       time_range: period,
     })
     const usersWatchedData = usersWatched?.response?.data?.rows
-    const shows = await getMediaAdditionalData(
-      itemsRes.response?.data?.rows,
-      'tv',
-      usersWatchedData,
-    )
 
-    items = shows
-  }
+    if (usersWatchedData) {
+      // Get artists users listened data
+      if (sectionType === 'artist') {
+        items.map((artist) => {
+          const usersListenedMapped = mapWatchedDataByRatingKey(
+            usersWatchedData,
+            artist,
+          )
 
-  if (sectionType === 'artist') {
-    const artists = itemsRes.response?.data?.rows
-    const usersListened = await fetchTautulli<TautulliItem>('get_home_stats', {
-      stat_id: 'popular_music',
-      stats_count: 50, // https://github.com/Tautulli/Tautulli/issues/2103
-      time_range: period,
-    })
-    const usersListenedData = usersListened?.response?.data?.rows
+          artist.users_watched = usersListenedMapped
+        })
+      }
 
-    artists.map((artist) => {
-      const listenedData = usersListenedData?.find(
-        (uw) => uw.rating_key === artist.rating_key,
-      )
+      // Get tv/movies additional data
+      if (sectionType === 'show' || sectionType === 'movie') {
+        items = await getMediaAdditionalData(
+          items,
+          sectionType === 'movie' ? 'movie' : 'tv',
+          usersWatchedData,
+        )
+      }
 
-      artist.users_watched = listenedData?.users_watched
-    })
-
-    items = artists
-  }
-
-  // Don't show how many users watched the item on personal dashboard
-  if (userId) {
-    items = items.map((item) => {
-      delete item.users_watched
-      return item
-    })
+      // Don't show how many users watched the item on personal dashboard
+      if (userId) {
+        items = items.map((item) => {
+          delete item.users_watched
+          return item
+        })
+      }
+    }
   }
 
   return items

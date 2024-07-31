@@ -147,15 +147,6 @@ export default function MediaItem({
               {secondsToTime(data.total_duration)}
             </li>
           )}
-          {/* Users watched */}
-          {activeStats.includes('users') &&
-            (type === 'show' || type === 'artist') &&
-            data.users_watched && (
-              <li className='icon-stat-wrapper'>
-                <UserIcon />
-                {pluralize(data.users_watched, 'user')}
-              </li>
-            )}
           {/* Plays */}
           {activeStats.includes('plays') &&
             (type === 'users' ? (
@@ -191,6 +182,13 @@ export default function MediaItem({
                 <span>{pluralize(data.total_plays, 'play')}</span>
               </li>
             ))}
+          {/* Users watched */}
+          {activeStats.includes('users') && data.users_watched && (
+            <li className='icon-stat-wrapper'>
+              <UserIcon />
+              {pluralize(data.users_watched, 'user')}
+            </li>
+          )}
           {/* Requests */}
           {activeStats.includes('requests') &&
             type === 'users' &&
