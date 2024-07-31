@@ -3,7 +3,11 @@ import fetchTautulli from './fetchTautulli'
 import { bytesToSize, secondsToTime, timeToSeconds } from './formatting'
 import getMediaAdditionalData from './getMediaAdditionalData'
 
-export async function getItems(library: Library, period: number) {
+export async function getItems(
+  library: Library,
+  period: number,
+  userId?: string,
+) {
   let items = []
   const sectionType = library.section_type
   const statIdMap = {
@@ -17,6 +21,7 @@ export async function getItems(library: Library, period: number) {
     stats_type: 'duration',
     time_range: period,
     section_id: library.section_id,
+    user_id: userId ? userId : '',
   })
 
   if (!itemsRes?.response?.data?.rows) {
@@ -68,6 +73,14 @@ export async function getItems(library: Library, period: number) {
     items = artists
   }
 
+  // Don't show how many users watched the item on personal dashboard
+  if (userId) {
+    items = items.map((item) => {
+      delete item.users_watched
+      return item
+    })
+  }
+
   return items
 }
 
@@ -75,6 +88,7 @@ export async function getTotalDuration(
   library: Library,
   period: string,
   settings: Settings,
+  userId?: string,
 ) {
   if (settings.features.activeDashboardTotalStatistics.includes('duration')) {
     const totalDuration = await fetchTautulli<{ total_duration: string }>(
@@ -83,6 +97,7 @@ export async function getTotalDuration(
         section_id: library.section_id,
         after: period,
         length: 0,
+        user_id: userId ? userId : '',
       },
     )
 

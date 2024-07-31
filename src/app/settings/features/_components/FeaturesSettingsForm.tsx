@@ -179,6 +179,20 @@ export default function FeaturesSettingsForm({ settings, libraries }: Props) {
           <div className='select-wrapper'>
             <select
               className='input'
+              name='dashboardDefaultStyle'
+              defaultValue={featuresSettings.dashboardDefaultStyle || 'general'}
+              required
+            >
+              <option value='general'>General</option>
+              <option value='personal'>Personal</option>
+            </select>
+          </div>
+          <span className='label required'>Default style</span>
+        </div>
+        <div className='input-wrapper'>
+          <div className='select-wrapper'>
+            <select
+              className='input'
               name='dashboardDefaultPeriod'
               defaultValue={featuresSettings.dashboardDefaultPeriod || 'custom'}
               required

@@ -11,9 +11,7 @@ export default function DashboardNavContent({
 }: DashboardNavProps) {
   const pathname = usePathname()
   const searchParams = useSearchParams()
-  const period = searchParams.get('period')
-    ? '?period=' + searchParams.get('period')
-    : ''
+  const params = searchParams.toString()
 
   return (
     <nav>
@@ -22,7 +20,7 @@ export default function DashboardNavContent({
         {libraries.map((library) => (
           <li key={library.section_id}>
             <Link
-              href={`/dashboard/${kebabCase(library.section_name)}${period}`}
+              href={`/dashboard/${kebabCase(library.section_name)}${params ? '?' + params : ''}`}
               className='nav-link'
               aria-current={
                 pathname === `/dashboard/${kebabCase(library.section_name)}` &&
@@ -36,7 +34,7 @@ export default function DashboardNavContent({
         {isUsersPageActive && (
           <li>
             <Link
-              href={`/dashboard/users${period}`}
+              href={`/dashboard/users${params ? '?' + params : ''}`}
               className='nav-link'
               aria-current={pathname === '/dashboard/users' && 'page'}
             >

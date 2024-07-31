@@ -1,4 +1,4 @@
-import { SearchParams, Settings, TautulliItem } from '@/types'
+import { DashboardSearchParams, Settings, TautulliItem } from '@/types'
 import {
   fetchOverseerrUserId,
   fetchPaginatedOverseerrStats,
@@ -180,7 +180,7 @@ async function getTotalRequests(period: string, settings: Settings) {
 }
 
 type Props = {
-  searchParams: SearchParams
+  searchParams: DashboardSearchParams
 }
 
 async function DashboardUsersContent({ searchParams }: Props) {

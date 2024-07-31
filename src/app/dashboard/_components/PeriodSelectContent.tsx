@@ -65,6 +65,18 @@ export default function PeriodSelectContent({ settings }: Props) {
     window.scrollTo(0, 0)
   }, [pathname])
 
+  const getUpdatedQueryParams = (newPeriod: string) => {
+    const params = new URLSearchParams(searchParams.toString())
+
+    if (newPeriod) {
+      params.set('period', newPeriod)
+    } else {
+      params.delete('period')
+    }
+
+    return params.toString() ? `?${params.toString()}` : ''
+  }
+
   return (
     <ul className='nav'>
       {periodOptions.map(({ label, value }) => {
@@ -73,7 +85,7 @@ export default function PeriodSelectContent({ settings }: Props) {
         return (
           <li key={value}>
             <Link
-              href={isDefault ? pathname : `${pathname}?period=${value}`}
+              href={`${pathname}${getUpdatedQueryParams(isDefault ? '' : value)}`}
               className='nav-link'
               aria-selected={isDefault ? !period : period === value}
             >

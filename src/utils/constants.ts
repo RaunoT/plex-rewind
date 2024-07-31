@@ -87,6 +87,7 @@ export const DEFAULT_SETTINGS: Settings = {
       'requests',
     ],
     activeDashboardTotalStatistics: ['size', 'duration', 'count', 'requests'],
+    dashboardDefaultStyle: 'general',
     dashboardDefaultPeriod: 'custom',
     dashboardCustomPeriod: '30',
     googleAnalyticsId: '',

@@ -23,16 +23,19 @@ type Props = {
 
 export default function AppProvider({ children, settings, version }: Props) {
   const pathname = usePathname()
-  const { data: session } = useSession()
-  const [isSettings, setIsSettings] = useState(pathname.startsWith('/settings'))
-
-  useEffect(() => {
-    setIsSettings(pathname.startsWith('/settings'))
-  }, [pathname])
 
   if (!checkRequiredSettings(settings) && pathname !== '/settings/connection') {
     redirect('/settings/connection')
   }
+
+  const { data: session } = useSession()
+  const [isSettings, setIsSettings] = useState<boolean>(
+    pathname.startsWith('/settings'),
+  )
+
+  useEffect(() => {
+    setIsSettings(pathname.startsWith('/settings'))
+  }, [pathname])
 
   return (
     <main

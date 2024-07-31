@@ -169,7 +169,7 @@ export default function Home({ settings }: Props) {
                 : settings.features.isUsersPageActive
                   ? 'users'
                   : '',
-            )}`}
+            )}${settings.features.dashboardDefaultStyle === 'personal' ? '?personal=true' : ''}`}
             className={clsx(
               'mt-4 block',
               !settings.features.isRewindActive ? 'button' : 'link',

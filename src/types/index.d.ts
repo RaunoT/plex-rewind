@@ -1,8 +1,9 @@
 import { User } from 'next-auth'
 import { PERIODS } from '../utils/constants'
 
-export type SearchParams = {
+export type DashboardSearchParams = {
   period?: keyof typeof PERIODS
+  personal?: 'true'
 }
 
 type LibraryRewind = {
@@ -138,6 +139,7 @@ export type FeaturesSettings = {
   activeLibraries: string[]
   activeDashboardItemStatistics: DashboardItemStatistics
   activeDashboardTotalStatistics: DashboardTotalStatistics
+  dashboardDefaultStyle: string
   dashboardDefaultPeriod: string
   dashboardCustomPeriod: string
   googleAnalyticsId: string
