@@ -27,33 +27,40 @@ export default function StoryGoodbye({
         </p>
       </RewindStat>
       <RewindStat renderDelay={2} scaleDelay={4} isPaused={isPaused}>
-        <p>
-          From your favorite{' '}
-          {userRewind.movies.duration && (
-            <span className='rewind-cat'>
-              Movies
-              <FilmIcon />
-            </span>
-          )}{' '}
-          to the most entertaining{' '}
-          {userRewind.shows.duration && (
-            <span className='rewind-cat'>
-              Shows
-              <PlayCircleIcon />
-            </span>
-          )}
-          {userRewind.audio.duration && (
-            <>
-              {' '}
-              and memorable{' '}
+        {userRewind.duration.user ? (
+          <p>
+            From your favorite{' '}
+            {userRewind.movies.duration && (
               <span className='rewind-cat'>
-                Tracks
-                <MusicalNoteIcon />
+                Movies
+                <FilmIcon />
               </span>
-            </>
-          )}
-          , it&apos;s been a year to remember.
-        </p>
+            )}{' '}
+            to the most entertaining{' '}
+            {userRewind.shows.duration && (
+              <span className='rewind-cat'>
+                Shows
+                <PlayCircleIcon />
+              </span>
+            )}
+            {userRewind.audio.duration && (
+              <>
+                {' '}
+                and memorable{' '}
+                <span className='rewind-cat'>
+                  Tracks
+                  <MusicalNoteIcon />
+                </span>
+              </>
+            )}
+            , it&apos;s been a year to remember.
+          </p>
+        ) : (
+          <p>
+            Sorry you couldn&apos;t find any content to watch or listen to this
+            time around. Better luck next year!
+          </p>
+        )}
       </RewindStat>
       <RewindStat
         renderDelay={6}
@@ -62,8 +69,10 @@ export default function StoryGoodbye({
         isPaused={isPaused}
       >
         <p>
-          We&apos;ll be back next year with even more{' '}
-          <span className='rewind-cat'>insights and stats.</span>
+          {userRewind.duration.user
+            ? "We'll be back next year"
+            : "Eitherway, we'll be here then"}{' '}
+          with even more <span className='rewind-cat'>insights and stats.</span>
         </p>
       </RewindStat>
       <RewindStat renderDelay={9} loaderDelay={6} isPaused={isPaused} noScale>
