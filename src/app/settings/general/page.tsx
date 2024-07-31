@@ -1,15 +1,15 @@
 import { getLibraries } from '@/utils/fetchTautulli'
 import getSettings from '@/utils/getSettings'
 import { Metadata } from 'next'
-import FeaturesSettingsForm from './_components/FeaturesSettingsForm'
+import GeneralSettingsForm from './_components/GeneralSettingsForm'
 
 export const metadata: Metadata = {
-  title: 'Features settings',
+  title: 'General settings',
 }
 
-export default async function FeaturesSettingsPage() {
+export default async function GeneralSettingsPage() {
   const libraries = await getLibraries(false)
   const settings = getSettings()
 
-  return <FeaturesSettingsForm settings={settings} libraries={libraries} />
+  return <GeneralSettingsForm settings={settings} libraries={libraries} />
 }

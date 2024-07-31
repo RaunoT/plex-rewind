@@ -73,12 +73,19 @@ export const DEFAULT_SETTINGS: Settings = {
     overseerrUrl: '',
     overseerrApiKey: '',
   },
-  features: {
-    isRewindActive: true,
-    isDashboardActive: true,
-    isUsersPageActive: true,
+  general: {
     activeLibraries: [],
-    activeDashboardItemStatistics: [
+    isPostersTmdbOnly: false,
+    googleAnalyticsId: '',
+  },
+  rewind: {
+    isActive: true,
+    isLibrariesSizeAndCountActive: true,
+  },
+  dashboard: {
+    isActive: true,
+    isUsersPageActive: true,
+    activeItemStatistics: [
       'year',
       'rating',
       'duration',
@@ -86,13 +93,10 @@ export const DEFAULT_SETTINGS: Settings = {
       'users',
       'requests',
     ],
-    activeDashboardTotalStatistics: ['size', 'duration', 'count', 'requests'],
-    dashboardDefaultStyle: 'general',
-    dashboardDefaultPeriod: 'custom',
-    dashboardCustomPeriod: '30',
-    googleAnalyticsId: '',
-    isPostersTmdbOnly: false,
-    isRewindLibrariesSizeAndCountActive: true,
+    activeTotalStatistics: ['size', 'duration', 'count', 'requests'],
+    defaultStyle: 'general',
+    defaultPeriod: 'custom',
+    customPeriod: '30',
   },
   test: false,
 }

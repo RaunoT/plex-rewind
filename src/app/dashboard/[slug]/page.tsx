@@ -56,7 +56,7 @@ async function DashboardContent({ params, searchParams }: Props) {
     getServerId(),
   ])
   const isCountActive =
-    settings.features.activeDashboardTotalStatistics.includes('count')
+    settings.dashboard.activeTotalStatistics.includes('count')
   const countValue =
     library.section_type === 'movie'
       ? Number(library.count)

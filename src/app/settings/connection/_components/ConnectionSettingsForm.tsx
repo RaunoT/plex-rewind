@@ -1,8 +1,8 @@
 'use client'
 
-import { saveConnectionSettings } from '@/actions/update-connection-settings'
 import { Settings } from '@/types'
 import SettingsForm from '../../_components/SettingsForm'
+import saveConnectionSettings from '../_actions/updateConnectionSettings'
 
 type Props = {
   settings: Settings

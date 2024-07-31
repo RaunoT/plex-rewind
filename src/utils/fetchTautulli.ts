@@ -88,7 +88,7 @@ export async function getServerId(): Promise<string> {
 
 export async function getLibraries(excludeInactive = true): Promise<Library[]> {
   const settings = getSettings()
-  const activeLibraries = settings.features.activeLibraries
+  const activeLibraries = settings.general.activeLibraries
   const libraries = await fetchTautulli<Library[]>('get_libraries')
 
   if (!libraries) {

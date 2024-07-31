@@ -30,7 +30,6 @@ export default async function SettingsLayout({ children }: Props) {
         title={
           checkRequiredSettings(settings) ? 'Settings' : "Let's get started"
         }
-        noBack
       />
       {checkRequiredSettings(settings) && <SettingsNav />}
       {children}

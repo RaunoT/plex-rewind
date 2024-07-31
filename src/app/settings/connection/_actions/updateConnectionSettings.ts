@@ -1,11 +1,8 @@
 'use server'
 
 import { SettingsFormInitialState } from '@/types'
-import { SETTINGS_PATH } from '@/utils/constants'
-import getSettings from '@/utils/getSettings'
-import { promises as fs } from 'fs'
-import { revalidatePath } from 'next/cache'
-import { z, ZodError } from 'zod'
+import { z } from 'zod'
+import updateSettings from '../../_actions/updateSettings'
 
 const schema = z.object({
   tautulliUrl: z.string().url(),
@@ -15,7 +12,7 @@ const schema = z.object({
   plexUrl: z.string().url(),
 })
 
-export async function saveConnectionSettings(
+export default async function saveConnectionSettings(
   prevState: SettingsFormInitialState,
   formData: FormData,
 ) {
@@ -112,37 +109,5 @@ export async function saveConnectionSettings(
     }
   }
 
-  // Save settings
-  try {
-    const settings = getSettings()
-    schema.parse(data)
-    settings.connection = data
-    settings.test = true
-
-    await fs.writeFile(SETTINGS_PATH, JSON.stringify(settings), 'utf8')
-
-    revalidatePath('/')
-
-    return {
-      message: 'Settings saved!',
-      status: 'success',
-      fields: data,
-    }
-  } catch (error) {
-    console.error('[CONFIG] - Error writing to settings file!', error)
-
-    if (error instanceof ZodError) {
-      return {
-        message: error.errors[0].message,
-        status: 'error',
-        fields: data,
-      }
-    }
-
-    return {
-      message: 'Something went wrong!',
-      status: 'error',
-      fields: data,
-    }
-  }
+  return await updateSettings(schema, data, 'connection')
 }

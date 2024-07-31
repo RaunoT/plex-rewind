@@ -138,7 +138,7 @@ export default function Home({ settings }: Props) {
           </button>
         )}
 
-        {settings.features.isRewindActive &&
+        {settings.rewind.isActive &&
           isLoggedIn &&
           (managedUsers ? (
             <>
@@ -161,18 +161,18 @@ export default function Home({ settings }: Props) {
             </Link>
           ))}
 
-        {settings.features.isDashboardActive && isLoggedIn && (
+        {settings.dashboard.isActive && isLoggedIn && (
           <Link
             href={`/dashboard/${kebabCase(
               libraries[0]
                 ? libraries[0].section_name
-                : settings.features.isUsersPageActive
+                : settings.dashboard.isUsersPageActive
                   ? 'users'
                   : '',
-            )}${settings.features.dashboardDefaultStyle === 'personal' ? '?personal=true' : ''}`}
+            )}${settings.dashboard.defaultStyle === 'personal' ? '?personal=true' : ''}`}
             className={clsx(
               'mt-4 block',
-              !settings.features.isRewindActive ? 'button' : 'link',
+              !settings.rewind.isActive ? 'button' : 'link',
             )}
           >
             Dashboard

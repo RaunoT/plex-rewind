@@ -90,7 +90,7 @@ export async function getTotalDuration(
   settings: Settings,
   userId?: string,
 ) {
-  if (settings.features.activeDashboardTotalStatistics.includes('duration')) {
+  if (settings.dashboard.activeTotalStatistics.includes('duration')) {
     const totalDuration = await fetchTautulli<{ total_duration: string }>(
       'get_history',
       {
@@ -110,7 +110,7 @@ export async function getTotalDuration(
 }
 
 export async function getTotalSize(library: Library, settings: Settings) {
-  if (settings.features.activeDashboardTotalStatistics.includes('size')) {
+  if (settings.dashboard.activeTotalStatistics.includes('size')) {
     const totalSize = await fetchTautulli<{ total_file_size: number }>(
       'get_library_media_info',
       {

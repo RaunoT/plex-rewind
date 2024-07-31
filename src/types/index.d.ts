@@ -105,18 +105,32 @@ export type TautulliUser = {
 export type SettingsFormInitialState = {
   message: string
   status: string
-  fields: ConnectionSettings | FeaturesSettings
+  fields:
+    | ConnectionSettings
+    | GeneralSettings
+    | RewindSettings
+    | DashboardSettings
 }
 
 export type ConnectionSettings = {
   tautulliUrl: string
   tautulliApiKey: string
-  overseerrUrl: string
-  overseerrApiKey: string
+  overseerrUrl?: string
+  overseerrApiKey?: string
   plexUrl: string
 }
 
-// Define the allowed strings for each type
+export type GeneralSettings = {
+  activeLibraries: string[]
+  isPostersTmdbOnly: boolean
+  googleAnalyticsId: string
+}
+
+export type RewindSettings = {
+  isActive: boolean
+  isLibrariesSizeAndCountActive: boolean
+}
+
 export type DashboardItemStatistics = (
   | 'year'
   | 'rating'
@@ -132,25 +146,22 @@ export type DashboardTotalStatistics = (
   | 'requests'
 )[]
 
-export type FeaturesSettings = {
-  isRewindActive: boolean
-  isDashboardActive: boolean
+export type DashboardSettings = {
+  isActive: boolean
   isUsersPageActive: boolean
-  activeLibraries: string[]
-  activeDashboardItemStatistics: DashboardItemStatistics
-  activeDashboardTotalStatistics: DashboardTotalStatistics
-  dashboardDefaultStyle: string
-  dashboardDefaultPeriod: string
-  dashboardCustomPeriod: string
-  googleAnalyticsId: string
-  isPostersTmdbOnly: boolean
-  isRewindLibrariesSizeAndCountActive: boolean
+  activeItemStatistics: DashboardItemStatistics
+  activeTotalStatistics: DashboardTotalStatistics
+  defaultStyle: string
+  defaultPeriod: string
+  customPeriod: string
 }
 
 export type Settings = {
   connection: ConnectionSettings
-  features: FeaturesSettings
-  test: boolean
+  general: GeneralSettings
+  rewind: RewindSettings
+  dashboard: DashboardSettings
+  test?: boolean
 }
 
 export type Version = {

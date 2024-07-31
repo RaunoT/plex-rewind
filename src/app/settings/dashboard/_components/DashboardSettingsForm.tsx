@@ -1,90 +1,28 @@
 'use client'
 
-import { saveFeaturesSettings } from '@/actions/update-feature-settings'
-import { Library, Settings } from '@/types'
-import { kebabCase } from 'lodash'
+import { Settings } from '@/types'
+import { DEFAULT_SETTINGS } from '@/utils/constants'
 import { Checkbox, CheckboxGroup, Label, Switch } from 'react-aria-components'
 import SettingsForm from '../../_components/SettingsForm'
+import saveDashboardSettings from '../_actions/updateDashboardSettings'
 
 type Props = {
   settings: Settings
-  libraries: Library[]
 }
 
-export default function FeaturesSettingsForm({ settings, libraries }: Props) {
-  const featuresSettings = settings.features
+export default function DashboardSettingsForm({ settings }: Props) {
+  const dashboardSettings = settings.dashboard
   const isOverseerrActive =
     settings.connection.overseerrUrl && settings.connection.overseerrApiKey
 
   return (
-    <SettingsForm settings={settings} action={saveFeaturesSettings}>
+    <SettingsForm settings={settings} action={saveDashboardSettings}>
       <section className='group-settings group'>
-        <h2 className='heading-settings'>General</h2>
-        <CheckboxGroup
-          className='input-wrapper'
-          name='activeLibraries'
-          defaultValue={featuresSettings.activeLibraries}
-        >
-          <div className='peer mr-auto flex flex-wrap gap-2'>
-            {libraries.map((library) => (
-              <Checkbox
-                key={library.section_id}
-                value={kebabCase(library.section_name)}
-                className='checkbox-wrapper'
-              >
-                <div className='checkbox' aria-hidden='true'></div>
-                {library.section_name}
-              </Checkbox>
-            ))}
-          </div>
-          <Label className='label label--start'>Libraries</Label>
-        </CheckboxGroup>
-        <Switch
-          className='switch items-start'
-          name='isPostersTmdbOnly'
-          defaultSelected={featuresSettings.isPostersTmdbOnly}
-        >
-          <div className='indicator'></div>
-          <span className='label'>
-            TMDB only posters
-            <small>
-              Ignore Plex posters for tv/movies.
-              <br /> By default, TMDB is a fallback.
-            </small>
-          </span>
-        </Switch>
-      </section>
-      <section className='group-settings group'>
-        <h2 className='heading-settings'>Rewind</h2>
+        <h2 className='heading-settings'>Status</h2>
         <Switch
           className='switch'
-          name='isRewindActive'
-          defaultSelected={featuresSettings.isRewindActive}
-        >
-          <div className='indicator' />
-          <span className='label'>Enabled</span>
-        </Switch>
-        <Switch
-          className='switch items-start'
-          name='isRewindLibrariesSizeAndCountActive'
-          defaultSelected={featuresSettings.isRewindLibrariesSizeAndCountActive}
-        >
-          <div className='indicator' />
-          <span className='label'>
-            Libraries size & count card
-            <small>
-              Disable if you don&apos;t want to rely on Tautulli for these
-              stats.
-            </small>
-          </span>
-        </Switch>
-      </section>
-      <section className='group-settings group'>
-        <h2 className='heading-settings'>Dashboard</h2>
-        <Switch
-          className='switch'
-          name='isDashboardActive'
-          defaultSelected={featuresSettings.isDashboardActive}
+          name='isActive'
+          defaultSelected={dashboardSettings.isActive}
         >
           <div className='indicator'></div>
           <span className='label'>Enabled</span>
@@ -92,23 +30,20 @@ export default function FeaturesSettingsForm({ settings, libraries }: Props) {
         <Switch
           className='switch'
           name='isUsersPageActive'
-          defaultSelected={featuresSettings.isUsersPageActive}
+          defaultSelected={dashboardSettings.isUsersPageActive}
         >
           <div className='indicator'></div>
           <span className='label'>Users page</span>
         </Switch>
+      </section>
+      <section className='group-settings group'>
+        <h2 className='heading-settings'>Statistics</h2>
         <CheckboxGroup
           className='input-wrapper'
-          name='activeDashboardItemStatistics'
+          name='activeItemStatistics'
           defaultValue={
-            featuresSettings.activeDashboardItemStatistics || [
-              'year',
-              'rating',
-              'duration',
-              'plays',
-              'users',
-              'requests',
-            ]
+            dashboardSettings.activeItemStatistics ||
+            DEFAULT_SETTINGS.dashboard.activeItemStatistics
           }
         >
           <div className='peer mr-auto flex flex-wrap gap-2'>
@@ -143,14 +78,10 @@ export default function FeaturesSettingsForm({ settings, libraries }: Props) {
         </CheckboxGroup>
         <CheckboxGroup
           className='input-wrapper'
-          name='activeDashboardTotalStatistics'
+          name='activeTotalStatistics'
           defaultValue={
-            featuresSettings.activeDashboardTotalStatistics || [
-              'size',
-              'duration',
-              'count',
-              'requests',
-            ]
+            dashboardSettings.activeTotalStatistics ||
+            DEFAULT_SETTINGS.dashboard.activeTotalStatistics
           }
         >
           <div className='peer mr-auto flex flex-wrap gap-2'>
@@ -175,12 +106,18 @@ export default function FeaturesSettingsForm({ settings, libraries }: Props) {
           </div>
           <Label className='label label--start'>Totals statistics</Label>
         </CheckboxGroup>
+      </section>
+      <section className='group-settings group'>
+        <h2 className='heading-settings'>Defaults</h2>
         <div className='input-wrapper'>
           <div className='select-wrapper'>
             <select
               className='input'
-              name='dashboardDefaultStyle'
-              defaultValue={featuresSettings.dashboardDefaultStyle || 'general'}
+              name='defaultStyle'
+              defaultValue={
+                dashboardSettings.defaultStyle ||
+                DEFAULT_SETTINGS.dashboard.defaultStyle
+              }
               required
             >
               <option value='general'>General</option>
@@ -193,8 +130,11 @@ export default function FeaturesSettingsForm({ settings, libraries }: Props) {
           <div className='select-wrapper'>
             <select
               className='input'
-              name='dashboardDefaultPeriod'
-              defaultValue={featuresSettings.dashboardDefaultPeriod || 'custom'}
+              name='defaultPeriod'
+              defaultValue={
+                dashboardSettings.defaultPeriod ||
+                DEFAULT_SETTINGS.dashboard.defaultPeriod
+              }
               required
             >
               <option value='7days'>7 days</option>
@@ -209,27 +149,17 @@ export default function FeaturesSettingsForm({ settings, libraries }: Props) {
           <input
             type='number'
             className='input'
-            name='dashboardCustomPeriod'
-            defaultValue={featuresSettings.dashboardCustomPeriod || '30'}
+            name='customPeriod'
+            defaultValue={
+              dashboardSettings.customPeriod ||
+              DEFAULT_SETTINGS.dashboard.customPeriod
+            }
             placeholder='30'
             min='1'
             max='3000'
             required
           />
           <span className='label'>Custom period</span>
-        </label>
-      </section>
-      <section className='group-settings group'>
-        <h2 className='heading-settings'>Miscellaneous</h2>
-        <label className='input-wrapper'>
-          <input
-            type='text'
-            className='input'
-            name='googleAnalyticsId'
-            defaultValue={featuresSettings.googleAnalyticsId}
-            placeholder='G-XXXXXXXXXX'
-          />
-          <span className='label'>Google Analytics ID</span>
         </label>
       </section>
     </SettingsForm>

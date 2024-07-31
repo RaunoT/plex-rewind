@@ -65,8 +65,8 @@ export default async function RootLayout({ children }: Props) {
         <PublicEnvScript />
       </head>
       <body className='h-full min-h-dvh bg-black text-white'>
-        {settings.features.googleAnalyticsId && (
-          <GoogleAnalytics id={settings.features.googleAnalyticsId} />
+        {settings.general.googleAnalyticsId && (
+          <GoogleAnalytics id={settings.general.googleAnalyticsId} />
         )}
         <SessionProviderWrapper>
           <AppProvider settings={settings} version={version}>

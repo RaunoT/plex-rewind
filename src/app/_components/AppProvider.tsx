@@ -32,8 +32,21 @@ export default function AppProvider({ children, settings, version }: Props) {
   const [isSettings, setIsSettings] = useState<boolean>(
     pathname.startsWith('/settings'),
   )
+  const [settingsLink, setSettingsLink] = useState<string>('/settings/general')
 
   useEffect(() => {
+    switch (true) {
+      case pathname.startsWith('/dashboard'):
+        setSettingsLink('/settings/dashboard')
+        break
+      case pathname.startsWith('/rewind'):
+        setSettingsLink('/settings/rewind')
+        break
+      default:
+        setSettingsLink('/settings/general')
+        break
+    }
+
     setIsSettings(pathname.startsWith('/settings'))
   }, [pathname])
 
@@ -41,7 +54,8 @@ export default function AppProvider({ children, settings, version }: Props) {
     <main
       className={clsx(
         'flex h-full min-h-dvh flex-col items-center overflow-x-hidden px-4 py-8 sm:justify-center',
-        { 'justify-center': pathname === '/' },
+        // TODO: Not sure if this offline conditional works as expected honestly
+        { 'justify-center': pathname === '/' || pathname === '/offline' },
       )}
     >
       <div className='fixed inset-0 -z-10 select-none overflow-hidden bg-black after:absolute after:inset-0 after:bg-black/50 after:content-[""]'>
@@ -71,7 +85,7 @@ export default function AppProvider({ children, settings, version }: Props) {
         )}
         {checkRequiredSettings(settings) && session?.user?.isAdmin && (
           <Link
-            href={isSettings ? '/' : '/settings/features'}
+            href={isSettings ? '/' : settingsLink}
             aria-label={isSettings ? 'Close settings' : 'Open settings'}
             className='link-light'
           >

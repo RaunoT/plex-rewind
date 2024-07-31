@@ -38,8 +38,8 @@ export default function PeriodSelectContent({ settings }: Props) {
   const pathname = usePathname()
   const searchParams = useSearchParams()
   const period = searchParams.get('period')
-  const customPeriod = parseInt(settings.features.dashboardCustomPeriod)
-  const defaultPeriod = settings.features.dashboardDefaultPeriod
+  const customPeriod = parseInt(settings.dashboard.customPeriod)
+  const defaultPeriod = settings.dashboard.defaultPeriod
   // Replace '30 days' with custom period if it exists
   const periodOptions = customPeriod
     ? [

@@ -136,7 +136,7 @@ async function getUsers(
 }
 
 async function getTotalDuration(period: string, settings: Settings) {
-  if (settings.features.activeDashboardTotalStatistics.includes('duration')) {
+  if (settings.dashboard.activeTotalStatistics.includes('duration')) {
     const totalDuration = await fetchTautulli<{ total_duration: string }>(
       'get_history',
       {
@@ -154,7 +154,7 @@ async function getTotalDuration(period: string, settings: Settings) {
 }
 
 async function getUsersCount(settings: Settings) {
-  if (settings.features.activeDashboardTotalStatistics.includes('count')) {
+  if (settings.dashboard.activeTotalStatistics.includes('count')) {
     const usersCount = await fetchTautulli<[]>('get_users')
 
     return usersCount?.response?.data.slice(1).length
@@ -168,7 +168,7 @@ async function getTotalRequests(period: string, settings: Settings) {
     settings.connection.overseerrUrl && settings.connection.overseerrApiKey
 
   if (
-    settings.features.activeDashboardTotalStatistics.includes('requests') &&
+    settings.dashboard.activeTotalStatistics.includes('requests') &&
     isOverseerrActive
   ) {
     const requests = await fetchPaginatedOverseerrStats('request', period)
@@ -186,7 +186,7 @@ type Props = {
 async function DashboardUsersContent({ searchParams }: Props) {
   const settings = getSettings()
 
-  if (!settings.features.isUsersPageActive) {
+  if (!settings.dashboard.isUsersPageActive) {
     return notFound()
   }
 

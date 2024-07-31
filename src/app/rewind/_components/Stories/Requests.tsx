@@ -46,7 +46,7 @@ export default function StoryRequests({
                     target='_blank'
                     rel='noopener noreferrer'
                   >
-                    {settings.connection.overseerrUrl.split('//').pop()}
+                    {settings.connection.overseerrUrl?.split('//').pop()}
                   </a>
                 </p>
               </RewindStat>
