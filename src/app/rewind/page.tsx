@@ -1,5 +1,6 @@
 import { authOptions } from '@/lib/auth'
-import { TautulliUser, UserRewind } from '@/types'
+import { UserRewind } from '@/types/rewind'
+import { TautulliUser } from '@/types/tautulli'
 import fetchTautulli, { getLibraries, getServerId } from '@/utils/fetchTautulli'
 import { secondsToTime } from '@/utils/formatting'
 import {

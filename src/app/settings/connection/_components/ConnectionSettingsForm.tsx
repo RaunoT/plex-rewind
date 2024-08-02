@@ -1,6 +1,6 @@
 'use client'
 
-import { Settings } from '@/types'
+import { Settings } from '@/types/settings'
 import SettingsForm from '../../_components/SettingsForm'
 import saveConnectionSettings from '../_actions/updateConnectionSettings'
 

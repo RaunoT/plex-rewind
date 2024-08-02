@@ -1,10 +1,7 @@
 import { authOptions } from '@/lib/auth'
-import {
-  DashboardSearchParams,
-  Settings,
-  TautulliItem,
-  TautulliUser,
-} from '@/types'
+import { DashboardSearchParams } from '@/types/dashboard'
+import { Settings } from '@/types/settings'
+import { TautulliItem, TautulliUser } from '@/types/tautulli'
 import {
   fetchOverseerrUserId,
   fetchPaginatedOverseerrStats,

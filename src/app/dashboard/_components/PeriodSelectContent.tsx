@@ -1,6 +1,6 @@
 'use client'
 
-import { Settings } from '@/types'
+import { Settings } from '@/types/settings'
 import { pluralize } from '@/utils/formatting'
 import Link from 'next/link'
 import { usePathname, useSearchParams } from 'next/navigation'

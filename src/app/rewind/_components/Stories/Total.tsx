@@ -1,4 +1,4 @@
-import { RewindStory } from '@/types'
+import { RewindStory } from '@/types/rewind'
 import { ChartPieIcon, ClockIcon } from '@heroicons/react/24/outline'
 import RewindStat from '../RewindStat'
 import StoryWrapper from '../StoryWrapper'

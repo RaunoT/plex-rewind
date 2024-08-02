@@ -1,6 +1,6 @@
 'use server'
 
-import { SettingsFormInitialState } from '@/types'
+import { ConnectionSettings, SettingsFormInitialState } from '@/types/settings'
 import { z } from 'zod'
 import updateSettings from '../../_actions/updateSettings'
 
@@ -13,7 +13,7 @@ const schema = z.object({
 })
 
 export default async function saveConnectionSettings(
-  prevState: SettingsFormInitialState,
+  prevState: SettingsFormInitialState<ConnectionSettings>,
   formData: FormData,
 ) {
   const data = {

@@ -1,6 +1,7 @@
 'use client'
 
-import { Settings, TautulliItemRow } from '@/types'
+import { Settings } from '@/types/settings'
+import { TautulliItemRow } from '@/types/tautulli'
 import { pluralize, secondsToTime } from '@/utils/formatting'
 import { slideDown } from '@/utils/motion'
 import {

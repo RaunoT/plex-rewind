@@ -1,4 +1,5 @@
-import { DashboardSearchParams, Settings } from '@/types'
+import { DashboardSearchParams } from '@/types/dashboard'
+import { Settings } from '@/types/settings'
 import { PERIODS } from './constants'
 
 export default function getPeriod(

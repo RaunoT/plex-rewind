@@ -1,6 +1,6 @@
 'use server'
 
-import { SettingsFormInitialState } from '@/types'
+import { GeneralSettings, SettingsFormInitialState } from '@/types/settings'
 import { z } from 'zod'
 import updateSettings from '../../_actions/updateSettings'
 
@@ -12,7 +12,7 @@ const schema = z.object({
 })
 
 export default async function saveGeneralSettings(
-  prevState: SettingsFormInitialState,
+  prevState: SettingsFormInitialState<GeneralSettings>,
   formData: FormData,
 ) {
   const data = {

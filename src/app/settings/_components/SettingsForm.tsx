@@ -1,6 +1,6 @@
 'use client'
 
-import { Settings } from '@/types'
+import { Settings } from '@/types/settings'
 import { ReactNode } from 'react'
 import { useFormState } from 'react-dom'
 import SettingsSaveButton from './SaveButton'
@@ -11,9 +11,15 @@ type Props = {
   // TODO: define action type
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   action: any
+  hideSubmit?: boolean
 }
 
-export default function SettingsForm({ children, settings, action }: Props) {
+export default function SettingsForm({
+  children,
+  settings,
+  action,
+  hideSubmit,
+}: Props) {
   const initialState = {
     message: '',
     status: '',
@@ -25,19 +31,23 @@ export default function SettingsForm({ children, settings, action }: Props) {
     <form className='glass-sheet pb-6' action={formAction}>
       <div className='grid gap-4'>
         {children}
-        <div className='flex flex-col items-center justify-end gap-2 sm:flex-row sm:gap-4'>
-          <p
-            aria-live='polite'
-            role='status'
-            className={
-              formState.status === 'success' ? 'text-green-500' : 'text-red-500'
-            }
-          >
-            {formState.message}
-          </p>
+        {!hideSubmit && (
+          <div className='flex flex-col items-center justify-end gap-2 sm:flex-row sm:gap-4'>
+            <p
+              aria-live='polite'
+              role='status'
+              className={
+                formState.status === 'success'
+                  ? 'text-green-500'
+                  : 'text-red-500'
+              }
+            >
+              {formState.message}
+            </p>
 
-          <SettingsSaveButton />
-        </div>
+            <SettingsSaveButton />
+          </div>
+        )}
       </div>
     </form>
   )

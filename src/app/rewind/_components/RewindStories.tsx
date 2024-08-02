@@ -1,6 +1,7 @@
 'use client'
 
-import { Settings, UserRewind } from '@/types'
+import { UserRewind } from '@/types/rewind'
+import { Settings } from '@/types/settings'
 import { FC } from 'react'
 import Stories from 'stories-react'
 import 'stories-react/dist/index.css'

@@ -1,6 +1,6 @@
 export const dynamic = 'force-dynamic'
 
-import { TautulliUser } from '@/types'
+import { TautulliUser } from '@/types/tautulli'
 import fetchTautulli from '@/utils/fetchTautulli'
 
 export async function GET(request: Request) {
