@@ -34,6 +34,8 @@ type Props = {
 }
 
 export default function RewindStories({ userRewind, settings }: Props) {
+  console.log("Here's the full rewind object we use ", userRewind)
+  console.log("And here's just the movies part", userRewind.movies)
   function createStory(Component: FC<StoryComponent>, duration: number) {
     return {
       type: 'component',
@@ -75,19 +77,19 @@ export default function RewindStories({ userRewind, settings }: Props) {
     ...(userRewind.duration.user && hasShowLibraries
       ? [createStory(StoryShows, userRewind.shows.count ? 10000 : 4000)]
       : []),
-    ...(userRewind.shows.count && hasShowLibraries
+    ...(userRewind.shows.top.length && hasShowLibraries
       ? [createStory(StoryShowsTop, 8000)]
       : []),
     ...(userRewind.duration.user && hasMovieLibraries
       ? [createStory(StoryMovies, userRewind.movies.count ? 10000 : 4000)]
       : []),
-    ...(userRewind.movies.count && hasMovieLibraries
+    ...(userRewind.movies.top.length && hasMovieLibraries
       ? [createStory(StoryMoviesTop, 8000)]
       : []),
     ...(userRewind.duration.user && hasAudioLibraries
       ? [createStory(StoryAudio, userRewind.audio.count ? 10000 : 4000)]
       : []),
-    ...(userRewind.audio.count && hasAudioLibraries
+    ...(userRewind.audio.top.length && hasAudioLibraries
       ? [createStory(StoryAudioTop, 8000)]
       : []),
     createStory(StoryGoodbye, 11000),
