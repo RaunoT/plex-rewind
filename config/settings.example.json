@@ -9,7 +9,8 @@
   "general": {
     "activeLibraries": [],
     "isPostersTmdbOnly": false,
-    "googleAnalyticsId": ""
+    "googleAnalyticsId": "",
+    "isOutsideAccess": false
   },
   "rewind": {
     "isActive": true,

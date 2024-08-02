@@ -1,3 +1,4 @@
+import { authOptions } from '@/lib/auth'
 import { DashboardSearchParams, Settings, TautulliItem } from '@/types'
 import {
   fetchOverseerrUserId,
@@ -8,6 +9,7 @@ import { secondsToTime, timeToSeconds } from '@/utils/formatting'
 import getPeriod from '@/utils/getPeriod'
 import getSettings from '@/utils/getSettings'
 import { Metadata } from 'next'
+import { getServerSession } from 'next-auth'
 import { notFound } from 'next/navigation'
 import { Suspense } from 'react'
 import Dashboard from '../_components/Dashboard'
@@ -190,6 +192,7 @@ async function DashboardUsersContent({ searchParams }: Props) {
     return notFound()
   }
 
+  const session = await getServerSession(authOptions)
   const period = getPeriod(searchParams, settings)
   const [usersData, totalDuration, usersCount, totalRequests] =
     await Promise.all([
@@ -208,6 +211,7 @@ async function DashboardUsersContent({ searchParams }: Props) {
       type='users'
       settings={settings}
       count={totalRequests}
+      isLoggedIn={!!session}
     />
   )
 }

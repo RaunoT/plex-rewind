@@ -30,7 +30,6 @@ type Props = {
   settings: Settings
 }
 
-// TODO: split into smaller pieces to reduce client rendered part
 export default function MediaItem({
   data,
   i,

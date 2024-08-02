@@ -61,11 +61,7 @@ export default function PeriodSelectContent({ settings }: Props) {
     )
   })
 
-  useEffect(() => {
-    window.scrollTo(0, 0)
-  }, [pathname])
-
-  const getUpdatedQueryParams = (newPeriod: string) => {
+  function getUpdatedQueryParams(newPeriod: string) {
     const params = new URLSearchParams(searchParams.toString())
 
     if (newPeriod) {
@@ -76,6 +72,10 @@ export default function PeriodSelectContent({ settings }: Props) {
 
     return params.toString() ? `?${params.toString()}` : ''
   }
+
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [pathname])
 
   return (
     <ul className='nav'>

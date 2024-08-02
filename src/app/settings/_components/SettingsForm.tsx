@@ -13,7 +13,6 @@ type Props = {
   action: any
 }
 
-// TODO: clear form status if dirty
 export default function SettingsForm({ children, settings, action }: Props) {
   const initialState = {
     message: '',

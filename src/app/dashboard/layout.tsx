@@ -1,7 +1,9 @@
 import CardWrapper from '@/app/_components/CardWrapper'
 import PageTitle from '@/app/_components/PageTitle'
+import { authOptions } from '@/lib/auth'
 import { getLibraries } from '@/utils/fetchTautulli'
 import getSettings from '@/utils/getSettings'
+import { getServerSession } from 'next-auth'
 import { notFound } from 'next/navigation'
 import { ReactNode } from 'react'
 import DashboardNav from './_components/DashboardNav'
@@ -14,8 +16,12 @@ type Props = {
 
 export default async function DashboardLayout({ children }: Props) {
   const settings = getSettings()
+  const session = await getServerSession(authOptions)
 
-  if (!settings.dashboard.isActive) {
+  if (
+    !settings.dashboard.isActive ||
+    (!session && !settings.general.isOutsideAccess)
+  ) {
     return notFound()
   }
 

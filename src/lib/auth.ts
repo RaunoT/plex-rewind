@@ -40,6 +40,9 @@ export const authOptions: AuthOptions = {
             headers: {
               'X-Plex-Token': authToken,
             },
+            next: {
+              revalidate: 3600,
+            },
           })
 
           if (!res.ok) {
@@ -69,7 +72,6 @@ export const authOptions: AuthOptions = {
               {
                 user_id: userData.id,
               },
-              true,
             )
 
             const userExists =

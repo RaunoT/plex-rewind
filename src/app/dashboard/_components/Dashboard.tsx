@@ -21,6 +21,7 @@ type Props = {
   serverId?: string
   count?: string
   settings: Settings
+  isLoggedIn: boolean
 }
 
 export default function Dashboard({
@@ -32,6 +33,7 @@ export default function Dashboard({
   serverId = '',
   count,
   settings,
+  isLoggedIn,
 }: Props) {
   return (
     <>
@@ -40,7 +42,7 @@ export default function Dashboard({
           {getTitleIcon(type)}
           {title}
         </h2>
-        {type !== 'users' && (
+        {type !== 'users' && isLoggedIn && (
           <Suspense>
             <DashboardPersonalToggle />
           </Suspense>

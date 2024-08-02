@@ -73,6 +73,7 @@ async function DashboardContent({ params, searchParams }: Props) {
       serverId={serverId}
       count={count}
       settings={settings}
+      isLoggedIn={!!session}
     />
   )
 }

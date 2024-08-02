@@ -24,8 +24,9 @@ export default function Home({ settings }: Props) {
   const searchParams = useSearchParams()
   const { data: session, status } = useSession()
   const isLoggedIn = status === 'authenticated'
+  const hasOutsideAccess = settings.general.isOutsideAccess
 
-  const handleLogin = async () => {
+  async function handleLogin() {
     const plexUrl = await createPlexAuthUrl()
     router.push(plexUrl)
   }
@@ -33,71 +34,77 @@ export default function Home({ settings }: Props) {
   useEffect(() => {
     const plexPinId = searchParams.get('plexPinId')
 
-    if (plexPinId) {
-      const authUser = async () => {
-        setIsLoading(true)
-        const plexAuthToken = await getPlexAuthToken(plexPinId)
+    async function authUser(plexPinId: string) {
+      setIsLoading(true)
+      const plexAuthToken = await getPlexAuthToken(plexPinId)
 
-        try {
-          const res = await signIn('plex', {
-            authToken: plexAuthToken,
-            callbackUrl: '/',
-          })
+      try {
+        const res = await signIn('plex', {
+          authToken: plexAuthToken,
+          callbackUrl: '/',
+        })
 
-          if (res?.error) {
-            console.error('[AUTH] - Failed to sign in!', res.error)
-          }
-
-          setIsLoading(false)
-        } catch (error) {
-          console.error('[AUTH] - Error during sign-in!', error)
-          setIsLoading(false)
+        if (res?.error) {
+          console.error('[AUTH] - Failed to sign in!', res.error)
         }
-      }
 
-      authUser()
+        setIsLoading(false)
+      } catch (error) {
+        console.error('[AUTH] - Error during sign-in!', error)
+        setIsLoading(false)
+      }
+    }
+
+    if (plexPinId) {
+      authUser(plexPinId)
     }
   }, [searchParams])
 
   useEffect(() => {
-    if (status === 'authenticated') {
-      const getLibraries = async () => {
-        setIsLoading(true)
+    async function getLibraries() {
+      setIsLoading(true)
 
-        try {
-          const res = await fetch('/api/libraries')
-          const data = await res.json()
+      try {
+        const res = await fetch('/api/libraries', {
+          next: {
+            revalidate: 3600,
+          },
+        })
+        const data = await res.json()
 
-          setLibraries(data)
-        } catch (error) {
-          console.error('[HOME] - Error fetching libraries!', error)
-        }
-
-        setIsLoading(false)
-      }
-      const getManagedUsers = async () => {
-        setIsLoading(true)
-
-        try {
-          const res = await fetch(
-            `/api/managed-users?userId=${session?.user.id}`,
-          )
-          const data = await res.json()
-
-          setManagedUsers(data)
-        } catch (error) {
-          console.error('[HOME] - Error fetching managed users!', error)
-        }
-
-        setIsLoading(false)
+        setLibraries(data)
+      } catch (error) {
+        console.error('[HOME] - Error fetching libraries!', error)
       }
 
+      setIsLoading(false)
+    }
+
+    async function getManagedUsers() {
+      setIsLoading(true)
+
+      try {
+        const res = await fetch(`/api/managed-users?userId=${session?.user.id}`)
+        const data = await res.json()
+
+        setManagedUsers(data)
+      } catch (error) {
+        console.error('[HOME] - Error fetching managed users!', error)
+      }
+
+      setIsLoading(false)
+    }
+
+    if (status === 'authenticated' || hasOutsideAccess) {
       getLibraries()
+    }
+
+    if (status === 'authenticated') {
       getManagedUsers()
     } else if (status !== 'loading') {
       setIsLoading(false)
     }
-  }, [status, session?.user.id])
+  }, [status, session?.user.id, hasOutsideAccess])
 
   if (isLoading) {
     return <Loader />
@@ -142,14 +149,17 @@ export default function Home({ settings }: Props) {
           isLoggedIn &&
           (managedUsers ? (
             <>
-              <Link href='/rewind' className='button button-sm mb-2 last:mb-0'>
+              <Link
+                href='/rewind'
+                className='button button-sm mb-2 w-full last:mb-0'
+              >
                 Start Rewind
               </Link>
               {managedUsers.map((user, i) => (
                 <Link
                   key={i}
                   href={`/rewind?userId=${user.user_id}`}
-                  className='button button-sm mb-2 last:mb-0'
+                  className='button button-sm mb-2 w-full last:mb-0'
                 >
                   Rewind for {user.friendly_name}
                 </Link>
@@ -161,7 +171,7 @@ export default function Home({ settings }: Props) {
             </Link>
           ))}
 
-        {settings.dashboard.isActive && isLoggedIn && (
+        {settings.dashboard.isActive && (isLoggedIn || hasOutsideAccess) && (
           <Link
             href={`/dashboard/${kebabCase(
               libraries[0]
@@ -169,9 +179,9 @@ export default function Home({ settings }: Props) {
                 : settings.dashboard.isUsersPageActive
                   ? 'users'
                   : '',
-            )}${settings.dashboard.defaultStyle === 'personal' ? '?personal=true' : ''}`}
+            )}${settings.dashboard.defaultStyle === 'personal' && isLoggedIn ? '?personal=true' : ''}`}
             className={clsx(
-              'mt-4 block',
+              'mx-auto mt-4 block',
               !settings.rewind.isActive ? 'button' : 'link',
             )}
           >

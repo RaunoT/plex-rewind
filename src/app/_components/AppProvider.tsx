@@ -54,8 +54,7 @@ export default function AppProvider({ children, settings, version }: Props) {
     <main
       className={clsx(
         'flex h-full min-h-dvh flex-col items-center overflow-x-hidden px-4 py-8 sm:justify-center',
-        // TODO: Not sure if this offline conditional works as expected honestly
-        { 'justify-center': pathname === '/' || pathname === '/offline' },
+        { 'justify-center': pathname === '/' || pathname === '/~offline' },
       )}
     >
       <div className='fixed inset-0 -z-10 select-none overflow-hidden bg-black after:absolute after:inset-0 after:bg-black/50 after:content-[""]'>
