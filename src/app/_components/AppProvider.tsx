@@ -1,6 +1,7 @@
 'use client'
 
-import { Settings, Version } from '@/types'
+import { Version } from '@/types'
+import { Settings } from '@/types/settings'
 import { checkRequiredSettings } from '@/utils/helpers'
 import {
   ArrowPathIcon,

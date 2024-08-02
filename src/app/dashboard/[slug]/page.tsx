@@ -1,5 +1,5 @@
 import { authOptions } from '@/lib/auth'
-import { DashboardSearchParams } from '@/types'
+import { DashboardSearchParams } from '@/types/dashboard'
 import { getLibraries, getServerId } from '@/utils/fetchTautulli'
 import { getItems, getTotalDuration, getTotalSize } from '@/utils/getDashboard'
 import getPeriod from '@/utils/getPeriod'

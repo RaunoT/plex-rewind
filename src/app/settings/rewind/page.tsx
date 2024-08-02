@@ -1,4 +1,4 @@
-import { TautulliUser } from '@/types'
+import { TautulliUser } from '@/types/tautulli'
 import fetchTautulli from '@/utils/fetchTautulli'
 import getSettings from '@/utils/getSettings'
 import { Metadata } from 'next'

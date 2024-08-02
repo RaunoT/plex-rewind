@@ -5,7 +5,7 @@ import {
   DashboardSettings,
   GeneralSettings,
   RewindSettings,
-} from '@/types'
+} from '@/types/settings'
 import { SETTINGS_PATH } from '@/utils/constants'
 import getSettings from '@/utils/getSettings'
 import { promises as fs } from 'fs'
@@ -14,8 +14,8 @@ import { ZodError, ZodSchema } from 'zod'
 
 type SettingsTypeMap = {
   connection: ConnectionSettings
-  dashboard: DashboardSettings
-  rewind: RewindSettings
+  dashboard: Partial<DashboardSettings>
+  rewind: Partial<RewindSettings>
   general: GeneralSettings
 }
 
@@ -33,7 +33,10 @@ export default async function updateSettings<K extends keyof SettingsTypeMap>(
       settings.test = true
     }
 
-    settings[key] = data
+    settings[key] = {
+      ...settings[key],
+      ...data,
+    }
 
     await fs.writeFile(SETTINGS_PATH, JSON.stringify(settings), 'utf8')
 

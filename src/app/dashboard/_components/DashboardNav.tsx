@@ -1,9 +1,9 @@
-import { Library } from '@/types'
+import { TautulliLibrary } from '@/types/tautulli'
 import { Suspense } from 'react'
 import DashboardNavContent from './DashboardNavContent'
 
 export type DashboardNavProps = {
-  libraries: Library[]
+  libraries: TautulliLibrary[]
   isUsersPageActive: boolean
 }
 

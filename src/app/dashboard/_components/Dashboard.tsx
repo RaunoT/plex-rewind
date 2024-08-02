@@ -1,5 +1,6 @@
 import MediaItems from '@/components/MediaItem/MediaItems'
-import { Settings, TautulliItemRow } from '@/types'
+import { Settings } from '@/types/settings'
+import { TautulliItemRow } from '@/types/tautulli'
 import {
   ClockIcon,
   FilmIcon,

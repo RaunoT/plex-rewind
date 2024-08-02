@@ -1,4 +1,4 @@
-import { TautulliUser } from '@/types'
+import { TautulliUser } from '@/types/tautulli'
 import { AuthOptions } from 'next-auth'
 import CredentialsProvider from 'next-auth/providers/credentials'
 import qs from 'qs'

@@ -1,29 +1,32 @@
 import {
-  Library,
-  MediaReturnType,
-  MediaType,
   TautulliItem,
   TautulliItemRow,
-} from '@/types'
+  TautulliLibrary,
+  TautulliMediaReturnType,
+  TautulliMediaType,
+} from '@/types/tautulli'
 import { PERIODS } from './constants'
 import { fetchPaginatedOverseerrStats } from './fetchOverseerr'
 import fetchTautulli from './fetchTautulli'
 import { secondsToTime, timeToSeconds } from './formatting'
 import getMediaAdditionalData from './getMediaAdditionalData'
 
-export async function getTopMediaStats(userId: string, libraries: Library[]) {
-  const mediaTypeMap: Record<MediaType, string> = {
+export async function getTopMediaStats(
+  userId: string,
+  libraries: TautulliLibrary[],
+) {
+  const mediaTypeMap: Record<TautulliMediaType, string> = {
     movie: 'movie',
     show: 'episode',
     artist: 'track',
   }
-  const typeToResultMap: Record<MediaType, MediaReturnType> = {
+  const typeToResultMap: Record<TautulliMediaType, TautulliMediaReturnType> = {
     show: 'shows',
     movie: 'movies',
     artist: 'audio',
   }
 
-  async function fetchLibraryData(library: Library) {
+  async function fetchLibraryData(library: TautulliLibrary) {
     const res = await fetchTautulli<{
       recordsFiltered: number
       total_duration: string
@@ -73,7 +76,7 @@ export async function getTopMediaStats(userId: string, libraries: Library[]) {
   return combinedResult
 }
 
-export async function getlibrariesTotalSize(libraries: Library[]) {
+export async function getlibrariesTotalSize(libraries: TautulliLibrary[]) {
   let totalSize = 0
   const res = await Promise.all(
     libraries.map((library) =>
@@ -95,7 +98,7 @@ export async function getlibrariesTotalSize(libraries: Library[]) {
   return totalSize
 }
 
-export async function getLibrariesTotalDuration(libraries: Library[]) {
+export async function getLibrariesTotalDuration(libraries: TautulliLibrary[]) {
   let totalDuration = 0
   const res = await Promise.all(
     libraries.map((library) => {
@@ -120,7 +123,7 @@ export async function getLibrariesTotalDuration(libraries: Library[]) {
 
 export async function getUserTotalDuration(
   userId: string,
-  libraries: Library[],
+  libraries: TautulliLibrary[],
 ) {
   let totalDuration = 0
   const res = await Promise.all(
@@ -145,7 +148,10 @@ export async function getUserTotalDuration(
   return totalDuration
 }
 
-export async function getTopMediaItems(userId: string, libraries: Library[]) {
+export async function getTopMediaItems(
+  userId: string,
+  libraries: TautulliLibrary[],
+) {
   const res = await Promise.all(
     libraries.map((library) => {
       return fetchTautulli<TautulliItem[]>('get_home_stats', {
@@ -157,7 +163,7 @@ export async function getTopMediaItems(userId: string, libraries: Library[]) {
       })
     }),
   )
-  const combinedResult: Record<MediaReturnType, TautulliItemRow[]> = {
+  const combinedResult: Record<TautulliMediaReturnType, TautulliItemRow[]> = {
     shows: [],
     movies: [],
     audio: [],

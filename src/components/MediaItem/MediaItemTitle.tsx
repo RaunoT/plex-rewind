@@ -1,6 +1,6 @@
 'use client'
 
-import { TautulliItemRow } from '@/types'
+import { TautulliItemRow } from '@/types/tautulli'
 import { motion, useAnimation } from 'framer-motion'
 import { debounce } from 'lodash'
 import { RefObject, useEffect, useRef } from 'react'

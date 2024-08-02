@@ -1,4 +1,4 @@
-import { Settings } from '@/types'
+import { Settings } from '@/types/settings'
 import { REQUIRED_SETTINGS } from './constants'
 
 export function checkRequiredSettings(settings: Settings): boolean {

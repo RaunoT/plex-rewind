@@ -1,4 +1,4 @@
-import { RewindStory } from '@/types'
+import { RewindStory } from '@/types/rewind'
 import Image from 'next/image'
 import RewindStat from '../RewindStat'
 import StoryWrapper from '../StoryWrapper'

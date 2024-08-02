@@ -1,5 +1,5 @@
 import MediaItems from '@/components/MediaItem/MediaItems'
-import { RewindStory } from '@/types'
+import { RewindStory } from '@/types/rewind'
 import { PlayCircleIcon } from '@heroicons/react/24/outline'
 import RewindStat from '../RewindStat'
 import StoryWrapper from '../StoryWrapper'

@@ -1,4 +1,5 @@
-import { Library, Settings, TautulliItem } from '@/types'
+import { Settings } from '@/types/settings'
+import { TautulliItem, TautulliLibrary } from '@/types/tautulli'
 import fetchTautulli from './fetchTautulli'
 import { bytesToSize, secondsToTime, timeToSeconds } from './formatting'
 import getMediaAdditionalData, {
@@ -6,7 +7,7 @@ import getMediaAdditionalData, {
 } from './getMediaAdditionalData'
 
 export async function getItems(
-  library: Library,
+  library: TautulliLibrary,
   period: number,
   userId?: string,
 ) {
@@ -77,7 +78,7 @@ export async function getItems(
 }
 
 export async function getTotalDuration(
-  library: Library,
+  library: TautulliLibrary,
   period: string,
   settings: Settings,
   userId?: string,
@@ -101,7 +102,10 @@ export async function getTotalDuration(
   return undefined
 }
 
-export async function getTotalSize(library: Library, settings: Settings) {
+export async function getTotalSize(
+  library: TautulliLibrary,
+  settings: Settings,
+) {
   if (settings.dashboard.activeTotalStatistics.includes('size')) {
     const totalSize = await fetchTautulli<{ total_file_size: number }>(
       'get_library_media_info',

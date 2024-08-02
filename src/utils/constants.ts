@@ -1,4 +1,4 @@
-import { Settings } from '@/types'
+import { Settings } from '@/types/settings'
 import { env } from 'next-runtime-env'
 import path from 'path'
 

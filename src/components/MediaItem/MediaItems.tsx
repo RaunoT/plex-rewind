@@ -1,4 +1,5 @@
-import { Settings, TautulliItemRow } from '@/types'
+import { Settings } from '@/types/settings'
+import { TautulliItemRow } from '@/types/tautulli'
 import clsx from 'clsx'
 import MediaItem from './MediaItem'
 

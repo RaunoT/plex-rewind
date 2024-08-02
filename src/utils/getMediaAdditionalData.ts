@@ -1,7 +1,17 @@
-import { TautulliItemRow, TmdbExternalId, TmdbItem } from '@/types'
+import { TautulliItemRow } from '@/types/tautulli'
 import fetchTautulli from './fetchTautulli'
 import fetchTmdb from './fetchTmdb'
 import getSettings from './getSettings'
+
+type TmdbItem = {
+  results: [
+    {
+      id: number
+      vote_average: number
+      first_air_date: number
+    },
+  ]
+}
 
 export default async function getMediaAdditionalData(
   media: TautulliItemRow[],
@@ -37,7 +47,7 @@ export default async function getMediaAdditionalData(
       let imdbId = null
 
       if (tmdbId) {
-        imdbId = await fetchTmdb<TmdbExternalId>(
+        imdbId = await fetchTmdb<{ imdb_id: string }>(
           `${type}/${tmdbId}/external_ids`,
         )
       }
