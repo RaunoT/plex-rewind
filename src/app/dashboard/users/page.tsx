@@ -1,5 +1,10 @@
 import { authOptions } from '@/lib/auth'
-import { DashboardSearchParams, Settings, TautulliItem } from '@/types'
+import {
+  DashboardSearchParams,
+  Settings,
+  TautulliItem,
+  TautulliUser,
+} from '@/types'
 import {
   fetchOverseerrUserId,
   fetchPaginatedOverseerrStats,
@@ -157,9 +162,16 @@ async function getTotalDuration(period: string, settings: Settings) {
 
 async function getUsersCount(settings: Settings) {
   if (settings.dashboard.activeTotalStatistics.includes('count')) {
-    const usersCount = await fetchTautulli<[]>('get_users')
+    const usersRes = await fetchTautulli<TautulliUser[]>('get_users')
+    let users = usersRes?.response?.data
 
-    return usersCount?.response?.data.slice(1).length
+    if (users) {
+      users = users.filter(
+        (user) => user.is_active && user.username !== 'Local',
+      )
+    }
+
+    return users?.length
   }
 
   return undefined

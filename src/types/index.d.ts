@@ -101,6 +101,8 @@ export type TautulliUser = {
   friendly_name: string
   thumb: string
   user_thumb: string
+  username: string
+  email: string
 }
 
 export type SettingsFormInitialState = {
