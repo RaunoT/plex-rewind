@@ -40,7 +40,7 @@ export default async function RewindPage({ searchParams }: Props) {
     )
     const queriedUser = res?.response.data
 
-    if (queriedUser && queriedUser.user_id === queryUserId) {
+    if (queriedUser && queriedUser.user_id == queryUserId) {
       user = {
         image: queriedUser.user_thumb,
         name: queriedUser.friendly_name,

@@ -138,7 +138,7 @@ export default function Home({ settings }: Props) {
       <div className='animate-fade-in animation-delay-700'>
         {!isLoggedIn && (
           <button
-            className='button button-sm button--plex mx-auto'
+            className='button button-sm button--plex mx-auto mb-4'
             onClick={() => handleLogin()}
           >
             Log in with Plex
@@ -166,7 +166,7 @@ export default function Home({ settings }: Props) {
               ))}
             </>
           ) : (
-            <Link href='/rewind' className='button'>
+            <Link href='/rewind' className='button mb-4'>
               Start Rewind
             </Link>
           ))}
@@ -181,8 +181,8 @@ export default function Home({ settings }: Props) {
                   : '',
             )}${settings.dashboard.defaultStyle === 'personal' && isLoggedIn ? '?personal=true' : ''}`}
             className={clsx(
-              'mx-auto mt-4 block',
-              !settings.rewind.isActive ? 'button' : 'link',
+              'mx-auto block',
+              !settings.rewind.isActive && isLoggedIn ? 'button' : 'link',
             )}
           >
             Dashboard
