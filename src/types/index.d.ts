@@ -97,9 +97,10 @@ export type TautulliUser = {
   is_admin: 0 | 1
   is_restricted: 0 | 1
   is_active: 0 | 1
-  user_id: number
+  user_id: string
   friendly_name: string
   thumb: string
+  user_thumb: string
 }
 
 export type SettingsFormInitialState = {
@@ -124,6 +125,7 @@ export type GeneralSettings = {
   activeLibraries: string[]
   isPostersTmdbOnly: boolean
   googleAnalyticsId: string
+  isOutsideAccess: boolean
 }
 
 export type RewindSettings = {

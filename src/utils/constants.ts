@@ -77,6 +77,7 @@ export const DEFAULT_SETTINGS: Settings = {
     activeLibraries: [],
     isPostersTmdbOnly: false,
     googleAnalyticsId: '',
+    isOutsideAccess: false,
   },
   rewind: {
     isActive: true,

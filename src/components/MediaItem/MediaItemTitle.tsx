@@ -18,7 +18,7 @@ export default function MediaItemTitle({ i, data, type, parentRef }: Props) {
   const controls = useAnimation()
 
   useEffect(() => {
-    const checkWidth = () => {
+    function checkWidth() {
       const titleElement = titleRef.current
       const parentElement = parentRef.current
       const numberElement = numberRef.current
@@ -54,7 +54,7 @@ export default function MediaItemTitle({ i, data, type, parentRef }: Props) {
       }
     }
 
-    const restartAnimation = () => {
+    function restartAnimation() {
       controls.stop()
       controls.set({ x: 0 })
       checkWidth()

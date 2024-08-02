@@ -1,7 +1,6 @@
 import { authOptions } from '@/lib/auth'
 import { TautulliUser, UserRewind } from '@/types'
-import { APP_URL } from '@/utils/constants'
-import { getLibraries, getServerId } from '@/utils/fetchTautulli'
+import fetchTautulli, { getLibraries, getServerId } from '@/utils/fetchTautulli'
 import { secondsToTime } from '@/utils/formatting'
 import {
   getLibrariesTotalDuration,
@@ -13,6 +12,7 @@ import {
 } from '@/utils/getRewind'
 import getSettings from '@/utils/getSettings'
 import { getServerSession } from 'next-auth'
+import { notFound } from 'next/navigation'
 import RewindStories from './_components/RewindStories'
 
 type Props = {
@@ -24,30 +24,31 @@ type Props = {
 export default async function RewindPage({ searchParams }: Props) {
   const session = await getServerSession(authOptions)
   const settings = getSettings()
+  const queryUserId = searchParams?.userId
+  let user = session?.user
 
-  if (!session?.user) {
-    return
-  }
-
-  let user = session.user
-  const managedUserId = searchParams?.userId
-
-  if (managedUserId) {
-    const res = await fetch(
-      `${APP_URL}/api/managed-users?userId=${session.user.id}`,
+  if (
+    queryUserId &&
+    (session?.user?.isAdmin || settings.general.isOutsideAccess)
+  ) {
+    const res = await fetchTautulli<TautulliUser>(
+      'get_user',
+      {
+        user_id: queryUserId,
+      },
+      true,
     )
-    const data: TautulliUser[] = await res.json()
-    const managedUser = data?.find(
-      (user) => user.user_id === Number(managedUserId),
-    )
+    const queriedUser = res?.response.data
 
-    if (managedUser) {
+    if (queriedUser && queriedUser.user_id === queryUserId) {
       user = {
-        image: managedUser.thumb,
-        name: managedUser.friendly_name,
-        id: managedUserId,
+        image: queriedUser.user_thumb,
+        name: queriedUser.friendly_name,
+        id: queryUserId,
         isAdmin: false,
       }
+    } else {
+      return notFound()
     }
   }
 

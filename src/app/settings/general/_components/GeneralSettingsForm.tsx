@@ -68,6 +68,20 @@ export default function GeneralSettingsForm({ settings, libraries }: Props) {
           <span className='label'>Google Analytics ID</span>
         </label>
       </section>
+      <section className='group-settings group'>
+        <h2 className='heading-settings'>Privacy</h2>
+        <Switch
+          className='switch items-start'
+          name='isOutsideAccess'
+          defaultSelected={generalSettings.isOutsideAccess}
+        >
+          <div className='indicator'></div>
+          <span className='label'>
+            Allow outside access
+            <small>Access without login.</small>
+          </span>
+        </Switch>
+      </section>
     </SettingsForm>
   )
 }

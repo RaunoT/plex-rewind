@@ -8,6 +8,7 @@ const schema = z.object({
   activeLibraries: z.array(z.string()),
   isPostersTmdbOnly: z.boolean(),
   googleAnalyticsId: z.string(),
+  isOutsideAccess: z.boolean(),
 })
 
 export default async function saveGeneralSettings(
@@ -18,6 +19,7 @@ export default async function saveGeneralSettings(
     activeLibraries: formData.getAll('activeLibraries') as string[],
     isPostersTmdbOnly: formData.get('isPostersTmdbOnly') === 'on',
     googleAnalyticsId: formData.get('googleAnalyticsId') as string,
+    isOutsideAccess: formData.get('isOutsideAccess') === 'on',
   }
 
   return await updateSettings(schema, data, 'general')
