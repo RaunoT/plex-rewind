@@ -69,7 +69,7 @@ type User = {
 export async function fetchOverseerrUserId(
   plexId: string,
 ): Promise<number | null> {
-  const users = await fetchOverseerr<OverseerrResponse<User[]>>('user', true)
+  const users = await fetchOverseerr<OverseerrResponse<User[]>>('user')
   const user = users?.results?.find((user) => String(user.plexId) === plexId)
 
   return user ? user.id : null
@@ -95,6 +95,7 @@ export async function fetchPaginatedOverseerrStats(
   do {
     const requestsData =
       await fetchOverseerr<OverseerrResponse<PaginatedRequestItem[]>>(reqUrl)
+    console.log('Fetching Overseerr data from', reqUrl)
 
     if (requestsData && requestsData.results) {
       const requestsDataFiltered = requestsData.results.filter(

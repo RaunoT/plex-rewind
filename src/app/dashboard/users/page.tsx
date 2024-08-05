@@ -55,10 +55,16 @@ async function getUsers(
     settings.connection.overseerrUrl && settings.connection.overseerrApiKey
 
   if (isOverseerrActive) {
+    console.log('Overseerr is active')
     const overseerrUserIds = await Promise.all(
       users.map(async (user) => {
         const overseerrId = await fetchOverseerrUserId(String(user.user_id))
-
+        console.log(
+          'Overseerr user ID for Plex user ID',
+          !!user.user_id,
+          'is',
+          overseerrId,
+        )
         return overseerrId
       }),
     )
@@ -66,6 +72,10 @@ async function getUsers(
     usersRequestsCounts = await Promise.all(
       overseerrUserIds.map(async (overseerrId) => {
         if (overseerrId) {
+          console.log(
+            `Starting fetchPaginatedOverseerrStats('user/${overseerrId}/requests`,
+            requestsPeriod,
+          )
           const userTotal = await fetchPaginatedOverseerrStats(
             `user/${overseerrId}/requests`,
             requestsPeriod,
