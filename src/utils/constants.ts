@@ -14,7 +14,7 @@ const ALL_TIME: Date = new Date(
   env('NEXT_PUBLIC_STATISTICS_START_DATE') || '2018-01-01',
 )
 
-type Period = {
+export type Period = {
   date: string
   string: string
   daysAgo: number

@@ -58,7 +58,6 @@ export default function RewindSettingsForm({ settings, users }: Props) {
                   <li key={user.user_id}>
                     <Link
                       href={`/rewind?userId=${user.user_id}`}
-                      target='_blank'
                       className='button button-sm'
                     >
                       {user.friendly_name}
