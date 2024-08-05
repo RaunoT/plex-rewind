@@ -1,6 +1,4 @@
-import { PERIODS } from '@/utils/constants'
-
 export type DashboardSearchParams = {
-  period?: keyof typeof PERIODS
+  period?: '7days' | '30days' | 'thisYear' | 'pastYear' | 'allTime' | 'custom'
   personal?: 'true'
 }

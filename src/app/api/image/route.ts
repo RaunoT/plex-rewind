@@ -4,13 +4,15 @@ export async function GET(request: Request) {
     const url = searchParams.get('url')
 
     if (!url) {
-      return new Response('URL parameter is missing', { status: 400 })
+      return new Response('[IMAGE PROXY] - URL parameter is missing', {
+        status: 400,
+      })
     }
 
     const res = await fetch(url)
 
     if (!res.ok) {
-      return new Response('Failed to fetch the image', {
+      return new Response('[IMAGE PROXY] - Failed to fetch the image', {
         status: res.status,
       })
     }
@@ -22,7 +24,8 @@ export async function GET(request: Request) {
       status: res.status,
       headers: headers,
     })
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
   } catch (error) {
-    return new Response('An error occurred', { status: 500 })
+    return new Response('[IMAGE PROXY] - An error occurred', { status: 500 })
   }
 }
