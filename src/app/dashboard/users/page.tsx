@@ -3,8 +3,8 @@ import { DashboardSearchParams } from '@/types/dashboard'
 import { Settings } from '@/types/settings'
 import { TautulliItem, TautulliUser } from '@/types/tautulli'
 import {
+  fetchOverseerrStats,
   fetchOverseerrUserId,
-  fetchPaginatedOverseerrStats,
 } from '@/utils/fetchOverseerr'
 import fetchTautulli, { getLibrariesByType } from '@/utils/fetchTautulli'
 import { secondsToTime, timeToSeconds } from '@/utils/formatting'
@@ -55,16 +55,10 @@ async function getUsers(
     settings.connection.overseerrUrl && settings.connection.overseerrApiKey
 
   if (isOverseerrActive) {
-    console.log('Overseerr is active')
     const overseerrUserIds = await Promise.all(
       users.map(async (user) => {
         const overseerrId = await fetchOverseerrUserId(String(user.user_id))
-        console.log(
-          'Overseerr user ID for Plex user ID',
-          !!user.user_id,
-          'is',
-          overseerrId,
-        )
+
         return overseerrId
       }),
     )
@@ -72,11 +66,7 @@ async function getUsers(
     usersRequestsCounts = await Promise.all(
       overseerrUserIds.map(async (overseerrId) => {
         if (overseerrId) {
-          console.log(
-            `Starting fetchPaginatedOverseerrStats('user/${overseerrId}/requests`,
-            requestsPeriod,
-          )
-          const userTotal = await fetchPaginatedOverseerrStats(
+          const userTotal = await fetchOverseerrStats(
             `user/${overseerrId}/requests`,
             requestsPeriod,
           )
@@ -192,7 +182,7 @@ async function getTotalRequests(period: string, settings: Settings) {
     settings.dashboard.activeTotalStatistics.includes('requests') &&
     isOverseerrActive
   ) {
-    const requests = await fetchPaginatedOverseerrStats('request', period)
+    const requests = await fetchOverseerrStats('request', period)
 
     return requests.length.toString()
   }

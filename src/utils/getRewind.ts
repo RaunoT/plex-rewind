@@ -6,7 +6,7 @@ import {
   TautulliMediaType,
 } from '@/types/tautulli'
 import { PERIODS } from './constants'
-import { fetchPaginatedOverseerrStats } from './fetchOverseerr'
+import { fetchOverseerrStats } from './fetchOverseerr'
 import fetchTautulli from './fetchTautulli'
 import { secondsToTime, timeToSeconds } from './formatting'
 import getMediaAdditionalData from './getMediaAdditionalData'
@@ -197,10 +197,7 @@ export async function getTopMediaItems(
 }
 
 export async function getRequestsTotals(userId: string) {
-  const requests = await fetchPaginatedOverseerrStats(
-    'request',
-    PERIODS.pastYear.date,
-  )
+  const requests = await fetchOverseerrStats('request', PERIODS.pastYear.date)
 
   return {
     total: requests.length,
