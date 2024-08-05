@@ -9,7 +9,7 @@ type OverseerrResponse<T> = {
     results: number
     page: number
   }
-  results: T
+  results: T[]
 }
 
 type OverseerrUser = {
@@ -56,6 +56,7 @@ export default async function fetchOverseerr<T>(
         revalidate: cache ? 3600 : 0,
       },
     })
+
     if (!res.ok) {
       console.error(
         `[OVERSEERR] - API request failed! The endpoint was '${endpoint}'.\n`,
@@ -80,34 +81,41 @@ export async function fetchOverseerrStats(
   timeframe: string,
 ): Promise<OverseerrRequestItem[]> {
   const pageSize = 10
-  let currentPage = 1
-  let totalPages = 1
   let requestsArr: OverseerrRequestItem[] = []
 
   async function fetchRequests(
     page: number,
-  ): Promise<OverseerrResponse<OverseerrRequestItem[]> | null> {
-    return await fetchOverseerr<OverseerrResponse<OverseerrRequestItem[]>>(
+  ): Promise<OverseerrResponse<OverseerrRequestItem> | null> {
+    return await fetchOverseerr<OverseerrResponse<OverseerrRequestItem>>(
       `${req}?skip=${pageSize * (page - 1)}`,
     )
   }
 
-  while (currentPage <= totalPages) {
-    const res = await fetchRequests(currentPage)
+  // Fetch the first page to determine total pages
+  const firstPage = await fetchRequests(1)
 
-    if (res && res.results) {
-      const filteredRequests = res.results.filter(
-        (request) => new Date(request.createdAt) > new Date(timeframe),
-      )
-
-      requestsArr = [...filteredRequests, ...requestsArr]
-      totalPages = res.pageInfo.pages
-      currentPage = res.pageInfo.page + 1
-    } else {
-      console.error(`[OVERSEERR] - No requests data found!`)
-      break
-    }
+  if (!firstPage || !firstPage.results) {
+    console.error('[OVERSEERR] - No requests data found!')
+    return []
   }
+
+  const totalPages = firstPage.pageInfo.pages
+  const promises = []
+
+  // Fetch remaining pages in parallel
+  for (let page = 2; page <= totalPages; page++) {
+    promises.push(fetchRequests(page))
+  }
+
+  const results = await Promise.all(promises)
+  const allRequests = [firstPage, ...results].flatMap(
+    (res) => res?.results || [],
+  )
+  const filteredRequests = allRequests.filter(
+    (request) => new Date(request.createdAt) > new Date(timeframe),
+  )
+
+  requestsArr = [...requestsArr, ...filteredRequests]
 
   return requestsArr
 }
@@ -116,37 +124,40 @@ export async function fetchOverseerrUserId(
   plexId: string,
 ): Promise<number | null> {
   const pageSize = 10
-  let currentPage = 1
-  let totalPages = 1
   let userId: number | null = null
 
   async function fetchUsers(
     page: number,
-  ): Promise<OverseerrResponse<OverseerrUser[]> | null> {
-    return await fetchOverseerr<OverseerrResponse<OverseerrUser[]>>(
+  ): Promise<OverseerrResponse<OverseerrUser> | null> {
+    return await fetchOverseerr<OverseerrResponse<OverseerrUser>>(
       `user?skip=${pageSize * (page - 1)}`,
     )
   }
 
-  while (currentPage <= totalPages) {
-    const res = await fetchUsers(currentPage)
+  // Fetch the first page to determine total pages
+  const firstPage = await fetchUsers(1)
 
-    if (res && res.results) {
-      const user = res.results.find((user) => String(user.plexId) === plexId)
+  if (!firstPage || !firstPage.results) {
+    console.error(`[OVERSEERR] - No user data found!`)
+    return null
+  }
 
-      if (user) {
-        userId = user.id
-        break
-      }
+  const totalPages = firstPage.pageInfo.pages
+  const promises = []
 
-      totalPages = res.pageInfo.pages
-      currentPage = res.pageInfo.page + 1
-    } else {
-      console.error(
-        `[OVERSEERR] - No matching user found for plexId ${plexId}!`,
-      )
-      break
-    }
+  // Fetch remaining pages in parallel
+  for (let page = 2; page <= totalPages; page++) {
+    promises.push(fetchUsers(page))
+  }
+
+  const results = await Promise.all(promises)
+  const allUsers = [firstPage, ...results].flatMap((res) => res?.results || [])
+  const user = allUsers.find((user) => String(user.plexId) === plexId)
+
+  if (user) {
+    userId = user.id
+  } else {
+    console.error(`[OVERSEERR] - No matching user found for plexId ${plexId}!`)
   }
 
   return userId
