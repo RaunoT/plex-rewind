@@ -57,15 +57,14 @@ export const authOptions: AuthOptions = {
           const xmlData = await res.text()
           const jsonData = await parseStringPromise(xmlData)
           const data = jsonData.user.$
-          const { title, id, thumb, email, homeAdmin, homeSize } = data
+          const { title, id, thumb, email } = data
           const userData = {
             id: id,
             name: title,
             email: email,
             image: thumb,
-            isAdmin: homeAdmin === '1' || homeSize === '1',
+            isAdmin: false,
           }
-          console.log('[AUTH] - User logged in with data:', userData)
 
           if (res.ok && userData) {
             const checkUserRes = await fetchTautulli<TautulliUser>('get_user', {
@@ -74,8 +73,12 @@ export const authOptions: AuthOptions = {
             const checkUser = checkUserRes?.response?.data
             const userValid =
               checkUser?.email === userData.email && checkUser?.is_active
+            const userAdmin = checkUser?.is_admin === 1
 
             if (userValid) {
+              userData.isAdmin = userAdmin
+              console.log('[AUTH] - User logged in with data:', userData)
+
               return userData
             } else {
               console.error('[AUTH] - User does not belong to this server!')
