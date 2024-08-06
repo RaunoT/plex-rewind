@@ -1,4 +1,4 @@
-import { Settings } from '@/types'
+import { Settings } from '@/types/settings'
 import { env } from 'next-runtime-env'
 import path from 'path'
 
@@ -14,7 +14,7 @@ const ALL_TIME: Date = new Date(
   env('NEXT_PUBLIC_STATISTICS_START_DATE') || '2018-01-01',
 )
 
-type Period = {
+export type Period = {
   date: string
   string: string
   daysAgo: number
@@ -73,12 +73,20 @@ export const DEFAULT_SETTINGS: Settings = {
     overseerrUrl: '',
     overseerrApiKey: '',
   },
-  features: {
-    isRewindActive: true,
-    isDashboardActive: true,
-    isUsersPageActive: true,
+  general: {
     activeLibraries: [],
-    activeDashboardItemStatistics: [
+    isPostersTmdbOnly: false,
+    googleAnalyticsId: '',
+    isOutsideAccess: false,
+  },
+  rewind: {
+    isActive: true,
+    isLibrariesSizeAndCountActive: true,
+  },
+  dashboard: {
+    isActive: true,
+    isUsersPageActive: true,
+    activeItemStatistics: [
       'year',
       'rating',
       'duration',
@@ -86,12 +94,10 @@ export const DEFAULT_SETTINGS: Settings = {
       'users',
       'requests',
     ],
-    activeDashboardTotalStatistics: ['size', 'duration', 'count', 'requests'],
-    dashboardDefaultPeriod: 'custom',
-    dashboardCustomPeriod: '30',
-    googleAnalyticsId: '',
-    isPostersTmdbOnly: false,
-    isRewindLibrariesSizeAndCountActive: true,
+    activeTotalStatistics: ['size', 'duration', 'count', 'requests'],
+    defaultStyle: 'general',
+    defaultPeriod: 'custom',
+    customPeriod: '30',
   },
   test: false,
 }

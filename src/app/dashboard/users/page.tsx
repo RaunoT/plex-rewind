@@ -1,13 +1,17 @@
-import { SearchParams, Settings, TautulliItem } from '@/types'
+import { authOptions } from '@/lib/auth'
+import { DashboardSearchParams } from '@/types/dashboard'
+import { Settings } from '@/types/settings'
+import { TautulliItem, TautulliUser } from '@/types/tautulli'
 import {
+  fetchOverseerrStats,
   fetchOverseerrUserId,
-  fetchPaginatedOverseerrStats,
 } from '@/utils/fetchOverseerr'
 import fetchTautulli, { getLibrariesByType } from '@/utils/fetchTautulli'
 import { secondsToTime, timeToSeconds } from '@/utils/formatting'
 import getPeriod from '@/utils/getPeriod'
 import getSettings from '@/utils/getSettings'
 import { Metadata } from 'next'
+import { getServerSession } from 'next-auth'
 import { notFound } from 'next/navigation'
 import { Suspense } from 'react'
 import Dashboard from '../_components/Dashboard'
@@ -62,7 +66,7 @@ async function getUsers(
     usersRequestsCounts = await Promise.all(
       overseerrUserIds.map(async (overseerrId) => {
         if (overseerrId) {
-          const userTotal = await fetchPaginatedOverseerrStats(
+          const userTotal = await fetchOverseerrStats(
             `user/${overseerrId}/requests`,
             requestsPeriod,
           )
@@ -136,7 +140,7 @@ async function getUsers(
 }
 
 async function getTotalDuration(period: string, settings: Settings) {
-  if (settings.features.activeDashboardTotalStatistics.includes('duration')) {
+  if (settings.dashboard.activeTotalStatistics.includes('duration')) {
     const totalDuration = await fetchTautulli<{ total_duration: string }>(
       'get_history',
       {
@@ -154,10 +158,17 @@ async function getTotalDuration(period: string, settings: Settings) {
 }
 
 async function getUsersCount(settings: Settings) {
-  if (settings.features.activeDashboardTotalStatistics.includes('count')) {
-    const usersCount = await fetchTautulli<[]>('get_users')
+  if (settings.dashboard.activeTotalStatistics.includes('count')) {
+    const usersRes = await fetchTautulli<TautulliUser[]>('get_users')
+    let users = usersRes?.response?.data
 
-    return usersCount?.response?.data.slice(1).length
+    if (users) {
+      users = users.filter(
+        (user) => user.is_active && user.username !== 'Local',
+      )
+    }
+
+    return users?.length
   }
 
   return undefined
@@ -168,10 +179,10 @@ async function getTotalRequests(period: string, settings: Settings) {
     settings.connection.overseerrUrl && settings.connection.overseerrApiKey
 
   if (
-    settings.features.activeDashboardTotalStatistics.includes('requests') &&
+    settings.dashboard.activeTotalStatistics.includes('requests') &&
     isOverseerrActive
   ) {
-    const requests = await fetchPaginatedOverseerrStats('request', period)
+    const requests = await fetchOverseerrStats('request', period)
 
     return requests.length.toString()
   }
@@ -180,16 +191,17 @@ async function getTotalRequests(period: string, settings: Settings) {
 }
 
 type Props = {
-  searchParams: SearchParams
+  searchParams: DashboardSearchParams
 }
 
 async function DashboardUsersContent({ searchParams }: Props) {
   const settings = getSettings()
 
-  if (!settings.features.isUsersPageActive) {
+  if (!settings.dashboard.isUsersPageActive) {
     return notFound()
   }
 
+  const session = await getServerSession(authOptions)
   const period = getPeriod(searchParams, settings)
   const [usersData, totalDuration, usersCount, totalRequests] =
     await Promise.all([
@@ -208,6 +220,7 @@ async function DashboardUsersContent({ searchParams }: Props) {
       type='users'
       settings={settings}
       count={totalRequests}
+      isLoggedIn={!!session}
     />
   )
 }

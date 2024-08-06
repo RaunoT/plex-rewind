@@ -1,6 +1,8 @@
 import CardWrapper from '@/app/_components/CardWrapper'
 import PageTitle from '@/app/_components/PageTitle'
+import { authOptions } from '@/lib/auth'
 import getSettings from '@/utils/getSettings'
+import { getServerSession } from 'next-auth'
 import { notFound } from 'next/navigation'
 import { ReactNode } from 'react'
 
@@ -8,10 +10,14 @@ type Props = {
   children: ReactNode
 }
 
-export default function RewindLayout({ children }: Props) {
+export default async function RewindLayout({ children }: Props) {
   const settings = getSettings()
+  const session = await getServerSession(authOptions)
 
-  if (!settings.features.isRewindActive) {
+  if (
+    !settings.rewind.isActive ||
+    (!session && !settings.general.isOutsideAccess)
+  ) {
     return notFound()
   }
 

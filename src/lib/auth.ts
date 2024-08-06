@@ -1,3 +1,4 @@
+import { TautulliUser } from '@/types/tautulli'
 import { AuthOptions } from 'next-auth'
 import CredentialsProvider from 'next-auth/providers/credentials'
 import qs from 'qs'
@@ -40,6 +41,9 @@ export const authOptions: AuthOptions = {
             headers: {
               'X-Plex-Token': authToken,
             },
+            next: {
+              revalidate: 3600,
+            },
           })
 
           if (!res.ok) {
@@ -64,18 +68,14 @@ export const authOptions: AuthOptions = {
           console.log('[AUTH] - User logged in with data:', userData)
 
           if (res.ok && userData) {
-            const checkUser = await fetchTautulli<{ email: string }>(
-              'get_user',
-              {
-                user_id: userData.id,
-              },
-              true,
-            )
+            const checkUserRes = await fetchTautulli<TautulliUser>('get_user', {
+              user_id: userData.id,
+            })
+            const checkUser = checkUserRes?.response?.data
+            const userValid =
+              checkUser?.email === userData.email && checkUser?.is_active
 
-            const userExists =
-              checkUser?.response?.data?.email === userData.email
-
-            if (userExists) {
+            if (userValid) {
               return userData
             } else {
               console.error('[AUTH] - User does not belong to this server!')

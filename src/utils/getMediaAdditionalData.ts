@@ -1,7 +1,17 @@
-import { TautulliItemRow, TmdbExternalId, TmdbItem } from '@/types'
+import { TautulliItemRow } from '@/types/tautulli'
 import fetchTautulli from './fetchTautulli'
 import fetchTmdb from './fetchTmdb'
 import getSettings from './getSettings'
+
+type TmdbItem = {
+  results: [
+    {
+      id: number
+      vote_average: number
+      first_air_date: number
+    },
+  ]
+}
 
 export default async function getMediaAdditionalData(
   media: TautulliItemRow[],
@@ -37,14 +47,14 @@ export default async function getMediaAdditionalData(
       let imdbId = null
 
       if (tmdbId) {
-        imdbId = await fetchTmdb<TmdbExternalId>(
+        imdbId = await fetchTmdb<{ imdb_id: string }>(
           `${type}/${tmdbId}/external_ids`,
         )
       }
 
       const settings = getSettings()
       const tautulliUrl = settings.connection.tautulliUrl
-      const isPostersTmdbOnly = settings.features.isPostersTmdbOnly
+      const isPostersTmdbOnly = settings.general.isPostersTmdbOnly
 
       // Test if thumb exists, if not, fetch from TMDB
       if ((!poster || isPostersTmdbOnly) && tautulliUrl) {
@@ -83,16 +93,28 @@ export default async function getMediaAdditionalData(
 
     if (type === 'tv') {
       mediaItem.year = additionalData[i].year
+    }
 
-      if (usersWatchedData) {
-        const watchedData = usersWatchedData.find(
-          (uw) => uw.rating_key === mediaItem.rating_key,
-        )
+    if (usersWatchedData) {
+      const usersWatchedMapped = mapWatchedDataByRatingKey(
+        usersWatchedData,
+        mediaItem,
+      )
 
-        mediaItem.users_watched = watchedData?.users_watched
-      }
+      mediaItem.users_watched = usersWatchedMapped
     }
   })
 
   return media
+}
+
+export function mapWatchedDataByRatingKey(
+  watchedData: TautulliItemRow[],
+  mediaItem: TautulliItemRow,
+) {
+  const usersWatchedMapped = watchedData.find(
+    (item) => item.rating_key === mediaItem.rating_key,
+  )
+
+  return usersWatchedMapped?.users_watched
 }

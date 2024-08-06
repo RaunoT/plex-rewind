@@ -1,4 +1,4 @@
-import { Settings } from '@/types'
+import { Settings } from '@/types/settings'
 import { Suspense } from 'react'
 import PeriodSelectContent from './PeriodSelectContent'
 

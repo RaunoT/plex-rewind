@@ -1,6 +1,6 @@
 'use client'
 
-import { Settings } from '@/types'
+import { Settings } from '@/types/settings'
 import { pluralize } from '@/utils/formatting'
 import Link from 'next/link'
 import { usePathname, useSearchParams } from 'next/navigation'
@@ -38,8 +38,8 @@ export default function PeriodSelectContent({ settings }: Props) {
   const pathname = usePathname()
   const searchParams = useSearchParams()
   const period = searchParams.get('period')
-  const customPeriod = parseInt(settings.features.dashboardCustomPeriod)
-  const defaultPeriod = settings.features.dashboardDefaultPeriod
+  const customPeriod = parseInt(settings.dashboard.customPeriod)
+  const defaultPeriod = settings.dashboard.defaultPeriod
   // Replace '30 days' with custom period if it exists
   const periodOptions = customPeriod
     ? [
@@ -61,6 +61,18 @@ export default function PeriodSelectContent({ settings }: Props) {
     )
   })
 
+  function getUpdatedQueryParams(newPeriod: string) {
+    const params = new URLSearchParams(searchParams.toString())
+
+    if (newPeriod) {
+      params.set('period', newPeriod)
+    } else {
+      params.delete('period')
+    }
+
+    return params.toString() ? `?${params.toString()}` : ''
+  }
+
   useEffect(() => {
     window.scrollTo(0, 0)
   }, [pathname])
@@ -73,7 +85,7 @@ export default function PeriodSelectContent({ settings }: Props) {
         return (
           <li key={value}>
             <Link
-              href={isDefault ? pathname : `${pathname}?period=${value}`}
+              href={`${pathname}${getUpdatedQueryParams(isDefault ? '' : value)}`}
               className='nav-link'
               aria-selected={isDefault ? !period : period === value}
             >

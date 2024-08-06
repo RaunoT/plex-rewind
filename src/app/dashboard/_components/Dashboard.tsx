@@ -1,5 +1,6 @@
 import MediaItems from '@/components/MediaItem/MediaItems'
-import { Settings, TautulliItemRow } from '@/types'
+import { Settings } from '@/types/settings'
+import { TautulliItemRow } from '@/types/tautulli'
 import {
   ClockIcon,
   FilmIcon,
@@ -9,6 +10,8 @@ import {
   QuestionMarkCircleIcon,
   UserIcon,
 } from '@heroicons/react/24/outline'
+import { Suspense } from 'react'
+import DashboardPersonalToggle from './DashboardPersonalToggle'
 
 type Props = {
   title: string
@@ -19,6 +22,7 @@ type Props = {
   serverId?: string
   count?: string
   settings: Settings
+  isLoggedIn: boolean
 }
 
 export default function Dashboard({
@@ -30,13 +34,21 @@ export default function Dashboard({
   serverId = '',
   count,
   settings,
+  isLoggedIn,
 }: Props) {
   return (
     <>
-      <h2 className='mb-1 flex items-center text-xl font-bold sm:text-2xl xl:text-3xl'>
-        {getTitleIcon(type)}
-        {title}
-      </h2>
+      <div className='mb-2 flex items-start justify-between gap-4 leading-tight'>
+        <h2 className='-mt-0.5 flex text-xl font-bold sm:-mt-1.5 sm:text-2xl xl:text-3xl'>
+          {getTitleIcon(type)}
+          {title}
+        </h2>
+        {type !== 'users' && isLoggedIn && (
+          <Suspense>
+            <DashboardPersonalToggle />
+          </Suspense>
+        )}
+      </div>
       <ul className='icon-stats-container mb-1 sm:gap-x-3'>
         {totalSize && (
           <li className='icon-stat-wrapper icon-stat-wrapper--clean'>
@@ -89,7 +101,8 @@ export default function Dashboard({
 }
 
 function getTitleIcon(type: string) {
-  const className = 'mr-1 sm:mr-2 size-8 sm:size-10 stroke-1 text-black'
+  const className =
+    'mr-1 sm:mr-2 size-8 sm:size-10 stroke-1 text-black shrink-0 pb-1 -ml-1'
 
   switch (type) {
     case 'movie':

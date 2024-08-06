@@ -1,6 +1,7 @@
 'use client'
 
-import { Settings, UserRewind } from '@/types'
+import { UserRewind } from '@/types/rewind'
+import { Settings } from '@/types/settings'
 import { FC } from 'react'
 import Stories from 'stories-react'
 import 'stories-react/dist/index.css'
@@ -51,8 +52,8 @@ export default function RewindStories({ userRewind, settings }: Props) {
 
   const isOverseerrActive =
     settings.connection.overseerrUrl && settings.connection.overseerrApiKey
-  const isRewindLibrariesSizeAndCountActive =
-    settings.features.isRewindLibrariesSizeAndCountActive
+  const isLibrariesSizeAndCountActive =
+    settings.rewind.isLibrariesSizeAndCountActive
   const hasMovieLibraries = userRewind.libraries.some(
     (library) => library.section_type === 'movie',
   )
@@ -65,7 +66,7 @@ export default function RewindStories({ userRewind, settings }: Props) {
   const stories = [
     createStory(StoryWelcome, 5000),
     createStory(StoryTotal, 8000),
-    ...(userRewind.libraries_total_size && isRewindLibrariesSizeAndCountActive
+    ...(userRewind.libraries_total_size && isLibrariesSizeAndCountActive
       ? [createStory(StoryLibraries, 9000)]
       : []),
     ...(isOverseerrActive

@@ -21,11 +21,29 @@ export default function SettingsNav() {
         </li>
         <li>
           <Link
-            href='/settings/features'
+            href='/settings/general'
             className='nav-link'
-            aria-current={pathname === '/settings/features' && 'page'}
+            aria-current={pathname === '/settings/general' && 'page'}
           >
-            Features
+            General
+          </Link>
+        </li>
+        <li>
+          <Link
+            href='/settings/rewind'
+            className='nav-link'
+            aria-current={pathname === '/settings/rewind' && 'page'}
+          >
+            Rewind
+          </Link>
+        </li>
+        <li>
+          <Link
+            href='/settings/dashboard'
+            className='nav-link'
+            aria-current={pathname === '/settings/dashboard' && 'page'}
+          >
+            Dashboard
           </Link>
         </li>
       </ul>

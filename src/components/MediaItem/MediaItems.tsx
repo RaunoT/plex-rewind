@@ -1,4 +1,5 @@
-import { Settings, TautulliItemRow } from '@/types'
+import { Settings } from '@/types/settings'
+import { TautulliItemRow } from '@/types/tautulli'
 import clsx from 'clsx'
 import MediaItem from './MediaItem'
 
@@ -34,7 +35,7 @@ export default function MediaItems({
           key={i}
           type={type}
           serverId={serverId}
-          activeStats={settings.features.activeDashboardItemStatistics}
+          activeStats={settings.dashboard.activeItemStatistics}
           settings={settings}
         />
       ))}

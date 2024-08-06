@@ -27,9 +27,9 @@ Keep an eye on the [issues page](https://github.com/RaunoT/plex-rewind/issues) t
 
 ## Preview
 
-![Dashboard](https://i.imgur.com/L5QEYKn.png 'Dashboard')
+![Dashboard](https://i.imgur.com/C4RVCVJ.png 'Dashboard')
 
-![Rewind](https://i.imgur.com/tcwMi0x.png 'Rewind')
+![Rewind](https://i.imgur.com/wB2x9X4.png 'Rewind')
 
 ## Getting started
 
@@ -40,6 +40,7 @@ services:
   plex-rewind:
     image: ghcr.io/raunot/plex-rewind:latest # :develop for the latest development version
     container_name: plex-rewind
+    # user: 1000:1000 # change to your user and group id if you are running into permissions issues
     environment:
       - NEXTAUTH_SECRET= # (required) used to encrypt auth JWT token, generate one with `openssl rand -base64 32`
       - NEXTAUTH_URL=http://localhost:8383 # (required) change to your domain if you are exposing the app to the internet

@@ -1,6 +1,7 @@
 'use client'
 
-import { Settings, Version } from '@/types'
+import { Version } from '@/types'
+import { Settings } from '@/types/settings'
 import { checkRequiredSettings } from '@/utils/helpers'
 import {
   ArrowPathIcon,
@@ -23,22 +24,38 @@ type Props = {
 
 export default function AppProvider({ children, settings, version }: Props) {
   const pathname = usePathname()
-  const { data: session } = useSession()
-  const [isSettings, setIsSettings] = useState(pathname.startsWith('/settings'))
-
-  useEffect(() => {
-    setIsSettings(pathname.startsWith('/settings'))
-  }, [pathname])
 
   if (!checkRequiredSettings(settings) && pathname !== '/settings/connection') {
     redirect('/settings/connection')
   }
 
+  const { data: session } = useSession()
+  const [isSettings, setIsSettings] = useState<boolean>(
+    pathname.startsWith('/settings'),
+  )
+  const [settingsLink, setSettingsLink] = useState<string>('/settings/general')
+
+  useEffect(() => {
+    switch (true) {
+      case pathname.startsWith('/dashboard'):
+        setSettingsLink('/settings/dashboard')
+        break
+      case pathname.startsWith('/rewind'):
+        setSettingsLink('/settings/rewind')
+        break
+      default:
+        setSettingsLink('/settings/general')
+        break
+    }
+
+    setIsSettings(pathname.startsWith('/settings'))
+  }, [pathname])
+
   return (
     <main
       className={clsx(
         'flex h-full min-h-dvh flex-col items-center overflow-x-hidden px-4 py-8 sm:justify-center',
-        { 'justify-center': pathname === '/' },
+        { 'justify-center': pathname === '/' || pathname === '/~offline' },
       )}
     >
       <div className='fixed inset-0 -z-10 select-none overflow-hidden bg-black after:absolute after:inset-0 after:bg-black/50 after:content-[""]'>
@@ -68,7 +85,7 @@ export default function AppProvider({ children, settings, version }: Props) {
         )}
         {checkRequiredSettings(settings) && session?.user?.isAdmin && (
           <Link
-            href={isSettings ? '/' : '/settings/features'}
+            href={isSettings ? '/' : settingsLink}
             aria-label={isSettings ? 'Close settings' : 'Open settings'}
             className='link-light'
           >

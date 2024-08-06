@@ -1,6 +1,7 @@
 'use client'
 
-import { Settings, TautulliItemRow } from '@/types'
+import { Settings } from '@/types/settings'
+import { TautulliItemRow } from '@/types/tautulli'
 import { pluralize, secondsToTime } from '@/utils/formatting'
 import { slideDown } from '@/utils/motion'
 import {
@@ -30,7 +31,6 @@ type Props = {
   settings: Settings
 }
 
-// TODO: split into smaller pieces to reduce client rendered part
 export default function MediaItem({
   data,
   i,
@@ -52,11 +52,12 @@ export default function MediaItem({
   const titleContainerRef = useRef<HTMLDivElement>(null)
   const isOverseerrActive =
     settings.connection.overseerrUrl && settings.connection.overseerrApiKey
-  const [imageSrc, setImageSrc] = useState(posterSrc)
+  const [imageSrc, setImageSrc] = useState<string>(posterSrc)
 
   useEffect(() => {
     setDataKey((prevDataKey) => prevDataKey + 1)
-  }, [data, type])
+    setImageSrc(posterSrc)
+  }, [data, type, posterSrc])
 
   return (
     <motion.li
@@ -146,15 +147,6 @@ export default function MediaItem({
               {secondsToTime(data.total_duration)}
             </li>
           )}
-          {/* Users watched */}
-          {activeStats.includes('users') &&
-            (type === 'show' || type === 'artist') &&
-            data.users_watched && (
-              <li className='icon-stat-wrapper'>
-                <UserIcon />
-                {pluralize(data.users_watched, 'user')}
-              </li>
-            )}
           {/* Plays */}
           {activeStats.includes('plays') &&
             (type === 'users' ? (
@@ -190,6 +182,13 @@ export default function MediaItem({
                 <span>{pluralize(data.total_plays, 'play')}</span>
               </li>
             ))}
+          {/* Users watched */}
+          {activeStats.includes('users') && data.users_watched && (
+            <li className='icon-stat-wrapper'>
+              <UserIcon />
+              {pluralize(data.users_watched, 'user')}
+            </li>
+          )}
           {/* Requests */}
           {activeStats.includes('requests') &&
             type === 'users' &&

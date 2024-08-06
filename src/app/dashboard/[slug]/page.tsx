@@ -1,10 +1,12 @@
-import { SearchParams } from '@/types'
+import { authOptions } from '@/lib/auth'
+import { DashboardSearchParams } from '@/types/dashboard'
 import { getLibraries, getServerId } from '@/utils/fetchTautulli'
 import { getItems, getTotalDuration, getTotalSize } from '@/utils/getDashboard'
 import getPeriod from '@/utils/getPeriod'
 import getSettings from '@/utils/getSettings'
 import { kebabCase } from 'lodash'
 import { Metadata } from 'next'
+import { getServerSession } from 'next-auth'
 import { notFound } from 'next/navigation'
 import { Suspense } from 'react'
 import Dashboard from '../_components/Dashboard'
@@ -14,7 +16,7 @@ type Props = {
   params: {
     slug: string
   }
-  searchParams: SearchParams
+  searchParams: DashboardSearchParams
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -39,15 +41,22 @@ async function DashboardContent({ params, searchParams }: Props) {
     return notFound()
   }
 
+  const session = await getServerSession(authOptions)
   const period = getPeriod(searchParams, settings)
+  const isPersonal = searchParams.personal === 'true'
   const [items, totalDuration, totalSize, serverId] = await Promise.all([
-    getItems(library, period.daysAgo),
-    getTotalDuration(library, period.string, settings),
+    getItems(library, period.daysAgo, isPersonal && session?.user.id),
+    getTotalDuration(
+      library,
+      period.string,
+      settings,
+      isPersonal && session?.user.id,
+    ),
     getTotalSize(library, settings),
     getServerId(),
   ])
   const isCountActive =
-    settings.features.activeDashboardTotalStatistics.includes('count')
+    settings.dashboard.activeTotalStatistics.includes('count')
   const countValue =
     library.section_type === 'movie'
       ? Number(library.count)
@@ -64,6 +73,7 @@ async function DashboardContent({ params, searchParams }: Props) {
       serverId={serverId}
       count={count}
       settings={settings}
+      isLoggedIn={!!session}
     />
   )
 }

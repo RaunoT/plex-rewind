@@ -1,4 +1,4 @@
-import { Settings } from '@/types'
+import { Settings } from '@/types/settings'
 import fs from 'fs'
 import { merge } from 'lodash'
 import { DEFAULT_SETTINGS, SETTINGS_PATH } from './constants'

@@ -1,6 +1,6 @@
 'use server'
 
-import { Library } from '@/types'
+import { TautulliLibrary } from '@/types/tautulli'
 import { kebabCase } from 'lodash'
 import qs from 'qs'
 import getSettings from './getSettings'
@@ -86,10 +86,12 @@ export async function getServerId(): Promise<string> {
   }
 }
 
-export async function getLibraries(excludeInactive = true): Promise<Library[]> {
+export async function getLibraries(
+  excludeInactive = true,
+): Promise<TautulliLibrary[]> {
   const settings = getSettings()
-  const activeLibraries = settings.features.activeLibraries
-  const libraries = await fetchTautulli<Library[]>('get_libraries')
+  const activeLibraries = settings.general.activeLibraries
+  const libraries = await fetchTautulli<TautulliLibrary[]>('get_libraries')
 
   if (!libraries) {
     console.warn('[TAUTULLI] - No libraries found!')
@@ -109,7 +111,7 @@ export async function getLibraries(excludeInactive = true): Promise<Library[]> {
 
 export async function getLibrariesByType(
   type: 'movie' | 'show' | 'artist',
-): Promise<Library[]> {
+): Promise<TautulliLibrary[]> {
   const libraries = await getLibraries()
 
   return libraries.filter((library) => library.section_type === type)

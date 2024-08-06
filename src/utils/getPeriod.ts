@@ -1,13 +1,14 @@
-import { SearchParams, Settings } from '@/types'
+import { DashboardSearchParams } from '@/types/dashboard'
+import { Settings } from '@/types/settings'
 import { PERIODS } from './constants'
 
 export default function getPeriod(
-  searchParams: SearchParams,
+  searchParams: DashboardSearchParams,
   settings: Settings,
 ) {
-  const periodSearchParams = searchParams?.period
-  const defaultPeriod = settings.features.dashboardDefaultPeriod
-  const customPeriod = parseInt(settings.features.dashboardCustomPeriod)
+  const periodSearchParams = searchParams.period
+  const defaultPeriod = settings.dashboard.defaultPeriod
+  const customPeriod = parseInt(settings.dashboard.customPeriod)
   let period = PERIODS[defaultPeriod] || PERIODS['30days']
 
   if (periodSearchParams && PERIODS[periodSearchParams]) {
