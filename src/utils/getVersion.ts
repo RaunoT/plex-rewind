@@ -37,10 +37,13 @@ export default async function getVersion(): Promise<Version> {
       if (data) {
         const latestRelease = data.find(
           (release: GitHubRelease) =>
-            !release.draft && (!isDevelop ? !release.prerelease : true),
+            !release.draft &&
+            (isDevelop ? release.prerelease : !release.prerelease),
         )
 
-        latestVersion = latestRelease.tag_name
+        if (latestRelease) {
+          latestVersion = latestRelease.tag_name
+        }
       }
     } catch (error) {
       console.error('[GITHUB] - Error fetching latest release!', error)
