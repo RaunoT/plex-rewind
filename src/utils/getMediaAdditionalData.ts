@@ -26,14 +26,11 @@ export default async function getMediaAdditionalData(
 
   const additionalData = await Promise.all(
     ratingKeys.map(async (key, i) => {
-      // TODO: We're basically only doing this fetch to determine if the item was deleted
-      // Maybe there's a better way to do this?
       const mediaTautulli = await fetchTautulli<TautulliItemRow>(
         'get_metadata',
         {
           rating_key: key,
         },
-        true,
       )
       const mediaTautulliData = mediaTautulli?.response?.data
       // Tautulli doesn't return rating for removed items, so we're using TMDB
@@ -53,11 +50,10 @@ export default async function getMediaAdditionalData(
       }
 
       const settings = getSettings()
-      const tautulliUrl = settings.connection.tautulliUrl
       const isPostersTmdbOnly = settings.general.isPostersTmdbOnly
 
       // Test if thumb exists, if not, fetch from TMDB
-      if ((!poster || isPostersTmdbOnly) && tautulliUrl) {
+      if (!poster || isPostersTmdbOnly) {
         const tmdbImage = await fetchTmdb<{ poster_path: string }>(
           `${type}/${tmdbId}`,
         )
