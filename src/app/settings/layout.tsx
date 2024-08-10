@@ -6,11 +6,11 @@ import { checkRequiredSettings } from '@/utils/helpers'
 import { CurrencyEuroIcon, HeartIcon } from '@heroicons/react/24/outline'
 import { getServerSession } from 'next-auth'
 import Image from 'next/image'
-import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import { ReactNode } from 'react'
 import PageTitle from '../_components/PageTitle'
 import SettingsNav from './_components/SettingsNav'
+import SetupNav from './_components/SetupNav'
 
 type Props = {
   children: ReactNode
@@ -20,22 +20,24 @@ export default async function SettingsLayout({ children }: Props) {
   const session = await getServerSession(authOptions)
   const settings = getSettings()
   const version = await getVersion()
-  const setupComplete = checkRequiredSettings(settings)
+  const missingSetting = checkRequiredSettings(settings)
 
-  if (!session?.user?.isAdmin && setupComplete) {
+  if (!session?.user?.isAdmin && !missingSetting) {
     redirect('/')
   }
 
   return (
     <div className='mb-auto w-full max-w-screen-sm'>
       <PageTitle
-        title={setupComplete ? 'Settings' : "Let's get started"}
-        noBack={!setupComplete}
+        title={missingSetting ? "Let's get started" : 'Settings'}
+        noBack={!!missingSetting}
       />
-      {setupComplete && <SettingsNav />}
+      {!missingSetting && <SettingsNav />}
       {children}
 
-      {setupComplete && (
+      {missingSetting ? (
+        <SetupNav settings={settings} />
+      ) : (
         <div className='glass-sheet mt-4 flex flex-col flex-wrap justify-between gap-3 py-4 sm:flex-row'>
           <a
             href='https://www.paypal.com/paypalme/raunot'
@@ -63,44 +65,6 @@ export default async function SettingsLayout({ children }: Props) {
           </a>
         </div>
       )}
-
-      <ul className='mt-4 flex flex-wrap justify-center gap-4'>
-        <li>
-          <Link
-            className='flex size-8 items-center justify-center rounded-full border border-neutral-400 aria-disabled:opacity-50'
-            href='/'
-          >
-            1
-          </Link>
-        </li>
-        <li>
-          <Link
-            className='flex size-8 items-center justify-center rounded-full border border-neutral-400 aria-disabled:opacity-50'
-            href='/'
-            aria-disabled
-          >
-            2
-          </Link>
-        </li>
-        <li>
-          <Link
-            className='flex size-8 items-center justify-center rounded-full border border-neutral-400 aria-disabled:opacity-50'
-            href='/'
-            aria-disabled
-          >
-            3
-          </Link>
-        </li>
-        <li>
-          <Link
-            className='flex size-8 items-center justify-center rounded-full border border-neutral-400 aria-disabled:opacity-50'
-            href='/'
-            aria-disabled
-          >
-            4
-          </Link>
-        </li>
-      </ul>
 
       <a
         className='link mx-auto mt-4 block w-fit text-center text-sm'

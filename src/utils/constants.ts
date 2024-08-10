@@ -113,5 +113,11 @@ export const REQUIRED_SETTINGS = [
   'rewind.complete',
   'dashboard.complete',
 ]
+export const SETTINGS_PAGES = [
+  '/settings/connection',
+  '/settings/general',
+  '/settings/rewind',
+  '/settings/dashboard',
+]
 
 export const TMDB_API_KEY = '4675b5b5d8cd1463ff16adca2680157b'

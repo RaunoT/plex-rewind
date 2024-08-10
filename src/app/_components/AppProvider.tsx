@@ -22,12 +22,29 @@ type Props = {
   version: Version
 }
 
+function getSettingsPage(missingSettingKey: string): string | undefined {
+  switch (true) {
+    case missingSettingKey.startsWith('connection'):
+      return '/settings/connection'
+    case missingSettingKey.startsWith('general'):
+      return '/settings/general'
+    case missingSettingKey.startsWith('rewind'):
+      return '/settings/rewind'
+    case missingSettingKey.startsWith('dashboard'):
+      return '/settings/dashboard'
+  }
+}
+
 export default function AppProvider({ children, settings, version }: Props) {
   const pathname = usePathname()
-  const setupComplete = checkRequiredSettings(settings)
+  const missingSetting = checkRequiredSettings(settings)
 
-  if (!setupComplete && pathname !== '/settings/connection') {
-    redirect('/settings/connection')
+  if (missingSetting) {
+    const redirectPage = getSettingsPage(missingSetting)
+
+    if (redirectPage && pathname !== redirectPage) {
+      redirect(redirectPage)
+    }
   }
 
   const { data: session } = useSession()
@@ -84,7 +101,7 @@ export default function AppProvider({ children, settings, version }: Props) {
             <ArrowPathIcon className='size-6' />
           </a>
         )}
-        {setupComplete && session?.user?.isAdmin && (
+        {!missingSetting && session?.user?.isAdmin && (
           <Link
             href={isSettings ? '/' : settingsLink}
             aria-label={isSettings ? 'Close settings' : 'Open settings'}
