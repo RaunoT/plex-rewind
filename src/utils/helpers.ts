@@ -14,3 +14,16 @@ export function checkRequiredSettings(settings: Settings): string | null {
 
   return null
 }
+
+export function getSettingsPage(missingSettingKey: string): string | undefined {
+  switch (true) {
+    case missingSettingKey.startsWith('connection'):
+      return '/settings/connection'
+    case missingSettingKey.startsWith('general'):
+      return '/settings/general'
+    case missingSettingKey.startsWith('rewind'):
+      return '/settings/rewind'
+    case missingSettingKey.startsWith('dashboard'):
+      return '/settings/dashboard'
+  }
+}

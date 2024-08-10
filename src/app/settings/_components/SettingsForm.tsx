@@ -1,9 +1,13 @@
 'use client'
 
 import { Settings } from '@/types/settings'
+import { SETTINGS_PAGES } from '@/utils/constants'
+import { ChevronDoubleRightIcon } from '@heroicons/react/24/outline'
+import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 import { ReactNode } from 'react'
 import { useFormState } from 'react-dom'
-import SettingsSaveButton from './SaveButton'
+import SettingsSaveButton from './SettingsSaveButton'
 
 type Props = {
   children: ReactNode
@@ -12,6 +16,15 @@ type Props = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   action: any
   hideSubmit?: boolean
+  settingKey: keyof Settings
+}
+
+function getNextSettingsPage(currentPath: string): string | undefined {
+  const currentIndex = SETTINGS_PAGES.indexOf(currentPath)
+
+  return currentIndex === -1
+    ? SETTINGS_PAGES[0]
+    : SETTINGS_PAGES[currentIndex + 1] || undefined
 }
 
 export default function SettingsForm({
@@ -19,6 +32,7 @@ export default function SettingsForm({
   settings,
   action,
   hideSubmit,
+  settingKey,
 }: Props) {
   const initialState = {
     message: '',
@@ -26,6 +40,9 @@ export default function SettingsForm({
     fields: settings,
   }
   const [formState, formAction] = useFormState(action, initialState)
+  const allowContinue = settings[settingKey].complete
+  const pathname = usePathname()
+  const nextPage = getNextSettingsPage(pathname)
 
   return (
     <form className='glass-sheet pb-6' action={formAction}>
@@ -46,6 +63,15 @@ export default function SettingsForm({
             </p>
 
             <SettingsSaveButton />
+            {nextPage && (
+              <Link
+                href={nextPage}
+                className='button -ml-2 px-2 aria-disabled:pointer-events-none aria-disabled:opacity-50'
+                aria-disabled={!allowContinue}
+              >
+                <ChevronDoubleRightIcon className='size-6' />
+              </Link>
+            )}
           </div>
         )}
       </div>

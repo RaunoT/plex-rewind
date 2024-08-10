@@ -1,6 +1,5 @@
 import { Settings } from '@/types/settings'
 import { env } from 'next-runtime-env'
-import path from 'path'
 
 const DAYS_AGO_7: Date = new Date(new Date().setDate(new Date().getDate() - 7))
 const DAYS_AGO_30: Date = new Date(
@@ -64,7 +63,6 @@ export const PLEX_PRODUCT_NAME = 'Plex Rewind'
 
 export const APP_URL = env('NEXT_PUBLIC_SITE_URL') || 'http://localhost:8383'
 
-export const SETTINGS_PATH = path.join(process.cwd(), 'config/settings.json')
 export const DEFAULT_SETTINGS: Settings = {
   connection: {
     tautulliUrl: '',

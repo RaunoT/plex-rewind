@@ -6,8 +6,7 @@ import {
   GeneralSettings,
   RewindSettings,
 } from '@/types/settings'
-import { SETTINGS_PATH } from '@/utils/constants'
-import getSettings from '@/utils/getSettings'
+import getSettings, { SETTINGS_PATH } from '@/utils/getSettings'
 import { promises as fs } from 'fs'
 import { revalidatePath } from 'next/cache'
 import { ZodError, ZodSchema } from 'zod'

@@ -18,7 +18,11 @@ export default function RewindSettingsForm({ settings, users }: Props) {
   const [isActive, setIsActive] = useState<boolean>(rewindSettings.isActive)
 
   return (
-    <SettingsForm settings={settings} action={saveRewindSettings}>
+    <SettingsForm
+      settings={settings}
+      action={saveRewindSettings}
+      settingKey='rewind'
+    >
       <section className='group-settings group'>
         <h2 className='heading-settings'>Status</h2>
         <Switch
@@ -50,7 +54,7 @@ export default function RewindSettingsForm({ settings, users }: Props) {
               </span>
             </Switch>
           </section>
-          {users?.length && (
+          {users?.length && rewindSettings.complete && (
             <section className='group-settings group'>
               <h2 className='heading-settings'>Users Rewinds</h2>
               <ul className='flex flex-wrap gap-2 sm:ml-48'>

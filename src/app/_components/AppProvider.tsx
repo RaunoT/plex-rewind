@@ -12,7 +12,7 @@ import clsx from 'clsx'
 import { useSession } from 'next-auth/react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { redirect, usePathname } from 'next/navigation'
+import { usePathname } from 'next/navigation'
 import { ReactNode, useEffect, useState } from 'react'
 import stars from '../_assets/stars.png'
 
@@ -22,31 +22,9 @@ type Props = {
   version: Version
 }
 
-function getSettingsPage(missingSettingKey: string): string | undefined {
-  switch (true) {
-    case missingSettingKey.startsWith('connection'):
-      return '/settings/connection'
-    case missingSettingKey.startsWith('general'):
-      return '/settings/general'
-    case missingSettingKey.startsWith('rewind'):
-      return '/settings/rewind'
-    case missingSettingKey.startsWith('dashboard'):
-      return '/settings/dashboard'
-  }
-}
-
 export default function AppProvider({ children, settings, version }: Props) {
   const pathname = usePathname()
   const missingSetting = checkRequiredSettings(settings)
-
-  if (missingSetting) {
-    const redirectPage = getSettingsPage(missingSetting)
-
-    if (redirectPage && pathname !== redirectPage) {
-      redirect(redirectPage)
-    }
-  }
-
   const { data: session } = useSession()
   const [isSettings, setIsSettings] = useState<boolean>(
     pathname.startsWith('/settings'),
