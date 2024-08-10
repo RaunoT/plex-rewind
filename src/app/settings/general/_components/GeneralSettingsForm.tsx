@@ -74,19 +74,6 @@ export default function GeneralSettingsForm({ settings, libraries }: Props) {
             </Switch>
           </section>
           <section className='group-settings group'>
-            <h2 className='heading-settings'>Analytics</h2>
-            <label className='input-wrapper'>
-              <input
-                type='text'
-                className='input'
-                name='googleAnalyticsId'
-                defaultValue={generalSettings.googleAnalyticsId}
-                placeholder='G-XXXXXXXXXX'
-              />
-              <span className='label'>Google Analytics ID</span>
-            </label>
-          </section>
-          <section className='group-settings group'>
             <h2 className='heading-settings'>Privacy</h2>
             <Switch
               className='switch items-start'
@@ -99,6 +86,19 @@ export default function GeneralSettingsForm({ settings, libraries }: Props) {
                 <small>Access without login.</small>
               </span>
             </Switch>
+          </section>
+          <section className='group-settings group'>
+            <h2 className='heading-settings'>Analytics</h2>
+            <label className='input-wrapper'>
+              <input
+                type='text'
+                className='input'
+                name='googleAnalyticsId'
+                defaultValue={generalSettings.googleAnalyticsId}
+                placeholder='G-XXXXXXXXXX'
+              />
+              <span className='label'>Google Analytics ID</span>
+            </label>
           </section>
         </>
       )}
