@@ -3,10 +3,12 @@
   "version": "1.0.0",
   "scripts": {
     "dev": "next dev",
+    "start": "next start",
     "build": "next build",
+    "lint": "next lint",
     "lint:types": "tsc --noEmit",
     "lint:css": "stylelint --cache \"**/*.css\"",
-    "lint": "next lint",
+    "lint:all": "pnpm lint && pnpm lint:types && pnpm lint:css && pnpm format:check",
     "format": "prettier --write --cache .",
     "format:check": "prettier --check --cache .",
     "prepare": "husky",

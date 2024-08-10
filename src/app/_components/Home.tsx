@@ -26,6 +26,10 @@ export default function Home({ settings }: Props) {
   const { data: session, status } = useSession()
   const isLoggedIn = status === 'authenticated'
   const hasOutsideAccess = settings.general.isOutsideAccess
+  const dashboardSlug = kebabCase(
+    libraries[0]?.section_name ||
+      (settings.dashboard.isUsersPageActive ? 'users' : ''),
+  )
 
   async function handleLogin() {
     const plexUrl = await createPlexAuthUrl()
@@ -172,23 +176,19 @@ export default function Home({ settings }: Props) {
             </Link>
           ))}
 
-        {settings.dashboard.isActive && (isLoggedIn || hasOutsideAccess) && (
-          <Link
-            href={`/dashboard/${kebabCase(
-              libraries[0]
-                ? libraries[0].section_name
-                : settings.dashboard.isUsersPageActive
-                  ? 'users'
-                  : '',
-            )}${settings.dashboard.defaultStyle === 'personal' && isLoggedIn ? '?personal=true' : ''}`}
-            className={clsx(
-              'mx-auto block',
-              !settings.rewind.isActive && isLoggedIn ? 'button' : 'link',
-            )}
-          >
-            Dashboard
-          </Link>
-        )}
+        {settings.dashboard.isActive &&
+          (isLoggedIn || hasOutsideAccess) &&
+          dashboardSlug && (
+            <Link
+              href={`/dashboard/${dashboardSlug}${settings.dashboard.defaultStyle === 'personal' && isLoggedIn ? '?personal=true' : ''}`}
+              className={clsx(
+                'mx-auto block',
+                !settings.rewind.isActive && isLoggedIn ? 'button' : 'link',
+              )}
+            >
+              Dashboard
+            </Link>
+          )}
 
         {isLoggedIn && (
           <button onClick={() => signOut()} className='link mt-16'>
