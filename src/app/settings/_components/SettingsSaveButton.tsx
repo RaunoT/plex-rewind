@@ -3,7 +3,11 @@
 import Loader from '@/components/Loader'
 import { useFormStatus } from 'react-dom'
 
-export default function SettingsSaveButton() {
+type Props = {
+  text?: string
+}
+
+export default function SettingsSaveButton({ text = 'Save' }: Props) {
   const { pending } = useFormStatus()
 
   return (
@@ -12,7 +16,7 @@ export default function SettingsSaveButton() {
       type='submit'
       disabled={pending}
     >
-      {pending ? <Loader size={6} /> : 'Save'}
+      {pending ? <Loader size={6} /> : text}
     </button>
   )
 }

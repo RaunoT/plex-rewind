@@ -2,6 +2,7 @@
 
 import { Settings } from '@/types/settings'
 import { SETTINGS_PAGES } from '@/utils/constants'
+import { checkRequiredSettings } from '@/utils/helpers'
 import { ChevronDoubleRightIcon } from '@heroicons/react/24/outline'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
@@ -43,6 +44,7 @@ export default function SettingsForm({
   const allowContinue = settings[settingKey].complete
   const pathname = usePathname()
   const nextPage = getNextSettingsPage(pathname)
+  const missingSetting = checkRequiredSettings(settings)
 
   return (
     <form className='glass-sheet pb-6' action={formAction}>
@@ -62,8 +64,14 @@ export default function SettingsForm({
               {formState.message}
             </p>
 
-            <SettingsSaveButton />
-            {nextPage && (
+            <SettingsSaveButton
+              text={
+                settingKey === 'dashboard' && missingSetting
+                  ? 'Finish setup'
+                  : 'Save'
+              }
+            />
+            {nextPage && missingSetting && (
               <Link
                 href={nextPage}
                 className='button -ml-2 px-2 aria-disabled:pointer-events-none aria-disabled:opacity-50'
