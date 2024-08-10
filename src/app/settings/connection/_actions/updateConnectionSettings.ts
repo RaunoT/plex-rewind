@@ -10,6 +10,7 @@ const schema = z.object({
   overseerrUrl: z.string().url().optional().or(z.literal('')),
   overseerrApiKey: z.string().optional(),
   plexUrl: z.string().url(),
+  complete: z.boolean(),
 })
 
 export default async function saveConnectionSettings(
@@ -22,6 +23,7 @@ export default async function saveConnectionSettings(
     overseerrUrl: formData.get('overseerrUrl') as string,
     overseerrApiKey: formData.get('overseerrApiKey') as string,
     plexUrl: formData.get('plexUrl') as string,
+    complete: true,
   }
 
   try {

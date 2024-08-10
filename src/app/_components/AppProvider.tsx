@@ -24,8 +24,9 @@ type Props = {
 
 export default function AppProvider({ children, settings, version }: Props) {
   const pathname = usePathname()
+  const setupComplete = checkRequiredSettings(settings)
 
-  if (!checkRequiredSettings(settings) && pathname !== '/settings/connection') {
+  if (!setupComplete && pathname !== '/settings/connection') {
     redirect('/settings/connection')
   }
 
@@ -83,7 +84,7 @@ export default function AppProvider({ children, settings, version }: Props) {
             <ArrowPathIcon className='size-6' />
           </a>
         )}
-        {checkRequiredSettings(settings) && session?.user?.isAdmin && (
+        {setupComplete && session?.user?.isAdmin && (
           <Link
             href={isSettings ? '/' : settingsLink}
             aria-label={isSettings ? 'Close settings' : 'Open settings'}

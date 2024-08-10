@@ -72,16 +72,19 @@ export const DEFAULT_SETTINGS: Settings = {
     plexUrl: '',
     overseerrUrl: '',
     overseerrApiKey: '',
+    complete: false,
   },
   general: {
     activeLibraries: [],
     isPostersTmdbOnly: false,
     googleAnalyticsId: '',
     isOutsideAccess: false,
+    complete: false,
   },
   rewind: {
     isActive: true,
     isLibrariesSizeAndCountActive: true,
+    complete: false,
   },
   dashboard: {
     isActive: true,
@@ -98,14 +101,17 @@ export const DEFAULT_SETTINGS: Settings = {
     defaultStyle: 'general',
     defaultPeriod: 'custom',
     customPeriod: '30',
+    complete: false,
   },
-  test: false,
 }
 export const REQUIRED_SETTINGS = [
   'connection.tautulliUrl',
   'connection.tautulliApiKey',
   'connection.plexUrl',
-  'test',
+  'connection.complete',
+  'general.complete',
+  'rewind.complete',
+  'dashboard.complete',
 ]
 
 export const TMDB_API_KEY = '4675b5b5d8cd1463ff16adca2680157b'

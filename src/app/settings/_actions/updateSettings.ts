@@ -29,10 +29,6 @@ export default async function updateSettings<K extends keyof SettingsTypeMap>(
 
     const settings = getSettings()
 
-    if (key === 'connection') {
-      settings.test = true
-    }
-
     settings[key] = {
       ...settings[key],
       ...data,
