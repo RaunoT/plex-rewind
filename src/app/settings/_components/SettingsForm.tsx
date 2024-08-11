@@ -64,13 +64,7 @@ export default function SettingsForm({
               {formState.message}
             </p>
 
-            <SettingsSaveButton
-              text={
-                settingKey === 'dashboard' && missingSetting
-                  ? 'Finish setup'
-                  : 'Save'
-              }
-            />
+            <SettingsSaveButton />
             {nextPage && missingSetting && (
               <Link
                 href={nextPage}
