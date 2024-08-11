@@ -1,6 +1,7 @@
 'use client'
 
 import { TautulliItemRow } from '@/types/tautulli'
+import clsx from 'clsx'
 import { motion, useAnimation } from 'framer-motion'
 import { debounce } from 'lodash'
 import { RefObject, useEffect, useRef } from 'react'
@@ -11,6 +12,8 @@ type Props = {
   type: string
   parentRef: RefObject<HTMLDivElement>
 }
+
+const topColors = ['text-yellow-300', 'text-gray-300', 'text-yellow-700']
 
 export default function MediaItemTitle({ i, data, type, parentRef }: Props) {
   const titleRef = useRef<HTMLSpanElement>(null)
@@ -75,7 +78,9 @@ export default function MediaItemTitle({ i, data, type, parentRef }: Props) {
   return (
     <h3 className='mb-2 flex sm:text-xl'>
       <span className='mr-1.5 inline-flex items-baseline gap-1' ref={numberRef}>
-        <span className='font-bold text-black'>#{i + 1} </span>
+        <span className={clsx('font-bold', topColors[i] || 'text-white')}>
+          #{i + 1}{' '}
+        </span>
         {i < 3 && (
           <svg width='16px' viewBox='0 0 300.439 300.439'>
             <path
@@ -118,7 +123,7 @@ export default function MediaItemTitle({ i, data, type, parentRef }: Props) {
           animate={controls}
           ref={titleRef}
         >
-          {type === 'users' ? data.user : data.title}
+          {type === 'users' ? data.friendly_name : data.title}
         </motion.span>
       </span>
     </h3>
