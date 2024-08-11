@@ -118,7 +118,7 @@ export default function MediaItemTitle({ i, data, type, parentRef }: Props) {
           animate={controls}
           ref={titleRef}
         >
-          {type === 'users' ? data.user : data.title}
+          {type === 'users' ? data.friendly_name : data.title}
         </motion.span>
       </span>
     </h3>
