@@ -1,7 +1,9 @@
 'use server'
 
-import { TautulliLibrary } from '@/types/tautulli'
+import { authOptions } from '@/lib/auth'
+import { TautulliLibrary, TautulliUser } from '@/types/tautulli'
 import { kebabCase } from 'lodash'
+import { getServerSession } from 'next-auth'
 import qs from 'qs'
 import getSettings from './getSettings'
 
@@ -91,22 +93,38 @@ export async function getLibraries(
 ): Promise<TautulliLibrary[]> {
   const settings = getSettings()
   const activeLibraries = settings.general.activeLibraries
-  const libraries = await fetchTautulli<TautulliLibrary[]>('get_libraries')
-
-  if (!libraries) {
+  let libraries = (await fetchTautulli<TautulliLibrary[]>('get_libraries'))
+    ?.response?.data
+  if (libraries == null) {
     console.warn('[TAUTULLI] - No libraries found!')
     return []
   }
 
+  const session = await getServerSession(authOptions)
+  const userId = session?.user.id
+
+  const sharedLibrariesResponse = await fetchTautulli<TautulliUser>(
+    'get_user',
+    { user_id: userId! },
+  )
+  if (!sharedLibrariesResponse) {
+    console.warn(`[TAUTULLI] - No shared libraries for user ${userId} found!`)
+    return []
+  }
+
+  libraries = libraries.filter((library) =>
+    sharedLibrariesResponse.response.data.shared_libraries.includes(
+      library.section_id,
+    ),
+  )
+
   if (excludeInactive) {
-    const filteredLibraries = libraries.response.data.filter((library) =>
+    libraries = libraries.filter((library) =>
       activeLibraries.includes(kebabCase(library.section_name)),
     )
-
-    return filteredLibraries
-  } else {
-    return libraries.response.data
   }
+
+  return libraries
 }
 
 export async function getLibrariesByType(
