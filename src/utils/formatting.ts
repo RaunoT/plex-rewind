@@ -7,6 +7,10 @@ export function secondsToTime(seconds: number): string {
     { label: 'min', duration: 60 },
   ]
 
+  if (seconds === 0) {
+    return `0 ${units[units.length - 1].label}`
+  }
+
   let remainingSeconds = seconds
   let unitCount = 0
 

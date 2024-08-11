@@ -1,7 +1,12 @@
 import { authOptions } from '@/lib/auth'
 import { DashboardSearchParams } from '@/types/dashboard'
 import { Settings } from '@/types/settings'
-import { TautulliItem, TautulliUser } from '@/types/tautulli'
+import {
+  TautulliItemRow,
+  TautulliUser,
+  TautulliUserItem,
+  TautulliUserItemRow,
+} from '@/types/tautulli'
 import {
   fetchOverseerrStats,
   fetchOverseerrUserId,
@@ -27,14 +32,26 @@ type UserRequestCounts =
     }
   | undefined
 
+async function getNonActiveUser(id: number): Promise<TautulliItemRow> {
+  const user = await fetchTautulli<TautulliItemRow>('get_user', {
+    user_id: id,
+  })
+  const nonActive = user?.response?.data ?? ({} as TautulliItemRow)
+  nonActive.total_duration = 0
+  return nonActive
+}
+
 async function getUsers(
   period: number,
   requestsPeriod: string,
   periodString: string,
 ) {
-  const usersRes = await fetchTautulli<TautulliItem>('get_home_stats', {
+  const numberOfUsers = 6
+  const settings = getSettings()
+  const allUsersCount = await getUsersCount(settings)
+  const usersRes = await fetchTautulli<TautulliUserItem>('get_home_stats', {
     stat_id: 'top_users',
-    stats_count: 6,
+    stats_count: allUsersCount ?? numberOfUsers,
     stats_type: 'duration',
     time_range: period,
   })
@@ -44,7 +61,12 @@ async function getUsers(
     return
   }
 
-  const settings = getSettings()
+  const listedUsers = await getStatsWithLoggedInUser(
+    settings,
+    users,
+    numberOfUsers,
+  )
+
   const [moviesLib, showsLib, audioLib] = await Promise.all([
     getLibrariesByType('movie'),
     getLibrariesByType('show'),
@@ -57,9 +79,8 @@ async function getUsers(
 
   if (isOverseerrActive) {
     const overseerrUserIds = await Promise.all(
-      users.map(async (user) => {
+      listedUsers.map(async (user) => {
         const overseerrId = await fetchOverseerrUserId(String(user.user_id))
-
         return overseerrId
       }),
     )
@@ -81,7 +102,7 @@ async function getUsers(
   }
 
   const usersPlaysAndDurations = await Promise.all(
-    users.map(async (user) => {
+    listedUsers.map(async (user) => {
       let moviesPlaysCount = 0
       let showsPlaysCount = 0
       let audioPlaysCount = 0
@@ -133,14 +154,39 @@ async function getUsers(
     }),
   )
 
-  users.map((user, i) => {
+  listedUsers.map((user, i) => {
     user.requests = usersRequestsCounts[i]?.requests || 0
     user.movies_plays_count = usersPlaysAndDurations[i].movies_plays_count
     user.shows_plays_count = usersPlaysAndDurations[i].shows_plays_count
     user.audio_plays_count = usersPlaysAndDurations[i].audio_plays_count
   })
 
-  return users
+  return listedUsers
+}
+
+async function getStatsWithLoggedInUser(
+  settings: Settings,
+  users: TautulliUserItemRow[],
+  numberOfUsers: number,
+) {
+  let listedUsers = users.slice(0, numberOfUsers)
+  const session = await getServerSession(authOptions)
+  const userId = session?.user?.id
+  if (settings.general.isOutsideAccess && !userId) {
+    return listedUsers
+  }
+
+  const loggedInUserRank = users.findIndex((user) => user.user_id == userId)
+  const loggedInUser =
+    users[loggedInUserRank] ?? (await getNonActiveUser(userId))
+  if (loggedInUserRank === -1 || loggedInUserRank >= numberOfUsers) {
+    listedUsers = listedUsers.slice(0, numberOfUsers - 1)
+    loggedInUser.rank =
+      loggedInUserRank === -1 ? users.length : loggedInUserRank
+    listedUsers.push(loggedInUser)
+  }
+
+  return listedUsers
 }
 
 async function getTotalDuration(period: string, settings: Settings) {

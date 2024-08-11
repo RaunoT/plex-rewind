@@ -1,7 +1,7 @@
 'use client'
 
 import { Settings } from '@/types/settings'
-import { TautulliItemRow } from '@/types/tautulli'
+import { TautulliItemRow, TautulliUserItemRow } from '@/types/tautulli'
 import { pluralize, secondsToTime } from '@/utils/formatting'
 import { slideDown } from '@/utils/motion'
 import {
@@ -59,10 +59,14 @@ export default function MediaItem({
     setImageSrc(posterSrc)
   }, [data, type, posterSrc])
 
+  const notUserDashboard = type !== 'users'
   return (
     <motion.li
       key={dataKey}
-      className={clsx('flex gap-3 2xl:items-center', i > 4 && 'hidden lg:flex')}
+      className={clsx(
+        'flex gap-3 2xl:items-center',
+        i > 4 && notUserDashboard && 'hidden lg:flex',
+      )}
       variants={slideDown}
       initial='hidden'
       animate='show'
@@ -83,7 +87,7 @@ export default function MediaItem({
       </div>
       <div className='overflow-hidden' ref={titleContainerRef}>
         <MediaItemTitle
-          i={i}
+          i={(data as unknown as TautulliUserItemRow)?.rank ?? i}
           data={data}
           type={type}
           parentRef={titleContainerRef}
