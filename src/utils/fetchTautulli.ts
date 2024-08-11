@@ -114,13 +114,6 @@ function filterByActiveLibraries(
   libraries: TautulliLibrary[],
 ): TautulliLibrary[] {
   const activeLibraries = settings.general.activeLibraries
-
-  if (excludeInactive) {
-    libraries = libraries.filter((library) =>
-      activeLibraries.includes(kebabCase(library.section_name)),
-    )
-  }
-
   return excludeInactive
     ? libraries.filter((library) =>
         activeLibraries.includes(kebabCase(library.section_name)),
