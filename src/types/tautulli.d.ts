@@ -43,6 +43,7 @@ export type TautulliItemRow = {
   imdb_id: string | null
   user_thumb: string
   user: string
+  friendly_name: string
   requests: number
   audio_plays_count: number
   movies_plays_count: number
