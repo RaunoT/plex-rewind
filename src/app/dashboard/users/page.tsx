@@ -37,6 +37,7 @@ async function getNonActiveUser(id: number): Promise<TautulliItemRow> {
     user_id: id,
   })
   const nonActive = user?.response?.data ?? ({} as TautulliItemRow)
+
   nonActive.total_duration = 0
   return nonActive
 }
@@ -172,6 +173,7 @@ async function getStatsWithLoggedInUser(
   let listedUsers = users.slice(0, numberOfUsers)
   const session = await getServerSession(authOptions)
   const userId = session?.user?.id
+
   if (settings.general.isOutsideAccess && !userId) {
     return listedUsers
   }
@@ -179,6 +181,7 @@ async function getStatsWithLoggedInUser(
   const loggedInUserRank = users.findIndex((user) => user.user_id == userId)
   const loggedInUser =
     users[loggedInUserRank] ?? (await getNonActiveUser(userId))
+
   if (loggedInUserRank === -1 || loggedInUserRank >= numberOfUsers) {
     listedUsers = listedUsers.slice(0, numberOfUsers - 1)
     loggedInUser.rank =

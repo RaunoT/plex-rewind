@@ -60,6 +60,7 @@ export default function MediaItem({
   }, [data, type, posterSrc])
 
   const notUserDashboard = type !== 'users'
+
   return (
     <motion.li
       key={dataKey}
