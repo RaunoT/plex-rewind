@@ -80,7 +80,10 @@ async function DashboardContent({ params, searchParams }: Props) {
 
 export default function DashboardPage({ params, searchParams }: Props) {
   return (
-    <Suspense fallback={<DashboardLoader />} key={searchParams.period}>
+    <Suspense
+      fallback={<DashboardLoader />}
+      key={`period-${searchParams.period}-personal-${searchParams.personal}`}
+    >
       <DashboardContent params={params} searchParams={searchParams} />
     </Suspense>
   )
