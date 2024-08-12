@@ -14,6 +14,13 @@ export async function middleware(req: NextRequest) {
       const redirectPage = getSettingsPage(missingSetting)
 
       if (redirectPage && pathname !== redirectPage) {
+        // Check if the current pathname is a completed settings page
+        const settingsKey = pathname.split('/')[2]
+
+        if (settingsKey && settings[settingsKey]?.complete) {
+          return NextResponse.next()
+        }
+
         return NextResponse.redirect(
           new URL(redirectPage, process.env.NEXT_PUBLIC_SITE_URL),
         )
