@@ -95,6 +95,7 @@ export async function getLibraries(
   const settings = getSettings()
   const libraries = (await fetchTautulli<TautulliLibrary[]>('get_libraries'))
     ?.response?.data
+
   if (libraries == null) {
     console.warn('[TAUTULLI] - No libraries found!')
     return []
@@ -105,6 +106,7 @@ export async function getLibraries(
     settings,
     libraries,
   )
+
   return await filterBySharedLibraries(settings, activeLibraries)
 }
 
@@ -114,6 +116,7 @@ function filterByActiveLibraries(
   libraries: TautulliLibrary[],
 ): TautulliLibrary[] {
   const activeLibraries = settings.general.activeLibraries
+
   return excludeInactive
     ? libraries.filter((library) =>
         activeLibraries.includes(kebabCase(library.section_name)),
