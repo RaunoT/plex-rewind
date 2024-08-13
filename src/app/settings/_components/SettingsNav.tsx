@@ -28,9 +28,13 @@ export default function SettingsNav({ settings }: Props) {
             <li key={key}>
               <Link
                 href={href}
-                className={clsx('nav-link', {
-                  'text-green-600': isComplete && missingSetting,
-                })}
+                className={clsx(
+                  'nav-link',
+                  missingSetting &&
+                    (isComplete ? '!text-green-600' : '!text-red-500'),
+                  missingSetting && 'hover:!opacity-80',
+                  pathname === href && 'opacity-80',
+                )}
                 aria-current={pathname === href && 'page'}
                 aria-disabled={shouldDisable && 'true'}
               >
