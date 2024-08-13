@@ -6,7 +6,7 @@ import { checkRequiredSettings } from '@/utils/helpers'
 import { CurrencyEuroIcon, HeartIcon } from '@heroicons/react/24/outline'
 import { getServerSession } from 'next-auth'
 import Image from 'next/image'
-import { redirect } from 'next/navigation'
+import { notFound } from 'next/navigation'
 import { ReactNode } from 'react'
 import PageTitle from '../_components/PageTitle'
 import SettingsNav from './_components/SettingsNav'
@@ -21,8 +21,8 @@ export default async function SettingsLayout({ children }: Props) {
   const version = await getVersion()
   const missingSetting = checkRequiredSettings(settings)
 
-  if (!session?.user?.isAdmin && !missingSetting) {
-    redirect('/')
+  if (!session?.user?.isAdmin) {
+    return notFound()
   }
 
   return (
