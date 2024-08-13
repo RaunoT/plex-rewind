@@ -1,7 +1,10 @@
 'use server'
 
-import { TautulliLibrary } from '@/types/tautulli'
+import { authOptions } from '@/lib/auth'
+import { Settings } from '@/types/settings'
+import { TautulliLibrary, TautulliUser } from '@/types/tautulli'
 import { kebabCase } from 'lodash'
+import { getServerSession } from 'next-auth'
 import qs from 'qs'
 import getSettings from './getSettings'
 
@@ -90,23 +93,67 @@ export async function getLibraries(
   excludeInactive = true,
 ): Promise<TautulliLibrary[]> {
   const settings = getSettings()
-  const activeLibraries = settings.general.activeLibraries
-  const libraries = await fetchTautulli<TautulliLibrary[]>('get_libraries')
+  const libraries = (await fetchTautulli<TautulliLibrary[]>('get_libraries'))
+    ?.response?.data
 
-  if (!libraries) {
+  if (libraries == null) {
     console.warn('[TAUTULLI] - No libraries found!')
     return []
   }
 
-  if (excludeInactive) {
-    const filteredLibraries = libraries.response.data.filter((library) =>
-      activeLibraries.includes(kebabCase(library.section_name)),
-    )
+  const activeLibraries = filterByActiveLibraries(
+    excludeInactive,
+    settings,
+    libraries,
+  )
 
-    return filteredLibraries
-  } else {
-    return libraries.response.data
+  return await filterBySharedLibraries(settings, activeLibraries)
+}
+
+function filterByActiveLibraries(
+  excludeInactive: boolean,
+  settings: Settings,
+  libraries: TautulliLibrary[],
+): TautulliLibrary[] {
+  const activeLibraries = settings.general.activeLibraries
+
+  return excludeInactive
+    ? libraries.filter((library) =>
+        activeLibraries.includes(kebabCase(library.section_name)),
+      )
+    : libraries
+}
+
+async function filterBySharedLibraries(
+  settings: Settings,
+  libraries: TautulliLibrary[],
+): Promise<TautulliLibrary[]> {
+  if (settings.general.isOutsideAccess) {
+    return libraries
   }
+
+  const session = await getServerSession(authOptions)
+  const userId = session?.user.id
+
+  if (!userId) {
+    console.error('[TAUTULLI] - No user ID found!')
+    return []
+  }
+
+  const userDataResponse = await fetchTautulli<TautulliUser>('get_user', {
+    user_id: userId,
+  })
+
+  if (!userDataResponse) {
+    console.warn(`[TAUTULLI] - Could not fetch user data for user ID ${userId}`)
+    return []
+  }
+
+  return libraries.filter((library) =>
+    userDataResponse.response.data.shared_libraries.includes(
+      library.section_id,
+    ),
+  )
 }
 
 export async function getLibrariesByType(

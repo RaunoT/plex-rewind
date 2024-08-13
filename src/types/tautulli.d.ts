@@ -22,6 +22,7 @@ export type TautulliUser = {
   user_thumb: string
   username: string
   email: string
+  shared_libraries: string[]
 }
 
 export type TautulliItem = {
