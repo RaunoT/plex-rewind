@@ -1,21 +1,22 @@
 import { withAuth } from 'next-auth/middleware'
 import { NextResponse } from 'next/server'
-import { checkRequiredSettings, getSettingsPage } from './utils/helpers'
+import { getSettingsPage } from './utils/helpers'
 
 export default withAuth(
   async function middleware(req) {
     const { pathname } = req.nextUrl
-    const res = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/settings`)
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_SITE_URL}/api/missing-setting`,
+    )
 
     if (res.ok) {
-      const settings = await res.json()
-      const missingSetting = checkRequiredSettings(settings)
+      const missingSetting = await res.json()
 
       if (missingSetting) {
         if (req.nextauth?.token?.isAdmin) {
           let redirectPage = getSettingsPage(missingSetting)
 
-          if (!settings.connection?.complete) {
+          if (missingSetting.startsWith('connection')) {
             redirectPage = getSettingsPage('connection')
 
             if (pathname !== redirectPage && redirectPage) {

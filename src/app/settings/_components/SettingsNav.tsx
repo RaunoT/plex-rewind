@@ -33,7 +33,7 @@ export default function SettingsNav({ settings }: Props) {
                   missingSetting &&
                     (isComplete ? '!text-green-600' : '!text-red-500'),
                   missingSetting && 'hover:!opacity-80',
-                  pathname === href && 'opacity-80',
+                  missingSetting && pathname === href && 'opacity-80',
                 )}
                 aria-current={pathname === href && 'page'}
                 aria-disabled={shouldDisable && 'true'}

@@ -4,7 +4,7 @@ import plexSvg from '@/assets/plex.svg'
 import Loader from '@/components/Loader'
 import { createPlexAuthUrl, getPlexAuthToken } from '@/lib/auth'
 import { Settings } from '@/types/settings'
-import { TautulliLibrary, TautulliUser } from '@/types/tautulli'
+import { TautulliLibrary } from '@/types/tautulli'
 import { checkRequiredSettings } from '@/utils/helpers'
 import clsx from 'clsx'
 import { kebabCase } from 'lodash'
@@ -16,12 +16,11 @@ import { useEffect, useState } from 'react'
 
 type Props = {
   settings: Settings
+  libraries: TautulliLibrary[]
 }
 
-export default function Home({ settings }: Props) {
-  const [libraries, setLibraries] = useState<TautulliLibrary[]>([])
-  const [managedUsers, setManagedUsers] = useState<TautulliUser[] | null>(null)
-  const [isLoading, setIsLoading] = useState<boolean>(true)
+export default function Home({ settings, libraries }: Props) {
+  const [isLoading, setIsLoading] = useState<boolean>(false)
   const missingSetting = checkRequiredSettings(settings)
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -74,52 +73,6 @@ export default function Home({ settings }: Props) {
     }
   }, [searchParams])
 
-  useEffect(() => {
-    async function getLibraries() {
-      setIsLoading(true)
-
-      try {
-        const res = await fetch('/api/libraries', {
-          next: {
-            revalidate: 3600,
-          },
-        })
-        const data = await res.json()
-
-        setLibraries(data)
-      } catch (error) {
-        console.error('[HOME] - Error fetching libraries!', error)
-      }
-
-      setIsLoading(false)
-    }
-
-    async function getManagedUsers() {
-      setIsLoading(true)
-
-      try {
-        const res = await fetch(`/api/managed-users?userId=${session?.user.id}`)
-        const data = await res.json()
-
-        setManagedUsers(data)
-      } catch (error) {
-        console.error('[HOME] - Error fetching managed users!', error)
-      }
-
-      setIsLoading(false)
-    }
-
-    if (status === 'authenticated' || hasOutsideAccess) {
-      getLibraries()
-    }
-
-    if (status === 'authenticated') {
-      getManagedUsers()
-    } else if (status !== 'loading') {
-      setIsLoading(false)
-    }
-  }, [status, session?.user.id, hasOutsideAccess])
-
   if (isLoading) {
     return <Loader />
   }
@@ -168,30 +121,11 @@ export default function Home({ settings }: Props) {
           </button>
         )}
 
-        {showRewind &&
-          (managedUsers ? (
-            <>
-              <Link
-                href='/rewind'
-                className='button button-sm mb-2 w-full last:mb-0'
-              >
-                Start Rewind
-              </Link>
-              {managedUsers.map((user, i) => (
-                <Link
-                  key={i}
-                  href={`/rewind?userId=${user.user_id}`}
-                  className='button button-sm mb-2 w-full last:mb-0'
-                >
-                  Rewind for {user.friendly_name}
-                </Link>
-              ))}
-            </>
-          ) : (
-            <Link href='/rewind' className='button mb-4'>
-              Start Rewind
-            </Link>
-          ))}
+        {showRewind && (
+          <Link href='/rewind' className='button mb-4'>
+            Start Rewind
+          </Link>
+        )}
 
         {showDashboard && (
           <Link
