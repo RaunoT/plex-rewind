@@ -80,10 +80,9 @@ async function getUsers(
 
   if (isOverseerrActive) {
     const overseerrUserIds = await Promise.all(
-      listedUsers.map(async (user) => {
-        const overseerrId = await fetchOverseerrUserId(String(user.user_id))
-        return overseerrId
-      }),
+      listedUsers.map(
+        async (user) => await fetchOverseerrUserId(String(user.user_id)),
+      ),
     )
 
     usersRequestsCounts = await Promise.all(
