@@ -102,15 +102,7 @@ export const DEFAULT_SETTINGS: Settings = {
     complete: false,
   },
 }
-export const REQUIRED_SETTINGS = [
-  'connection.tautulliUrl',
-  'connection.tautulliApiKey',
-  'connection.plexUrl',
-  'connection.complete',
-  'general.complete',
-  'rewind.complete',
-  'dashboard.complete',
-]
+
 export const SETTINGS_PAGES = [
   { href: '/settings/connection', label: 'Connection', key: 'connection' },
   { href: '/settings/general', label: 'General', key: 'general' },

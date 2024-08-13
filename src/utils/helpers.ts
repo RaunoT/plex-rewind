@@ -1,5 +1,15 @@
 import { Settings } from '@/types/settings'
-import { REQUIRED_SETTINGS, SETTINGS_PAGES } from './constants'
+import { SETTINGS_PAGES } from './constants'
+
+const REQUIRED_SETTINGS = [
+  'connection.tautulliUrl',
+  'connection.tautulliApiKey',
+  'connection.plexUrl',
+  'connection.complete',
+  'general.complete',
+  'rewind.complete',
+  'dashboard.complete',
+]
 
 export function checkRequiredSettings(settings: Settings): string | null {
   for (const key of REQUIRED_SETTINGS) {
