@@ -21,11 +21,13 @@ type Props = {
 }
 
 function getNextSettingsPage(currentPath: string): string | undefined {
-  const currentIndex = SETTINGS_PAGES.indexOf(currentPath)
+  const currentIndex = SETTINGS_PAGES.findIndex(
+    (page) => page.href === currentPath,
+  )
 
-  return currentIndex === -1
-    ? SETTINGS_PAGES[0]
-    : SETTINGS_PAGES[currentIndex + 1] || undefined
+  return currentIndex === -1 || currentIndex === SETTINGS_PAGES.length - 1
+    ? undefined
+    : SETTINGS_PAGES[currentIndex + 1].href
 }
 
 export default function SettingsForm({

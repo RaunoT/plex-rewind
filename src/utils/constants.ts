@@ -112,10 +112,10 @@ export const REQUIRED_SETTINGS = [
   'dashboard.complete',
 ]
 export const SETTINGS_PAGES = [
-  '/settings/connection',
-  '/settings/general',
-  '/settings/rewind',
-  '/settings/dashboard',
+  { href: '/settings/connection', label: 'Connection', key: 'connection' },
+  { href: '/settings/general', label: 'General', key: 'general' },
+  { href: '/settings/rewind', label: 'Rewind', key: 'rewind' },
+  { href: '/settings/dashboard', label: 'Dashboard', key: 'dashboard' },
 ]
 
 export const TMDB_API_KEY = '4675b5b5d8cd1463ff16adca2680157b'

@@ -10,17 +10,22 @@ export async function middleware(req: NextRequest) {
     const settings = await res.json()
     const missingSetting = checkRequiredSettings(settings)
 
-    if (missingSetting) {
+    if (!settings.connection?.complete) {
+      const redirectPage = getSettingsPage('connection')
+
+      if (pathname !== redirectPage && redirectPage) {
+        return NextResponse.redirect(
+          new URL(redirectPage, process.env.NEXT_PUBLIC_SITE_URL),
+        )
+      }
+    } else if (missingSetting) {
       const redirectPage = getSettingsPage(missingSetting)
 
-      if (redirectPage && pathname !== redirectPage) {
-        // Check if the current pathname is a completed settings page
-        const settingsKey = pathname.split('/')[2]
-
-        if (settingsKey && settings[settingsKey]?.complete) {
-          return NextResponse.next()
-        }
-
+      if (
+        redirectPage &&
+        pathname !== redirectPage &&
+        !pathname.includes('settings')
+      ) {
         return NextResponse.redirect(
           new URL(redirectPage, process.env.NEXT_PUBLIC_SITE_URL),
         )

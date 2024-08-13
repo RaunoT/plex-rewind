@@ -1,5 +1,5 @@
 import { Settings } from '@/types/settings'
-import { REQUIRED_SETTINGS } from './constants'
+import { REQUIRED_SETTINGS, SETTINGS_PAGES } from './constants'
 
 export function checkRequiredSettings(settings: Settings): string | null {
   for (const key of REQUIRED_SETTINGS) {
@@ -16,14 +16,6 @@ export function checkRequiredSettings(settings: Settings): string | null {
 }
 
 export function getSettingsPage(missingSettingKey: string): string | undefined {
-  switch (true) {
-    case missingSettingKey.startsWith('connection'):
-      return '/settings/connection'
-    case missingSettingKey.startsWith('general'):
-      return '/settings/general'
-    case missingSettingKey.startsWith('rewind'):
-      return '/settings/rewind'
-    case missingSettingKey.startsWith('dashboard'):
-      return '/settings/dashboard'
-  }
+  return SETTINGS_PAGES.find((page) => missingSettingKey.startsWith(page.key))
+    ?.href
 }
