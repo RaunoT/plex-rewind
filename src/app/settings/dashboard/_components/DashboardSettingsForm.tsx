@@ -18,11 +18,7 @@ export default function DashboardSettingsForm({ settings }: Props) {
   const [isActive, setIsActive] = useState<boolean>(dashboardSettings.isActive)
 
   return (
-    <SettingsForm
-      settings={settings}
-      action={saveDashboardSettings}
-      settingKey='dashboard'
-    >
+    <SettingsForm settings={settings} action={saveDashboardSettings}>
       <section className='group-settings group'>
         <h2 className='heading-settings'>Status</h2>
         <Switch

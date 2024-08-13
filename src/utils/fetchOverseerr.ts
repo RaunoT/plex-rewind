@@ -81,6 +81,7 @@ export async function fetchOverseerrStats(
   timeframe: string,
 ): Promise<OverseerrRequestItem[]> {
   const pageSize = 10
+
   let requestsArr: OverseerrRequestItem[] = []
 
   async function fetchRequests(
@@ -124,6 +125,7 @@ export async function fetchOverseerrUserId(
   plexId: string,
 ): Promise<number | null> {
   const pageSize = 10
+
   let userId: number | null = null
 
   async function fetchUsers(

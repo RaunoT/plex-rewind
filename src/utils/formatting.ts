@@ -6,6 +6,7 @@ export function secondsToTime(seconds: number): string {
     { label: 'hr', duration: 3600 },
     { label: 'min', duration: 60 },
   ]
+
   let remainingSeconds = seconds
   let unitCount = 0
 
@@ -35,6 +36,7 @@ export function secondsToTime(seconds: number): string {
 
 export function secondsToMinutes(seconds: number): string {
   const minutes = Math.floor(seconds / 60)
+
   return `${minutes.toLocaleString('en-US')} minute${minutes !== 1 && 's'}`
 }
 

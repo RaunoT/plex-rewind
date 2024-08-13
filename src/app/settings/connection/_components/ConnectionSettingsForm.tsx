@@ -12,11 +12,7 @@ export default function ConnectionSettingsForm({ settings }: Props) {
   const connectionSettings = settings.connection
 
   return (
-    <SettingsForm
-      settings={settings}
-      action={saveConnectionSettings}
-      settingKey='connection'
-    >
+    <SettingsForm settings={settings} action={saveConnectionSettings}>
       <section className='group-settings group'>
         <h2 className='heading-settings'>Tautulli</h2>
         <label className='input-wrapper'>

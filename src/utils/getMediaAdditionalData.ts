@@ -40,6 +40,7 @@ export default async function getMediaAdditionalData(
       })
       const tmdbResult = mediaTmdb?.results?.[0]
       const tmdbId = tmdbResult?.id
+
       let poster = mediaTautulliData?.thumb || ''
       let imdbId = null
 

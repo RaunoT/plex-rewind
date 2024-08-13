@@ -24,6 +24,7 @@ const schema = z.object({
     .refine(
       (value) => {
         const number = parseFloat(value)
+
         return number > 1 && number <= 3000
       },
       {

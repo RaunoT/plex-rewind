@@ -50,9 +50,10 @@ async function getUsers(
     getLibrariesByType('show'),
     getLibrariesByType('artist'),
   ])
-  let usersRequestsCounts: UserRequestCounts[] = []
   const isOverseerrActive =
     settings.connection.overseerrUrl && settings.connection.overseerrApiKey
+
+  let usersRequestsCounts: UserRequestCounts[] = []
 
   if (isOverseerrActive) {
     const overseerrUserIds = await Promise.all(
@@ -94,6 +95,7 @@ async function getUsers(
             section_id: movieLib.section_id,
           },
         )
+
         moviesPlaysCount += userMovies?.response?.data?.recordsFiltered || 0
       }
 
@@ -106,6 +108,7 @@ async function getUsers(
             section_id: showLib.section_id,
           },
         )
+
         showsPlaysCount += userShows?.response?.data?.recordsFiltered || 0
       }
 
@@ -118,6 +121,7 @@ async function getUsers(
             section_id: audioLibItem.section_id,
           },
         )
+
         audioPlaysCount += userAudio?.response?.data?.recordsFiltered || 0
       }
 
@@ -160,6 +164,7 @@ async function getTotalDuration(period: string, settings: Settings) {
 async function getUsersCount(settings: Settings) {
   if (settings.dashboard.activeTotalStatistics.includes('count')) {
     const usersRes = await fetchTautulli<TautulliUser[]>('get_users')
+
     let users = usersRes?.response?.data
 
     if (users) {

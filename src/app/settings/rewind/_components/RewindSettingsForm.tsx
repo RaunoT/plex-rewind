@@ -18,11 +18,7 @@ export default function RewindSettingsForm({ settings, users }: Props) {
   const [isActive, setIsActive] = useState<boolean>(rewindSettings.isActive)
 
   return (
-    <SettingsForm
-      settings={settings}
-      action={saveRewindSettings}
-      settingKey='rewind'
-    >
+    <SettingsForm settings={settings} action={saveRewindSettings}>
       <section className='group-settings group'>
         <h2 className='heading-settings'>Status</h2>
         <Switch

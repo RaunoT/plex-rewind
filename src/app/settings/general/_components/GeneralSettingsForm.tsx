@@ -20,7 +20,6 @@ export default function GeneralSettingsForm({ settings, libraries }: Props) {
       settings={settings}
       action={saveGeneralSettings}
       hideSubmit={!libraries.length}
-      settingKey='general'
     >
       <section className='group-settings group'>
         <h2 className='heading-settings'>Libraries</h2>
