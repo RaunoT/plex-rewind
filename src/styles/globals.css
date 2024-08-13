@@ -135,7 +135,7 @@
     @apply relative w-full;
 
     &::after {
-      @apply absolute inset-y-2 right-12 -mr-px h-auto w-px bg-neutral-300;
+      @apply pointer-events-none absolute inset-y-2 right-12 -mr-px h-auto w-px bg-neutral-300;
 
       content: '';
     }
@@ -312,7 +312,7 @@ input[type='number'] {
 }
 
 select.input {
-  @apply relative cursor-pointer appearance-none bg-no-repeat pr-12;
+  @apply relative cursor-pointer appearance-none bg-no-repeat pr-14;
 
   background-image: url('data:image/svg+xml;charset=US-ASCII,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23D4D4D4"><path d="M7 10l5 5 5-5z"/></svg>');
   background-position: right 12px center;

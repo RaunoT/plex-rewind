@@ -9,7 +9,7 @@
     "lint:types": "tsc --noEmit",
     "lint:css": "stylelint --cache \"**/*.css\"",
     "lint:all": "pnpm lint && pnpm lint:types && pnpm lint:css && pnpm format:check",
-    "lint:all:fix": "next lint --fix && pnpm format && stylelint --cache --fix \"**/*.css\"",
+    "lint:all:fix": "next lint --fix && pnpm lint:types && stylelint --cache --fix \"**/*.css\" && pnpm format",
     "format": "prettier --write --cache .",
     "format:check": "prettier --check --cache .",
     "prepare": "husky",

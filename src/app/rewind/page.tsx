@@ -15,6 +15,7 @@ import getSettings from '@/utils/getSettings'
 import { getServerSession } from 'next-auth'
 import { notFound } from 'next/navigation'
 import RewindStories from './_components/RewindStories'
+import UserSelect from './_components/UserSelect'
 
 type Props = {
   searchParams: {
@@ -28,30 +29,31 @@ export default async function RewindPage({ searchParams }: Props) {
   const queryUserId = searchParams?.userId
 
   let user = session?.user
+  let users: TautulliUser[] | undefined
 
-  if (
-    queryUserId &&
-    (session?.user?.isAdmin || settings.general.isOutsideAccess)
-  ) {
-    const res = await fetchTautulli<TautulliUser>(
-      'get_user',
-      {
-        user_id: queryUserId,
-      },
-      true,
+  if (session?.user?.isAdmin || settings.general.isOutsideAccess) {
+    const res = await fetchTautulli<TautulliUser[]>('get_users')
+
+    users = res?.response?.data?.filter(
+      (user) => user.is_active && user.username !== 'Local',
     )
-    const queriedUser = res?.response.data
 
-    if (queriedUser && queriedUser.user_id == queryUserId) {
-      user = {
-        image: queriedUser.user_thumb,
-        name: queriedUser.friendly_name,
-        id: queryUserId,
-        isAdmin: false,
+    if (queryUserId && users) {
+      const queriedUser = users.find((u) => u.user_id == queryUserId)
+
+      if (queriedUser) {
+        user = {
+          image: queriedUser.thumb,
+          name: queriedUser.friendly_name,
+          id: queryUserId,
+          isAdmin: false,
+        }
       }
-    } else {
-      return notFound()
     }
+  }
+
+  if (!user) {
+    return notFound()
   }
 
   const libraries = await getLibraries()
@@ -107,5 +109,12 @@ export default async function RewindPage({ searchParams }: Props) {
     userRewind.requests = requestTotals
   }
 
-  return <RewindStories userRewind={userRewind} settings={settings} />
+  return (
+    <>
+      <RewindStories userRewind={userRewind} settings={settings} />
+      {session?.user?.isAdmin && users && (
+        <UserSelect users={users} currentUserId={user.id} />
+      )}
+    </>
+  )
 }
