@@ -19,19 +19,19 @@ export default async function SettingsLayout({ children }: Props) {
   const session = await getServerSession(authOptions)
   const settings = getSettings()
   const version = await getVersion()
+  const missingSetting = checkRequiredSettings(settings)
 
-  if (!session?.user?.isAdmin && checkRequiredSettings(settings)) {
+  if (!session?.user?.isAdmin && !missingSetting) {
     redirect('/')
   }
 
   return (
     <div className='mb-auto w-full max-w-screen-sm'>
       <PageTitle
-        title={
-          checkRequiredSettings(settings) ? 'Settings' : "Let's get started"
-        }
+        title={missingSetting ? "Let's get started" : 'Settings'}
+        noBack={!!missingSetting}
       />
-      {checkRequiredSettings(settings) && <SettingsNav />}
+      <SettingsNav settings={settings} />
       {children}
 
       <div className='glass-sheet mt-4 flex flex-col flex-wrap justify-between gap-3 py-4 sm:flex-row'>
@@ -60,6 +60,7 @@ export default async function SettingsLayout({ children }: Props) {
           Report an issue
         </a>
       </div>
+
       <a
         className='link mx-auto mt-4 block w-fit text-center text-sm'
         href='https://github.com/RaunoT/plex-rewind/releases'

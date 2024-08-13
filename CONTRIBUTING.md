@@ -77,11 +77,11 @@ Please follow the guidelines below.
 
 - Use the appropriate Unicode characters for ellipses, arrows, and other special characters/symbols
 
-- Branch and PR naming should follow [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) logic. If there's an issue linked to the PR, it should be included in the scope.
+- Branch and PR naming should follow [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) logic.
 
-  > Example branch name: `feat(#123)/new-feature` or `fix/bug`
+  > Example branch name: `feat(dashboard)/new-feature` or `fix/bug`
 
-  > Example pull request name: `feat(#123): new feature` or `fix: bug`
+  > Example pull request name: `feat(dashboard): new feature` or `fix: bug`
 
 - Make sure to keep your branch up-to-date.
 

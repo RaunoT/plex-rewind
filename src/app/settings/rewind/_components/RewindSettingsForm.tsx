@@ -50,7 +50,7 @@ export default function RewindSettingsForm({ settings, users }: Props) {
               </span>
             </Switch>
           </section>
-          {users?.length && (
+          {users?.length && rewindSettings.complete && (
             <section className='group-settings group'>
               <h2 className='heading-settings'>Users Rewinds</h2>
               <ul className='flex flex-wrap gap-2 sm:ml-48'>

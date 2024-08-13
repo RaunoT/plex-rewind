@@ -26,6 +26,7 @@ export default async function RewindPage({ searchParams }: Props) {
   const session = await getServerSession(authOptions)
   const settings = getSettings()
   const queryUserId = searchParams?.userId
+
   let user = session?.user
 
   if (

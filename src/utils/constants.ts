@@ -1,6 +1,5 @@
 import { Settings } from '@/types/settings'
 import { env } from 'next-runtime-env'
-import path from 'path'
 
 const DAYS_AGO_7: Date = new Date(new Date().setDate(new Date().getDate() - 7))
 const DAYS_AGO_30: Date = new Date(
@@ -64,7 +63,6 @@ export const PLEX_PRODUCT_NAME = 'Plex Rewind'
 
 export const APP_URL = env('NEXT_PUBLIC_SITE_URL') || 'http://localhost:8383'
 
-export const SETTINGS_PATH = path.join(process.cwd(), 'config/settings.json')
 export const DEFAULT_SETTINGS: Settings = {
   connection: {
     tautulliUrl: '',
@@ -72,16 +70,19 @@ export const DEFAULT_SETTINGS: Settings = {
     plexUrl: '',
     overseerrUrl: '',
     overseerrApiKey: '',
+    complete: false,
   },
   general: {
     activeLibraries: [],
     isPostersTmdbOnly: false,
     googleAnalyticsId: '',
     isOutsideAccess: false,
+    complete: false,
   },
   rewind: {
     isActive: true,
     isLibrariesSizeAndCountActive: true,
+    complete: false,
   },
   dashboard: {
     isActive: true,
@@ -98,14 +99,23 @@ export const DEFAULT_SETTINGS: Settings = {
     defaultStyle: 'general',
     defaultPeriod: 'custom',
     customPeriod: '30',
+    complete: false,
   },
-  test: false,
 }
 export const REQUIRED_SETTINGS = [
   'connection.tautulliUrl',
   'connection.tautulliApiKey',
   'connection.plexUrl',
-  'test',
+  'connection.complete',
+  'general.complete',
+  'rewind.complete',
+  'dashboard.complete',
+]
+export const SETTINGS_PAGES = [
+  { href: '/settings/connection', label: 'Connection', key: 'connection' },
+  { href: '/settings/general', label: 'General', key: 'general' },
+  { href: '/settings/rewind', label: 'Rewind', key: 'rewind' },
+  { href: '/settings/dashboard', label: 'Dashboard', key: 'dashboard' },
 ]
 
 export const TMDB_API_KEY = '4675b5b5d8cd1463ff16adca2680157b'

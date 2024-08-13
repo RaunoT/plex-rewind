@@ -10,6 +10,7 @@ export type ConnectionSettings = {
   overseerrUrl?: string
   overseerrApiKey?: string
   plexUrl: string
+  complete: boolean
 }
 
 export type GeneralSettings = {
@@ -17,11 +18,13 @@ export type GeneralSettings = {
   isPostersTmdbOnly: boolean
   googleAnalyticsId: string
   isOutsideAccess: boolean
+  complete: boolean
 }
 
 export type RewindSettings = {
   isActive: boolean
   isLibrariesSizeAndCountActive: boolean
+  complete: boolean
 }
 
 export type DashboardItemStatistics = (
@@ -47,6 +50,7 @@ export type DashboardSettings = {
   defaultStyle: string
   defaultPeriod: string
   customPeriod: string
+  complete: boolean
 }
 
 export type Settings = {
@@ -54,5 +58,4 @@ export type Settings = {
   general: GeneralSettings
   rewind: RewindSettings
   dashboard: DashboardSettings
-  test?: boolean
 }

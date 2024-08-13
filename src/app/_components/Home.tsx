@@ -33,6 +33,7 @@ export default function Home({ settings }: Props) {
 
   async function handleLogin() {
     const plexUrl = await createPlexAuthUrl()
+
     router.push(plexUrl)
   }
 

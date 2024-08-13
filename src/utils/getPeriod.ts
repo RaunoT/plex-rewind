@@ -9,6 +9,7 @@ export default function getPeriod(
   const periodSearchParams = searchParams.period
   const defaultPeriod = settings.dashboard.defaultPeriod
   const customPeriod = parseInt(settings.dashboard.customPeriod)
+
   let period = PERIODS[defaultPeriod] || PERIODS['30days']
 
   if (periodSearchParams && PERIODS[periodSearchParams]) {

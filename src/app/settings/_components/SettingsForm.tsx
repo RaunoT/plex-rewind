@@ -3,7 +3,7 @@
 import { Settings } from '@/types/settings'
 import { ReactNode } from 'react'
 import { useFormState } from 'react-dom'
-import SettingsSaveButton from './SaveButton'
+import SettingsSaveButton from './SettingsSaveButton'
 
 type Props = {
   children: ReactNode
@@ -38,7 +38,7 @@ export default function SettingsForm({
               role='status'
               className={
                 formState.status === 'success'
-                  ? 'text-green-500'
+                  ? 'text-green-600'
                   : 'text-red-500'
               }
             >
