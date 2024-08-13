@@ -34,8 +34,6 @@ type Props = {
 }
 
 export default function RewindStories({ userRewind, settings }: Props) {
-  console.log("Here's the full rewind object we use ", userRewind)
-  console.log("And here's just the movies part", userRewind.movies)
   function createStory(Component: FC<StoryComponent>, duration: number) {
     return {
       type: 'component',
