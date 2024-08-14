@@ -7,6 +7,7 @@ import updateSettings from '../../_actions/updateSettings'
 const schema = z.object({
   isActive: z.boolean(),
   isLibrariesSizeAndCountActive: z.boolean().optional(),
+  complete: z.boolean(),
 })
 
 export default async function saveRewindSettings(
@@ -16,6 +17,7 @@ export default async function saveRewindSettings(
   const isActive = formData.get('isActive') === 'on'
   const data: Partial<RewindSettings> = {
     isActive,
+    complete: true,
   }
 
   if (isActive) {

@@ -24,6 +24,7 @@ const schema = z.object({
     .refine(
       (value) => {
         const number = parseFloat(value)
+
         return number > 1 && number <= 3000
       },
       {
@@ -32,6 +33,7 @@ const schema = z.object({
     )
     .optional(),
   defaultStyle: z.string().optional(),
+  complete: z.boolean(),
 })
 
 export default async function saveDashboardSettings(
@@ -41,6 +43,7 @@ export default async function saveDashboardSettings(
   const isActive = formData.get('isActive') === 'on'
   const data: Partial<DashboardSettings> = {
     isActive,
+    complete: true,
   }
 
   if (isActive) {

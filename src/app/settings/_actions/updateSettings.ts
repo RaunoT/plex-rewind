@@ -6,8 +6,7 @@ import {
   GeneralSettings,
   RewindSettings,
 } from '@/types/settings'
-import { SETTINGS_PATH } from '@/utils/constants'
-import getSettings from '@/utils/getSettings'
+import getSettings, { SETTINGS_PATH } from '@/utils/getSettings'
 import { promises as fs } from 'fs'
 import { revalidatePath } from 'next/cache'
 import { ZodError, ZodSchema } from 'zod'
@@ -28,10 +27,6 @@ export default async function updateSettings<K extends keyof SettingsTypeMap>(
     schema.parse(data)
 
     const settings = getSettings()
-
-    if (key === 'connection') {
-      settings.test = true
-    }
 
     settings[key] = {
       ...settings[key],

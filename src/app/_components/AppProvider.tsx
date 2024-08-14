@@ -12,7 +12,7 @@ import clsx from 'clsx'
 import { useSession } from 'next-auth/react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { redirect, usePathname } from 'next/navigation'
+import { usePathname } from 'next/navigation'
 import { ReactNode, useEffect, useState } from 'react'
 import stars from '../_assets/stars.png'
 
@@ -24,11 +24,7 @@ type Props = {
 
 export default function AppProvider({ children, settings, version }: Props) {
   const pathname = usePathname()
-
-  if (!checkRequiredSettings(settings) && pathname !== '/settings/connection') {
-    redirect('/settings/connection')
-  }
-
+  const missingSetting = checkRequiredSettings(settings)
   const { data: session } = useSession()
   const [isSettings, setIsSettings] = useState<boolean>(
     pathname.startsWith('/settings'),
@@ -83,7 +79,7 @@ export default function AppProvider({ children, settings, version }: Props) {
             <ArrowPathIcon className='size-6' />
           </a>
         )}
-        {checkRequiredSettings(settings) && session?.user?.isAdmin && (
+        {!missingSetting && session?.user?.isAdmin && (
           <Link
             href={isSettings ? '/' : settingsLink}
             aria-label={isSettings ? 'Close settings' : 'Open settings'}

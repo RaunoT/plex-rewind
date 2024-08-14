@@ -27,11 +27,7 @@ jobs:
         run: pnpm install
 
       - name: Lint code and check formatting
-        run: |
-          pnpm lint
-          pnpm lint:css
-          pnpm lint:types
-          pnpm format:check
+        run: pnpm lint:all
 
       - name: Build
         run: pnpm build

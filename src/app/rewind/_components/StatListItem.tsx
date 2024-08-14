@@ -19,15 +19,13 @@ export default function StatListItem({
   return (
     <li className='my-2 last:my-0'>
       {library && (
-        <div className='mb-1 text-base text-black lg:text-lg'>{library}</div>
+        <div className='gradient-plex mb-1 text-base lg:text-lg'>{library}</div>
       )}
-      <span className='font-semibold text-black'>
-        {count.toLocaleString('en-US')}
-      </span>
+      <span className='font-semibold'>{count.toLocaleString('en-US')}</span>
       <span
         className={clsx(
           'mx-2',
-          separator === '•' ? 'text-black' : 'text-white',
+          separator === '•' ? 'gradient-rewind' : 'text-white',
         )}
       >
         {separator}

@@ -12,6 +12,7 @@ export default async function getVersion(): Promise<Version> {
   const isSHA = /^[0-9a-f]{40}$/i.test(tag) // Check if tag is a 40-character SHA
   const currentVersion = tag ? (isSHA ? tag : `v${tag}`) : 'local' // Prefix with 'v' if not a SHA
   const isDevelop = currentVersion.includes('develop')
+
   let latestVersion = currentVersion
 
   if (currentVersion !== 'local' && !isSHA) {
@@ -37,10 +38,13 @@ export default async function getVersion(): Promise<Version> {
       if (data) {
         const latestRelease = data.find(
           (release: GitHubRelease) =>
-            !release.draft && (!isDevelop ? !release.prerelease : true),
+            !release.draft &&
+            (isDevelop ? release.prerelease : !release.prerelease),
         )
 
-        latestVersion = latestRelease.tag_name
+        if (latestRelease) {
+          latestVersion = latestRelease.tag_name
+        }
       }
     } catch (error) {
       console.error('[GITHUB] - Error fetching latest release!', error)

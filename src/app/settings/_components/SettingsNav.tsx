@@ -1,51 +1,48 @@
 'use client'
 
+import { Settings } from '@/types/settings'
+import { SETTINGS_PAGES } from '@/utils/constants'
+import { checkRequiredSettings } from '@/utils/helpers'
+import clsx from 'clsx'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 
-export default function SettingsNav() {
+type Props = {
+  settings: Settings
+}
+
+export default function SettingsNav({ settings }: Props) {
   const pathname = usePathname()
+  const missingSetting = checkRequiredSettings(settings)
 
   return (
     <nav className='mb-3'>
       <h2 className='sr-only'>Settings navigation</h2>
       <ul className='nav'>
-        <li>
-          <Link
-            href='/settings/connection'
-            className='nav-link'
-            aria-current={pathname === '/settings/connection' && 'page'}
-          >
-            Connection
-          </Link>
-        </li>
-        <li>
-          <Link
-            href='/settings/general'
-            className='nav-link'
-            aria-current={pathname === '/settings/general' && 'page'}
-          >
-            General
-          </Link>
-        </li>
-        <li>
-          <Link
-            href='/settings/rewind'
-            className='nav-link'
-            aria-current={pathname === '/settings/rewind' && 'page'}
-          >
-            Rewind
-          </Link>
-        </li>
-        <li>
-          <Link
-            href='/settings/dashboard'
-            className='nav-link'
-            aria-current={pathname === '/settings/dashboard' && 'page'}
-          >
-            Dashboard
-          </Link>
-        </li>
+        {SETTINGS_PAGES.map(({ href, label, key }) => {
+          const isComplete = settings[key as keyof Settings].complete
+          const isConnectionIncomplete = !settings.connection.complete
+          const shouldDisable = isConnectionIncomplete && key !== 'connection'
+
+          return (
+            <li key={key}>
+              <Link
+                href={href}
+                className={clsx(
+                  'nav-link',
+                  missingSetting &&
+                    (isComplete ? '!text-green-600' : '!text-red-500'),
+                  missingSetting && 'hover:!opacity-80',
+                  missingSetting && pathname === href && 'opacity-80',
+                )}
+                aria-current={pathname === href && 'page'}
+                aria-disabled={shouldDisable && 'true'}
+              >
+                {label}
+              </Link>
+            </li>
+          )
+        })}
       </ul>
     </nav>
   )

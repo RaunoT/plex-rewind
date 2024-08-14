@@ -13,6 +13,7 @@ import fetchTautulli from '../utils/fetchTautulli'
 
 function getClientIdentifier(): string {
   const clientId = localStorage.getItem('plexClientId') || uuidv4()
+
   localStorage.setItem('plexClientId', clientId)
 
   return clientId

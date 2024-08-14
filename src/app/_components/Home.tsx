@@ -4,7 +4,8 @@ import plexSvg from '@/assets/plex.svg'
 import Loader from '@/components/Loader'
 import { createPlexAuthUrl, getPlexAuthToken } from '@/lib/auth'
 import { Settings } from '@/types/settings'
-import { TautulliLibrary, TautulliUser } from '@/types/tautulli'
+import { TautulliLibrary } from '@/types/tautulli'
+import { checkRequiredSettings } from '@/utils/helpers'
 import clsx from 'clsx'
 import { kebabCase } from 'lodash'
 import { signIn, signOut, useSession } from 'next-auth/react'
@@ -15,20 +16,31 @@ import { useEffect, useState } from 'react'
 
 type Props = {
   settings: Settings
+  libraries: TautulliLibrary[]
 }
 
-export default function Home({ settings }: Props) {
-  const [libraries, setLibraries] = useState<TautulliLibrary[]>([])
-  const [managedUsers, setManagedUsers] = useState<TautulliUser[] | null>(null)
-  const [isLoading, setIsLoading] = useState<boolean>(true)
+export default function Home({ settings, libraries }: Props) {
+  const [isLoading, setIsLoading] = useState<boolean>(false)
+  const missingSetting = checkRequiredSettings(settings)
   const router = useRouter()
   const searchParams = useSearchParams()
   const { data: session, status } = useSession()
   const isLoggedIn = status === 'authenticated'
   const hasOutsideAccess = settings.general.isOutsideAccess
+  const dashboardSlug = kebabCase(
+    libraries[0]?.section_name ||
+      (settings.dashboard.isUsersPageActive ? 'users' : ''),
+  )
+  const showRewind = settings.rewind.isActive && isLoggedIn && !missingSetting
+  const showDashboard =
+    !missingSetting &&
+    settings.dashboard.isActive &&
+    (isLoggedIn || hasOutsideAccess) &&
+    dashboardSlug
 
   async function handleLogin() {
     const plexUrl = await createPlexAuthUrl()
+
     router.push(plexUrl)
   }
 
@@ -61,52 +73,6 @@ export default function Home({ settings }: Props) {
     }
   }, [searchParams])
 
-  useEffect(() => {
-    async function getLibraries() {
-      setIsLoading(true)
-
-      try {
-        const res = await fetch('/api/libraries', {
-          next: {
-            revalidate: 3600,
-          },
-        })
-        const data = await res.json()
-
-        setLibraries(data)
-      } catch (error) {
-        console.error('[HOME] - Error fetching libraries!', error)
-      }
-
-      setIsLoading(false)
-    }
-
-    async function getManagedUsers() {
-      setIsLoading(true)
-
-      try {
-        const res = await fetch(`/api/managed-users?userId=${session?.user.id}`)
-        const data = await res.json()
-
-        setManagedUsers(data)
-      } catch (error) {
-        console.error('[HOME] - Error fetching managed users!', error)
-      }
-
-      setIsLoading(false)
-    }
-
-    if (status === 'authenticated' || hasOutsideAccess) {
-      getLibraries()
-    }
-
-    if (status === 'authenticated') {
-      getManagedUsers()
-    } else if (status !== 'loading') {
-      setIsLoading(false)
-    }
-  }, [status, session?.user.id, hasOutsideAccess])
-
   if (isLoading) {
     return <Loader />
   }
@@ -126,15 +92,24 @@ export default function Home({ settings }: Props) {
         </div>
       )}
 
-      <h1 className='animate-fade-up mb-6 text-[2.5rem] font-bold leading-none animation-delay-300'>
-        <Image
-          src={plexSvg}
-          className='mb-0.5 mr-3 inline h-[2.25rem] w-auto'
-          alt='Plex logo'
-          priority
-        />
-        <span>rewind</span>
-      </h1>
+      {missingSetting ? (
+        <>
+          <h1 className='mb-2 text-3xl font-bold'>Setup required</h1>
+          <p className='mb-6'>
+            This application needs to be configured by an administrator.
+          </p>
+        </>
+      ) : (
+        <h1 className='animate-fade-up mb-6 text-[2.5rem] font-bold leading-none animation-delay-300'>
+          <Image
+            src={plexSvg}
+            className='mb-0.5 mr-3 inline h-[2.25rem] w-auto'
+            alt='Plex logo'
+            priority
+          />
+          <span>rewind</span>
+        </h1>
+      )}
 
       <div className='animate-fade-in animation-delay-700'>
         {!isLoggedIn && (
@@ -146,41 +121,15 @@ export default function Home({ settings }: Props) {
           </button>
         )}
 
-        {settings.rewind.isActive &&
-          isLoggedIn &&
-          (managedUsers ? (
-            <>
-              <Link
-                href='/rewind'
-                className='button button-sm mb-2 w-full last:mb-0'
-              >
-                Start Rewind
-              </Link>
-              {managedUsers.map((user, i) => (
-                <Link
-                  key={i}
-                  href={`/rewind?userId=${user.user_id}`}
-                  className='button button-sm mb-2 w-full last:mb-0'
-                >
-                  Rewind for {user.friendly_name}
-                </Link>
-              ))}
-            </>
-          ) : (
-            <Link href='/rewind' className='button mb-4'>
-              Start Rewind
-            </Link>
-          ))}
+        {showRewind && (
+          <Link href='/rewind' className='button mb-4'>
+            Start Rewind
+          </Link>
+        )}
 
-        {settings.dashboard.isActive && (isLoggedIn || hasOutsideAccess) && (
+        {showDashboard && (
           <Link
-            href={`/dashboard/${kebabCase(
-              libraries[0]
-                ? libraries[0].section_name
-                : settings.dashboard.isUsersPageActive
-                  ? 'users'
-                  : '',
-            )}${settings.dashboard.defaultStyle === 'personal' && isLoggedIn ? '?personal=true' : ''}`}
+            href={`/dashboard/${dashboardSlug}${settings.dashboard.defaultStyle === 'personal' && isLoggedIn ? '?personal=true' : ''}`}
             className={clsx(
               'mx-auto block',
               !settings.rewind.isActive && isLoggedIn ? 'button' : 'link',

@@ -4,17 +4,20 @@
     "tautulliApiKey": "",
     "plexUrl": "",
     "overseerrUrl": "",
-    "overseerrApiKey": ""
+    "overseerrApiKey": "",
+    "complete": false
   },
   "general": {
     "activeLibraries": [],
     "isPostersTmdbOnly": false,
     "googleAnalyticsId": "",
-    "isOutsideAccess": false
+    "isOutsideAccess": false,
+    "complete": false
   },
   "rewind": {
     "isActive": true,
-    "isLibrariesSizeAndCountActive": true
+    "isLibrariesSizeAndCountActive": true,
+    "complete": false
   },
   "dashboard": {
     "isActive": true,
@@ -30,7 +33,7 @@
     "activeTotalStatistics": ["size", "duration", "count", "requests"],
     "defaultStyle": "general",
     "defaultPeriod": "custom",
-    "customPeriod": "30"
-  },
-  "test": false
+    "customPeriod": "30",
+    "complete": false
+  }
 }

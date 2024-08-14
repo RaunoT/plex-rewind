@@ -14,7 +14,10 @@ import {
 import getSettings from '@/utils/getSettings'
 import { getServerSession } from 'next-auth'
 import { notFound } from 'next/navigation'
+import { Suspense } from 'react'
 import RewindStories from './_components/RewindStories'
+import UserSelect from './_components/UserSelect'
+import Loading from './loading'
 
 type Props = {
   searchParams: {
@@ -22,35 +25,37 @@ type Props = {
   }
 }
 
-export default async function RewindPage({ searchParams }: Props) {
+async function RewindContent({ searchParams }: Props) {
   const session = await getServerSession(authOptions)
   const settings = getSettings()
   const queryUserId = searchParams?.userId
+
   let user = session?.user
+  let users: TautulliUser[] | undefined
 
-  if (
-    queryUserId &&
-    (session?.user?.isAdmin || settings.general.isOutsideAccess)
-  ) {
-    const res = await fetchTautulli<TautulliUser>(
-      'get_user',
-      {
-        user_id: queryUserId,
-      },
-      true,
+  if (session?.user?.isAdmin || settings.general.isOutsideAccess) {
+    const res = await fetchTautulli<TautulliUser[]>('get_users')
+
+    users = res?.response?.data?.filter(
+      (user) => user.is_active && user.username !== 'Local',
     )
-    const queriedUser = res?.response.data
 
-    if (queriedUser && queriedUser.user_id == queryUserId) {
-      user = {
-        image: queriedUser.user_thumb,
-        name: queriedUser.friendly_name,
-        id: queryUserId,
-        isAdmin: false,
+    if (queryUserId && users) {
+      const queriedUser = users.find((u) => u.user_id == queryUserId)
+
+      if (queriedUser) {
+        user = {
+          image: queriedUser.thumb,
+          name: queriedUser.friendly_name,
+          id: queryUserId,
+          isAdmin: false,
+        }
       }
-    } else {
-      return notFound()
     }
+  }
+
+  if (!user) {
+    return notFound()
   }
 
   const libraries = await getLibraries()
@@ -106,5 +111,20 @@ export default async function RewindPage({ searchParams }: Props) {
     userRewind.requests = requestTotals
   }
 
-  return <RewindStories userRewind={userRewind} settings={settings} />
+  return (
+    <>
+      <RewindStories userRewind={userRewind} settings={settings} />
+      {session?.user?.isAdmin && users && (
+        <UserSelect users={users} currentUserId={user.id} />
+      )}
+    </>
+  )
+}
+
+export default function RewindPage({ searchParams }: Props) {
+  return (
+    <Suspense fallback={<Loading />} key={searchParams.userId}>
+      <RewindContent searchParams={searchParams} />
+    </Suspense>
+  )
 }
