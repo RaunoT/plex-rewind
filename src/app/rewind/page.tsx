@@ -14,8 +14,10 @@ import {
 import getSettings from '@/utils/getSettings'
 import { getServerSession } from 'next-auth'
 import { notFound } from 'next/navigation'
+import { Suspense } from 'react'
 import RewindStories from './_components/RewindStories'
 import UserSelect from './_components/UserSelect'
+import Loading from './loading'
 
 type Props = {
   searchParams: {
@@ -23,7 +25,7 @@ type Props = {
   }
 }
 
-export default async function RewindPage({ searchParams }: Props) {
+async function RewindContent({ searchParams }: Props) {
   const session = await getServerSession(authOptions)
   const settings = getSettings()
   const queryUserId = searchParams?.userId
@@ -116,5 +118,13 @@ export default async function RewindPage({ searchParams }: Props) {
         <UserSelect users={users} currentUserId={user.id} />
       )}
     </>
+  )
+}
+
+export default function RewindPage({ searchParams }: Props) {
+  return (
+    <Suspense fallback={<Loading />} key={searchParams.userId}>
+      <RewindContent searchParams={searchParams} />
+    </Suspense>
   )
 }
