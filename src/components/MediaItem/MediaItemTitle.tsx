@@ -4,7 +4,8 @@ import { TautulliItemRow } from '@/types/tautulli'
 import clsx from 'clsx'
 import { motion, useAnimation } from 'framer-motion'
 import { debounce } from 'lodash'
-import { RefObject, useEffect, useRef } from 'react'
+import { getSession } from 'next-auth/react'
+import { RefObject, useEffect, useRef, useState } from 'react'
 
 type Props = {
   i: number
@@ -18,8 +19,10 @@ const topColors = ['text-yellow-300', 'text-gray-300', 'text-yellow-700']
 export default function MediaItemTitle({ i, data, type, parentRef }: Props) {
   const titleRef = useRef<HTMLSpanElement>(null)
   const numberRef = useRef<HTMLSpanElement>(null)
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
   const controls = useAnimation()
-
+  const isUsersDashboard = type === 'users'
+  
   useEffect(() => {
     function checkWidth() {
       const titleElement = titleRef.current
@@ -68,6 +71,8 @@ export default function MediaItemTitle({ i, data, type, parentRef }: Props) {
     window.addEventListener('resize', debouncedRestartAnimation)
     checkWidth()
 
+    getSession().then((session) => setIsLoggedIn(session?.user?.id == data.user_id));
+
     return () => {
       controls.stop()
       window.removeEventListener('resize', debouncedRestartAnimation)
@@ -76,9 +81,9 @@ export default function MediaItemTitle({ i, data, type, parentRef }: Props) {
   }, [controls, parentRef])
 
   return (
-    <h3 className='mb-2 flex sm:text-xl'>
+    <h3 className={clsx('mb-2 flex sm:text-xl', isLoggedIn && 'gradient-plex')}>
       <span className='mr-1.5 inline-flex items-baseline gap-1' ref={numberRef}>
-        <span className={clsx('font-bold', topColors[i] || 'text-white')}>
+      <span className={clsx('font-bold', !isLoggedIn && (topColors[i] || 'text-white'))}>
           #{i + 1}{' '}
         </span>
         {i < 3 && (
@@ -123,7 +128,7 @@ export default function MediaItemTitle({ i, data, type, parentRef }: Props) {
           animate={controls}
           ref={titleRef}
         >
-          {type === 'users' ? data.friendly_name : data.title}
+          {isUsersDashboard ? data.friendly_name : data.title}
         </motion.span>
       </span>
     </h3>
