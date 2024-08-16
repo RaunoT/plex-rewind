@@ -21,6 +21,7 @@ export default function getSettings(): Settings {
     console.error('[SETTINGS] - Error reading or parsing settings file!', error)
     settings = { ...DEFAULT_SETTINGS }
     writeSettings(settings)
+
     return settings
   }
 
