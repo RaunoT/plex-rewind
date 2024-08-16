@@ -34,17 +34,11 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: npx semantic-release --dry-run
 
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
-
-      - name: Cache Docker layers
-        uses: actions/cache@v4
-        with:
-          path: /tmp/.buildx-cache
-          key: ${{ runner.os }}-buildx-develop-${{ hashFiles('Dockerfile') }}
-          restore-keys: |
-            ${{ runner.os }}-buildx-develop-${{ hashFiles('Dockerfile') }}
-            ${{ runner.os }}-buildx-develop-
 
       - name: Log in to GitHub Container Registry
         uses: docker/login-action@v3
@@ -65,8 +59,8 @@ jobs:
             ghcr.io/raunot/plex-rewind:${{ env.NEXT_VERSION_TAG }}
           build-args: |
             NEXT_PUBLIC_VERSION_TAG=${{ env.NEXT_VERSION_TAG }}
-          cache-from: type=gha,scope=plex-rewind-develop
-          cache-to: type=gha,mode=max,scope=plex-rewind-develop
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
 
       - name: Run Semantic Release publish
         env:

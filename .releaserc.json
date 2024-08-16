@@ -43,9 +43,9 @@
               "hidden": false
             },
             { "type": "build", "section": "🛠️ Other Changes", "hidden": false },
-            { "type": "style", "section": "🛠️ Other Changes", "hidden": false },
-            { "type": "ci", "section": "🛠️ Other Changes", "hidden": false },
-            { "type": "test", "section": "🛠️ Other Changes", "hidden": false }
+            { "type": "style", "section": "🛠️ Other Changes", "hidden": true },
+            { "type": "ci", "section": "🛠️ Other Changes", "hidden": true },
+            { "type": "test", "section": "🛠️ Other Changes", "hidden": true }
           ]
         }
       }
