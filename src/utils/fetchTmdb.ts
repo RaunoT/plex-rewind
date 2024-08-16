@@ -36,6 +36,7 @@ export default async function fetchTmdb<T>(
       `[TMDB] - Error fetching from API! The endpoint was '${endpoint}'.\n`,
       error,
     )
+
     return null
   }
 }

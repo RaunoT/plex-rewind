@@ -89,6 +89,7 @@ export const authOptions: AuthOptions = {
           return null
         } catch (error) {
           console.error('[AUTH] - Error getting Plex user!', error)
+
           return null
         }
       },

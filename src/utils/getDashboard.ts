@@ -68,6 +68,7 @@ export async function getItems(
       if (userId) {
         items = items.map((item) => {
           delete item.users_watched
+
           return item
         })
       }
