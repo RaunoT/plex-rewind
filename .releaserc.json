@@ -1,7 +1,55 @@
 {
   "plugins": [
-    "@semantic-release/commit-analyzer",
-    "@semantic-release/release-notes-generator",
+    [
+      "@semantic-release/commit-analyzer",
+      {
+        "preset": "conventionalcommits",
+        "releaseRules": [
+          { "type": "feat", "release": "minor" },
+          { "type": "fix", "release": "patch" },
+          { "type": "ui", "release": "patch" },
+          { "type": "perf", "release": "patch" },
+          { "type": "docs", "release": false },
+          { "type": "revert", "release": "patch" },
+          { "type": "chore", "release": "patch" },
+          { "type": "refactor", "release": "patch" },
+          { "type": "build", "release": "patch" },
+          { "type": "ci", "release": "patch" },
+          { "type": "style", "release": false },
+          { "type": "test", "release": false }
+        ]
+      }
+    ],
+    [
+      "@semantic-release/release-notes-generator",
+      {
+        "preset": "conventionalcommits",
+        "presetConfig": {
+          "types": [
+            { "type": "feat", "section": "🚀 Features", "hidden": false },
+            { "type": "fix", "section": "🐛 Bug Fixes", "hidden": false },
+            { "type": "ui", "section": "🎨 UI Changes", "hidden": false },
+            {
+              "type": "perf",
+              "section": "⚡ Performance Improvements",
+              "hidden": false
+            },
+            { "type": "docs", "section": "📝 Documentation", "hidden": false },
+            { "type": "revert", "section": "⏪ Reverts", "hidden": false },
+            { "type": "chore", "section": "🛠️ Other Changes", "hidden": false },
+            {
+              "type": "refactor",
+              "section": "🛠️ Other Changes",
+              "hidden": false
+            },
+            { "type": "build", "section": "🛠️ Other Changes", "hidden": false },
+            { "type": "ci", "section": "🛠️ Other Changes", "hidden": false },
+            { "type": "style", "section": "🛠️ Other Changes", "hidden": true },
+            { "type": "test", "section": "🛠️ Other Changes", "hidden": true }
+          ]
+        }
+      }
+    ],
     "@semantic-release/github",
     [
       "@semantic-release/exec",
