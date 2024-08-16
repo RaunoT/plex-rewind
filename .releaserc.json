@@ -14,8 +14,8 @@
           { "type": "chore", "release": "patch" },
           { "type": "refactor", "release": "patch" },
           { "type": "build", "release": "patch" },
+          { "type": "ci", "release": "patch" },
           { "type": "style", "release": false },
-          { "type": "ci", "release": false },
           { "type": "test", "release": false }
         ]
       }
@@ -43,8 +43,8 @@
               "hidden": false
             },
             { "type": "build", "section": "🛠️ Other Changes", "hidden": false },
+            { "type": "ci", "section": "🛠️ Other Changes", "hidden": false },
             { "type": "style", "section": "🛠️ Other Changes", "hidden": true },
-            { "type": "ci", "section": "🛠️ Other Changes", "hidden": true },
             { "type": "test", "section": "🛠️ Other Changes", "hidden": true }
           ]
         }

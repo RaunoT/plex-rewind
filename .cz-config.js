@@ -22,12 +22,12 @@ module.exports = {
       name: 'build:    Changes that affect the build system or external dependencies\n            (example scopes: docker, pnpm)',
     },
     {
-      value: 'style',
-      name: 'style:    Changes that do not affect the meaning of the code\n            (white-space, formatting, missing semi-colons, etc)',
-    },
-    {
       value: 'ci',
       name: 'ci:       Changes to our CI configuration files and scripts\n            (example scope: gh-actions)',
+    },
+    {
+      value: 'style',
+      name: 'style:    Changes that do not affect the meaning of the code\n            (white-space, formatting, missing semi-colons, etc)',
     },
     {
       value: 'test',
