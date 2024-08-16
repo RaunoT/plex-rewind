@@ -32,7 +32,9 @@ type UserRequestCounts =
     }
   | undefined
 
-async function getInactiveUserInTimePeriod(id: number): Promise<TautulliItemRow> {
+async function getInactiveUserInTimePeriod(
+  id: number,
+): Promise<TautulliItemRow> {
   const user = await fetchTautulli<TautulliItemRow>('get_user', {
     user_id: id,
   })
@@ -47,13 +49,20 @@ async function getUsers(
   period: number,
   requestsPeriod: string,
   periodString: string,
+  settings: Settings,
 ) {
   const numberOfUsers = 6
-  const settings = getSettings()
   const allUsersCount = await getUsersCount(settings)
+
+  if (!allUsersCount) {
+    console.error('[TAUTULLI] - Could not determine the number of users.')
+
+    return null
+  }
+
   const usersRes = await fetchTautulli<TautulliUserItem>('get_home_stats', {
     stat_id: 'top_users',
-    stats_count: allUsersCount ?? numberOfUsers,
+    stats_count: allUsersCount,
     stats_type: 'duration',
     time_range: period,
   })
@@ -63,8 +72,15 @@ async function getUsers(
     return
   }
 
+  const session = await getServerSession(authOptions)
+  const userId = session?.user.id
+
+  if (settings.general.isOutsideAccess && !userId) {
+    return users.slice(0, numberOfUsers)
+  }
+
   const listedUsers = await getStatsWithLoggedInUser(
-    settings,
+    userId,
     users,
     numberOfUsers,
   )
@@ -166,30 +182,23 @@ async function getUsers(
 }
 
 async function getStatsWithLoggedInUser(
-  settings: Settings,
+  userId: number,
   users: TautulliUserItemRow[],
   numberOfUsers: number,
 ) {
-  let listedUsers = users.slice(0, numberOfUsers)
-  const session = await getServerSession(authOptions)
-  const userId = session?.user?.id
-
-  if (settings.general.isOutsideAccess && !userId) {
-    return listedUsers
-  }
-
+  let slicedUsers = users.slice(0, numberOfUsers)
   const loggedInUserRank = users.findIndex((user) => user.user_id == userId)
   const loggedInUser =
-    users[loggedInUserRank] ?? (await getInactiveUserInTimePeriod(userId))
+    users[loggedInUserRank] || (await getInactiveUserInTimePeriod(userId))
 
   if (loggedInUserRank === -1 || loggedInUserRank >= numberOfUsers) {
-    listedUsers = listedUsers.slice(0, numberOfUsers - 1)
+    slicedUsers = users.slice(0, numberOfUsers - 1)
     loggedInUser.rank =
       loggedInUserRank === -1 ? users.length : loggedInUserRank
-    listedUsers.push(loggedInUser)
+    slicedUsers.push(loggedInUser)
   }
 
-  return listedUsers
+  return slicedUsers
 }
 
 async function getTotalDuration(period: string, settings: Settings) {
@@ -259,11 +268,15 @@ async function DashboardUsersContent({ searchParams }: Props) {
   const period = getPeriod(searchParams, settings)
   const [usersData, totalDuration, usersCount, totalRequests] =
     await Promise.all([
-      getUsers(period.daysAgo, period.date, period.string),
+      getUsers(period.daysAgo, period.date, period.string, settings),
       getTotalDuration(period.string, settings),
       getUsersCount(settings),
       getTotalRequests(period.date, settings),
     ])
+
+  if (!usersData) {
+    return undefined
+  }
 
   return (
     <Dashboard
