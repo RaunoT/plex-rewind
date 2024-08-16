@@ -22,7 +22,7 @@ export default function MediaItemTitle({ i, data, type, parentRef }: Props) {
   const [isLoggedIn, setIsLoggedIn] = useState(false)
   const controls = useAnimation()
   const isUsersDashboard = type === 'users'
-  
+
   useEffect(() => {
     function checkWidth() {
       const titleElement = titleRef.current
@@ -71,19 +71,26 @@ export default function MediaItemTitle({ i, data, type, parentRef }: Props) {
     window.addEventListener('resize', debouncedRestartAnimation)
     checkWidth()
 
-    getSession().then((session) => setIsLoggedIn(session?.user?.id == data.user_id));
+    getSession().then((session) =>
+      setIsLoggedIn(session?.user?.id == data.user_id),
+    )
 
     return () => {
       controls.stop()
       window.removeEventListener('resize', debouncedRestartAnimation)
       debouncedRestartAnimation.cancel()
     }
-  }, [controls, parentRef])
+  }, [controls, parentRef, data.user_id])
 
   return (
     <h3 className={clsx('mb-2 flex sm:text-xl', isLoggedIn && 'gradient-plex')}>
       <span className='mr-1.5 inline-flex items-baseline gap-1' ref={numberRef}>
-      <span className={clsx('font-bold', !isLoggedIn && (topColors[i] || 'text-white'))}>
+        <span
+          className={clsx(
+            'font-bold',
+            !isLoggedIn && (topColors[i] || 'text-white'),
+          )}
+        >
           #{i + 1}{' '}
         </span>
         {i < 3 && (
