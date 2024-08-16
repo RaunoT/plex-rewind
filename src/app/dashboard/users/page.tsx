@@ -32,13 +32,14 @@ type UserRequestCounts =
     }
   | undefined
 
-async function getNonActiveUser(id: number): Promise<TautulliItemRow> {
+async function getInactiveUserInTimePeriod(id: number): Promise<TautulliItemRow> {
   const user = await fetchTautulli<TautulliItemRow>('get_user', {
     user_id: id,
   })
-  const nonActive = user?.response?.data ?? ({} as TautulliItemRow)
+  const nonActive = user!.response.data
 
   nonActive.total_duration = 0
+
   return nonActive
 }
 
@@ -179,7 +180,7 @@ async function getStatsWithLoggedInUser(
 
   const loggedInUserRank = users.findIndex((user) => user.user_id == userId)
   const loggedInUser =
-    users[loggedInUserRank] ?? (await getNonActiveUser(userId))
+    users[loggedInUserRank] ?? (await getInactiveUserInTimePeriod(userId))
 
   if (loggedInUserRank === -1 || loggedInUserRank >= numberOfUsers) {
     listedUsers = listedUsers.slice(0, numberOfUsers - 1)
