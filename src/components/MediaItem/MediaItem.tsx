@@ -41,11 +41,12 @@ export default function MediaItem({
 }: Props) {
   const tautulliUrl = settings.connection.tautulliUrl
   const isTmdbPoster = data.thumb?.startsWith('https://image.tmdb.org')
+  const isUserDashboard = type === 'users'
   const posterSrc = isTmdbPoster
     ? data.thumb
     : `/api/image?url=${encodeURIComponent(
         `${tautulliUrl}/pms_image_proxy?img=${
-          type === 'users' ? data.user_thumb : data.thumb
+          isUserDashboard ? data.user_thumb : data.thumb
         }&width=300`,
       )}`
   const [dataKey, setDataKey] = useState<number>(0)
@@ -59,14 +60,12 @@ export default function MediaItem({
     setImageSrc(posterSrc)
   }, [data, type, posterSrc])
 
-  const notUserDashboard = type !== 'users'
-
   return (
     <motion.li
       key={dataKey}
       className={clsx(
         'flex gap-3 2xl:items-center',
-        i > 4 && notUserDashboard && 'hidden lg:flex',
+        i > 4 && !isUserDashboard && 'hidden lg:flex',
       )}
       variants={slideDown}
       initial='hidden'
@@ -77,9 +76,7 @@ export default function MediaItem({
         <Image
           fill
           className='object-cover object-top'
-          alt={
-            type === 'users' ? data.user + ' avatar' : data.title + ' poster'
-          }
+          alt={isUserDashboard ? data.user + ' avatar' : data.title + ' poster'}
           src={imageSrc}
           sizes='10rem'
           onError={() => setImageSrc(placeholderSvg)}
@@ -154,7 +151,7 @@ export default function MediaItem({
           )}
           {/* Plays */}
           {activeStats.includes('plays') &&
-            (type === 'users' ? (
+            (isUserDashboard ? (
               <>
                 {data.shows_plays_count > 0 && (
                   <li className='icon-stat-wrapper'>
@@ -196,7 +193,7 @@ export default function MediaItem({
           )}
           {/* Requests */}
           {activeStats.includes('requests') &&
-            type === 'users' &&
+            isUserDashboard &&
             data.requests > 0 && (
               <li className='icon-stat-wrapper'>
                 <QuestionMarkCircleIcon />
