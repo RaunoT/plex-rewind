@@ -1,7 +1,47 @@
 {
   "plugins": [
-    "@semantic-release/commit-analyzer",
-    "@semantic-release/release-notes-generator",
+    [
+      "@semantic-release/commit-analyzer",
+      {
+        "preset": "conventionalcommits",
+        "releaseRules": [
+          { "type": "feat", "release": "minor" },
+          { "type": "fix", "release": "patch" },
+          { "type": "ui", "release": "patch" },
+          { "type": "perf", "release": "patch" },
+          { "type": "docs", "release": false },
+          { "type": "revert", "release": "patch" },
+          { "type": "chore", "release": "patch" },
+          { "type": "refactor", "release": "patch" },
+          { "type": "build", "release": "patch" },
+          { "type": "style", "release": false },
+          { "type": "ci", "release": false },
+          { "type": "test", "release": false }
+        ]
+      }
+    ],
+    [
+      "@semantic-release/release-notes-generator",
+      {
+        "preset": "conventionalcommits",
+        "writerOpts": {
+          "types": [
+            { "type": "feat", "section": "🚀 Features" },
+            { "type": "fix", "section": "🐛 Bug Fixes" },
+            { "type": "ui", "section": "🎨 UI Changes" },
+            { "type": "perf", "section": "⚡ Performance Improvements" },
+            { "type": "docs", "section": "📝 Documentation" },
+            { "type": "revert", "section": "⏪ Reverts" },
+            { "type": "chore", "section": "🛠️ Other Changes" },
+            { "type": "refactor", "section": "🛠️ Other Changes" },
+            { "type": "build", "section": "🛠️ Other Changes" },
+            { "type": "style", "section": "🛠️ Other Changes" },
+            { "type": "ci", "section": "🛠️ Other Changes" },
+            { "type": "test", "section": "🛠️ Other Changes" }
+          ]
+        }
+      }
+    ],
     "@semantic-release/github",
     [
       "@semantic-release/exec",

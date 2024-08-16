@@ -17,7 +17,7 @@
   },
   "config": {
     "commitizen": {
-      "path": "./node_modules/cz-conventional-changelog"
+      "path": "./node_modules/cz-customizable"
     }
   },
   "dependencies": {
@@ -57,7 +57,7 @@
     "autoprefixer": "^10.4.20",
     "clsx": "^2.1.1",
     "commitizen": "^4.3.0",
-    "cz-conventional-changelog": "^3.3.0",
+    "cz-customizable": "7.2.1",
     "eslint": "^8.57.0",
     "eslint-config-next": "^14.2.5",
     "eslint-config-prettier": "^9.1.0",
