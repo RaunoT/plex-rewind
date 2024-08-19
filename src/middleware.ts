@@ -13,7 +13,11 @@ export default withAuth(
       const missingSetting = await res.json()
 
       if (missingSetting) {
-        if (req.nextauth?.token?.isAdmin) {
+        if (
+          req.nextauth?.token?.isAdmin ||
+          missingSetting === 'connection.tautulliUrl' ||
+          missingSetting === 'connection.tautulliApiKey'
+        ) {
           let redirectPage = getSettingsPage(missingSetting)
 
           if (missingSetting.startsWith('connection')) {
