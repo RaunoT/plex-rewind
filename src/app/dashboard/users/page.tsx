@@ -75,15 +75,12 @@ async function getUsers(
   const session = await getServerSession(authOptions)
   const userId = session?.user.id
 
-  if (settings.general.isOutsideAccess && !userId) {
-    return users.slice(0, numberOfUsers)
-  }
 
-  const listedUsers = await getStatsWithLoggedInUser(
-    userId,
-    users,
-    numberOfUsers,
-  )
+  const isAnonymousAccess = settings.general.isOutsideAccess && !userId
+
+  const listedUsers = isAnonymousAccess 
+    ? users.slice(0, numberOfUsers) 
+    : await getStatsWithLoggedInUser(userId, users, numberOfUsers)
 
   const [moviesLib, showsLib, audioLib] = await Promise.all([
     getLibrariesByType('movie'),
