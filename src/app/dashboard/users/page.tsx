@@ -57,7 +57,7 @@ async function getUsers(
   if (!allUsersCount) {
     console.error('[TAUTULLI] - Could not determine the number of users.')
 
-    return null
+    return
   }
 
   const usersRes = await fetchTautulli<TautulliUserItem>('get_home_stats', {
@@ -270,10 +270,6 @@ async function DashboardUsersContent({ searchParams }: Props) {
       getUsersCount(settings),
       getTotalRequests(period.date, settings),
     ])
-
-  if (!usersData) {
-    return undefined
-  }
 
   return (
     <Dashboard
