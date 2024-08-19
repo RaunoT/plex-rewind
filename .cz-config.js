@@ -23,7 +23,7 @@ module.exports = {
     },
     {
       value: 'ci',
-      name: 'ci:       Changes to our CI configuration files and scripts\n            (example scope: gh-actions)',
+      name: 'ci:       Changes to our CI configuration files and scripts',
     },
     {
       value: 'style',
