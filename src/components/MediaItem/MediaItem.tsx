@@ -28,7 +28,8 @@ type Props = {
   type: string
   serverId: string
   activeStats: string[]
-  settings: Settings
+  settings: Settings,
+  loggedInUserId?: string
 }
 
 export default function MediaItem({
@@ -38,6 +39,7 @@ export default function MediaItem({
   serverId,
   activeStats,
   settings,
+  loggedInUserId
 }: Props) {
   const tautulliUrl = settings.connection.tautulliUrl
   const isTmdbPoster = data.thumb?.startsWith('https://image.tmdb.org')
@@ -89,6 +91,7 @@ export default function MediaItem({
           data={data}
           type={type}
           parentRef={titleContainerRef}
+          loggedInUserId={loggedInUserId}
         />
         {(type === 'movie' || type === 'show') && (
           <div className='relative z-10 mb-3 flex items-center gap-2'>

@@ -4,22 +4,22 @@ import { TautulliItemRow } from '@/types/tautulli'
 import clsx from 'clsx'
 import { motion, useAnimation } from 'framer-motion'
 import { debounce } from 'lodash'
-import { getSession } from 'next-auth/react'
-import { RefObject, useEffect, useRef, useState } from 'react'
+import { RefObject, useEffect, useRef } from 'react'
 
 type Props = {
   i: number
   data: TautulliItemRow
   type: string
   parentRef: RefObject<HTMLDivElement>
+  loggedInUserId?: string
 }
 
 const topColors = ['text-yellow-300', 'text-gray-300', 'text-yellow-700']
 
-export default function MediaItemTitle({ i, data, type, parentRef }: Props) {
+export default function MediaItemTitle({ i, data, type, parentRef, loggedInUserId }: Props) {
   const titleRef = useRef<HTMLSpanElement>(null)
   const numberRef = useRef<HTMLSpanElement>(null)
-  const [isLoggedIn, setIsLoggedIn] = useState(false)
+  const isLoggedIn = String(data.user_id) == loggedInUserId
   const controls = useAnimation()
   const isUsersDashboard = type === 'users'
 
@@ -70,10 +70,6 @@ export default function MediaItemTitle({ i, data, type, parentRef }: Props) {
 
     window.addEventListener('resize', debouncedRestartAnimation)
     checkWidth()
-
-    getSession().then((session) =>
-      setIsLoggedIn(session?.user?.id == data.user_id),
-    )
 
     return () => {
       controls.stop()

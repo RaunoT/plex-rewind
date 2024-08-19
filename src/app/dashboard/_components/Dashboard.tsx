@@ -22,7 +22,7 @@ type Props = {
   serverId?: string
   count?: string
   settings: Settings
-  isLoggedIn: boolean
+  loggedInUserId?: string
 }
 
 export default function Dashboard({
@@ -34,8 +34,10 @@ export default function Dashboard({
   serverId = '',
   count,
   settings,
-  isLoggedIn,
+  loggedInUserId,
 }: Props) {
+  const isLoggedIn = !!loggedInUserId
+
   return (
     <>
       <div className='mb-2 flex items-start justify-between gap-4 leading-tight'>
@@ -88,6 +90,7 @@ export default function Dashboard({
           type={type}
           serverId={serverId}
           settings={settings}
+          loggedInUserId={loggedInUserId}
         />
       ) : (
         <div className='flex flex-1 flex-col justify-center text-center text-neutral-300'>

@@ -46,6 +46,7 @@ async function getInactiveUserInTimePeriod(
 }
 
 async function getUsers(
+  loggedInUserId: string,
   period: number,
   requestsPeriod: string,
   periodString: string,
@@ -72,15 +73,11 @@ async function getUsers(
     return
   }
 
-  const session = await getServerSession(authOptions)
-  const userId = session?.user.id
-
-
-  const isAnonymousAccess = settings.general.isOutsideAccess && !userId
+  const isAnonymousAccess = settings.general.isOutsideAccess && !loggedInUserId
 
   const listedUsers = isAnonymousAccess 
     ? users.slice(0, numberOfUsers) 
-    : await getStatsWithLoggedInUser(userId, users, numberOfUsers)
+    : await getStatsWithLoggedInUser(loggedInUserId, users, numberOfUsers)
 
   const [moviesLib, showsLib, audioLib] = await Promise.all([
     getLibrariesByType('movie'),
@@ -262,10 +259,11 @@ async function DashboardUsersContent({ searchParams }: Props) {
   }
 
   const session = await getServerSession(authOptions)
+  const loggedInUserId = session?.user?.id
   const period = getPeriod(searchParams, settings)
   const [usersData, totalDuration, usersCount, totalRequests] =
     await Promise.all([
-      getUsers(period.daysAgo, period.date, period.string, settings),
+      getUsers(loggedInUserId, period.daysAgo, period.date, period.string, settings),
       getTotalDuration(period.string, settings),
       getUsersCount(settings),
       getTotalRequests(period.date, settings),
@@ -280,7 +278,7 @@ async function DashboardUsersContent({ searchParams }: Props) {
       type='users'
       settings={settings}
       count={totalRequests}
-      isLoggedIn={!!session}
+      loggedInUserId={loggedInUserId}
     />
   )
 }
