@@ -33,7 +33,7 @@ type UserRequestCounts =
   | undefined
 
 async function getInactiveUserInTimePeriod(
-  id: number,
+  id: string,
 ): Promise<TautulliItemRow> {
   const user = await fetchTautulli<TautulliItemRow>('get_user', {
     user_id: id,
@@ -182,12 +182,12 @@ async function getUsers(
 }
 
 async function getStatsWithLoggedInUser(
-  userId: number,
+  userId: string,
   users: TautulliUserItemRow[],
   numberOfUsers: number,
 ) {
   let slicedUsers = users.slice(0, numberOfUsers)
-  const loggedInUserRank = users.findIndex((user) => user.user_id == userId)
+  const loggedInUserRank = users.findIndex((user) => String(user.user_id) == userId)
   const loggedInUser =
     users[loggedInUserRank] || (await getInactiveUserInTimePeriod(userId))
 
