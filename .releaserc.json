@@ -11,7 +11,7 @@
           { "type": "perf", "release": "patch" },
           { "type": "docs", "release": false },
           { "type": "revert", "release": "patch" },
-          { "type": "chore", "release": "patch" },
+          { "type": "chore", "release": false },
           { "type": "refactor", "release": "patch" },
           { "type": "build", "release": "patch" },
           { "type": "ci", "release": "patch" },
@@ -36,7 +36,7 @@
             },
             { "type": "docs", "section": "📝 Documentation", "hidden": false },
             { "type": "revert", "section": "⏪ Reverts", "hidden": false },
-            { "type": "chore", "section": "🛠️ Other Changes", "hidden": false },
+            { "type": "chore", "section": "🛠️ Other Changes", "hidden": true },
             {
               "type": "refactor",
               "section": "🛠️ Other Changes",
@@ -60,7 +60,8 @@
     [
       "@saithodev/semantic-release-backmerge",
       {
-        "backmergeBranches": [{ "from": "main", "to": "develop" }]
+        "backmergeBranches": [{ "from": "main", "to": "develop" }],
+        "message": "chore(release): backmerge [skip ci]"
       }
     ]
   ],
