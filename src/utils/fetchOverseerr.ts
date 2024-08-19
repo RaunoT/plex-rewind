@@ -37,11 +37,13 @@ export default async function fetchOverseerr<T>(
 
   if (!overseerrUrl) {
     console.error('[OVERSEERR] - URL is not configured! Skipping request.')
+
     return null
   }
 
   if (!apiKey) {
     console.error('[OVERSEERR] - API key is not configured! Skipping request.')
+
     return null
   }
 
@@ -63,6 +65,7 @@ export default async function fetchOverseerr<T>(
         res.status,
         res.statusText,
       )
+
       return null
     }
 
@@ -72,6 +75,7 @@ export default async function fetchOverseerr<T>(
       `[OVERSEERR] - Error fetching from API! The endpoint was '${endpoint}'.\n`,
       error,
     )
+
     return null
   }
 }
@@ -97,6 +101,7 @@ export async function fetchOverseerrStats(
 
   if (!firstPage || !firstPage.results) {
     console.error('[OVERSEERR] - No requests data found!')
+
     return []
   }
 
@@ -141,6 +146,7 @@ export async function fetchOverseerrUserId(
 
   if (!firstPage || !firstPage.results) {
     console.error(`[OVERSEERR] - No user data found!`)
+
     return null
   }
 

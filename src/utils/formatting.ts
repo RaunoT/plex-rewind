@@ -17,6 +17,7 @@ export function secondsToTime(seconds: number): string {
       }
 
       let value = Math.floor(remainingSeconds / duration)
+
       remainingSeconds %= duration
 
       if (label === 'min' && remainingSeconds > 0) {

@@ -42,6 +42,7 @@ export default async function saveConnectionSettings(
           res.status,
           res.statusText,
         )
+
         return {
           message: 'Tautulli - invalid API key!',
           status: 'error',
@@ -50,6 +51,7 @@ export default async function saveConnectionSettings(
       }
     } catch (error) {
       console.error('[CONFIG] - Error testing Tautulli connection!', error)
+
       return {
         message: 'Tautulli - unable to connect!',
         status: 'error',
@@ -73,6 +75,7 @@ export default async function saveConnectionSettings(
             res.status,
             res.statusText,
           )
+
           return {
             message: 'Overseerr - invalid API key!',
             status: 'error',
@@ -81,6 +84,7 @@ export default async function saveConnectionSettings(
         }
       } catch (error) {
         console.error('[CONFIG] - Error testing Overseerr connection!', error)
+
         return {
           message: 'Overseerr - unable to connect!',
           status: 'error',
@@ -96,6 +100,7 @@ export default async function saveConnectionSettings(
       })
     } catch (error) {
       console.error('[CONFIG] - Error testing Plex connection!', error)
+
       return {
         message: 'Plex - unable to connect!',
         status: 'error',
@@ -104,6 +109,7 @@ export default async function saveConnectionSettings(
     }
   } catch (error) {
     console.error('[CONFIG] - Error testing connection!', error)
+
     return {
       message: 'Something went wrong!',
       status: 'error',

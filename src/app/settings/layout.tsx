@@ -21,7 +21,11 @@ export default async function SettingsLayout({ children }: Props) {
   const version = await getVersion()
   const missingSetting = checkRequiredSettings(settings)
 
-  if (!session?.user?.isAdmin) {
+  if (
+    !session?.user?.isAdmin &&
+    missingSetting !== 'connection.tautulliUrl' &&
+    missingSetting !== 'connection.tautulliApiKey'
+  ) {
     return notFound()
   }
 

@@ -5,11 +5,11 @@
     "dev": "next dev",
     "start": "next start",
     "build": "next build",
-    "lint": "next lint",
+    "lint": "eslint --cache .",
     "lint:types": "tsc --noEmit",
     "lint:css": "stylelint --cache \"**/*.css\"",
     "lint:all": "pnpm lint && pnpm lint:types && pnpm lint:css && pnpm format:check",
-    "lint:all:fix": "next lint --fix && pnpm lint:types && stylelint --cache --fix \"**/*.css\" && pnpm format",
+    "lint:all:fix": "eslint --cache --fix . && pnpm lint:types && stylelint --cache --fix \"**/*.css\" && pnpm format",
     "format": "prettier --write --cache .",
     "format:check": "prettier --check --cache .",
     "prepare": "husky",
@@ -17,7 +17,7 @@
   },
   "config": {
     "commitizen": {
-      "path": "./node_modules/cz-conventional-changelog"
+      "path": "./node_modules/cz-customizable"
     }
   },
   "dependencies": {
@@ -57,7 +57,8 @@
     "autoprefixer": "^10.4.20",
     "clsx": "^2.1.1",
     "commitizen": "^4.3.0",
-    "cz-conventional-changelog": "^3.3.0",
+    "conventional-changelog-conventionalcommits": "^8.0.0",
+    "cz-customizable": "7.2.1",
     "eslint": "^8.57.0",
     "eslint-config-next": "^14.2.5",
     "eslint-config-prettier": "^9.1.0",
@@ -73,10 +74,5 @@
     "stylelint-config-standard": "^36.0.1",
     "tailwindcss": "^3.4.9",
     "typescript": "^5.5.4"
-  },
-  "pnpm": {
-    "overrides": {
-      "conventional-changelog-conventionalcommits": ">= 8.0.0"
-    }
   }
 }

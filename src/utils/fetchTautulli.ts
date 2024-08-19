@@ -29,11 +29,13 @@ export default async function fetchTautulli<T>(
 
   if (!tautulliUrl) {
     console.error('[TAUTULLI] - URL is not configured! Skipping request.')
+
     return null
   }
 
   if (!apiKey) {
     console.error('[TAUTULLI] - API key is not configured! Skipping request.')
+
     return null
   }
 
@@ -60,6 +62,7 @@ export default async function fetchTautulli<T>(
       `[TAUTULLI] - Error fetching from API! The query was '${query}'.\n`,
       error,
     )
+
     return null
   }
 }
@@ -85,6 +88,7 @@ export async function getServerId(): Promise<string> {
     console.error(
       `[TAUTULLI] - Couldn't find server ID for Plex server with hostname ${plexUrl} and port ${plexPort}`,
     )
+
     return ''
   }
 }
@@ -96,8 +100,9 @@ export async function getLibraries(
   const libraries = (await fetchTautulli<TautulliLibrary[]>('get_libraries'))
     ?.response?.data
 
-  if (libraries == null) {
+  if (!libraries) {
     console.warn('[TAUTULLI] - No libraries found!')
+
     return []
   }
 
@@ -137,6 +142,7 @@ async function filterBySharedLibraries(
 
   if (!userId) {
     console.error('[TAUTULLI] - No user ID found!')
+
     return []
   }
 
@@ -146,6 +152,7 @@ async function filterBySharedLibraries(
 
   if (!userDataResponse) {
     console.warn(`[TAUTULLI] - Could not fetch user data for user ID ${userId}`)
+
     return []
   }
 
