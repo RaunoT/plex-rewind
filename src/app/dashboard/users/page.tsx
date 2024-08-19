@@ -38,7 +38,7 @@ async function getInactiveUserInTimePeriod(
   const user = await fetchTautulli<TautulliItemRow>('get_user', {
     user_id: id,
   })
-  const nonActive = user!.response.data
+  const nonActive = user?.response?.data ?? ({} as TautulliItemRow)
 
   nonActive.total_duration = 0
 
@@ -75,8 +75,8 @@ async function getUsers(
 
   const isAnonymousAccess = settings.general.isOutsideAccess && !loggedInUserId
 
-  const listedUsers = isAnonymousAccess 
-    ? users.slice(0, numberOfUsers) 
+  const listedUsers = isAnonymousAccess
+    ? users.slice(0, numberOfUsers)
     : await getStatsWithLoggedInUser(loggedInUserId, users, numberOfUsers)
 
   const [moviesLib, showsLib, audioLib] = await Promise.all([
@@ -181,7 +181,9 @@ async function getStatsWithLoggedInUser(
   numberOfUsers: number,
 ) {
   let slicedUsers = users.slice(0, numberOfUsers)
-  const loggedInUserRank = users.findIndex((user) => String(user.user_id) == userId)
+  const loggedInUserRank = users.findIndex(
+    (user) => String(user.user_id) == userId,
+  )
   const loggedInUser =
     users[loggedInUserRank] || (await getInactiveUserInTimePeriod(userId))
 
@@ -263,7 +265,13 @@ async function DashboardUsersContent({ searchParams }: Props) {
   const period = getPeriod(searchParams, settings)
   const [usersData, totalDuration, usersCount, totalRequests] =
     await Promise.all([
-      getUsers(loggedInUserId, period.daysAgo, period.date, period.string, settings),
+      getUsers(
+        loggedInUserId,
+        period.daysAgo,
+        period.date,
+        period.string,
+        settings,
+      ),
       getTotalDuration(period.string, settings),
       getUsersCount(settings),
       getTotalRequests(period.date, settings),

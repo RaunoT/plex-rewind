@@ -42,6 +42,7 @@ async function DashboardContent({ params, searchParams }: Props) {
   }
 
   const session = await getServerSession(authOptions)
+  const loggedInUserId = session?.user.id
   const period = getPeriod(searchParams, settings)
   const isPersonal = searchParams.personal === 'true'
   const [items, totalDuration, totalSize, serverId] = await Promise.all([
@@ -73,7 +74,7 @@ async function DashboardContent({ params, searchParams }: Props) {
       serverId={serverId}
       count={count}
       settings={settings}
-      isLoggedIn={!!session}
+      loggedInUserId={loggedInUserId}
     />
   )
 }
