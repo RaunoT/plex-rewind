@@ -28,7 +28,7 @@ type Props = {
   type: string
   serverId: string
   activeStats: string[]
-  settings: Settings,
+  settings: Settings
   loggedInUserId?: string
 }
 
@@ -39,7 +39,7 @@ export default function MediaItem({
   serverId,
   activeStats,
   settings,
-  loggedInUserId
+  loggedInUserId,
 }: Props) {
   const tautulliUrl = settings.connection.tautulliUrl
   const isTmdbPoster = data.thumb?.startsWith('https://image.tmdb.org')

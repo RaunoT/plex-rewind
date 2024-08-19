@@ -16,7 +16,13 @@ type Props = {
 
 const topColors = ['text-yellow-300', 'text-gray-300', 'text-yellow-700']
 
-export default function MediaItemTitle({ i, data, type, parentRef, loggedInUserId }: Props) {
+export default function MediaItemTitle({
+  i,
+  data,
+  type,
+  parentRef,
+  loggedInUserId,
+}: Props) {
   const titleRef = useRef<HTMLSpanElement>(null)
   const numberRef = useRef<HTMLSpanElement>(null)
   const isLoggedIn = String(data.user_id) == loggedInUserId

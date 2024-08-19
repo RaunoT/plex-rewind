@@ -18,7 +18,7 @@ export default function MediaItems({
   serverId,
   rows,
   settings,
-  loggedInUserId
+  loggedInUserId,
 }: Props) {
   return (
     <ul
