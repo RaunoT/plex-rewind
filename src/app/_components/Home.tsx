@@ -49,6 +49,7 @@ export default function Home({ settings, libraries }: Props) {
 
     async function authUser(plexPinId: string) {
       setIsLoading(true)
+
       const plexAuthToken = await getPlexAuthToken(plexPinId)
 
       try {

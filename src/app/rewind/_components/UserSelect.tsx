@@ -14,6 +14,7 @@ export default function UserSelect({ users, currentUserId }: Props) {
   const searchParams = useSearchParams()
   const selectRef = useRef<HTMLSelectElement>(null)
 
+  // eslint-disable-next-line @stylistic/js/padding-line-between-statements
   const handleChange = (e: ChangeEvent<HTMLSelectElement>) => {
     const newParams = new URLSearchParams(searchParams.toString())
 

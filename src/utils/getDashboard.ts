@@ -11,7 +11,6 @@ export async function getItems(
   period: number,
   userId?: string,
 ) {
-  let items = []
   const sectionType = library.section_type
   const statIdMap = {
     movie: 'top_movies',
@@ -31,6 +30,8 @@ export async function getItems(
     section_id: library.section_id,
     user_id: userId ? userId : '',
   })
+
+  let items = []
 
   items = itemsRes?.response?.data?.rows || []
 

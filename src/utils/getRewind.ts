@@ -77,7 +77,6 @@ export async function getTopMediaStats(
 }
 
 export async function getlibrariesTotalSize(libraries: TautulliLibrary[]) {
-  let totalSize = 0
   const res = await Promise.all(
     libraries.map((library) =>
       fetchTautulli<{ total_file_size: number }>('get_library_media_info', {
@@ -86,6 +85,8 @@ export async function getlibrariesTotalSize(libraries: TautulliLibrary[]) {
       }),
     ),
   )
+
+  let totalSize = 0
 
   for (const library of res) {
     const librarySize = library?.response?.data?.total_file_size
@@ -99,7 +100,6 @@ export async function getlibrariesTotalSize(libraries: TautulliLibrary[]) {
 }
 
 export async function getLibrariesTotalDuration(libraries: TautulliLibrary[]) {
-  let totalDuration = 0
   const res = await Promise.all(
     libraries.map((library) => {
       return fetchTautulli<{ total_duration: string }>('get_history', {
@@ -109,6 +109,8 @@ export async function getLibrariesTotalDuration(libraries: TautulliLibrary[]) {
       })
     }),
   )
+
+  let totalDuration = 0
 
   for (const library of res) {
     const duration = library?.response?.data?.total_duration
@@ -125,7 +127,6 @@ export async function getUserTotalDuration(
   userId: string,
   libraries: TautulliLibrary[],
 ) {
-  let totalDuration = 0
   const res = await Promise.all(
     libraries.map((library) => {
       return fetchTautulli<{ total_duration: string }>('get_history', {
@@ -136,6 +137,8 @@ export async function getUserTotalDuration(
       })
     }),
   )
+
+  let totalDuration = 0
 
   for (const library of res) {
     const duration = library?.response?.data?.total_duration

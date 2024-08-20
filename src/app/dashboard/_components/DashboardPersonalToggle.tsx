@@ -12,6 +12,7 @@ export default function DashboardPersonalToggle() {
   const { isDashboardPersonal, setIsDashboardPersonal } =
     useContext(DashboardContext)
 
+  // eslint-disable-next-line @stylistic/js/padding-line-between-statements
   const updateURL = useCallback(() => {
     const currentParams = new URLSearchParams(
       Array.from(searchParams.entries()),

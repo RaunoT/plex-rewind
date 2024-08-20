@@ -31,7 +31,6 @@ export default async function fetchOverseerr<T>(
   cache: boolean = false,
 ): Promise<T | null> {
   const settings = getSettings()
-
   const overseerrUrl = settings.connection.overseerrUrl
   const apiKey = settings.connection.overseerrApiKey
 
