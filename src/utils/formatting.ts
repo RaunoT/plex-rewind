@@ -1,38 +1,49 @@
 export function secondsToTime(seconds: number): string {
+  if (seconds <= 0) {
+    return ''
+  }
+
   const units = [
     { label: 'month', duration: 2629746 },
     { label: 'week', duration: 604800 },
     { label: 'day', duration: 86400 },
     { label: 'hr', duration: 3600 },
     { label: 'min', duration: 60 },
+    { label: 'sec', duration: 1 },
   ]
 
-  let remainingSeconds = seconds
+  const maxUnits = 2
+  const result = []
+  let remainingSeconds = Math.round(seconds)
   let unitCount = 0
 
-  return units
-    .map(({ label, duration }) => {
-      if (unitCount >= 2) {
-        return ''
-      }
+  for (const { label, duration } of units) {
+    if (unitCount >= maxUnits) {
+      break
+    }
 
-      let value = Math.floor(remainingSeconds / duration)
+    let value = Math.floor(remainingSeconds / duration)
 
+    // Handle rounding for minutes if seconds are present
+    if (label === 'min' && remainingSeconds % duration >= 30) {
+      value++ // Round up to the next minute if 30 or more seconds remain
+      remainingSeconds = 0 // Reset remaining seconds after rounding up
+    } else {
       remainingSeconds %= duration
+    }
 
-      if (label === 'min' && remainingSeconds > 0) {
-        value += 1
-        remainingSeconds = 0
+    if (value > 0 || (unitCount === 0 && remainingSeconds === 0)) {
+      // Special case for seconds: only include if it's the only unit
+      if (label === 'sec' && unitCount > 0) {
+        break
       }
 
-      if (value > 0) {
-        unitCount++
-      }
+      result.push(pluralize(value, label))
+      unitCount++
+    }
+  }
 
-      return value > 0 ? `${value} ${value === 1 ? label : label + 's'} ` : ''
-    })
-    .join('')
-    .trim()
+  return result.join(' ')
 }
 
 export function secondsToMinutes(seconds: number): string {
@@ -71,10 +82,6 @@ export function timeToSeconds(time: string): number {
   return days + hours + mins + secs
 }
 
-export function pluralize(value: number, string: string): string {
-  if (value > 1 || value === 0) {
-    return `${value} ${string}s`
-  } else {
-    return `${value} ${string}`
-  }
+export function pluralize(value: number, label: string): string {
+  return value === 1 ? `${value} ${label}` : `${value} ${label}s`
 }
