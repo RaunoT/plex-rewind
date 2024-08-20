@@ -1,4 +1,8 @@
 export function secondsToTime(seconds: number): string {
+  if (seconds <= 0) {
+    return ''
+  }
+
   const units = [
     { label: 'month', duration: 2629746 },
     { label: 'week', duration: 604800 },
@@ -8,26 +12,38 @@ export function secondsToTime(seconds: number): string {
     { label: 'sec', duration: 1 },
   ]
 
+  const maxUnits = 2
+  const result = []
   let remainingSeconds = Math.round(seconds)
-  let result = ''
   let unitCount = 0
 
   for (const { label, duration } of units) {
-    if (unitCount >= 2) {
+    if (unitCount >= maxUnits) {
       break
     }
 
-    const value = Math.floor(remainingSeconds / duration)
+    let value = Math.floor(remainingSeconds / duration)
 
-    remainingSeconds %= duration
+    // Handle rounding for minutes if seconds are present
+    if (label === 'min' && remainingSeconds % duration >= 30) {
+      value++ // Round up to the next minute if 30 or more seconds remain
+      remainingSeconds = 0 // Reset remaining seconds after rounding up
+    } else {
+      remainingSeconds %= duration
+    }
 
     if (value > 0 || (unitCount === 0 && remainingSeconds === 0)) {
-      result += `${value} ${value === 1 ? label : label + 's'} `
+      // Special case for seconds: only include if it's the only unit
+      if (label === 'sec' && unitCount > 0) {
+        break
+      }
+
+      result.push(pluralize(value, label))
       unitCount++
     }
   }
 
-  return result.trim()
+  return result.join(' ')
 }
 
 export function secondsToMinutes(seconds: number): string {
@@ -66,10 +82,6 @@ export function timeToSeconds(time: string): number {
   return days + hours + mins + secs
 }
 
-export function pluralize(value: number, string: string): string {
-  if (value > 1 || value === 0) {
-    return `${value} ${string}s`
-  } else {
-    return `${value} ${string}`
-  }
+export function pluralize(value: number, label: string): string {
+  return value === 1 ? `${value} ${label}` : `${value} ${label}s`
 }
