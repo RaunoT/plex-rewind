@@ -5,34 +5,29 @@ export function secondsToTime(seconds: number): string {
     { label: 'day', duration: 86400 },
     { label: 'hr', duration: 3600 },
     { label: 'min', duration: 60 },
+    { label: 'sec', duration: 1 },
   ]
 
-  let remainingSeconds = seconds
+  let remainingSeconds = Math.round(seconds)
+  let result = ''
   let unitCount = 0
 
-  return units
-    .map(({ label, duration }) => {
-      if (unitCount >= 2) {
-        return ''
-      }
+  for (const { label, duration } of units) {
+    if (unitCount >= 2) {
+      break
+    }
 
-      let value = Math.floor(remainingSeconds / duration)
+    const value = Math.floor(remainingSeconds / duration)
 
-      remainingSeconds %= duration
+    remainingSeconds %= duration
 
-      if (label === 'min' && remainingSeconds > 0) {
-        value += 1
-        remainingSeconds = 0
-      }
+    if (value > 0 || (unitCount === 0 && remainingSeconds === 0)) {
+      result += `${value} ${value === 1 ? label : label + 's'} `
+      unitCount++
+    }
+  }
 
-      if (value > 0) {
-        unitCount++
-      }
-
-      return value > 0 ? `${value} ${value === 1 ? label : label + 's'} ` : ''
-    })
-    .join('')
-    .trim()
+  return result.trim()
 }
 
 export function secondsToMinutes(seconds: number): string {
