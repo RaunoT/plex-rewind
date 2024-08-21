@@ -179,39 +179,6 @@
     }
   }
 
-  .datefield {
-    @apply input mr-auto flex w-fit gap-1;
-
-    .datefield-segment {
-      @apply px-1.5;
-
-      &[data-type='literal'] {
-        @apply p-0 text-neutral-400;
-      }
-
-      &[data-placeholder] {
-        @apply text-neutral-400;
-      }
-
-      &:focus {
-        @apply rounded-lg bg-neutral-500 outline-none;
-      }
-    }
-
-    &:focus-within {
-      .datefield-segment {
-        &[data-placeholder],
-        &[data-type='literal'] {
-          @apply text-neutral-300;
-        }
-      }
-
-      ~ .label {
-        @apply text-white;
-      }
-    }
-  }
-
   .checkbox-wrapper {
     @apply flex cursor-pointer items-center gap-1;
 
@@ -311,6 +278,7 @@ input[type='number'] {
   appearance: textfield;
 }
 
+.select-input,
 select.input {
   @apply relative cursor-pointer appearance-none bg-no-repeat pr-14;
 

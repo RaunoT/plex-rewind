@@ -1,5 +1,6 @@
 'use client'
 
+import DatePicker from '@/components/DatePicker'
 import { Settings } from '@/types/settings'
 import { useState } from 'react'
 import { Switch } from 'react-aria-components'
@@ -46,6 +47,14 @@ export default function RewindSettingsForm({ settings }: Props) {
                 </small>
               </span>
             </Switch>
+          </section>
+          <section className='group-settings group'>
+            <h2 className='heading-settings'>Defaults</h2>
+            <DatePicker
+              label='Start date'
+              helperText='Defaults to 365 days ago.'
+            />
+            <DatePicker label='End date' helperText='Defaults to today.' />
           </section>
         </>
       )}
