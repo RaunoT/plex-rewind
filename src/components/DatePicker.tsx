@@ -3,7 +3,10 @@
 import {
   ArrowLeftCircleIcon,
   ArrowRightCircleIcon,
+  XCircleIcon,
 } from '@heroicons/react/24/outline'
+import { CalendarDate } from '@internationalized/date'
+import clsx from 'clsx'
 import { useState } from 'react'
 import {
   DatePicker as AriaDatePicker,
@@ -21,7 +24,6 @@ import {
   Heading,
   Label,
   Popover,
-  Text,
 } from 'react-aria-components'
 
 type Props = {
@@ -31,63 +33,74 @@ type Props = {
 
 export default function DatePicker({ label, helperText }: Props) {
   const [isOpen, setIsOpen] = useState(false)
+  const [value, setValue] = useState<CalendarDate | null>(null)
 
   return (
     <AriaDatePicker
-      className='input-wrapper'
-      onOpenChange={setIsOpen}
+      value={value}
       isOpen={isOpen}
+      onChange={setValue}
+      onOpenChange={setIsOpen}
+      className='input-wrapper'
     >
-      <Group
-        className='input select-wrapper flex cursor-pointer uppercase'
-        onClick={() => setIsOpen(true)}
-      >
-        <DateInput className='flex cursor-auto'>
-          {(segment) => (
-            <DateSegment
-              segment={segment}
-              className='mx-1 first:ml-0 last:mr-0'
-            />
-          )}
-        </DateInput>
-        <svg
-          xmlns='http://www.w3.org/2000/svg'
-          viewBox='0 0 24 24'
-          fill='#D4D4D4'
-          className='ml-auto size-6'
-        >
-          <path d='M7 10l5 5 5-5z' />
-        </svg>
+      <Group className='select-wrapper flex cursor-pointer'>
+        <div className='select-input input' onClick={() => setIsOpen(true)}>
+          <DateInput className='flex w-fit cursor-auto'>
+            {(segment) => (
+              <DateSegment
+                segment={segment}
+                className='mx-1 uppercase outline-none first:ml-0 last:mr-0 data-[type="literal"]:text-neutral-300'
+              />
+            )}
+          </DateInput>
+        </div>
+        {value && (
+          <Button
+            onPress={() => setValue(null)}
+            aria-label='Clear date'
+            className='absolute inset-y-0 right-14 my-auto'
+          >
+            <XCircleIcon className='size-6 text-neutral-300' />
+          </Button>
+        )}
       </Group>
       <Label className='label'>
         {label} {helperText && <small>{helperText}</small>}
       </Label>
       <Popover onOpenChange={setIsOpen}>
         <Dialog>
-          <Calendar className='min-w-[14rem] rounded-xl bg-neutral-500 p-4'>
-            <div className='flex items-center justify-between gap-4 text-neutral-300'>
-              <Button slot='previous'>
+          <Calendar className='glass-sheet bg-neutral-200/20 p-4'>
+            <div className='flex items-center justify-between gap-3 px-2'>
+              <Button slot='previous' className='link-light'>
                 <ArrowLeftCircleIcon className='size-5' />
               </Button>
-              <Heading />
-              <Button slot='next'>
+              <Heading className='text-white' />
+              <Button slot='next' className='link-light'>
                 <ArrowRightCircleIcon className='size-5' />
               </Button>
             </div>
-            <CalendarGrid className='mx-auto'>
+            <CalendarGrid className='mt-2'>
               <CalendarGridHeader>
-                {(day) => <CalendarHeaderCell>{day}</CalendarHeaderCell>}
+                {(day) => (
+                  <CalendarHeaderCell className='text-xs text-neutral-400'>
+                    {day}
+                  </CalendarHeaderCell>
+                )}
               </CalendarGridHeader>
               <CalendarGridBody>
                 {(date) => (
                   <CalendarCell
                     date={date}
-                    className='flex size-8 items-center justify-center rounded-full hover:bg-neutral-400'
+                    className={(state) =>
+                      clsx(
+                        'm-px flex size-8 items-center justify-center rounded-full hover:bg-neutral-400 focus:bg-neutral-400 focus:outline-none',
+                        state.isOutsideMonth && 'hidden',
+                      )
+                    }
                   />
                 )}
               </CalendarGridBody>
             </CalendarGrid>
-            <Text slot='errorMessage' />
           </Calendar>
         </Dialog>
       </Popover>
