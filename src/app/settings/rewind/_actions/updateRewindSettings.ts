@@ -7,6 +7,8 @@ import updateSettings from '../../_actions/updateSettings'
 const schema = z.object({
   isActive: z.boolean(),
   isLibrariesSizeAndCountActive: z.boolean().optional(),
+  startDate: z.string().optional(),
+  endDate: z.string().optional(),
   complete: z.boolean(),
 })
 
@@ -23,6 +25,8 @@ export default async function saveRewindSettings(
   if (isActive) {
     data.isLibrariesSizeAndCountActive =
       formData.get('isLibrariesSizeAndCountActive') === 'on'
+    data.startDate = formData.get('startDate') as string
+    data.endDate = formData.get('endDate') as string
   }
 
   return await updateSettings(schema, data, 'rewind')

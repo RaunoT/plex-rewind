@@ -82,6 +82,8 @@ export const DEFAULT_SETTINGS: Settings = {
   rewind: {
     isActive: true,
     isLibrariesSizeAndCountActive: true,
+    startDate: '',
+    endDate: '',
     complete: false,
   },
   dashboard: {

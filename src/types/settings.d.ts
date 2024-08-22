@@ -24,6 +24,8 @@ export type GeneralSettings = {
 export type RewindSettings = {
   isActive: boolean
   isLibrariesSizeAndCountActive: boolean
+  startDate?: string
+  endDate?: string
   complete: boolean
 }
 

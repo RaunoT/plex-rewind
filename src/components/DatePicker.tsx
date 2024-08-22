@@ -29,9 +29,10 @@ import {
 type Props = {
   label: string
   helperText?: string
+  name: string
 }
 
-export default function DatePicker({ label, helperText }: Props) {
+export default function DatePicker({ label, helperText, name }: Props) {
   const [isOpen, setIsOpen] = useState(false)
   const [value, setValue] = useState<CalendarDate | null>(null)
 
@@ -42,6 +43,7 @@ export default function DatePicker({ label, helperText }: Props) {
       onChange={setValue}
       onOpenChange={setIsOpen}
       className='input-wrapper'
+      name={name}
     >
       <Group className='select-wrapper flex cursor-pointer'>
         <div className='select-input input' onClick={() => setIsOpen(true)}>
