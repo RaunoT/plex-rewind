@@ -5,7 +5,7 @@ import {
   ArrowRightCircleIcon,
   XCircleIcon,
 } from '@heroicons/react/24/outline'
-import { CalendarDate } from '@internationalized/date'
+import { CalendarDate, parseDate } from '@internationalized/date'
 import clsx from 'clsx'
 import { useState } from 'react'
 import {
@@ -30,11 +30,19 @@ type Props = {
   label: string
   helperText?: string
   name: string
+  defaultValue?: string
 }
 
-export default function DatePicker({ label, helperText, name }: Props) {
+export default function DatePicker({
+  label,
+  helperText,
+  name,
+  defaultValue,
+}: Props) {
   const [isOpen, setIsOpen] = useState(false)
-  const [value, setValue] = useState<CalendarDate | null>(null)
+  const [value, setValue] = useState<CalendarDate | null>(
+    defaultValue ? parseDate(defaultValue) : null,
+  )
 
   return (
     <AriaDatePicker

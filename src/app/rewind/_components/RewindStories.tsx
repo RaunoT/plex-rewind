@@ -75,19 +75,19 @@ export default function RewindStories({ userRewind, settings }: Props) {
     ...(userRewind.duration.user && hasShowLibraries
       ? [createStory(StoryShows, userRewind.shows.count ? 10000 : 4000)]
       : []),
-    ...(userRewind.shows.top.length && hasShowLibraries
+    ...(userRewind.shows.top.length > 1 && hasShowLibraries
       ? [createStory(StoryShowsTop, 8000)]
       : []),
     ...(userRewind.duration.user && hasMovieLibraries
       ? [createStory(StoryMovies, userRewind.movies.count ? 10000 : 4000)]
       : []),
-    ...(userRewind.movies.top.length && hasMovieLibraries
+    ...(userRewind.movies.top.length > 1 && hasMovieLibraries
       ? [createStory(StoryMoviesTop, 8000)]
       : []),
     ...(userRewind.duration.user && hasAudioLibraries
       ? [createStory(StoryAudio, userRewind.audio.count ? 10000 : 4000)]
       : []),
-    ...(userRewind.audio.top.length && hasAudioLibraries
+    ...(userRewind.audio.top.length > 1 && hasAudioLibraries
       ? [createStory(StoryAudioTop, 8000)]
       : []),
     createStory(StoryGoodbye, 11000),

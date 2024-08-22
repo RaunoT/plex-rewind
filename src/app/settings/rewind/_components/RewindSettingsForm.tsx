@@ -54,11 +54,13 @@ export default function RewindSettingsForm({ settings }: Props) {
               label='Start date'
               helperText='Defaults to 365 days ago.'
               name='startDate'
+              defaultValue={rewindSettings.startDate}
             />
             <DatePicker
               label='End date'
               helperText='Defaults to today.'
               name='endDate'
+              defaultValue={rewindSettings.endDate}
             />
           </section>
         </>

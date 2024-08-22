@@ -81,7 +81,8 @@ export default async function fetchOverseerr<T>(
 
 export async function fetchOverseerrStats(
   req: string,
-  timeframe: string,
+  startDate: string,
+  endDate?: string,
 ): Promise<OverseerrRequestItem[]> {
   const pageSize = 10
 
@@ -116,9 +117,13 @@ export async function fetchOverseerrStats(
   const allRequests = [firstPage, ...results].flatMap(
     (res) => res?.results || [],
   )
-  const filteredRequests = allRequests.filter(
-    (request) => new Date(request.createdAt) > new Date(timeframe),
-  )
+  const filteredRequests = allRequests.filter((request) => {
+    const requestDate = new Date(request.createdAt)
+    const startDateObj = new Date(startDate)
+    const endDateObj = endDate ? new Date(endDate) : new Date()
+
+    return requestDate >= startDateObj && requestDate <= endDateObj
+  })
 
   requestsArr = [...requestsArr, ...filteredRequests]
 

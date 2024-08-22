@@ -28,7 +28,7 @@ const schema = z.object({
         return number > 1 && number <= 3000
       },
       {
-        message: 'Dashboard - custom period must be > 1 and <= 3000',
+        message: 'Custom period must be > 1 and <= 3000',
       },
     )
     .optional(),
