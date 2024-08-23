@@ -13,14 +13,14 @@ Present [Plex](https://plex.tv) user statistics and habits in a beautiful and or
 
 - 📱 Fully responsive - viewable, usable & enjoyable on desktop, tablet or mobile, courtesy of [Tailwind.css](https://tailwindcss.com).
 - 🔄 Fully dynamic - the data your're viewing will always be the latest available.
-- 📆 Rewind - allows your Plex users view their statistics and habits for a given year.
-- 👀 Dashboard - provides an easily glanceable overview of activity on your server for all your libraries.
-- ✨ Beautiful animations with [Framer Motion](https://www.framer.com/motion).
-- 📊 Fuelled by data from [Tautulli](https://tautulli.com) - the backbone responsible for the heavy lifting regarding stats.
-- 🔗 Integrates with [Overseerr](https://overseerr.dev) - show request breakdowns and totals.
+- 📆 Rewind - allows your Plex users view their statistics and habits for a chosen time period.
+- 👀 Dashboard - provides an easily glanceable overview of activity on your server for all your libraries, personalized or general.
+- 📊 Fuelled by data from [Tautulli](https://tautulli.com) - the backbone responsible for the heavy lifting regarding statistics.
+- 🔗 Integrates with [Overseerr](https://overseerr.dev) - show request breakdowns and totals and display request buttons straight under deleted fan-favorite media items.
 - 🔐 Log in with Plex - uses [NextAuth.js](https://next-auth.js.org) to enable secure login and session management with your Plex account.
 - 🚀 PWA support - installable on mobile devices and desktops thanks to [Serwist](https://github.com/serwist/serwist).
 - 🐳 Easy deployment - run the application in a containerized environment with [Docker](https://www.docker.com).
+- ✨ Beautiful animations with [Framer Motion](https://www.framer.com/motion).
 - ⭐ All of this and more - powered by [Next.js](https://nextjs.org).
 
 Keep an eye on the [issues page](https://github.com/RaunoT/plex-rewind/issues) to see what new features have already been requested or to make your own request!

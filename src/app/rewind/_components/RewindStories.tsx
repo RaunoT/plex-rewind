@@ -64,7 +64,7 @@ export default function RewindStories({ userRewind, settings }: Props) {
     (library) => library.section_type === 'artist',
   )
   const stories = [
-    createStory(StoryWelcome, 5000),
+    createStory(StoryWelcome, 7000),
     createStory(StoryTotal, 8000),
     ...(userRewind.libraries_total_size && isLibrariesSizeAndCountActive
       ? [createStory(StoryLibraries, 9000)]

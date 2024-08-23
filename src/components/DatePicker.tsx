@@ -3,6 +3,7 @@
 import {
   ArrowLeftCircleIcon,
   ArrowRightCircleIcon,
+  CalendarDaysIcon,
   XCircleIcon,
 } from '@heroicons/react/24/outline'
 import { CalendarDate, parseDate } from '@internationalized/date'
@@ -22,6 +23,7 @@ import {
   Dialog,
   Group,
   Heading,
+  I18nProvider,
   Label,
   Popover,
 } from 'react-aria-components'
@@ -54,38 +56,47 @@ export default function DatePicker({
       name={name}
     >
       <Group className='select-wrapper flex cursor-pointer'>
-        <div className='select-input input' onClick={() => setIsOpen(true)}>
-          <DateInput className='flex w-fit cursor-auto'>
-            {(segment) => (
-              <DateSegment
-                segment={segment}
-                className='mx-1 uppercase outline-none first:ml-0 last:mr-0 data-[type="literal"]:text-neutral-300'
-              />
-            )}
-          </DateInput>
+        <div
+          className='input select-input focus-within:focus-ring !bg-none'
+          onClick={() => setIsOpen(true)}
+        >
+          <I18nProvider locale='en-GB'>
+            <DateInput className='flex w-fit cursor-auto'>
+              {(segment) => (
+                <DateSegment
+                  segment={segment}
+                  className='rounded px-1 uppercase outline-none focus-within:bg-neutral-500 data-[placeholder]:text-neutral-300 data-[type="literal"]:text-neutral-300'
+                />
+              )}
+            </DateInput>
+          </I18nProvider>
+          {value && (
+            <Button
+              onPress={() => {
+                setValue(null)
+                setIsOpen(false)
+              }}
+              aria-label='Clear date'
+              className='link-dark absolute inset-y-0 right-14 my-auto'
+            >
+              <XCircleIcon className='size-6 text-neutral-300' />
+            </Button>
+          )}
+          <CalendarDaysIcon className='absolute inset-y-0 right-3.5 my-auto size-5 text-neutral-300' />
         </div>
-        {value && (
-          <Button
-            onPress={() => setValue(null)}
-            aria-label='Clear date'
-            className='absolute inset-y-0 right-14 my-auto'
-          >
-            <XCircleIcon className='size-6 text-neutral-300' />
-          </Button>
-        )}
       </Group>
       <Label className='label'>
         {label} {helperText && <small>{helperText}</small>}
       </Label>
-      <Popover onOpenChange={setIsOpen}>
+      <Popover>
         <Dialog>
           <Calendar className='glass-sheet bg-neutral-200/20 p-4'>
             <div className='flex items-center justify-between gap-3 px-2'>
-              <Button slot='previous' className='link-light'>
+              <Button slot='previous' className='link-dark'>
                 <ArrowLeftCircleIcon className='size-5' />
               </Button>
               <Heading className='text-white' />
-              <Button slot='next' className='link-light'>
+              <Button slot='next' className='link-dark'>
                 <ArrowRightCircleIcon className='size-5' />
               </Button>
             </div>

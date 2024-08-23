@@ -17,7 +17,7 @@ export default function StoryAudio({
         <>
           <RewindStat isPaused={isPaused} scaleDelay={3}>
             <p>
-              To finish it off, you&apos;ve listened to&nbsp;
+              To finish it off, you listened to&nbsp;
               <span className='rewind-stat'>
                 {userRewind.audio.duration}
               </span>{' '}
@@ -32,7 +32,7 @@ export default function StoryAudio({
 
           <RewindStat isPaused={isPaused} renderDelay={3} scaleDelay={3}>
             <p>
-              You&apos;ve listened to{' '}
+              You listened to{' '}
               <span className='rewind-stat'>{userRewind.audio.count}</span>{' '}
               <span className='rewind-cat'>tracks</span> in total!
             </p>
@@ -45,7 +45,7 @@ export default function StoryAudio({
             noScale
           >
             <p className='mb-2'>
-              Your favorite has been{' '}
+              Your favorite was{' '}
               <span className='rewind-cat'>
                 {userRewind.audio.top[0].title}
               </span>
@@ -65,13 +65,16 @@ export default function StoryAudio({
       ) : (
         <RewindStat noScale>
           <p>
-            You haven&apos;t listened to any{' '}
+            You didn&apos;t listen to any{' '}
             <span className='rewind-cat'>
               Audio
               <MusicalNoteIcon />
             </span>{' '}
-            on <span className='gradient-plex'>Plex</span> in the past year{' '}
-            <span className='not-italic'>🥴</span>
+            on{' '}
+            <span className='whitespace-nowrap'>
+              <span className='gradient-plex'>Plex</span>{' '}
+              <span className='not-italic'>🥴</span>
+            </span>
           </p>
         </RewindStat>
       )}
