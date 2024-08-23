@@ -74,7 +74,7 @@ export default function Home({ settings, libraries }: Props) {
     }
   }, [searchParams])
 
-  if (isLoading || status === 'loading') {
+  if (isLoading) {
     return <Loader />
   }
 
