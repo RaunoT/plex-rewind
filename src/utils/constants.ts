@@ -83,7 +83,7 @@ export const DEFAULT_SETTINGS: Settings = {
     defaultStyle: 'general',
     defaultPeriod: 'custom',
     customPeriod: '30',
-    startDate: '2000-01-01',
+    startDate: '2010-01-01',
     complete: false,
   },
 }
