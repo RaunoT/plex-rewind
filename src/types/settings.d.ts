@@ -49,8 +49,6 @@ export type DashboardSettings = {
   isUsersPageActive: boolean
   activeItemStatistics: DashboardItemStatistics
   activeTotalStatistics: DashboardTotalStatistics
-  defaultStyle: string
-  defaultPeriod: string
   customPeriod: string
   startDate: string
   complete: boolean

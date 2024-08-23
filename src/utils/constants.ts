@@ -72,8 +72,6 @@ export const DEFAULT_SETTINGS: Settings = {
       'requests',
     ],
     activeTotalStatistics: ['size', 'duration', 'count', 'requests'],
-    defaultStyle: 'general',
-    defaultPeriod: 'custom',
     customPeriod: '30',
     startDate: '2010-01-01',
     complete: false,

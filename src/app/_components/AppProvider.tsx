@@ -81,15 +81,11 @@ export default function AppProvider({ children, settings, version }: Props) {
   }, [pathname])
 
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('dashboardPersonal', isDashboardPersonal.toString())
-    }
+    localStorage.setItem('dashboardPersonal', isDashboardPersonal.toString())
   }, [isDashboardPersonal])
 
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('dashboardPeriod', period || '')
-    }
+    localStorage.setItem('dashboardPeriod', period || '')
   }, [period])
 
   return (

@@ -43,9 +43,10 @@ export default function PeriodSelectContent({ settings }: Props) {
     { label: 'Past year', value: 'pastYear' },
     { label: 'All time', value: 'allTime' },
   ]
-  const isDefaultSelected =
-    !periodParam ||
-    !periodOptions.some((option) => option.value === periodParam)
+  const belongsToOptions = periodOptions.some(
+    (option) => option.value === periodParam,
+  )
+  const isDefaultSelected = !periodParam || !belongsToOptions
 
   // Sort period options
   periodOptions.sort((a, b) => {
@@ -70,6 +71,14 @@ export default function PeriodSelectContent({ settings }: Props) {
   useEffect(() => {
     window.scrollTo(0, 0)
   }, [pathname])
+
+  useEffect(() => {
+    setPeriod(
+      belongsToOptions && periodParam
+        ? (periodParam as DashboardSearchParams['period'])
+        : undefined,
+    )
+  }, [periodParam, setPeriod, belongsToOptions])
 
   return (
     <ul className='nav'>
