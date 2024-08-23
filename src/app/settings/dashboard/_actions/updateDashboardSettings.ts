@@ -33,6 +33,9 @@ const schema = z.object({
     )
     .optional(),
   defaultStyle: z.string().optional(),
+  startDate: z.string().refine((val) => !isNaN(Date.parse(val)), {
+    message: 'Invalid start date',
+  }),
   complete: z.boolean(),
 })
 
@@ -57,6 +60,7 @@ export default async function saveDashboardSettings(
     data.defaultPeriod = formData.get('defaultPeriod') as string
     data.customPeriod = formData.get('customPeriod') as string
     data.defaultStyle = formData.get('defaultStyle') as string
+    data.startDate = formData.get('startDate') as string
   }
 
   return await updateSettings(schema, data, 'dashboard')
