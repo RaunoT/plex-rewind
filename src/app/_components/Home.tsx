@@ -12,7 +12,8 @@ import { signIn, signOut, useSession } from 'next-auth/react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
+import { GlobalContext } from './AppProvider'
 
 type Props = {
   settings: Settings
@@ -24,6 +25,7 @@ export default function Home({ settings, libraries }: Props) {
   const missingSetting = checkRequiredSettings(settings)
   const router = useRouter()
   const searchParams = useSearchParams()
+  const { isDashboardPersonal, period } = useContext(GlobalContext)
   const { data: session, status } = useSession()
   const isLoggedIn = status === 'authenticated'
   const hasOutsideAccess = settings.general.isOutsideAccess
@@ -37,6 +39,15 @@ export default function Home({ settings, libraries }: Props) {
     settings.dashboard.isActive &&
     (isLoggedIn || hasOutsideAccess) &&
     dashboardSlug
+  const dashboardParams = new URLSearchParams()
+
+  if (isDashboardPersonal) {
+    dashboardParams.set('personal', 'true')
+  }
+
+  if (period) {
+    dashboardParams.set('period', period)
+  }
 
   async function handleLogin() {
     const plexUrl = await createPlexAuthUrl()
@@ -130,7 +141,7 @@ export default function Home({ settings, libraries }: Props) {
 
         {showDashboard && (
           <Link
-            href={`/dashboard/${dashboardSlug}${settings.dashboard.defaultStyle === 'personal' && isLoggedIn ? '?personal=true' : ''}`}
+            href={`/dashboard/${dashboardSlug}?${dashboardParams.toString()}`}
             className={clsx(
               'mx-auto block',
               !settings.rewind.isActive && isLoggedIn ? 'button' : 'link',

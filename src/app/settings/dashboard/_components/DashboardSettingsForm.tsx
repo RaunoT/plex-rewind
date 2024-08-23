@@ -117,42 +117,6 @@ export default function DashboardSettingsForm({ settings }: Props) {
           </section>
           <section className='group-settings group'>
             <h2 className='heading-settings'>Defaults</h2>
-            <div className='input-wrapper'>
-              <div className='select-wrapper'>
-                <select
-                  className='input'
-                  name='defaultStyle'
-                  defaultValue={
-                    dashboardSettings.defaultStyle ||
-                    DEFAULT_SETTINGS.dashboard.defaultStyle
-                  }
-                  required
-                >
-                  <option value='general'>General</option>
-                  <option value='personal'>Personal</option>
-                </select>
-              </div>
-              <span className='label required'>Default style</span>
-            </div>
-            <div className='input-wrapper'>
-              <div className='select-wrapper'>
-                <select
-                  className='input'
-                  name='defaultPeriod'
-                  defaultValue={
-                    dashboardSettings.defaultPeriod ||
-                    DEFAULT_SETTINGS.dashboard.defaultPeriod
-                  }
-                  required
-                >
-                  <option value='7days'>7 days</option>
-                  <option value='custom'>Custom period</option>
-                  <option value='pastYear'>Past year</option>
-                  <option value='allTime'>All time</option>
-                </select>
-              </div>
-              <span className='label required'>Default period</span>
-            </div>
             <label className='input-wrapper'>
               <input
                 type='number'
@@ -173,7 +137,10 @@ export default function DashboardSettingsForm({ settings }: Props) {
               label='Start date'
               helperText='Used for the all time period.'
               name='startDate'
-              defaultValue={dashboardSettings.startDate}
+              defaultValue={
+                dashboardSettings.startDate ||
+                DEFAULT_SETTINGS.dashboard.startDate
+              }
             />
           </section>
         </>

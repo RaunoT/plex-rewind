@@ -1,16 +1,16 @@
 'use client'
 
+import { GlobalContext } from '@/app/_components/AppProvider'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { useCallback, useContext, useEffect } from 'react'
 import { Switch } from 'react-aria-components'
-import { DashboardContext } from './DashboardProvider'
 
 export default function DashboardPersonalToggle() {
   const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()
   const { isDashboardPersonal, setIsDashboardPersonal } =
-    useContext(DashboardContext)
+    useContext(GlobalContext)
 
   // eslint-disable-next-line @stylistic/js/padding-line-between-statements
   const updateURL = useCallback(() => {
