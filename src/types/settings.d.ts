@@ -52,6 +52,7 @@ export type DashboardSettings = {
   defaultStyle: string
   defaultPeriod: string
   customPeriod: string
+  startDate: string
   complete: boolean
 }
 

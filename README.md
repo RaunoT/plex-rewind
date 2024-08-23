@@ -45,7 +45,6 @@ services:
       - NEXTAUTH_SECRET= # (required) used to encrypt auth JWT token, generate one with `openssl rand -base64 32`
       - NEXTAUTH_URL=http://localhost:8383 # (required) change to your domain if you are exposing the app to the internet
       - NEXT_PUBLIC_SITE_URL=http://localhost:8383 # (required) change to your domain if you are exposing the app to the internet
-      - NEXT_PUBLIC_STATISTICS_START_DATE=2018-01-01 # (optional) starting date for "all time" option (YYYY-MM-DD)
     volumes:
       - ./config:/app/config
     ports:

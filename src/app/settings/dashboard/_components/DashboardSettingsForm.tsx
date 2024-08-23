@@ -1,5 +1,6 @@
 'use client'
 
+import DatePicker from '@/components/DatePicker'
 import { Settings } from '@/types/settings'
 import { DEFAULT_SETTINGS } from '@/utils/constants'
 import { useState } from 'react'
@@ -168,6 +169,12 @@ export default function DashboardSettingsForm({ settings }: Props) {
               />
               <span className='label'>Custom period</span>
             </label>
+            <DatePicker
+              label='Start date'
+              helperText='Used for the all time period.'
+              name='startDate'
+              defaultValue={dashboardSettings.startDate}
+            />
           </section>
         </>
       )}
