@@ -53,12 +53,12 @@ export default function StoryGoodbye({
                 </span>
               </>
             )}
-            , it&apos;s been a year to remember.
+            , it&apos;s been a journey to remember.
           </p>
         ) : (
           <p>
             Sorry you couldn&apos;t find any content to watch or listen to this
-            time around. Better luck next year!
+            time around. Better luck next time!
           </p>
         )}
       </RewindStat>
@@ -70,7 +70,7 @@ export default function StoryGoodbye({
       >
         <p>
           {userRewind.duration.user
-            ? "We'll be back next year"
+            ? "We'll be back next time"
             : "Eitherway, we'll be here then"}{' '}
           with even more <span className='rewind-cat'>insights and stats.</span>
         </p>
