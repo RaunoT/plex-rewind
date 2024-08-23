@@ -18,7 +18,6 @@ const schema = z.object({
   activeTotalStatistics: z
     .array(z.enum(['size', 'duration', 'count', 'requests']))
     .optional(),
-  defaultPeriod: z.string().optional(),
   customPeriod: z
     .string()
     .refine(
@@ -32,7 +31,6 @@ const schema = z.object({
       },
     )
     .optional(),
-  defaultStyle: z.string().optional(),
   startDate: z.string().refine((val) => !isNaN(Date.parse(val)), {
     message: 'Invalid start date',
   }),
@@ -57,9 +55,7 @@ export default async function saveDashboardSettings(
     data.activeTotalStatistics = formData.getAll(
       'activeTotalStatistics',
     ) as DashboardTotalStatistics
-    data.defaultPeriod = formData.get('defaultPeriod') as string
     data.customPeriod = formData.get('customPeriod') as string
-    data.defaultStyle = formData.get('defaultStyle') as string
     data.startDate = formData.get('startDate') as string
   }
 

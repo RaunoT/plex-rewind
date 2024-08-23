@@ -7,7 +7,6 @@ export default function getPeriod(
   settings: Settings,
 ) {
   const periodSearchParams = searchParams.period
-  const defaultPeriod = settings.dashboard.defaultPeriod
   const customPeriod = parseInt(settings.dashboard.customPeriod)
 
   function getCustomPeriod() {
@@ -46,8 +45,7 @@ export default function getPeriod(
 
   const period =
     (periodSearchParams && getPeriodFromKey(periodSearchParams)) ||
-    getPeriodFromKey(defaultPeriod) ||
-    PERIODS[defaultPeriod]
+    getPeriodFromKey('custom')
 
   return period
 }
