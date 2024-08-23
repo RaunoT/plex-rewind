@@ -48,9 +48,7 @@ export default function AppProvider({ children, settings, version }: Props) {
   const [isDashboardPersonal, setIsDashboardPersonal] = useState<boolean>(
     () => {
       if (typeof window !== 'undefined') {
-        const storedPreference = localStorage.getItem('dashboardPersonal')
-
-        return storedPreference === 'true'
+        return localStorage.getItem('dashboardPersonal') === 'true'
       }
 
       return false
@@ -58,14 +56,12 @@ export default function AppProvider({ children, settings, version }: Props) {
   )
   const [period, setPeriod] = useState<DashboardSearchParams['period']>(() => {
     if (typeof window !== 'undefined') {
-      const storedPeriod = localStorage.getItem(
+      return localStorage.getItem(
         'dashboardPeriod',
       ) as DashboardSearchParams['period']
-
-      return storedPeriod || 'custom'
     }
 
-    return 'custom'
+    return undefined
   })
 
   useEffect(() => {
@@ -83,6 +79,18 @@ export default function AppProvider({ children, settings, version }: Props) {
 
     setIsSettings(pathname.startsWith('/settings'))
   }, [pathname])
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('dashboardPersonal', isDashboardPersonal.toString())
+    }
+  }, [isDashboardPersonal])
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('dashboardPeriod', period || '')
+    }
+  }, [period])
 
   return (
     <GlobalContext.Provider

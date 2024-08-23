@@ -43,6 +43,9 @@ export default function PeriodSelectContent({ settings }: Props) {
     { label: 'Past year', value: 'pastYear' },
     { label: 'All time', value: 'allTime' },
   ]
+  const isDefaultSelected =
+    !periodParam ||
+    !periodOptions.some((option) => option.value === periodParam)
 
   // Sort period options
   periodOptions.sort((a, b) => {
@@ -78,9 +81,15 @@ export default function PeriodSelectContent({ settings }: Props) {
             <Link
               href={`${pathname}${getUpdatedQueryParams(isDefault ? '' : value)}`}
               className='nav-link'
-              aria-selected={isDefault ? !periodParam : periodParam === value}
+              aria-selected={
+                isDefault ? isDefaultSelected : periodParam === value
+              }
               onClick={() =>
-                setPeriod(value as DashboardSearchParams['period'])
+                setPeriod(
+                  isDefault
+                    ? undefined
+                    : (value as DashboardSearchParams['period']),
+                )
               }
             >
               {label}
