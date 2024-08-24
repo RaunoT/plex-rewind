@@ -1,11 +1,15 @@
 'use client'
 
 import { GlobalContext } from '@/app/_components/GlobalContextProvider'
-import { DashboardSearchParams } from '@/types/dashboard'
+import clsx from 'clsx'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { ChangeEvent, useCallback, useContext, useEffect } from 'react'
 
-export default function DashboardFilters() {
+type Props = {
+  className?: string
+}
+
+export default function DashboardFilters({ className }: Props) {
   const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()
@@ -17,14 +21,14 @@ export default function DashboardFilters() {
   const updateURL = useCallback(() => {
     const currentParams = new URLSearchParams(searchParams.toString())
 
-    if (isPersonal) {
+    if (isPersonal === 'true') {
       currentParams.set('personal', 'true')
     } else {
       currentParams.delete('personal')
     }
 
-    if (sortBy) {
-      currentParams.set('sortBy', sortBy)
+    if (sortBy === 'plays') {
+      currentParams.set('sortBy', 'plays')
     } else {
       currentParams.delete('sortBy')
     }
@@ -38,12 +42,7 @@ export default function DashboardFilters() {
   // eslint-disable-next-line @stylistic/js/padding-line-between-statements
   const handlePersonalChange = useCallback(
     (e: ChangeEvent<HTMLSelectElement>) => {
-      if (e.target.value === 'true') {
-        setIsPersonal('true')
-      } else {
-        setIsPersonal(undefined)
-      }
-
+      setIsPersonal(e.target.value === 'true' ? 'true' : undefined)
       updateURL()
     },
     [setIsPersonal, updateURL],
@@ -52,12 +51,7 @@ export default function DashboardFilters() {
   // eslint-disable-next-line @stylistic/js/padding-line-between-statements
   const handleSortChange = useCallback(
     (e: ChangeEvent<HTMLSelectElement>) => {
-      if (e.target.value === 'plays') {
-        setSortBy('plays')
-      } else {
-        setSortBy(undefined)
-      }
-
+      setSortBy(e.target.value === 'plays' ? 'plays' : undefined)
       updateURL()
     },
     [setSortBy, updateURL],
@@ -65,11 +59,11 @@ export default function DashboardFilters() {
 
   useEffect(() => {
     const currentParams = new URLSearchParams(searchParams.toString())
+    const personalParam = currentParams.get('personal')
+    const sortByParam = currentParams.get('sortBy')
 
-    setIsPersonal(
-      currentParams.get('personal') as DashboardSearchParams['personal'],
-    )
-    setSortBy(currentParams.get('sortBy') as DashboardSearchParams['sortBy'])
+    setIsPersonal(personalParam === 'true' ? 'true' : undefined)
+    setSortBy(sortByParam === 'plays' ? 'plays' : undefined)
   }, [searchParams, setIsPersonal, setSortBy])
 
   useEffect(() => {
@@ -77,7 +71,7 @@ export default function DashboardFilters() {
   }, [isPersonal, sortBy, updateURL])
 
   return (
-    <div className='flex gap-3'>
+    <div className={clsx('flex gap-3', className)}>
       <div className='input-wrapper'>
         <label htmlFor='style-select' className='sr-only'>
           Style
@@ -86,7 +80,7 @@ export default function DashboardFilters() {
           <select
             id='style-select'
             className='input input--small'
-            value={isPersonal ? 'true' : ''}
+            value={isPersonal === 'true' ? 'true' : ''}
             onChange={handlePersonalChange}
           >
             <option disabled>Style</option>
@@ -103,7 +97,7 @@ export default function DashboardFilters() {
           <select
             id='sort-select'
             className='input input--small'
-            value={sortBy || ''}
+            value={sortBy === 'plays' ? 'plays' : ''}
             onChange={handleSortChange}
           >
             <option disabled>Sort</option>

@@ -36,18 +36,24 @@ export default function Dashboard({
   settings,
   isLoggedIn,
 }: Props) {
+  function renderFilters(className?: string) {
+    if (type !== 'users' && isLoggedIn) {
+      return (
+        <Suspense>
+          <DashboardFilters className={className} />
+        </Suspense>
+      )
+    }
+  }
+
   return (
     <>
-      <div className='mb-2 flex items-start justify-between gap-4 leading-tight'>
-        <h2 className='-mt-0.5 flex text-xl font-bold sm:-mt-1.5 sm:text-2xl xl:text-3xl'>
+      <div className='mb-2 flex items-center justify-between gap-4 leading-tight'>
+        <h2 className='flex items-center text-xl font-bold sm:-mt-1.5 sm:text-2xl xl:text-3xl'>
           {getTitleIcon(type)}
           {title}
         </h2>
-        {type !== 'users' && isLoggedIn && (
-          <Suspense>
-            <DashboardFilters />
-          </Suspense>
-        )}
+        {renderFilters('hidden sm:flex')}
       </div>
       <ul className='icon-stats-container mb-1 sm:gap-x-3'>
         {totalSize && (
@@ -96,13 +102,15 @@ export default function Dashboard({
           </h2>
         </div>
       )}
+
+      {renderFilters('flex sm:hidden justify-center mt-6')}
     </>
   )
 }
 
 function getTitleIcon(type: string) {
   const className =
-    'mr-1 sm:mr-2 size-8 sm:size-10 stroke-1 text-black shrink-0 pb-1 -ml-1'
+    'mr-1 sm:mr-2 size-8 sm:size-10 stroke-1 text-black shrink-0 -ml-0.5 sm:-ml-1'
 
   switch (type) {
     case 'movie':

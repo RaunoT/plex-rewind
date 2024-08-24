@@ -301,7 +301,7 @@ select.input {
   &--small {
     @apply pr-10;
 
-    background-position: right 8px center;
+    background-position: right 7px center;
     background-size: 16px;
   }
 }
