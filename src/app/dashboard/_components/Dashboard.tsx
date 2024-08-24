@@ -40,7 +40,10 @@ export default function Dashboard({
     if (type !== 'users' && isLoggedIn) {
       return (
         <Suspense>
-          <DashboardFilters className={className} />
+          <DashboardFilters
+            className={className}
+            isSortByPlaysActive={settings.dashboard.isSortByPlaysActive}
+          />
         </Suspense>
       )
     }

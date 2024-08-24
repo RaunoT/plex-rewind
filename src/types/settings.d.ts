@@ -49,6 +49,7 @@ export type DashboardSettings = {
   isUsersPageActive: boolean
   activeItemStatistics: DashboardItemStatistics
   activeTotalStatistics: DashboardTotalStatistics
+  isSortByPlaysActive: boolean
   customPeriod: string
   startDate: string
   complete: boolean

@@ -7,9 +7,13 @@ import { ChangeEvent, useCallback, useContext, useEffect } from 'react'
 
 type Props = {
   className?: string
+  isSortByPlaysActive: boolean
 }
 
-export default function DashboardFilters({ className }: Props) {
+export default function DashboardFilters({
+  className,
+  isSortByPlaysActive,
+}: Props) {
   const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()
@@ -89,23 +93,25 @@ export default function DashboardFilters({ className }: Props) {
           </select>
         </div>
       </div>
-      <div className='input-wrapper'>
-        <label htmlFor='sort-select' className='sr-only'>
-          Sort by
-        </label>
-        <div className='select-wrapper select-wrapper--small'>
-          <select
-            id='sort-select'
-            className='input input--small'
-            value={sortBy === 'plays' ? 'plays' : ''}
-            onChange={handleSortChange}
-          >
-            <option disabled>Sort</option>
-            <option value=''>By duration</option>
-            <option value='plays'>By plays</option>
-          </select>
+      {isSortByPlaysActive && (
+        <div className='input-wrapper'>
+          <label htmlFor='sort-select' className='sr-only'>
+            Sort by
+          </label>
+          <div className='select-wrapper select-wrapper--small'>
+            <select
+              id='sort-select'
+              className='input input--small'
+              value={sortBy === 'plays' ? 'plays' : ''}
+              onChange={handleSortChange}
+            >
+              <option disabled>Sort</option>
+              <option value=''>By duration</option>
+              <option value='plays'>By plays</option>
+            </select>
+          </div>
         </div>
-      </div>
+      )}
     </div>
   )
 }

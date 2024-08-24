@@ -18,6 +18,7 @@ const schema = z.object({
   activeTotalStatistics: z
     .array(z.enum(['size', 'duration', 'count', 'requests']))
     .optional(),
+  isSortByPlaysActive: z.boolean().optional(),
   customPeriod: z
     .string()
     .refine(
@@ -55,6 +56,7 @@ export default async function saveDashboardSettings(
     data.activeTotalStatistics = formData.getAll(
       'activeTotalStatistics',
     ) as DashboardTotalStatistics
+    data.isSortByPlaysActive = formData.get('isSortByPlaysActive') === 'on'
     data.customPeriod = formData.get('customPeriod') as string
     data.startDate = formData.get('startDate') as string
   }

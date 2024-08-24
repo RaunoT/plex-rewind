@@ -114,6 +114,14 @@ export default function DashboardSettingsForm({ settings }: Props) {
               </div>
               <Label className='label label--start'>Totals statistics</Label>
             </CheckboxGroup>
+            <Switch
+              className='switch'
+              name='isSortByPlaysActive'
+              defaultSelected={dashboardSettings.isSortByPlaysActive}
+            >
+              <div className='indicator'></div>
+              <span className='label'>Sort by plays filter</span>
+            </Switch>
           </section>
           <section className='group-settings group'>
             <h2 className='heading-settings'>Defaults</h2>
