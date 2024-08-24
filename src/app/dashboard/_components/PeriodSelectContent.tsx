@@ -1,6 +1,6 @@
 'use client'
 
-import { GlobalContext } from '@/app/_components/AppProvider'
+import { GlobalContext } from '@/app/_components/GlobalContextProvider'
 import { DashboardSearchParams } from '@/types/dashboard'
 import { Settings } from '@/types/settings'
 import { pluralize } from '@/utils/formatting'
@@ -30,7 +30,9 @@ function getPeriodValue(period: string, customPeriod: number): number {
 export default function PeriodSelectContent({ settings }: Props) {
   const pathname = usePathname()
   const searchParams = useSearchParams()
-  const { setPeriod } = useContext(GlobalContext)
+  const {
+    dashboard: { setPeriod },
+  } = useContext(GlobalContext)
   const periodParam = searchParams.get('period')
   const customPeriod = parseInt(settings.dashboard.customPeriod)
   // Replace '30 days' with custom period if it exists

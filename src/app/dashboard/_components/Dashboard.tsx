@@ -11,7 +11,7 @@ import {
   UserIcon,
 } from '@heroicons/react/24/outline'
 import { Suspense } from 'react'
-import DashboardPersonalToggle from './DashboardPersonalToggle'
+import DashboardFilters from './DashboardFilters'
 
 type Props = {
   title: string
@@ -45,7 +45,7 @@ export default function Dashboard({
         </h2>
         {type !== 'users' && isLoggedIn && (
           <Suspense>
-            <DashboardPersonalToggle />
+            <DashboardFilters />
           </Suspense>
         )}
       </div>

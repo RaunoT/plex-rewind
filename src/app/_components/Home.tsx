@@ -12,7 +12,7 @@ import { signOut, useSession } from 'next-auth/react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useContext } from 'react'
-import { GlobalContext } from './AppProvider'
+import { GlobalContext } from './GlobalContextProvider'
 
 type Props = {
   settings: Settings
@@ -22,7 +22,9 @@ type Props = {
 export default function Home({ settings, libraries }: Props) {
   const { isLoading, handleLogin } = usePlexAuth()
   const missingSetting = checkRequiredSettings(settings)
-  const { isDashboardPersonal, period } = useContext(GlobalContext)
+  const {
+    dashboard: { isPersonal, period, sortBy },
+  } = useContext(GlobalContext)
   const { data: session, status } = useSession()
   const isLoggedIn = status === 'authenticated'
   const dashboardSlug = kebabCase(
@@ -36,8 +38,9 @@ export default function Home({ settings, libraries }: Props) {
     (isLoggedIn || settings.general.isOutsideAccess) &&
     dashboardSlug
   const dashboardParams = new URLSearchParams({
-    ...(isDashboardPersonal && { personal: 'true' }),
+    ...(isPersonal && { personal: 'true' }),
     ...(period && { period }),
+    ...(sortBy && { sortBy }),
   })
 
   if (isLoading || status === 'loading') {
