@@ -3,7 +3,7 @@
 import { GlobalContext } from '@/app/_components/GlobalContextProvider'
 import clsx from 'clsx'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
-import { ChangeEvent, useCallback, useContext, useEffect } from 'react'
+import { ChangeEvent, useContext, useEffect } from 'react'
 
 type Props = {
   className?: string
@@ -17,65 +17,49 @@ export default function DashboardFilters({
   const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()
+  const personalParam = searchParams.get('personal')
+  const sortByParam = searchParams.get('sortBy')
   const {
     dashboard: { isPersonal, setIsPersonal, sortBy, setSortBy },
   } = useContext(GlobalContext)
 
-  // eslint-disable-next-line @stylistic/js/padding-line-between-statements
-  const updateURL = useCallback(() => {
-    const currentParams = new URLSearchParams(searchParams.toString())
+  function updateURL() {
+    const params = new URLSearchParams(searchParams.toString())
 
     if (isPersonal === 'true') {
-      currentParams.set('personal', 'true')
+      params.set('personal', 'true')
     } else {
-      currentParams.delete('personal')
+      params.delete('personal')
     }
 
     if (sortBy === 'plays') {
-      currentParams.set('sortBy', 'plays')
+      params.set('sortBy', 'plays')
     } else {
-      currentParams.delete('sortBy')
+      params.delete('sortBy')
     }
 
-    const search = currentParams.toString()
-    const query = search ? `?${search}` : ''
+    const query = params.toString() ? `?${params.toString()}` : ''
 
     router.push(`${pathname}${query}`)
-  }, [isPersonal, sortBy, router, pathname, searchParams])
+  }
 
-  // eslint-disable-next-line @stylistic/js/padding-line-between-statements
-  const handlePersonalChange = useCallback(
-    (e: ChangeEvent<HTMLSelectElement>) => {
-      setIsPersonal(e.target.value === 'true' ? 'true' : undefined)
-      updateURL()
-    },
-    [setIsPersonal, updateURL],
-  )
+  function handlePersonalChange(e: ChangeEvent<HTMLSelectElement>) {
+    setIsPersonal(e.target.value === 'true' ? 'true' : undefined)
+    updateURL()
+  }
 
-  // eslint-disable-next-line @stylistic/js/padding-line-between-statements
-  const handleSortChange = useCallback(
-    (e: ChangeEvent<HTMLSelectElement>) => {
-      setSortBy(e.target.value === 'plays' ? 'plays' : undefined)
-      updateURL()
-    },
-    [setSortBy, updateURL],
-  )
+  function handleSortChange(e: ChangeEvent<HTMLSelectElement>) {
+    setSortBy(e.target.value === 'plays' ? 'plays' : undefined)
+    updateURL()
+  }
 
   useEffect(() => {
-    const currentParams = new URLSearchParams(searchParams.toString())
-    const personalParam = currentParams.get('personal')
-    const sortByParam = currentParams.get('sortBy')
-
     setIsPersonal(personalParam === 'true' ? 'true' : undefined)
     setSortBy(sortByParam === 'plays' ? 'plays' : undefined)
-  }, [searchParams, setIsPersonal, setSortBy])
-
-  useEffect(() => {
-    updateURL()
-  }, [isPersonal, sortBy, updateURL])
+  }, [setIsPersonal, setSortBy, personalParam, sortByParam])
 
   return (
-    <div className={clsx('flex gap-3', className)}>
+    <div className={clsx('flex gap-2 sm:gap-3', className)}>
       <div className='input-wrapper'>
         <label htmlFor='style-select' className='sr-only'>
           Style
