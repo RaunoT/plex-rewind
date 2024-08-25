@@ -44,7 +44,8 @@ async function DashboardContent({ params, searchParams }: Props) {
   const session = await getServerSession(authOptions)
   const period = getPeriod(searchParams, settings)
   const isPersonal = searchParams.personal === 'true'
-  const sortByPlays = searchParams.sortBy === 'plays'
+  const sortByPlays =
+    searchParams.sortBy === 'plays' && settings.dashboard.isSortByPlaysActive
   const [items, totalDuration, totalSize, serverId] = await Promise.all([
     getItems(
       library,

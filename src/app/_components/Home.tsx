@@ -40,7 +40,7 @@ export default function Home({ settings, libraries }: Props) {
   const dashboardParams = new URLSearchParams({
     ...(isPersonal && { personal: 'true' }),
     ...(period && { period }),
-    ...(sortBy && { sortBy }),
+    ...(sortBy && settings.dashboard.isSortByPlaysActive && { sortBy }),
   })
 
   if (isLoading || status === 'loading') {

@@ -106,7 +106,7 @@ export default function Dashboard({
         </div>
       )}
 
-      {renderFilters('flex sm:hidden justify-end mt-6')}
+      {renderFilters('flex sm:hidden justify-end pt-6')}
     </>
   )
 }
