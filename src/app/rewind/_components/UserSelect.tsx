@@ -25,9 +25,9 @@ export default function UserSelect({ users, currentUserId }: Props) {
 
   return (
     <div className='input-wrapper absolute bottom-4 left-4 z-10'>
-      <div className='select-wrapper'>
+      <div className='select-wrapper select-wrapper--small'>
         <select
-          className='input'
+          className='input input--small'
           value={currentUserId}
           onChange={handleChange}
           ref={selectRef}

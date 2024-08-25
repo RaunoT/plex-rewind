@@ -24,7 +24,7 @@ export default async function RewindLayout({ children }: Props) {
   return (
     <div className='flex w-full max-w-2xl flex-1 flex-col sm:flex-none'>
       <PageTitle title='Rewind' />
-      <CardWrapper className='pb-20 sm:min-h-[80vh]'>{children}</CardWrapper>
+      <CardWrapper className='pb-16 sm:min-h-[80vh]'>{children}</CardWrapper>
     </div>
   )
 }
