@@ -10,6 +10,7 @@ export async function getItems(
   library: TautulliLibrary,
   period: number,
   userId?: string,
+  sortByPlays?: boolean,
 ) {
   const sectionType = library.section_type
   const statIdMap = {
@@ -25,7 +26,7 @@ export async function getItems(
   const itemsRes = await fetchTautulli<TautulliItem>('get_home_stats', {
     stat_id: statIdMap[sectionType],
     stats_count: 6,
-    stats_type: 'duration',
+    stats_type: sortByPlays ? 'plays' : 'duration',
     time_range: period,
     section_id: library.section_id,
     user_id: userId ? userId : '',

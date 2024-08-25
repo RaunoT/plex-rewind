@@ -129,6 +129,10 @@
     &[required] + .label {
       @apply required;
     }
+
+    &--small {
+      @apply px-2 py-1 text-sm;
+    }
   }
 
   .input-wrapper {
@@ -142,6 +146,10 @@
       @apply pointer-events-none absolute inset-y-2 right-12 -mr-px h-auto w-px bg-neutral-300;
 
       content: '';
+    }
+
+    &--small::after {
+      @apply right-7;
     }
   }
 
@@ -289,4 +297,11 @@ select.input {
   background-image: url('data:image/svg+xml;charset=US-ASCII,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23D4D4D4"><path d="M7 10l5 5 5-5z"/></svg>');
   background-position: right 12px center;
   background-size: 24px;
+
+  &--small {
+    @apply pr-10;
+
+    background-position: right 7px center;
+    background-size: 16px;
+  }
 }

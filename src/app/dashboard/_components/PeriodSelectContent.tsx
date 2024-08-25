@@ -1,6 +1,6 @@
 'use client'
 
-import { GlobalContext } from '@/app/_components/AppProvider'
+import { GlobalContext } from '@/app/_components/GlobalContextProvider'
 import { DashboardSearchParams } from '@/types/dashboard'
 import { Settings } from '@/types/settings'
 import { pluralize } from '@/utils/formatting'
@@ -30,10 +30,11 @@ function getPeriodValue(period: string, customPeriod: number): number {
 export default function PeriodSelectContent({ settings }: Props) {
   const pathname = usePathname()
   const searchParams = useSearchParams()
-  const { setPeriod } = useContext(GlobalContext)
+  const {
+    dashboard: { setPeriod },
+  } = useContext(GlobalContext)
   const periodParam = searchParams.get('period')
   const customPeriod = parseInt(settings.dashboard.customPeriod)
-  // Replace '30 days' with custom period if it exists
   const periodOptions = [
     { label: '7 days', value: '7days' },
     {
@@ -43,12 +44,11 @@ export default function PeriodSelectContent({ settings }: Props) {
     { label: 'Past year', value: 'pastYear' },
     { label: 'All time', value: 'allTime' },
   ]
-  const belongsToOptions = periodOptions.some(
-    (option) => option.value === periodParam,
-  )
-  const isDefaultSelected = !periodParam || !belongsToOptions
+  const validPeriodValues = periodOptions.map((option) => option.value)
+  const isValidPeriod = periodParam && validPeriodValues.includes(periodParam)
+  const isDefaultSelected = !isValidPeriod
 
-  // Sort period options
+  // Sort period options by value
   periodOptions.sort((a, b) => {
     return (
       getPeriodValue(a.value, customPeriod) -
@@ -74,11 +74,11 @@ export default function PeriodSelectContent({ settings }: Props) {
 
   useEffect(() => {
     setPeriod(
-      belongsToOptions && periodParam
+      isValidPeriod
         ? (periodParam as DashboardSearchParams['period'])
         : undefined,
     )
-  }, [periodParam, setPeriod, belongsToOptions])
+  }, [periodParam, setPeriod, isValidPeriod])
 
   return (
     <ul className='nav'>

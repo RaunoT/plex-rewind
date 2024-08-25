@@ -1,7 +1,6 @@
 'use client'
 
 import { Version } from '@/types'
-import { DashboardSearchParams } from '@/types/dashboard'
 import { Settings } from '@/types/settings'
 import { checkRequiredSettings } from '@/utils/helpers'
 import {
@@ -14,22 +13,9 @@ import { useSession } from 'next-auth/react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { createContext, ReactNode, useEffect, useState } from 'react'
+import { ReactNode, useEffect, useState } from 'react'
 import stars from '../_assets/stars.png'
-
-type GlobalContextProps = {
-  isDashboardPersonal: boolean
-  setIsDashboardPersonal: (isDashboardPersonal: boolean) => void
-  period: DashboardSearchParams['period']
-  setPeriod: (period: DashboardSearchParams['period']) => void
-}
-
-export const GlobalContext = createContext<GlobalContextProps>({
-  isDashboardPersonal: false,
-  setIsDashboardPersonal: () => {},
-  period: 'custom',
-  setPeriod: () => {},
-})
+import GlobalContextProvider from './GlobalContextProvider'
 
 type Props = {
   children: ReactNode
@@ -45,24 +31,6 @@ export default function AppProvider({ children, settings, version }: Props) {
     pathname.startsWith('/settings'),
   )
   const [settingsLink, setSettingsLink] = useState<string>('/settings/general')
-  const [isDashboardPersonal, setIsDashboardPersonal] = useState<boolean>(
-    () => {
-      if (typeof window !== 'undefined') {
-        return localStorage.getItem('dashboardPersonal') === 'true'
-      }
-
-      return false
-    },
-  )
-  const [period, setPeriod] = useState<DashboardSearchParams['period']>(() => {
-    if (typeof window !== 'undefined') {
-      return localStorage.getItem(
-        'dashboardPeriod',
-      ) as DashboardSearchParams['period']
-    }
-
-    return undefined
-  })
 
   useEffect(() => {
     switch (true) {
@@ -80,23 +48,8 @@ export default function AppProvider({ children, settings, version }: Props) {
     setIsSettings(pathname.startsWith('/settings'))
   }, [pathname])
 
-  useEffect(() => {
-    localStorage.setItem('dashboardPersonal', isDashboardPersonal.toString())
-  }, [isDashboardPersonal])
-
-  useEffect(() => {
-    localStorage.setItem('dashboardPeriod', period || '')
-  }, [period])
-
   return (
-    <GlobalContext.Provider
-      value={{
-        isDashboardPersonal,
-        setIsDashboardPersonal,
-        period,
-        setPeriod,
-      }}
-    >
+    <GlobalContextProvider>
       <main
         className={clsx(
           'flex h-full min-h-dvh flex-col items-center overflow-x-hidden px-4 py-8 sm:justify-center',
@@ -145,6 +98,6 @@ export default function AppProvider({ children, settings, version }: Props) {
 
         {children}
       </main>
-    </GlobalContext.Provider>
+    </GlobalContextProvider>
   )
 }

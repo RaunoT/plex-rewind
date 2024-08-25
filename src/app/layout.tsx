@@ -25,7 +25,6 @@ export const metadata: Metadata = {
   manifest: '/manifest.json',
   appleWebApp: {
     title: META_TITLE,
-    capable: true,
     statusBarStyle: 'black',
   },
   openGraph: {
