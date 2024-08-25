@@ -3,7 +3,7 @@
 import { GlobalContext } from '@/app/_components/GlobalContextProvider'
 import clsx from 'clsx'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
-import { ChangeEvent, useContext, useEffect } from 'react'
+import { ChangeEvent, useCallback, useContext, useEffect } from 'react'
 
 type Props = {
   className?: string
@@ -23,7 +23,8 @@ export default function DashboardFilters({
     dashboard: { isPersonal, setIsPersonal, sortBy, setSortBy },
   } = useContext(GlobalContext)
 
-  function updateURL() {
+  // eslint-disable-next-line @stylistic/js/padding-line-between-statements
+  const updateURL = useCallback(() => {
     const params = new URLSearchParams(searchParams.toString())
 
     if (isPersonal === 'true') {
@@ -41,17 +42,19 @@ export default function DashboardFilters({
     const query = params.toString() ? `?${params.toString()}` : ''
 
     router.push(`${pathname}${query}`)
-  }
+  }, [isPersonal, sortBy, pathname, searchParams, router])
 
   function handlePersonalChange(e: ChangeEvent<HTMLSelectElement>) {
     setIsPersonal(e.target.value === 'true' ? 'true' : undefined)
-    updateURL()
   }
 
   function handleSortChange(e: ChangeEvent<HTMLSelectElement>) {
     setSortBy(e.target.value === 'plays' ? 'plays' : undefined)
-    updateURL()
   }
+
+  useEffect(() => {
+    updateURL()
+  }, [isPersonal, sortBy, updateURL])
 
   useEffect(() => {
     setIsPersonal(personalParam === 'true' ? 'true' : undefined)
