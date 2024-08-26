@@ -1,5 +1,5 @@
 import { Settings } from '@/types/settings'
-import { SETTINGS_PAGES } from './constants'
+import { PERIODS, SETTINGS_PAGES } from './constants'
 
 const requiredSettings = [
   'connection.tautulliUrl',
@@ -8,6 +8,8 @@ const requiredSettings = [
   'connection.complete',
   'general.complete',
   'rewind.complete',
+  'dashboard.customPeriod',
+  'dashboard.startDate',
   'dashboard.complete',
 ]
 
@@ -28,4 +30,12 @@ export function checkRequiredSettings(settings: Settings): string | null {
 export function getSettingsPage(missingSettingKey: string): string | undefined {
   return SETTINGS_PAGES.find((page) => missingSettingKey.startsWith(page.key))
     ?.href
+}
+
+export function getRewindDateRange(settings: Settings) {
+  const startDate = settings.rewind.startDate || PERIODS.pastYear.string
+  const endDate =
+    settings.rewind.endDate || new Date().toISOString().split('T')[0]
+
+  return { startDate, endDate }
 }

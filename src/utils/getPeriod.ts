@@ -7,24 +7,45 @@ export default function getPeriod(
   settings: Settings,
 ) {
   const periodSearchParams = searchParams.period
-  const defaultPeriod = settings.dashboard.defaultPeriod
   const customPeriod = parseInt(settings.dashboard.customPeriod)
 
-  let period = PERIODS[defaultPeriod] || PERIODS['30days']
+  function getCustomPeriod() {
+    const startDate = new Date(Date.now() - customPeriod * 24 * 60 * 60 * 1000)
 
-  if (periodSearchParams && PERIODS[periodSearchParams]) {
-    period = PERIODS[periodSearchParams]
-  } else if (defaultPeriod === 'custom' || periodSearchParams === 'custom') {
-    const DAYS_AGO_CUSTOM: Date = new Date(
-      new Date().setDate(new Date().getDate() - customPeriod),
+    return createPeriodObject(startDate, customPeriod)
+  }
+
+  function getAllTimePeriod() {
+    const startDate = new Date(settings.dashboard.startDate)
+    const daysAgo = Math.ceil(
+      (Date.now() - startDate.getTime()) / (24 * 60 * 60 * 1000),
     )
 
-    period = {
-      date: DAYS_AGO_CUSTOM.toISOString(),
-      string: DAYS_AGO_CUSTOM.toISOString().split('T')[0],
-      daysAgo: customPeriod,
+    return createPeriodObject(startDate, daysAgo)
+  }
+
+  function createPeriodObject(date: Date, daysAgo: number) {
+    return {
+      date: date.toISOString(),
+      string: date.toISOString().split('T')[0],
+      daysAgo,
     }
   }
+
+  function getPeriodFromKey(key: string) {
+    switch (key) {
+      case 'custom':
+        return getCustomPeriod()
+      case 'allTime':
+        return getAllTimePeriod()
+      default:
+        return PERIODS[key]
+    }
+  }
+
+  const period =
+    (periodSearchParams && getPeriodFromKey(periodSearchParams)) ||
+    getPeriodFromKey('custom')
 
   return period
 }

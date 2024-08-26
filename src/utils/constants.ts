@@ -2,15 +2,8 @@ import { Settings } from '@/types/settings'
 import { env } from 'next-runtime-env'
 
 const DAYS_AGO_7: Date = new Date(new Date().setDate(new Date().getDate() - 7))
-const DAYS_AGO_30: Date = new Date(
-  new Date().setDate(new Date().getDate() - 30),
-)
-const CURRENT_YEAR: Date = new Date(new Date().getFullYear(), 0, 1)
 const PAST_YEAR: Date = new Date(
   new Date().setFullYear(new Date().getFullYear() - 1),
-)
-const ALL_TIME: Date = new Date(
-  env('NEXT_PUBLIC_STATISTICS_START_DATE') || '2018-01-01',
 )
 
 export type Period = {
@@ -25,30 +18,11 @@ export const PERIODS: { [key: string]: Period } = {
     string: DAYS_AGO_7.toISOString().split('T')[0],
     daysAgo: 7,
   },
-  '30days': {
-    date: DAYS_AGO_30.toISOString(),
-    string: DAYS_AGO_30.toISOString().split('T')[0],
-    daysAgo: 30,
-  },
-  thisYear: {
-    date: CURRENT_YEAR.toISOString(),
-    string: CURRENT_YEAR.toISOString().split('T')[0],
-    daysAgo: Math.ceil(
-      (new Date().getTime() - CURRENT_YEAR.getTime()) / (1000 * 3600 * 24),
-    ),
-  },
   pastYear: {
     date: PAST_YEAR.toISOString(),
     string: PAST_YEAR.toISOString().split('T')[0],
     daysAgo: Math.ceil(
       (new Date().getTime() - PAST_YEAR.getTime()) / (1000 * 3600 * 24),
-    ),
-  },
-  allTime: {
-    date: ALL_TIME.toISOString(),
-    string: ALL_TIME.toISOString().split('T')[0],
-    daysAgo: Math.ceil(
-      (new Date().getTime() - ALL_TIME.getTime()) / (1000 * 3600 * 24),
     ),
   },
 }
@@ -82,6 +56,8 @@ export const DEFAULT_SETTINGS: Settings = {
   rewind: {
     isActive: true,
     isLibrariesSizeAndCountActive: true,
+    startDate: '',
+    endDate: '',
     complete: false,
   },
   dashboard: {
@@ -96,9 +72,9 @@ export const DEFAULT_SETTINGS: Settings = {
       'requests',
     ],
     activeTotalStatistics: ['size', 'duration', 'count', 'requests'],
-    defaultStyle: 'general',
-    defaultPeriod: 'custom',
+    isSortByPlaysActive: true,
     customPeriod: '30',
+    startDate: '2010-01-01',
     complete: false,
   },
 }

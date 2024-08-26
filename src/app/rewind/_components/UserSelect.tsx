@@ -14,6 +14,7 @@ export default function UserSelect({ users, currentUserId }: Props) {
   const searchParams = useSearchParams()
   const selectRef = useRef<HTMLSelectElement>(null)
 
+  // eslint-disable-next-line @stylistic/js/padding-line-between-statements
   const handleChange = (e: ChangeEvent<HTMLSelectElement>) => {
     const newParams = new URLSearchParams(searchParams.toString())
 
@@ -24,9 +25,9 @@ export default function UserSelect({ users, currentUserId }: Props) {
 
   return (
     <div className='input-wrapper absolute bottom-4 left-4 z-10'>
-      <div className='select-wrapper'>
+      <div className='select-wrapper select-wrapper--small'>
         <select
-          className='input'
+          className='input input--small'
           value={currentUserId}
           onChange={handleChange}
           ref={selectRef}

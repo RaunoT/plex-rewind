@@ -70,6 +70,10 @@
     @apply hover:opacity-80;
   }
 
+  .link-dark {
+    @apply hover:opacity-60;
+  }
+
   .nav {
     @apply flex flex-wrap items-center justify-center gap-3 gap-y-1 text-xs font-medium uppercase sm:gap-4 sm:text-sm 2xl:text-base;
   }
@@ -116,19 +120,25 @@
 
     &:focus {
       @apply focus-ring bg-neutral-400 placeholder:text-neutral-300;
-
-      + .label {
-        @apply text-white;
-      }
     }
 
-    &[required] + .label {
+    &[required] + .label > .label-wrapper {
       @apply required;
+    }
+
+    &--small {
+      @apply px-2 py-1 text-sm;
     }
   }
 
   .input-wrapper {
     @apply relative flex flex-col-reverse gap-2 sm:flex-row-reverse sm:items-center;
+
+    &:focus-within {
+      .label {
+        @apply text-white;
+      }
+    }
   }
 
   .select-wrapper {
@@ -138,6 +148,10 @@
       @apply pointer-events-none absolute inset-y-2 right-12 -mr-px h-auto w-px bg-neutral-300;
 
       content: '';
+    }
+
+    &--small::after {
+      @apply right-7;
     }
   }
 
@@ -174,39 +188,6 @@
       }
 
       .label {
-        @apply text-white;
-      }
-    }
-  }
-
-  .datefield {
-    @apply input mr-auto flex w-fit gap-1;
-
-    .datefield-segment {
-      @apply px-1.5;
-
-      &[data-type='literal'] {
-        @apply p-0 text-neutral-400;
-      }
-
-      &[data-placeholder] {
-        @apply text-neutral-400;
-      }
-
-      &:focus {
-        @apply rounded-lg bg-neutral-500 outline-none;
-      }
-    }
-
-    &:focus-within {
-      .datefield-segment {
-        &[data-placeholder],
-        &[data-type='literal'] {
-          @apply text-neutral-300;
-        }
-      }
-
-      ~ .label {
         @apply text-white;
       }
     }
@@ -311,10 +292,18 @@ input[type='number'] {
   appearance: textfield;
 }
 
+.select-input,
 select.input {
   @apply relative cursor-pointer appearance-none bg-no-repeat pr-14;
 
   background-image: url('data:image/svg+xml;charset=US-ASCII,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23D4D4D4"><path d="M7 10l5 5 5-5z"/></svg>');
   background-position: right 12px center;
   background-size: 24px;
+
+  &--small {
+    @apply pr-10;
+
+    background-position: right 7px center;
+    background-size: 16px;
+  }
 }

@@ -18,7 +18,7 @@ const schema = z.object({
   activeTotalStatistics: z
     .array(z.enum(['size', 'duration', 'count', 'requests']))
     .optional(),
-  defaultPeriod: z.string().optional(),
+  isSortByPlaysActive: z.boolean().optional(),
   customPeriod: z
     .string()
     .refine(
@@ -28,11 +28,13 @@ const schema = z.object({
         return number > 1 && number <= 3000
       },
       {
-        message: 'Dashboard - custom period must be > 1 and <= 3000',
+        message: 'Custom period must be > 1 and <= 3000',
       },
     )
     .optional(),
-  defaultStyle: z.string().optional(),
+  startDate: z.string().refine((val) => !isNaN(Date.parse(val)), {
+    message: 'Invalid start date',
+  }),
   complete: z.boolean(),
 })
 
@@ -54,9 +56,9 @@ export default async function saveDashboardSettings(
     data.activeTotalStatistics = formData.getAll(
       'activeTotalStatistics',
     ) as DashboardTotalStatistics
-    data.defaultPeriod = formData.get('defaultPeriod') as string
+    data.isSortByPlaysActive = formData.get('isSortByPlaysActive') === 'on'
     data.customPeriod = formData.get('customPeriod') as string
-    data.defaultStyle = formData.get('defaultStyle') as string
+    data.startDate = formData.get('startDate') as string
   }
 
   return await updateSettings(schema, data, 'dashboard')

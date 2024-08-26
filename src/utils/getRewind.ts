@@ -5,11 +5,12 @@ import {
   TautulliMediaReturnType,
   TautulliMediaType,
 } from '@/types/tautulli'
-import { PERIODS } from './constants'
 import { fetchOverseerrStats } from './fetchOverseerr'
 import fetchTautulli from './fetchTautulli'
 import { secondsToTime, timeToSeconds } from './formatting'
 import getMediaAdditionalData from './getMediaAdditionalData'
+import getSettings from './getSettings'
+import { getRewindDateRange } from './helpers'
 
 export async function getTopMediaStats(
   userId: string,
@@ -27,12 +28,14 @@ export async function getTopMediaStats(
   }
 
   async function fetchLibraryData(library: TautulliLibrary) {
+    const { startDate, endDate } = getRewindDateRange(getSettings())
     const res = await fetchTautulli<{
       recordsFiltered: number
       total_duration: string
     }>('get_history', {
       user_id: userId,
-      after: PERIODS.pastYear.string,
+      after: startDate,
+      before: endDate,
       length: 0,
       media_type: mediaTypeMap[library.section_type],
       section_id: library.section_id,
@@ -77,7 +80,6 @@ export async function getTopMediaStats(
 }
 
 export async function getlibrariesTotalSize(libraries: TautulliLibrary[]) {
-  let totalSize = 0
   const res = await Promise.all(
     libraries.map((library) =>
       fetchTautulli<{ total_file_size: number }>('get_library_media_info', {
@@ -86,6 +88,8 @@ export async function getlibrariesTotalSize(libraries: TautulliLibrary[]) {
       }),
     ),
   )
+
+  let totalSize = 0
 
   for (const library of res) {
     const librarySize = library?.response?.data?.total_file_size
@@ -99,16 +103,19 @@ export async function getlibrariesTotalSize(libraries: TautulliLibrary[]) {
 }
 
 export async function getLibrariesTotalDuration(libraries: TautulliLibrary[]) {
-  let totalDuration = 0
+  const { startDate, endDate } = getRewindDateRange(getSettings())
   const res = await Promise.all(
     libraries.map((library) => {
       return fetchTautulli<{ total_duration: string }>('get_history', {
         section_id: library.section_id,
-        after: PERIODS.pastYear.string,
+        after: startDate,
+        before: endDate,
         length: 0,
       })
     }),
   )
+
+  let totalDuration = 0
 
   for (const library of res) {
     const duration = library?.response?.data?.total_duration
@@ -125,17 +132,20 @@ export async function getUserTotalDuration(
   userId: string,
   libraries: TautulliLibrary[],
 ) {
-  let totalDuration = 0
+  const { startDate, endDate } = getRewindDateRange(getSettings())
   const res = await Promise.all(
     libraries.map((library) => {
       return fetchTautulli<{ total_duration: string }>('get_history', {
         user_id: userId,
         section_id: library.section_id,
-        after: PERIODS.pastYear.string,
+        after: startDate,
+        before: endDate,
         length: 0,
       })
     }),
   )
+
+  let totalDuration = 0
 
   for (const library of res) {
     const duration = library?.response?.data?.total_duration
@@ -152,12 +162,14 @@ export async function getTopMediaItems(
   userId: string,
   libraries: TautulliLibrary[],
 ) {
+  const { startDate, endDate } = getRewindDateRange(getSettings())
   const res = await Promise.all(
     libraries.map((library) => {
       return fetchTautulli<TautulliItem[]>('get_home_stats', {
         user_id: userId,
         section_id: library.section_id,
-        time_range: PERIODS.pastYear.daysAgo,
+        before: endDate,
+        after: startDate,
         stats_count: 5,
         stats_type: 'duration',
       })
@@ -197,7 +209,8 @@ export async function getTopMediaItems(
 }
 
 export async function getRequestsTotals(userId: string) {
-  const requests = await fetchOverseerrStats('request', PERIODS.pastYear.date)
+  const { startDate, endDate } = getRewindDateRange(getSettings())
+  const requests = await fetchOverseerrStats('request', startDate, endDate)
 
   return {
     total: requests.length,

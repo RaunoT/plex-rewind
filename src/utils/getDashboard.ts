@@ -6,38 +6,41 @@ import getMediaAdditionalData, {
   mapWatchedDataByRatingKey,
 } from './getMediaAdditionalData'
 
+const statIdMap = {
+  movie: 'top_movies',
+  show: 'top_tv',
+  artist: 'top_music',
+}
+const popularIdMap = {
+  movie: 'popular_movies',
+  show: 'popular_tv',
+  artist: 'popular_music',
+}
+
 export async function getItems(
   library: TautulliLibrary,
   period: number,
   userId?: string,
+  sortByPlays?: boolean,
 ) {
-  let items = []
   const sectionType = library.section_type
-  const statIdMap = {
-    movie: 'top_movies',
-    show: 'top_tv',
-    artist: 'top_music',
-  }
-  const popularIdMap = {
-    movie: 'popular_movies',
-    show: 'popular_tv',
-    artist: 'popular_music',
-  }
   const itemsRes = await fetchTautulli<TautulliItem>('get_home_stats', {
     stat_id: statIdMap[sectionType],
     stats_count: 6,
-    stats_type: 'duration',
+    stats_type: sortByPlays ? 'plays' : 'duration',
     time_range: period,
     section_id: library.section_id,
     user_id: userId ? userId : '',
   })
+
+  let items = []
 
   items = itemsRes?.response?.data?.rows || []
 
   if (items.length) {
     const usersWatched = await fetchTautulli<TautulliItem>('get_home_stats', {
       stat_id: popularIdMap[sectionType],
-      stats_count: 100, // https://github.com/Tautulli/Tautulli/issues/2103
+      stats_count: 100, // TODO: https://github.com/Tautulli/Tautulli/issues/2103
       time_range: period,
     })
     const usersWatchedData = usersWatched?.response?.data?.rows

@@ -33,7 +33,7 @@ async function RewindContent({ searchParams }: Props) {
   let user = session?.user
   let users: TautulliUser[] | undefined
 
-  if (session?.user?.isAdmin || settings.general.isOutsideAccess) {
+  if (session?.user.isAdmin || settings.general.isOutsideAccess) {
     const res = await fetchTautulli<TautulliUser[]>('get_users')
 
     users = res?.response?.data?.filter(
@@ -114,7 +114,7 @@ async function RewindContent({ searchParams }: Props) {
   return (
     <>
       <RewindStories userRewind={userRewind} settings={settings} />
-      {session?.user?.isAdmin && users && (
+      {session?.user.isAdmin && users && (
         <UserSelect users={users} currentUserId={user.id} />
       )}
     </>
