@@ -120,10 +120,6 @@
 
     &:focus {
       @apply focus-ring bg-neutral-400 placeholder:text-neutral-300;
-
-      + .label {
-        @apply text-white;
-      }
     }
 
     &[required] + .label > .label-wrapper {
@@ -137,6 +133,12 @@
 
   .input-wrapper {
     @apply relative flex flex-col-reverse gap-2 sm:flex-row-reverse sm:items-center;
+
+    &:focus-within {
+      .label {
+        @apply text-white;
+      }
+    }
   }
 
   .select-wrapper {

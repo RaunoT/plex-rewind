@@ -60,7 +60,10 @@ export default function DatePicker({
     >
       <Group className='select-wrapper flex cursor-pointer'>
         <div
-          className='input select-input focus-within:focus-ring !bg-none'
+          className={clsx(
+            'input select-input focus-within:focus-ring !bg-none',
+            isOpen && 'focus-ring bg-neutral-400',
+          )}
           onClick={() => setIsOpen(true)}
         >
           <I18nProvider locale='en-GB'>
@@ -88,7 +91,7 @@ export default function DatePicker({
           <CalendarDaysIcon className='absolute inset-y-0 right-3.5 my-auto size-5 text-neutral-300' />
         </div>
       </Group>
-      <Label className='label'>
+      <Label className={clsx('label', isOpen && 'text-white')}>
         <span className={clsx('label-wrapper', required && 'required')}>
           {label}
         </span>{' '}
