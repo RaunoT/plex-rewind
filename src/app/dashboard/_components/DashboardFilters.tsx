@@ -8,11 +8,13 @@ import { ChangeEvent, useCallback, useContext, useEffect } from 'react'
 type Props = {
   className?: string
   isSortByPlaysActive: boolean
+  personalFilter: boolean
 }
 
 export default function DashboardFilters({
   className,
   isSortByPlaysActive,
+  personalFilter,
 }: Props) {
   const router = useRouter()
   const pathname = usePathname()
@@ -63,23 +65,25 @@ export default function DashboardFilters({
 
   return (
     <div className={clsx('mt-auto flex gap-2 sm:gap-3', className)}>
-      <div className='input-wrapper'>
-        <label htmlFor='style-select' className='sr-only'>
-          Style
-        </label>
-        <div className='select-wrapper select-wrapper--small'>
-          <select
-            id='style-select'
-            className='input input--small'
-            value={isPersonal === 'true' ? 'true' : ''}
-            onChange={handlePersonalChange}
-          >
-            <option disabled>Style</option>
-            <option value=''>General</option>
-            <option value='true'>Personal</option>
-          </select>
+      {personalFilter && (
+        <div className='input-wrapper'>
+          <label htmlFor='style-select' className='sr-only'>
+            Style
+          </label>
+          <div className='select-wrapper select-wrapper--small'>
+            <select
+              id='style-select'
+              className='input input--small'
+              value={isPersonal === 'true' ? 'true' : ''}
+              onChange={handlePersonalChange}
+            >
+              <option disabled>Style</option>
+              <option value=''>General</option>
+              <option value='true'>Personal</option>
+            </select>
+          </div>
         </div>
-      </div>
+      )}
       {isSortByPlaysActive && (
         <div className='input-wrapper'>
           <label htmlFor='sort-select' className='sr-only'>

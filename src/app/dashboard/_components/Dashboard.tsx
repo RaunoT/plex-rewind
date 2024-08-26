@@ -37,12 +37,13 @@ export default function Dashboard({
   isLoggedIn,
 }: Props) {
   function renderFilters(className?: string) {
-    if (type !== 'users' && isLoggedIn) {
+    if (type !== 'users') {
       return (
         <Suspense>
           <DashboardFilters
             className={className}
             isSortByPlaysActive={settings.dashboard.isSortByPlaysActive}
+            personalFilter={isLoggedIn}
           />
         </Suspense>
       )
