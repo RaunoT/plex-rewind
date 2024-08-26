@@ -71,7 +71,7 @@ export default function AppProvider({ children, settings, version }: Props) {
         </div>
 
         <div className='absolute right-3 top-3 flex items-center gap-3 sm:right-4 sm:top-4'>
-          {version.hasUpdate && session?.user?.isAdmin && (
+          {version.hasUpdate && session?.user.isAdmin && (
             <a
               href='https://github.com/RaunoT/plex-rewind/releases'
               aria-label='Update available'
@@ -81,7 +81,7 @@ export default function AppProvider({ children, settings, version }: Props) {
               <ArrowPathIcon className='size-6' />
             </a>
           )}
-          {!missingSetting && session?.user?.isAdmin && (
+          {!missingSetting && session?.user.isAdmin && (
             <Link
               href={isSettings ? '/' : settingsLink}
               aria-label={isSettings ? 'Close settings' : 'Open settings'}
