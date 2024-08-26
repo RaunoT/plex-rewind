@@ -27,9 +27,9 @@ Keep an eye on the [issues page](https://github.com/RaunoT/plex-rewind/issues) t
 
 ## Preview
 
-![Dashboard](https://i.imgur.com/C4RVCVJ.png 'Dashboard')
+![Dashboard](https://i.imgur.com/6UKEp7v.png 'Dashboard')
 
-![Rewind](https://i.imgur.com/wB2x9X4.png 'Rewind')
+![Rewind](https://i.imgur.com/w536oB5.png 'Rewind')
 
 ## Getting started
 
