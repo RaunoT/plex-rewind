@@ -12,6 +12,7 @@ export default async function getVersion(): Promise<Version> {
   const isSHA = /^[0-9a-f]{40}$/i.test(tag) // Check if tag is a 40-character SHA
   const currentVersion = tag ? (isSHA ? tag : `v${tag}`) : 'local' // Prefix with 'v' if not a SHA
   const isDevelop = currentVersion.includes('develop')
+  const channel = tag ? (isDevelop || isSHA ? 'develop' : 'stable') : 'local'
 
   let latestVersion = currentVersion
 
@@ -55,5 +56,6 @@ export default async function getVersion(): Promise<Version> {
     hasUpdate: latestVersion !== currentVersion,
     latestVersion,
     currentVersion,
+    channel,
   }
 }
