@@ -126,7 +126,7 @@
       }
     }
 
-    &[required] + .label {
+    &[required] + .label > .label-wrapper {
       @apply required;
     }
 

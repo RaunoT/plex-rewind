@@ -41,7 +41,9 @@ export default function GeneralSettingsForm({ settings, libraries }: Props) {
                 </Checkbox>
               ))}
             </div>
-            <Label className='label label--start'>Active libraries</Label>
+            <Label className='label label--start'>
+              <span className='label-wrapper'>Active libraries</span>
+            </Label>
           </CheckboxGroup>
         ) : (
           <p
@@ -65,7 +67,7 @@ export default function GeneralSettingsForm({ settings, libraries }: Props) {
             >
               <div className='indicator'></div>
               <span className='label'>
-                TMDB only posters
+                <span className='label-wrapper'>TMDB only posters</span>
                 <small>
                   Ignore Plex posters for tv/movies.
                   <br /> By default, TMDB is a fallback.
@@ -82,7 +84,7 @@ export default function GeneralSettingsForm({ settings, libraries }: Props) {
             >
               <div className='indicator'></div>
               <span className='label'>
-                Allow outside access
+                <span className='label-wrapper'>Allow outside access</span>
                 <small>Access without login.</small>
               </span>
             </Switch>
@@ -97,7 +99,9 @@ export default function GeneralSettingsForm({ settings, libraries }: Props) {
                 defaultValue={generalSettings.googleAnalyticsId}
                 placeholder='G-XXXXXXXXXX'
               />
-              <span className='label'>Google Analytics ID</span>
+              <span className='label'>
+                <span className='label-wrapper'>Google Analytics ID</span>
+              </span>
             </label>
           </section>
         </>

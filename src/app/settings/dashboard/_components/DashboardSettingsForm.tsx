@@ -29,7 +29,9 @@ export default function DashboardSettingsForm({ settings }: Props) {
           onChange={setIsActive}
         >
           <div className='indicator'></div>
-          <span className='label'>Enabled</span>
+          <span className='label'>
+            <span className='label-wrapper'>Enabled</span>
+          </span>
         </Switch>
         {isActive && (
           <Switch
@@ -38,7 +40,9 @@ export default function DashboardSettingsForm({ settings }: Props) {
             defaultSelected={dashboardSettings.isUsersPageActive}
           >
             <div className='indicator'></div>
-            <span className='label'>Users page</span>
+            <span className='label'>
+              <span className='label-wrapper'>Users page</span>
+            </span>
           </Switch>
         )}
       </section>
@@ -82,7 +86,9 @@ export default function DashboardSettingsForm({ settings }: Props) {
                   </Checkbox>
                 )}
               </div>
-              <Label className='label label--start'>Item statistics</Label>
+              <Label className='label label--start'>
+                <span className='label-wrapper'>Item statistics</span>
+              </Label>
             </CheckboxGroup>
             <CheckboxGroup
               className='input-wrapper'
@@ -112,7 +118,9 @@ export default function DashboardSettingsForm({ settings }: Props) {
                   </Checkbox>
                 )}
               </div>
-              <Label className='label label--start'>Totals statistics</Label>
+              <Label className='label label--start'>
+                <span className='label-wrapper'>Totals statistics</span>
+              </Label>
             </CheckboxGroup>
             <Switch
               className='switch'
@@ -120,7 +128,9 @@ export default function DashboardSettingsForm({ settings }: Props) {
               defaultSelected={dashboardSettings.isSortByPlaysActive}
             >
               <div className='indicator'></div>
-              <span className='label'>Sort by plays filter</span>
+              <span className='label'>
+                <span className='label-wrapper'>Sort by plays filter</span>
+              </span>
             </Switch>
           </section>
           <section className='group-settings group'>
@@ -139,7 +149,9 @@ export default function DashboardSettingsForm({ settings }: Props) {
                 max='3000'
                 required
               />
-              <span className='label'>Custom period</span>
+              <span className='label'>
+                <span className='label-wrapper'>Custom period</span>
+              </span>
             </label>
             <DatePicker
               label='Start date'
@@ -149,6 +161,7 @@ export default function DashboardSettingsForm({ settings }: Props) {
                 dashboardSettings.startDate ||
                 DEFAULT_SETTINGS.dashboard.startDate
               }
+              required
             />
           </section>
         </>

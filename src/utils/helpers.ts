@@ -8,6 +8,8 @@ const requiredSettings = [
   'connection.complete',
   'general.complete',
   'rewind.complete',
+  'dashboard.customPeriod',
+  'dashboard.startDate',
   'dashboard.complete',
 ]
 

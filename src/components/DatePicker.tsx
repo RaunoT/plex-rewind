@@ -33,6 +33,7 @@ type Props = {
   helperText?: string
   name: string
   defaultValue?: string
+  required?: boolean
 }
 
 export default function DatePicker({
@@ -40,6 +41,7 @@ export default function DatePicker({
   helperText,
   name,
   defaultValue,
+  required,
 }: Props) {
   const [isOpen, setIsOpen] = useState(false)
   const [value, setValue] = useState<CalendarDate | null>(
@@ -54,6 +56,7 @@ export default function DatePicker({
       onOpenChange={setIsOpen}
       className='input-wrapper'
       name={name}
+      isRequired={required}
     >
       <Group className='select-wrapper flex cursor-pointer'>
         <div
@@ -86,7 +89,10 @@ export default function DatePicker({
         </div>
       </Group>
       <Label className='label'>
-        {label} {helperText && <small>{helperText}</small>}
+        <span className={clsx('label-wrapper', required && 'required')}>
+          {label}
+        </span>{' '}
+        {helperText && <small>{helperText}</small>}
       </Label>
       <Popover>
         <Dialog>

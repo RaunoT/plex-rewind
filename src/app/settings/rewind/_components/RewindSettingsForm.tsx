@@ -27,7 +27,9 @@ export default function RewindSettingsForm({ settings }: Props) {
           onChange={setIsActive}
         >
           <div className='indicator' />
-          <span className='label'>Enabled</span>
+          <span className='label'>
+            <span className='label-wrapper'>Enabled</span>
+          </span>
         </Switch>
       </section>
       {isActive && (
@@ -41,7 +43,9 @@ export default function RewindSettingsForm({ settings }: Props) {
             >
               <div className='indicator' />
               <span className='label'>
-                Libraries size & count card
+                <span className='label-wrapper'>
+                  Libraries size & count card
+                </span>
                 <small>
                   Disable if you don&apos;t want to rely on Tautulli for these
                   stats.
