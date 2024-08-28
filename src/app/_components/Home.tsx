@@ -27,10 +27,10 @@ export default function Home({ settings, libraries }: Props) {
   } = useContext(GlobalContext)
   const { data: session, status } = useSession()
   const isLoggedIn = status === 'authenticated'
-  const dashboardSlug = kebabCase(
-    libraries[0]?.section_name ||
-      (settings.dashboard.isUsersPageActive ? 'users' : ''),
-  )
+  const dashboardSlug =
+    settings.general.activeLibraries.find((libSlug) =>
+      libraries.some((lib) => kebabCase(lib.section_name) === libSlug),
+    ) || (settings.dashboard.isUsersPageActive ? 'users' : '')
   const showRewind = settings.rewind.isActive && isLoggedIn && !missingSetting
   const showDashboard =
     !missingSetting &&
