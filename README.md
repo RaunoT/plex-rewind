@@ -27,9 +27,9 @@ Keep an eye on the [issues page](https://github.com/RaunoT/plex-rewind/issues) t
 
 ## Preview
 
-![Dashboard](https://i.imgur.com/C4RVCVJ.png 'Dashboard')
+![Dashboard](https://i.imgur.com/6UKEp7v.png 'Dashboard')
 
-![Rewind](https://i.imgur.com/wB2x9X4.png 'Rewind')
+![Rewind](https://i.imgur.com/w536oB5.png 'Rewind')
 
 ## Getting started
 
@@ -52,6 +52,8 @@ services:
 ```
 
 > _NOTE: If you run into authentication issues, try setting `NEXTAUTH_URL` and `NEXT_PUBLIC_SITE_URL` to your external Docker IP, instead of localhost. For example `http://192.168.1.1:8383`._
+
+For those that need it, a simple status page is also available at `/api/status`.
 
 ### Unraid
 

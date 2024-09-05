@@ -43,7 +43,7 @@ export default function DatePicker({
   defaultValue,
   required,
 }: Props) {
-  const [isOpen, setIsOpen] = useState(false)
+  const [isOpen, setIsOpen] = useState<boolean>(false)
   const [value, setValue] = useState<CalendarDate | null>(
     defaultValue ? parseDate(defaultValue) : null,
   )
