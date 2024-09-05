@@ -5,14 +5,15 @@
       {
         "preset": "conventionalcommits",
         "releaseRules": [
+          { "breaking": true, "release": "major" },
           { "type": "feat", "release": "minor" },
           { "type": "fix", "release": "patch" },
           { "type": "ui", "release": "patch" },
           { "type": "perf", "release": "patch" },
           { "type": "build", "release": "patch" },
-          { "type": "ci", "release": "patch" },
           { "type": "revert", "release": "patch" },
           { "type": "docs", "release": false },
+          { "type": "ci", "release": false },
           { "type": "chore", "release": false },
           { "type": "refactor", "release": false },
           { "type": "style", "release": false },
@@ -35,16 +36,21 @@
               "hidden": false
             },
             { "type": "build", "section": "🛠️ Other Changes", "hidden": false },
-            { "type": "ci", "section": "🛠️ Other Changes", "hidden": false },
             { "type": "revert", "section": "⏪ Reverts", "hidden": false },
             { "type": "docs", "section": "📝 Documentation", "hidden": false },
+            { "type": "ci", "hidden": true },
             { "type": "chore", "hidden": true },
             {
               "type": "refactor",
               "hidden": true
             },
             { "type": "style", "hidden": true },
-            { "type": "test", "hidden": true }
+            { "type": "test", "hidden": true },
+            {
+              "type": "breaking",
+              "section": "❗ Breaking Changes",
+              "hidden": false
+            }
           ]
         }
       }
