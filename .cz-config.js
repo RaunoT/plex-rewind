@@ -34,5 +34,11 @@ module.exports = {
       name: 'test:     Adding missing tests or correcting existing tests',
     },
   ],
-  scopes: [{ name: 'rewind' }, { name: 'dashboard' }, { name: 'config' }],
+  scopes: [
+    { name: 'rewind' },
+    { name: 'dashboard' },
+    { name: 'config' },
+    { name: 'api' },
+    { name: 'dependencies' },
+  ],
 }

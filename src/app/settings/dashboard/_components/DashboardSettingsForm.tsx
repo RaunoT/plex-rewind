@@ -1,5 +1,6 @@
 'use client'
 
+import DatePicker from '@/components/DatePicker'
 import { Settings } from '@/types/settings'
 import { DEFAULT_SETTINGS } from '@/utils/constants'
 import { useState } from 'react'
@@ -28,7 +29,9 @@ export default function DashboardSettingsForm({ settings }: Props) {
           onChange={setIsActive}
         >
           <div className='indicator'></div>
-          <span className='label'>Enabled</span>
+          <span className='label'>
+            <span className='label-wrapper'>Enabled</span>
+          </span>
         </Switch>
         {isActive && (
           <Switch
@@ -37,7 +40,9 @@ export default function DashboardSettingsForm({ settings }: Props) {
             defaultSelected={dashboardSettings.isUsersPageActive}
           >
             <div className='indicator'></div>
-            <span className='label'>Users page</span>
+            <span className='label'>
+              <span className='label-wrapper'>Users page</span>
+            </span>
           </Switch>
         )}
       </section>
@@ -81,7 +86,9 @@ export default function DashboardSettingsForm({ settings }: Props) {
                   </Checkbox>
                 )}
               </div>
-              <Label className='label label--start'>Item statistics</Label>
+              <Label className='label label--start'>
+                <span className='label-wrapper'>Item statistics</span>
+              </Label>
             </CheckboxGroup>
             <CheckboxGroup
               className='input-wrapper'
@@ -111,47 +118,23 @@ export default function DashboardSettingsForm({ settings }: Props) {
                   </Checkbox>
                 )}
               </div>
-              <Label className='label label--start'>Totals statistics</Label>
+              <Label className='label label--start'>
+                <span className='label-wrapper'>Totals statistics</span>
+              </Label>
             </CheckboxGroup>
+            <Switch
+              className='switch'
+              name='isSortByPlaysActive'
+              defaultSelected={dashboardSettings.isSortByPlaysActive}
+            >
+              <div className='indicator'></div>
+              <span className='label'>
+                <span className='label-wrapper'>Sort by plays filter</span>
+              </span>
+            </Switch>
           </section>
           <section className='group-settings group'>
             <h2 className='heading-settings'>Defaults</h2>
-            <div className='input-wrapper'>
-              <div className='select-wrapper'>
-                <select
-                  className='input'
-                  name='defaultStyle'
-                  defaultValue={
-                    dashboardSettings.defaultStyle ||
-                    DEFAULT_SETTINGS.dashboard.defaultStyle
-                  }
-                  required
-                >
-                  <option value='general'>General</option>
-                  <option value='personal'>Personal</option>
-                </select>
-              </div>
-              <span className='label required'>Default style</span>
-            </div>
-            <div className='input-wrapper'>
-              <div className='select-wrapper'>
-                <select
-                  className='input'
-                  name='defaultPeriod'
-                  defaultValue={
-                    dashboardSettings.defaultPeriod ||
-                    DEFAULT_SETTINGS.dashboard.defaultPeriod
-                  }
-                  required
-                >
-                  <option value='7days'>7 days</option>
-                  <option value='custom'>Custom period</option>
-                  <option value='pastYear'>Past year</option>
-                  <option value='allTime'>All time</option>
-                </select>
-              </div>
-              <span className='label required'>Default period</span>
-            </div>
             <label className='input-wrapper'>
               <input
                 type='number'
@@ -166,8 +149,20 @@ export default function DashboardSettingsForm({ settings }: Props) {
                 max='3000'
                 required
               />
-              <span className='label'>Custom period</span>
+              <span className='label'>
+                <span className='label-wrapper'>Custom period</span>
+              </span>
             </label>
+            <DatePicker
+              label='Start date'
+              helperText='Used for the all time period.'
+              name='startDate'
+              defaultValue={
+                dashboardSettings.startDate ||
+                DEFAULT_SETTINGS.dashboard.startDate
+              }
+              required
+            />
           </section>
         </>
       )}

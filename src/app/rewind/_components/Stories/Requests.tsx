@@ -1,4 +1,5 @@
 import { RewindStory } from '@/types/rewind'
+import { pluralize } from '@/utils/formatting'
 import {
   FilmIcon,
   PlayCircleIcon,
@@ -21,12 +22,12 @@ export default function StoryRequests({
         {userRewind.requests.total == 0 ? (
           <RewindStat noScale>
             <p>
-              There haven&apos;t been any{' '}
+              There weren&apos;t any{' '}
               <span className='rewind-cat'>
                 Requests
                 <QuestionMarkCircleIcon />
               </span>{' '}
-              in the past year <span className='not-italic'>😲</span>
+              <span className='not-italic'>😲</span>
             </p>
           </RewindStat>
         ) : (
@@ -34,12 +35,12 @@ export default function StoryRequests({
             {userRewind.requests.user == 0 ? (
               <RewindStat isPaused={isPaused} scaleDelay={3}>
                 <p>
-                  You haven&apos;t made any content{' '}
+                  You didn&apos;t make any content{' '}
                   <span className='rewind-cat'>
                     Requests
-                    <QuestionMarkCircleIcon />
+                    <QuestionMarkCircleIcon />.
                   </span>{' '}
-                  in the past year! You can make them via{' '}
+                  You can make them via{' '}
                   <a
                     className='link relative z-10'
                     href={settings.connection.overseerrUrl}
@@ -53,26 +54,25 @@ export default function StoryRequests({
             ) : (
               <RewindStat isPaused={isPaused} scaleDelay={3}>
                 <p>
-                  You&apos;ve made{' '}
+                  You made{' '}
                   <span className='rewind-stat'>
                     {userRewind.requests.user}
                   </span>{' '}
                   content{' '}
                   <span className='rewind-cat'>
-                    Requests
+                    {userRewind.requests.user == 1 ? 'Request' : 'Requests'}
                     <QuestionMarkCircleIcon />
-                  </span>{' '}
-                  in the past year.
+                  </span>
                 </p>
               </RewindStat>
             )}
 
             <RewindStat isPaused={isPaused} renderDelay={3} scaleDelay={3}>
               <p>
-                Altogether there have been{' '}
-                <span className='rewind-stat'>{userRewind.requests.total}</span>{' '}
+                Altogether there{' '}
+                {userRewind.requests.total == 1 ? 'was' : 'were'}{' '}
                 <span className='rewind-cat'>
-                  Requests
+                  {pluralize(userRewind.requests.total, 'Request')}
                   <QuestionMarkCircleIcon />
                 </span>{' '}
                 during the same period.
@@ -85,7 +85,7 @@ export default function StoryRequests({
               noScale
               loaderDelay={3}
             >
-              <p>That includes:</p>
+              <p>Here&apos;s the breakdown:</p>
               <ul className='list'>
                 <StatListItem
                   count={userRewind.requests.movies}

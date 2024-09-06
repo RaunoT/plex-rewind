@@ -13,23 +13,23 @@ Present [Plex](https://plex.tv) user statistics and habits in a beautiful and or
 
 - 📱 Fully responsive - viewable, usable & enjoyable on desktop, tablet or mobile, courtesy of [Tailwind.css](https://tailwindcss.com).
 - 🔄 Fully dynamic - the data your're viewing will always be the latest available.
-- 📆 Rewind - allows your Plex users view their statistics and habits for a given year.
-- 👀 Dashboard - provides an easily glanceable overview of activity on your server for all your libraries.
-- ✨ Beautiful animations with [Framer Motion](https://www.framer.com/motion).
-- 📊 Fuelled by data from [Tautulli](https://tautulli.com) - the backbone responsible for the heavy lifting regarding stats.
-- 🔗 Integrates with [Overseerr](https://overseerr.dev) - show request breakdowns and totals.
+- 📆 Rewind - allows your Plex users view their statistics and habits for a chosen time period.
+- 👀 Dashboard - provides an easily glanceable overview of activity on your server for all your libraries, personalized or general.
+- 📊 Fuelled by data from [Tautulli](https://tautulli.com) - the backbone responsible for the heavy lifting regarding statistics.
+- 🔗 Integrates with [Overseerr](https://overseerr.dev) - show request breakdowns and totals and display request buttons straight under deleted fan-favorite media items.
 - 🔐 Log in with Plex - uses [NextAuth.js](https://next-auth.js.org) to enable secure login and session management with your Plex account.
 - 🚀 PWA support - installable on mobile devices and desktops thanks to [Serwist](https://github.com/serwist/serwist).
 - 🐳 Easy deployment - run the application in a containerized environment with [Docker](https://www.docker.com).
+- ✨ Beautiful animations with [Framer Motion](https://www.framer.com/motion).
 - ⭐ All of this and more - powered by [Next.js](https://nextjs.org).
 
 Keep an eye on the [issues page](https://github.com/RaunoT/plex-rewind/issues) to see what new features have already been requested or to make your own request!
 
 ## Preview
 
-![Dashboard](https://i.imgur.com/C4RVCVJ.png 'Dashboard')
+![Dashboard](https://i.imgur.com/6UKEp7v.png 'Dashboard')
 
-![Rewind](https://i.imgur.com/wB2x9X4.png 'Rewind')
+![Rewind](https://i.imgur.com/w536oB5.png 'Rewind')
 
 ## Getting started
 
@@ -40,12 +40,10 @@ services:
   plex-rewind:
     image: ghcr.io/raunot/plex-rewind:latest # :develop for the latest development version
     container_name: plex-rewind
-    # user: 1000:1000 # change to your user and group id if you are running into permissions issues
     environment:
       - NEXTAUTH_SECRET= # (required) used to encrypt auth JWT token, generate one with `openssl rand -base64 32`
       - NEXTAUTH_URL=http://localhost:8383 # (required) change to your domain if you are exposing the app to the internet
       - NEXT_PUBLIC_SITE_URL=http://localhost:8383 # (required) change to your domain if you are exposing the app to the internet
-      - NEXT_PUBLIC_STATISTICS_START_DATE=2018-01-01 # (optional) starting date for "all time" option (YYYY-MM-DD)
     volumes:
       - ./config:/app/config
     ports:
@@ -55,15 +53,11 @@ services:
 
 > _NOTE: If you run into authentication issues, try setting `NEXTAUTH_URL` and `NEXT_PUBLIC_SITE_URL` to your external Docker IP, instead of localhost. For example `http://192.168.1.1:8383`._
 
+For those that need it, a simple status page is also available at `/api/status`.
+
 ### Unraid
 
-Plex Rewind is available in the Community Apps store for Unraid. Search for "Plex Rewind" and install it from grtgbln's repository.
-
-As noted in the installation instructions, you will need to download a copy of `settings.json` into the associated settings path **before** running the application. To download the file, you can open a terminal, enter the directory and run the following command:
-
-```sh
-curl -o settings.json https://raw.githubusercontent.com/RaunoT/plex-rewind/main/config/settings.example.json
-```
+Plex Rewind is also available in the Community Apps store for Unraid. Search for "Plex Rewind" and install it from grtgbln's repository.
 
 ## Updating
 

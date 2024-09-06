@@ -5,16 +5,17 @@
       {
         "preset": "conventionalcommits",
         "releaseRules": [
+          { "breaking": true, "release": "major" },
           { "type": "feat", "release": "minor" },
           { "type": "fix", "release": "patch" },
           { "type": "ui", "release": "patch" },
           { "type": "perf", "release": "patch" },
-          { "type": "docs", "release": false },
-          { "type": "revert", "release": "patch" },
-          { "type": "chore", "release": false },
-          { "type": "refactor", "release": "patch" },
           { "type": "build", "release": "patch" },
-          { "type": "ci", "release": "patch" },
+          { "type": "revert", "release": "patch" },
+          { "type": "docs", "release": false },
+          { "type": "ci", "release": false },
+          { "type": "chore", "release": false },
+          { "type": "refactor", "release": false },
           { "type": "style", "release": false },
           { "type": "test", "release": false }
         ]
@@ -27,25 +28,29 @@
         "presetConfig": {
           "types": [
             { "type": "feat", "section": "🚀 Features", "hidden": false },
-            { "type": "fix", "section": "🐛 Bug Fixes", "hidden": false },
-            { "type": "ui", "section": "🎨 UI Changes", "hidden": false },
+            { "type": "fix", "section": "🐛 Bug fixes", "hidden": false },
+            { "type": "ui", "section": "🎨 UI changes", "hidden": false },
             {
               "type": "perf",
-              "section": "⚡ Performance Improvements",
-              "hidden": false
-            },
-            { "type": "docs", "section": "📝 Documentation", "hidden": false },
-            { "type": "revert", "section": "⏪ Reverts", "hidden": false },
-            { "type": "chore", "section": "🛠️ Other Changes", "hidden": true },
-            {
-              "type": "refactor",
-              "section": "🛠️ Other Changes",
+              "section": "⚡ Performance improvements",
               "hidden": false
             },
             { "type": "build", "section": "🛠️ Other Changes", "hidden": false },
-            { "type": "ci", "section": "🛠️ Other Changes", "hidden": false },
-            { "type": "style", "section": "🛠️ Other Changes", "hidden": true },
-            { "type": "test", "section": "🛠️ Other Changes", "hidden": true }
+            { "type": "revert", "section": "⏪ Reverts", "hidden": false },
+            { "type": "docs", "section": "📝 Documentation", "hidden": false },
+            { "type": "ci", "hidden": true },
+            { "type": "chore", "hidden": true },
+            {
+              "type": "refactor",
+              "hidden": true
+            },
+            { "type": "style", "hidden": true },
+            { "type": "test", "hidden": true },
+            {
+              "type": "breaking",
+              "section": "❗ Breaking Changes",
+              "hidden": false
+            }
           ]
         }
       }

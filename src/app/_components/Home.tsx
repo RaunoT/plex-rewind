@@ -2,17 +2,17 @@
 
 import plexSvg from '@/assets/plex.svg'
 import Loader from '@/components/Loader'
-import { createPlexAuthUrl, getPlexAuthToken } from '@/lib/auth'
+import usePlexAuth from '@/hooks/usePlexAuth'
 import { Settings } from '@/types/settings'
 import { TautulliLibrary } from '@/types/tautulli'
 import { checkRequiredSettings } from '@/utils/helpers'
 import clsx from 'clsx'
 import { kebabCase } from 'lodash'
-import { signIn, signOut, useSession } from 'next-auth/react'
+import { signOut, useSession } from 'next-auth/react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { useRouter, useSearchParams } from 'next/navigation'
-import { useEffect, useState } from 'react'
+import { useContext } from 'react'
+import { GlobalContext } from './GlobalContextProvider'
 
 type Props = {
   settings: Settings
@@ -20,70 +20,40 @@ type Props = {
 }
 
 export default function Home({ settings, libraries }: Props) {
-  const [isLoading, setIsLoading] = useState<boolean>(false)
+  const { isLoading, handleLogin } = usePlexAuth()
   const missingSetting = checkRequiredSettings(settings)
-  const router = useRouter()
-  const searchParams = useSearchParams()
+  const {
+    dashboard: { isPersonal, period, sortBy },
+  } = useContext(GlobalContext)
   const { data: session, status } = useSession()
   const isLoggedIn = status === 'authenticated'
-  const hasOutsideAccess = settings.general.isOutsideAccess
-  const dashboardSlug = kebabCase(
-    libraries[0]?.section_name ||
-      (settings.dashboard.isUsersPageActive ? 'users' : ''),
-  )
+  const dashboardSlug =
+    settings.general.activeLibraries.find((libSlug) =>
+      libraries.some((lib) => kebabCase(lib.section_name) === libSlug),
+    ) || (settings.dashboard.isUsersPageActive ? 'users' : '')
   const showRewind = settings.rewind.isActive && isLoggedIn && !missingSetting
   const showDashboard =
     !missingSetting &&
     settings.dashboard.isActive &&
-    (isLoggedIn || hasOutsideAccess) &&
+    (isLoggedIn || settings.general.isOutsideAccess) &&
     dashboardSlug
+  const dashboardParams = new URLSearchParams({
+    ...(isPersonal && { personal: 'true' }),
+    ...(period && { period }),
+    ...(sortBy && settings.dashboard.isSortByPlaysActive && { sortBy }),
+  })
 
-  async function handleLogin() {
-    const plexUrl = await createPlexAuthUrl()
-
-    router.push(plexUrl)
-  }
-
-  useEffect(() => {
-    const plexPinId = searchParams.get('plexPinId')
-
-    async function authUser(plexPinId: string) {
-      setIsLoading(true)
-      const plexAuthToken = await getPlexAuthToken(plexPinId)
-
-      try {
-        const res = await signIn('plex', {
-          authToken: plexAuthToken,
-          callbackUrl: '/',
-        })
-
-        if (res?.error) {
-          console.error('[AUTH] - Failed to sign in!', res.error)
-        }
-
-        setIsLoading(false)
-      } catch (error) {
-        console.error('[AUTH] - Error during sign-in!', error)
-        setIsLoading(false)
-      }
-    }
-
-    if (plexPinId) {
-      authUser(plexPinId)
-    }
-  }, [searchParams])
-
-  if (isLoading) {
+  if (isLoading || status === 'loading') {
     return <Loader />
   }
 
   return (
     <div className='flex flex-col items-center text-center'>
-      {session?.user?.image && (
+      {session?.user.image && (
         <div className='animate-fade-up relative mb-6 size-24'>
           <Image
-            src={session?.user?.image}
-            alt={`${session?.user?.name} profile picture`}
+            src={session.user.image}
+            alt={`${session.user.name} profile picture`}
             className='rounded-full object-cover'
             sizes='10rem'
             fill
@@ -115,7 +85,7 @@ export default function Home({ settings, libraries }: Props) {
         {!isLoggedIn && (
           <button
             className='button button-sm button--plex mx-auto mb-4'
-            onClick={() => handleLogin()}
+            onClick={handleLogin}
           >
             Log in with Plex
           </button>
@@ -129,7 +99,7 @@ export default function Home({ settings, libraries }: Props) {
 
         {showDashboard && (
           <Link
-            href={`/dashboard/${dashboardSlug}${settings.dashboard.defaultStyle === 'personal' && isLoggedIn ? '?personal=true' : ''}`}
+            href={`/dashboard/${dashboardSlug}${dashboardParams.size ? `?${dashboardParams.toString()}` : ''}`}
             className={clsx(
               'mx-auto block',
               !settings.rewind.isActive && isLoggedIn ? 'button' : 'link',

@@ -24,7 +24,9 @@ export default function ConnectionSettingsForm({ settings }: Props) {
             required
             defaultValue={connectionSettings.tautulliUrl}
           />
-          <span className='label'>URL</span>
+          <span className='label'>
+            <span className='label-wrapper'>URL</span>
+          </span>
         </label>
         <label className='input-wrapper'>
           <input
@@ -34,7 +36,9 @@ export default function ConnectionSettingsForm({ settings }: Props) {
             required
             defaultValue={connectionSettings.tautulliApiKey}
           />
-          <span className='label'>API key</span>
+          <span className='label'>
+            <span className='label-wrapper'>API key</span>
+          </span>
         </label>
       </section>
       <section className='group-settings group'>
@@ -48,7 +52,9 @@ export default function ConnectionSettingsForm({ settings }: Props) {
             required
             defaultValue={connectionSettings.plexUrl}
           />
-          <span className='label'>URL</span>
+          <span className='label'>
+            <span className='label-wrapper'>URL</span>
+          </span>
         </label>
       </section>
       <section className='group-settings group'>
@@ -61,7 +67,9 @@ export default function ConnectionSettingsForm({ settings }: Props) {
             name='overseerrUrl'
             defaultValue={connectionSettings.overseerrUrl}
           />
-          <span className='label'>URL</span>
+          <span className='label'>
+            <span className='label-wrapper'>URL</span>
+          </span>
         </label>
         <label className='input-wrapper'>
           <input
@@ -70,7 +78,9 @@ export default function ConnectionSettingsForm({ settings }: Props) {
             name='overseerrApiKey'
             defaultValue={connectionSettings.overseerrApiKey}
           />
-          <span className='label'>API key</span>
+          <span className='label'>
+            <span className='label-wrapper'>API key</span>
+          </span>
         </label>
       </section>
     </SettingsForm>

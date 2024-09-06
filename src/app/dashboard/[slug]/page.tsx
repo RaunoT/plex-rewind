@@ -45,8 +45,15 @@ async function DashboardContent({ params, searchParams }: Props) {
   const loggedInUserId = session?.user.id
   const period = getPeriod(searchParams, settings)
   const isPersonal = searchParams.personal === 'true'
+  const sortByPlays =
+    searchParams.sortBy === 'plays' && settings.dashboard.isSortByPlaysActive
   const [items, totalDuration, totalSize, serverId] = await Promise.all([
-    getItems(library, period.daysAgo, isPersonal && session?.user.id),
+    getItems(
+      library,
+      period.daysAgo,
+      isPersonal && session?.user.id,
+      sortByPlays,
+    ),
     getTotalDuration(
       library,
       period.string,
@@ -83,7 +90,7 @@ export default function DashboardPage({ params, searchParams }: Props) {
   return (
     <Suspense
       fallback={<DashboardLoader />}
-      key={`period-${searchParams.period}-personal-${searchParams.personal}`}
+      key={`period-${searchParams.period}-personal-${searchParams.personal}-sortBy-${searchParams.sortBy}`}
     >
       <DashboardContent params={params} searchParams={searchParams} />
     </Suspense>

@@ -24,6 +24,8 @@ export type GeneralSettings = {
 export type RewindSettings = {
   isActive: boolean
   isLibrariesSizeAndCountActive: boolean
+  startDate?: string
+  endDate?: string
   complete: boolean
 }
 
@@ -47,9 +49,9 @@ export type DashboardSettings = {
   isUsersPageActive: boolean
   activeItemStatistics: DashboardItemStatistics
   activeTotalStatistics: DashboardTotalStatistics
-  defaultStyle: string
-  defaultPeriod: string
+  isSortByPlaysActive: boolean
   customPeriod: string
+  startDate: string
   complete: boolean
 }
 

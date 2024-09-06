@@ -1,6 +1,8 @@
 'use client'
 
+import DatePicker from '@/components/DatePicker'
 import { Settings } from '@/types/settings'
+import { DEFAULT_SETTINGS } from '@/utils/constants'
 import { useState } from 'react'
 import { Switch } from 'react-aria-components'
 import SettingsForm from '../../_components/SettingsForm'
@@ -25,7 +27,9 @@ export default function RewindSettingsForm({ settings }: Props) {
           onChange={setIsActive}
         >
           <div className='indicator' />
-          <span className='label'>Enabled</span>
+          <span className='label'>
+            <span className='label-wrapper'>Enabled</span>
+          </span>
         </Switch>
       </section>
       {isActive && (
@@ -39,13 +43,34 @@ export default function RewindSettingsForm({ settings }: Props) {
             >
               <div className='indicator' />
               <span className='label'>
-                Libraries size & count card
+                <span className='label-wrapper'>
+                  Libraries size & count card
+                </span>
                 <small>
                   Disable if you don&apos;t want to rely on Tautulli for these
                   stats.
                 </small>
               </span>
             </Switch>
+          </section>
+          <section className='group-settings group'>
+            <h2 className='heading-settings'>Defaults</h2>
+            <DatePicker
+              label='Start date'
+              helperText='Defaults to 365 days ago.'
+              name='startDate'
+              defaultValue={
+                rewindSettings.startDate || DEFAULT_SETTINGS.rewind.startDate
+              }
+            />
+            <DatePicker
+              label='End date'
+              helperText='Defaults to today.'
+              name='endDate'
+              defaultValue={
+                rewindSettings.endDate || DEFAULT_SETTINGS.rewind.endDate
+              }
+            />
           </section>
         </>
       )}

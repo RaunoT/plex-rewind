@@ -15,6 +15,7 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { ReactNode, useEffect, useState } from 'react'
 import stars from '../_assets/stars.png'
+import GlobalContextProvider from './GlobalContextProvider'
 
 type Props = {
   children: ReactNode
@@ -48,53 +49,55 @@ export default function AppProvider({ children, settings, version }: Props) {
   }, [pathname])
 
   return (
-    <main
-      className={clsx(
-        'flex h-full min-h-dvh flex-col items-center overflow-x-hidden px-4 py-8 sm:justify-center',
-        { 'justify-center': pathname === '/' || pathname === '/~offline' },
-      )}
-    >
-      <div className='fixed inset-0 -z-10 select-none overflow-hidden bg-black after:absolute after:inset-0 after:bg-black/50 after:content-[""]'>
-        <div className='relative h-screen w-screen'>
-          <Image
-            src={stars}
-            alt='Stars background layer'
-            className='object-cover'
-            fill
-            priority
-          />
+    <GlobalContextProvider>
+      <main
+        className={clsx(
+          'flex h-full min-h-dvh flex-col items-center overflow-x-hidden px-4 py-8 sm:justify-center',
+          { 'justify-center': pathname === '/' || pathname === '/~offline' },
+        )}
+      >
+        <div className='fixed inset-0 -z-10 select-none overflow-hidden bg-black after:absolute after:inset-0 after:bg-black/50 after:content-[""]'>
+          <div className='relative h-screen w-screen'>
+            <Image
+              src={stars}
+              alt='Stars background layer'
+              className='object-cover'
+              fill
+              priority
+            />
+          </div>
+          <div className='bg-twinkling' />
+          <div className='bg-clouds sm:opacity-50' />
         </div>
-        <div className='bg-twinkling' />
-        <div className='bg-clouds sm:opacity-50' />
-      </div>
 
-      <div className='absolute right-3 top-3 flex items-center gap-3 sm:right-4 sm:top-4'>
-        {version.hasUpdate && session?.user?.isAdmin && (
-          <a
-            href='https://github.com/RaunoT/plex-rewind/releases'
-            aria-label='Update available'
-            target='_blank'
-            className='link-light'
-          >
-            <ArrowPathIcon className='size-6' />
-          </a>
-        )}
-        {!missingSetting && session?.user?.isAdmin && (
-          <Link
-            href={isSettings ? '/' : settingsLink}
-            aria-label={isSettings ? 'Close settings' : 'Open settings'}
-            className='link-light'
-          >
-            {isSettings ? (
-              <XCircleIcon className='size-6' />
-            ) : (
-              <CogIcon className='size-6' />
-            )}
-          </Link>
-        )}
-      </div>
+        <div className='absolute right-3 top-3 flex items-center gap-3 sm:right-4 sm:top-4'>
+          {version.hasUpdate && session?.user.isAdmin && (
+            <a
+              href='https://github.com/RaunoT/plex-rewind/releases'
+              aria-label='Update available'
+              target='_blank'
+              className='link-light'
+            >
+              <ArrowPathIcon className='size-6' />
+            </a>
+          )}
+          {!missingSetting && session?.user.isAdmin && (
+            <Link
+              href={isSettings ? '/' : settingsLink}
+              aria-label={isSettings ? 'Close settings' : 'Open settings'}
+              className='link-light'
+            >
+              {isSettings ? (
+                <XCircleIcon className='size-6' />
+              ) : (
+                <CogIcon className='size-6' />
+              )}
+            </Link>
+          )}
+        </div>
 
-      {children}
-    </main>
+        {children}
+      </main>
+    </GlobalContextProvider>
   )
 }

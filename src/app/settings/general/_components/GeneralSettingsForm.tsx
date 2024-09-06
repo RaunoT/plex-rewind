@@ -2,10 +2,15 @@
 
 import { Settings } from '@/types/settings'
 import { TautulliLibrary } from '@/types/tautulli'
+import { Bars2Icon } from '@heroicons/react/24/outline'
 import { kebabCase } from 'lodash'
+import { useState } from 'react'
 import { Checkbox, CheckboxGroup, Label, Switch } from 'react-aria-components'
+import { ReactSortable } from 'react-sortablejs'
 import SettingsForm from '../../_components/SettingsForm'
 import saveGeneralSettings from '../_actions/updateGeneralSettings'
+
+type SortableLibrary = TautulliLibrary & { id: TautulliLibrary['section_id'] }
 
 type Props = {
   settings: Settings
@@ -14,6 +19,26 @@ type Props = {
 
 export default function GeneralSettingsForm({ settings, libraries }: Props) {
   const generalSettings = settings.general
+  const [librariesState, setLibrariesState] = useState<SortableLibrary[]>(
+    () => {
+      const activeLibraries = generalSettings.activeLibraries
+        .map((libName) =>
+          libraries.find((lib) => kebabCase(lib.section_name) === libName),
+        )
+        .filter((lib): lib is TautulliLibrary => !!lib)
+      const inactiveLibraries = libraries.filter(
+        (lib) =>
+          !generalSettings.activeLibraries.includes(
+            kebabCase(lib.section_name),
+          ),
+      )
+
+      return [...activeLibraries, ...inactiveLibraries].map((lib) => ({
+        ...lib,
+        id: lib.section_id,
+      }))
+    },
+  )
 
   return (
     <SettingsForm
@@ -29,19 +54,28 @@ export default function GeneralSettingsForm({ settings, libraries }: Props) {
             name='activeLibraries'
             defaultValue={generalSettings.activeLibraries}
           >
-            <div className='peer mr-auto flex flex-wrap gap-2'>
-              {libraries.map((library) => (
+            <ReactSortable
+              list={librariesState}
+              setList={setLibrariesState}
+              className='peer mr-auto flex flex-wrap gap-2'
+              handle='.drag-handle'
+              animation={200}
+            >
+              {librariesState.map((library) => (
                 <Checkbox
                   key={library.section_id}
                   value={kebabCase(library.section_name)}
                   className='checkbox-wrapper'
                 >
+                  <Bars2Icon className='drag-handle size-4 cursor-move' />
                   <div className='checkbox' aria-hidden='true'></div>
                   {library.section_name}
                 </Checkbox>
               ))}
-            </div>
-            <Label className='label label--start'>Active libraries</Label>
+            </ReactSortable>
+            <Label className='label label--start'>
+              <span className='label-wrapper'>Active libraries</span>
+            </Label>
           </CheckboxGroup>
         ) : (
           <p
@@ -65,7 +99,7 @@ export default function GeneralSettingsForm({ settings, libraries }: Props) {
             >
               <div className='indicator'></div>
               <span className='label'>
-                TMDB only posters
+                <span className='label-wrapper'>TMDB only posters</span>
                 <small>
                   Ignore Plex posters for tv/movies.
                   <br /> By default, TMDB is a fallback.
@@ -82,7 +116,7 @@ export default function GeneralSettingsForm({ settings, libraries }: Props) {
             >
               <div className='indicator'></div>
               <span className='label'>
-                Allow outside access
+                <span className='label-wrapper'>Allow outside access</span>
                 <small>Access without login.</small>
               </span>
             </Switch>
@@ -97,7 +131,9 @@ export default function GeneralSettingsForm({ settings, libraries }: Props) {
                 defaultValue={generalSettings.googleAnalyticsId}
                 placeholder='G-XXXXXXXXXX'
               />
-              <span className='label'>Google Analytics ID</span>
+              <span className='label'>
+                <span className='label-wrapper'>Google Analytics ID</span>
+              </span>
             </label>
           </section>
         </>
