@@ -50,4 +50,5 @@ export type TautulliItemRow = {
   movies_plays_count: number
   shows_plays_count: number
   user_id: number
+  rank: number
 }

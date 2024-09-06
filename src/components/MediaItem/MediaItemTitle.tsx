@@ -11,14 +11,23 @@ type Props = {
   data: TautulliItemRow
   type: string
   parentRef: RefObject<HTMLDivElement>
+  loggedInUserId?: string
 }
 
 const topColors = ['text-yellow-300', 'text-gray-300', 'text-yellow-700']
 
-export default function MediaItemTitle({ i, data, type, parentRef }: Props) {
+export default function MediaItemTitle({
+  i,
+  data,
+  type,
+  parentRef,
+  loggedInUserId,
+}: Props) {
   const titleRef = useRef<HTMLSpanElement>(null)
   const numberRef = useRef<HTMLSpanElement>(null)
+  const isLoggedIn = String(data.user_id) === loggedInUserId
   const controls = useAnimation()
+  const isUsersDashboard = type === 'users'
 
   useEffect(() => {
     function checkWidth() {
@@ -76,7 +85,7 @@ export default function MediaItemTitle({ i, data, type, parentRef }: Props) {
   }, [controls, parentRef])
 
   return (
-    <h3 className='mb-2 flex sm:text-xl'>
+    <h3 className={clsx('mb-2 flex sm:text-xl', isLoggedIn && 'gradient-plex')}>
       <span className='mr-1.5 inline-flex items-baseline gap-1' ref={numberRef}>
         <span className={clsx('font-bold', topColors[i] || 'text-white')}>
           #{i + 1}{' '}
@@ -123,7 +132,7 @@ export default function MediaItemTitle({ i, data, type, parentRef }: Props) {
           animate={controls}
           ref={titleRef}
         >
-          {type === 'users' ? data.friendly_name : data.title}
+          {isUsersDashboard ? data.friendly_name : data.title}
         </motion.span>
       </span>
     </h3>
