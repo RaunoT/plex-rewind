@@ -1,12 +1,7 @@
 import { authOptions } from '@/lib/auth'
 import { DashboardSearchParams } from '@/types/dashboard'
 import { Settings } from '@/types/settings'
-import {
-  TautulliItemRow,
-  TautulliUser,
-  TautulliUserItem,
-  TautulliUserItemRow,
-} from '@/types/tautulli'
+import { TautulliItem, TautulliItemRow, TautulliUser } from '@/types/tautulli'
 import {
   fetchOverseerrStats,
   fetchOverseerrUserId,
@@ -61,7 +56,7 @@ async function getUsers(
     return
   }
 
-  const usersRes = await fetchTautulli<TautulliUserItem>('get_home_stats', {
+  const usersRes = await fetchTautulli<TautulliItem>('get_home_stats', {
     stat_id: 'top_users',
     stats_count: allUsersCount,
     stats_type: 'duration',
@@ -175,7 +170,7 @@ async function getUsers(
 
 async function getStatsWithLoggedInUser(
   userId: string,
-  users: TautulliUserItemRow[],
+  users: TautulliItemRow[],
   numberOfUsers: number,
 ) {
   const loggedInUserRank = users.findIndex(

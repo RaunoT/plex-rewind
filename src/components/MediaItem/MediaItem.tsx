@@ -1,7 +1,7 @@
 'use client'
 
 import { Settings } from '@/types/settings'
-import { TautulliItemRow, TautulliUserItemRow } from '@/types/tautulli'
+import { TautulliItemRow } from '@/types/tautulli'
 import { pluralize, secondsToTime } from '@/utils/formatting'
 import { slideDown } from '@/utils/motion'
 import {
@@ -87,7 +87,7 @@ export default function MediaItem({
       </div>
       <div className='overflow-hidden' ref={titleContainerRef}>
         <MediaItemTitle
-          i={(data as unknown as TautulliUserItemRow)?.rank ?? i}
+          i={data.rank || i}
           data={data}
           type={type}
           parentRef={titleContainerRef}

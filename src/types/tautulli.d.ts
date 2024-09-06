@@ -30,11 +30,6 @@ export type TautulliItem = {
   stat_id: string
 }
 
-export type TautulliUserItem = {
-  rows: TautulliUserItemRow[]
-  stat_id: string
-}
-
 export type TautulliItemRow = {
   title: string
   year: number | null
@@ -55,8 +50,5 @@ export type TautulliItemRow = {
   movies_plays_count: number
   shows_plays_count: number
   user_id: number
-}
-
-export type TautulliUserItemRow = {
   rank: number
-} & TautulliItemRow
+}
