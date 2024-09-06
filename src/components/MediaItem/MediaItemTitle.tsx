@@ -25,7 +25,7 @@ export default function MediaItemTitle({
 }: Props) {
   const titleRef = useRef<HTMLSpanElement>(null)
   const numberRef = useRef<HTMLSpanElement>(null)
-  const isLoggedIn = String(data.user_id) == loggedInUserId
+  const isLoggedIn = String(data.user_id) === loggedInUserId
   const controls = useAnimation()
   const isUsersDashboard = type === 'users'
 
@@ -82,17 +82,12 @@ export default function MediaItemTitle({
       window.removeEventListener('resize', debouncedRestartAnimation)
       debouncedRestartAnimation.cancel()
     }
-  }, [controls, parentRef, data.user_id])
+  }, [controls, parentRef])
 
   return (
     <h3 className={clsx('mb-2 flex sm:text-xl', isLoggedIn && 'gradient-plex')}>
       <span className='mr-1.5 inline-flex items-baseline gap-1' ref={numberRef}>
-        <span
-          className={clsx(
-            'font-bold',
-            !isLoggedIn && (topColors[i] || 'text-white'),
-          )}
-        >
+        <span className={clsx('font-bold', topColors[i] || 'text-white')}>
           #{i + 1}{' '}
         </span>
         {i < 3 && (

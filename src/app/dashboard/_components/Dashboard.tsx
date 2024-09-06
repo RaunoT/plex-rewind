@@ -36,6 +36,8 @@ export default function Dashboard({
   settings,
   loggedInUserId,
 }: Props) {
+  const isLoggedIn = !!loggedInUserId
+
   function renderFilters(className?: string) {
     if (type !== 'users') {
       return (
@@ -49,8 +51,6 @@ export default function Dashboard({
       )
     }
   }
-
-  const isLoggedIn = !!loggedInUserId
 
   return (
     <>

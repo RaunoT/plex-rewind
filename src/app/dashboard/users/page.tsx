@@ -74,11 +74,9 @@ async function getUsers(
   }
 
   const isAnonymousAccess = settings.general.isOutsideAccess && !loggedInUserId
-
   const listedUsers = isAnonymousAccess
     ? users.slice(0, numberOfUsers)
     : await getStatsWithLoggedInUser(loggedInUserId, users, numberOfUsers)
-
   const [moviesLib, showsLib, audioLib] = await Promise.all([
     getLibrariesByType('movie'),
     getLibrariesByType('show'),
@@ -180,12 +178,13 @@ async function getStatsWithLoggedInUser(
   users: TautulliUserItemRow[],
   numberOfUsers: number,
 ) {
-  let slicedUsers = users.slice(0, numberOfUsers)
   const loggedInUserRank = users.findIndex(
     (user) => String(user.user_id) == userId,
   )
   const loggedInUser =
     users[loggedInUserRank] || (await getInactiveUserInTimePeriod(userId))
+
+  let slicedUsers = users.slice(0, numberOfUsers)
 
   if (loggedInUserRank === -1 || loggedInUserRank >= numberOfUsers) {
     slicedUsers = users.slice(0, numberOfUsers - 1)
