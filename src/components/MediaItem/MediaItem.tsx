@@ -30,6 +30,7 @@ type Props = {
   activeStats: string[]
   settings: Settings
   loggedInUserId?: string
+  items: TautulliItemRow[]
 }
 
 export default function MediaItem({
@@ -40,6 +41,7 @@ export default function MediaItem({
   activeStats,
   settings,
   loggedInUserId,
+  items,
 }: Props) {
   const tautulliUrl = settings.connection.tautulliUrl
   const isTmdbPoster = data.thumb?.startsWith('https://image.tmdb.org')
@@ -67,7 +69,10 @@ export default function MediaItem({
       key={dataKey}
       className={clsx(
         'flex gap-3 2xl:items-center',
-        i > 4 && !isUserDashboard && 'hidden lg:flex',
+        isUserDashboard &&
+          i === 4 &&
+          String(items[5].user_id) === loggedInUserId &&
+          'hidden lg:flex',
       )}
       variants={slideDown}
       initial='hidden'
