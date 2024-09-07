@@ -1,7 +1,7 @@
 import { authOptions } from '@/lib/auth'
 import { DashboardSearchParams } from '@/types/dashboard'
 import { Settings } from '@/types/settings'
-import { TautulliItem, TautulliUser } from '@/types/tautulli'
+import { TautulliItem, TautulliItemRow, TautulliUser } from '@/types/tautulli'
 import {
   fetchOverseerrStats,
   fetchOverseerrUserId,
@@ -27,14 +27,38 @@ type UserRequestCounts =
     }
   | undefined
 
+async function getInactiveUserInTimePeriod(
+  id: string,
+): Promise<TautulliItemRow> {
+  const user = await fetchTautulli<TautulliItemRow>('get_user', {
+    user_id: id,
+  })
+  const nonActive = user?.response?.data ?? ({} as TautulliItemRow)
+
+  nonActive.total_duration = 0
+
+  return nonActive
+}
+
 async function getUsers(
+  loggedInUserId: string,
   period: number,
   requestsPeriod: string,
   periodString: string,
+  settings: Settings,
 ) {
+  const numberOfUsers = 6
+  const allUsersCount = await getUsersCount(settings)
+
+  if (!allUsersCount) {
+    console.error('[TAUTULLI] - Could not determine the number of users.')
+
+    return
+  }
+
   const usersRes = await fetchTautulli<TautulliItem>('get_home_stats', {
     stat_id: 'top_users',
-    stats_count: 6,
+    stats_count: allUsersCount,
     stats_type: 'duration',
     time_range: period,
   })
@@ -44,7 +68,10 @@ async function getUsers(
     return
   }
 
-  const settings = getSettings()
+  const isAnonymousAccess = settings.general.isOutsideAccess && !loggedInUserId
+  const listedUsers = isAnonymousAccess
+    ? users.slice(0, numberOfUsers)
+    : await getStatsWithLoggedInUser(loggedInUserId, users, numberOfUsers)
   const [moviesLib, showsLib, audioLib] = await Promise.all([
     getLibrariesByType('movie'),
     getLibrariesByType('show'),
@@ -57,11 +84,9 @@ async function getUsers(
 
   if (isOverseerrActive) {
     const overseerrUserIds = await Promise.all(
-      users.map(async (user) => {
-        const overseerrId = await fetchOverseerrUserId(String(user.user_id))
-
-        return overseerrId
-      }),
+      listedUsers.map(
+        async (user) => await fetchOverseerrUserId(String(user.user_id)),
+      ),
     )
 
     usersRequestsCounts = await Promise.all(
@@ -81,7 +106,7 @@ async function getUsers(
   }
 
   const usersPlaysAndDurations = await Promise.all(
-    users.map(async (user) => {
+    listedUsers.map(async (user) => {
       let moviesPlaysCount = 0
       let showsPlaysCount = 0
       let audioPlaysCount = 0
@@ -133,14 +158,37 @@ async function getUsers(
     }),
   )
 
-  users.map((user, i) => {
+  listedUsers.map((user, i) => {
     user.requests = usersRequestsCounts[i]?.requests || 0
     user.movies_plays_count = usersPlaysAndDurations[i].movies_plays_count
     user.shows_plays_count = usersPlaysAndDurations[i].shows_plays_count
     user.audio_plays_count = usersPlaysAndDurations[i].audio_plays_count
   })
 
-  return users
+  return listedUsers
+}
+
+async function getStatsWithLoggedInUser(
+  userId: string,
+  users: TautulliItemRow[],
+  numberOfUsers: number,
+) {
+  const loggedInUserRank = users.findIndex(
+    (user) => String(user.user_id) == userId,
+  )
+  const loggedInUser =
+    users[loggedInUserRank] || (await getInactiveUserInTimePeriod(userId))
+
+  let slicedUsers = users.slice(0, numberOfUsers)
+
+  if (loggedInUserRank === -1 || loggedInUserRank >= numberOfUsers) {
+    slicedUsers = users.slice(0, numberOfUsers - 1)
+    loggedInUser.rank =
+      loggedInUserRank === -1 ? users.length : loggedInUserRank
+    slicedUsers.push(loggedInUser)
+  }
+
+  return slicedUsers
 }
 
 async function getTotalDuration(period: string, settings: Settings) {
@@ -207,10 +255,17 @@ async function DashboardUsersContent({ searchParams }: Props) {
   }
 
   const session = await getServerSession(authOptions)
+  const loggedInUserId = session?.user?.id
   const period = getPeriod(searchParams, settings)
   const [usersData, totalDuration, usersCount, totalRequests] =
     await Promise.all([
-      getUsers(period.daysAgo, period.date, period.string),
+      getUsers(
+        loggedInUserId,
+        period.daysAgo,
+        period.date,
+        period.string,
+        settings,
+      ),
       getTotalDuration(period.string, settings),
       getUsersCount(settings),
       getTotalRequests(period.date, settings),
@@ -225,7 +280,7 @@ async function DashboardUsersContent({ searchParams }: Props) {
       type='users'
       settings={settings}
       count={totalRequests}
-      isLoggedIn={!!session}
+      loggedInUserId={loggedInUserId}
     />
   )
 }

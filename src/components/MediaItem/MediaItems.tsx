@@ -9,6 +9,7 @@ type Props = {
   serverId: string
   rows?: boolean
   settings: Settings
+  loggedInUserId?: string
 }
 
 export default function MediaItems({
@@ -17,6 +18,7 @@ export default function MediaItems({
   serverId,
   rows,
   settings,
+  loggedInUserId,
 }: Props) {
   return (
     <ul
@@ -37,6 +39,8 @@ export default function MediaItems({
           serverId={serverId}
           activeStats={settings.dashboard.activeItemStatistics}
           settings={settings}
+          loggedInUserId={loggedInUserId}
+          items={items}
         />
       ))}
     </ul>

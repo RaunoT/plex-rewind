@@ -1,6 +1,6 @@
 export function secondsToTime(seconds: number): string {
   if (seconds <= 0) {
-    return ''
+    return '0 mins'
   }
 
   const units = [

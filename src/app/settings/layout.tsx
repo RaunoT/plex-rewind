@@ -60,7 +60,7 @@ export default async function SettingsLayout({ children }: Props) {
           target='_blank'
           className='link-light inline-flex items-center gap-2'
         >
-          <Image src={githubSvg} alt='GitHub' className='size-[24px] p-0.5' />
+          <Image src={githubSvg} alt='GitHub' className='size-6 p-0.5' />
           Report an issue
         </a>
       </div>
