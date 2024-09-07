@@ -64,7 +64,7 @@ export default function DashboardFilters({
   }, [setIsPersonal, setSortBy, personalParam, sortByParam])
 
   return (
-    <div className={clsx('mt-auto flex gap-2 sm:gap-3', className)}>
+    <div className={clsx('mt-auto flex gap-2 sm:mt-0 sm:gap-3', className)}>
       {personalFilter && (
         <div className='input-wrapper'>
           <label htmlFor='style-select' className='sr-only'>
