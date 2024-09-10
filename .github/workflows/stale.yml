@@ -12,9 +12,9 @@ jobs:
           stale-issue-message: 'This issue has been automatically marked as stale because it has not had recent activity. It will be closed if no further activity occurs. Thank you for your contributions.'
           exempt-issue-labels: 'never-stale'
           stale-issue-label: 'stale'
+          only-issue-labels: 'awaiting triage'
           stale-pr-message: 'This pull request has been automatically marked as stale because it has not had recent activity. It will be closed if no further activity occurs. Thank you for your contributions.'
           exempt-pr-labels: 'never-stale'
           stale-pr-label: 'stale'
           days-before-stale: 30
           days-before-close: 5
-          only-labels: 'awaiting triage'
