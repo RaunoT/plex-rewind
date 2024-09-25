@@ -9,6 +9,10 @@ jobs:
   release:
     name: Publish image and release
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+      issues: write
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -32,7 +36,7 @@ jobs:
 
       - name: Run Semantic Release dry run
         env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: npx semantic-release --dry-run
 
       - name: Set up QEMU
@@ -65,5 +69,5 @@ jobs:
 
       - name: Run Semantic Release publish
         env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: npx semantic-release
