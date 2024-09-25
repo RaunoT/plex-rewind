@@ -40,12 +40,15 @@ jobs:
         run: npx semantic-release --dry-run
 
       - name: Set up QEMU
+        if: env.NEXT_VERSION_TAG
         uses: docker/setup-qemu-action@v3
 
       - name: Set up Docker Buildx
+        if: env.NEXT_VERSION_TAG
         uses: docker/setup-buildx-action@v3
 
       - name: Log in to GitHub Container Registry
+        if: env.NEXT_VERSION_TAG
         uses: docker/login-action@v3
         with:
           registry: ghcr.io
@@ -68,6 +71,7 @@ jobs:
           cache-to: type=gha,mode=max
 
       - name: Run Semantic Release publish
+        if: env.NEXT_VERSION_TAG
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: npx semantic-release
