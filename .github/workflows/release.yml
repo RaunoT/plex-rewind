@@ -68,5 +68,5 @@ jobs:
       - name: Run Semantic Release publish
         if: env.NEXT_VERSION_TAG
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
         run: npx semantic-release
