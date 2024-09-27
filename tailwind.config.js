@@ -1,4 +1,5 @@
 /** @type {import('tailwindcss').Config} */
+import forms from '@tailwindcss/forms'
 import plugin from 'tailwindcss/plugin'
 
 /** https://tailwindcss.com/docs/configuration */
@@ -13,7 +14,7 @@ export const theme = {
   },
 }
 export const plugins = [
-  require('@tailwindcss/forms'),
+  forms,
   plugin(({ matchUtilities, theme }) => {
     matchUtilities(
       {

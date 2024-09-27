@@ -39,6 +39,5 @@ module.exports = {
     { name: 'dashboard' },
     { name: 'config' },
     { name: 'api' },
-    { name: 'dependencies' },
   ],
 }
