@@ -12,7 +12,7 @@ Present [Plex](https://plex.tv) user statistics and habits in a beautiful and or
 ## Features
 
 - 📱 Fully responsive - viewable, usable & enjoyable on desktop, tablet or mobile, courtesy of [Tailwind.css](https://tailwindcss.com).
-- 🔄 Fully dynamic - the data your're viewing will always be the latest available.
+- 🔄 Fully dynamic - the data you're viewing will always be the latest available.
 - 📆 Rewind - allows your Plex users view their statistics and habits for a chosen time period.
 - 👀 Dashboard - provides an easily glanceable overview of activity on your server for all your libraries, personalized or general.
 - 📊 Fuelled by data from [Tautulli](https://tautulli.com) - the backbone responsible for the heavy lifting regarding statistics.
