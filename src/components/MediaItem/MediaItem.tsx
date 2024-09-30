@@ -75,6 +75,7 @@ export default function MediaItem({
           'hidden lg:flex',
         isUserDashboard
           ? i === 4 &&
+              items[5] &&
               String(items[5].user_id) === loggedInUserId &&
               'hidden lg:flex'
           : i > 4 && 'hidden lg:flex',

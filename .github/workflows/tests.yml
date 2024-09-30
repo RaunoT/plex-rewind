@@ -7,6 +7,7 @@ on:
 
 jobs:
   test:
+    if: ${{ !(github.base_ref == 'main' && github.head_ref == 'develop') }}
     name: Lint & test build
     runs-on: ubuntu-latest
     steps:
