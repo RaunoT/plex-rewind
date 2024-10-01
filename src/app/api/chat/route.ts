@@ -1,6 +1,7 @@
 import { TautulliItemRow } from '@/types/tautulli'
 import fetchTautulli from '@/utils/fetchTautulli'
-import { openai } from '@ai-sdk/openai'
+import getSettings from '@/utils/getSettings'
+import { createOpenAI } from '@ai-sdk/openai'
 import { streamText } from 'ai'
 
 export const maxDuration = 30
@@ -10,7 +11,7 @@ export async function POST(req: Request) {
   const historyData = await fetchTautulli<{ data: TautulliItemRow[] }>(
     'get_history',
     {
-      length: 50,
+      length: 10,
     },
     true,
   )
@@ -38,6 +39,10 @@ export async function POST(req: Request) {
 
   console.log(formattedHistory)
 
+  const settings = getSettings()
+  const openai = createOpenAI({
+    apiKey: settings.connection.openaiApiKey,
+  })
   const result = await streamText({
     model: openai('gpt-4o-mini'),
     system:

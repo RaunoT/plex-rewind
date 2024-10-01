@@ -16,6 +16,7 @@ import { usePathname } from 'next/navigation'
 import { ReactNode, useEffect, useState } from 'react'
 import stars from '../_assets/stars.png'
 import GlobalContextProvider from './GlobalContextProvider'
+import TautulliAI from './TautulliAI'
 
 type Props = {
   children: ReactNode
@@ -80,6 +81,9 @@ export default function AppProvider({ children, settings, version }: Props) {
             >
               <ArrowPathIcon className='size-6' />
             </a>
+          )}
+          {!missingSetting && session?.user && (
+            <TautulliAI userId={session?.user.id} />
           )}
           {!missingSetting && session?.user.isAdmin && (
             <Link

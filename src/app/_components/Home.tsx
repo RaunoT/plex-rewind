@@ -1,6 +1,5 @@
 'use client'
 
-import TautulliAI from '@/app/_components/TautulliAI'
 import plexSvg from '@/assets/plex.svg'
 import Loader from '@/components/Loader'
 import usePlexAuth from '@/hooks/usePlexAuth'
@@ -108,10 +107,6 @@ export default function Home({ settings, libraries }: Props) {
           >
             Dashboard
           </Link>
-        )}
-
-        {isLoggedIn && !missingSetting && settings.connection.openaiApiKey && (
-          <TautulliAI userId={session?.user.id} />
         )}
 
         {isLoggedIn && (
