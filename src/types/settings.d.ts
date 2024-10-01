@@ -10,6 +10,7 @@ export type ConnectionSettings = {
   overseerrUrl?: string
   overseerrApiKey?: string
   plexUrl: string
+  openaiApiKey?: string
   complete: boolean
 }
 

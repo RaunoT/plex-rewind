@@ -83,6 +83,21 @@ export default function ConnectionSettingsForm({ settings }: Props) {
           </span>
         </label>
       </section>
+      <section className='group-settings group'>
+        <h2 className='heading-settings'>AI</h2>
+        <label className='input-wrapper'>
+          <input
+            type='password'
+            className='input'
+            placeholder='sk-proj'
+            name='openaiApiKey'
+            defaultValue={connectionSettings.openaiApiKey}
+          />
+          <span className='label'>
+            <span className='label-wrapper'>OpenAI API key</span>
+          </span>
+        </label>
+      </section>
     </SettingsForm>
   )
 }

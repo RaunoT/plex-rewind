@@ -1,5 +1,6 @@
 'use client'
 
+import TautulliAI from '@/app/_components/TautulliAI'
 import plexSvg from '@/assets/plex.svg'
 import Loader from '@/components/Loader'
 import usePlexAuth from '@/hooks/usePlexAuth'
@@ -92,7 +93,7 @@ export default function Home({ settings, libraries }: Props) {
         )}
 
         {showRewind && (
-          <Link href='/rewind' className='button mb-4'>
+          <Link href='/rewind' className='button mx-auto mb-4'>
             Start Rewind
           </Link>
         )}
@@ -101,12 +102,16 @@ export default function Home({ settings, libraries }: Props) {
           <Link
             href={`/dashboard/${dashboardSlug}${dashboardParams.size ? `?${dashboardParams.toString()}` : ''}`}
             className={clsx(
-              'mx-auto block',
+              'mx-auto block w-fit',
               !settings.rewind.isActive && isLoggedIn ? 'button' : 'link',
             )}
           >
             Dashboard
           </Link>
+        )}
+
+        {isLoggedIn && !missingSetting && settings.connection.openaiApiKey && (
+          <TautulliAI userId={session?.user.id} />
         )}
 
         {isLoggedIn && (

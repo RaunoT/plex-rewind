@@ -103,7 +103,7 @@ export default function Dashboard({
           loggedInUserId={loggedInUserId}
         />
       ) : (
-        <div className='flex flex-1 flex-col justify-center text-center text-neutral-300'>
+        <div className='flex flex-1 flex-col justify-center text-center text-neutral-400'>
           <h2 className='mb-4 py-32 text-2xl italic leading-tight last:mb-0 sm:text-3xl'>
             No activity during this period.. 😴
           </h2>

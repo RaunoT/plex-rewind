@@ -10,6 +10,7 @@ const schema = z.object({
   overseerrUrl: z.string().url().optional().or(z.literal('')),
   overseerrApiKey: z.string().optional(),
   plexUrl: z.string().url(),
+  openaiApiKey: z.string(),
   complete: z.boolean(),
 })
 
@@ -23,6 +24,7 @@ export default async function saveConnectionSettings(
     overseerrUrl: formData.get('overseerrUrl') as string,
     overseerrApiKey: formData.get('overseerrApiKey') as string,
     plexUrl: formData.get('plexUrl') as string,
+    openaiApiKey: formData.get('openaiApiKey') as string,
     complete: true,
   }
 
@@ -103,6 +105,37 @@ export default async function saveConnectionSettings(
 
       return {
         message: 'Plex - unable to connect!',
+        status: 'error',
+        fields: data,
+      }
+    }
+
+    // Test OpenAI
+    try {
+      const res = await fetch('https://api.openai.com/v1/models', {
+        headers: {
+          Authorization: `Bearer ${data.openaiApiKey}`,
+        },
+      })
+
+      if (!res.ok) {
+        console.error(
+          '[CONFIG] - Error testing OpenAI connection!',
+          res.status,
+          res.statusText,
+        )
+
+        return {
+          message: 'OpenAI - invalid API key!',
+          status: 'error',
+          fields: data,
+        }
+      }
+    } catch (error) {
+      console.error('[CONFIG] - Error testing OpenAI connection!', error)
+
+      return {
+        message: 'OpenAI - invalid API key!',
         status: 'error',
         fields: data,
       }

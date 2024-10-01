@@ -21,8 +21,10 @@
     }
   },
   "dependencies": {
+    "@ai-sdk/openai": "^0.0.63",
     "@heroicons/react": "^2.1.5",
     "@internationalized/date": "^3.5.5",
+    "ai": "^3.4.7",
     "framer-motion": "^11.5.6",
     "lodash": "^4.17.21",
     "next": "^14.2.13",
