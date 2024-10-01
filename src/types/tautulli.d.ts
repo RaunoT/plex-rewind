@@ -62,4 +62,6 @@ export type TautulliItemRow = {
   platform: string
   product: string
   media_type: string
+  paused_counter: number
+  player: string
 }

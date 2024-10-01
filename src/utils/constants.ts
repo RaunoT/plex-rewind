@@ -44,6 +44,7 @@ export const DEFAULT_SETTINGS: Settings = {
     plexUrl: '',
     overseerrUrl: '',
     overseerrApiKey: '',
+    openaiApiKey: '',
     complete: false,
   },
   general: {
@@ -51,6 +52,7 @@ export const DEFAULT_SETTINGS: Settings = {
     isPostersTmdbOnly: false,
     googleAnalyticsId: '',
     isOutsideAccess: false,
+    aiAdminOnly: true,
     complete: false,
   },
   rewind: {

@@ -82,9 +82,11 @@ export default function AppProvider({ children, settings, version }: Props) {
               <ArrowPathIcon className='size-6' />
             </a>
           )}
-          {!missingSetting && session?.user && (
-            <TautulliAI userId={session?.user.id} />
-          )}
+          {!missingSetting &&
+            session?.user &&
+            (settings.general.aiAdminOnly ? session?.user.isAdmin : true) && (
+              <TautulliAI userId={session?.user.id} />
+            )}
           {!missingSetting && session?.user.isAdmin && (
             <Link
               href={isSettings ? '/' : settingsLink}

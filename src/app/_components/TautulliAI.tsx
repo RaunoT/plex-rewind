@@ -5,6 +5,7 @@ import { useChat } from 'ai/react'
 import clsx from 'clsx'
 import { useState } from 'react'
 import { Button, Dialog, DialogTrigger, Modal } from 'react-aria-components'
+import ReactMarkdown from 'react-markdown'
 
 type Props = {
   userId: string
@@ -12,12 +13,13 @@ type Props = {
 
 export default function TautulliAI({ userId }: Props) {
   const [isOpen, setIsOpen] = useState<boolean>(false)
-  const { messages, input, handleInputChange, handleSubmit } = useChat({
-    api: '/api/chat',
-    body: {
-      userId,
-    },
-  })
+  const { messages, input, handleInputChange, handleSubmit, isLoading } =
+    useChat({
+      api: '/api/chat',
+      body: {
+        userId,
+      },
+    })
 
   return (
     <DialogTrigger isOpen={isOpen} onOpenChange={setIsOpen}>
@@ -37,18 +39,20 @@ export default function TautulliAI({ userId }: Props) {
 
               <div className='flex-grow overflow-y-auto pr-6 sm:pr-12'>
                 {messages.map((m) => (
-                  <p
+                  <div
                     key={m.id}
                     className={clsx(
-                      'mb-2 whitespace-pre-wrap last:mb-0',
-                      m.role !== 'user' && 'text-yellow-500',
+                      'mb-2 last:mb-0',
+                      m.role === 'user' && 'text-neutral-400',
                     )}
                   >
-                    {m.content}
-                  </p>
+                    <ReactMarkdown>{m.content}</ReactMarkdown>
+                  </div>
                 ))}
 
-                {messages.length === 0 && (
+                {isLoading && <div className='skeleton w-1/3 sm:w-32'></div>}
+
+                {messages.length === 0 && !isLoading && (
                   <p className='text-neutral-400'>
                     Ask me something like &quot;What did I watch last
                     week?&quot;
@@ -63,6 +67,7 @@ export default function TautulliAI({ userId }: Props) {
                   placeholder='Type here...'
                   onChange={handleInputChange}
                   autoFocus={isOpen}
+                  disabled={isLoading}
                 />
               </form>
             </>

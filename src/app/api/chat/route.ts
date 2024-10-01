@@ -1,5 +1,6 @@
 import { TautulliItemRow } from '@/types/tautulli'
 import fetchTautulli from '@/utils/fetchTautulli'
+import { secondsToTime } from '@/utils/formatting'
 import getSettings from '@/utils/getSettings'
 import { createOpenAI } from '@ai-sdk/openai'
 import { streamText } from 'ai'
@@ -20,25 +21,23 @@ export async function POST(req: Request) {
     history
       ?.map(
         (item: TautulliItemRow) => `
-    - ${item.title} (${item.year})
-      User: ${item.friendly_name}
-      Date: ${new Date(item.date * 1000).toISOString().split('T')[0]}
-      Duration: ${Math.round(item.duration / 60)} minutes
+    - ${item.full_title} (${item.year})
+      Viewed by user: ${item.friendly_name} (${item.user_id})
+      Date watched: ${new Date(item.date * 1000).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}
+      Started at: ${new Date(item.date * 1000).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })}
+      Finished at: ${new Date(item.date * 1000).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })}
+      Paused: ${item.paused_counter} times
+      Duration: ${secondsToTime(item.duration)}
       Platform: ${item.platform}
-      Product: ${item.product}
+      Player: ${item.player}
       Media Type: ${item.media_type}
-      Full Title: ${item.full_title}
-      Watched: ${item.watched_status}
-      Percent completed: ${item.percent_complete}
+      Finished: ${item.watched_status ? 'Yes' : 'No'}
+      Percent completed: ${item.watched_status ? 100 : item.percent_complete}%
       Transcoding decision: ${item.transcode_decision}
       Rating key: ${item.rating_key}
-      User ID: ${item.user_id}
   `,
       )
       .join('\n') || 'No recent viewing history available.'
-
-  console.log(formattedHistory)
-
   const settings = getSettings()
   const openai = createOpenAI({
     apiKey: settings.connection.openaiApiKey,
@@ -53,7 +52,9 @@ export async function POST(req: Request) {
       `${formattedHistory} ` +
       `Use this information to provide context for your responses. ` +
       `The user asking the questions is ${userId}` +
-      `If asked about content not in the history, you can still provide general information or recommendations based on the types of content the users watch.`,
+      `If asked about content not in the history, you can still provide general information or recommendations based on the types of content the users watch. ` +
+      `Try to keep the response concise and to the point without providing too much detail. ` +
+      `Today is ${new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}. Feel free to use provide this date in your response if it's relevant.`,
     messages: messages,
   })
 
