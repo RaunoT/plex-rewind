@@ -15,8 +15,8 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { ReactNode, useEffect, useState } from 'react'
 import stars from '../_assets/stars.png'
+import Chat from './Chat'
 import GlobalContextProvider from './GlobalContextProvider'
-import TautulliAI from './TautulliAI'
 
 type Props = {
   children: ReactNode
@@ -85,7 +85,7 @@ export default function AppProvider({ children, settings, version }: Props) {
           {!missingSetting &&
             session?.user &&
             (settings.general.aiAdminOnly ? session?.user.isAdmin : true) && (
-              <TautulliAI userId={session?.user.id} />
+              <Chat userId={session?.user.id} />
             )}
           {!missingSetting && session?.user.isAdmin && (
             <Link

@@ -3,7 +3,7 @@
 import { ChatBubbleLeftRightIcon, XMarkIcon } from '@heroicons/react/24/outline'
 import { useChat } from 'ai/react'
 import clsx from 'clsx'
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Button, Dialog, DialogTrigger, Modal } from 'react-aria-components'
 import ReactMarkdown from 'react-markdown'
 
@@ -11,8 +11,9 @@ type Props = {
   userId: string
 }
 
-export default function TautulliAI({ userId }: Props) {
+export default function Chat({ userId }: Props) {
   const [isOpen, setIsOpen] = useState<boolean>(false)
+  const messageContainerRef = useRef<HTMLDivElement>(null)
   const { messages, input, handleInputChange, handleSubmit, isLoading } =
     useChat({
       api: '/api/chat',
@@ -20,6 +21,13 @@ export default function TautulliAI({ userId }: Props) {
         userId,
       },
     })
+
+  useEffect(() => {
+    if (messageContainerRef.current) {
+      messageContainerRef.current.scrollTop =
+        messageContainerRef.current.scrollHeight
+    }
+  }, [messages, isOpen])
 
   return (
     <DialogTrigger isOpen={isOpen} onOpenChange={setIsOpen}>
@@ -34,32 +42,39 @@ export default function TautulliAI({ userId }: Props) {
                 onPress={close}
                 className='link-light absolute right-3 top-3 z-10'
               >
-                <XMarkIcon className='size-6' />
+                <XMarkIcon className='size-4' />
               </Button>
 
-              <div className='flex-grow overflow-y-auto pr-6 sm:pr-12'>
-                {messages.map((m) => (
+              <div
+                ref={messageContainerRef}
+                className='flex-grow overflow-y-auto'
+              >
+                {messages.map((m, index) => (
                   <div
                     key={m.id}
                     className={clsx(
-                      'mb-2 last:mb-0',
-                      m.role === 'user' && 'text-neutral-400',
+                      m.role === 'user'
+                        ? 'mb-3 mt-5 first:mt-0'
+                        : 'rounded-xl bg-neutral-600/50 px-4 py-3 text-yellow-300',
                     )}
                   >
-                    <ReactMarkdown>{m.content}</ReactMarkdown>
+                    <ReactMarkdown className='chat-reply'>
+                      {m.content}
+                    </ReactMarkdown>
+                    {isLoading &&
+                      m.role !== 'user' &&
+                      index === messages.length - 1 && (
+                        <p
+                          aria-live='polite'
+                          role='status'
+                          className='animate-pulse'
+                          aria-label='Loading response...'
+                        >
+                          ...
+                        </p>
+                      )}
                   </div>
                 ))}
-
-                {isLoading && (
-                  <div
-                    aria-live='polite'
-                    role='status'
-                    className='animate-pulse'
-                    aria-label='Loading response...'
-                  >
-                    ...
-                  </div>
-                )}
 
                 {messages.length === 0 && !isLoading && (
                   <p className='text-neutral-400'>

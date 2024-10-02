@@ -4,40 +4,14 @@ import { secondsToTime } from '@/utils/formatting'
 import getSettings from '@/utils/getSettings'
 import { createOpenAI } from '@ai-sdk/openai'
 import { streamText } from 'ai'
+import fs from 'fs/promises'
+import path from 'path'
 
 export const maxDuration = 30
 
 export async function POST(req: Request) {
   const { messages, userId } = await req.json()
-  const historyData = await fetchTautulli<{ data: TautulliItemRow[] }>(
-    'get_history',
-    {
-      length: 10,
-    },
-    true,
-  )
-  const history = historyData?.response?.data.data
-  const formattedHistory =
-    history
-      ?.map(
-        (item: TautulliItemRow) => `
-    - ${item.full_title} (${item.year})
-      Viewed by user: ${item.friendly_name} (${item.user_id})
-      Date watched: ${new Date(item.date * 1000).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}
-      Started at: ${new Date(item.date * 1000).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })}
-      Finished at: ${new Date(item.date * 1000).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })}
-      Paused: ${item.paused_counter} times
-      Duration: ${secondsToTime(item.duration)}
-      Platform: ${item.platform}
-      Player: ${item.player}
-      Media Type: ${item.media_type}
-      Finished: ${item.watched_status ? 'Yes' : 'No'}
-      Percent completed: ${item.watched_status ? 100 : item.percent_complete}%
-      Transcoding decision: ${item.transcode_decision}
-      Rating key: ${item.rating_key}
-  `,
-      )
-      .join('\n') || 'No recent viewing history available.'
+  const formattedHistory = await getHistory()
   const settings = getSettings()
   const openai = createOpenAI({
     apiKey: settings.connection.openaiApiKey,
@@ -59,4 +33,46 @@ export async function POST(req: Request) {
   })
 
   return result.toDataStreamResponse()
+}
+
+async function getHistory(): Promise<string> {
+  const filePath = path.join(process.cwd(), 'config/history.txt')
+  const historyData = await fetchTautulli<{ data: TautulliItemRow[] }>(
+    'get_history',
+    {
+      length: 10,
+    },
+    true,
+  )
+  const history = historyData?.response?.data.data
+  const formattedHistory = formatHistory(history)
+
+  await fs.writeFile(filePath, formattedHistory, 'utf-8')
+
+  return formattedHistory
+}
+
+function formatHistory(history: TautulliItemRow[] | undefined): string {
+  return (
+    history
+      ?.map(
+        (item: TautulliItemRow) => `
+  - ${item.full_title} (${item.year})
+    Viewed by user: ${item.friendly_name} (${item.user_id})
+    Date watched: ${new Date(item.date * 1000).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}
+    Started at: ${new Date(item.date * 1000).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })}
+    Finished at: ${new Date(item.date * 1000).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })}
+    Paused: ${item.paused_counter} times
+    Duration: ${secondsToTime(item.duration)}
+    Platform: ${item.platform}
+    Player: ${item.player}
+    Media Type: ${item.media_type}
+    Finished: ${item.watched_status ? 'Yes' : 'No'}
+    Percent completed: ${item.watched_status ? 100 : item.percent_complete}%
+    Transcoding decision: ${item.transcode_decision}
+    Rating key: ${item.rating_key}
+`,
+      )
+      .join('\n') || 'No recent viewing history available.'
+  )
 }
