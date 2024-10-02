@@ -4,30 +4,44 @@ import fetchTautulli from '@/utils/fetchTautulli'
 import { secondsToTime } from '@/utils/formatting'
 import getSettings from '@/utils/getSettings'
 import { getHistoryDateRange } from '@/utils/helpers'
-import { createOpenAI } from '@ai-sdk/openai'
+import { createGoogleGenerativeAI } from '@ai-sdk/google'
+import { GoogleAICacheManager } from '@google/generative-ai/server'
 import { convertToCoreMessages, streamText } from 'ai'
 import fs from 'fs'
-import { encode } from 'gpt-tokenizer'
 import path from 'path'
 
-const MAX_INPUT_TOKENS = 1024
-const MAX_OUTPUT_TOKENS = 128000
+// const MAX_INPUT_TOKENS = 1024
+// const MAX_OUTPUT_TOKENS = 128000
 
 export async function POST(req: Request) {
   const { messages, userId } = await req.json()
   const settings = getSettings()
+  // https://aistudio.google.com/app/apikey
+  const apiKey = settings.connection.openaiApiKey
+  // https://sdk.vercel.ai/providers/ai-sdk-providers/google-generative-ai
+  const google = createGoogleGenerativeAI({
+    apiKey,
+  })
+  const model = 'models/gemini-1.5-flash-001'
   const context = await getContext(userId, settings)
-  const openai = createOpenAI({
-    apiKey: settings.connection.openaiApiKey,
+  // https://ai.google.dev/api/caching
+  // https://ai.google.dev/gemini-api/docs/caching?lang=node
+  const cacheManager = new GoogleAICacheManager(apiKey!)
+  const { name: cachedContent } = await cacheManager.create({
+    model,
+    contents: [
+      {
+        role: 'user',
+        parts: [{ text: context }],
+      },
+    ],
+    ttlSeconds: 60 * 60, // 1 hour,
   })
 
   try {
     const result = await streamText({
-      model: openai('gpt-4o-mini'),
-      system: context,
+      model: google(model, { cachedContent }),
       messages: convertToCoreMessages(messages),
-      temperature: 0.5,
-      maxTokens: MAX_INPUT_TOKENS,
     })
 
     return result.toDataStreamResponse()
@@ -83,9 +97,10 @@ async function getContext(userId: string, settings: Settings): Promise<string> {
     `The history provided is from ${startDate} to ${endDate}. Let the user know that this can be changed from Rewind settings.\n` +
     `The Plex viewing history from the Tautulli API is as follows:\n` +
     `${formattedHistory}`
-  const truncatedContext = truncateContext(context)
+  // const truncatedContext = truncateContext(context)
 
-  fs.writeFileSync(contextFilePath, truncatedContext, 'utf-8')
+  // fs.writeFileSync(contextFilePath, truncatedContext, 'utf-8')
+  fs.writeFileSync(contextFilePath, context, 'utf-8')
 
   return context
 }
@@ -113,32 +128,32 @@ function formatHistory(history: TautulliItemRow[] | undefined): string {
     .join('\n')
 }
 
-function truncateContext(context: string): string {
-  const tokens = encode(context)
+// function truncateContext(context: string): string {
+//   const tokens = encode(context)
 
-  if (tokens.length <= MAX_OUTPUT_TOKENS) {
-    return context
-  }
+//   if (tokens.length <= MAX_OUTPUT_TOKENS) {
+//     return context
+//   }
 
-  const notice =
-    '\n\nThe history has been trimmed due to token limit. Make the user aware of this.'
-  const noticeTokens = encode(notice)
-  const availableTokens = MAX_OUTPUT_TOKENS - noticeTokens.length
-  const entries = context.split('\n\n')
+//   const notice =
+//     '\n\nThe history has been trimmed due to token limit. Make the user aware of this.'
+//   const noticeTokens = encode(notice)
+//   const availableTokens = MAX_OUTPUT_TOKENS - noticeTokens.length
+//   const entries = context.split('\n\n')
 
-  let truncatedContext = ''
-  let currentTokenCount = 0
+//   let truncatedContext = ''
+//   let currentTokenCount = 0
 
-  for (const entry of entries) {
-    const entryTokens = encode(entry)
+//   for (const entry of entries) {
+//     const entryTokens = encode(entry)
 
-    if (currentTokenCount + entryTokens.length > availableTokens) {
-      break
-    }
+//     if (currentTokenCount + entryTokens.length > availableTokens) {
+//       break
+//     }
 
-    truncatedContext += entry + '\n\n'
-    currentTokenCount += entryTokens.length
-  }
+//     truncatedContext += entry + '\n\n'
+//     currentTokenCount += entryTokens.length
+//   }
 
-  return truncatedContext.trim() + notice
-}
+//   return truncatedContext.trim() + notice
+// }

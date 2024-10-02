@@ -8,9 +8,12 @@ importers:
 
   .:
     dependencies:
-      '@ai-sdk/openai':
-        specifier: ^0.0.63
-        version: 0.0.63(zod@3.23.8)
+      '@ai-sdk/google':
+        specifier: ^0.0.51
+        version: 0.0.51(zod@3.23.8)
+      '@google/generative-ai':
+        specifier: ^0.20.0
+        version: 0.20.0
       '@heroicons/react':
         specifier: ^2.1.5
         version: 2.1.5(react@18.3.1)
@@ -189,8 +192,8 @@ importers:
 
 packages:
 
-  '@ai-sdk/openai@0.0.63':
-    resolution: {integrity: sha512-VX4yDfP1zoKIoKqkFuBJGPjQ7aYFxE2GgPW8hMAolCBolQyx3+0+mgID+JmU5Jaq3PAPWtxWuuiwasPqh+e8zQ==}
+  '@ai-sdk/google@0.0.51':
+    resolution: {integrity: sha512-MUwN3tFH0grkL5zZdTUFDCDubQdMjykFw0o9bR3dMFtKP8Z2tc/iEqU1fb79+jbz2HzUBbnNGjqMQiUwG3/OrA==}
     engines: {node: '>=18'}
     peerDependencies:
       zod: ^3.0.0
@@ -427,6 +430,10 @@ packages:
 
   '@formatjs/intl-localematcher@0.5.4':
     resolution: {integrity: sha512-zTwEpWOzZ2CiKcB93BLngUX59hQkuZjT2+SAQEscSm52peDW/getsawMcWF1rGRpMCX6D7nSJA3CzJ8gn13N/g==}
+
+  '@google/generative-ai@0.20.0':
+    resolution: {integrity: sha512-uJQNDr1sihvBJ9w8B0ESpNdX9aEueAMXgwnTuhTo+LnI7DD0M1KHnOWzxb2l6cM1rRHzvkdgJNNfeybcqg7uVg==}
+    engines: {node: '>=18.0.0'}
 
   '@heroicons/react@2.1.5':
     resolution: {integrity: sha512-FuzFN+BsHa+7OxbvAERtgBTNeZpUjgM/MIizfVkSCL2/edriN0Hx/DWRCR//aPYwO5QX/YlgLGXk+E3PcfZwjA==}
@@ -5403,10 +5410,11 @@ packages:
 
 snapshots:
 
-  '@ai-sdk/openai@0.0.63(zod@3.23.8)':
+  '@ai-sdk/google@0.0.51(zod@3.23.8)':
     dependencies:
       '@ai-sdk/provider': 0.0.24
       '@ai-sdk/provider-utils': 1.0.20(zod@3.23.8)
+      json-schema: 0.4.0
       zod: 3.23.8
 
   '@ai-sdk/provider-utils@1.0.20(zod@3.23.8)':
@@ -5686,6 +5694,8 @@ snapshots:
   '@formatjs/intl-localematcher@0.5.4':
     dependencies:
       tslib: 2.7.0
+
+  '@google/generative-ai@0.20.0': {}
 
   '@heroicons/react@2.1.5(react@18.3.1)':
     dependencies:
