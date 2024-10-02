@@ -11,7 +11,7 @@ Present [Plex](https://plex.tv) user statistics and habits in a beautiful and or
 
 ## Features
 
-- 🤖 AI assistant - using a chat interface, you can ask questions about your Plex library, viewing history, and get recommendations. Built with [Vercel AI SDK](https://sdk.vercel.ai) using [GPT-4o-mini](https://platform.openai.com/docs/models/gpt-4o) via the [OpenAI API](https://openai.com).
+- 🤖 AI assistant - using a chat interface, you can ask questions about your Plex library, viewing history, and get recommendations using [GPT-4o-mini](https://platform.openai.com/docs/models/gpt-4o).
 - 📱 Fully responsive - viewable, usable & enjoyable on desktop, tablet or mobile, courtesy of [Tailwind.css](https://tailwindcss.com).
 - 🔄 Fully dynamic - the data you're viewing will always be the latest available.
 - 📆 Rewind - allows your Plex users view their statistics and habits for a chosen time period.
@@ -59,6 +59,21 @@ For those that need it, a simple status page is also available at `/api/status`.
 ### Unraid
 
 Plex Rewind is also available in the Community Apps store for Unraid. Search for "Plex Rewind" and install it from grtgbln's repository.
+
+### AI Assistant
+
+Built with [Vercel AI SDK](https://sdk.vercel.ai) using [GPT-4o-mini](https://platform.openai.com/docs/models/gpt-4o), the most efficient and cost effective model by OpenAI at the time of writing.
+
+You will need to set up your own [OpenAI API key](https://platform.openai.com/docs/guides/production-best-practices/api-keys) to use the AI assistant. Once you have your API key you can add it under Connection settings and a new chat icon will appear in the top right corner of the page.
+
+Here are some parameters in place to try and keep costs down:
+
+- **Output tokens:** limited to 1024 per request to keep costs down.
+- **Input tokens:** 128,000 per request - the maximum allowed by OpenAI. This is required for long histories. In case the history is still too long, it will automatically be trimmed.
+- **Temperature:** 0.5 - a balance between "creative" and "precise" answers.
+- **Caching** - The history of your library (max 128,000 tokens) is cached to `config/ai-context.txt`. This file is updated only once per hour to reduce excessive writing of large files and speed up the response time. If you want to clear the cache, delete the `ai-context.txt` file and make a new request.
+
+Pricing can be found on [OpenAI's pricing page](https://openai.com/api/pricing).
 
 ## Updating
 

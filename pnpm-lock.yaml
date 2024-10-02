@@ -23,6 +23,9 @@ importers:
       framer-motion:
         specifier: ^11.5.6
         version: 11.5.6(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      gpt-tokenizer:
+        specifier: ^2.4.0
+        version: 2.4.0
       lodash:
         specifier: ^4.17.21
         version: 4.17.21
@@ -2993,6 +2996,9 @@ packages:
 
   gopd@1.0.1:
     resolution: {integrity: sha512-d65bNlIadxvpb/A2abVdlqKqV563juRnZ1Wtk6s1sIR8uNsXR70xqIzVqxVf1eTqDunwT2MkczEeaezCKTZhwA==}
+
+  gpt-tokenizer@2.4.0:
+    resolution: {integrity: sha512-UmipHgPmzOVSj1Nu0bajJt7eZYnIttoaUSfgsXs77jFlpKGFBodM0fpa7989rl/pUEONKjye9WqAhlerHKux9Q==}
 
   graceful-fs@4.2.10:
     resolution: {integrity: sha512-9ByhssR2fPVsNZj478qUUbKfmL0+t5BDVyjShtyZZLiK7ZDAArFFfopyOTj0M05wE2tJPisA4iTnnXl2YoPvOA==}
@@ -9055,6 +9061,8 @@ snapshots:
   gopd@1.0.1:
     dependencies:
       get-intrinsic: 1.2.4
+
+  gpt-tokenizer@2.4.0: {}
 
   graceful-fs@4.2.10: {}
 

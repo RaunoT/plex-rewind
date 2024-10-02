@@ -10,7 +10,7 @@ const schema = z.object({
   overseerrUrl: z.string().url().optional().or(z.literal('')),
   overseerrApiKey: z.string().optional(),
   plexUrl: z.string().url(),
-  openaiApiKey: z.string(),
+  openaiApiKey: z.string().optional().or(z.literal('')),
   complete: z.boolean(),
 })
 
@@ -111,33 +111,35 @@ export default async function saveConnectionSettings(
     }
 
     // Test OpenAI
-    try {
-      const res = await fetch('https://api.openai.com/v1/models', {
-        headers: {
-          Authorization: `Bearer ${data.openaiApiKey}`,
-        },
-      })
+    if (data.openaiApiKey) {
+      try {
+        const res = await fetch('https://api.openai.com/v1/models', {
+          headers: {
+            Authorization: `Bearer ${data.openaiApiKey}`,
+          },
+        })
 
-      if (!res.ok) {
-        console.error(
-          '[CONFIG] - Error testing OpenAI connection!',
-          res.status,
-          res.statusText,
-        )
+        if (!res.ok) {
+          console.error(
+            '[CONFIG] - Error testing OpenAI connection!',
+            res.status,
+            res.statusText,
+          )
+
+          return {
+            message: 'OpenAI - invalid API key!',
+            status: 'error',
+            fields: data,
+          }
+        }
+      } catch (error) {
+        console.error('[CONFIG] - Error testing OpenAI connection!', error)
 
         return {
           message: 'OpenAI - invalid API key!',
           status: 'error',
           fields: data,
         }
-      }
-    } catch (error) {
-      console.error('[CONFIG] - Error testing OpenAI connection!', error)
-
-      return {
-        message: 'OpenAI - invalid API key!',
-        status: 'error',
-        fields: data,
       }
     }
   } catch (error) {

@@ -10,7 +10,7 @@ import fetchTautulli from './fetchTautulli'
 import { secondsToTime, timeToSeconds } from './formatting'
 import getMediaAdditionalData from './getMediaAdditionalData'
 import getSettings from './getSettings'
-import { getRewindDateRange } from './helpers'
+import { getHistoryDateRange } from './helpers'
 
 export async function getTopMediaStats(
   userId: string,
@@ -28,7 +28,7 @@ export async function getTopMediaStats(
   }
 
   async function fetchLibraryData(library: TautulliLibrary) {
-    const { startDate, endDate } = getRewindDateRange(getSettings())
+    const { startDate, endDate } = getHistoryDateRange(getSettings())
     const res = await fetchTautulli<{
       recordsFiltered: number
       total_duration: string
@@ -103,7 +103,7 @@ export async function getlibrariesTotalSize(libraries: TautulliLibrary[]) {
 }
 
 export async function getLibrariesTotalDuration(libraries: TautulliLibrary[]) {
-  const { startDate, endDate } = getRewindDateRange(getSettings())
+  const { startDate, endDate } = getHistoryDateRange(getSettings())
   const res = await Promise.all(
     libraries.map((library) => {
       return fetchTautulli<{ total_duration: string }>('get_history', {
@@ -132,7 +132,7 @@ export async function getUserTotalDuration(
   userId: string,
   libraries: TautulliLibrary[],
 ) {
-  const { startDate, endDate } = getRewindDateRange(getSettings())
+  const { startDate, endDate } = getHistoryDateRange(getSettings())
   const res = await Promise.all(
     libraries.map((library) => {
       return fetchTautulli<{ total_duration: string }>('get_history', {
@@ -162,7 +162,7 @@ export async function getTopMediaItems(
   userId: string,
   libraries: TautulliLibrary[],
 ) {
-  const { startDate, endDate } = getRewindDateRange(getSettings())
+  const { startDate, endDate } = getHistoryDateRange(getSettings())
   const res = await Promise.all(
     libraries.map((library) => {
       return fetchTautulli<TautulliItem[]>('get_home_stats', {
@@ -209,7 +209,7 @@ export async function getTopMediaItems(
 }
 
 export async function getRequestsTotals(userId: string) {
-  const { startDate, endDate } = getRewindDateRange(getSettings())
+  const { startDate, endDate } = getHistoryDateRange(getSettings())
   const requests = await fetchOverseerrStats('request', startDate, endDate)
 
   return {

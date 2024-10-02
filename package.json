@@ -26,6 +26,7 @@
     "@internationalized/date": "^3.5.5",
     "ai": "^3.4.7",
     "framer-motion": "^11.5.6",
+    "gpt-tokenizer": "^2.4.0",
     "lodash": "^4.17.21",
     "next": "^14.2.13",
     "next-auth": "^4.24.7",

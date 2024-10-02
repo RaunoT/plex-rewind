@@ -1,16 +1,22 @@
+import { Settings } from '@/types/settings'
 import { TautulliItemRow } from '@/types/tautulli'
 import fetchTautulli from '@/utils/fetchTautulli'
 import { secondsToTime } from '@/utils/formatting'
 import getSettings from '@/utils/getSettings'
+import { getHistoryDateRange } from '@/utils/helpers'
 import { createOpenAI } from '@ai-sdk/openai'
-import { streamText } from 'ai'
+import { convertToCoreMessages, streamText } from 'ai'
+import fs from 'fs'
+import { encode } from 'gpt-tokenizer'
+import path from 'path'
 
-export const maxDuration = 30
+const MAX_INPUT_TOKENS = 1024
+const MAX_OUTPUT_TOKENS = 128000
 
 export async function POST(req: Request) {
   const { messages, userId } = await req.json()
-  const formattedHistory = await getHistory()
   const settings = getSettings()
+  const context = await getContext(userId, settings)
   const openai = createOpenAI({
     apiKey: settings.connection.openaiApiKey,
   })
@@ -18,18 +24,10 @@ export async function POST(req: Request) {
   try {
     const result = await streamText({
       model: openai('gpt-4o-mini'),
-      system:
-        `You are an AI assistant for a Plex server, using Tautulli to provide information about viewing history and media content. ` +
-        `Your primary function is to answer questions about the Plex library, viewing habits, and provide recommendations based on the viewing history. ` +
-        `Do not provide answers to questions that are not related to the Plex server or its media content. ` +
-        `Recent Plex viewing history from the Tautulli API: ` +
-        `${formattedHistory} ` +
-        `Use this information to provide context for your responses. ` +
-        `The user asking the questions is ${userId}` +
-        `If asked about content not in the history, you can still provide general information or recommendations based on the types of content the users watch. ` +
-        `Try to keep the response concise and to the point without providing too much detail. ` +
-        `Today is ${new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}. Feel free to use provide this date in your response if it's relevant.`,
-      messages: messages,
+      system: context,
+      messages: convertToCoreMessages(messages),
+      temperature: 0.5,
+      maxTokens: MAX_INPUT_TOKENS,
     })
 
     return result.toDataStreamResponse()
@@ -40,41 +38,107 @@ export async function POST(req: Request) {
   }
 }
 
-async function getHistory(): Promise<string> {
+async function getContext(userId: string, settings: Settings): Promise<string> {
+  const contextFilePath = path.join(process.cwd(), 'config/ai-context.txt')
+
+  let newFile = false
+
+  if (!fs.existsSync(contextFilePath)) {
+    fs.writeFileSync(contextFilePath, 'Initial context', 'utf-8')
+    newFile = true
+  }
+
+  try {
+    const stats = fs.statSync(contextFilePath)
+    const fileAge = Date.now() - stats.mtimeMs
+
+    if (fileAge < 3600000 && !newFile) {
+      // Less than 1 hour old
+      return fs.readFileSync(contextFilePath, 'utf-8')
+    }
+  } catch (error) {
+    console.error('[AI] - Error reading history file!', error)
+  }
+
+  // If the file is older than 1 hour, fetch new data
+  const { startDate, endDate } = getHistoryDateRange(settings)
   const historyData = await fetchTautulli<{ data: TautulliItemRow[] }>(
     'get_history',
     {
-      length: 10,
+      length: -1,
+      after: startDate,
+      before: endDate,
     },
-    true,
+    false,
   )
   const history = historyData?.response?.data.data
   const formattedHistory = formatHistory(history)
+  const context =
+    `You are an AI assistant for a Plex server, using history from the Tautulli API as context.\n` +
+    `Your primary function is to answer questions about the Plex library, viewing habits and history.\n` +
+    `Do not provide answers to questions that are not related to the Plex server or its media content.\n` +
+    `The user asking the questions ${userId ? `has the userId ${userId}.` : 'is unknown.'}\n` +
+    `Try to keep the response concise and to the point.\n` +
+    `Today is ${new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}.\n` +
+    `The history provided is from ${startDate} to ${endDate}. Let the user know that this can be changed from Rewind settings.\n` +
+    `The Plex viewing history from the Tautulli API is as follows:\n` +
+    `${formattedHistory}`
+  const truncatedContext = truncateContext(context)
 
-  return formattedHistory
+  fs.writeFileSync(contextFilePath, truncatedContext, 'utf-8')
+
+  return context
 }
 
 function formatHistory(history: TautulliItemRow[] | undefined): string {
-  return (
-    history
-      ?.map(
-        (item: TautulliItemRow) => `
+  if (!history?.length) return 'No recent viewing history available.'
+
+  return history
+    .map(
+      (item: TautulliItemRow) => `
   - ${item.full_title} (${item.year})
-    Viewed by user: ${item.friendly_name} (${item.user_id})
-    Date watched: ${new Date(item.date * 1000).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}
-    Started at: ${new Date(item.started * 1000).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })}
-    Finished at: ${new Date(item.stopped * 1000).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })}
-    Paused: ${item.paused_counter} times
-    Duration: ${secondsToTime(item.duration)}
+    Viewer: ${item.friendly_name} (ID: ${item.user_id})
+    Date: ${new Date(item.date * 1000).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
+    Start: ${new Date(item.started * 1000).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })}
+    Finish: ${new Date(item.stopped * 1000).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })}
+    Paused: ${secondsToTime(item.paused_counter)}
+    Duration: ${secondsToTime(item.duration)} (${item.watched_status ? 100 : item.percent_complete}%)
     Platform: ${item.platform}
     Player: ${item.player}
-    Media Type: ${item.media_type}
-    Finished: ${item.watched_status ? 'Yes' : 'No'}
-    Percent completed: ${item.watched_status ? 100 : item.percent_complete}%
+    Type: ${item.media_type}
     Transcoding decision: ${item.transcode_decision}
     Rating key: ${item.rating_key}
 `,
-      )
-      .join('\n') || 'No recent viewing history available.'
-  )
+    )
+    .join('\n')
+}
+
+function truncateContext(context: string): string {
+  const tokens = encode(context)
+
+  if (tokens.length <= MAX_OUTPUT_TOKENS) {
+    return context
+  }
+
+  const notice =
+    '\n\nThe history has been trimmed due to token limit. Make the user aware of this.'
+  const noticeTokens = encode(notice)
+  const availableTokens = MAX_OUTPUT_TOKENS - noticeTokens.length
+  const entries = context.split('\n\n')
+
+  let truncatedContext = ''
+  let currentTokenCount = 0
+
+  for (const entry of entries) {
+    const entryTokens = encode(entry)
+
+    if (currentTokenCount + entryTokens.length > availableTokens) {
+      break
+    }
+
+    truncatedContext += entry + '\n\n'
+    currentTokenCount += entryTokens.length
+  }
+
+  return truncatedContext.trim() + notice
 }
