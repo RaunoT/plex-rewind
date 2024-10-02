@@ -84,6 +84,7 @@ export default function AppProvider({ children, settings, version }: Props) {
           )}
           {!missingSetting &&
             session?.user &&
+            settings.connection.openaiApiKey &&
             (settings.general.aiAdminOnly ? session?.user.isAdmin : true) && (
               <Chat userId={session?.user.id} />
             )}
