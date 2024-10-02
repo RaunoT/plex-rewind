@@ -50,7 +50,16 @@ export default function TautulliAI({ userId }: Props) {
                   </div>
                 ))}
 
-                {isLoading && <div className='skeleton w-1/3 sm:w-32'></div>}
+                {isLoading && (
+                  <div
+                    aria-live='polite'
+                    role='status'
+                    className='animate-pulse'
+                    aria-label='Loading response...'
+                  >
+                    ...
+                  </div>
+                )}
 
                 {messages.length === 0 && !isLoading && (
                   <p className='text-neutral-400'>
