@@ -130,7 +130,9 @@ export default function GeneralSettingsForm({ settings, libraries }: Props) {
                 <span className='label-wrapper'>Restrict AI</span>
                 <small>
                   Limit access to admins.
-                  <br /> Login is always required, but has access to all users.
+                  <br /> Login is always required anyway.
+                  <br />
+                  <br /> AI has knowledge of all users.
                 </small>
               </span>
             </Switch>

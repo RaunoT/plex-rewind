@@ -44,4 +44,3 @@ public/swe-worker-*.js
 
 #config
 config/settings.json
-config/history.txt

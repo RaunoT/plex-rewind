@@ -64,4 +64,6 @@ export type TautulliItemRow = {
   media_type: string
   paused_counter: number
   player: string
+  started: number
+  stopped: number
 }

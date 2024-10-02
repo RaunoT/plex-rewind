@@ -14,7 +14,7 @@ type Props = {
 export default function Chat({ userId }: Props) {
   const [isOpen, setIsOpen] = useState<boolean>(false)
   const messageContainerRef = useRef<HTMLDivElement>(null)
-  const { messages, input, handleInputChange, handleSubmit, isLoading } =
+  const { messages, input, handleInputChange, handleSubmit, isLoading, error } =
     useChat({
       api: '/api/chat',
       body: {
@@ -54,8 +54,8 @@ export default function Chat({ userId }: Props) {
                     key={m.id}
                     className={clsx(
                       m.role === 'user'
-                        ? 'mb-3 mt-5 first:mt-0'
-                        : 'rounded-xl bg-neutral-600/50 px-4 py-3 text-yellow-300',
+                        ? 'mb-3 mt-5 text-neutral-400 first:mt-0'
+                        : 'rounded-xl bg-neutral-600/50 px-4 py-3',
                     )}
                   >
                     <ReactMarkdown className='chat-reply'>
@@ -76,15 +76,22 @@ export default function Chat({ userId }: Props) {
                   </div>
                 ))}
 
-                {messages.length === 0 && !isLoading && (
+                {messages.length === 0 && !isLoading && !error && (
                   <p className='text-neutral-400'>
                     Ask me something like &quot;What did I watch last
                     week?&quot;
                   </p>
                 )}
+
+                {error && (
+                  <p role='alert' aria-live='polite' className='text-red-500'>
+                    <span className='mb-2 block'>Something went wrong!</span>
+                    <span className='text-xs'>{error.message}</span>
+                  </p>
+                )}
               </div>
 
-              <form onSubmit={handleSubmit} className='pt-4 sm:pt-8'>
+              <form onSubmit={handleSubmit} className='flex gap-2 pt-4 sm:pt-8'>
                 <input
                   className='input w-full'
                   value={input}
@@ -93,6 +100,13 @@ export default function Chat({ userId }: Props) {
                   autoFocus={isOpen}
                   disabled={isLoading}
                 />
+                <button
+                  type='submit'
+                  className='button button--plex'
+                  disabled={isLoading}
+                >
+                  Ask
+                </button>
               </form>
             </>
           )}

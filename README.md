@@ -72,7 +72,7 @@ If you like this project and wish to support it, you can do so by donating via [
 
 To learn more about some of the tools used in this project, take a look at the following resources:
 
-- [Tautulli API reference](https://github.com/Tautulli/Tautulli/wiki/Tautulli-API-Reference)
+- [Tautulli API reference](https://docs.tautulli.com/extending-tautulli/api-reference)
 - [Overseerr API reference](https://api-docs.overseerr.dev)
 - [OpenAI API reference](https://platform.openai.com/docs/overview)
 - [Next.js docs](https://nextjs.org/docs)
