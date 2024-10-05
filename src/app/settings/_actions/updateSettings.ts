@@ -1,6 +1,7 @@
 'use server'
 
 import {
+  ChatSettings,
   ConnectionSettings,
   DashboardSettings,
   GeneralSettings,
@@ -16,6 +17,7 @@ type SettingsTypeMap = {
   dashboard: Partial<DashboardSettings>
   rewind: Partial<RewindSettings>
   general: GeneralSettings
+  chat: ChatSettings
 }
 
 export default async function updateSettings<K extends keyof SettingsTypeMap>(

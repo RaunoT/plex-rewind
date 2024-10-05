@@ -1,5 +1,5 @@
 import { RewindStory } from '@/types/rewind'
-import { getHistoryDateRange } from '@/utils/helpers'
+import { getRewindDateRange } from '@/utils/helpers'
 import Image from 'next/image'
 import RewindStat from '../RewindStat'
 import StoryWrapper from '../StoryWrapper'
@@ -43,7 +43,7 @@ export default function StoryWelcome({
   resume,
   settings,
 }: RewindStory) {
-  const { startDate, endDate } = getHistoryDateRange(settings)
+  const { startDate, endDate } = getRewindDateRange(settings)
   const isDefaultPeriod = !settings.rewind.startDate && !settings.rewind.endDate
   const dateRange = getDateRange(startDate, endDate, isDefaultPeriod)
 

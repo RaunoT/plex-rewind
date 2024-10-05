@@ -32,7 +32,7 @@ export function getSettingsPage(missingSettingKey: string): string | undefined {
     ?.href
 }
 
-export function getHistoryDateRange(settings: Settings) {
+export function getRewindDateRange(settings: Settings) {
   const startDate = settings.rewind.startDate || PERIODS.pastYear.string
   const endDate =
     settings.rewind.endDate || new Date().toISOString().split('T')[0]

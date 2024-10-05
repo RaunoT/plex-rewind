@@ -44,7 +44,7 @@ export const DEFAULT_SETTINGS: Settings = {
     plexUrl: '',
     overseerrUrl: '',
     overseerrApiKey: '',
-    openaiApiKey: '',
+    aiApiKey: '',
     complete: false,
   },
   general: {
@@ -52,8 +52,13 @@ export const DEFAULT_SETTINGS: Settings = {
     isPostersTmdbOnly: false,
     googleAnalyticsId: '',
     isOutsideAccess: false,
-    aiAdminOnly: true,
     complete: false,
+  },
+  chat: {
+    complete: false,
+    adminOnly: true,
+    startDate: '',
+    endDate: '',
   },
   rewind: {
     isActive: true,
@@ -84,6 +89,7 @@ export const DEFAULT_SETTINGS: Settings = {
 export const SETTINGS_PAGES = [
   { href: '/settings/connection', label: 'Connection', key: 'connection' },
   { href: '/settings/general', label: 'General', key: 'general' },
+  { href: '/settings/chat', label: 'Chat', key: 'chat' },
   { href: '/settings/rewind', label: 'Rewind', key: 'rewind' },
   { href: '/settings/dashboard', label: 'Dashboard', key: 'dashboard' },
 ]

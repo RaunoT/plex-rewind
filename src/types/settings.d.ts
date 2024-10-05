@@ -10,7 +10,7 @@ export type ConnectionSettings = {
   overseerrUrl?: string
   overseerrApiKey?: string
   plexUrl: string
-  openaiApiKey?: string
+  aiApiKey?: string
   complete: boolean
 }
 
@@ -19,8 +19,14 @@ export type GeneralSettings = {
   isPostersTmdbOnly: boolean
   googleAnalyticsId: string
   isOutsideAccess: boolean
-  aiAdminOnly: boolean
   complete: boolean
+}
+
+export type ChatSettings = {
+  complete: boolean
+  adminOnly: boolean
+  startDate?: string
+  endDate?: string
 }
 
 export type RewindSettings = {
@@ -60,6 +66,7 @@ export type DashboardSettings = {
 export type Settings = {
   connection: ConnectionSettings
   general: GeneralSettings
+  chat: ChatSettings
   rewind: RewindSettings
   dashboard: DashboardSettings
 }

@@ -10,7 +10,7 @@ const schema = z.object({
   overseerrUrl: z.string().url().optional().or(z.literal('')),
   overseerrApiKey: z.string().optional(),
   plexUrl: z.string().url(),
-  openaiApiKey: z.string().optional().or(z.literal('')),
+  aiApiKey: z.string().optional().or(z.literal('')),
   complete: z.boolean(),
 })
 
@@ -24,7 +24,7 @@ export default async function saveConnectionSettings(
     overseerrUrl: formData.get('overseerrUrl') as string,
     overseerrApiKey: formData.get('overseerrApiKey') as string,
     plexUrl: formData.get('plexUrl') as string,
-    openaiApiKey: formData.get('openaiApiKey') as string,
+    aiApiKey: formData.get('aiApiKey') as string,
     complete: true,
   }
 
@@ -110,33 +110,35 @@ export default async function saveConnectionSettings(
       }
     }
 
-    // Test OpenAI
-    if (data.openaiApiKey) {
+    // Test Google Gemini
+    if (data.aiApiKey) {
       try {
-        const res = await fetch('https://api.openai.com/v1/models', {
-          headers: {
-            Authorization: `Bearer ${data.openaiApiKey}`,
-          },
-        })
+        const res = await fetch(
+          'https://generativelanguage.googleapis.com/v1/models?key=' +
+            data.aiApiKey,
+        )
 
         if (!res.ok) {
           console.error(
-            '[CONFIG] - Error testing OpenAI connection!',
+            '[CONFIG] - Error testing Google Gemini connection!',
             res.status,
             res.statusText,
           )
 
           return {
-            message: 'OpenAI - invalid API key!',
+            message: 'Chat - invalid API key!',
             status: 'error',
             fields: data,
           }
         }
       } catch (error) {
-        console.error('[CONFIG] - Error testing OpenAI connection!', error)
+        console.error(
+          '[CONFIG] - Error testing Google Gemini connection!',
+          error,
+        )
 
         return {
-          message: 'OpenAI - invalid API key!',
+          message: 'Chat - unable to connect!',
           status: 'error',
           fields: data,
         }

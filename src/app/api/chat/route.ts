@@ -3,7 +3,6 @@ import { TautulliItemRow } from '@/types/tautulli'
 import fetchTautulli from '@/utils/fetchTautulli'
 import { secondsToTime } from '@/utils/formatting'
 import getSettings from '@/utils/getSettings'
-import { getHistoryDateRange } from '@/utils/helpers'
 import { createGoogleGenerativeAI } from '@ai-sdk/google'
 import { GoogleAICacheManager } from '@google/generative-ai/server'
 import { convertToCoreMessages, streamText } from 'ai'
@@ -17,7 +16,7 @@ export async function POST(req: Request) {
   const { messages, userId } = await req.json()
   const settings = getSettings()
   // https://aistudio.google.com/app/apikey
-  const apiKey = settings.connection.openaiApiKey
+  const apiKey = settings.connection.aiApiKey
   // https://sdk.vercel.ai/providers/ai-sdk-providers/google-generative-ai
   const google = createGoogleGenerativeAI({
     apiKey,
@@ -75,7 +74,8 @@ async function getContext(userId: string, settings: Settings): Promise<string> {
   }
 
   // If the file is older than 1 hour, fetch new data
-  const { startDate, endDate } = getHistoryDateRange(settings)
+  const startDate = settings.chat.startDate || ''
+  const endDate = settings.chat.endDate || ''
   const historyData = await fetchTautulli<{ data: TautulliItemRow[] }>(
     'get_history',
     {

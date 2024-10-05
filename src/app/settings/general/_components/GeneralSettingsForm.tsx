@@ -120,22 +120,6 @@ export default function GeneralSettingsForm({ settings, libraries }: Props) {
                 <small>Access without login.</small>
               </span>
             </Switch>
-            <Switch
-              className='switch items-start'
-              name='aiAdminOnly'
-              defaultSelected={generalSettings.aiAdminOnly}
-            >
-              <div className='indicator'></div>
-              <span className='label'>
-                <span className='label-wrapper'>Restrict AI</span>
-                <small>
-                  Limit access to admins.
-                  <br /> Login is always required anyway.
-                  <br />
-                  <br /> AI has knowledge of all users.
-                </small>
-              </span>
-            </Switch>
           </section>
           <section className='group-settings group'>
             <h2 className='heading-settings'>Analytics</h2>
