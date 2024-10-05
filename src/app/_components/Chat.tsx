@@ -64,10 +64,10 @@ export default function Chat({ userId }: Props) {
         <ChatBubbleLeftRightIcon className='size-6' />
       </Button>
       <ModalOverlay
-        className='fixed inset-0 flex items-center justify-center bg-black/50 p-4 sm:p-8'
+        className='fixed inset-0 flex justify-center bg-black/50 p-4 sm:p-8 xl:items-center'
         isDismissable
       >
-        <Modal className='size-full overflow-hidden xl:max-w-screen-md'>
+        <Modal className='w-full overflow-hidden xl:h-2/3 xl:max-w-screen-lg'>
           <Dialog className='glass-sheet flex size-full flex-col'>
             {({ close }) => (
               <>

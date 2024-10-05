@@ -7,6 +7,7 @@ import {
   GeneralSettings,
   RewindSettings,
 } from '@/types/settings'
+import { saveTautulliHistory } from '@/utils/chat'
 import getSettings, { SETTINGS_PATH } from '@/utils/getSettings'
 import { promises as fs } from 'fs'
 import { revalidatePath } from 'next/cache'
@@ -36,6 +37,10 @@ export default async function updateSettings<K extends keyof SettingsTypeMap>(
     }
 
     await fs.writeFile(SETTINGS_PATH, JSON.stringify(settings), 'utf8')
+
+    if (key === 'chat') {
+      saveTautulliHistory(settings)
+    }
 
     revalidatePath('/')
 

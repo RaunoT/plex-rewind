@@ -6,12 +6,12 @@ import getMediaAdditionalData, {
   mapWatchedDataByRatingKey,
 } from './getMediaAdditionalData'
 
-const statIdMap = {
+const STAT_ID_MAP = {
   movie: 'top_movies',
   show: 'top_tv',
   artist: 'top_music',
 }
-const popularIdMap = {
+const POPULAR_ID_MAP = {
   movie: 'popular_movies',
   show: 'popular_tv',
   artist: 'popular_music',
@@ -25,7 +25,7 @@ export async function getItems(
 ) {
   const sectionType = library.section_type
   const itemsRes = await fetchTautulli<TautulliItem>('get_home_stats', {
-    stat_id: statIdMap[sectionType],
+    stat_id: STAT_ID_MAP[sectionType],
     stats_count: 6,
     stats_type: sortByPlays ? 'plays' : 'duration',
     time_range: period,
@@ -39,7 +39,7 @@ export async function getItems(
 
   if (items.length) {
     const usersWatched = await fetchTautulli<TautulliItem>('get_home_stats', {
-      stat_id: popularIdMap[sectionType],
+      stat_id: POPULAR_ID_MAP[sectionType],
       stats_count: 100, // TODO: https://github.com/Tautulli/Tautulli/issues/2103
       time_range: period,
     })

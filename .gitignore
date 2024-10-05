@@ -44,4 +44,4 @@ public/swe-worker-*.js
 
 #config
 config/settings.json
-config/ai-context.txt
+config/history.txt

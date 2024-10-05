@@ -1,7 +1,7 @@
 import { Settings } from '@/types/settings'
 import { PERIODS, SETTINGS_PAGES } from './constants'
 
-const requiredSettings = [
+const REQUIRED_SETTINGS = [
   'connection.tautulliUrl',
   'connection.tautulliApiKey',
   'connection.plexUrl',
@@ -14,7 +14,7 @@ const requiredSettings = [
 ]
 
 export function checkRequiredSettings(settings: Settings): string | null {
-  for (const key of requiredSettings) {
+  for (const key of REQUIRED_SETTINGS) {
     const keys = key.split('.')
     // @ts-expect-error - TODO: we know this is safe, but should still look to resolve without exception
     const settingValue = keys.reduce((acc, curr) => acc && acc[curr], settings)
