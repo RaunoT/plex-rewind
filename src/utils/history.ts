@@ -33,21 +33,20 @@ export async function saveTautulliHistory(
       const stats = fs.statSync(HISTORY_PATH)
       const fileAge = Date.now() - stats.mtimeMs
 
+      // Less than 1 hour old
       if (fileAge < 3600000) {
-        // Less than 1 hour old
         return fs.readFileSync(HISTORY_PATH, 'utf-8')
       }
     } catch (error) {
       console.error('[CHAT] - Error reading history file!', error)
     }
-
-    // If the file is older than 1 hour, fetch new data
-    const history = await getHistory(settings)
-
-    fs.writeFileSync(HISTORY_PATH, history, 'utf-8')
-
-    return history
   }
+
+  const history = await getHistory(settings)
+
+  fs.writeFileSync(HISTORY_PATH, history, 'utf-8')
+
+  return history
 }
 
 async function getHistory(settings: Settings): Promise<string> {
@@ -118,9 +117,6 @@ function truncateHistory(history: string): string {
     truncatedHistory += entry + '\n'
     currentTokenCount += entryTokens.length
   }
-
-  console.log('INITIAL TOKENS LENGTH', tokens.length)
-  console.log('TRUNCATED TOKENS LENGTH', truncatedHistory.length)
 
   return (notice + truncatedHistory).trim()
 }

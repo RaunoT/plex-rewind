@@ -1,5 +1,5 @@
-import { HISTORY_PATH } from '@/utils/chat'
 import getSettings from '@/utils/getSettings'
+import { HISTORY_PATH, saveTautulliHistory } from '@/utils/history'
 import { createGoogleGenerativeAI } from '@ai-sdk/google'
 import {
   FileState,
@@ -32,12 +32,15 @@ async function uploadHistoryFile(apiKey: string) {
 export async function POST(req: Request) {
   const { messages, userId } = await req.json()
   const settings = getSettings()
+  const startDate = settings.chat.startDate || ''
+  const endDate = settings.chat.endDate || ''
   const apiKey = settings.connection.aiApiKey
   const google = createGoogleGenerativeAI({
     apiKey,
   })
-  const startDate = settings.chat.startDate || ''
-  const endDate = settings.chat.endDate || ''
+
+  await saveTautulliHistory(settings)
+
   const historyFile = await uploadHistoryFile(apiKey!)
   const cacheManager = new GoogleAICacheManager(apiKey!)
   const { name: cachedContent } = await cacheManager.create({

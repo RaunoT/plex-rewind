@@ -1,9 +1,13 @@
 'use client'
 
-import { ChatBubbleLeftRightIcon, XMarkIcon } from '@heroicons/react/24/outline'
+import {
+  ChatBubbleLeftRightIcon,
+  QuestionMarkCircleIcon,
+  XMarkIcon,
+} from '@heroicons/react/24/outline'
 import { useChat } from 'ai/react'
 import clsx from 'clsx'
-import { useEffect, useRef, useState } from 'react'
+import { ChangeEvent, FormEvent, useEffect, useRef, useState } from 'react'
 import {
   Button,
   Dialog,
@@ -12,6 +16,12 @@ import {
   ModalOverlay,
 } from 'react-aria-components'
 import ReactMarkdown from 'react-markdown'
+
+const PREDEFINED_QUESTIONS = [
+  "What's the last thing I watched?",
+  'What show did I watch most last week?',
+  'How many movies have I seen?',
+]
 
 type Props = {
   userId: string
@@ -22,6 +32,7 @@ export default function Chat({ userId }: Props) {
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false)
   const [isAnswerGenerating, setIsAnswerGenerating] = useState<boolean>(false)
   const messageContainerRef = useRef<HTMLDivElement>(null)
+  const formRef = useRef<HTMLFormElement>(null)
   const { messages, input, handleInputChange, handleSubmit, isLoading, error } =
     useChat({
       api: '/api/chat',
@@ -31,7 +42,15 @@ export default function Chat({ userId }: Props) {
       keepLastMessageOnError: true,
     })
 
-  function handleFormSubmit(e: React.FormEvent<HTMLFormElement>) {
+  function handlePredefinedQuestion(question: string) {
+    handleInputChange({
+      target: { value: question },
+    } as ChangeEvent<HTMLInputElement>)
+
+    // TODO: submit the form
+  }
+
+  function handleFormSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault()
     setIsSubmitting(true)
     handleSubmit(e)
@@ -107,10 +126,23 @@ export default function Chat({ userId }: Props) {
                   )}
 
                   {messages.length === 0 && !isSubmitting && !error && (
-                    <p className='text-neutral-400'>
-                      Ask me something like &quot;What did I watch last
-                      week?&quot;
-                    </p>
+                    <div className='text-neutral-400'>
+                      <p className='mb-4'>
+                        Ask me something or choose a question below:
+                      </p>
+                      <div className='grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3'>
+                        {PREDEFINED_QUESTIONS.map((question, index) => (
+                          <button
+                            key={index}
+                            className='flex items-center justify-between gap-2 rounded-lg border border-neutral-600 bg-neutral-700 p-3 text-left text-sm hover:bg-neutral-600'
+                            onClick={() => handlePredefinedQuestion(question)}
+                          >
+                            {question}
+                            <QuestionMarkCircleIcon className='size-5 shrink-0' />
+                          </button>
+                        ))}
+                      </div>
+                    </div>
                   )}
 
                   {error && (
@@ -124,6 +156,7 @@ export default function Chat({ userId }: Props) {
                 <form
                   onSubmit={handleFormSubmit}
                   className='flex gap-2 pt-4 sm:pt-8'
+                  ref={formRef}
                 >
                   <input
                     className='input w-full'

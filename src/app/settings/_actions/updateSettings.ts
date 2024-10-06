@@ -7,8 +7,8 @@ import {
   GeneralSettings,
   RewindSettings,
 } from '@/types/settings'
-import { saveTautulliHistory } from '@/utils/chat'
 import getSettings, { SETTINGS_PATH } from '@/utils/getSettings'
+import { saveTautulliHistory } from '@/utils/history'
 import { promises as fs } from 'fs'
 import { revalidatePath } from 'next/cache'
 import { ZodError, ZodSchema } from 'zod'
@@ -39,7 +39,7 @@ export default async function updateSettings<K extends keyof SettingsTypeMap>(
     await fs.writeFile(SETTINGS_PATH, JSON.stringify(settings), 'utf8')
 
     if (key === 'chat') {
-      saveTautulliHistory(settings)
+      await saveTautulliHistory(settings)
     }
 
     revalidatePath('/')
