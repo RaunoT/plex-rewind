@@ -49,7 +49,7 @@ export async function POST(req: Request) {
       `The user asking the questions ${userId ? `has the userId ${userId}.` : 'is unknown.'}\n` +
       `Try to keep the response concise and to the point.\n` +
       `Today is ${new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}.\n` +
-      `The history provided is from ${startDate || 'the beginning of time'} to ${endDate || 'today'}. Let the user know that this can be changed from Rewind settings.\n` +
+      `The history provided is from ${startDate || 'the beginning of time'} to ${endDate || 'today'}.\n` +
       `The Plex viewing history from the Tautulli API is in the file you have access to.\n`,
     contents: [
       {
