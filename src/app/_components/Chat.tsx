@@ -83,7 +83,7 @@ export default function Chat({ userId }: Props) {
         <ChatBubbleLeftRightIcon className='size-6' />
       </Button>
       <ModalOverlay
-        className='fixed inset-0 flex justify-center bg-black/50 p-4 sm:p-8 xl:items-center'
+        className='fixed inset-0 flex justify-center bg-black/75 p-4 sm:p-8 xl:items-center'
         isDismissable
       >
         <Modal className='h-full w-full overflow-hidden xl:max-w-screen-lg 2xl:h-2/3'>
@@ -92,7 +92,7 @@ export default function Chat({ userId }: Props) {
               <>
                 <Button
                   onPress={close}
-                  className='link-light absolute right-3 top-3 z-10'
+                  className='link-light absolute right-3 top-3 z-10 sm:right-4 sm:top-4'
                 >
                   <XMarkIcon className='size-6' />
                 </Button>
@@ -101,10 +101,11 @@ export default function Chat({ userId }: Props) {
                   ref={messageContainerRef}
                   className='flex-grow overflow-y-auto'
                 >
-                  {messages.map((m) => (
+                  {messages.map((m, i) => (
                     <div
                       key={m.id}
                       className={clsx(
+                        i === 0 && 'pr-10 sm:pr-12',
                         m.role === 'user'
                           ? 'mb-3 mt-5 text-neutral-400 first:mt-0'
                           : 'rounded-xl bg-neutral-600/50 px-4 py-3',
@@ -120,7 +121,7 @@ export default function Chat({ userId }: Props) {
                     <div
                       aria-live='polite'
                       role='status'
-                      className='skeleton w-1/3'
+                      className='skeleton w-3/5 lg:w-1/3'
                       aria-label='Loading response...'
                     />
                   )}
