@@ -89,7 +89,11 @@ export default function MediaItem({
         <Image
           fill
           className='object-cover object-top'
-          alt={isUserDashboard ? data.user + ' avatar' : data.title + ' poster'}
+          alt={
+            isUserDashboard
+              ? data.friendly_name + ' avatar'
+              : data.title + ' poster'
+          }
           src={imageSrc}
           sizes='10rem'
           onError={() => setImageSrc(placeholderSvg)}

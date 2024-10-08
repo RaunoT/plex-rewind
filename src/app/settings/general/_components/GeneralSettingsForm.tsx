@@ -120,6 +120,17 @@ export default function GeneralSettingsForm({ settings, libraries }: Props) {
                 <small>Access without login.</small>
               </span>
             </Switch>
+            <Switch
+              className='switch items-start'
+              name='isAnonymized'
+              defaultSelected={generalSettings.isAnonymized}
+            >
+              <div className='indicator'></div>
+              <span className='label'>
+                <span className='label-wrapper'>Anonymize</span>
+                <small>Hide usernames for other users.</small>
+              </span>
+            </Switch>
           </section>
           <section className='group-settings group'>
             <h2 className='heading-settings'>Analytics</h2>
