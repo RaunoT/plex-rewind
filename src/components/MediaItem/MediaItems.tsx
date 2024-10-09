@@ -5,7 +5,7 @@ import MediaItem from './MediaItem'
 
 type Props = {
   items: TautulliItemRow[]
-  type: string
+  type: 'movie' | 'show' | 'artist' | 'users'
   serverId: string
   rows?: boolean
   settings: Settings

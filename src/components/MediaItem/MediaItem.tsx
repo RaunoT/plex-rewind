@@ -26,7 +26,7 @@ import PlexDeeplink from './PlexDeeplink'
 type Props = {
   data: TautulliItemRow
   i: number
-  type: string
+  type: 'movie' | 'show' | 'artist' | 'users'
   serverId: string
   activeStats: string[]
   settings: Settings

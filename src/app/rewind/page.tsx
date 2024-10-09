@@ -12,6 +12,7 @@ import {
   getlibrariesTotalSize,
 } from '@/utils/getRewind'
 import getSettings from '@/utils/getSettings'
+import getUsersTop from '@/utils/getUsersTop'
 import { getServerSession } from 'next-auth'
 import { notFound } from 'next/navigation'
 import { Suspense } from 'react'
@@ -66,6 +67,7 @@ async function RewindContent({ searchParams }: Props) {
     librariesTotalSize,
     librariesTotalDuration,
     serverId,
+    usersTop,
   ] = await Promise.all([
     getTopMediaItems(user.id, libraries),
     getTopMediaStats(user.id, libraries),
@@ -73,6 +75,7 @@ async function RewindContent({ searchParams }: Props) {
     getlibrariesTotalSize(libraries),
     getLibrariesTotalDuration(libraries),
     getServerId(),
+    getUsersTop(user.id, 30, '2024-10-01', '2024-10-01', settings),
   ])
   const userRewind: UserRewind = {
     duration: {
@@ -82,6 +85,7 @@ async function RewindContent({ searchParams }: Props) {
       )}%`,
       total: secondsToTime(librariesTotalDuration),
     },
+    usersTop: usersTop,
     shows: {
       top: topMediaItems.shows,
       count: topMediaStats.shows.count,
