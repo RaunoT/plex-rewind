@@ -2,9 +2,7 @@
 
 import { Settings } from '@/types/settings'
 import { TautulliItemRow } from '@/types/tautulli'
-import { ANONYMIZED_ANIMALS } from '@/utils/constants'
 import { pluralize, secondsToTime } from '@/utils/formatting'
-import { getAnimalIcon } from '@/utils/helpers'
 import { slideDown } from '@/utils/motion'
 import {
   CalendarDaysIcon,
@@ -20,6 +18,7 @@ import clsx from 'clsx'
 import { motion } from 'framer-motion'
 import Image from 'next/image'
 import { useEffect, useRef, useState } from 'react'
+import anonymousSvg from './anonymous.svg'
 import MediaItemTitle from './MediaItemTitle'
 import placeholderSvg from './placeholder.svg'
 import PlexDeeplink from './PlexDeeplink'
@@ -55,9 +54,9 @@ export default function MediaItem({
           isUserDashboard ? data.user_thumb : data.thumb
         }&width=300`,
       )}`
-  const isAnonymized = ANONYMIZED_ANIMALS.includes(data.user_thumb)
+  const isAnonymized = data.user === 'Anonymous'
   const initialImageSrc =
-    isUserDashboard && isAnonymized ? getAnimalIcon(data.user_thumb) : posterSrc
+    isUserDashboard && isAnonymized ? anonymousSvg : posterSrc
   const [imageSrc, setImageSrc] = useState<string>(initialImageSrc)
   const [dataKey, setDataKey] = useState<number>(0)
   const titleContainerRef = useRef<HTMLDivElement>(null)
@@ -90,15 +89,10 @@ export default function MediaItem({
       animate='show'
       transition={{ delay: i * 0.075 }}
     >
-      <div
-        className={clsx(
-          'relative aspect-[2/3] h-full w-20 flex-shrink-0 sm:w-[5.35rem] 2xl:w-24',
-          isAnonymized && 'bg-neutral-600/50',
-        )}
-      >
+      <div className='relative aspect-[2/3] h-full w-20 flex-shrink-0 sm:w-[5.35rem] 2xl:w-24'>
         <Image
           fill
-          className={clsx(isAnonymized ? 'p-3' : 'object-cover object-top')}
+          className='object-cover object-top'
           alt={
             isUserDashboard
               ? data.friendly_name + ' avatar'
