@@ -18,9 +18,10 @@ import clsx from 'clsx'
 import { motion } from 'framer-motion'
 import Image from 'next/image'
 import { useEffect, useRef, useState } from 'react'
+import anonymousSvg from './anonymous.svg'
 import MediaItemTitle from './MediaItemTitle'
-import PlexDeeplink from './PlexDeeplink'
 import placeholderSvg from './placeholder.svg'
+import PlexDeeplink from './PlexDeeplink'
 
 type Props = {
   data: TautulliItemRow
@@ -53,16 +54,19 @@ export default function MediaItem({
           isUserDashboard ? data.user_thumb : data.thumb
         }&width=300`,
       )}`
+  const isAnonymized = data.user === 'Anonymous'
+  const initialImageSrc =
+    isUserDashboard && isAnonymized ? anonymousSvg : posterSrc
+  const [imageSrc, setImageSrc] = useState<string>(initialImageSrc)
   const [dataKey, setDataKey] = useState<number>(0)
   const titleContainerRef = useRef<HTMLDivElement>(null)
   const isOverseerrActive =
     settings.connection.overseerrUrl && settings.connection.overseerrApiKey
-  const [imageSrc, setImageSrc] = useState<string>(posterSrc)
 
   useEffect(() => {
     setDataKey((prevDataKey) => prevDataKey + 1)
-    setImageSrc(posterSrc)
-  }, [data, type, posterSrc])
+    setImageSrc(initialImageSrc)
+  }, [data, type, initialImageSrc])
 
   return (
     <motion.li
@@ -89,7 +93,11 @@ export default function MediaItem({
         <Image
           fill
           className='object-cover object-top'
-          alt={isUserDashboard ? data.user + ' avatar' : data.title + ' poster'}
+          alt={
+            isUserDashboard
+              ? data.friendly_name + ' avatar'
+              : data.title + ' poster'
+          }
           src={imageSrc}
           sizes='10rem'
           onError={() => setImageSrc(placeholderSvg)}

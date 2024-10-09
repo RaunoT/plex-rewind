@@ -10,6 +10,7 @@ import fetchTautulli, { getLibrariesByType } from '@/utils/fetchTautulli'
 import { secondsToTime, timeToSeconds } from '@/utils/formatting'
 import getPeriod from '@/utils/getPeriod'
 import getSettings from '@/utils/getSettings'
+import { anonymizeUsers } from '@/utils/helpers'
 import { Metadata } from 'next'
 import { getServerSession } from 'next-auth'
 import { notFound } from 'next/navigation'
@@ -51,7 +52,7 @@ async function getUsers(
   const allUsersCount = await getUsersCount(settings)
 
   if (!allUsersCount) {
-    console.error('[TAUTULLI] - Could not determine the number of users.')
+    console.error('Could not determine the number of users!')
 
     return
   }
@@ -164,6 +165,10 @@ async function getUsers(
     user.shows_plays_count = usersPlaysAndDurations[i].shows_plays_count
     user.audio_plays_count = usersPlaysAndDurations[i].audio_plays_count
   })
+
+  if (settings.general.isAnonymized) {
+    return anonymizeUsers(listedUsers, loggedInUserId)
+  }
 
   return listedUsers
 }
