@@ -13,37 +13,13 @@ const REQUIRED_SETTINGS = [
   'dashboard.startDate',
   'dashboard.complete',
 ]
-const ANONYMIZED_USERS = [
-  'Swift Falcon',
-  'Wise Owl',
-  'Sly Fox',
-  'Brave Wolf',
-  'Silent Lynx',
-  'Mighty Panther',
-  'Cunning Coyote',
-  'Gentle Deer',
-  'Quick Hare',
-  'Stealthy Tiger',
-  'Fierce Lion',
-  'Nimble Squirrel',
-  'Proud Eagle',
-  'Calm Dolphin',
-  'Playful Otter',
-  'Bold Hawk',
-  'Shy Tortoise',
-  'Loyal Dog',
-  'Curious Cat',
-  'Elegant Swan',
-  'Strong Bear',
-  'Graceful Gazelle',
-  'Fearless Shark',
-  'Sneaky Raccoon',
-  'Vigilant Falcon',
-  'Cheerful Penguin',
-  'Wild Stallion',
-  'Clever Raven',
-  'Majestic Whale',
-  'Swift Antelope',
+const ANONYMIZED_BIRDS = [
+  'Ferocious Falcon',
+  'Observant Owl',
+  'Resourceful Raven',
+  'Serene Swan',
+  'Playful Parrot',
+  'Mischievous Magpie',
 ]
 
 export function checkRequiredSettings(settings: Settings): string | null {
@@ -77,16 +53,14 @@ export function anonymizeUsers(
   users: TautulliItemRow[],
   loggedInUserId: string,
 ) {
-  return users.map((user) => {
+  return users.map((user, i) => {
     const isLoggedIn = user.user_id === Number(loggedInUserId)
-    const anonName = isLoggedIn
-      ? user.friendly_name
-      : ANONYMIZED_USERS[Math.floor(Math.random() * ANONYMIZED_USERS.length)]
+    const anonName = ANONYMIZED_BIRDS[i]
 
     return {
       ...user,
-      user: anonName,
-      friendly_name: anonName,
+      user: isLoggedIn ? user.user : anonName,
+      friendly_name: isLoggedIn ? user.friendly_name : anonName,
       user_thumb: isLoggedIn ? user.user_thumb : '',
       user_id: isLoggedIn ? user.user_id : 0,
     }
