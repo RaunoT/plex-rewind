@@ -88,3 +88,24 @@ export const SETTINGS_PAGES = [
 ]
 
 export const TMDB_API_KEY = '4675b5b5d8cd1463ff16adca2680157b'
+
+export const ANONYMIZED_ANIMALS = [
+  'Bat',
+  'Butterfly',
+  'Cat',
+  'Duck',
+  'Giraffe',
+  'Hippo',
+  'Kangaroo',
+  'Lion',
+  'Monkey',
+  'Moose',
+  'Octopus',
+  'Ostrich',
+  'Rabbit',
+  'Racoon',
+  'Shark',
+  'Snake',
+  'Tiger',
+  'Turtle',
+]

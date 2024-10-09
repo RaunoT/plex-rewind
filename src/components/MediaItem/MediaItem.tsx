@@ -2,7 +2,9 @@
 
 import { Settings } from '@/types/settings'
 import { TautulliItemRow } from '@/types/tautulli'
+import { ANONYMIZED_ANIMALS } from '@/utils/constants'
 import { pluralize, secondsToTime } from '@/utils/formatting'
+import { getAnimalIcon } from '@/utils/helpers'
 import { slideDown } from '@/utils/motion'
 import {
   CalendarDaysIcon,
@@ -19,8 +21,8 @@ import { motion } from 'framer-motion'
 import Image from 'next/image'
 import { useEffect, useRef, useState } from 'react'
 import MediaItemTitle from './MediaItemTitle'
-import PlexDeeplink from './PlexDeeplink'
 import placeholderSvg from './placeholder.svg'
+import PlexDeeplink from './PlexDeeplink'
 
 type Props = {
   data: TautulliItemRow
@@ -53,16 +55,19 @@ export default function MediaItem({
           isUserDashboard ? data.user_thumb : data.thumb
         }&width=300`,
       )}`
+  const isAnonymized = ANONYMIZED_ANIMALS.includes(data.user_thumb)
+  const initialImageSrc =
+    isUserDashboard && isAnonymized ? getAnimalIcon(data.user_thumb) : posterSrc
+  const [imageSrc, setImageSrc] = useState<string>(initialImageSrc)
   const [dataKey, setDataKey] = useState<number>(0)
   const titleContainerRef = useRef<HTMLDivElement>(null)
   const isOverseerrActive =
     settings.connection.overseerrUrl && settings.connection.overseerrApiKey
-  const [imageSrc, setImageSrc] = useState<string>(posterSrc)
 
   useEffect(() => {
     setDataKey((prevDataKey) => prevDataKey + 1)
-    setImageSrc(posterSrc)
-  }, [data, type, posterSrc])
+    setImageSrc(initialImageSrc)
+  }, [data, type, initialImageSrc])
 
   return (
     <motion.li
@@ -85,10 +90,15 @@ export default function MediaItem({
       animate='show'
       transition={{ delay: i * 0.075 }}
     >
-      <div className='relative aspect-[2/3] h-full w-20 flex-shrink-0 sm:w-[5.35rem] 2xl:w-24'>
+      <div
+        className={clsx(
+          'relative aspect-[2/3] h-full w-20 flex-shrink-0 sm:w-[5.35rem] 2xl:w-24',
+          isAnonymized && 'bg-neutral-600/50',
+        )}
+      >
         <Image
           fill
-          className='object-cover object-top'
+          className={clsx(isAnonymized ? 'p-3' : 'object-cover object-top')}
           alt={
             isUserDashboard
               ? data.friendly_name + ' avatar'
