@@ -29,6 +29,7 @@ export default function StoryUsersTop({
             serverId={userRewind.server_id}
             rows
             settings={settings}
+            loggedInUserId={userRewind.user.id}
           />
         </div>
       </RewindStat>

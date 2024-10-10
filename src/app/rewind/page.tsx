@@ -13,6 +13,7 @@ import {
 } from '@/utils/getRewind'
 import getSettings from '@/utils/getSettings'
 import getUsersTop from '@/utils/getUsersTop'
+import { getRewindDateRange } from '@/utils/helpers'
 import { getServerSession } from 'next-auth'
 import { notFound } from 'next/navigation'
 import { Suspense } from 'react'
@@ -60,6 +61,7 @@ async function RewindContent({ searchParams }: Props) {
   }
 
   const libraries = await getLibraries()
+  const { startDate, endDate } = getRewindDateRange(settings)
   const [
     topMediaItems,
     topMediaStats,
@@ -75,7 +77,7 @@ async function RewindContent({ searchParams }: Props) {
     getlibrariesTotalSize(libraries),
     getLibrariesTotalDuration(libraries),
     getServerId(),
-    getUsersTop(user.id, 30, '2024-10-01', '2024-10-01', settings),
+    getUsersTop(user.id, startDate, 0, endDate),
   ])
   const userRewind: UserRewind = {
     duration: {

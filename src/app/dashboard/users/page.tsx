@@ -68,13 +68,7 @@ async function DashboardUsersContent({ searchParams }: Props) {
   const period = getPeriod(searchParams, settings)
   const [usersData, totalDuration, usersCount, totalRequests] =
     await Promise.all([
-      getUsersTop(
-        loggedInUserId,
-        period.daysAgo,
-        period.date,
-        period.string,
-        settings,
-      ),
+      getUsersTop(loggedInUserId, period.string, period.daysAgo),
       getTotalDuration(period.string, settings),
       getUsersCount(settings),
       getTotalRequests(period.date, settings),

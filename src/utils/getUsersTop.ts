@@ -1,10 +1,10 @@
-import { Settings } from '@/types/settings'
 import { TautulliItem, TautulliItemRow } from '@/types/tautulli'
 import { fetchOverseerrStats, fetchOverseerrUserId } from './fetchOverseerr'
 import fetchTautulli, {
   getLibrariesByType,
   getUsersCount,
 } from './fetchTautulli'
+import getSettings from './getSettings'
 import { anonymizeUsers } from './helpers'
 
 type UserRequestCounts =
@@ -15,12 +15,12 @@ type UserRequestCounts =
 
 export default async function getUsersTop(
   loggedInUserId: string,
-  period: number,
-  requestsPeriod: string,
-  periodString: string,
-  settings: Settings,
+  after: string,
+  period?: number,
+  before?: string,
 ): Promise<TautulliItemRow[] | null> {
   const numberOfUsers = 6
+  const settings = getSettings()
   const allUsersCount = await getUsersCount(settings)
 
   if (!allUsersCount) {
@@ -33,7 +33,7 @@ export default async function getUsersTop(
     stat_id: 'top_users',
     stats_count: allUsersCount,
     stats_type: 'duration',
-    time_range: period,
+    ...(after && before ? { after, before } : { time_range: period || '30' }),
   })
   const users = usersRes?.response?.data?.rows
 
@@ -67,7 +67,8 @@ export default async function getUsersTop(
         if (overseerrId) {
           const userTotal = await fetchOverseerrStats(
             `user/${overseerrId}/requests`,
-            requestsPeriod,
+            after,
+            ...(before ? [before] : []),
           )
 
           return {
@@ -89,8 +90,9 @@ export default async function getUsersTop(
           'get_history',
           {
             user_id: user.user_id,
-            after: periodString,
+            after: after,
             section_id: movieLib.section_id,
+            ...(before && { before }),
           },
         )
 
@@ -102,8 +104,9 @@ export default async function getUsersTop(
           'get_history',
           {
             user_id: user.user_id,
-            after: periodString,
+            after: after,
             section_id: showLib.section_id,
+            ...(before && { before }),
           },
         )
 
@@ -115,8 +118,9 @@ export default async function getUsersTop(
           'get_history',
           {
             user_id: user.user_id,
-            after: periodString,
+            after: after,
             section_id: audioLibItem.section_id,
+            ...(before && { before }),
           },
         )
 
