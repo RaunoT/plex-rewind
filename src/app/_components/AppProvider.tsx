@@ -15,6 +15,7 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { ReactNode, useEffect, useState } from 'react'
 import stars from '../_assets/stars.png'
+import Chat from './Chat'
 import GlobalContextProvider from './GlobalContextProvider'
 
 type Props = {
@@ -81,6 +82,12 @@ export default function AppProvider({ children, settings, version }: Props) {
               <ArrowPathIcon className='size-6' />
             </a>
           )}
+          {!missingSetting &&
+            session?.user &&
+            settings.connection.aiApiKey &&
+            (settings.chat.adminOnly ? session?.user.isAdmin : true) && (
+              <Chat userId={session?.user.id} />
+            )}
           {!missingSetting && session?.user.isAdmin && (
             <Link
               href={isSettings ? '/' : settingsLink}

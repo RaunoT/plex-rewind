@@ -26,9 +26,6 @@
   "stylelint.validate": ["css", "postcss"],
   "typescript.tsdk": "node_modules/typescript/lib",
   "files.associations": {
-    "*.css": "postcss"
-  },
-  "tailwindCSS.experimental.classRegex": [
-    ["clsx\\(([^)]*)\\)", "(?:'|\"|`)([^']*)(?:'|\"|`)"]
-  ]
+    "*.css": "tailwindcss"
+  }
 }
