@@ -24,10 +24,8 @@ export default function MediaItems({
     <ul
       className={clsx(
         'mt-4 flex flex-col gap-y-3 overflow-hidden sm:mt-6 sm:gap-y-5',
-        {
-          'lg:grid lg:grid-flow-col lg:grid-cols-2 lg:grid-rows-3 lg:gap-x-8':
-            !rows,
-        },
+        !rows &&
+          'lg:grid lg:grid-flow-col lg:grid-cols-2 lg:grid-rows-3 lg:gap-x-8',
       )}
     >
       {items.map((itemData, i) => (
@@ -41,6 +39,7 @@ export default function MediaItems({
           settings={settings}
           loggedInUserId={loggedInUserId}
           items={items}
+          rows={rows}
         />
       ))}
     </ul>

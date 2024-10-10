@@ -32,6 +32,7 @@ type Props = {
   settings: Settings
   loggedInUserId?: string
   items: TautulliItemRow[]
+  rows?: boolean
 }
 
 export default function MediaItem({
@@ -43,25 +44,31 @@ export default function MediaItem({
   settings,
   loggedInUserId,
   items,
+  rows,
 }: Props) {
   const tautulliUrl = settings.connection.tautulliUrl
   const isTmdbPoster = data.thumb?.startsWith('https://image.tmdb.org')
-  const isUserDashboard = type === 'users'
+  const isUsers = type === 'users'
   const posterSrc = isTmdbPoster
     ? data.thumb
     : `/api/image?url=${encodeURIComponent(
         `${tautulliUrl}/pms_image_proxy?img=${
-          isUserDashboard ? data.user_thumb : data.thumb
+          isUsers ? data.user_thumb : data.thumb
         }&width=300`,
       )}`
   const isAnonymized = data.user === 'Anonymous'
-  const initialImageSrc =
-    isUserDashboard && isAnonymized ? anonymousSvg : posterSrc
+  const initialImageSrc = isUsers && isAnonymized ? anonymousSvg : posterSrc
   const [imageSrc, setImageSrc] = useState<string>(initialImageSrc)
   const [dataKey, setDataKey] = useState<number>(0)
   const titleContainerRef = useRef<HTMLDivElement>(null)
   const isOverseerrActive =
     settings.connection.overseerrUrl && settings.connection.overseerrApiKey
+  // Hidden conditional
+  const isLoggedInUser = String(data.user_id) === loggedInUserId
+  const isHiddenUser = isUsers && i > 4 && !isLoggedInUser
+  const isHiddenItem = !isUsers && i > 4
+  const isSpecialCase =
+    i === 4 && items[5] && String(items[5].user_id) === loggedInUserId
 
   useEffect(() => {
     setDataKey((prevDataKey) => prevDataKey + 1)
@@ -71,19 +78,11 @@ export default function MediaItem({
   return (
     <motion.li
       key={dataKey}
-      className={clsx(
-        'flex gap-3 2xl:items-center',
-        isUserDashboard &&
-          i > 4 &&
-          String(data.user_id) !== loggedInUserId &&
-          'hidden lg:flex',
-        isUserDashboard
-          ? i === 4 &&
-              items[5] &&
-              String(items[5].user_id) === loggedInUserId &&
-              'hidden lg:flex'
-          : i > 4 && 'hidden lg:flex',
-      )}
+      className={clsx('flex gap-3 2xl:items-center', {
+        'hidden lg:flex':
+          !rows && (isHiddenUser || isHiddenItem || isSpecialCase),
+        hidden: rows && (isHiddenUser || isSpecialCase),
+      })}
       variants={slideDown}
       initial='hidden'
       animate='show'
@@ -94,9 +93,7 @@ export default function MediaItem({
           fill
           className='object-cover object-top'
           alt={
-            isUserDashboard
-              ? data.friendly_name + ' avatar'
-              : data.title + ' poster'
+            isUsers ? data.friendly_name + ' avatar' : data.title + ' poster'
           }
           src={imageSrc}
           sizes='10rem'
@@ -173,7 +170,7 @@ export default function MediaItem({
           )}
           {/* Plays */}
           {activeStats.includes('plays') &&
-            (isUserDashboard ? (
+            (isUsers ? (
               <>
                 {data.shows_plays_count > 0 && (
                   <li className='icon-stat-wrapper'>
@@ -214,14 +211,12 @@ export default function MediaItem({
             </li>
           )}
           {/* Requests */}
-          {activeStats.includes('requests') &&
-            isUserDashboard &&
-            data.requests > 0 && (
-              <li className='icon-stat-wrapper'>
-                <QuestionMarkCircleIcon />
-                {pluralize(data.requests, 'request')}
-              </li>
-            )}
+          {activeStats.includes('requests') && isUsers && data.requests > 0 && (
+            <li className='icon-stat-wrapper'>
+              <QuestionMarkCircleIcon />
+              {pluralize(data.requests, 'request')}
+            </li>
+          )}
         </ul>
       </div>
     </motion.li>
