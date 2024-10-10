@@ -7,6 +7,7 @@ type LibraryRewind = {
 }
 
 export type UserRewind = {
+  usersTop: TautulliItemRow[] | null
   libraries: TautulliLibrary[]
   libraries_total_size: number
   requests?: {
