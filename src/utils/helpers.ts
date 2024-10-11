@@ -1,4 +1,5 @@
 import { Settings } from '@/types/settings'
+import { TautulliItemRow } from '@/types/tautulli'
 import { PERIODS, SETTINGS_PAGES } from './constants'
 
 const REQUIRED_SETTINGS = [
@@ -38,4 +39,21 @@ export function getRewindDateRange(settings: Settings) {
     settings.rewind.endDate || new Date().toISOString().split('T')[0]
 
   return { startDate, endDate }
+}
+
+export function anonymizeUsers(
+  users: TautulliItemRow[],
+  loggedInUserId: string,
+): TautulliItemRow[] {
+  return users.map((user) => {
+    const isLoggedIn = user.user_id === Number(loggedInUserId)
+
+    return {
+      ...user,
+      user: isLoggedIn ? user.user : 'Anonymous',
+      friendly_name: isLoggedIn ? user.friendly_name : 'Anonymous',
+      user_thumb: isLoggedIn ? user.user_thumb : '',
+      user_id: isLoggedIn ? user.user_id : 0,
+    }
+  })
 }

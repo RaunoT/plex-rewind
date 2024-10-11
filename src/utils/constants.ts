@@ -52,6 +52,7 @@ export const DEFAULT_SETTINGS: Settings = {
     isPostersTmdbOnly: false,
     googleAnalyticsId: '',
     isOutsideAccess: false,
+    isAnonymized: false,
     complete: false,
   },
   chat: {

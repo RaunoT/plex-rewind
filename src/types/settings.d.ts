@@ -19,6 +19,7 @@ export type GeneralSettings = {
   isPostersTmdbOnly: boolean
   googleAnalyticsId: string
   isOutsideAccess: boolean
+  isAnonymized: boolean
   complete: boolean
 }
 

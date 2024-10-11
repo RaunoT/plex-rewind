@@ -15,7 +15,7 @@ import DashboardFilters from './DashboardFilters'
 
 type Props = {
   title: string
-  items?: TautulliItemRow[]
+  items?: TautulliItemRow[] | null
   totalDuration?: string
   totalSize?: string | number
   type: 'movie' | 'show' | 'artist' | 'users'
