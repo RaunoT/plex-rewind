@@ -15,6 +15,7 @@ import StoryRequests from './Stories/Requests'
 import StoryShows from './Stories/Shows'
 import StoryShowsTop from './Stories/ShowsTop'
 import StoryTotal from './Stories/Total'
+import StoryUsersTop from './Stories/UsersTop'
 import StoryWelcome from './Stories/Welcome'
 
 type Story = {
@@ -66,6 +67,9 @@ export default function RewindStories({ userRewind, settings }: Props) {
   const stories = [
     createStory(StoryWelcome, 7000),
     createStory(StoryTotal, 8000),
+    ...(userRewind.usersTop && userRewind.usersTop.length > 1
+      ? [createStory(StoryUsersTop, 9000)]
+      : []),
     ...(userRewind.libraries_total_size && isLibrariesSizeAndCountActive
       ? [createStory(StoryLibraries, 9000)]
       : []),
