@@ -1,6 +1,7 @@
 import { TautulliItem, TautulliItemRow } from '@/types/tautulli'
 import { fetchOverseerrStats, fetchOverseerrUserId } from './fetchOverseerr'
 import fetchTautulli, {
+  getLibraries,
   getLibrariesByType,
   getUsersCount,
 } from './fetchTautulli'
@@ -29,18 +30,39 @@ export default async function getUsersTop(
     return null
   }
 
-  const usersRes = await fetchTautulli<TautulliItem>('get_home_stats', {
-    stat_id: 'top_users',
-    stats_count: allUsersCount,
-    stats_type: 'duration',
-    ...(after && before ? { after, before } : { time_range: period || '30' }),
+  const activeLibraries = await getLibraries()
+  const userStats = await Promise.all(
+    activeLibraries.map((library) =>
+      fetchTautulli<TautulliItem>('get_home_stats', {
+        stat_id: 'top_users',
+        stats_count: allUsersCount,
+        stats_type: 'duration',
+        section_id: library.section_id,
+        ...(after && before
+          ? { after, before }
+          : { time_range: period || '30' }),
+      }),
+    ),
+  )
+  const combinedUserStats: { [key: string]: TautulliItemRow } = {}
+
+  userStats.forEach((stat) => {
+    const users = stat?.response?.data?.rows
+
+    if (users) {
+      users.forEach((user) => {
+        if (combinedUserStats[user.user_id]) {
+          combinedUserStats[user.user_id].total_duration += user.total_duration
+        } else {
+          combinedUserStats[user.user_id] = { ...user }
+        }
+      })
+    }
   })
-  const users = usersRes?.response?.data?.rows
 
-  if (!users) {
-    return null
-  }
-
+  const users = Object.values(combinedUserStats)
+    .sort((a, b) => b.total_duration - a.total_duration)
+    .slice(0, numberOfUsers)
   const isAnonymousAccess = settings.general.isOutsideAccess && !loggedInUserId
   const listedUsers = isAnonymousAccess
     ? users.slice(0, numberOfUsers)
