@@ -57,20 +57,3 @@ export function anonymizeUsers(
     }
   })
 }
-
-export function sumObjectValues<T extends Record<string, number>>(
-  obj1: T,
-  obj2: T,
-): T {
-  const result = { ...obj1 }
-
-  for (const key in obj2) {
-    if (result.hasOwnProperty(key)) {
-      result[key] += obj2[key]
-    } else {
-      result[key] = obj2[key]
-    }
-  }
-
-  return result
-}

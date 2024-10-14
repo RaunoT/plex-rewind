@@ -44,7 +44,7 @@ export default async function getUsersTop(
       }),
     ),
   )
-  const combinedUserStats: { [key: string]: TautulliItemRow } = {}
+  const combinedUserStats: { [userId: string]: TautulliItemRow } = {}
 
   userStats.forEach((stat) => {
     const users = stat?.response?.data?.rows
@@ -60,9 +60,9 @@ export default async function getUsersTop(
     }
   })
 
-  const users = Object.values(combinedUserStats)
-    .sort((a, b) => b.total_duration - a.total_duration)
-    .slice(0, numberOfUsers)
+  const users = Object.values(combinedUserStats).sort(
+    (a, b) => b.total_duration - a.total_duration,
+  )
   const isAnonymousAccess = settings.general.isOutsideAccess && !loggedInUserId
   const listedUsers = isAnonymousAccess
     ? users.slice(0, numberOfUsers)
