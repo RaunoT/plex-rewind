@@ -73,7 +73,7 @@ _Please note that supporting does not guarantee any support or future developmen
 
 To learn more about some of the tools used in this project, take a look at the following resources:
 
-- [Tautulli API reference](https://github.com/Tautulli/Tautulli/wiki/Tautulli-API-Reference)
+- [Tautulli API reference](https://docs.tautulli.com/extending-tautulli/api-reference)
 - [Overseerr API reference](https://api-docs.overseerr.dev)
 - [Next.js docs](https://nextjs.org/docs)
 - [NextAuth.js docs](https://next-auth.js.org/getting-started/introduction)
