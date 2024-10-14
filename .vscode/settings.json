@@ -10,7 +10,6 @@
     "typescript",
     "typescriptreact"
   ],
-  "css.validate": false,
   "[css]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
@@ -20,12 +19,13 @@
   "[typescript]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
-  "prettier.documentSelectors": ["**/*.svg"],
+  "css.validate": false,
   "stylelint.packageManager": "pnpm",
   "stylelint.snippet": ["css", "postcss"],
   "stylelint.validate": ["css", "postcss"],
-  "typescript.tsdk": "node_modules/typescript/lib",
+  "prettier.documentSelectors": ["**/*.svg"],
   "files.associations": {
     "*.css": "tailwindcss"
-  }
+  },
+  "typescript.tsdk": "node_modules/typescript/lib"
 }
