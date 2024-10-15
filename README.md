@@ -72,6 +72,8 @@ Pricing can be found on [Google's AI pricing page](https://ai.google.dev/pricing
 
 To update, run `docker compose pull` and then `docker compose up -d`.
 
+Optionally, you can also set up automatic updates with [Watchtower](https://containrrr.dev/watchtower).
+
 ## Donate
 
 If you like this project and wish to support it, you can do so by donating via [Patreon](https://www.patreon.com/PlexRewind) or [PayPal](https://paypal.me/raunot). Thank you! ❤️
