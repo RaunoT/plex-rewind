@@ -6,7 +6,6 @@ import fetchTautulli, {
   getUsersCount,
 } from './fetchTautulli'
 import getSettings from './getSettings'
-import { anonymizeUsers } from './helpers'
 
 type UserRequestCounts =
   | {
@@ -205,4 +204,21 @@ async function getInactiveUserInTimePeriod(
   nonActive.total_duration = 0
 
   return nonActive
+}
+
+function anonymizeUsers(
+  users: TautulliItemRow[],
+  loggedInUserId: string,
+): TautulliItemRow[] {
+  return users.map((user) => {
+    const isLoggedIn = user.user_id === Number(loggedInUserId)
+
+    return {
+      ...user,
+      user: isLoggedIn ? user.user : 'Anonymous',
+      friendly_name: isLoggedIn ? user.friendly_name : 'Anonymous',
+      user_thumb: isLoggedIn ? user.user_thumb : '',
+      user_id: isLoggedIn ? user.user_id : 0,
+    }
+  })
 }
