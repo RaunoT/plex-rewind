@@ -8,7 +8,7 @@ import { secondsToTime } from './formatting'
 
 const MAX_TOKENS = 1000000
 
-export const HISTORY_PATH = path.join(process.cwd(), 'config/history.txt')
+export const HISTORY_PATH = path.join(process.cwd(), 'config/history.csv')
 
 export async function saveTautulliHistory(
   settings: Settings,
@@ -71,24 +71,30 @@ async function getHistory(settings: Settings): Promise<string> {
 function formatHistory(history: TautulliItemRow[] | undefined): string {
   if (!history?.length) return 'No recent viewing history available.'
 
-  return history
-    .map(
-      (item: TautulliItemRow) => `
-  - ${item.full_title} (${item.year})
-    Viewer: ${item.friendly_name} (ID: ${item.user_id})
-    Date: ${new Date(item.date * 1000).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
-    Start: ${new Date(item.started * 1000).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })}
-    Finish: ${new Date(item.stopped * 1000).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })}
-    Paused: ${secondsToTime(item.paused_counter)}
-    Duration: ${secondsToTime(item.duration)} (${item.watched_status ? 100 : item.percent_complete}%)
-    Platform: ${item.platform}
-    Player: ${item.player}
-    Type: ${item.media_type}
-    Transcoding decision: ${item.transcode_decision}
-    Rating key: ${item.rating_key}
-`,
-    )
+  const header =
+    'Title,Year,Username,UserID,Date,StartTime,FinishTime,Paused,Duration,Percent,Platform,Player,Type,Transcode,RatingKey\n'
+  const rows = history
+    .map((item: TautulliItemRow) => {
+      const date = new Date(item.date * 1000).toLocaleDateString('en-US', {
+        month: '2-digit',
+        day: '2-digit',
+        year: 'numeric',
+      })
+      const start = new Date(item.started * 1000).toLocaleTimeString('en-GB', {
+        hour: '2-digit',
+        minute: '2-digit',
+      })
+      const finish = new Date(item.stopped * 1000).toLocaleTimeString('en-GB', {
+        hour: '2-digit',
+        minute: '2-digit',
+      })
+      const percent = item.watched_status ? 100 : item.percent_complete
+
+      return `"${item.full_title}",${item.year},${item.friendly_name},${item.user_id},${date},${start},${finish},${secondsToTime(item.paused_counter)},${secondsToTime(item.duration)},${percent},${item.platform},${item.player},${item.media_type},${item.transcode_decision},${item.rating_key}`
+    })
     .join('\n')
+
+  return header + rows
 }
 
 function truncateHistory(history: string): string {
