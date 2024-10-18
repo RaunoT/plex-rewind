@@ -151,6 +151,7 @@ export default function DashboardSettingsForm({ settings }: Props) {
               />
               <span className='label'>
                 <span className='label-wrapper'>Custom period</span>
+                <small>In days.</small>
               </span>
             </label>
             <DatePicker
