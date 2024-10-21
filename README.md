@@ -67,7 +67,11 @@ Optionally, you can also set up automatic updates with [Watchtower](https://cont
 
 ## Donate
 
-If you like this project and wish to support it, you can do so by donating via [Patreon](https://www.patreon.com/PlexRewind) or [PayPal](https://paypal.me/raunot). Thank you! ❤️
+If you like this project and wish to support it, you can do so with a one-time donation via [PayPal](https://paypal.me/raunot) or a recurring one on [Patreon](https://www.patreon.com/PlexRewind) or [GitHub Sponsors](https://github.com/sponsors/RaunoT) (preferred). Thank you! ❤️
+
+### Supporters
+
+- NAS Assist
 
 ## Learn More
 
