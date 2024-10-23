@@ -242,6 +242,26 @@
     background: transparent url('/clouds.png') repeat;
     animation: move-bg 100s linear infinite;
   }
+
+  .chat-reply {
+    p {
+      @apply mb-2 last:mb-0;
+    }
+
+    ul,
+    ol {
+      @apply mb-2;
+    }
+
+    > ul,
+    > ol {
+      @apply last:mb-0;
+    }
+
+    ul {
+      @apply list-inside list-disc;
+    }
+  }
 }
 
 @layer utilities {
