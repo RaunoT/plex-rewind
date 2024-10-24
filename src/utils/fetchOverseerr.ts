@@ -26,9 +26,12 @@ type OverseerrRequestItem = {
   }
 }
 
+const PAGE_SIZE = 20
+
 export default async function fetchOverseerr<T>(
   endpoint: string,
   cache: boolean = false,
+  additionalParams?: Record<string, string>,
 ): Promise<T | null> {
   const settings = getSettings()
   const overseerrUrl = settings.connection.overseerrUrl
@@ -46,7 +49,11 @@ export default async function fetchOverseerr<T>(
     return null
   }
 
-  const apiUrl = `${overseerrUrl}/api/v1/${endpoint}`
+  const queryParams = new URLSearchParams({
+    take: String(PAGE_SIZE),
+    ...additionalParams,
+  })
+  const apiUrl = `${overseerrUrl}/api/v1/${endpoint}?${queryParams.toString()}`
 
   try {
     const res = await fetch(apiUrl, {
@@ -84,15 +91,17 @@ export async function fetchOverseerrStats(
   startDate: string,
   endDate?: string,
 ): Promise<OverseerrRequestItem[]> {
-  const pageSize = 10
-
   let requestsArr: OverseerrRequestItem[] = []
 
   async function fetchRequests(
     page: number,
   ): Promise<OverseerrResponse<OverseerrRequestItem> | null> {
     return await fetchOverseerr<OverseerrResponse<OverseerrRequestItem>>(
-      `${req}?skip=${pageSize * (page - 1)}`,
+      req,
+      undefined,
+      {
+        skip: String(PAGE_SIZE * (page - 1)),
+      },
     )
   }
 
@@ -133,15 +142,17 @@ export async function fetchOverseerrStats(
 export async function fetchOverseerrUserId(
   plexId: string,
 ): Promise<number | null> {
-  const pageSize = 10
-
   let userId: number | null = null
 
   async function fetchUsers(
     page: number,
   ): Promise<OverseerrResponse<OverseerrUser> | null> {
     return await fetchOverseerr<OverseerrResponse<OverseerrUser>>(
-      `user?skip=${pageSize * (page - 1)}`,
+      `user`,
+      undefined,
+      {
+        skip: String(PAGE_SIZE * (page - 1)),
+      },
     )
   }
 
