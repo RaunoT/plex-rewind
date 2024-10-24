@@ -63,11 +63,15 @@ Plex Rewind is also available in the Community Apps store for Unraid. Search for
 
 To update, run `docker compose pull` and then `docker compose up -d`.
 
+Optionally, you can also set up automatic updates with [Watchtower](https://containrrr.dev/watchtower).
+
 ## Donate
 
-If you like this project and wish to support it, you can do so by donating via [Patreon](https://www.patreon.com/PlexRewind) or [PayPal](https://paypal.me/raunot). Thank you! ❤️
+If you like this project and wish to support it, you can do so with a one-time donation via [PayPal](https://paypal.me/raunot) or a recurring one on [Patreon](https://www.patreon.com/PlexRewind) or [GitHub Sponsors](https://github.com/sponsors/RaunoT) (preferred). Thank you! ❤️
 
-_Please note that supporting does not guarantee any support or future developments._
+### Supporters
+
+- NAS Assist
 
 ## Learn More
 
