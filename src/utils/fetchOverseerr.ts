@@ -31,7 +31,7 @@ const PAGE_SIZE = 20
 export default async function fetchOverseerr<T>(
   endpoint: string,
   cache: boolean = false,
-  additionalParams: Record<string, string> = {},
+  additionalParams?: Record<string, string>,
 ): Promise<T | null> {
   const settings = getSettings()
   const overseerrUrl = settings.connection.overseerrUrl
