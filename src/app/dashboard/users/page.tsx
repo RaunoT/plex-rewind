@@ -64,7 +64,7 @@ async function DashboardUsersContent({ searchParams }: Props) {
   }
 
   const session = await getServerSession(authOptions)
-  const loggedInUserId = session?.user?.id
+  const loggedInUserId = session?.user.id
   const period = getPeriod(searchParams, settings)
   const [usersData, totalDuration, usersCount, totalRequests] =
     await Promise.all([
