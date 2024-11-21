@@ -211,7 +211,7 @@ export default function MediaItem({
             </li>
           )}
           {/* Requests */}
-          {activeStats.includes('requests') && isUsers && isOverseerrActive && (
+          {activeStats.includes('requests') && isUsers && data.requests > 0 && (
             <li className='icon-stat-wrapper'>
               <QuestionMarkCircleIcon />
               {pluralize(data.requests, 'request')}
