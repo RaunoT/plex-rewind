@@ -20,6 +20,7 @@ const nextConfig = {
       },
     ],
   },
+  swcMinify: false,
   // logging: {
   //   fetches: {
   //     fullUrl: true,
