@@ -3,7 +3,6 @@
 import { GlobalContext } from '@/app/_components/GlobalContextProvider'
 import { DashboardSearchParams } from '@/types/dashboard'
 import { Settings } from '@/types/settings'
-import { pluralize } from '@/utils/formatting'
 import Link from 'next/link'
 import { usePathname, useSearchParams } from 'next/navigation'
 import { useContext, useEffect } from 'react'
@@ -38,7 +37,7 @@ export default function PeriodSelectContent({ settings }: Props) {
   const periodOptions = [
     { label: '7 days', value: '7days' },
     {
-      label: `${pluralize(customPeriod, 'day')}`,
+      label: customPeriod > 1 ? `${customPeriod} days` : 'Today',
       value: 'custom',
     },
     { label: 'Past year', value: 'pastYear' },

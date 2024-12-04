@@ -170,3 +170,21 @@ export async function getLibrariesByType(
 
   return libraries.filter((library) => library.section_type === type)
 }
+
+export async function getUsersCount(settings: Settings) {
+  if (settings.dashboard.activeTotalStatistics.includes('count')) {
+    const usersRes = await fetchTautulli<TautulliUser[]>('get_users')
+
+    let users = usersRes?.response?.data
+
+    if (users) {
+      users = users.filter(
+        (user) => user.is_active && user.username !== 'Local',
+      )
+    }
+
+    return users?.length
+  }
+
+  return undefined
+}

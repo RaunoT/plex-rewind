@@ -9,6 +9,7 @@ const schema = z.object({
   isPostersTmdbOnly: z.boolean(),
   googleAnalyticsId: z.string(),
   isOutsideAccess: z.boolean(),
+  isAnonymized: z.boolean(),
   complete: z.boolean(),
 })
 
@@ -21,6 +22,7 @@ export default async function saveGeneralSettings(
     isPostersTmdbOnly: formData.get('isPostersTmdbOnly') === 'on',
     googleAnalyticsId: formData.get('googleAnalyticsId') as string,
     isOutsideAccess: formData.get('isOutsideAccess') === 'on',
+    isAnonymized: formData.get('isAnonymized') === 'on',
     complete: true,
   }
 

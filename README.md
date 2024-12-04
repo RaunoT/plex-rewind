@@ -12,7 +12,7 @@ Present [Plex](https://plex.tv) user statistics and habits in a beautiful and or
 ## Features
 
 - 📱 Fully responsive - viewable, usable & enjoyable on desktop, tablet or mobile, courtesy of [Tailwind.css](https://tailwindcss.com).
-- 🔄 Fully dynamic - the data your're viewing will always be the latest available.
+- 🔄 Fully dynamic - the data you're viewing will always be the latest available.
 - 📆 Rewind - allows your Plex users view their statistics and habits for a chosen time period.
 - 👀 Dashboard - provides an easily glanceable overview of activity on your server for all your libraries, personalized or general.
 - 📊 Fuelled by data from [Tautulli](https://tautulli.com) - the backbone responsible for the heavy lifting regarding statistics.
@@ -63,17 +63,21 @@ Plex Rewind is also available in the Community Apps store for Unraid. Search for
 
 To update, run `docker compose pull` and then `docker compose up -d`.
 
+Optionally, you can also set up automatic updates with [Watchtower](https://containrrr.dev/watchtower).
+
 ## Donate
 
-If you like this project and wish to support it, you can do so by donating via [Patreon](https://www.patreon.com/PlexRewind) or [PayPal](https://paypal.me/raunot). Thank you! ❤️
+If you like this project and wish to support it, you can do so with a one-time donation via [PayPal](https://paypal.me/raunot) or a recurring one on [Patreon](https://www.patreon.com/PlexRewind) or [GitHub Sponsors](https://github.com/sponsors/RaunoT) (preferred). Thank you! ❤️
 
-_Please note that supporting does not guarantee any support or future developments._
+### Supporters
+
+- NAS Assist
 
 ## Learn More
 
 To learn more about some of the tools used in this project, take a look at the following resources:
 
-- [Tautulli API reference](https://github.com/Tautulli/Tautulli/wiki/Tautulli-API-Reference)
+- [Tautulli API reference](https://docs.tautulli.com/extending-tautulli/api-reference)
 - [Overseerr API reference](https://api-docs.overseerr.dev)
 - [Next.js docs](https://nextjs.org/docs)
 - [NextAuth.js docs](https://next-auth.js.org/getting-started/introduction)
