@@ -35,9 +35,6 @@ RUN \
 FROM base AS runner
 WORKDIR /app
 
-# Install openssl in the runner stage
-RUN apk add --no-cache openssl
-
 ENV NODE_ENV=production
 ENV BASE_DIR=/app
 ARG NEXT_PUBLIC_VERSION_TAG
