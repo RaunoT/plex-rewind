@@ -1,4 +1,5 @@
 import { Settings } from '@/types/settings'
+import { env } from 'next-runtime-env'
 
 const DAYS_AGO_7: Date = new Date(new Date().setDate(new Date().getDate() - 7))
 const PAST_YEAR: Date = new Date(
@@ -34,8 +35,8 @@ export const META_TITLE_TEMPLATE: string = '%s | Plex Rewind'
 export const PLEX_API_ENDPOINT = 'https://plex.tv/api/v2'
 export const PLEX_PRODUCT_NAME = 'Plex Rewind'
 
-export const APP_URL =
-  process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:8383'
+// TODO: this is causing warnings during build regarding edge runtime
+export const APP_URL = env('NEXT_PUBLIC_SITE_URL') || 'http://localhost:8383'
 
 export const DEFAULT_SETTINGS: Settings = {
   connection: {
