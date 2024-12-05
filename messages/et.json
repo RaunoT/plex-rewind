@@ -9,7 +9,38 @@
     "profilePicture": "profiilipilt"
   },
   "Dashboard": {
-    "noActivity": "Valitud perioodil puudub tegevus.. 😴"
+    "noActivity": "Valitud perioodil puudub tegevus.. 😴",
+    "title": "Edetabel",
+    "users": "kasutajat",
+    "movies": "filmi",
+    "episodes": "episoodi",
+    "tracks": "laulu",
+    "requests": "tellimust"
+  },
+  "DashboardFilters": {
+    "type": "Tüüp",
+    "general": "Üldine",
+    "personal": "Isiklik",
+    "sortByLabel": "Sorteerimisalus",
+    "sort": "Sorteerimine",
+    "duration": "Kestuse järgi",
+    "plays": "Mängimiste järgi"
+  },
+  "DashboardNavContent": {
+    "label": "Edetabeli navigatsioon",
+    "users": "Kasutajad"
+  },
+  "DashboardError": {
+    "title": "Oih.. midagi läks valesti!",
+    "cta": "Proovi uuesti"
+  },
+  "PeriodSelectContent": {
+    "7days": "7 päeva",
+    "today": "Täna",
+    "pastYear": "Eelmine aasta",
+    "allTime": "Kogu aeg",
+    "days": "päeva",
+    "label": "Perioodi valik"
   },
   "NotFound": {
     "title": "404",
@@ -81,6 +112,9 @@
       "startDateHelperText": "Vaikimisi 365 päeva tagasi.",
       "endDateHelperText": "Vaikeväärtuseks on täna."
     }
+  },
+  "LocaleSelect": {
+    "label": "Keelevalik"
   },
   "Common": {
     "enabled": "Aktiveeritud",

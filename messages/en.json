@@ -9,7 +9,38 @@
     "profilePicture": "profile picture"
   },
   "Dashboard": {
-    "noActivity": "No activity during this period.. 😴"
+    "noActivity": "No activity during this period.. 😴",
+    "title": "Dashboard",
+    "users": "users",
+    "movies": "movies",
+    "episodes": "episodes",
+    "tracks": "tracks",
+    "requests": "requests"
+  },
+  "DashboardFilters": {
+    "type": "Type",
+    "general": "General",
+    "personal": "Personal",
+    "sortByLabel": "Sort by",
+    "sort": "Sort",
+    "duration": "By duration",
+    "plays": "By plays"
+  },
+  "DashboardNavContent": {
+    "label": "Dashboard navigation",
+    "users": "Users"
+  },
+  "DashboardError": {
+    "title": "Uh oh.. something went wrong!",
+    "cta": "Try again"
+  },
+  "PeriodSelectContent": {
+    "7days": "7 days",
+    "today": "Today",
+    "pastYear": "Past year",
+    "allTime": "All time",
+    "days": "days",
+    "label": "Period select"
   },
   "NotFound": {
     "title": "404",
@@ -81,6 +112,9 @@
       "startDateHelperText": "Defaults to 365 days ago.",
       "endDateHelperText": "Defaults to today."
     }
+  },
+  "LocaleSelect": {
+    "label": "Language select"
   },
   "Common": {
     "enabled": "Enabled",

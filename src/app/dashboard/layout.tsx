@@ -6,6 +6,7 @@ import { getLibraries } from '@/utils/fetchTautulli'
 import getSettings from '@/utils/getSettings'
 import { kebabCase } from 'lodash'
 import { getServerSession } from 'next-auth'
+import { getTranslations } from 'next-intl/server'
 import { notFound } from 'next/navigation'
 import { ReactNode } from 'react'
 import DashboardNav from './_components/DashboardNav'
@@ -30,10 +31,11 @@ export default async function DashboardLayout({ children }: Props) {
   const activeLibraries = settings.general.activeLibraries.map((libSlug) =>
     libraries.find((lib) => kebabCase(lib.section_name) === libSlug),
   )
+  const t = await getTranslations('Dashboard')
 
   return (
     <div className='flex w-full max-w-2xl flex-1 flex-col lg:max-w-7xl lg:flex-none 2xl:max-w-[90rem]'>
-      <PageTitle title='Dashboard' />
+      <PageTitle title={t('title')} />
       <DashboardNav
         libraries={activeLibraries as TautulliLibrary[]}
         isUsersPageActive={settings.dashboard.isUsersPageActive}
