@@ -24,5 +24,77 @@
   },
   "Offline": {
     "title": "You are offline"
+  },
+  "Settings": {
+    "saved": "Settings saved!",
+    "error": "Something went wrong!",
+    "save": "Save",
+    "apiKey": "API key",
+    "invalidApiKey": "Invalid API key!",
+    "unableToConnect": "Unable to connect!",
+    "buyMeACoffee": "Buy me a coffee",
+    "becomeASponsor": "Become a sponsor",
+    "reportAnIssue": "Report an issue",
+    "Nav": {
+      "label": "Navigation"
+    },
+    "Connection": {
+      "title": "Connection settings"
+    },
+    "Dashboard": {
+      "title": "Dashboard settings",
+      "customPeriodError": "Custom period must be > 0 and <= 3000",
+      "startDateError": "Invalid start date",
+      "usersPage": "Users page",
+      "statistics": "Statistics",
+      "itemStatistics": "Item statistics",
+      "totalStatistics": "Total statistics",
+      "sortByPlaysFilter": "Sort by plays filter",
+      "customPeriod": "Custom period",
+      "inDays": "In days.",
+      "startDateHelperText": "Used for the all time period."
+    },
+    "General": {
+      "title": "General settings",
+      "libraries": "Libraries",
+      "activeLibraries": "Active libraries",
+      "noLibrariesMessage1": "Please create a library in Plex to proceed.",
+      "noLibrariesMessage2": "Plex Rewind requires at least one library to function.",
+      "media": "Media",
+      "tmdbOnlyPosters": "TMDB only posters",
+      "tmdbOnlyPostersDescription1": "Ignore Plex posters for tv/movies.",
+      "tmdbOnlyPostersDescription2": "By default, TMDB is a fallback.",
+      "privacy": "Privacy",
+      "outsideAccess": "Allow outside access",
+      "outsideAccessDescription": "Access without login.",
+      "anonymize": "Anonymize",
+      "anonymizeDescription": "Hide usernames for other users.",
+      "analytics": "Analytics"
+    },
+    "Rewind": {
+      "title": "Rewind settings",
+      "endDateMustBeAfterStartDateError": "End date must be after start date",
+      "startDateMustBeBeforeEndDateError": "Start date must be before end date",
+      "cards": "Cards",
+      "librariesSizeAndCountCard": "Libraries size & count card",
+      "librariesSizeAndCountCardDescription": "Disable if you don't want to rely on Tautulli for these stats.",
+      "startDateHelperText": "Defaults to 365 days ago.",
+      "endDateHelperText": "Defaults to today."
+    }
+  },
+  "Common": {
+    "enabled": "Enabled",
+    "status": "Status",
+    "year": "Year",
+    "rating": "Rating",
+    "duration": "Duration",
+    "plays": "Plays",
+    "users": "Users",
+    "requests": "Requests",
+    "count": "Count",
+    "size": "Size",
+    "defaults": "Defaults",
+    "startDate": "Start date",
+    "endDate": "End date"
   }
 }

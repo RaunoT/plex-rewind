@@ -2,9 +2,9 @@
   "Home": {
     "setupRequired": "Seadistamine vajalik",
     "setupRequiredDescription": "Rakendus vajab seadistamist administraatori poolt.",
-    "loginWithPlex": "Logi sisse Plexiga",
+    "loginWithPlex": "Logi sisse Plex'iga",
     "rewind": "Rewind",
-    "dashboard": "Dashboard",
+    "dashboard": "Edetabel",
     "signOut": "Logi välja",
     "profilePicture": "profiilipilt"
   },
@@ -24,5 +24,77 @@
   },
   "Offline": {
     "title": "Internetiühendus puudub"
+  },
+  "Settings": {
+    "saved": "Salvestatud!",
+    "error": "Midagi läks valesti!",
+    "save": "Salvesta",
+    "apiKey": "API võti",
+    "invalidApiKey": "Vale API võti!",
+    "unableToConnect": "Ühenduse loomine ebaõnnestus!",
+    "buyMeACoffee": "Osta mulle kohvi",
+    "becomeASponsor": "Hakka sponsoriks",
+    "reportAnIssue": "Teata probleemist",
+    "Nav": {
+      "label": "Navigatsioon"
+    },
+    "Connection": {
+      "title": "Ühenduse seaded"
+    },
+    "Dashboard": {
+      "title": "Edetabeli seaded",
+      "customPeriodError": "Kohandatud periood peab olema > 0 ja <= 3000",
+      "startDateError": "Vale algusaeg",
+      "usersPage": "Kasutajate leht",
+      "statistics": "Statistika",
+      "itemStatistics": "Eseme statistika",
+      "totalStatistics": "Kokkuvõtlik statistika",
+      "sortByPlaysFilter": "Mängimiste arvu järgi sorteerimine",
+      "customPeriod": "Kohandatud periood",
+      "inDays": "Päevades.",
+      "startDateHelperText": "Kasutatud koguajalise perioodi jaoks."
+    },
+    "General": {
+      "title": "Üldseaded",
+      "libraries": "Kogumikud",
+      "activeLibraries": "Aktiivsed kogumikud",
+      "noLibrariesMessage1": "Palun loo kogumik Plex'is.",
+      "noLibrariesMessage2": "Plex Rewind vajab toimimiseks vähemalt ühte kogumikku.",
+      "media": "Meedia",
+      "tmdbOnlyPosters": "Ainult TMDB pildid",
+      "tmdbOnlyPostersDescription1": "Ignoreeri Plex'i postreid tv/filmide jaoks.",
+      "tmdbOnlyPostersDescription2": "Vaikimisi kasutatakse TMDB'd kui Plex'i postrid puuduvad.",
+      "privacy": "Privaatsus",
+      "outsideAccess": "Luba väline ligipääs",
+      "outsideAccessDescription": "Ligipääs ilma sisselogimiseta.",
+      "anonymize": "Anonümiseeri",
+      "anonymizeDescription": "Peida teiste kasutajanimed.",
+      "analytics": "Analüütika"
+    },
+    "Rewind": {
+      "title": "Rewind seaded",
+      "endDateMustBeAfterStartDateError": "Lõpp peab olema pärast algust",
+      "startDateMustBeBeforeEndDateError": "Algus peab olema enne lõppu",
+      "cards": "Kaardid",
+      "librariesSizeAndCountCard": "Kogumike suuruse kaart",
+      "librariesSizeAndCountCardDescription": "Lülita välja, kui ei soovi sõltuda Tautulli'st suuruste jaoks.",
+      "startDateHelperText": "Vaikimisi 365 päeva tagasi.",
+      "endDateHelperText": "Vaikeväärtuseks on täna."
+    }
+  },
+  "Common": {
+    "enabled": "Aktiveeritud",
+    "status": "Olek",
+    "year": "Aasta",
+    "rating": "Hinnang",
+    "duration": "Kestus",
+    "plays": "Mängimiste arv",
+    "users": "Kasutajate arv",
+    "requests": "Tellimuste arv",
+    "count": "Mängimiste arv",
+    "size": "Suurus",
+    "defaults": "Vaikeväärtused",
+    "startDate": "Algus",
+    "endDate": "Lõppkuupäev"
   }
 }

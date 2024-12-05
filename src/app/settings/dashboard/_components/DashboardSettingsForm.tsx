@@ -3,6 +3,7 @@
 import DatePicker from '@/components/DatePicker'
 import { Settings } from '@/types/settings'
 import { DEFAULT_SETTINGS } from '@/utils/constants'
+import { useTranslations } from 'next-intl'
 import { useState } from 'react'
 import { Checkbox, CheckboxGroup, Label, Switch } from 'react-aria-components'
 import SettingsForm from '../../_components/SettingsForm'
@@ -17,11 +18,13 @@ export default function DashboardSettingsForm({ settings }: Props) {
   const isOverseerrActive =
     settings.connection.overseerrUrl && settings.connection.overseerrApiKey
   const [isActive, setIsActive] = useState<boolean>(dashboardSettings.isActive)
+  const t = useTranslations('Settings.Dashboard')
+  const tCommon = useTranslations('Common')
 
   return (
     <SettingsForm settings={settings} action={saveDashboardSettings}>
       <section className='group-settings group'>
-        <h2 className='heading-settings'>Status</h2>
+        <h2 className='heading-settings'>{tCommon('status')}</h2>
         <Switch
           className='switch'
           name='isActive'
@@ -30,7 +33,7 @@ export default function DashboardSettingsForm({ settings }: Props) {
         >
           <div className='indicator'></div>
           <span className='label'>
-            <span className='label-wrapper'>Enabled</span>
+            <span className='label-wrapper'>{tCommon('enabled')}</span>
           </span>
         </Switch>
         {isActive && (
@@ -41,7 +44,7 @@ export default function DashboardSettingsForm({ settings }: Props) {
           >
             <div className='indicator'></div>
             <span className='label'>
-              <span className='label-wrapper'>Users page</span>
+              <span className='label-wrapper'>{t('usersPage')}</span>
             </span>
           </Switch>
         )}
@@ -49,7 +52,7 @@ export default function DashboardSettingsForm({ settings }: Props) {
       {isActive && (
         <>
           <section className='group-settings group'>
-            <h2 className='heading-settings'>Statistics</h2>
+            <h2 className='heading-settings'>{t('statistics')}</h2>
             <CheckboxGroup
               className='input-wrapper'
               name='activeItemStatistics'
@@ -61,33 +64,33 @@ export default function DashboardSettingsForm({ settings }: Props) {
               <div className='peer mr-auto flex flex-wrap gap-2'>
                 <Checkbox value='year' className='checkbox-wrapper'>
                   <div className='checkbox' aria-hidden='true'></div>
-                  Year
+                  {tCommon('year')}
                 </Checkbox>
                 <Checkbox value='rating' className='checkbox-wrapper'>
                   <div className='checkbox' aria-hidden='true'></div>
-                  Rating
+                  {tCommon('rating')}
                 </Checkbox>
                 <Checkbox value='duration' className='checkbox-wrapper'>
                   <div className='checkbox' aria-hidden='true'></div>
-                  Duration
+                  {tCommon('duration')}
                 </Checkbox>
                 <Checkbox value='plays' className='checkbox-wrapper'>
                   <div className='checkbox' aria-hidden='true'></div>
-                  Plays
+                  {tCommon('plays')}
                 </Checkbox>
                 <Checkbox value='users' className='checkbox-wrapper'>
                   <div className='checkbox' aria-hidden='true'></div>
-                  Users
+                  {tCommon('users')}
                 </Checkbox>
                 {isOverseerrActive && (
                   <Checkbox value='requests' className='checkbox-wrapper'>
                     <div className='checkbox' aria-hidden='true'></div>
-                    Requests
+                    {tCommon('requests')}
                   </Checkbox>
                 )}
               </div>
               <Label className='label label--start'>
-                <span className='label-wrapper'>Item statistics</span>
+                <span className='label-wrapper'>{t('itemStatistics')}</span>
               </Label>
             </CheckboxGroup>
             <CheckboxGroup
@@ -101,25 +104,25 @@ export default function DashboardSettingsForm({ settings }: Props) {
               <div className='peer mr-auto flex flex-wrap gap-2'>
                 <Checkbox value='size' className='checkbox-wrapper'>
                   <div className='checkbox' aria-hidden='true'></div>
-                  Size
+                  {tCommon('size')}
                 </Checkbox>
                 <Checkbox value='duration' className='checkbox-wrapper'>
                   <div className='checkbox' aria-hidden='true'></div>
-                  Duration
+                  {tCommon('duration')}
                 </Checkbox>
                 <Checkbox value='count' className='checkbox-wrapper'>
                   <div className='checkbox' aria-hidden='true'></div>
-                  Count
+                  {tCommon('count')}
                 </Checkbox>
                 {isOverseerrActive && (
                   <Checkbox value='requests' className='checkbox-wrapper'>
                     <div className='checkbox' aria-hidden='true'></div>
-                    Requests
+                    {tCommon('requests')}
                   </Checkbox>
                 )}
               </div>
               <Label className='label label--start'>
-                <span className='label-wrapper'>Totals statistics</span>
+                <span className='label-wrapper'>{t('totalStatistics')}</span>
               </Label>
             </CheckboxGroup>
             <Switch
@@ -129,12 +132,12 @@ export default function DashboardSettingsForm({ settings }: Props) {
             >
               <div className='indicator'></div>
               <span className='label'>
-                <span className='label-wrapper'>Sort by plays filter</span>
+                <span className='label-wrapper'>{t('sortByPlaysFilter')}</span>
               </span>
             </Switch>
           </section>
           <section className='group-settings group'>
-            <h2 className='heading-settings'>Defaults</h2>
+            <h2 className='heading-settings'>{tCommon('defaults')}</h2>
             <label className='input-wrapper'>
               <input
                 type='number'
@@ -150,13 +153,13 @@ export default function DashboardSettingsForm({ settings }: Props) {
                 required
               />
               <span className='label'>
-                <span className='label-wrapper'>Custom period</span>
-                <small>In days.</small>
+                <span className='label-wrapper'>{t('customPeriod')}</span>
+                <small>{t('inDays')}</small>
               </span>
             </label>
             <DatePicker
-              label='Start date'
-              helperText='Used for the all time period.'
+              label={tCommon('startDate')}
+              helperText={t('startDateHelperText')}
               name='startDate'
               defaultValue={
                 dashboardSettings.startDate ||

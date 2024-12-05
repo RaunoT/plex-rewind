@@ -4,6 +4,7 @@ import { Settings } from '@/types/settings'
 import { SETTINGS_PAGES } from '@/utils/constants'
 import { checkRequiredSettings } from '@/utils/helpers'
 import clsx from 'clsx'
+import { useTranslations } from 'next-intl'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 
@@ -14,10 +15,10 @@ type Props = {
 export default function SettingsNav({ settings }: Props) {
   const pathname = usePathname()
   const missingSetting = checkRequiredSettings(settings)
+  const t = useTranslations('Settings.Nav')
 
   return (
-    <nav className='mb-3'>
-      <h2 className='sr-only'>Settings navigation</h2>
+    <nav className='mb-3' aria-label={t('label')}>
       <ul className='nav'>
         {SETTINGS_PAGES.map(({ href, label, key }) => {
           const isComplete = settings[key as keyof Settings].complete
