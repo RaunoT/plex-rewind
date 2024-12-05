@@ -1,3 +1,5 @@
+import clsx from 'clsx'
+
 type Props = {
   size?: number
 }
@@ -7,7 +9,10 @@ export default function Loader({ size = 8 }: Props) {
     <div role='status'>
       <svg
         aria-hidden='true'
-        className={`animate-spin fill-blue-800 text-slate-300 size-${size}`}
+        className={clsx(
+          'animate-spin fill-blue-800 text-slate-300',
+          `size-${size}`,
+        )}
         viewBox='0 0 100 101'
         fill='none'
         xmlns='http://www.w3.org/2000/svg'

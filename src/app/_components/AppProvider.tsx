@@ -16,6 +16,7 @@ import { usePathname } from 'next/navigation'
 import { ReactNode, useEffect, useState } from 'react'
 import stars from '../_assets/stars.png'
 import GlobalContextProvider from './GlobalContextProvider'
+import LocaleSelect from './LocaleSelect'
 
 type Props = {
   children: ReactNode
@@ -94,6 +95,7 @@ export default function AppProvider({ children, settings, version }: Props) {
               )}
             </Link>
           )}
+          <LocaleSelect />
         </div>
 
         {children}

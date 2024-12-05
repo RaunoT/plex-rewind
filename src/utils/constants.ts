@@ -89,3 +89,9 @@ export const SETTINGS_PAGES = [
 ]
 
 export const TMDB_API_KEY = '4675b5b5d8cd1463ff16adca2680157b'
+
+export type Locale = (typeof LOCALES)[number]
+
+export const LOCALES = ['en', 'et']
+export const DEFAULT_LOCALE: Locale = 'en'
+export const LOCALE_COOKIE_NAME = 'locale'
