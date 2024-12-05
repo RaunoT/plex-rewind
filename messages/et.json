@@ -1,1 +1,28 @@
-{}
+{
+  "Home": {
+    "setupRequired": "Seadistamine vajalik",
+    "setupRequiredDescription": "Rakendus vajab seadistamist administraatori poolt.",
+    "loginWithPlex": "Logi sisse Plexiga",
+    "rewind": "Rewind",
+    "dashboard": "Dashboard",
+    "signOut": "Logi välja",
+    "profilePicture": "profiilipilt"
+  },
+  "Dashboard": {
+    "noActivity": "Valitud perioodil puudub tegevus.. 😴"
+  },
+  "NotFound": {
+    "title": "404",
+    "description": "Soovitud lehte ei leitud.",
+    "cta": "Ehk on parem alustada uuesti."
+  },
+  "AppProvider": {
+    "starsAlt": "Tähtedega taust",
+    "updateAvailable": "Uuendus saadaval",
+    "closeSettings": "Sulge seaded",
+    "openSettings": "Ava seaded"
+  },
+  "Offline": {
+    "title": "Internetiühendus puudub"
+  }
+}

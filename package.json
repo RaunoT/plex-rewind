@@ -68,7 +68,6 @@
     "eslint-config-next": "^14.2.19",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-react-compiler": "19.0.0-beta-df7b47d-20241124",
-    "eslint-plugin-react-hooks": "^5.0.0",
     "eslint-plugin-tailwindcss": "^3.17.5",
     "husky": "^9.1.7",
     "lint-staged": "^15.2.10",

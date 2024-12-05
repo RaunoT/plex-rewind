@@ -10,6 +10,7 @@ import {
   QuestionMarkCircleIcon,
   UserIcon,
 } from '@heroicons/react/24/outline'
+import { useTranslations } from 'next-intl'
 import { Suspense } from 'react'
 import DashboardFilters from './DashboardFilters'
 
@@ -37,6 +38,7 @@ export default function Dashboard({
   loggedInUserId,
 }: Props) {
   const isLoggedIn = !!loggedInUserId
+  const t = useTranslations('Dashboard')
 
   function renderFilters(className?: string) {
     if (type !== 'users') {
@@ -105,7 +107,7 @@ export default function Dashboard({
       ) : (
         <div className='flex flex-1 flex-col justify-center text-center text-neutral-300'>
           <h2 className='mb-4 py-32 text-2xl italic leading-tight last:mb-0 sm:text-3xl'>
-            No activity during this period.. 😴
+            {t('noActivity')}
           </h2>
         </div>
       )}

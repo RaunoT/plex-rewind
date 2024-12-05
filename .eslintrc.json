@@ -4,7 +4,6 @@
     "plugin:@typescript-eslint/recommended",
     "next/core-web-vitals",
     "plugin:tailwindcss/recommended",
-    // "plugin:react-hooks/recommended",
     "prettier"
   ],
   "parser": "@typescript-eslint/parser",

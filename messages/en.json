@@ -1,1 +1,28 @@
-{}
+{
+  "Home": {
+    "setupRequired": "Setup required",
+    "setupRequiredDescription": "This application needs to be configured by an administrator.",
+    "loginWithPlex": "Log in with Plex",
+    "rewind": "Start Rewind",
+    "dashboard": "Dashboard",
+    "signOut": "Sign out",
+    "profilePicture": "profile picture"
+  },
+  "Dashboard": {
+    "noActivity": "No activity during this period.. 😴"
+  },
+  "NotFound": {
+    "title": "404",
+    "description": "The requested page could not be found.",
+    "cta": "Might be better to start over."
+  },
+  "AppProvider": {
+    "starsAlt": "Stars background",
+    "updateAvailable": "Update available",
+    "closeSettings": "Close settings",
+    "openSettings": "Open settings"
+  },
+  "Offline": {
+    "title": "You are offline"
+  }
+}
