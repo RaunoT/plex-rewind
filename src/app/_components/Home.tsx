@@ -9,6 +9,7 @@ import { checkRequiredSettings } from '@/utils/helpers'
 import clsx from 'clsx'
 import { kebabCase } from 'lodash'
 import { signOut, useSession } from 'next-auth/react'
+import { useTranslations } from 'next-intl'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useContext } from 'react'
@@ -42,6 +43,8 @@ export default function Home({ settings, libraries }: Props) {
     ...(period && { period }),
     ...(sortBy && settings.dashboard.isSortByPlaysActive && { sortBy }),
   })
+  const t = useTranslations('Home')
+  const tCommon = useTranslations('Common')
 
   if (isLoading || status === 'loading') {
     return <Loader />
@@ -53,7 +56,7 @@ export default function Home({ settings, libraries }: Props) {
         <div className='animate-fade-up relative mb-6 size-24'>
           <Image
             src={session.user.image}
-            alt={`${session.user.name} profile picture`}
+            alt={`${session.user.name} ${tCommon('profilePictureAlt')}`}
             className='rounded-full object-cover'
             sizes='10rem'
             fill
@@ -64,19 +67,18 @@ export default function Home({ settings, libraries }: Props) {
 
       {missingSetting ? (
         <>
-          <h1 className='mb-2 text-3xl font-bold'>Setup required</h1>
-          <p className='mb-6'>
-            This application needs to be configured by an administrator.
-          </p>
+          <h1 className='mb-2 text-3xl font-bold'>{t('setupRequired')}</h1>
+          <p className='mb-6'>{t('setupRequiredDescription')}</p>
         </>
       ) : (
         <h1 className='animate-fade-up mb-6 text-[2.5rem] font-bold leading-none animation-delay-300'>
           <Image
             src={plexSvg}
-            className='mb-0.5 mr-3 inline h-[2.25rem] w-auto'
+            className='mb-0.5 mr-3 inline h-9 w-auto'
             alt='Plex logo'
             priority
           />
+          {/* eslint-disable-next-line react/jsx-no-literals */}
           <span>rewind</span>
         </h1>
       )}
@@ -87,13 +89,13 @@ export default function Home({ settings, libraries }: Props) {
             className='button button-sm button--plex mx-auto mb-4'
             onClick={handleLogin}
           >
-            Log in with Plex
+            {t('loginWithPlex')}
           </button>
         )}
 
         {showRewind && (
           <Link href='/rewind' className='button mb-4'>
-            Start Rewind
+            {t('rewind')}
           </Link>
         )}
 
@@ -105,13 +107,13 @@ export default function Home({ settings, libraries }: Props) {
               !settings.rewind.isActive && isLoggedIn ? 'button' : 'link',
             )}
           >
-            Dashboard
+            {t('dashboard')}
           </Link>
         )}
 
         {isLoggedIn && (
           <button onClick={() => signOut()} className='link mt-16'>
-            Sign out
+            {t('signOut')}
           </button>
         )}
       </div>

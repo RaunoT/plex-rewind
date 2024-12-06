@@ -5,6 +5,7 @@ import getVersion from '@/utils/getVersion'
 import { checkRequiredSettings } from '@/utils/helpers'
 import { CurrencyEuroIcon, HeartIcon } from '@heroicons/react/24/outline'
 import { getServerSession } from 'next-auth'
+import { getTranslations } from 'next-intl/server'
 import Image from 'next/image'
 import { notFound } from 'next/navigation'
 import { ReactNode } from 'react'
@@ -20,6 +21,7 @@ export default async function SettingsLayout({ children }: Props) {
   const settings = getSettings()
   const version = await getVersion()
   const missingSetting = checkRequiredSettings(settings)
+  const t = await getTranslations('Settings')
 
   if (
     !session?.user.isAdmin &&
@@ -32,7 +34,7 @@ export default async function SettingsLayout({ children }: Props) {
   return (
     <div className='mb-auto w-full max-w-screen-sm'>
       <PageTitle
-        title={missingSetting ? "Let's get started" : 'Settings'}
+        title={missingSetting ? t('getStarted') : t('title')}
         noBack={!!missingSetting}
       />
       <SettingsNav settings={settings} />
@@ -45,7 +47,7 @@ export default async function SettingsLayout({ children }: Props) {
           className='link-light inline-flex items-center gap-2'
         >
           <CurrencyEuroIcon className='size-6 text-yellow-500' />
-          Buy me a coffee
+          {t('buyMeACoffee')}
         </a>
         <a
           href='https://www.patreon.com/PlexRewind'
@@ -53,7 +55,7 @@ export default async function SettingsLayout({ children }: Props) {
           className='link-light inline-flex items-center gap-2'
         >
           <HeartIcon className='size-6 text-red-500' />
-          Become a sponsor
+          {t('becomeASponsor')}
         </a>
         <a
           href='https://github.com/RaunoT/plex-rewind/issues'
@@ -61,7 +63,7 @@ export default async function SettingsLayout({ children }: Props) {
           className='link-light inline-flex items-center gap-2'
         >
           <Image src={githubSvg} alt='GitHub' className='size-6 p-0.5' />
-          Report an issue
+          {t('reportAnIssue')}
         </a>
       </div>
 
@@ -70,7 +72,9 @@ export default async function SettingsLayout({ children }: Props) {
         href='https://github.com/RaunoT/plex-rewind/releases'
         target='_blank'
       >
-        {version.hasUpdate && <span className='block'>Update available</span>}
+        {version.hasUpdate && (
+          <span className='block'>{t('updateAvailable')}</span>
+        )}
         <span className='font-mono text-xs'>
           {version.currentVersion}
           {version.hasUpdate && ` → ${version.latestVersion}`}

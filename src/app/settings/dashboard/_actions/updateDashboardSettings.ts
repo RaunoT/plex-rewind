@@ -6,42 +6,45 @@ import {
   DashboardTotalStatistics,
   SettingsFormInitialState,
 } from '@/types/settings'
+import { getTranslations } from 'next-intl/server'
 import { z } from 'zod'
 import updateSettings from '../../_actions/updateSettings'
-
-const schema = z.object({
-  isActive: z.boolean(),
-  isUsersPageActive: z.boolean().optional(),
-  activeItemStatistics: z
-    .array(z.enum(['year', 'rating', 'duration', 'plays', 'users', 'requests']))
-    .optional(),
-  activeTotalStatistics: z
-    .array(z.enum(['size', 'duration', 'count', 'requests']))
-    .optional(),
-  isSortByPlaysActive: z.boolean().optional(),
-  customPeriod: z
-    .string()
-    .refine(
-      (value) => {
-        const number = parseFloat(value)
-
-        return number > 0 && number <= 3000
-      },
-      {
-        message: 'Custom period must be > 0 and <= 3000',
-      },
-    )
-    .optional(),
-  startDate: z.string().refine((val) => !isNaN(Date.parse(val)), {
-    message: 'Invalid start date',
-  }),
-  complete: z.boolean(),
-})
 
 export default async function saveDashboardSettings(
   prevState: SettingsFormInitialState<DashboardSettings>,
   formData: FormData,
 ) {
+  const t = await getTranslations('Settings.Dashboard')
+  const schema = z.object({
+    isActive: z.boolean(),
+    isUsersPageActive: z.boolean().optional(),
+    activeItemStatistics: z
+      .array(
+        z.enum(['year', 'rating', 'duration', 'plays', 'users', 'requests']),
+      )
+      .optional(),
+    activeTotalStatistics: z
+      .array(z.enum(['size', 'duration', 'count', 'requests']))
+      .optional(),
+    isSortByPlaysActive: z.boolean().optional(),
+    customPeriod: z
+      .string()
+      .refine(
+        (value) => {
+          const number = parseFloat(value)
+
+          return number > 0 && number <= 3000
+        },
+        {
+          message: t('customPeriodError'),
+        },
+      )
+      .optional(),
+    startDate: z.string().refine((val) => !isNaN(Date.parse(val)), {
+      message: t('startDateError'),
+    }),
+    complete: z.boolean(),
+  })
   const isActive = formData.get('isActive') === 'on'
   const data: Partial<DashboardSettings> = {
     isActive,

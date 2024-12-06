@@ -3,11 +3,11 @@
     "eslint:recommended",
     "plugin:@typescript-eslint/recommended",
     "next/core-web-vitals",
-    "next/typescript",
+    "plugin:tailwindcss/recommended",
     "prettier"
   ],
   "parser": "@typescript-eslint/parser",
-  "plugins": ["@typescript-eslint", "@stylistic/js"],
+  "plugins": ["@typescript-eslint", "@stylistic/js", "react-compiler"],
   "root": true,
   "rules": {
     "@stylistic/js/padding-line-between-statements": [
@@ -20,6 +20,9 @@
       { "blankLine": "always", "prev": "*", "next": ["const", "let"] },
       { "blankLine": "never", "prev": "const", "next": "const" },
       { "blankLine": "never", "prev": "let", "next": "let" }
-    ]
+    ],
+    "react-compiler/react-compiler": 2,
+    "tailwindcss/no-custom-classname": 0,
+    "react/jsx-no-literals": 1
   }
 }

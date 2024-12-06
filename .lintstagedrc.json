@@ -5,5 +5,5 @@
     "bash -c tsc --noEmit --skipLibCheck"
   ],
   "**/*.css": "stylelint --cache --fix",
-  "**/*.{css,md,json}": "prettier --write"
+  "**/*.{css,md,json}": "prettier --write --cache"
 }

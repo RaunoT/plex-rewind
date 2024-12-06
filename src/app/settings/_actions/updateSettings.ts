@@ -8,6 +8,7 @@ import {
 } from '@/types/settings'
 import getSettings, { SETTINGS_PATH } from '@/utils/getSettings'
 import { promises as fs } from 'fs'
+import { getTranslations } from 'next-intl/server'
 import { revalidatePath } from 'next/cache'
 import { ZodError, ZodSchema } from 'zod'
 
@@ -23,6 +24,8 @@ export default async function updateSettings<K extends keyof SettingsTypeMap>(
   data: SettingsTypeMap[K],
   key: K,
 ) {
+  const t = await getTranslations('Settings')
+
   try {
     schema.parse(data)
 
@@ -38,7 +41,7 @@ export default async function updateSettings<K extends keyof SettingsTypeMap>(
     revalidatePath('/')
 
     return {
-      message: 'Settings saved!',
+      message: t('saved'),
       status: 'success',
       fields: data,
     }
@@ -54,7 +57,7 @@ export default async function updateSettings<K extends keyof SettingsTypeMap>(
     }
 
     return {
-      message: 'Something went wrong!',
+      message: t('genericError'),
       status: 'error',
       fields: data,
     }
