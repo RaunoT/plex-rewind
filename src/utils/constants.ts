@@ -82,10 +82,10 @@ export const DEFAULT_SETTINGS: Settings = {
 }
 
 export const SETTINGS_PAGES = [
-  { href: '/settings/connection', label: 'Connection', key: 'connection' },
-  { href: '/settings/general', label: 'General', key: 'general' },
-  { href: '/settings/rewind', label: 'Rewind', key: 'rewind' },
-  { href: '/settings/dashboard', label: 'Dashboard', key: 'dashboard' },
+  { href: '/settings/connection', key: 'connection' },
+  { href: '/settings/general', key: 'general' },
+  { href: '/settings/rewind', key: 'rewind' },
+  { href: '/settings/dashboard', key: 'dashboard' },
 ]
 
 export const TMDB_API_KEY = '4675b5b5d8cd1463ff16adca2680157b'

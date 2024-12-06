@@ -57,7 +57,7 @@ export default async function updateSettings<K extends keyof SettingsTypeMap>(
     }
 
     return {
-      message: t('error'),
+      message: t('genericError'),
       status: 'error',
       fields: data,
     }

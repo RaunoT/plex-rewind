@@ -44,6 +44,7 @@ export default function Home({ settings, libraries }: Props) {
     ...(sortBy && settings.dashboard.isSortByPlaysActive && { sortBy }),
   })
   const t = useTranslations('Home')
+  const tCommon = useTranslations('Common')
 
   if (isLoading || status === 'loading') {
     return <Loader />
@@ -55,7 +56,7 @@ export default function Home({ settings, libraries }: Props) {
         <div className='animate-fade-up relative mb-6 size-24'>
           <Image
             src={session.user.image}
-            alt={`${session.user.name} ${t('profilePicture')}`}
+            alt={`${session.user.name} ${tCommon('profilePictureAlt')}`}
             className='rounded-full object-cover'
             sizes='10rem'
             fill

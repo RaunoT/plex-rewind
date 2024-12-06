@@ -5,8 +5,7 @@
     "loginWithPlex": "Logi sisse Plex'iga",
     "rewind": "Rewind",
     "dashboard": "Edetabel",
-    "signOut": "Logi välja",
-    "profilePicture": "profiilipilt"
+    "signOut": "Logi välja"
   },
   "Dashboard": {
     "noActivity": "Valitud perioodil puudub tegevus.. 😴",
@@ -14,7 +13,7 @@
     "users": "kasutajat",
     "movies": "filmi",
     "episodes": "episoodi",
-    "tracks": "laulu",
+    "tracks": "lugu",
     "requests": "tellimust"
   },
   "DashboardFilters": {
@@ -23,8 +22,8 @@
     "personal": "Isiklik",
     "sortByLabel": "Sorteerimisalus",
     "sort": "Sorteerimine",
-    "duration": "Kestuse järgi",
-    "plays": "Mängimiste järgi"
+    "byDuration": "Kestuse järgi",
+    "byPlays": "Mängimiste järgi"
   },
   "DashboardNavContent": {
     "label": "Edetabeli navigatsioon",
@@ -37,8 +36,8 @@
   "PeriodSelectContent": {
     "7days": "7 päeva",
     "today": "Täna",
-    "pastYear": "Eelmine aasta",
-    "allTime": "Kogu aeg",
+    "pastYear": "Viimane aasta",
+    "allTime": "Kokku",
     "days": "päeva",
     "label": "Perioodi valik"
   },
@@ -54,11 +53,14 @@
     "openSettings": "Ava seaded"
   },
   "Offline": {
-    "title": "Internetiühendus puudub"
+    "title": "Ühendus puudub"
   },
   "Settings": {
+    "title": "Seaded",
+    "getStarted": "Teeme algust!",
+    "updateAvailable": "Uuendus saadaval",
     "saved": "Salvestatud!",
-    "error": "Midagi läks valesti!",
+    "genericError": "Midagi läks valesti!",
     "save": "Salvesta",
     "apiKey": "API võti",
     "invalidApiKey": "Vale API võti!",
@@ -67,7 +69,11 @@
     "becomeASponsor": "Hakka sponsoriks",
     "reportAnIssue": "Teata probleemist",
     "Nav": {
-      "label": "Navigatsioon"
+      "label": "Navigatsioon",
+      "connection": "Ühendus",
+      "general": "Üldine",
+      "rewind": "Rewind",
+      "dashboard": "Edetabel"
     },
     "Connection": {
       "title": "Ühenduse seaded"
@@ -78,7 +84,7 @@
       "startDateError": "Vale algusaeg",
       "usersPage": "Kasutajate leht",
       "statistics": "Statistika",
-      "itemStatistics": "Eseme statistika",
+      "itemStatistics": "Kirje statistika",
       "totalStatistics": "Kokkuvõtlik statistika",
       "sortByPlaysFilter": "Mängimiste arvu järgi sorteerimine",
       "customPeriod": "Kohandatud periood",
@@ -129,6 +135,39 @@
     "size": "Suurus",
     "defaults": "Vaikeväärtused",
     "startDate": "Algus",
-    "endDate": "Lõppkuupäev"
+    "endDate": "Lõppkuupäev",
+    "profilePictureAlt": "profiilipilt"
+  },
+  "DatePicker": {
+    "clear": "Tühjenda kuupäev"
+  },
+  "Loader": {
+    "loading": "Laadimine..."
+  },
+  "Rewind": {
+    "Common": {
+      "top": "Siin on sinu <top>Top {count}</top>"
+    },
+    "Welcome": {
+      "welcome": "Tere tulemast oma <rewind>Plex Rewind'i</rewind>",
+      "takeYouThrough": "Taaskülastame sinu parimad hetki",
+      "letsGetStarted": "Hakkame pihta!",
+      "forPastYear": "<pastYear>viimase aasta</pastYear> jooksul.",
+      "singleDate": "<singleDate>{singleDateValue}</singleDate> jooksul.",
+      "dateRange": "vahemikus <startDate>{startDateValue}</startDate> kuni <endDate>{endDateValue}</endDate>."
+    },
+    "Audio": {
+      "duration": "Lõpetuseks kuulasid sa <duration>{durationValue}</duration> <audio>Audiot</audio> <from>Plex'ist</from>",
+      "count": "Kokku kuulasid sa <count>{countValue}</count> <tracks>lugu</tracks>!",
+      "favorite": "Sinu lemmik oli",
+      "noData": "Sa ei kuulanud <audio>Audiot</audio> <from>Plex'ist</from>"
+    }
+  },
+  "MediaItem": {
+    "request": "Telli",
+    "deleted": "Kustutatud",
+    "statPlays": "{count, plural, =1 {# mängimine} other {# mängimist}}",
+    "statUsers": "{count, plural, =1 {# kasutaja} other {# kasutajat}}",
+    "statRequests": "{count, plural, =1 {# tellimus} other {# tellimust}}"
   }
 }

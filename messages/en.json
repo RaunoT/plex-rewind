@@ -5,8 +5,7 @@
     "loginWithPlex": "Log in with Plex",
     "rewind": "Start Rewind",
     "dashboard": "Dashboard",
-    "signOut": "Sign out",
-    "profilePicture": "profile picture"
+    "signOut": "Sign out"
   },
   "Dashboard": {
     "noActivity": "No activity during this period.. 😴",
@@ -23,8 +22,8 @@
     "personal": "Personal",
     "sortByLabel": "Sort by",
     "sort": "Sort",
-    "duration": "By duration",
-    "plays": "By plays"
+    "byDuration": "By duration",
+    "byPlays": "By plays"
   },
   "DashboardNavContent": {
     "label": "Dashboard navigation",
@@ -57,8 +56,11 @@
     "title": "You are offline"
   },
   "Settings": {
+    "title": "Settings",
+    "getStarted": "Let's get started",
+    "updateAvailable": "Update available",
     "saved": "Settings saved!",
-    "error": "Something went wrong!",
+    "genericError": "Something went wrong!",
     "save": "Save",
     "apiKey": "API key",
     "invalidApiKey": "Invalid API key!",
@@ -67,7 +69,11 @@
     "becomeASponsor": "Become a sponsor",
     "reportAnIssue": "Report an issue",
     "Nav": {
-      "label": "Navigation"
+      "label": "Navigation",
+      "connection": "Connection",
+      "general": "General",
+      "rewind": "Rewind",
+      "dashboard": "Dashboard"
     },
     "Connection": {
       "title": "Connection settings"
@@ -129,6 +135,39 @@
     "size": "Size",
     "defaults": "Defaults",
     "startDate": "Start date",
-    "endDate": "End date"
+    "endDate": "End date",
+    "profilePictureAlt": "profile picture"
+  },
+  "DatePicker": {
+    "clear": "Clear date"
+  },
+  "Loader": {
+    "loading": "Loading..."
+  },
+  "Rewind": {
+    "Common": {
+      "top": "Here's your <top>Top {count}</top>"
+    },
+    "Welcome": {
+      "welcome": "Welcome to your <rewind>Plex Rewind</rewind>",
+      "takeYouThrough": "We'll take you through your highlights",
+      "letsGetStarted": "Let's get started!",
+      "forPastYear": "for the <pastYear>past year</pastYear>.",
+      "singleDate": "during <singleDate>{singleDateValue}</singleDate>.",
+      "dateRange": "from <startDate>{startDateValue}</startDate> to <endDate>{endDateValue}</endDate>."
+    },
+    "Audio": {
+      "duration": "To finish it off, you listened to <duration>{durationValue}</duration> of <audio>Audio</audio> from <from>Plex</from>",
+      "count": "You listened to <count>{countValue}</count> <tracks>tracks</tracks> in total!",
+      "favorite": "Your favorite was",
+      "noData": "You didn't listen to any <audio>Audio</audio> from <from>Plex</from>"
+    }
+  },
+  "MediaItem": {
+    "request": "Request",
+    "deleted": "Deleted",
+    "statPlays": "{count, plural, =1 {play} other {# plays}}",
+    "statUsers": "{count, plural, =1 {user} other {# users}}",
+    "statRequests": "{count, plural, =1 {request} other {# requests}}"
   }
 }

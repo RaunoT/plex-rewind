@@ -34,7 +34,7 @@ export default async function SettingsLayout({ children }: Props) {
   return (
     <div className='mb-auto w-full max-w-screen-sm'>
       <PageTitle
-        title={missingSetting ? "Let's get started" : 'Settings'}
+        title={missingSetting ? t('getStarted') : t('title')}
         noBack={!!missingSetting}
       />
       <SettingsNav settings={settings} />
@@ -72,7 +72,9 @@ export default async function SettingsLayout({ children }: Props) {
         href='https://github.com/RaunoT/plex-rewind/releases'
         target='_blank'
       >
-        {version.hasUpdate && <span className='block'>Update available</span>}
+        {version.hasUpdate && (
+          <span className='block'>{t('updateAvailable')}</span>
+        )}
         <span className='font-mono text-xs'>
           {version.currentVersion}
           {version.hasUpdate && ` → ${version.latestVersion}`}

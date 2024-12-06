@@ -95,8 +95,8 @@ export default function DashboardFilters({
               aria-label={t('sortByLabel')}
             >
               <option disabled>{t('sort')}</option>
-              <option value=''>{t('duration')}</option>
-              <option value='plays'>{t('plays')}</option>
+              <option value=''>{t('byDuration')}</option>
+              <option value='plays'>{t('byPlays')}</option>
             </select>
           </div>
         </div>

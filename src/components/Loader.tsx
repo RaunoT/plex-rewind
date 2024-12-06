@@ -1,10 +1,13 @@
 import clsx from 'clsx'
+import { useTranslations } from 'next-intl'
 
 type Props = {
   size?: number
 }
 
 export default function Loader({ size = 8 }: Props) {
+  const t = useTranslations('Loader')
+
   return (
     <div role='status'>
       <svg
@@ -34,7 +37,7 @@ export default function Loader({ size = 8 }: Props) {
           fill='currentFill'
         />
       </svg>
-      <span className='sr-only'>Loading...</span>
+      <span className='sr-only'>{t('loading')}</span>
     </div>
   )
 }

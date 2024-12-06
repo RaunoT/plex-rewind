@@ -113,7 +113,7 @@ export default async function saveConnectionSettings(
     console.error('[CONFIG] - Error testing connection!', error)
 
     return {
-      message: t('error'),
+      message: t('genericError'),
       status: 'error',
       fields: data,
     }

@@ -20,7 +20,7 @@ export default function SettingsNav({ settings }: Props) {
   return (
     <nav className='mb-3' aria-label={t('label')}>
       <ul className='nav'>
-        {SETTINGS_PAGES.map(({ href, label, key }) => {
+        {SETTINGS_PAGES.map(({ href, key }) => {
           const isComplete = settings[key as keyof Settings].complete
           const isConnectionIncomplete = !settings.connection.complete
           const shouldDisable = isConnectionIncomplete && key !== 'connection'
@@ -39,7 +39,7 @@ export default function SettingsNav({ settings }: Props) {
                 aria-current={pathname === href && 'page'}
                 aria-disabled={shouldDisable && 'true'}
               >
-                {label}
+                {t(key)}
               </Link>
             </li>
           )
