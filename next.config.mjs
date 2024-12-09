@@ -1,4 +1,5 @@
 import withSerwistInit from '@serwist/next'
+import createNextIntlPlugin from 'next-intl/plugin'
 
 const isDev = process.env.NODE_ENV !== 'production'
 const nextConfig = {
@@ -63,5 +64,6 @@ const withSerwist = withSerwistInit({
   disable: isDev,
   additionalPrecacheEntries: [{ url: '/~offline', revision }],
 })
+const withNextIntl = createNextIntlPlugin()
 
-export default withSerwist(nextConfig)
+export default withSerwist(withNextIntl(nextConfig))

@@ -1,10 +1,12 @@
 'use client'
 
 import Loader from '@/components/Loader'
+import { useTranslations } from 'next-intl'
 import { useFormStatus } from 'react-dom'
 
 export default function SettingsSaveButton() {
   const { pending } = useFormStatus()
+  const t = useTranslations('Settings')
 
   return (
     <button
@@ -12,7 +14,7 @@ export default function SettingsSaveButton() {
       type='submit'
       disabled={pending}
     >
-      {pending ? <Loader size={6} /> : 'Save'}
+      {pending ? <Loader size={6} /> : t('save')}
     </button>
   )
 }
