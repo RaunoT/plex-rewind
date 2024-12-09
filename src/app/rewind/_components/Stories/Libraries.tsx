@@ -6,6 +6,7 @@ import {
   MusicalNoteIcon,
   PlayCircleIcon,
 } from '@heroicons/react/24/outline'
+import { useTranslations } from 'next-intl'
 import RewindStat from '../RewindStat'
 import StatListItem from '../StatListItem'
 import StoryWrapper from '../StoryWrapper'
@@ -16,45 +17,50 @@ export default function StoryLibraries({
   pause,
   resume,
 }: RewindStory) {
+  const t = useTranslations('Rewind.Libraries')
+
   return (
     <StoryWrapper isPaused={isPaused} pause={pause} resume={resume}>
       <RewindStat isPaused={isPaused} scaleDelay={3}>
         <p>
-          Did you know the{' '}
-          <span className='rewind-cat'>
-            Filesize
-            <FolderIcon />
-          </span>{' '}
-          of all the available content on{' '}
-          <span className='gradient-plex'>Plex</span> is{' '}
-          <span className='whitespace-nowrap'>
-            <span className='rewind-stat'>
-              {bytesToSize(userRewind.libraries_total_size)}!
-            </span>
-          </span>
+          {t.rich('filesize', {
+            filesize: (chunks) => (
+              <span className='rewind-cat'>
+                {chunks}
+                <FolderIcon />
+              </span>
+            ),
+            plex: (chunks) => <span className='gradient-plex'>{chunks}</span>,
+            size: (chunks) => (
+              <span className='whitespace-nowrap'>
+                <span className='rewind-stat'>{chunks}</span>
+              </span>
+            ),
+            sizeValue: bytesToSize(userRewind.libraries_total_size),
+          })}
         </p>
       </RewindStat>
 
       <RewindStat isPaused={isPaused} renderDelay={3} noScale>
-        <p>The current library consists of:</p>
+        <p>{t('libraries')}</p>
         <ul className='list mt-2'>
           {userRewind.libraries.map((library) => {
             const libMap = {
               movie: {
                 library: library.section_name,
-                name: 'Movies',
+                name: t('movies', { count: parseInt(library.count) }),
                 icon: <FilmIcon />,
                 count: parseInt(library.count),
               },
               show: {
                 library: library.section_name,
-                name: 'Episodes',
+                name: t('episodes', { count: parseInt(library.child_count) }),
                 icon: <PlayCircleIcon />,
                 count: parseInt(library.child_count),
               },
               artist: {
                 library: library.section_name,
-                name: 'Tracks',
+                name: t('tracks', { count: parseInt(library.child_count) }),
                 icon: <MusicalNoteIcon />,
                 count: parseInt(library.child_count),
               },

@@ -29,9 +29,12 @@
     "label": "Edetabeli navigatsioon",
     "users": "Kasutajad"
   },
-  "DashboardError": {
+  "Error": {
     "title": "Oih.. midagi läks valesti!",
     "cta": "Proovi uuesti"
+  },
+  "PlexDeeplink": {
+    "available": "Saadaval"
   },
   "PeriodSelectContent": {
     "7days": "7 päeva",
@@ -150,17 +153,53 @@
     },
     "Welcome": {
       "welcome": "Tere tulemast oma <rewind>Plex Rewind'i</rewind>",
-      "takeYouThrough": "Taaskülastame sinu parimad hetki",
+      "takeYouThrough": "Vaatame üle su parimad hetked",
       "letsGetStarted": "Hakkame pihta!",
       "forPastYear": "<pastYear>viimase aasta</pastYear> jooksul.",
       "singleDate": "<singleDate>{singleDateValue}</singleDate> jooksul.",
       "dateRange": "vahemikus <startDate>{startDateValue}</startDate> kuni <endDate>{endDateValue}</endDate>."
+    },
+    "Total": {
+      "duration": "<total>Kokku</total> kulutasid sa <duration>{durationValue}</duration> <plex>Plex'is!</plex>",
+      "percentage": "See on <percentage>{percentageValue}</percentage> tervest aktiivsusest, mis oli <duration>{durationValue}</duration> kõigi kasutajate peale.",
+      "noData": "Sa ei mänginud midagi <plex>Plex'ist</plex> <emoji>😫</emoji>"
+    },
+    "Users": {
+      "top": "Siin oled sa võrdluses teiste <users>Kasutajatega</users>"
     },
     "Audio": {
       "duration": "Lõpetuseks kuulasid sa <duration>{durationValue}</duration> <audio>Audiot</audio> <from>Plex'ist</from>",
       "count": "Kokku kuulasid sa <count>{countValue}</count> <tracks>lugu</tracks>!",
       "favorite": "Sinu lemmik oli",
       "noData": "Sa ei kuulanud <audio>Audiot</audio> <from>Plex'ist</from>"
+    },
+    "Libraries": {
+      "filesize": "Kas teadsid, et kõikide kogumike <filesize>Failisuurus</filesize> <plex>Plex'is</plex> on <size>{sizeValue}!</size>",
+      "libraries": "Hetkel on saadaval:",
+      "movies": "{count, plural, =1 {Film} other {Filmi}}",
+      "episodes": "{count, plural, =1 {Saade} other {Saadet}}",
+      "tracks": "{count, plural, =1 {Lugu} other {Lugu}}"
+    },
+    "Shows": {
+      "duration": "<library>Saated</library> võtsid <duration>{durationValue}</duration> sinu ajast <plex>Plex'is.</plex>",
+      "count": "Sa vaatasid kokku <count>{countValue}</count> <episodes>episoodi</episodes>",
+      "favorite": "Sinu lemmik oli",
+      "noData": "Sa ei vaadanud ühtegi <shows>Saadet</shows> <plex>Plex'ist</plex> <emoji>😥</emoji>"
+    },
+    "Requests": {
+      "noData": "Ühtegi <requests>Tellimust</requests> pole tehtud <emoji>😲</emoji>",
+      "noUserData": "Sa ei teinud ühtegi <requests>Tellimust</requests>. Sa saad seda teha lingilt <requestLink>{requestLinkValue}</requestLink>.",
+      "count": "Sa tegid <count>{countValue}</count> sisu <requests>{countValue, plural, =1 {Tellimuse} other {Tellimust}}</requests>",
+      "countTotal": "Kokku tehti samal perioodil <count>{countValue, plural, =1 {# Tellimus} other {# Tellimust}}</count>",
+      "breakdown": "Siin on täpsem jaotus:",
+      "movies": "{count, plural, =1 {Film} other {Filmi}}",
+      "shows": "{count, plural, =1 {Saade} other {Saadet}}"
+    },
+    "Movies": {
+      "duration": "<duration>{durationValue}</duration> kulus sul <movies>Filmidele</movies> <plex>Plex'is.</plex>",
+      "count": "Vaatasid <count>{countValue}</count> <movies>{countValue, plural, =1 {Filmi} other {Filmi}}</movies>",
+      "favorite": "Sinu lemmik oli",
+      "noData": "Sa ei vaadanud ühtegi <movies>Filmi</movies> <plex>Plex'ist</plex> <emoji>😵‍💫</emoji>"
     }
   },
   "MediaItem": {

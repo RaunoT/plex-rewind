@@ -29,9 +29,12 @@
     "label": "Dashboard navigation",
     "users": "Users"
   },
-  "DashboardError": {
+  "Error": {
     "title": "Uh oh.. something went wrong!",
     "cta": "Try again"
+  },
+  "PlexDeeplink": {
+    "available": "Available"
   },
   "PeriodSelectContent": {
     "7days": "7 days",
@@ -156,11 +159,47 @@
       "singleDate": "during <singleDate>{singleDateValue}</singleDate>.",
       "dateRange": "from <startDate>{startDateValue}</startDate> to <endDate>{endDateValue}</endDate>."
     },
+    "Total": {
+      "duration": "You spent a <total>Total</total> of <duration>{durationValue}</duration> on <plex>Plex!</plex>",
+      "percentage": "That's <percentage>{percentageValue}</percentage> of all plays, which totalled <duration>{durationValue}</duration> across all users.",
+      "noData": "You haven't played anything on <plex>Plex</plex> <emoji>😫</emoji>"
+    },
+    "Users": {
+      "top": "Here's how you compared to other <users>Users</users>"
+    },
     "Audio": {
       "duration": "To finish it off, you listened to <duration>{durationValue}</duration> of <audio>Audio</audio> from <from>Plex</from>",
       "count": "You listened to <count>{countValue}</count> <tracks>tracks</tracks> in total!",
       "favorite": "Your favorite was",
       "noData": "You didn't listen to any <audio>Audio</audio> from <from>Plex</from>"
+    },
+    "Libraries": {
+      "filesize": "Did you know the <filesize>Filesize</filesize> of all the available content on <plex>Plex</plex> is <size>{sizeValue}!</size>",
+      "libraries": "The current library consists of:",
+      "movies": "{count, plural, =1 {Movie} other {Movies}}",
+      "episodes": "{count, plural, =1 {Episode} other {Episodes}}",
+      "tracks": "{count, plural, =1 {Track} other {Tracks}}"
+    },
+    "Shows": {
+      "duration": "<library>TV Shows</library> took up <duration>{durationValue}</duration> of your time on <plex>Plex.</plex>",
+      "count": "You watched <count>{countValue}</count> <episodes>episodes</episodes> in total!",
+      "favorite": "Your favorite was",
+      "noData": "You didn't watch any <shows>TV Shows</shows> on <plex>Plex</plex> <emoji>😥</emoji>"
+    },
+    "Requests": {
+      "noData": "There weren't any <requests>Requests</requests> <emoji>😲</emoji>",
+      "noUserData": "You didn't make any <requests>Requests</requests>. You can make them via <requestLink>{requestLinkValue}</requestLink>.",
+      "count": "You made <count>{countValue}</count> content <requests>{countValue, plural, =1 {Request} other {Requests}}</requests>",
+      "countTotal": "Altogether there {countValue, plural, =1 {was} other {were}} <count>{countValue, plural, =1 {# Request} other {# Requests}}</count> during the same period.",
+      "breakdown": "Here's the breakdown:",
+      "movies": "{count, plural, =1 {Movie} other {Movies}}",
+      "shows": "{count, plural, =1 {Show} other {Shows}}"
+    },
+    "Movies": {
+      "duration": "<duration>{durationValue}</duration> of your time was spent watching <movies>Movies</movies> on <plex>Plex.</plex>",
+      "count": "You watched <count>{countValue}</count> <movies>{countValue, plural, =1 {Movie} other {Movies}}</movies> in total!",
+      "favorite": "Your favorite was",
+      "noData": "You didn't watch any <movies>Movies</movies> on <plex>Plex</plex> <emoji>😵‍💫</emoji>"
     }
   },
   "MediaItem": {
