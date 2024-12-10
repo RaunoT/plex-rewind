@@ -2,7 +2,7 @@
 
 import { Settings } from '@/types/settings'
 import { TautulliItemRow } from '@/types/tautulli'
-import { pluralize, secondsToTime } from '@/utils/formatting'
+import { secondsToTime } from '@/utils/formatting'
 import { slideDown } from '@/utils/motion'
 import {
   CalendarDaysIcon,
@@ -16,6 +16,7 @@ import {
 } from '@heroicons/react/24/outline'
 import clsx from 'clsx'
 import { motion } from 'framer-motion'
+import { useTranslations } from 'next-intl'
 import Image from 'next/image'
 import { useEffect, useRef, useState } from 'react'
 import anonymousSvg from './anonymous.svg'
@@ -46,6 +47,7 @@ export default function MediaItem({
   items,
   rows,
 }: Props) {
+  const t = useTranslations('MediaItem')
   const tautulliUrl = settings.connection.tautulliUrl
   const isTmdbPoster = data.thumb?.startsWith('https://image.tmdb.org')
   const isUsers = type === 'users'
@@ -88,7 +90,7 @@ export default function MediaItem({
       animate='show'
       transition={{ delay: i * 0.075 }}
     >
-      <div className='relative aspect-[2/3] h-full w-20 flex-shrink-0 sm:w-[5.35rem] 2xl:w-24'>
+      <div className='relative aspect-[2/3] h-full w-20 shrink-0 sm:w-[5.35rem] 2xl:w-24'>
         <Image
           fill
           className='object-cover object-top'
@@ -121,10 +123,10 @@ export default function MediaItem({
                   rel='noopener noreferrer'
                   className='button-card bg-purple-500'
                 >
-                  Request
+                  {t('request')}
                 </a>
               ) : (
-                <div className='button-card bg-red-500'>Deleted</div>
+                <div className='button-card bg-red-500'>{t('deleted')}</div>
               )
             ) : (
               serverId && (
@@ -137,6 +139,7 @@ export default function MediaItem({
                 target='_blank'
                 rel='noopener noreferrer'
                 className='button-card bg-yellow-500 text-black'
+                // eslint-disable-next-line react/jsx-no-literals
               >
                 IMDB
               </a>
@@ -175,19 +178,19 @@ export default function MediaItem({
                 {data.shows_plays_count > 0 && (
                   <li className='icon-stat-wrapper'>
                     <PlayCircleIcon />
-                    {pluralize(data.shows_plays_count, 'play')}
+                    {t('statPlays', { count: data.shows_plays_count })}
                   </li>
                 )}
                 {data.movies_plays_count > 0 && (
                   <li className='icon-stat-wrapper'>
                     <FilmIcon />
-                    {pluralize(data.movies_plays_count, 'play')}
+                    {t('statPlays', { count: data.movies_plays_count })}
                   </li>
                 )}
                 {data.audio_plays_count > 0 && (
                   <li className='icon-stat-wrapper'>
                     <MusicalNoteIcon />
-                    {pluralize(data.audio_plays_count, 'play')}
+                    {t('statPlays', { count: data.audio_plays_count })}
                   </li>
                 )}
               </>
@@ -200,21 +203,21 @@ export default function MediaItem({
                 ) : (
                   <PlayCircleIcon />
                 )}
-                <span>{pluralize(data.total_plays, 'play')}</span>
+                <span>{t('statPlays', { count: data.total_plays })}</span>
               </li>
             ))}
           {/* Users watched */}
           {activeStats.includes('users') && data.users_watched && (
             <li className='icon-stat-wrapper'>
               <UserIcon />
-              {pluralize(data.users_watched, 'user')}
+              {t('statUsers', { count: data.users_watched })}
             </li>
           )}
           {/* Requests */}
           {activeStats.includes('requests') && isUsers && data.requests > 0 && (
             <li className='icon-stat-wrapper'>
               <QuestionMarkCircleIcon />
-              {pluralize(data.requests, 'request')}
+              {t('statRequests', { count: data.requests })}
             </li>
           )}
         </ul>

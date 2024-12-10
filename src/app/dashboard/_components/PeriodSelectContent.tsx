@@ -3,6 +3,7 @@
 import { GlobalContext } from '@/app/_components/GlobalContextProvider'
 import { DashboardSearchParams } from '@/types/dashboard'
 import { Settings } from '@/types/settings'
+import { useTranslations } from 'next-intl'
 import Link from 'next/link'
 import { usePathname, useSearchParams } from 'next/navigation'
 import { useContext, useEffect } from 'react'
@@ -27,6 +28,7 @@ function getPeriodValue(period: string, customPeriod: number): number {
 }
 
 export default function PeriodSelectContent({ settings }: Props) {
+  const t = useTranslations('PeriodSelectContent')
   const pathname = usePathname()
   const searchParams = useSearchParams()
   const {
@@ -35,13 +37,13 @@ export default function PeriodSelectContent({ settings }: Props) {
   const periodParam = searchParams.get('period')
   const customPeriod = parseInt(settings.dashboard.customPeriod)
   const periodOptions = [
-    { label: '7 days', value: '7days' },
+    { label: t('7days'), value: '7days' },
     {
-      label: customPeriod > 1 ? `${customPeriod} days` : 'Today',
+      label: customPeriod > 1 ? `${customPeriod} ${t('days')}` : t('today'),
       value: 'custom',
     },
-    { label: 'Past year', value: 'pastYear' },
-    { label: 'All time', value: 'allTime' },
+    { label: t('pastYear'), value: 'pastYear' },
+    { label: t('allTime'), value: 'allTime' },
   ]
   const validPeriodValues = periodOptions.map((option) => option.value)
   const isValidPeriod = periodParam && validPeriodValues.includes(periodParam)
@@ -80,7 +82,7 @@ export default function PeriodSelectContent({ settings }: Props) {
   }, [periodParam, setPeriod, isValidPeriod])
 
   return (
-    <ul className='nav'>
+    <ul className='nav' aria-label={t('label')}>
       {periodOptions.map(({ label, value }) => {
         const isDefault = value === 'custom'
 

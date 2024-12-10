@@ -1,5 +1,6 @@
 'use client'
 
+import { useTranslations } from 'next-intl'
 import { useEffect, useState } from 'react'
 
 type Props = {
@@ -11,6 +12,7 @@ export default function PlexDeeplink({ ratingKey, serverId }: Props) {
   const [plexUrl, setPlexUrl] = useState<string>(
     `https://app.plex.tv/desktop#!/server/${serverId}/details?key=%2Flibrary%2Fmetadata%2F${ratingKey}`,
   )
+  const t = useTranslations('PlexDeeplink')
 
   useEffect(() => {
     if (/iPad|iPhone|iPod/.test(navigator.userAgent)) {
@@ -27,7 +29,7 @@ export default function PlexDeeplink({ ratingKey, serverId }: Props) {
       rel='noopener noreferrer'
       className='button-card bg-green-600'
     >
-      Available
+      {t('available')}
     </a>
   )
 }

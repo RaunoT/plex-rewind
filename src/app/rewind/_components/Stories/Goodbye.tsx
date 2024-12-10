@@ -4,6 +4,7 @@ import {
   MusicalNoteIcon,
   PlayCircleIcon,
 } from '@heroicons/react/24/outline'
+import { useTranslations } from 'next-intl'
 import RewindStat from '../RewindStat'
 import StoryWrapper from '../StoryWrapper'
 
@@ -13,53 +14,52 @@ export default function StoryGoodbye({
   pause,
   resume,
 }: RewindStory) {
+  const t = useTranslations('Rewind.Goodbye')
+
   return (
     <StoryWrapper isPaused={isPaused} pause={pause} resume={resume}>
       <RewindStat scaleDelay={2} isPaused={isPaused}>
         <p>
-          Thanks for tuning into your{' '}
-          <span className='whitespace-nowrap'>
-            <span className='gradient-plex'>Plex Rewind</span>,
-          </span>{' '}
-          <span className='whitespace-nowrap'>
-            <span className='rewind-cat'>{userRewind.user.name}!</span>
-          </span>
+          {t.rich('thanks', {
+            plex: (chunks) => <span className='gradient-plex'>{chunks}</span>,
+            user: (chunks) => (
+              <span className='rewind-cat whitespace-nowrap'>{chunks}</span>
+            ),
+            userValue: userRewind.user.name,
+          })}
         </p>
       </RewindStat>
       <RewindStat renderDelay={2} scaleDelay={4} isPaused={isPaused}>
         {userRewind.duration.user ? (
           <p>
-            From your favorite{' '}
+            {t('fromYourFavorite')}{' '}
             {userRewind.movies.duration && (
               <span className='rewind-cat'>
-                Movies
+                {t('movies')}
                 <FilmIcon />
               </span>
             )}{' '}
-            to the most entertaining{' '}
+            {t('toTheMostEntertaining')}{' '}
             {userRewind.shows.duration && (
               <span className='rewind-cat'>
-                Shows
+                {t('shows')}
                 <PlayCircleIcon />
               </span>
             )}
             {userRewind.audio.duration && (
               <>
                 {' '}
-                and memorable{' '}
+                {t('andMemorable')}{' '}
                 <span className='rewind-cat'>
-                  Tracks
+                  {t('tracks')}
                   <MusicalNoteIcon />
                 </span>
               </>
             )}
-            , it&apos;s been a journey to remember.
+            {t('itsBeenAJourneyToRemember')}
           </p>
         ) : (
-          <p>
-            Sorry you couldn&apos;t find any content to watch or listen to this
-            time around. Better luck next time!
-          </p>
+          <p>{t('sorry')}</p>
         )}
       </RewindStat>
       <RewindStat
@@ -69,16 +69,19 @@ export default function StoryGoodbye({
         isPaused={isPaused}
       >
         <p>
-          {userRewind.duration.user
-            ? "We'll be back next time"
-            : "Eitherway, we'll be here then"}{' '}
-          with even more <span className='rewind-cat'>insights and stats.</span>
+          {userRewind.duration.user ? t('weWillBeBack') : t('weWillBeHere')}{' '}
+          {t.rich('insightsAndStats', {
+            insightsAndStats: (chunks) => (
+              <span className='rewind-cat'>{chunks}</span>
+            ),
+          })}
         </p>
       </RewindStat>
       <RewindStat renderDelay={9} loaderDelay={6} isPaused={isPaused} noScale>
         <p>
-          Until then, keep exploring and enjoying all that{' '}
-          <span className='gradient-plex'>Plex</span> has to offer.
+          {t.rich('untilThen', {
+            plex: (chunks) => <span className='gradient-plex'>{chunks}</span>,
+          })}
         </p>
       </RewindStat>
     </StoryWrapper>

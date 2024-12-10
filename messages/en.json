@@ -1,0 +1,230 @@
+{
+  "Home": {
+    "setupRequired": "Setup required",
+    "setupRequiredDescription": "This application needs to be configured by an administrator.",
+    "loginWithPlex": "Log in with Plex",
+    "rewind": "Start Rewind",
+    "dashboard": "Dashboard",
+    "signOut": "Sign out"
+  },
+  "Dashboard": {
+    "noActivity": "No activity during this period.. 😴",
+    "title": "Dashboard",
+    "users": "users",
+    "movies": "movies",
+    "episodes": "episodes",
+    "tracks": "tracks",
+    "requests": "requests"
+  },
+  "DashboardFilters": {
+    "type": "Type",
+    "general": "General",
+    "personal": "Personal",
+    "sortByLabel": "Sort by",
+    "sort": "Sort",
+    "byDuration": "By duration",
+    "byPlays": "By plays"
+  },
+  "DashboardNavContent": {
+    "label": "Dashboard navigation",
+    "users": "Users"
+  },
+  "Error": {
+    "title": "Uh oh.. something went wrong!",
+    "cta": "Try again"
+  },
+  "PlexDeeplink": {
+    "available": "Available"
+  },
+  "PeriodSelectContent": {
+    "7days": "7 days",
+    "today": "Today",
+    "pastYear": "Past year",
+    "allTime": "All time",
+    "days": "days",
+    "label": "Period select"
+  },
+  "NotFound": {
+    "title": "404",
+    "description": "The requested page could not be found.",
+    "cta": "Might be better to start over."
+  },
+  "AppProvider": {
+    "starsAlt": "Stars background",
+    "updateAvailable": "Update available",
+    "closeSettings": "Close settings",
+    "openSettings": "Open settings"
+  },
+  "Offline": {
+    "title": "You are offline"
+  },
+  "Settings": {
+    "title": "Settings",
+    "getStarted": "Let's get started",
+    "updateAvailable": "Update available",
+    "saved": "Settings saved!",
+    "genericError": "Something went wrong!",
+    "save": "Save",
+    "apiKey": "API key",
+    "invalidApiKey": "Invalid API key!",
+    "unableToConnect": "Unable to connect!",
+    "buyMeACoffee": "Buy me a coffee",
+    "becomeASponsor": "Become a sponsor",
+    "reportAnIssue": "Report an issue",
+    "Nav": {
+      "label": "Navigation",
+      "connection": "Connection",
+      "general": "General",
+      "rewind": "Rewind",
+      "dashboard": "Dashboard"
+    },
+    "Connection": {
+      "title": "Connection settings"
+    },
+    "Dashboard": {
+      "title": "Dashboard settings",
+      "customPeriodError": "Custom period must be > 0 and <= 3000",
+      "startDateError": "Invalid start date",
+      "usersPage": "Users page",
+      "statistics": "Statistics",
+      "itemStatistics": "Item statistics",
+      "totalStatistics": "Total statistics",
+      "sortByPlaysFilter": "Sort by plays filter",
+      "customPeriod": "Custom period",
+      "inDays": "In days.",
+      "startDateHelperText": "Used for the all time period."
+    },
+    "General": {
+      "title": "General settings",
+      "libraries": "Libraries",
+      "activeLibraries": "Active libraries",
+      "noLibrariesMessage1": "Please create a library in Plex to proceed.",
+      "noLibrariesMessage2": "Plex Rewind requires at least one library to function.",
+      "media": "Media",
+      "tmdbOnlyPosters": "TMDB only posters",
+      "tmdbOnlyPostersDescription1": "Ignore Plex posters for tv/movies.",
+      "tmdbOnlyPostersDescription2": "By default, TMDB is a fallback.",
+      "privacy": "Privacy",
+      "outsideAccess": "Allow outside access",
+      "outsideAccessDescription": "Access without login.",
+      "anonymize": "Anonymize",
+      "anonymizeDescription": "Hide usernames for other users.",
+      "analytics": "Analytics"
+    },
+    "Rewind": {
+      "title": "Rewind settings",
+      "endDateMustBeAfterStartDateError": "End date must be after start date",
+      "startDateMustBeBeforeEndDateError": "Start date must be before end date",
+      "cards": "Cards",
+      "librariesSizeAndCountCard": "Libraries size & count card",
+      "librariesSizeAndCountCardDescription": "Disable if you don't want to rely on Tautulli for these stats.",
+      "startDateHelperText": "Defaults to 365 days ago.",
+      "endDateHelperText": "Defaults to today."
+    }
+  },
+  "LocaleSelect": {
+    "label": "Select language"
+  },
+  "UserSelect": {
+    "label": "Select user"
+  },
+  "Common": {
+    "enabled": "Enabled",
+    "status": "Status",
+    "year": "Year",
+    "rating": "Rating",
+    "duration": "Duration",
+    "plays": "Plays",
+    "users": "Users",
+    "requests": "Requests",
+    "count": "Count",
+    "size": "Size",
+    "defaults": "Defaults",
+    "startDate": "Start date",
+    "endDate": "End date",
+    "profilePictureAlt": "profile picture"
+  },
+  "DatePicker": {
+    "clear": "Clear date"
+  },
+  "Loader": {
+    "loading": "Loading..."
+  },
+  "Rewind": {
+    "Common": {
+      "top": "Here's your <top>Top {count}</top>"
+    },
+    "Welcome": {
+      "welcome": "Welcome to your <rewind>Plex Rewind</rewind>",
+      "takeYouThrough": "We'll take you through your highlights",
+      "letsGetStarted": "Let's get started!",
+      "forPastYear": "for the <pastYear>past year.</pastYear>",
+      "singleDate": "during <singleDate>{singleDateValue}</singleDate>.",
+      "dateRange": "from <startDate>{startDateValue}</startDate> to <endDate>{endDateValue}</endDate>."
+    },
+    "Total": {
+      "duration": "You spent a <total>Total</total> of <duration>{durationValue}</duration> on <plex>Plex!</plex>",
+      "percentage": "That's <percentage>{percentageValue}</percentage> of all plays, which totalled <duration>{durationValue}</duration> across all users.",
+      "noData": "You haven't played anything on <plex>Plex</plex> <emoji>😫</emoji>"
+    },
+    "Users": {
+      "top": "Here's how you compared to other <users>Users</users>"
+    },
+    "Audio": {
+      "duration": "To finish it off, you listened to <duration>{durationValue}</duration> of <audio>Audio</audio>",
+      "count": "You listened to <count>{countValue}</count> <tracks>tracks</tracks> in total!",
+      "favorite": "Your favorite was",
+      "noData": "You didn't listen to any <audio>Audio</audio> from <from>Plex</from>"
+    },
+    "Libraries": {
+      "filesize": "Did you know the <filesize>Filesize</filesize> of all the available content on <plex>Plex</plex> is <size>{sizeValue}!</size>",
+      "libraries": "The current library consists of:",
+      "movies": "{count, plural, =1 {Movie} other {Movies}}",
+      "episodes": "{count, plural, =1 {Episode} other {Episodes}}",
+      "tracks": "{count, plural, =1 {Track} other {Tracks}}"
+    },
+    "Shows": {
+      "duration": "<library>TV Shows</library> took up <duration>{durationValue}</duration> of your time on <plex>Plex.</plex>",
+      "count": "You watched <count>{countValue}</count> <episodes>episodes</episodes> in total!",
+      "favorite": "Your favorite was",
+      "noData": "You didn't watch any <shows>TV Shows</shows> on <plex>Plex</plex> <emoji>😥</emoji>"
+    },
+    "Requests": {
+      "noData": "There weren't any <requests>Requests</requests> <emoji>😲</emoji>",
+      "noUserData": "You didn't make any <requests>Requests</requests>. You can make them via <requestLink>{requestLinkValue}</requestLink>.",
+      "count": "You made <count>{countValue}</count> content <requests>{countValue, plural, =1 {Request} other {Requests}}</requests>",
+      "countTotal": "Altogether there {countValue, plural, =1 {was} other {were}} <count>{countValue, plural, =1 {# Request} other {# Requests}}</count> during the same period.",
+      "breakdown": "Here's the breakdown:",
+      "movies": "{count, plural, =1 {Movie} other {Movies}}",
+      "shows": "{count, plural, =1 {Show} other {Shows}}"
+    },
+    "Movies": {
+      "duration": "<duration>{durationValue}</duration> of your time was spent watching <movies>Movies</movies>",
+      "count": "You watched <count>{countValue}</count> <movies>{countValue, plural, =1 {movie} other {movies}}</movies> in total!",
+      "favorite": "Your favorite was",
+      "noData": "You didn't watch any <movies>Movies</movies> on <plex>Plex</plex> <emoji>😵‍💫</emoji>"
+    },
+    "Goodbye": {
+      "thanks": "Thanks for tuning into your <plex>Plex Rewind</plex>, <user>{userValue}!</user>",
+      "sorry": "Sorry you couldn't find any content to watch or listen to this time around. Better luck next time!",
+      "weWillBeBack": "We'll be back next time",
+      "weWillBeHere": "Eitherway, we'll be here",
+      "insightsAndStats": "with even more <insightsAndStats>insights and stats.</insightsAndStats>",
+      "untilThen": "Until then, keep exploring and enjoying all that <plex>Plex</plex> has to offer.",
+      "movies": "Movies",
+      "shows": "Shows",
+      "tracks": "Tracks",
+      "fromYourFavorite": "From your favorite",
+      "toTheMostEntertaining": "to the most entertaining",
+      "andMemorable": "and memorable",
+      "itsBeenAJourneyToRemember": ", it's been a journey to remember."
+    }
+  },
+  "MediaItem": {
+    "request": "Request",
+    "deleted": "Deleted",
+    "statPlays": "{count, plural, =1 {# play} other {# plays}}",
+    "statUsers": "{count, plural, =1 {# user} other {# users}}",
+    "statRequests": "{count, plural, =1 {# request} other {# requests}}"
+  }
+}

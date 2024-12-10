@@ -1,13 +1,21 @@
+import clsx from 'clsx'
+import { useTranslations } from 'next-intl'
+
 type Props = {
   size?: number
 }
 
 export default function Loader({ size = 8 }: Props) {
+  const t = useTranslations('Loader')
+
   return (
     <div role='status'>
       <svg
         aria-hidden='true'
-        className={`animate-spin fill-blue-800 text-slate-300 size-${size}`}
+        className={clsx(
+          'animate-spin fill-blue-800 text-slate-300',
+          `size-${size}`,
+        )}
         viewBox='0 0 100 101'
         fill='none'
         xmlns='http://www.w3.org/2000/svg'
@@ -29,7 +37,7 @@ export default function Loader({ size = 8 }: Props) {
           fill='currentFill'
         />
       </svg>
-      <span className='sr-only'>Loading...</span>
+      <span className='sr-only'>{t('loading')}</span>
     </div>
   )
 }
