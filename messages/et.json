@@ -92,7 +92,7 @@
       "sortByPlaysFilter": "Mängimiste arvu järgi sorteerimine",
       "customPeriod": "Kohandatud periood",
       "inDays": "Päevades.",
-      "startDateHelperText": "Kasutatud koguajalise perioodi jaoks."
+      "startDateHelperText": "Kasutatud kogu ajalise perioodi jaoks."
     },
     "General": {
       "title": "Üldseaded",
@@ -102,8 +102,8 @@
       "noLibrariesMessage2": "Plex Rewind vajab toimimiseks vähemalt ühte kogumikku.",
       "media": "Meedia",
       "tmdbOnlyPosters": "Ainult TMDB pildid",
-      "tmdbOnlyPostersDescription1": "Ignoreeri Plex'i postreid tv/filmide jaoks.",
-      "tmdbOnlyPostersDescription2": "Vaikimisi kasutatakse TMDB'd kui Plex'i postrid puuduvad.",
+      "tmdbOnlyPostersDescription1": "Ära kasuta Plex'i postreid.",
+      "tmdbOnlyPostersDescription2": "Vaikimisi kasutatakse TMDB'd ainult kui postrid puuduvad.",
       "privacy": "Privaatsus",
       "outsideAccess": "Luba väline ligipääs",
       "outsideAccessDescription": "Ligipääs ilma sisselogimiseta.",
@@ -116,14 +116,17 @@
       "endDateMustBeAfterStartDateError": "Lõpp peab olema pärast algust",
       "startDateMustBeBeforeEndDateError": "Algus peab olema enne lõppu",
       "cards": "Kaardid",
-      "librariesSizeAndCountCard": "Kogumike suuruse kaart",
-      "librariesSizeAndCountCardDescription": "Lülita välja, kui ei soovi sõltuda Tautulli'st suuruste jaoks.",
+      "librariesSizeAndCountCard": "Kogumike failisuuruse kaart",
+      "librariesSizeAndCountCardDescription": "Lülita välja, kui ei soovi sõltuda Tautulli'st failisuuruste jaoks.",
       "startDateHelperText": "Vaikimisi 365 päeva tagasi.",
       "endDateHelperText": "Vaikeväärtuseks on täna."
     }
   },
   "LocaleSelect": {
-    "label": "Keelevalik"
+    "label": "Vali keel"
+  },
+  "UserSelect": {
+    "label": "Vali kasutaja"
   },
   "Common": {
     "enabled": "Aktiveeritud",
@@ -168,8 +171,8 @@
       "top": "Siin oled sa võrdluses teiste <users>Kasutajatega</users>"
     },
     "Audio": {
-      "duration": "Lõpetuseks kuulasid sa <duration>{durationValue}</duration> <audio>Audiot</audio> <from>Plex'ist</from>",
-      "count": "Kokku kuulasid sa <count>{countValue}</count> <tracks>lugu</tracks>!",
+      "duration": "Lõpetuseks kuulasid sa <duration>{durationValue}</duration> <audio>Audiot</audio>",
+      "count": "Kokku kuulasid sa <count>{countValue}</count> <tracks>lugu!</tracks>",
       "favorite": "Sinu lemmik oli",
       "noData": "Sa ei kuulanud <audio>Audiot</audio> <from>Plex'ist</from>"
     },
@@ -196,10 +199,25 @@
       "shows": "{count, plural, =1 {Saade} other {Saadet}}"
     },
     "Movies": {
-      "duration": "<duration>{durationValue}</duration> kulus sul <movies>Filmidele</movies> <plex>Plex'is.</plex>",
-      "count": "Vaatasid <count>{countValue}</count> <movies>{countValue, plural, =1 {Filmi} other {Filmi}}</movies>",
+      "duration": "<duration>{durationValue}</duration> kulus sul <movies>Filmidele</movies>",
+      "count": "Vaatasid <count>{countValue}</count> <movies>{countValue, plural, =1 {filmi} other {filmi}}</movies>",
       "favorite": "Sinu lemmik oli",
       "noData": "Sa ei vaadanud ühtegi <movies>Filmi</movies> <plex>Plex'ist</plex> <emoji>😵‍💫</emoji>"
+    },
+    "Goodbye": {
+      "thanks": "Tänan, et vaatasid oma <plex>Plex Rewind'i</plex>, <user>{userValue}!</user>",
+      "sorry": "Kahju, et sa ei leidnud seekord sisu mida vaadata või kuulata. Loodame, et järgmisel korral läheb paremini!",
+      "weWillBeBack": "Oleme tagasi järgmisel korral",
+      "weWillBeHere": "Igal juhul oleme olemas ka järgmine kord",
+      "insightsAndStats": "veelgi huvitavama <insightsAndStats>statistikaga.</insightsAndStats>",
+      "untilThen": "Seniks, naudi kogu sisu, mis <plex>Plex'il</plex> on pakkuda.",
+      "movies": "Filmidest",
+      "shows": "Saadeteni",
+      "tracks": "Lugudeni",
+      "fromYourFavorite": "Sinu lemmikutest",
+      "toTheMostEntertaining": "kõige huvitavamate",
+      "andMemorable": "ja meeldejäävate",
+      "itsBeenAJourneyToRemember": ", see on olnud meeldejääv teekond."
     }
   },
   "MediaItem": {

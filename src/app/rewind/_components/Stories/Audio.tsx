@@ -31,9 +31,6 @@ export default function StoryAudio({
                     <MusicalNoteIcon />
                   </span>
                 ),
-                from: (chunks) => (
-                  <span className='gradient-plex'>{chunks}</span>
-                ),
               })}
             </p>
           </RewindStat>

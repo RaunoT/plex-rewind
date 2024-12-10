@@ -115,13 +115,11 @@ export default function StoryRequests({
                   count={userRewind.requests.movies}
                   name={t('movies', { count: userRewind.requests.movies })}
                   icon={<FilmIcon />}
-                  separator='for'
                 />
                 <StatListItem
                   count={userRewind.requests.shows}
                   name={t('shows', { count: userRewind.requests.shows })}
                   icon={<PlayCircleIcon />}
-                  separator='for'
                 />
               </ul>
             </RewindStat>

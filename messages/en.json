@@ -123,7 +123,10 @@
     }
   },
   "LocaleSelect": {
-    "label": "Language select"
+    "label": "Select language"
+  },
+  "UserSelect": {
+    "label": "Select user"
   },
   "Common": {
     "enabled": "Enabled",
@@ -155,7 +158,7 @@
       "welcome": "Welcome to your <rewind>Plex Rewind</rewind>",
       "takeYouThrough": "We'll take you through your highlights",
       "letsGetStarted": "Let's get started!",
-      "forPastYear": "for the <pastYear>past year</pastYear>.",
+      "forPastYear": "for the <pastYear>past year.</pastYear>",
       "singleDate": "during <singleDate>{singleDateValue}</singleDate>.",
       "dateRange": "from <startDate>{startDateValue}</startDate> to <endDate>{endDateValue}</endDate>."
     },
@@ -168,7 +171,7 @@
       "top": "Here's how you compared to other <users>Users</users>"
     },
     "Audio": {
-      "duration": "To finish it off, you listened to <duration>{durationValue}</duration> of <audio>Audio</audio> from <from>Plex</from>",
+      "duration": "To finish it off, you listened to <duration>{durationValue}</duration> of <audio>Audio</audio>",
       "count": "You listened to <count>{countValue}</count> <tracks>tracks</tracks> in total!",
       "favorite": "Your favorite was",
       "noData": "You didn't listen to any <audio>Audio</audio> from <from>Plex</from>"
@@ -196,17 +199,32 @@
       "shows": "{count, plural, =1 {Show} other {Shows}}"
     },
     "Movies": {
-      "duration": "<duration>{durationValue}</duration> of your time was spent watching <movies>Movies</movies> on <plex>Plex.</plex>",
-      "count": "You watched <count>{countValue}</count> <movies>{countValue, plural, =1 {Movie} other {Movies}}</movies> in total!",
+      "duration": "<duration>{durationValue}</duration> of your time was spent watching <movies>Movies</movies>",
+      "count": "You watched <count>{countValue}</count> <movies>{countValue, plural, =1 {movie} other {movies}}</movies> in total!",
       "favorite": "Your favorite was",
       "noData": "You didn't watch any <movies>Movies</movies> on <plex>Plex</plex> <emoji>😵‍💫</emoji>"
+    },
+    "Goodbye": {
+      "thanks": "Thanks for tuning into your <plex>Plex Rewind</plex>, <user>{userValue}!</user>",
+      "sorry": "Sorry you couldn't find any content to watch or listen to this time around. Better luck next time!",
+      "weWillBeBack": "We'll be back next time",
+      "weWillBeHere": "Eitherway, we'll be here",
+      "insightsAndStats": "with even more <insightsAndStats>insights and stats.</insightsAndStats>",
+      "untilThen": "Until then, keep exploring and enjoying all that <plex>Plex</plex> has to offer.",
+      "movies": "Movies",
+      "shows": "Shows",
+      "tracks": "Tracks",
+      "fromYourFavorite": "From your favorite",
+      "toTheMostEntertaining": "to the most entertaining",
+      "andMemorable": "and memorable",
+      "itsBeenAJourneyToRemember": ", it's been a journey to remember."
     }
   },
   "MediaItem": {
     "request": "Request",
     "deleted": "Deleted",
-    "statPlays": "{count, plural, =1 {play} other {# plays}}",
-    "statUsers": "{count, plural, =1 {user} other {# users}}",
-    "statRequests": "{count, plural, =1 {request} other {# requests}}"
+    "statPlays": "{count, plural, =1 {# play} other {# plays}}",
+    "statUsers": "{count, plural, =1 {# user} other {# users}}",
+    "statRequests": "{count, plural, =1 {# request} other {# requests}}"
   }
 }

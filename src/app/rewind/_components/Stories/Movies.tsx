@@ -31,9 +31,6 @@ export default function StoryMovies({
                     <FilmIcon />
                   </span>
                 ),
-                plex: (chunks) => (
-                  <span className='gradient-plex'>{chunks}</span>
-                ),
               })}
             </p>
           </RewindStat>

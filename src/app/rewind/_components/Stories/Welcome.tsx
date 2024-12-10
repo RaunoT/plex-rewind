@@ -54,7 +54,7 @@ export default function StoryWelcome({
           </span>
         </p>
         <p className='animate-fade-up mb-4 animation-delay-[2000ms]'>
-          {t('takeYouThrough')}
+          {t('takeYouThrough')}{' '}
           <span className='whitespace-nowrap'>
             {isDefaultPeriod
               ? t.rich('forPastYear', {
