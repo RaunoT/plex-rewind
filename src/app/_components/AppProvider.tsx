@@ -10,12 +10,14 @@ import {
 } from '@heroicons/react/24/outline'
 import clsx from 'clsx'
 import { useSession } from 'next-auth/react'
+import { useTranslations } from 'next-intl'
 import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { ReactNode, useEffect, useState } from 'react'
 import stars from '../_assets/stars.png'
 import GlobalContextProvider from './GlobalContextProvider'
+import LocaleSelect from './LocaleSelect'
 
 type Props = {
   children: ReactNode
@@ -31,6 +33,7 @@ export default function AppProvider({ children, settings, version }: Props) {
     pathname.startsWith('/settings'),
   )
   const [settingsLink, setSettingsLink] = useState<string>('/settings/general')
+  const t = useTranslations('AppProvider')
 
   useEffect(() => {
     switch (true) {
@@ -60,7 +63,7 @@ export default function AppProvider({ children, settings, version }: Props) {
           <div className='relative h-screen w-screen'>
             <Image
               src={stars}
-              alt='Stars background layer'
+              alt={t('starsAlt')}
               className='object-cover'
               fill
               priority
@@ -74,7 +77,7 @@ export default function AppProvider({ children, settings, version }: Props) {
           {version.hasUpdate && session?.user.isAdmin && (
             <a
               href='https://github.com/RaunoT/plex-rewind/releases'
-              aria-label='Update available'
+              aria-label={t('updateAvailable')}
               target='_blank'
               className='link-light'
             >
@@ -84,7 +87,7 @@ export default function AppProvider({ children, settings, version }: Props) {
           {!missingSetting && session?.user.isAdmin && (
             <Link
               href={isSettings ? '/' : settingsLink}
-              aria-label={isSettings ? 'Close settings' : 'Open settings'}
+              aria-label={isSettings ? t('closeSettings') : t('openSettings')}
               className='link-light'
             >
               {isSettings ? (
@@ -94,6 +97,7 @@ export default function AppProvider({ children, settings, version }: Props) {
               )}
             </Link>
           )}
+          <LocaleSelect />
         </div>
 
         {children}

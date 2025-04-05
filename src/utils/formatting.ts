@@ -1,6 +1,10 @@
-export function secondsToTime(seconds: number): string {
+// This type is compatible with next-intl's translation function
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type TranslateFunction = (key: string, params?: any) => string
+
+export function secondsToTime(seconds: number, t: TranslateFunction): string {
   if (seconds <= 0) {
-    return '0 mins'
+    return t('Common.time.zero')
   }
 
   const units = [
@@ -38,7 +42,7 @@ export function secondsToTime(seconds: number): string {
         break
       }
 
-      result.push(pluralize(value, label))
+      result.push(t(`Common.time.${label}`, { count: value }))
       unitCount++
     }
   }
@@ -46,25 +50,27 @@ export function secondsToTime(seconds: number): string {
   return result.join(' ')
 }
 
-export function secondsToMinutes(seconds: number): string {
-  const minutes = Math.floor(seconds / 60)
-
-  return `${minutes.toLocaleString('en-US')} minute${minutes !== 1 && 's'}`
-}
-
 export function removeAfterMinutes(timeString: string): string {
   return timeString.replace(/mins.*/, 'mins')
 }
 
-export function bytesToSize(bytes: number, decimals = 2): string | undefined {
+export function bytesToSize(
+  bytes: number,
+  decimals = 2,
+  t: TranslateFunction,
+): string | undefined {
   if (!+bytes) return
 
   const k = 1024
   const dm = decimals < 0 ? 0 : decimals
   const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB']
   const i = Math.floor(Math.log(bytes) / Math.log(k))
+  const value = parseFloat((bytes / Math.pow(k, i)).toFixed(dm))
 
-  return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`
+  return t('Common.fileSize', {
+    value,
+    unit: sizes[i],
+  })
 }
 
 export function timeToSeconds(time: string): number {
@@ -78,8 +84,4 @@ export function timeToSeconds(time: string): number {
   const secs = secMatch ? parseFloat(secMatch[1]) : 0
 
   return days + hours + mins + secs
-}
-
-export function pluralize(value: number, label: string): string {
-  return value === 1 ? `${value} ${label}` : `${value} ${label}s`
 }

@@ -10,6 +10,7 @@ import {
   QuestionMarkCircleIcon,
   UserIcon,
 } from '@heroicons/react/24/outline'
+import { getTranslations } from 'next-intl/server'
 import { Suspense } from 'react'
 import DashboardFilters from './DashboardFilters'
 
@@ -25,7 +26,7 @@ type Props = {
   loggedInUserId?: string
 }
 
-export default function Dashboard({
+export default async function Dashboard({
   title,
   items,
   totalDuration,
@@ -37,6 +38,7 @@ export default function Dashboard({
   loggedInUserId,
 }: Props) {
   const isLoggedIn = !!loggedInUserId
+  const t = await getTranslations('Dashboard')
 
   function renderFilters(className?: string) {
     if (type !== 'users') {
@@ -66,7 +68,7 @@ export default function Dashboard({
           <li className='icon-stat-wrapper icon-stat-wrapper--clean'>
             {type === 'users' ? <UserIcon /> : <FolderIcon />}
             {totalSize}
-            {type === 'users' && ' users'}
+            {type === 'users' && ` ${t('users')}`}
           </li>
         )}
         {count && (
@@ -76,12 +78,12 @@ export default function Dashboard({
               <span>{count}</span>&nbsp;
               <span>
                 {type === 'movie'
-                  ? 'movies'
+                  ? t('movies')
                   : type === 'show'
-                    ? 'episodes'
+                    ? t('episodes')
                     : type === 'artist'
-                      ? 'tracks'
-                      : 'requests'}
+                      ? t('tracks')
+                      : t('requests')}
               </span>
             </span>
           </li>
@@ -105,7 +107,7 @@ export default function Dashboard({
       ) : (
         <div className='flex flex-1 flex-col justify-center text-center text-neutral-300'>
           <h2 className='mb-4 py-32 text-2xl italic leading-tight last:mb-0 sm:text-3xl'>
-            No activity during this period.. 😴
+            {t('noActivity')}
           </h2>
         </div>
       )}

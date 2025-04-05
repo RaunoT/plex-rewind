@@ -1,5 +1,6 @@
 import { RewindStory } from '@/types/rewind'
 import { getRewindDateRange } from '@/utils/helpers'
+import { useTranslations } from 'next-intl'
 import Image from 'next/image'
 import RewindStat from '../RewindStat'
 import StoryWrapper from '../StoryWrapper'
@@ -12,30 +13,6 @@ function formatDate(dateString: string) {
   return `${month} ${year}`
 }
 
-function getDateRange(startDate: string, endDate: string, isDefault: boolean) {
-  if (isDefault) {
-    return (
-      <>
-        for the <span className='rewind-cat'>past year.</span>
-      </>
-    )
-  }
-
-  const formattedStartDate = formatDate(startDate)
-  const formattedEndDate = formatDate(endDate)
-
-  return formattedStartDate === formattedEndDate ? (
-    <>
-      during <span className='rewind-cat'>{formattedStartDate}.</span>
-    </>
-  ) : (
-    <>
-      from <span className='rewind-cat'>{formattedStartDate}</span> to{' '}
-      <span className='rewind-cat'>{formattedEndDate}.</span>
-    </>
-  )
-}
-
 export default function StoryWelcome({
   userRewind,
   isPaused,
@@ -45,7 +22,9 @@ export default function StoryWelcome({
 }: RewindStory) {
   const { startDate, endDate } = getRewindDateRange(settings)
   const isDefaultPeriod = !settings.rewind.startDate && !settings.rewind.endDate
-  const dateRange = getDateRange(startDate, endDate, isDefaultPeriod)
+  const t = useTranslations('Rewind.Welcome')
+  const formattedStartDate = formatDate(startDate)
+  const formattedEndDate = formatDate(endDate)
 
   return (
     <StoryWrapper isPaused={isPaused} pause={pause} resume={resume}>
@@ -61,20 +40,49 @@ export default function StoryWelcome({
           />
         </div>
         <p className='animate-fade-up mb-4 animation-delay-500'>
-          Welcome to your{' '}
+          {t.rich('welcome', {
+            rewind: (chunks) => (
+              <span className='whitespace-nowrap'>
+                {/* eslint-disable-next-line react/jsx-no-literals */}
+                <span className='gradient-plex'>{chunks}</span>,
+              </span>
+            ),
+          })}
           <span className='whitespace-nowrap'>
-            <span className='gradient-plex'>Plex Rewind</span>,
-          </span>{' '}
-          <span className='whitespace-nowrap'>
+            {/* eslint-disable-next-line react/jsx-no-literals */}
             <span className='rewind-cat'>{userRewind.user.name}!</span>
           </span>
         </p>
         <p className='animate-fade-up mb-4 animation-delay-[2000ms]'>
-          We&apos;ll take you through your highlights{' '}
-          <span className='whitespace-nowrap'>{dateRange}</span>
+          {t('takeYouThrough')}{' '}
+          <span className='whitespace-nowrap'>
+            {isDefaultPeriod
+              ? t.rich('forPastYear', {
+                  pastYear: (chunks) => (
+                    <span className='rewind-cat'>{chunks}</span>
+                  ),
+                })
+              : formattedStartDate === formattedEndDate
+                ? t.rich('singleDate', {
+                    singleDateValue: formattedStartDate,
+                    singleDate: (chunks) => (
+                      <span className='rewind-cat'>{chunks}</span>
+                    ),
+                  })
+                : t.rich('dateRange', {
+                    startDateValue: formattedStartDate,
+                    endDateValue: formattedEndDate,
+                    startDate: (chunks) => (
+                      <span className='rewind-cat'>{chunks}</span>
+                    ),
+                    endDate: (chunks) => (
+                      <span className='rewind-cat'>{chunks}</span>
+                    ),
+                  })}
+          </span>
         </p>
         <p className='animate-fade-up animation-delay-[4000ms]'>
-          Let&apos;s get started!
+          {t('letsGetStarted')}
         </p>
       </RewindStat>
     </StoryWrapper>

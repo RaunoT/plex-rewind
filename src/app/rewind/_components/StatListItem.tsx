@@ -1,4 +1,3 @@
-import clsx from 'clsx'
 import { ReactNode } from 'react'
 
 type Props = {
@@ -9,27 +8,15 @@ type Props = {
   library?: string
 }
 
-export default function StatListItem({
-  count,
-  name,
-  icon,
-  separator = '•',
-  library,
-}: Props) {
+export default function StatListItem({ count, name, icon, library }: Props) {
   return (
     <li className='my-2 last:my-0'>
       {library && (
         <div className='gradient-plex mb-1 text-base lg:text-lg'>{library}</div>
       )}
       <span className='font-semibold'>{count.toLocaleString('en-US')}</span>
-      <span
-        className={clsx(
-          'mx-2',
-          separator === '•' ? 'gradient-rewind' : 'text-white',
-        )}
-      >
-        {separator}
-      </span>
+      {/* eslint-disable-next-line react/jsx-no-literals */}
+      <span className='gradient-rewind mx-2'>•</span>
       <span className='rewind-cat'>
         {name}
         {icon}

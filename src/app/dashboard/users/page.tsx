@@ -3,12 +3,17 @@ import { DashboardSearchParams } from '@/types/dashboard'
 import { Settings } from '@/types/settings'
 import { fetchOverseerrStats } from '@/utils/fetchOverseerr'
 import fetchTautulli, { getUsersCount } from '@/utils/fetchTautulli'
-import { secondsToTime, timeToSeconds } from '@/utils/formatting'
+import {
+  secondsToTime,
+  timeToSeconds,
+  TranslateFunction,
+} from '@/utils/formatting'
 import getPeriod from '@/utils/getPeriod'
 import getSettings from '@/utils/getSettings'
 import getUsersTop from '@/utils/getUsersTop'
 import { Metadata } from 'next'
 import { getServerSession } from 'next-auth'
+import { getTranslations } from 'next-intl/server'
 import { notFound } from 'next/navigation'
 import { Suspense } from 'react'
 import Dashboard from '../_components/Dashboard'
@@ -18,7 +23,11 @@ export const metadata: Metadata = {
   title: 'Users',
 }
 
-async function getTotalDuration(period: string, settings: Settings) {
+async function getTotalDuration(
+  period: string,
+  settings: Settings,
+  t: TranslateFunction,
+) {
   if (settings.dashboard.activeTotalStatistics.includes('duration')) {
     const totalDuration = await fetchTautulli<{ total_duration: string }>(
       'get_history',
@@ -30,6 +39,7 @@ async function getTotalDuration(period: string, settings: Settings) {
 
     return secondsToTime(
       timeToSeconds(totalDuration?.response?.data?.total_duration || '0'),
+      t,
     )
   }
 
@@ -58,6 +68,7 @@ type Props = {
 
 async function DashboardUsersContent({ searchParams }: Props) {
   const settings = getSettings()
+  const t = await getTranslations()
 
   if (!settings.dashboard.isUsersPageActive) {
     return notFound()
@@ -69,7 +80,7 @@ async function DashboardUsersContent({ searchParams }: Props) {
   const [usersData, totalDuration, usersCount, totalRequests] =
     await Promise.all([
       getUsersTop(loggedInUserId, period.string, period.daysAgo),
-      getTotalDuration(period.string, settings),
+      getTotalDuration(period.string, settings, t),
       getUsersCount(settings),
       getTotalRequests(period.date, settings),
     ])
