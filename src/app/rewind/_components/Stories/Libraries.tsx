@@ -17,6 +17,7 @@ export default function StoryLibraries({
   pause,
   resume,
 }: RewindStory) {
+  const translations = useTranslations()
   const t = useTranslations('Rewind.Libraries')
 
   return (
@@ -36,7 +37,11 @@ export default function StoryLibraries({
                 <span className='rewind-stat'>{chunks}</span>
               </span>
             ),
-            sizeValue: bytesToSize(userRewind.libraries_total_size),
+            sizeValue: bytesToSize(
+              userRewind.libraries_total_size,
+              undefined,
+              translations,
+            ),
           })}
         </p>
       </RewindStat>

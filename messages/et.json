@@ -142,7 +142,17 @@
     "defaults": "Vaikeväärtused",
     "startDate": "Algus",
     "endDate": "Lõppkuupäev",
-    "profilePictureAlt": "profiilipilt"
+    "profilePictureAlt": "profiilipilt",
+    "time": {
+      "zero": "0 min",
+      "month": "{count, plural, =1 {# kuu} other {# kuud}}",
+      "week": "{count, plural, =1 {# nädal} other {# nädalat}}",
+      "day": "{count, plural, =1 {# päev} other {# päeva}}",
+      "hr": "{count, plural, =1 {# tund} other {# tundi}}",
+      "min": "{count, plural, =1 {# min} other {# min}}",
+      "sec": "{count, plural, =1 {# sek} other {# sek}}"
+    },
+    "fileSize": "{value} {unit}"
   },
   "DatePicker": {
     "clear": "Tühjenda kuupäev"

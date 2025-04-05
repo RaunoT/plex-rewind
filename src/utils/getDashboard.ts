@@ -1,5 +1,6 @@
 import { Settings } from '@/types/settings'
 import { TautulliItem, TautulliLibrary } from '@/types/tautulli'
+import { getTranslations } from 'next-intl/server'
 import fetchTautulli from './fetchTautulli'
 import { bytesToSize, secondsToTime, timeToSeconds } from './formatting'
 import getMediaAdditionalData, {
@@ -97,9 +98,11 @@ export async function getTotalDuration(
         user_id: userId ? userId : '',
       },
     )
+    const t = await getTranslations()
 
     return secondsToTime(
       timeToSeconds(totalDuration?.response?.data?.total_duration || '0'),
+      t,
     )
   }
 
@@ -118,8 +121,9 @@ export async function getTotalSize(
         length: 0,
       },
     )
+    const t = await getTranslations()
 
-    return bytesToSize(totalSize?.response?.data.total_file_size || 0)
+    return bytesToSize(totalSize?.response?.data.total_file_size || 0, 2, t)
   }
 
   return undefined

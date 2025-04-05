@@ -5,6 +5,7 @@ import {
   TautulliMediaReturnType,
   TautulliMediaType,
 } from '@/types/tautulli'
+import { getTranslations } from 'next-intl/server'
 import { fetchOverseerrStats } from './fetchOverseerr'
 import fetchTautulli from './fetchTautulli'
 import { secondsToTime, timeToSeconds } from './formatting'
@@ -16,6 +17,7 @@ export async function getTopMediaStats(
   userId: string,
   libraries: TautulliLibrary[],
 ) {
+  const t = await getTranslations()
   const mediaTypeMap: Record<TautulliMediaType, string> = {
     movie: 'movie',
     show: 'episode',
@@ -72,6 +74,7 @@ export async function getTopMediaStats(
       combinedResult[resultType].duration = secondsToTime(
         timeToSeconds(combinedResult[resultType].duration) +
           timeToSeconds(data.total_duration),
+        t,
       )
     }
   }

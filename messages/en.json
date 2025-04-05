@@ -142,7 +142,17 @@
     "defaults": "Defaults",
     "startDate": "Start date",
     "endDate": "End date",
-    "profilePictureAlt": "profile picture"
+    "profilePictureAlt": "profile picture",
+    "time": {
+      "zero": "0 mins",
+      "month": "{count, plural, =1 {# month} other {# months}}",
+      "week": "{count, plural, =1 {# week} other {# weeks}}",
+      "day": "{count, plural, =1 {# day} other {# days}}",
+      "hr": "{count, plural, =1 {# hr} other {# hrs}}",
+      "min": "{count, plural, =1 {# min} other {# mins}}",
+      "sec": "{count, plural, =1 {# sec} other {# secs}}"
+    },
+    "fileSize": "{value} {unit}"
   },
   "DatePicker": {
     "clear": "Clear date"

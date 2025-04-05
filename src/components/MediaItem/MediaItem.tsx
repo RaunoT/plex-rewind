@@ -47,6 +47,7 @@ export default function MediaItem({
   items,
   rows,
 }: Props) {
+  const translations = useTranslations()
   const t = useTranslations('MediaItem')
   const tautulliUrl = settings.connection.tautulliUrl
   const isTmdbPoster = data.thumb?.startsWith('https://image.tmdb.org')
@@ -168,7 +169,7 @@ export default function MediaItem({
           {activeStats.includes('duration') && (
             <li className='icon-stat-wrapper'>
               <ClockIcon />
-              {secondsToTime(data.total_duration)}
+              {secondsToTime(data.total_duration, translations)}
             </li>
           )}
           {/* Plays */}
