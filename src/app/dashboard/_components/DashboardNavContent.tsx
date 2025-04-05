@@ -1,6 +1,7 @@
 'use client'
 
 import { kebabCase } from 'lodash'
+import { useTranslations } from 'next-intl'
 import Link from 'next/link'
 import { usePathname, useSearchParams } from 'next/navigation'
 import { DashboardNavProps } from './DashboardNav'
@@ -12,10 +13,10 @@ export default function DashboardNavContent({
   const pathname = usePathname()
   const searchParams = useSearchParams()
   const params = searchParams.toString()
+  const t = useTranslations('DashboardNavContent')
 
   return (
-    <nav>
-      <h2 className='sr-only'>Dashboard navigation</h2>
+    <nav aria-label={t('label')}>
       <ul className='nav'>
         {libraries.map((library) => (
           <li key={library.section_id}>
@@ -38,7 +39,7 @@ export default function DashboardNavContent({
               className='nav-link'
               aria-current={pathname === '/dashboard/users' && 'page'}
             >
-              Users
+              {t('users')}
             </Link>
           </li>
         )}

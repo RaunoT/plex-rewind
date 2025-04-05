@@ -1,6 +1,7 @@
 'use server'
 
 import { ConnectionSettings, SettingsFormInitialState } from '@/types/settings'
+import { getTranslations } from 'next-intl/server'
 import { z } from 'zod'
 import updateSettings from '../../_actions/updateSettings'
 
@@ -25,6 +26,7 @@ export default async function saveConnectionSettings(
     plexUrl: formData.get('plexUrl') as string,
     complete: true,
   }
+  const t = await getTranslations('Settings')
 
   try {
     // Test Tautulli
@@ -44,7 +46,7 @@ export default async function saveConnectionSettings(
         )
 
         return {
-          message: 'Tautulli - invalid API key!',
+          message: `Tautulli - ${t('invalidApiKey')}!`,
           status: 'error',
           fields: data,
         }
@@ -53,7 +55,7 @@ export default async function saveConnectionSettings(
       console.error('[CONFIG] - Error testing Tautulli connection!', error)
 
       return {
-        message: 'Tautulli - unable to connect!',
+        message: `Tautulli - ${t('unableToConnect')}!`,
         status: 'error',
         fields: data,
       }
@@ -77,7 +79,7 @@ export default async function saveConnectionSettings(
           )
 
           return {
-            message: 'Overseerr - invalid API key!',
+            message: `Overseerr - ${t('invalidApiKey')}!`,
             status: 'error',
             fields: data,
           }
@@ -86,7 +88,7 @@ export default async function saveConnectionSettings(
         console.error('[CONFIG] - Error testing Overseerr connection!', error)
 
         return {
-          message: 'Overseerr - unable to connect!',
+          message: `Overseerr - ${t('unableToConnect')}!`,
           status: 'error',
           fields: data,
         }
@@ -102,7 +104,7 @@ export default async function saveConnectionSettings(
       console.error('[CONFIG] - Error testing Plex connection!', error)
 
       return {
-        message: 'Plex - unable to connect!',
+        message: `Plex - ${t('unableToConnect')}!`,
         status: 'error',
         fields: data,
       }
@@ -111,7 +113,7 @@ export default async function saveConnectionSettings(
     console.error('[CONFIG] - Error testing connection!', error)
 
     return {
-      message: 'Something went wrong!',
+      message: t('genericError'),
       status: 'error',
       fields: data,
     }

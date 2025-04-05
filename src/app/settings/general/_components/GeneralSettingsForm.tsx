@@ -4,6 +4,7 @@ import { Settings } from '@/types/settings'
 import { TautulliLibrary } from '@/types/tautulli'
 import { Bars2Icon } from '@heroicons/react/24/outline'
 import { kebabCase } from 'lodash'
+import { useTranslations } from 'next-intl'
 import { useState } from 'react'
 import { Checkbox, CheckboxGroup, Label, Switch } from 'react-aria-components'
 import { ReactSortable } from 'react-sortablejs'
@@ -39,6 +40,7 @@ export default function GeneralSettingsForm({ settings, libraries }: Props) {
       }))
     },
   )
+  const t = useTranslations('Settings.General')
 
   return (
     <SettingsForm
@@ -47,7 +49,7 @@ export default function GeneralSettingsForm({ settings, libraries }: Props) {
       hideSubmit={!libraries.length}
     >
       <section className='group-settings group'>
-        <h2 className='heading-settings'>Libraries</h2>
+        <h2 className='heading-settings'>{t('libraries')}</h2>
         {libraries.length ? (
           <CheckboxGroup
             className='input-wrapper'
@@ -74,7 +76,7 @@ export default function GeneralSettingsForm({ settings, libraries }: Props) {
               ))}
             </ReactSortable>
             <Label className='label label--start'>
-              <span className='label-wrapper'>Active libraries</span>
+              <span className='label-wrapper'>{t('activeLibraries')}</span>
             </Label>
           </CheckboxGroup>
         ) : (
@@ -83,15 +85,15 @@ export default function GeneralSettingsForm({ settings, libraries }: Props) {
             role='status'
             className='text-center text-neutral-400'
           >
-            Please create a library in Plex to proceed. <br />
-            Plex Rewind requires at least one library to function.
+            {t('noLibrariesMessage1')} <br />
+            {t('noLibrariesMessage2')}
           </p>
         )}
       </section>
       {libraries.length > 0 && (
         <>
           <section className='group-settings group'>
-            <h2 className='heading-settings'>Media</h2>
+            <h2 className='heading-settings'>{t('media')}</h2>
             <Switch
               className='switch items-start'
               name='isPostersTmdbOnly'
@@ -99,16 +101,16 @@ export default function GeneralSettingsForm({ settings, libraries }: Props) {
             >
               <div className='indicator'></div>
               <span className='label'>
-                <span className='label-wrapper'>TMDB only posters</span>
+                <span className='label-wrapper'>{t('tmdbOnlyPosters')}</span>
                 <small>
-                  Ignore Plex posters for tv/movies.
-                  <br /> By default, TMDB is a fallback.
+                  {t('tmdbOnlyPostersDescription1')}
+                  <br /> {t('tmdbOnlyPostersDescription2')}
                 </small>
               </span>
             </Switch>
           </section>
           <section className='group-settings group'>
-            <h2 className='heading-settings'>Privacy</h2>
+            <h2 className='heading-settings'>{t('privacy')}</h2>
             <Switch
               className='switch items-start'
               name='isOutsideAccess'
@@ -116,8 +118,8 @@ export default function GeneralSettingsForm({ settings, libraries }: Props) {
             >
               <div className='indicator'></div>
               <span className='label'>
-                <span className='label-wrapper'>Allow outside access</span>
-                <small>Access without login.</small>
+                <span className='label-wrapper'>{t('outsideAccess')}</span>
+                <small>{t('outsideAccessDescription')}</small>
               </span>
             </Switch>
             <Switch
@@ -127,13 +129,13 @@ export default function GeneralSettingsForm({ settings, libraries }: Props) {
             >
               <div className='indicator'></div>
               <span className='label'>
-                <span className='label-wrapper'>Anonymize</span>
-                <small>Hide usernames for other users.</small>
+                <span className='label-wrapper'>{t('anonymize')}</span>
+                <small>{t('anonymizeDescription')}</small>
               </span>
             </Switch>
           </section>
           <section className='group-settings group'>
-            <h2 className='heading-settings'>Analytics</h2>
+            <h2 className='heading-settings'>{t('analytics')}</h2>
             <label className='input-wrapper'>
               <input
                 type='text'
@@ -143,6 +145,7 @@ export default function GeneralSettingsForm({ settings, libraries }: Props) {
                 placeholder='G-XXXXXXXXXX'
               />
               <span className='label'>
+                {/* eslint-disable-next-line react/jsx-no-literals */}
                 <span className='label-wrapper'>Google Analytics ID</span>
               </span>
             </label>

@@ -15,6 +15,7 @@ import getSettings from '@/utils/getSettings'
 import getUsersTop from '@/utils/getUsersTop'
 import { getRewindDateRange } from '@/utils/helpers'
 import { getServerSession } from 'next-auth'
+import { getTranslations } from 'next-intl/server'
 import { notFound } from 'next/navigation'
 import { Suspense } from 'react'
 import RewindStories from './_components/RewindStories'
@@ -60,6 +61,7 @@ async function RewindContent({ searchParams }: Props) {
     return notFound()
   }
 
+  const t = await getTranslations()
   const libraries = await getLibraries()
   const { startDate, endDate } = getRewindDateRange(settings)
   const [
@@ -81,11 +83,11 @@ async function RewindContent({ searchParams }: Props) {
   ])
   const userRewind: UserRewind = {
     duration: {
-      user: secondsToTime(userTotalDuration),
+      user: secondsToTime(userTotalDuration, t),
       user_percentage: `${Math.round(
         (userTotalDuration * 100) / librariesTotalDuration,
       )}%`,
-      total: secondsToTime(librariesTotalDuration),
+      total: secondsToTime(librariesTotalDuration, t),
     },
     usersTop: usersTop,
     shows: {

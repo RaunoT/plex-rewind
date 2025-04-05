@@ -1,6 +1,7 @@
 'use client'
 
 import { TautulliUser } from '@/types/tautulli'
+import { useTranslations } from 'next-intl'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { ChangeEvent, useRef } from 'react'
 
@@ -13,6 +14,7 @@ export default function UserSelect({ users, currentUserId }: Props) {
   const router = useRouter()
   const searchParams = useSearchParams()
   const selectRef = useRef<HTMLSelectElement>(null)
+  const t = useTranslations('UserSelect')
 
   // eslint-disable-next-line @stylistic/js/padding-line-between-statements
   const handleChange = (e: ChangeEvent<HTMLSelectElement>) => {
@@ -31,6 +33,7 @@ export default function UserSelect({ users, currentUserId }: Props) {
           value={currentUserId}
           onChange={handleChange}
           ref={selectRef}
+          aria-label={t('label')}
         >
           {users.map((user) => (
             <option key={user.user_id} value={user.user_id}>
