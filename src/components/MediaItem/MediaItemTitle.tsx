@@ -87,6 +87,7 @@ export default function MediaItemTitle({
   return (
     <h3 className={clsx('mb-2 flex sm:text-xl', isLoggedIn && 'gradient-plex')}>
       <span className='mr-1.5 inline-flex items-baseline gap-1' ref={numberRef}>
+        {/* eslint-disable-next-line react/jsx-no-literals */}
         <span className={clsx('font-bold', topColors[i] || 'text-white')}>
           #{i + 1}{' '}
         </span>

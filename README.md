@@ -22,6 +22,7 @@ Present [Plex](https://plex.tv) user statistics and habits in a beautiful and or
 - 🚀 PWA support - installable on mobile devices and desktops thanks to [Serwist](https://github.com/serwist/serwist).
 - 🐳 Easy deployment - run the application in a containerized environment with [Docker](https://www.docker.com).
 - ✨ Beautiful animations with [Framer Motion](https://www.framer.com/motion).
+- 🌐 Multi-language support - currently supporting English and Estonian. See [translations](#translations) for more information.
 - ⭐ All of this and more - powered by [Next.js](https://nextjs.org).
 
 Keep an eye on the [issues page](https://github.com/RaunoT/plex-rewind/issues) to see what new features have already been requested or to make your own request!
@@ -74,9 +75,17 @@ To update, run `docker compose pull` and then `docker compose up -d`.
 
 Optionally, you can also set up automatic updates with [Watchtower](https://containrrr.dev/watchtower).
 
+## Translations
+
+To help translate the application to your language, create a new `<language-code>.json` in the `messages` directory and translate the strings, using `en.json` as a reference. Once the translation is complete, create a pull request for review.
+
 ## Donate
 
-If you like this project and wish to support it, you can do so by donating via [Patreon](https://www.patreon.com/PlexRewind) or [PayPal](https://paypal.me/raunot). Thank you! ❤️
+If you like this project and wish to support it, you can do so with a one-time donation via [PayPal](https://paypal.me/raunot) or a recurring one on [Patreon](https://www.patreon.com/PlexRewind) or [GitHub Sponsors](https://github.com/sponsors/RaunoT) (preferred). Thank you! ❤️
+
+### Supporters
+
+- NAS Assist
 
 ## Learn More
 
