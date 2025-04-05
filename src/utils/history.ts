@@ -2,9 +2,10 @@ import { Settings } from '@/types/settings'
 import { TautulliItemRow } from '@/types/tautulli'
 import fs from 'fs'
 import { encode } from 'gpt-tokenizer'
+import { getTranslations } from 'next-intl/server'
 import path from 'path'
 import fetchTautulli from './fetchTautulli'
-import { secondsToTime } from './formatting'
+import { secondsToTime, TranslateFunction } from './formatting'
 
 const MAX_TOKENS = 1000000
 
@@ -50,6 +51,7 @@ export async function saveTautulliHistory(
 }
 
 async function getHistory(settings: Settings): Promise<string> {
+  const t = await getTranslations()
   const startDate = settings.chat.startDate || ''
   const endDate = settings.chat.endDate || ''
   const historyData = await fetchTautulli<{ data: TautulliItemRow[] }>(
@@ -62,13 +64,16 @@ async function getHistory(settings: Settings): Promise<string> {
     false,
   )
   const history = historyData?.response?.data.data
-  const formattedHistory = formatHistory(history)
+  const formattedHistory = formatHistory(history, t)
   const truncatedHistory = truncateHistory(formattedHistory)
 
   return truncatedHistory
 }
 
-function formatHistory(history: TautulliItemRow[] | undefined): string {
+function formatHistory(
+  history: TautulliItemRow[] | undefined,
+  t: TranslateFunction,
+): string {
   if (!history?.length) return 'No recent viewing history available.'
 
   const header =
@@ -90,7 +95,7 @@ function formatHistory(history: TautulliItemRow[] | undefined): string {
       })
       const percent = item.watched_status ? 100 : item.percent_complete
 
-      return `"${item.full_title}",${item.year},${item.friendly_name},${item.user_id},${date},${start},${finish},${secondsToTime(item.paused_counter)},${secondsToTime(item.duration)},${percent},${item.platform},${item.player},${item.media_type},${item.transcode_decision},${item.rating_key}`
+      return `"${item.full_title}",${item.year},${item.friendly_name},${item.user_id},${date},${start},${finish},${secondsToTime(item.paused_counter, t)},${secondsToTime(item.duration, t)},${percent},${item.platform},${item.player},${item.media_type},${item.transcode_decision},${item.rating_key}`
     })
     .join('\n')
 

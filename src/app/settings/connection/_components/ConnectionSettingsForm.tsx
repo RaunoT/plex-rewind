@@ -12,12 +12,12 @@ type Props = {
 export default function ConnectionSettingsForm({ settings }: Props) {
   const connectionSettings = settings.connection
   const t = useTranslations('Settings')
+  const tCommon = useTranslations('Common')
 
   return (
     <SettingsForm settings={settings} action={saveConnectionSettings}>
       <section className='group-settings group'>
-        {/* eslint-disable-next-line react/jsx-no-literals */}
-        <h2 className='heading-settings'>Tautulli</h2>
+        <h2 className='heading-settings'>{tCommon('tautulli')}</h2>
         <label className='input-wrapper'>
           <input
             type='url'
@@ -28,8 +28,7 @@ export default function ConnectionSettingsForm({ settings }: Props) {
             defaultValue={connectionSettings.tautulliUrl}
           />
           <span className='label'>
-            {/* eslint-disable-next-line react/jsx-no-literals */}
-            <span className='label-wrapper'>URL</span>
+            <span className='label-wrapper'>{tCommon('url')}</span>
           </span>
         </label>
         <label className='input-wrapper'>
@@ -46,8 +45,7 @@ export default function ConnectionSettingsForm({ settings }: Props) {
         </label>
       </section>
       <section className='group-settings group'>
-        {/* eslint-disable-next-line react/jsx-no-literals */}
-        <h2 className='heading-settings'>Plex</h2>
+        <h2 className='heading-settings'>{tCommon('plex')}</h2>
         <label className='input-wrapper'>
           <input
             type='url'
@@ -58,14 +56,12 @@ export default function ConnectionSettingsForm({ settings }: Props) {
             defaultValue={connectionSettings.plexUrl}
           />
           <span className='label'>
-            {/* eslint-disable-next-line react/jsx-no-literals */}
-            <span className='label-wrapper'>URL</span>
+            <span className='label-wrapper'>{tCommon('url')}</span>
           </span>
         </label>
       </section>
       <section className='group-settings group'>
-        {/* eslint-disable-next-line react/jsx-no-literals */}
-        <h2 className='heading-settings'>Overseerr</h2>
+        <h2 className='heading-settings'>{tCommon('overseerr')}</h2>
         <label className='input-wrapper'>
           <input
             type='url'
@@ -75,8 +71,7 @@ export default function ConnectionSettingsForm({ settings }: Props) {
             defaultValue={connectionSettings.overseerrUrl}
           />
           <span className='label'>
-            {/* eslint-disable-next-line react/jsx-no-literals */}
-            <span className='label-wrapper'>URL</span>
+            <span className='label-wrapper'>{tCommon('url')}</span>
           </span>
         </label>
         <label className='input-wrapper'>
@@ -92,7 +87,7 @@ export default function ConnectionSettingsForm({ settings }: Props) {
         </label>
       </section>
       <section className='group-settings group'>
-        <h2 className='heading-settings'>Chat</h2>
+        <h2 className='heading-settings'>{tCommon('chat')}</h2>
         <label className='input-wrapper'>
           <input
             type='password'
@@ -102,7 +97,7 @@ export default function ConnectionSettingsForm({ settings }: Props) {
             defaultValue={connectionSettings.aiApiKey}
           />
           <span className='label'>
-            <span className='label-wrapper'>Gemini API key</span>
+            <span className='label-wrapper'>{t('Connection.aiApiKey')}</span>
           </span>
         </label>
       </section>

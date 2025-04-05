@@ -76,10 +76,12 @@
       "connection": "Connection",
       "general": "General",
       "rewind": "Rewind",
-      "dashboard": "Dashboard"
+      "dashboard": "Dashboard",
+      "chat": "Chat"
     },
     "Connection": {
-      "title": "Connection settings"
+      "title": "Connection settings",
+      "aiApiKey": "Gemini API key"
     },
     "Dashboard": {
       "title": "Dashboard settings",
@@ -120,6 +122,13 @@
       "librariesSizeAndCountCardDescription": "Disable if you don't want to rely on Tautulli for these stats.",
       "startDateHelperText": "Defaults to 365 days ago.",
       "endDateHelperText": "Defaults to today."
+    },
+    "Chat": {
+      "privacy": "Privacy",
+      "knowledge": "Knowledge",
+      "adminOnly": "Restrict to admins",
+      "adminOnlyDescription1": "Login is always required.",
+      "adminOnlyDescription2": "Chat has knowledge of all users."
     }
   },
   "LocaleSelect": {
@@ -143,6 +152,11 @@
     "startDate": "Start date",
     "endDate": "End date",
     "profilePictureAlt": "profile picture",
+    "tautulli": "Tautulli",
+    "plex": "Plex",
+    "overseerr": "Overseerr",
+    "chat": "Chat",
+    "url": "URL",
     "time": {
       "zero": "0 mins",
       "month": "{count, plural, =1 {# month} other {# months}}",
@@ -236,5 +250,15 @@
     "statPlays": "{count, plural, =1 {# play} other {# plays}}",
     "statUsers": "{count, plural, =1 {# user} other {# users}}",
     "statRequests": "{count, plural, =1 {# request} other {# requests}}"
+  },
+  "Chat": {
+    "askMeSomething": "Ask me something or choose a question below",
+    "predefinedQuestions": {
+      "whatDidYouWatch": "What's the last thing I watched?",
+      "whatDidYouListenTo": "What show did I watch most last week?",
+      "howManyMoviesHaveISeen": "How many movies have I seen?"
+    },
+    "error": "Something went wrong!",
+    "ask": "Ask"
   }
 }

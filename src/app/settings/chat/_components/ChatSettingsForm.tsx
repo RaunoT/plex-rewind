@@ -3,6 +3,7 @@
 import DatePicker from '@/components/DatePicker'
 import { Settings } from '@/types/settings'
 import { DEFAULT_SETTINGS } from '@/utils/constants'
+import { useTranslations } from 'next-intl'
 import { Switch } from 'react-aria-components'
 import SettingsForm from '../../_components/SettingsForm'
 import saveChatSettings from '../_actions/updateChatSettings'
@@ -12,12 +13,13 @@ type Props = {
 }
 
 export default function ChatSettingsForm({ settings }: Props) {
+  const t = useTranslations('Settings.Chat')
   const chatSettings = settings.chat
 
   return (
     <SettingsForm settings={settings} action={saveChatSettings}>
       <section className='group-settings group'>
-        <h2 className='heading-settings'>Privacy</h2>
+        <h2 className='heading-settings'>{t('privacy')}</h2>
         <Switch
           className='switch items-start'
           name='adminOnly'
@@ -25,16 +27,17 @@ export default function ChatSettingsForm({ settings }: Props) {
         >
           <div className='indicator'></div>
           <span className='label'>
-            <span className='label-wrapper'>Restrict to admins</span>
+            <span className='label-wrapper'>{t('adminOnly')}</span>
             <small>
-              Login is always required.
-              <br /> AI has knowledge of all users.
+              {t('adminOnlyDescription1')}
+              <br />
+              {t('adminOnlyDescription2')}
             </small>
           </span>
         </Switch>
       </section>
       <section className='group-settings group'>
-        <h2 className='heading-settings'>Knowledge</h2>
+        <h2 className='heading-settings'>{t('knowledge')}</h2>
         <DatePicker
           label='Start date'
           helperText='Defaults to all time.'

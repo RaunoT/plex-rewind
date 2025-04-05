@@ -76,10 +76,12 @@
       "connection": "Ühendus",
       "general": "Üldine",
       "rewind": "Rewind",
-      "dashboard": "Edetabel"
+      "dashboard": "Edetabel",
+      "chat": "Chat"
     },
     "Connection": {
-      "title": "Ühenduse seaded"
+      "title": "Ühenduse seaded",
+      "aiApiKey": "Gemini API võti"
     },
     "Dashboard": {
       "title": "Edetabeli seaded",
@@ -143,6 +145,11 @@
     "startDate": "Algus",
     "endDate": "Lõppkuupäev",
     "profilePictureAlt": "profiilipilt",
+    "tautulli": "Tautulli",
+    "plex": "Plex",
+    "overseerr": "Overseerr",
+    "chat": "Chat",
+    "url": "URL",
     "time": {
       "zero": "0 min",
       "month": "{count, plural, =1 {# kuu} other {# kuud}}",

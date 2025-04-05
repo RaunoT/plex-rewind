@@ -7,6 +7,7 @@ import {
 } from '@heroicons/react/24/outline'
 import { useChat } from 'ai/react'
 import clsx from 'clsx'
+import { useTranslations } from 'next-intl'
 import { ChangeEvent, FormEvent, useEffect, useRef, useState } from 'react'
 import {
   Button,
@@ -17,17 +18,12 @@ import {
 } from 'react-aria-components'
 import ReactMarkdown from 'react-markdown'
 
-const PREDEFINED_QUESTIONS = [
-  "What's the last thing I watched?",
-  'What show did I watch most last week?',
-  'How many movies have I seen?',
-]
-
 type Props = {
   userId: string
 }
 
 export default function Chat({ userId }: Props) {
+  const t = useTranslations('Chat')
   const [isOpen, setIsOpen] = useState<boolean>(false)
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false)
   const [isAnswerGenerating, setIsAnswerGenerating] = useState<boolean>(false)
@@ -41,6 +37,11 @@ export default function Chat({ userId }: Props) {
       },
       keepLastMessageOnError: true,
     })
+  const PREDEFINED_QUESTIONS = [
+    t('predefinedQuestions.whatDidYouWatch'),
+    t('predefinedQuestions.whatDidYouListenTo'),
+    t('predefinedQuestions.howManyMoviesHaveISeen'),
+  ]
 
   function handlePredefinedQuestion(question: string) {
     handleInputChange({
@@ -86,7 +87,7 @@ export default function Chat({ userId }: Props) {
         className='fixed inset-0 flex justify-center bg-black/75 p-4 sm:p-8 xl:items-center'
         isDismissable
       >
-        <Modal className='h-full w-full overflow-hidden xl:max-w-screen-lg 2xl:h-2/3'>
+        <Modal className='size-full overflow-hidden xl:max-w-screen-lg 2xl:h-2/3'>
           <Dialog className='glass-sheet flex size-full flex-col'>
             {({ close }) => (
               <>
@@ -97,10 +98,7 @@ export default function Chat({ userId }: Props) {
                   <XMarkIcon className='size-6' />
                 </Button>
 
-                <div
-                  ref={messageContainerRef}
-                  className='flex-grow overflow-y-auto'
-                >
+                <div ref={messageContainerRef} className='grow overflow-y-auto'>
                   {messages.map((m, i) => (
                     <div
                       key={m.id}
@@ -128,9 +126,7 @@ export default function Chat({ userId }: Props) {
 
                   {messages.length === 0 && !isSubmitting && !error && (
                     <div className='text-neutral-400'>
-                      <p className='mb-4'>
-                        Ask me something or choose a question below:
-                      </p>
+                      <p className='mb-4'>{`${t('askMeSomething')}:`}</p>
                       <div className='grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3'>
                         {PREDEFINED_QUESTIONS.map((question, index) => (
                           <button
@@ -148,7 +144,7 @@ export default function Chat({ userId }: Props) {
 
                   {error && (
                     <p role='alert' aria-live='polite' className='text-red-500'>
-                      <span className='mb-2 block'>Something went wrong!</span>
+                      <span className='mb-2 block'>{t('error')}</span>
                       <span className='text-xs'>{error.message}</span>
                     </p>
                   )}
@@ -172,7 +168,7 @@ export default function Chat({ userId }: Props) {
                     className='button button--plex'
                     disabled={isSubmitting}
                   >
-                    Ask
+                    {t('ask')}
                   </button>
                 </form>
               </>

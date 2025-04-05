@@ -61,9 +61,9 @@ For those that need it, a simple status page is also available at `/api/status`.
 
 Plex Rewind is also available in the Community Apps store for Unraid. Search for "Plex Rewind" and install it from grtgbln's repository.
 
-### AI Assistant
+### AI Assistant (Chat)
 
-Built with [Vercel AI SDK](https://sdk.vercel.ai) using [Google Gemini 1.5 Flash](https://deepmind.google/technologies/gemini/flash), the most efficient and cost effective model by Google at the time of writing. The reason for using Gemini over GPT is better caching, higher token limits and an available free tier at the time of writing.
+Built with [Vercel AI SDK](https://sdk.vercel.ai) using [Google Gemini 1.5 Flash](https://deepmind.google/technologies/gemini/flash), the most efficient and cost effective model by Google at the time of writing. The reason for using Gemini over other models is better caching, higher token limits and an available free tier at the time of writing.
 
 You will need to set up your own [Google AI API key](https://aistudio.google.com/app/apikey). Once you have it, you can enter it under connection settings and a new chat icon will appear in the top right corner of the page.
 
