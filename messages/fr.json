@@ -168,7 +168,7 @@
       "welcome": "Bienvenue dans votre <rewind>Plex Rewind</rewind>",
       "takeYouThrough": "Nous allons vous faire découvrir vos moments forts",
       "letsGetStarted": "Commençons !",
-      "forPastYear": "pour l'<pastYear>année passée.</pastYear>",
+      "forPastYear": "pour <pastYear>l'année passée.</pastYear>",
       "singleDate": "pendant le <singleDate>{singleDateValue}</singleDate>.",
       "dateRange": "du <startDate>{startDateValue}</startDate> au <endDate>{endDateValue}</endDate>."
     },
@@ -203,7 +203,7 @@
       "noData": "Il n'y a eu aucune <requests>Demande</requests> <emoji>😲</emoji>",
       "noUserData": "Vous n'avez fait aucune <requests>Demande</requests>. Vous pouvez en faire via <requestLink>{requestLinkValue}</requestLink>.",
       "count": "Vous avez fait <count>{countValue}</count> <requests>{countValue, plural, =1 {Demande} other {Demandes}}</requests> de contenu",
-      "countTotal": "Au total, il y {countValue, plural, =1 {a eu} other {a eu}} <count>{countValue, plural, =1 {# Demande} other {# Demandes}}</count> pendant la même période.",
+      "countTotal": "Au total, il y {countValue, plural, =1 {a eu} other {a eu}} <count>{countValue, plural, =1 {# Demande} other {# Demandes}}</count> pendant la même période",
       "breakdown": "Voici la répartition :",
       "movies": "{count, plural, =1 {Film} other {Films}}",
       "shows": "{count, plural, =1 {Série} other {Séries}}"
@@ -219,7 +219,7 @@
       "sorry": "Désolé que vous n'ayez pas trouvé de contenu à regarder ou à écouter cette fois-ci. Bonne chance pour la prochaine fois !",
       "weWillBeBack": "Nous serons de retour la prochaine fois",
       "weWillBeHere": "Dans tous les cas, nous serons là",
-      "insightsAndStats": "avec encore plus d'<insightsAndStats>informations et de statistiques.</insightsAndStats>",
+      "insightsAndStats": "avec encore plus <insightsAndStats>d'informations et de statistiques.</insightsAndStats>",
       "untilThen": "D'ici là, continuez à explorer et à profiter de tout ce que <plex>Plex</plex> a à offrir.",
       "movies": "Films",
       "shows": "Séries",
