@@ -56,7 +56,7 @@ export default function AppProvider({ children, settings, version }: Props) {
     <GlobalContextProvider>
       <main
         className={clsx(
-          'flex h-full min-h-dvh flex-col items-center overflow-x-hidden px-4 py-8 sm:justify-center',
+          'flex h-full min-h-dvh flex-col items-center overflow-x-hidden px-4 pb-8 pt-10 sm:justify-center sm:pt-8',
           { 'justify-center': pathname === '/' || pathname === '/~offline' },
         )}
       >
