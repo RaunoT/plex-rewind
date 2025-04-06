@@ -145,8 +145,7 @@ export default function GeneralSettingsForm({ settings, libraries }: Props) {
                 placeholder='G-XXXXXXXXXX'
               />
               <span className='label'>
-                {/* eslint-disable-next-line react/jsx-no-literals */}
-                <span className='label-wrapper'>Google Analytics ID</span>
+                <span className='label-wrapper'>{t('googleAnalyticsId')}</span>
               </span>
             </label>
           </section>

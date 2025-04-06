@@ -111,7 +111,8 @@
       "outsideAccessDescription": "Access without login.",
       "anonymize": "Anonymize",
       "anonymizeDescription": "Hide usernames for other users.",
-      "analytics": "Analytics"
+      "analytics": "Analytics",
+      "googleAnalyticsId": "Google Analytics ID"
     },
     "Rewind": {
       "title": "Rewind settings",
@@ -251,7 +252,8 @@
     "deleted": "Deleted",
     "statPlays": "{count, plural, =1 {# play} other {# plays}}",
     "statUsers": "{count, plural, =1 {# user} other {# users}}",
-    "statRequests": "{count, plural, =1 {# request} other {# requests}}"
+    "statRequests": "{count, plural, =1 {# request} other {# requests}}",
+    "imdb": "IMDB"
   },
   "Chat": {
     "askMeSomething": "Ask me something or choose a question below",
