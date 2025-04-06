@@ -121,7 +121,16 @@
       "librariesSizeAndCountCard": "Kogumike failisuuruse kaart",
       "librariesSizeAndCountCardDescription": "Lülita välja, kui ei soovi sõltuda Tautulli'st failisuuruste jaoks.",
       "startDateHelperText": "Vaikimisi 365 päeva tagasi.",
-      "endDateHelperText": "Vaikeväärtuseks on täna."
+      "endDateHelperText": "Vaikimisi täna."
+    },
+    "Chat": {
+      "privacy": "Privaatsus",
+      "defaults": "Vaikeväärtused",
+      "adminOnly": "Piira ainult administraatoritele",
+      "adminOnlyDescription1": "Sisselogimine on alati vajalik.",
+      "adminOnlyDescription2": "Chat'il on teadmised kõigi kasutajate kohta.",
+      "startDateHelperText": "Vaikimisi võrdne kogu ajalise perioodiga.",
+      "endDateHelperText": "Vaikimisi täna."
     }
   },
   "LocaleSelect": {
@@ -243,5 +252,15 @@
     "statPlays": "{count, plural, =1 {# mängimine} other {# mängimist}}",
     "statUsers": "{count, plural, =1 {# kasutaja} other {# kasutajat}}",
     "statRequests": "{count, plural, =1 {# tellimus} other {# tellimust}}"
+  },
+  "Chat": {
+    "askMeSomething": "Küsi mult midagi või vali küsimus altpoolt",
+    "predefinedQuestions": {
+      "whatDidIWatch": "Mida ma viimati vaatasin?",
+      "whatShowDidIWatchLastWeek": "Mis saadet ma eelmine nädal enim vaatasin?",
+      "howManyMoviesHaveISeen": "Mitut filmi ma vaadanud olen?"
+    },
+    "error": "Midagi läks valesti!",
+    "ask": "Küsi"
   }
 }

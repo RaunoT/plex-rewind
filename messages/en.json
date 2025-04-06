@@ -125,10 +125,12 @@
     },
     "Chat": {
       "privacy": "Privacy",
-      "knowledge": "Knowledge",
+      "defaults": "Defaults",
       "adminOnly": "Restrict to admins",
       "adminOnlyDescription1": "Login is always required.",
-      "adminOnlyDescription2": "Chat has knowledge of all users."
+      "adminOnlyDescription2": "Chat has knowledge of all users.",
+      "startDateHelperText": "Defaults to all time.",
+      "endDateHelperText": "Defaults to today."
     }
   },
   "LocaleSelect": {
@@ -254,8 +256,8 @@
   "Chat": {
     "askMeSomething": "Ask me something or choose a question below",
     "predefinedQuestions": {
-      "whatDidYouWatch": "What's the last thing I watched?",
-      "whatDidYouListenTo": "What show did I watch most last week?",
+      "whatDidIWatch": "What's the last thing I watched?",
+      "whatShowDidIWatchLastWeek": "What show did I watch most last week?",
       "howManyMoviesHaveISeen": "How many movies have I seen?"
     },
     "error": "Something went wrong!",

@@ -38,8 +38,8 @@ export default function Chat({ userId }: Props) {
       keepLastMessageOnError: true,
     })
   const PREDEFINED_QUESTIONS = [
-    t('predefinedQuestions.whatDidYouWatch'),
-    t('predefinedQuestions.whatDidYouListenTo'),
+    t('predefinedQuestions.whatDidIWatch'),
+    t('predefinedQuestions.whatShowDidIWatchLastWeek'),
     t('predefinedQuestions.howManyMoviesHaveISeen'),
   ]
 

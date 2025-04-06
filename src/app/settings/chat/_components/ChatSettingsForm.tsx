@@ -14,6 +14,7 @@ type Props = {
 
 export default function ChatSettingsForm({ settings }: Props) {
   const t = useTranslations('Settings.Chat')
+  const tCommon = useTranslations('Common')
   const chatSettings = settings.chat
 
   return (
@@ -37,18 +38,18 @@ export default function ChatSettingsForm({ settings }: Props) {
         </Switch>
       </section>
       <section className='group-settings group'>
-        <h2 className='heading-settings'>{t('knowledge')}</h2>
+        <h2 className='heading-settings'>{t('defaults')}</h2>
         <DatePicker
-          label='Start date'
-          helperText='Defaults to all time.'
+          label={tCommon('startDate')}
+          helperText={t('startDateHelperText')}
           name='startDate'
           defaultValue={
             chatSettings.startDate || DEFAULT_SETTINGS.chat.startDate
           }
         />
         <DatePicker
-          label='End date'
-          helperText='Defaults to today.'
+          label={tCommon('endDate')}
+          helperText={t('endDateHelperText')}
           name='endDate'
           defaultValue={chatSettings.endDate || DEFAULT_SETTINGS.chat.endDate}
         />
