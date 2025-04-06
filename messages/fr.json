@@ -202,8 +202,8 @@
     "Requests": {
       "noData": "Il n'y a eu aucune <requests>Demande</requests> <emoji>😲</emoji>",
       "noUserData": "Vous n'avez fait aucune <requests>Demande</requests>. Vous pouvez en faire via <requestLink>{requestLinkValue}</requestLink>.",
-      "count": "Vous avez fait <count>{countValue}</count> <requests>{countValue, plural, =1 {Demande} other {Demandes}}</requests> de contenu",
-      "countTotal": "Au total, il y {countValue, plural, =1 {a eu} other {a eu}} <count>{countValue, plural, =1 {# Demande} other {# Demandes}}</count> pendant la même période",
+      "count": "Vous avez fait <count>{countValue}</count> de contenu <requests>{countValue, plural, =1 {Demande} other {Demandes}}</requests>",
+      "countTotal": "Au total, il y {countValue, plural, =1 {a eu} other {a eu}} <count>{countValue, plural, =1 {# Demande} other {# Demandes}}</count> pendant la même période.",
       "breakdown": "Voici la répartition :",
       "movies": "{count, plural, =1 {Film} other {Films}}",
       "shows": "{count, plural, =1 {Série} other {Séries}}"
