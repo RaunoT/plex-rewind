@@ -181,7 +181,7 @@
       "top": "Im Vergleich zu anderen <users>Nutzern</users>"
     },
     "Audio": {
-      "duration": "Abschließend hast du <duration>{durationValue}</duration> <audio>Audio</audio> gehört",
+      "duration": "Abschließend hast du <duration>{durationValue}</duration> <audio>Audio</audio> gehört.",
       "count": "Du hast <count>{countValue}</count> <tracks>Titel</tracks> insgesamt angehört!",
       "favorite": "Dein Favorit war",
       "noData": "Du hast keine <audio>Audio</audio> von <from>Plex</from> angehört"
