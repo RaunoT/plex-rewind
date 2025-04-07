@@ -10,11 +10,11 @@
   "Dashboard": {
     "noActivity": "Keine Aktivität in dieser Zeitspanne.. 😴",
     "title": "Dashboard",
-    "users": "nutzer",
-    "movies": "filme",
-    "episodes": "episoden",
-    "tracks": "titel",
-    "requests": "anfragen"
+    "users": "Benutzer",
+    "movies": "Filme",
+    "episodes": "Episoden",
+    "tracks": "Titel",
+    "requests": "Anfragen"
   },
   "DashboardFilters": {
     "type": "Typ",
@@ -27,7 +27,7 @@
   },
   "DashboardNavContent": {
     "label": "Dashboard Navigation",
-    "users": "Nutzer"
+    "users": "Benutzer"
   },
   "Error": {
     "title": "Oh oh... da ist etwas schief gelaufen!",
@@ -73,7 +73,7 @@
     "reportAnIssue": "Problem melden",
     "Nav": {
       "label": "Navigation",
-      "connection": "Verbindung",
+      "connection": "Verbindungen",
       "general": "Allgemein",
       "rewind": "Rewind",
       "dashboard": "Dashboard"
@@ -126,7 +126,7 @@
     "label": "Sprache auswählen"
   },
   "UserSelect": {
-    "label": "Nutzer Auswählen"
+    "label": "Benutzer Auswählen"
   },
   "Common": {
     "enabled": "Aktiv",
@@ -135,7 +135,7 @@
     "rating": "Bewertung",
     "duration": "Länge",
     "plays": "Wiedergaben",
-    "users": "Nutzer",
+    "users": "Benutzer",
     "requests": "Anfragen",
     "count": "Anzahl",
     "size": "Größe",
@@ -147,7 +147,7 @@
       "zero": "0 Minuten",
       "month": "{count, plural, =1 {# Monat} other {# Monate}}",
       "week": "{count, plural, =1 {# Woche} other {# Wochen}}",
-      "day": "{count, plural, =1 {# Tage} other {# Tage}}",
+      "day": "{count, plural, =1 {# Tag} other {# Tage}}",
       "hr": "{count, plural, =1 {# Stunde} other {# Stunden}}",
       "min": "{count, plural, =1 {# Minute} other {# Minuten}}",
       "sec": "{count, plural, =1 {# Sekunde} other {# Sekunden}}"
@@ -166,11 +166,11 @@
     },
     "Welcome": {
       "welcome": "Willkommen zu deinem <rewind>Plex Rewind</rewind>",
-      "takeYouThrough": "Lass uns deine Highlights anschauen",
-      "letsGetStarted": "Lass uns loslegen!",
-      "forPastYear": "für das <pastYear>letzte Jahr.</pastYear>",
-      "singleDate": "am <singleDate>{singleDateValue}</singleDate>.",
-      "dateRange": "vom <startDate>{startDateValue}</startDate> bis zum <endDate>{endDateValue}</endDate>."
+      "takeYouThrough": "Lass uns deine Highlights",
+      "letsGetStarted": "Los gehts!",
+      "forPastYear": "für das <pastYear>letzte Jahr</pastYear> anschauen.",
+      "singleDate": "am <singleDate>{singleDateValue}</singleDate> anschauen.",
+      "dateRange": "vom <startDate>{startDateValue}</startDate> bis zum <endDate>{endDateValue}</endDate> anschauen."
     },
     "Total": {
       "duration": "Du hast <total>insgesamt</total> <duration>{durationValue}</duration> auf <plex>Plex</plex> verbracht!",
@@ -183,7 +183,7 @@
     "Audio": {
       "duration": "Abschließend hast du <duration>{durationValue}</duration> <audio>Audio</audio> gehört.",
       "count": "Du hast <count>{countValue}</count> <tracks>Titel</tracks> insgesamt angehört!",
-      "favorite": "Dein Favorit war",
+      "favorite": "Dein Lieblingstitel war",
       "noData": "Du hast keine <audio>Audio</audio> von <from>Plex</from> angehört"
     },
     "Libraries": {
@@ -194,47 +194,47 @@
       "tracks": "{count, plural, =1 {Titel} other {Titel}}"
     },
     "Shows": {
-      "duration": "<library>Serien</library> nahmen <duration>{durationValue}</duration> deiner Zeit auf <plex>Plex</plex> ein.",
+      "duration": "<library>Serien</library> haben <duration>{durationValue}</duration> deiner Zeit auf <plex>Plex</plex> eingenommen.",
       "count": "Du hast insgesamt <count>{countValue}</count> <episodes>Episoden</episodes> geschaut!",
-      "favorite": "Dein Favorit war",
+      "favorite": "Deine Lieblingsserie war",
       "noData": "Du hast keine <shows>Serien</shows> auf <plex>Plex</plex> geschaut <emoji>😥</emoji>"
     },
     "Requests": {
       "noData": "Es gab keine <requests>Anfragen</requests> <emoji>😲</emoji>",
       "noUserData": "Du hast keine <requests>Anfragen</requests> gestellt. Stelle sie via <requestLink>{requestLinkValue}</requestLink>.",
-      "count": "Du hast <count>{countValue}</count> <requests>{countValue, plural, =1 {Anfrage} other {Anfragen}}</requests>",
+      "count": "Du hast <count>{countValue}</count> <requests>{countValue, plural, =1 {Anfrage} other {Anfragen}}</requests> gestellt.",
       "countTotal": "Insgesamt gab es <count>{countValue, plural, =1 {# Anfrage} other {# Anfragen}}</count> in der gleichen Zeit.",
-      "breakdown": "Das ist die Aufteilung:",
+      "breakdown": "Hier ist die Aufteilung:",
       "movies": "{count, plural, =1 {Film} other {Filme}}",
       "shows": "{count, plural, =1 {Serie} other {Serien}}"
     },
     "Movies": {
-      "duration": "<duration>{durationValue}</duration> deiner Zeit hast du damit verbracht <movies>Filme</movies> zu schauen.",
+      "duration": "<duration>{durationValue}</duration> deiner Zeit hast du mit <movies>Filmen</movies> verbracht.",
       "count": "Du hast <count>{countValue}</count> <movies>{countValue, plural, =1 {Film} other {Filme}}</movies> gesehen!",
-      "favorite": "Dein Favorit war",
+      "favorite": "Dein Lieblingsfilm war",
       "noData": "Du hast keine <movies>Filme</movies> auf <plex>Plex</plex> gesehen <emoji>😵‍💫</emoji>"
     },
     "Goodbye": {
       "thanks": "Vielen Dank, dass du dir deinen <plex>Plex Rewind</plex> angeschaut hast, <user>{userValue}!</user>",
       "sorry": "Es tut uns leid, dass du keine Inhalte für dich gefunden hast. Mehr Erfolg beim nächsten Mal!",
-      "weWillBeBack": "Nächstes Mal sind wir wieder",
+      "weWillBeBack": "Beim nächsten Mal sind wir wieder",
       "weWillBeHere": "Wir werden dennoch hier sein",
       "insightsAndStats": "mit umso mehr <insightsAndStats>Einblicken und Statistiken</insightsAndStats> hier.",
-      "untilThen": "Bis dahin, erkunden weiterhin alles, was <plex>Plex</plex> anzubieten hat.",
+      "untilThen": "Bis dahin, erkunde weiterhin alles, was <plex>Plex</plex> anzubieten hat.",
       "movies": "Filme",
       "shows": "Serien",
       "tracks": "Titel",
-      "fromYourFavorite": "Deine Favorigen",
+      "fromYourFavorite": "Deine liebsten",
       "toTheMostEntertaining": "den unterhaltsamsten",
-      "andMemorable": "und unvergesslichsten",
-      "itsBeenAJourneyToRemember": ", es war eine unvergessliche Weg!"
+      "andMemorable": "und unvergessliche",
+      "itsBeenAJourneyToRemember": ", es war ein erinnerungswürdiger Weg!"
     }
   },
   "MediaItem": {
     "request": "Anfrage",
     "deleted": "Gelöscht",
     "statPlays": "{count, plural, =1 {# Wiedergabe} other {# Wiedergaben}}",
-    "statUsers": "Benutzer",
+    "statUsers": "{count, plural, =1 {# Benutzer} other {# Benutzer}}",
     "statRequests": "{count, plural, =1 {# Anfrage} other {# Anfragen}}"
   }
 }
