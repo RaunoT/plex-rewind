@@ -1,0 +1,240 @@
+{
+  "Home": {
+    "setupRequired": "Setup notwendig",
+    "setupRequiredDescription": "Die Anwendung muss von einem Administrator eingerichtet werden.",
+    "loginWithPlex": "Mit Plex einloggen",
+    "rewind": "Rewind starten",
+    "dashboard": "Dashboard",
+    "signOut": "Abmelden"
+  },
+  "Dashboard": {
+    "noActivity": "Keine Aktivität in dieser Zeitspanne.. 😴",
+    "title": "Dashboard",
+    "users": "nutzer",
+    "movies": "filme",
+    "episodes": "episoden",
+    "tracks": "titel",
+    "requests": "anfragen"
+  },
+  "DashboardFilters": {
+    "type": "Typ",
+    "general": "Allgemein",
+    "personal": "Persönlich",
+    "sortByLabel": "Sortieren nach",
+    "sort": "Sortieren",
+    "byDuration": "Nach Länge",
+    "byPlays": "Nach Anzahl der Wiedergaben"
+  },
+  "DashboardNavContent": {
+    "label": "Dashboard Navigation",
+    "users": "Nutzer"
+  },
+  "Error": {
+    "title": "Oh oh... da ist etwas schief gelaufen!",
+    "cta": "Erneut versuchen"
+  },
+  "PlexDeeplink": {
+    "available": "Verfügbar"
+  },
+  "PeriodSelectContent": {
+    "7days": "7 Tage",
+    "today": "Heute",
+    "pastYear": "Letztes Jahr",
+    "allTime": "Gesamte Zeit",
+    "days": "tage",
+    "label": "Zeitraum auswählen"
+  },
+  "NotFound": {
+    "title": "404",
+    "description": "Die angefragte Seite wurde nicht gefunden.",
+    "cta": "Bitte von vorne beginnen."
+  },
+  "AppProvider": {
+    "starsAlt": "Hintergrund Sterne",
+    "updateAvailable": "Aktualisierung verfügbar",
+    "closeSettings": "Einstellungen schließen",
+    "openSettings": "Einstellungen öffnen"
+  },
+  "Offline": {
+    "title": "Du bist offline"
+  },
+  "Settings": {
+    "title": "Einstellungen",
+    "getStarted": "Lass uns loslegen!",
+    "updateAvailable": "Aktualisierung verfügbar",
+    "saved": "Einstellungen gespeichert!",
+    "genericError": "Etwas ging schief!",
+    "save": "Speichern",
+    "apiKey": "API-Schlüssel",
+    "invalidApiKey": "Ungültiger API-Schlüssel!",
+    "unableToConnect": "Verbindung fehlgeschlagen!",
+    "buyMeACoffee": "Kaffee spenden",
+    "becomeASponsor": "Sponsor werden",
+    "reportAnIssue": "Problem melden",
+    "Nav": {
+      "label": "Navigation",
+      "connection": "Verbindung",
+      "general": "Allgemein",
+      "rewind": "Rewind",
+      "dashboard": "Dashboard"
+    },
+    "Connection": {
+      "title": "Verbindungseinstellungen"
+    },
+    "Dashboard": {
+      "title": "Dashboard Einstellungen",
+      "customPeriodError": "benutzerdefinierter Zeitraum muss zwischen > 0 and <= 3000 liegen",
+      "startDateError": "Ungültiges Anfangsdatum",
+      "usersPage": "Users page",
+      "statistics": "Statistiken",
+      "itemStatistics": "Artikelstatistiken",
+      "totalStatistics": "Gesamtstatistik",
+      "sortByPlaysFilter": "Sortieren nach Anzahl der Wiedergaben",
+      "customPeriod": "benutzerdefinierter Zeitraum",
+      "inDays": "In Tagen.",
+      "startDateHelperText": "Für den gesamten Zeitraum genutzt."
+    },
+    "General": {
+      "title": "Allgemeine Einstellungen",
+      "libraries": "Bibliotheken",
+      "activeLibraries": "Aktive Bibliotheken",
+      "noLibrariesMessage1": "Mindestens eine Bibliothek in Plex erstellen um fortzufahren.",
+      "noLibrariesMessage2": "Plex Rewind benötigt mindestens eine Bibliothek um zu funktionieren.",
+      "media": "Medien",
+      "tmdbOnlyPosters": "Nur TMDB Poster",
+      "tmdbOnlyPostersDescription1": "Plex Poster für Filme/Serien ignorieren.",
+      "tmdbOnlyPostersDescription2": "Es wird TMDB verwendet, wenn kein Poster vorhanden ist.",
+      "privacy": "Datenschutz",
+      "outsideAccess": "Zugang von Außen zulassen",
+      "outsideAccessDescription": "Zugang ohne Anmeldung.",
+      "anonymize": "Anonymisieren",
+      "anonymizeDescription": "Nutzernamen vor anderen Nutzern verstecken.",
+      "analytics": "Analytik"
+    },
+    "Rewind": {
+      "title": "Rewind Einstellungen",
+      "endDateMustBeAfterStartDateError": "Enddatum muss nach dem Startdatum sein",
+      "startDateMustBeBeforeEndDateError": "Startdatum muss vor dem Enddatum sein",
+      "cards": "Karten",
+      "librariesSizeAndCountCard": "Bibliothekengröße & Anzahl Karte",
+      "librariesSizeAndCountCardDescription": "Ausschalten, wenn diese Statisiken nicht genutzt werden sollen.",
+      "startDateHelperText": "Standardmäßig die letzten 356 Tage.",
+      "endDateHelperText": "Standardmäßig heute."
+    }
+  },
+  "LocaleSelect": {
+    "label": "Sprache auswählen"
+  },
+  "UserSelect": {
+    "label": "Nutzer Auswählen"
+  },
+  "Common": {
+    "enabled": "Aktiv",
+    "status": "Status",
+    "year": "Jahr",
+    "rating": "Bewertung",
+    "duration": "Länge",
+    "plays": "Wiedergaben",
+    "users": "Nutzer",
+    "requests": "Anfragen",
+    "count": "Anzahl",
+    "size": "Größe",
+    "defaults": "Standard",
+    "startDate": "Startdatum",
+    "endDate": "Enddatum",
+    "profilePictureAlt": "Profilbild",
+    "time": {
+      "zero": "0 Minuten",
+      "month": "{count, plural, =1 {# Monat} other {# Monate}}",
+      "week": "{count, plural, =1 {# Woche} other {# Wochen}}",
+      "day": "{count, plural, =1 {# Tage} other {# Tage}}",
+      "hr": "{count, plural, =1 {# Stunde} other {# Stunden}}",
+      "min": "{count, plural, =1 {# Minute} other {# Minuten}}",
+      "sec": "{count, plural, =1 {# Sekunde} other {# Sekunden}}"
+    },
+    "fileSize": "{value} {unit}"
+  },
+  "DatePicker": {
+    "clear": "Datum löschen"
+  },
+  "Loader": {
+    "loading": "Laden..."
+  },
+  "Rewind": {
+    "Common": {
+      "top": "Hier sind deine <top>Top {count}</top>"
+    },
+    "Welcome": {
+      "welcome": "Willkommen zu deinem <rewind>Plex Rewind</rewind>",
+      "takeYouThrough": "Lass uns deine Highlights anschauen",
+      "letsGetStarted": "Lass uns loslegen!",
+      "forPastYear": "für das <pastYear>letzte Jahr.</pastYear>",
+      "singleDate": "am <singleDate>{singleDateValue}</singleDate>.",
+      "dateRange": "vom <startDate>{startDateValue}</startDate> bis zum <endDate>{endDateValue}</endDate>."
+    },
+    "Total": {
+      "duration": "Du hast <total>insgesamt</total> <duration>{durationValue}</duration> auf <plex>Plex</plex> verbracht!",
+      "percentage": "Das sind <percentage>{percentageValue}</percentage> aller Wiedergaben, welche insgesamt <duration>{durationValue}</duration> betragen.",
+      "noData": "Du hast nichts auf <plex>Plex</plex> abgespielt <emoji>😫</emoji>"
+    },
+    "Users": {
+      "top": "Im Vergleich zu anderen <users>Nutzern</users>"
+    },
+    "Audio": {
+      "duration": "Abschließend hast du <duration>{durationValue}</duration> <audio>Audio</audio> gehört.",
+      "count": "Du hast <count>{countValue}</count> <tracks>Titel</tracks> insgesamt angehört!",
+      "favorite": "Dein Favorit war",
+      "noData": "Du hast keine <audio>Audio</audio> von <from>Plex</from> angehört"
+    },
+    "Libraries": {
+      "filesize": "Wusstest du, dass die <filesize>Dateigröße</filesize> der verfügbaren Inhalte auf <plex>Plex</plex> <size>{sizeValue}</size> ist?",
+      "libraries": "Die jetzige Bibliothek beinhaltet:",
+      "movies": "{count, plural, =1 {Film} other {Filme}}",
+      "episodes": "{count, plural, =1 {Episode} other {Episoden}}",
+      "tracks": "{count, plural, =1 {Titel} other {Titel}}"
+    },
+    "Shows": {
+      "duration": "<library>Serien</library> nahmen <duration>{durationValue}</duration> deiner Zeit auf <plex>Plex</plex> ein.",
+      "count": "Du hast insgesamt <count>{countValue}</count> <episodes>Episoden</episodes> geschaut!",
+      "favorite": "Dein Favorit war",
+      "noData": "Du hast keine <shows>Serien</shows> auf <plex>Plex</plex> geschaut <emoji>😥</emoji>"
+    },
+    "Requests": {
+      "noData": "Es gab keine <requests>Anfragen</requests> <emoji>😲</emoji>",
+      "noUserData": "Du hast keine <requests>Anfragen</requests> gestellt. Stelle sie via <requestLink>{requestLinkValue}</requestLink>.",
+      "count": "Du hast <count>{countValue}</count> <requests>{countValue, plural, =1 {Anfrage} other {Anfragen}}</requests>",
+      "countTotal": "Insgesamt gab es <count>{countValue, plural, =1 {# Anfrage} other {# Anfragen}}</count> in der gleichen Zeit.",
+      "breakdown": "Das ist die Aufteilung:",
+      "movies": "{count, plural, =1 {Film} other {Filme}}",
+      "shows": "{count, plural, =1 {Serie} other {Serien}}"
+    },
+    "Movies": {
+      "duration": "<duration>{durationValue}</duration> deiner Zeit hast du damit verbracht <movies>Filme</movies> zu schauen.",
+      "count": "Du hast <count>{countValue}</count> <movies>{countValue, plural, =1 {Film} other {Filme}}</movies> gesehen!",
+      "favorite": "Dein Favorit war",
+      "noData": "Du hast keine <movies>Filme</movies> auf <plex>Plex</plex> gesehen <emoji>😵‍💫</emoji>"
+    },
+    "Goodbye": {
+      "thanks": "Vielen Dank, dass du dir deinen <plex>Plex Rewind</plex> angeschaut hast, <user>{userValue}!</user>",
+      "sorry": "Es tut uns leid, dass du keine Inhalte für dich gefunden hast. Mehr Erfolg beim nächsten Mal!",
+      "weWillBeBack": "Nächstes Mal sind wir wieder",
+      "weWillBeHere": "Wir werden dennoch hier sein",
+      "insightsAndStats": "mit umso mehr <insightsAndStats>Einblicken und Statistiken</insightsAndStats> hier.",
+      "untilThen": "Bis dahin, erkunden weiterhin alles, was <plex>Plex</plex> anzubieten hat.",
+      "movies": "Filme",
+      "shows": "Serien",
+      "tracks": "Titel",
+      "fromYourFavorite": "Deine Favorigen",
+      "toTheMostEntertaining": "den unterhaltsamsten",
+      "andMemorable": "und unvergesslichsten",
+      "itsBeenAJourneyToRemember": ", es war eine unvergessliche Weg!"
+    }
+  },
+  "MediaItem": {
+    "request": "Anfrage",
+    "deleted": "Gelöscht",
+    "statPlays": "{count, plural, =1 {# Wiedergabe} other {# Wiedergaben}}",
+    "statUsers": "Benutzer",
+    "statRequests": "{count, plural, =1 {# Anfrage} other {# Anfragen}}"
+  }
+}
