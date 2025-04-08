@@ -1,12 +1,14 @@
 'use server'
 
 import {
+  ChatSettings,
   ConnectionSettings,
   DashboardSettings,
   GeneralSettings,
   RewindSettings,
 } from '@/types/settings'
 import getSettings, { SETTINGS_PATH } from '@/utils/getSettings'
+import { saveTautulliHistory } from '@/utils/history'
 import { promises as fs } from 'fs'
 import { getTranslations } from 'next-intl/server'
 import { revalidatePath } from 'next/cache'
@@ -17,6 +19,7 @@ type SettingsTypeMap = {
   dashboard: Partial<DashboardSettings>
   rewind: Partial<RewindSettings>
   general: GeneralSettings
+  chat: ChatSettings
 }
 
 export default async function updateSettings<K extends keyof SettingsTypeMap>(
@@ -37,6 +40,10 @@ export default async function updateSettings<K extends keyof SettingsTypeMap>(
     }
 
     await fs.writeFile(SETTINGS_PATH, JSON.stringify(settings), 'utf8')
+
+    if (key === 'chat') {
+      await saveTautulliHistory(settings)
+    }
 
     revalidatePath('/')
 

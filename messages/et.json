@@ -76,10 +76,12 @@
       "connection": "Ühendus",
       "general": "Üldine",
       "rewind": "Rewind",
-      "dashboard": "Edetabel"
+      "dashboard": "Edetabel",
+      "chat": "Chat"
     },
     "Connection": {
-      "title": "Ühenduse seaded"
+      "title": "Ühenduse seaded",
+      "aiApiKey": "Gemini API võti"
     },
     "Dashboard": {
       "title": "Edetabeli seaded",
@@ -109,7 +111,8 @@
       "outsideAccessDescription": "Ligipääs ilma sisselogimiseta.",
       "anonymize": "Anonümiseeri",
       "anonymizeDescription": "Peida teiste kasutajanimed.",
-      "analytics": "Analüütika"
+      "analytics": "Analüütika",
+      "googleAnalyticsId": "Google Analytics ID"
     },
     "Rewind": {
       "title": "Rewind seaded",
@@ -119,7 +122,16 @@
       "librariesSizeAndCountCard": "Kogumike failisuuruse kaart",
       "librariesSizeAndCountCardDescription": "Lülita välja, kui ei soovi sõltuda Tautulli'st failisuuruste jaoks.",
       "startDateHelperText": "Vaikimisi 365 päeva tagasi.",
-      "endDateHelperText": "Vaikeväärtuseks on täna."
+      "endDateHelperText": "Vaikimisi täna."
+    },
+    "Chat": {
+      "privacy": "Privaatsus",
+      "defaults": "Vaikeväärtused",
+      "adminOnly": "Piira ainult administraatoritele",
+      "adminOnlyDescription1": "Sisselogimine on alati vajalik.",
+      "adminOnlyDescription2": "Chat'il on teadmised kõigi kasutajate kohta.",
+      "startDateHelperText": "Vaikimisi võrdne kogu ajalise perioodiga.",
+      "endDateHelperText": "Vaikimisi täna."
     }
   },
   "LocaleSelect": {
@@ -143,6 +155,11 @@
     "startDate": "Algus",
     "endDate": "Lõppkuupäev",
     "profilePictureAlt": "profiilipilt",
+    "tautulli": "Tautulli",
+    "plex": "Plex",
+    "overseerr": "Overseerr",
+    "chat": "Chat",
+    "url": "URL",
     "time": {
       "zero": "0 min",
       "month": "{count, plural, =1 {# kuu} other {# kuud}}",
@@ -235,6 +252,17 @@
     "deleted": "Kustutatud",
     "statPlays": "{count, plural, =1 {# mängimine} other {# mängimist}}",
     "statUsers": "{count, plural, =1 {# kasutaja} other {# kasutajat}}",
-    "statRequests": "{count, plural, =1 {# tellimus} other {# tellimust}}"
+    "statRequests": "{count, plural, =1 {# tellimus} other {# tellimust}}",
+    "imdb": "IMDB"
+  },
+  "Chat": {
+    "askMeSomething": "Küsi mult midagi või vali küsimus altpoolt",
+    "predefinedQuestions": {
+      "whatDidIWatch": "Mida ma viimati vaatasin?",
+      "whatShowDidIWatchLastWeek": "Mis saadet ma eelmine nädal enim vaatasin?",
+      "howManyMoviesHaveISeen": "Mitut filmi ma vaadanud olen?"
+    },
+    "error": "Midagi läks valesti!",
+    "ask": "Küsi"
   }
 }

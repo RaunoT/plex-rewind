@@ -76,10 +76,12 @@
       "connection": "Connection",
       "general": "General",
       "rewind": "Rewind",
-      "dashboard": "Dashboard"
+      "dashboard": "Dashboard",
+      "chat": "Chat"
     },
     "Connection": {
-      "title": "Connection settings"
+      "title": "Connection settings",
+      "aiApiKey": "Gemini API key"
     },
     "Dashboard": {
       "title": "Dashboard settings",
@@ -109,7 +111,8 @@
       "outsideAccessDescription": "Access without login.",
       "anonymize": "Anonymize",
       "anonymizeDescription": "Hide usernames for other users.",
-      "analytics": "Analytics"
+      "analytics": "Analytics",
+      "googleAnalyticsId": "Google Analytics ID"
     },
     "Rewind": {
       "title": "Rewind settings",
@@ -119,6 +122,15 @@
       "librariesSizeAndCountCard": "Libraries size & count card",
       "librariesSizeAndCountCardDescription": "Disable if you don't want to rely on Tautulli for these stats.",
       "startDateHelperText": "Defaults to 365 days ago.",
+      "endDateHelperText": "Defaults to today."
+    },
+    "Chat": {
+      "privacy": "Privacy",
+      "defaults": "Defaults",
+      "adminOnly": "Restrict to admins",
+      "adminOnlyDescription1": "Login is always required.",
+      "adminOnlyDescription2": "Chat has knowledge of all users.",
+      "startDateHelperText": "Defaults to all time.",
       "endDateHelperText": "Defaults to today."
     }
   },
@@ -143,6 +155,11 @@
     "startDate": "Start date",
     "endDate": "End date",
     "profilePictureAlt": "profile picture",
+    "tautulli": "Tautulli",
+    "plex": "Plex",
+    "overseerr": "Overseerr",
+    "chat": "Chat",
+    "url": "URL",
     "time": {
       "zero": "0 mins",
       "month": "{count, plural, =1 {# month} other {# months}}",
@@ -235,6 +252,17 @@
     "deleted": "Deleted",
     "statPlays": "{count, plural, =1 {# play} other {# plays}}",
     "statUsers": "{count, plural, =1 {# user} other {# users}}",
-    "statRequests": "{count, plural, =1 {# request} other {# requests}}"
+    "statRequests": "{count, plural, =1 {# request} other {# requests}}",
+    "imdb": "IMDB"
+  },
+  "Chat": {
+    "askMeSomething": "Ask me something or choose a question below",
+    "predefinedQuestions": {
+      "whatDidIWatch": "What's the last thing I watched?",
+      "whatShowDidIWatchLastWeek": "What show did I watch most last week?",
+      "howManyMoviesHaveISeen": "How many movies have I seen?"
+    },
+    "error": "Something went wrong!",
+    "ask": "Ask"
   }
 }
