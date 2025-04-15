@@ -2,8 +2,8 @@
 
 import { TautulliItemRow } from '@/types/tautulli'
 import clsx from 'clsx'
-import { motion, useAnimation } from 'framer-motion'
 import { debounce } from 'lodash'
+import { motion, useAnimation } from 'motion/react'
 import { RefObject, useEffect, useRef } from 'react'
 
 type Props = {

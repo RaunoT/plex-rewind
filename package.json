@@ -23,8 +23,8 @@
   "dependencies": {
     "@heroicons/react": "^2.2.0",
     "@internationalized/date": "^3.8.0",
-    "framer-motion": "^11.18.2",
     "lodash": "^4.17.21",
+    "motion": "^12.7.3",
     "next": "15.3.0",
     "next-auth": "^4.24.11",
     "next-intl": "^3.26.5",

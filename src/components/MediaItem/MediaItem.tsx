@@ -15,7 +15,7 @@ import {
   UserIcon,
 } from '@heroicons/react/24/outline'
 import clsx from 'clsx'
-import { motion } from 'framer-motion'
+import { motion } from 'motion/react'
 import { useTranslations } from 'next-intl'
 import Image from 'next/image'
 import { useEffect, useRef, useState } from 'react'

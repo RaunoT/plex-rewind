@@ -3,7 +3,7 @@
 import useTimer from '@/hooks/useTimer'
 import { animateRewindStat, fadeIn } from '@/utils/motion'
 import clsx from 'clsx'
-import { motion } from 'framer-motion'
+import { motion } from 'motion/react'
 import { ReactNode, useEffect, useState } from 'react'
 
 type Props = {
