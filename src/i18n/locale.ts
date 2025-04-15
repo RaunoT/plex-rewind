@@ -9,7 +9,7 @@ import {
 import { cookies } from 'next/headers'
 
 export async function getUserLocale() {
-  const cookieStore = cookies()
+  const cookieStore = await cookies()
 
   return LOCALES.includes(cookieStore.get(LOCALE_COOKIE_NAME)?.value as Locale)
     ? cookieStore.get(LOCALE_COOKIE_NAME)?.value
@@ -17,7 +17,7 @@ export async function getUserLocale() {
 }
 
 export async function setUserLocale(locale: Locale) {
-  const cookieStore = cookies()
+  const cookieStore = await cookies()
 
   cookieStore.set(LOCALE_COOKIE_NAME, locale)
 }

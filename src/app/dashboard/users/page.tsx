@@ -62,11 +62,11 @@ async function getTotalRequests(period: string, settings: Settings) {
   return undefined
 }
 
-type Props = {
-  searchParams: DashboardSearchParams
-}
-
-async function DashboardUsersContent({ searchParams }: Props) {
+async function DashboardUsersContent({
+  periodSp,
+}: {
+  periodSp: DashboardSearchParams['period']
+}) {
   const settings = getSettings()
   const t = await getTranslations()
 
@@ -76,7 +76,7 @@ async function DashboardUsersContent({ searchParams }: Props) {
 
   const session = await getServerSession(authOptions)
   const loggedInUserId = session?.user.id
-  const period = getPeriod(searchParams, settings)
+  const period = getPeriod(periodSp, settings)
   const [usersData, totalDuration, usersCount, totalRequests] =
     await Promise.all([
       getUsersTop(loggedInUserId, period.string, period.daysAgo),
@@ -99,10 +99,16 @@ async function DashboardUsersContent({ searchParams }: Props) {
   )
 }
 
-export default function DashboardUsersPage({ searchParams }: Props) {
+type Props = {
+  searchParams: Promise<DashboardSearchParams>
+}
+
+export default async function DashboardUsersPage({ searchParams }: Props) {
+  const { period } = await searchParams
+
   return (
-    <Suspense fallback={<DashboardLoader />} key={searchParams.period}>
-      <DashboardUsersContent searchParams={searchParams} />
+    <Suspense fallback={<DashboardLoader />} key={period}>
+      <DashboardUsersContent periodSp={period} />
     </Suspense>
   )
 }

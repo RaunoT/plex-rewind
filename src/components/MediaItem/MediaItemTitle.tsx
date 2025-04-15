@@ -10,7 +10,7 @@ type Props = {
   i: number
   data: TautulliItemRow
   type: string
-  parentRef: RefObject<HTMLDivElement>
+  parentRef: RefObject<HTMLDivElement | null>
   loggedInUserId?: string
 }
 

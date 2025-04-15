@@ -14,6 +14,7 @@ import {
 import getSettings from '@/utils/getSettings'
 import getUsersTop from '@/utils/getUsersTop'
 import { getRewindDateRange } from '@/utils/helpers'
+import { Metadata } from 'next'
 import { getServerSession } from 'next-auth'
 import { getTranslations } from 'next-intl/server'
 import { notFound } from 'next/navigation'
@@ -22,16 +23,13 @@ import RewindStories from './_components/RewindStories'
 import UserSelect from './_components/UserSelect'
 import Loading from './loading'
 
-type Props = {
-  searchParams: {
-    userId?: string
-  }
+export const metadata: Metadata = {
+  title: 'Rewind',
 }
 
-async function RewindContent({ searchParams }: Props) {
+async function RewindContent({ userId }: { userId?: string }) {
   const session = await getServerSession(authOptions)
   const settings = getSettings()
-  const queryUserId = searchParams?.userId
 
   let user = session?.user
   let users: TautulliUser[] | undefined
@@ -43,14 +41,14 @@ async function RewindContent({ searchParams }: Props) {
       (user) => user.is_active && user.username !== 'Local',
     )
 
-    if (queryUserId && users) {
-      const queriedUser = users.find((u) => u.user_id == queryUserId)
+    if (userId && users) {
+      const queriedUser = users.find((u) => u.user_id == userId)
 
       if (queriedUser) {
         user = {
           image: queriedUser.thumb,
           name: queriedUser.friendly_name,
-          id: queryUserId,
+          id: userId,
           isAdmin: false,
         }
       }
@@ -129,10 +127,18 @@ async function RewindContent({ searchParams }: Props) {
   )
 }
 
-export default function RewindPage({ searchParams }: Props) {
+type Props = {
+  searchParams: Promise<{
+    userId?: string
+  }>
+}
+
+export default async function RewindPage({ searchParams }: Props) {
+  const { userId } = await searchParams
+
   return (
-    <Suspense fallback={<Loading />} key={searchParams.userId}>
-      <RewindContent searchParams={searchParams} />
+    <Suspense fallback={<Loading />} key={userId}>
+      <RewindContent userId={userId} />
     </Suspense>
   )
 }
