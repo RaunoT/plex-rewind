@@ -68,7 +68,7 @@ export default async function RootLayout({ children }: Props) {
         <PublicEnvScript />
       </head>
       <body className='h-full min-h-dvh bg-black text-white'>
-        <NextIntlClientProvider messages={messages}>
+        <NextIntlClientProvider>
           {settings.general.googleAnalyticsId && (
             <GoogleAnalytics id={settings.general.googleAnalyticsId} />
           )}
