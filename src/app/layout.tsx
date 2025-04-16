@@ -9,7 +9,7 @@ import getSettings from '@/utils/getSettings'
 import getVersion from '@/utils/getVersion'
 import { Metadata, Viewport } from 'next'
 import { NextIntlClientProvider } from 'next-intl'
-import { getLocale, getMessages } from 'next-intl/server'
+import { getLocale } from 'next-intl/server'
 import { PublicEnvScript } from 'next-runtime-env'
 import { ReactNode } from 'react'
 import AppProvider from './_components/AppProvider'
@@ -60,7 +60,6 @@ export default async function RootLayout({ children }: Props) {
   const settings = getSettings()
   const version = await getVersion()
   const locale = await getLocale()
-  const messages = await getMessages()
 
   return (
     <html lang={locale}>

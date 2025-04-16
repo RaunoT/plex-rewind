@@ -1,6 +1,5 @@
 /** @type {import("prettier").Config} */
-/** https://prettier.io/docs/en/configuration.html */
-module.exports = {
+export default {
   singleQuote: true,
   jsxSingleQuote: true,
   semi: false,

@@ -72,6 +72,12 @@ importers:
       '@commitlint/config-conventional':
         specifier: ^19.8.0
         version: 19.8.0
+      '@commitlint/types':
+        specifier: ^19.8.0
+        version: 19.8.0
+      '@eslint/eslintrc':
+        specifier: ^3.3.1
+        version: 3.3.1
       '@saithodev/semantic-release-backmerge':
         specifier: ^4.0.1
         version: 4.0.1(typescript@5.8.3)
@@ -141,9 +147,15 @@ importers:
       eslint-config-prettier:
         specifier: ^10.1.2
         version: 10.1.2(eslint@9.24.0(jiti@2.4.2))
+      eslint-plugin-jsx-a11y:
+        specifier: ^6.10.2
+        version: 6.10.2(eslint@9.24.0(jiti@2.4.2))
       eslint-plugin-react-compiler:
         specifier: 19.0.0-beta-ebf51a3-20250411
         version: 19.0.0-beta-ebf51a3-20250411(eslint@9.24.0(jiti@2.4.2))
+      eslint-plugin-react-hooks:
+        specifier: ^5.2.0
+        version: 5.2.0(eslint@9.24.0(jiti@2.4.2))
       eslint-plugin-tailwindcss:
         specifier: ^3.18.0
         version: 3.18.0(tailwindcss@3.4.17)
@@ -177,6 +189,9 @@ importers:
       stylelint-config-standard:
         specifier: ^38.0.0
         version: 38.0.0(stylelint@16.18.0(typescript@5.8.3))
+      stylelint-config-tailwindcss:
+        specifier: ^1.0.0
+        version: 1.0.0(stylelint@16.18.0(typescript@5.8.3))(tailwindcss@3.4.17)
       tailwindcss:
         specifier: ^3.4.17
         version: 3.4.17
@@ -4809,6 +4824,12 @@ packages:
     engines: {node: '>=18.12.0'}
     peerDependencies:
       stylelint: ^16.18.0
+
+  stylelint-config-tailwindcss@1.0.0:
+    resolution: {integrity: sha512-e6WUBJeLdOZ0sy8FZ1jk5Zy9iNGqqJbrMwnnV0Hpaw/yin6QO3gVv/zvyqSty8Yg6nEB5gqcyJbN387TPhEa7Q==}
+    peerDependencies:
+      stylelint: '>=13.13.1'
+      tailwindcss: '>=2.2.16'
 
   stylelint@16.18.0:
     resolution: {integrity: sha512-OXb68qzesv7J70BSbFwfK3yTVLEVXiQ/ro6wUE4UrSbKCMjLLA02S8Qq3LC01DxKyVjk7z8xh35aB4JzO3/sNA==}
@@ -10756,6 +10777,11 @@ snapshots:
     dependencies:
       stylelint: 16.18.0(typescript@5.8.3)
       stylelint-config-recommended: 16.0.0(stylelint@16.18.0(typescript@5.8.3))
+
+  stylelint-config-tailwindcss@1.0.0(stylelint@16.18.0(typescript@5.8.3))(tailwindcss@3.4.17):
+    dependencies:
+      stylelint: 16.18.0(typescript@5.8.3)
+      tailwindcss: 3.4.17
 
   stylelint@16.18.0(typescript@5.8.3):
     dependencies:
