@@ -45,6 +45,7 @@ export const DEFAULT_SETTINGS: Settings = {
     plexUrl: '',
     overseerrUrl: '',
     overseerrApiKey: '',
+    aiApiKey: '',
     complete: false,
   },
   general: {
@@ -54,6 +55,12 @@ export const DEFAULT_SETTINGS: Settings = {
     isOutsideAccess: false,
     isAnonymized: false,
     complete: false,
+  },
+  chat: {
+    complete: false,
+    adminOnly: true,
+    startDate: '',
+    endDate: '',
   },
   rewind: {
     isActive: true,
@@ -84,6 +91,7 @@ export const DEFAULT_SETTINGS: Settings = {
 export const SETTINGS_PAGES = [
   { href: '/settings/connection', key: 'connection' },
   { href: '/settings/general', key: 'general' },
+  { href: '/settings/chat', key: 'chat' },
   { href: '/settings/rewind', key: 'rewind' },
   { href: '/settings/dashboard', key: 'dashboard' },
 ]

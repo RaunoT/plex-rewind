@@ -11,6 +11,7 @@ const schema = z.object({
   overseerrUrl: z.string().url().optional().or(z.literal('')),
   overseerrApiKey: z.string().optional(),
   plexUrl: z.string().url(),
+  aiApiKey: z.string().optional().or(z.literal('')),
   complete: z.boolean(),
 })
 
@@ -24,6 +25,7 @@ export default async function saveConnectionSettings(
     overseerrUrl: formData.get('overseerrUrl') as string,
     overseerrApiKey: formData.get('overseerrApiKey') as string,
     plexUrl: formData.get('plexUrl') as string,
+    aiApiKey: formData.get('aiApiKey') as string,
     complete: true,
   }
   const t = await getTranslations('Settings')
@@ -107,6 +109,41 @@ export default async function saveConnectionSettings(
         message: `Plex - ${t('unableToConnect')}!`,
         status: 'error',
         fields: data,
+      }
+    }
+
+    // Test Google Gemini
+    if (data.aiApiKey) {
+      try {
+        const res = await fetch(
+          'https://generativelanguage.googleapis.com/v1/models?key=' +
+            data.aiApiKey,
+        )
+
+        if (!res.ok) {
+          console.error(
+            '[CONFIG] - Error testing Google Gemini connection!',
+            res.status,
+            res.statusText,
+          )
+
+          return {
+            message: 'Chat - invalid API key!',
+            status: 'error',
+            fields: data,
+          }
+        }
+      } catch (error) {
+        console.error(
+          '[CONFIG] - Error testing Google Gemini connection!',
+          error,
+        )
+
+        return {
+          message: 'Chat - unable to connect!',
+          status: 'error',
+          fields: data,
+        }
       }
     }
   } catch (error) {

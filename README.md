@@ -7,10 +7,11 @@
 
 A Plex Rewind application inspired by the likes of [Spotify Wrapped](https://www.spotify.com/us/wrapped) and [Tautulli](https://tautulli.com).
 
-Present [Plex](https://plex.tv) user statistics and habits in a beautiful and organized manner - as a web application application powered by [Next.js](https://nextjs.org) and [Tailwind.css](https://tailwindcss.com), using data from [Tautulli](https://tautulli.com), [Overseerr](https://overseerr.dev) and [Plex](https://plex.tv). You can also disable the Rewind functionality and just use it as an easily sharable Dashboard for your Plex users or vice versa!
+Present [Plex](https://plex.tv) user statistics and habits in a beautiful and organized manner - as a web application application using data from [Tautulli](https://tautulli.com), [Overseerr](https://overseerr.dev) and [Plex](https://plex.tv).
 
 ## Features
 
+- 🤖 AI assistant - using a chat interface, you can ask questions about your Plex library, viewing history, and even get recommendations using [Gemini 1.5 Flash](https://deepmind.google/technologies/gemini/flash).
 - 📱 Fully responsive - viewable, usable & enjoyable on desktop, tablet or mobile, courtesy of [Tailwind.css](https://tailwindcss.com).
 - 🔄 Fully dynamic - the data you're viewing will always be the latest available.
 - 📆 Rewind - allows your Plex users view their statistics and habits for a chosen time period.
@@ -60,7 +61,15 @@ For those that need it, a simple status page is also available at `/api/status`.
 
 Plex Rewind is also available in the Community Apps store for Unraid. Search for "Plex Rewind" and install it from grtgbln's repository.
 
-### Updating
+### AI Assistant (Chat)
+
+Built with [Vercel AI SDK](https://sdk.vercel.ai) using [Google Gemini 1.5 Flash](https://deepmind.google/technologies/gemini/flash), the most efficient and cost effective model by Google at the time of writing. The reason for using Gemini over other models is better caching, higher token limits and an available free tier at the time of writing.
+
+You will need to set up your own [Google AI API key](https://aistudio.google.com/app/apikey). Once you have it, you can enter it under connection settings and a new chat icon will appear in the top right corner of the page.
+
+Pricing can be found on [Google's AI pricing page](https://ai.google.dev/pricing).
+
+## Updating
 
 To update, run `docker compose pull` and then `docker compose up -d`.
 
@@ -84,5 +93,7 @@ To learn more about some of the tools used in this project, take a look at the f
 
 - [Tautulli API reference](https://docs.tautulli.com/extending-tautulli/api-reference)
 - [Overseerr API reference](https://api-docs.overseerr.dev)
+- [OpenAI API reference](https://platform.openai.com/docs/overview)
 - [Next.js docs](https://nextjs.org/docs)
 - [NextAuth.js docs](https://next-auth.js.org/getting-started/introduction)
+- [Vercel AI SDK docs](https://sdk.vercel.ai/docs/introduction)

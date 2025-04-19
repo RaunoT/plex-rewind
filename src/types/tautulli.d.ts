@@ -51,4 +51,19 @@ export type TautulliItemRow = {
   shows_plays_count: number
   user_id: number
   rank: number
+  duration: number
+  date: number
+  watched_status: number
+  percent_complete: number
+  transcode_decision: string
+  rating_key: number
+  year: number
+  full_title: string
+  platform: string
+  product: string
+  media_type: string
+  paused_counter: number
+  player: string
+  started: number
+  stopped: number
 }

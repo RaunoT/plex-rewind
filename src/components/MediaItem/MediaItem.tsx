@@ -140,9 +140,8 @@ export default function MediaItem({
                 target='_blank'
                 rel='noopener noreferrer'
                 className='button-card bg-yellow-500 text-black'
-                // eslint-disable-next-line react/jsx-no-literals
               >
-                IMDB
+                {t('imdb')}
               </a>
             )}
           </div>
