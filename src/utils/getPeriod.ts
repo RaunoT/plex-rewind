@@ -3,10 +3,9 @@ import { Settings } from '@/types/settings'
 import { PERIODS } from './constants'
 
 export default function getPeriod(
-  searchParams: DashboardSearchParams,
+  periodSearchParam: DashboardSearchParams['period'],
   settings: Settings,
 ) {
-  const periodSearchParams = searchParams.period
   const customPeriod = parseInt(settings.dashboard.customPeriod)
 
   function getCustomPeriod() {
@@ -44,7 +43,7 @@ export default function getPeriod(
   }
 
   const period =
-    (periodSearchParams && getPeriodFromKey(periodSearchParams)) ||
+    (periodSearchParam && getPeriodFromKey(periodSearchParam)) ||
     getPeriodFromKey('custom')
 
   return period

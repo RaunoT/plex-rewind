@@ -3,7 +3,7 @@
 import useTimer from '@/hooks/useTimer'
 import { animateRewindStat, fadeIn } from '@/utils/motion'
 import clsx from 'clsx'
-import { motion } from 'framer-motion'
+import { motion } from 'motion/react'
 import { ReactNode, useEffect, useState } from 'react'
 
 type Props = {
@@ -61,7 +61,7 @@ export default function RewindStat({
   return isComponentShown ? (
     <motion.div
       className={clsx(
-        'mb-4 text-3xl italic leading-tight last-of-type:mb-0 sm:text-4xl',
+        'mb-4 text-3xl leading-tight italic last-of-type:mb-0 sm:text-4xl',
         className,
       )}
       variants={isAnimated ? animateRewindStat : undefined}
@@ -85,8 +85,8 @@ function Loader() {
       animate='show'
     >
       <span className='size-1 animate-pulse rounded-full bg-white'></span>
-      <span className='size-1 animate-pulse rounded-full bg-white animation-delay-300'></span>
-      <span className='size-1 animate-pulse rounded-full bg-white animation-delay-700'></span>
+      <span className='animation-delay-300 size-1 animate-pulse rounded-full bg-white'></span>
+      <span className='animation-delay-700 size-1 animate-pulse rounded-full bg-white'></span>
     </motion.div>
   )
 }

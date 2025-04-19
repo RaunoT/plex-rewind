@@ -17,7 +17,7 @@ export default function PageTitle({ title, noBack }: Props) {
             className={clsx(
               'link-light ml-5 block w-5 transition-transform hover:translate-x-0.5 aria-disabled:pointer-events-none aria-disabled:opacity-75',
               {
-                'absolute left-0 top-1/2 my-auto -translate-y-1/2': title,
+                'absolute top-1/2 left-0 my-auto -translate-y-1/2': title,
               },
             )}
           >

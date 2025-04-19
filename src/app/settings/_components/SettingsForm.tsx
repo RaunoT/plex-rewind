@@ -1,8 +1,7 @@
 'use client'
 
 import { Settings } from '@/types/settings'
-import { ReactNode } from 'react'
-import { useFormState } from 'react-dom'
+import { ReactNode, useActionState } from 'react'
 import SettingsSaveButton from './SettingsSaveButton'
 
 type Props = {
@@ -25,7 +24,7 @@ export default function SettingsForm({
     status: '',
     fields: settings,
   }
-  const [formState, formAction] = useFormState(action, initialState)
+  const [formState, formAction] = useActionState(action, initialState)
 
   return (
     <form className='glass-sheet pb-6' action={formAction}>
