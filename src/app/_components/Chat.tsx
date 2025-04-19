@@ -93,7 +93,7 @@ export default function Chat({ userId }: Props) {
               <>
                 <Button
                   onPress={close}
-                  className='link-light absolute right-3 top-3 z-10 sm:right-4 sm:top-4'
+                  className='link-light absolute top-3 right-3 z-10 sm:top-4 sm:right-4'
                 >
                   <XMarkIcon className='size-6' />
                 </Button>
@@ -103,15 +103,14 @@ export default function Chat({ userId }: Props) {
                     <div
                       key={m.id}
                       className={clsx(
+                        'chat-reply',
                         i === 0 && 'pr-10 sm:pr-12',
                         m.role === 'user'
-                          ? 'mb-3 mt-5 text-neutral-400 first:mt-0'
+                          ? 'mt-5 mb-3 text-neutral-400 first:mt-0'
                           : 'rounded-xl bg-neutral-600/50 px-4 py-3',
                       )}
                     >
-                      <ReactMarkdown className='chat-reply'>
-                        {m.content}
-                      </ReactMarkdown>
+                      <ReactMarkdown>{m.content}</ReactMarkdown>
                     </div>
                   ))}
 
