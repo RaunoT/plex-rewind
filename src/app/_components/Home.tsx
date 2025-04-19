@@ -71,10 +71,10 @@ export default function Home({ settings, libraries }: Props) {
           <p className='mb-6'>{t('setupRequiredDescription')}</p>
         </>
       ) : (
-        <h1 className='animate-fade-up mb-6 text-[2.5rem] font-bold leading-none animation-delay-300'>
+        <h1 className='animate-fade-up animation-delay-300 mb-6 text-[2.5rem] leading-none font-bold'>
           <Image
             src={plexSvg}
-            className='mb-0.5 mr-3 inline h-9 w-auto'
+            className='mr-3 mb-0.5 inline h-9 w-auto'
             alt='Plex logo'
             priority
           />

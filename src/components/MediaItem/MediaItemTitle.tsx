@@ -129,7 +129,7 @@ export default function MediaItemTitle({
       </span>
       <span className='overflow-hidden'>
         <motion.span
-          className='block whitespace-nowrap font-medium'
+          className='block font-medium whitespace-nowrap'
           animate={controls}
           ref={titleRef}
         >
