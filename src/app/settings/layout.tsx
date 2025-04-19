@@ -32,7 +32,7 @@ export default async function SettingsLayout({ children }: Props) {
   }
 
   return (
-    <div className='mb-auto w-full max-w-screen-sm'>
+    <div className='mb-auto w-full max-w-(--breakpoint-sm)'>
       <PageTitle
         title={missingSetting ? t('getStarted') : t('title')}
         noBack={!!missingSetting}

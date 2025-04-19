@@ -56,11 +56,11 @@ export default function AppProvider({ children, settings, version }: Props) {
     <GlobalContextProvider>
       <main
         className={clsx(
-          'flex h-full min-h-dvh flex-col items-center overflow-x-hidden px-4 pb-8 pt-10 sm:justify-center sm:pt-8',
+          'flex h-full min-h-dvh flex-col items-center overflow-x-hidden px-4 pt-10 pb-8 sm:justify-center sm:pt-8',
           { 'justify-center': pathname === '/' || pathname === '/~offline' },
         )}
       >
-        <div className='fixed inset-0 -z-10 select-none overflow-hidden bg-black after:absolute after:inset-0 after:bg-black/50 after:content-[""]'>
+        <div className='fixed inset-0 -z-10 overflow-hidden bg-black select-none after:absolute after:inset-0 after:bg-black/50 after:content-[""]'>
           <div className='relative h-screen w-screen'>
             <Image
               src={stars}
@@ -74,7 +74,7 @@ export default function AppProvider({ children, settings, version }: Props) {
           <div className='bg-clouds sm:opacity-50' />
         </div>
 
-        <div className='absolute right-3 top-3 flex items-center gap-3 sm:right-4 sm:top-4'>
+        <div className='absolute top-3 right-3 flex items-center gap-3 sm:top-4 sm:right-4'>
           {version.hasUpdate && session?.user.isAdmin && (
             <a
               href='https://github.com/RaunoT/plex-rewind/releases'

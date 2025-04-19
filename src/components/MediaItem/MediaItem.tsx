@@ -15,7 +15,7 @@ import {
   UserIcon,
 } from '@heroicons/react/24/outline'
 import clsx from 'clsx'
-import { motion } from 'framer-motion'
+import { motion } from 'motion/react'
 import { useTranslations } from 'next-intl'
 import Image from 'next/image'
 import { useEffect, useRef, useState } from 'react'
@@ -91,7 +91,7 @@ export default function MediaItem({
       animate='show'
       transition={{ delay: i * 0.075 }}
     >
-      <div className='relative aspect-[2/3] h-full w-20 shrink-0 sm:w-[5.35rem] 2xl:w-24'>
+      <div className='relative aspect-2/3 h-full w-20 shrink-0 sm:w-[5.35rem] 2xl:w-24'>
         <Image
           fill
           className='object-cover object-top'

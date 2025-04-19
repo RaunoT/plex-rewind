@@ -1,6 +1,60 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss';
+
+@layer base {
+  input::-webkit-outer-spin-button,
+  input::-webkit-inner-spin-button {
+    @apply appearance-none;
+  }
+
+  input[type='number'] {
+    appearance: textfield;
+  }
+
+  button,
+  [role='button'] {
+    @apply cursor-pointer;
+  }
+
+  button:disabled,
+  [role='button']:disabled {
+    @apply cursor-default;
+  }
+}
+
+@utility container {
+  @apply mx-auto px-4;
+}
+
+@utility gradient-rewind {
+  @apply bg-gradient-to-r from-blue-500 to-teal-400 bg-clip-text text-transparent;
+}
+
+@utility focus-ring {
+  @apply ring-1 ring-neutral-300 focus-visible:outline-none;
+}
+
+@utility required {
+  &::after {
+    @apply ml-1 align-text-bottom text-red-500 content-['*'];
+  }
+}
+
+@utility skeleton {
+  @apply animate-pulse rounded-full bg-neutral-500 px-4 py-2;
+}
+
+@utility skeleton--large {
+  @apply px-6 py-3;
+}
+
+@utility skeleton--no-animate {
+  @apply animate-none;
+}
+
+/* prettier-ignore */
+@utility animation-delay-* {
+  animation-delay: --value(integer)ms;
+}
 
 @layer components {
   .button {
@@ -10,39 +64,23 @@
       @apply cursor-not-allowed opacity-50;
     }
 
-    &:hover {
+    &:hover:not([disabled]) {
       @apply opacity-75;
     }
 
-    &-sm {
+    &.button-sm {
       @apply rounded-xl px-4 py-1 text-sm;
     }
 
-    &--plex {
+    &.button--plex {
       @apply from-yellow-500 to-yellow-700;
     }
   }
 
   .button-card {
-    @apply block w-fit rounded-sm px-1 font-semibold uppercase leading-normal;
+    @apply block w-fit rounded-sm px-1 leading-normal font-semibold uppercase;
 
     font-size: 0.65rem;
-  }
-
-  .skeleton {
-    @apply animate-pulse rounded-full bg-neutral-500 px-4 py-2;
-
-    &--large {
-      @apply px-6 py-3;
-    }
-
-    &--no-animate {
-      @apply animate-none;
-    }
-  }
-
-  .gradient-rewind {
-    @apply bg-gradient-to-r from-blue-500 to-teal-400 bg-clip-text text-transparent;
   }
 
   .gradient-plex {
@@ -92,27 +130,19 @@
   }
 
   .icon-stat-wrapper {
-    @apply flex items-center gap-1 rounded-full bg-neutral-600/50 py-0.5 pl-2 pr-3 italic sm:gap-2;
+    @apply flex items-center gap-1 rounded-full bg-neutral-600/50 py-0.5 pr-3 pl-2 italic sm:gap-2;
 
     > svg {
       @apply size-5 text-black;
     }
 
-    &--clean {
+    &.icon-stat-wrapper--clean {
       @apply bg-transparent p-0 not-italic;
     }
   }
 
   .glass-sheet {
     @apply rounded-3xl bg-neutral-200/20 p-4 backdrop-blur-lg sm:p-8 2xl:p-10;
-  }
-
-  .focus-ring {
-    @apply ring-1 ring-neutral-300;
-  }
-
-  .required::after {
-    @apply ml-1 align-text-bottom text-red-500 content-['*'];
   }
 
   .input {
@@ -126,7 +156,7 @@
       @apply required;
     }
 
-    &--small {
+    &.input--small {
       @apply px-2 py-1 text-sm;
     }
   }
@@ -150,7 +180,7 @@
       content: '';
     }
 
-    &--small::after {
+    &.select-wrapper--small::after {
       @apply right-7;
     }
   }
@@ -158,7 +188,7 @@
   .label {
     @apply text-xs text-neutral-300 peer-focus-within:text-white sm:w-48 sm:shrink-0 sm:text-right sm:text-sm;
 
-    &--start {
+    &.label--start {
       @apply mt-0.5 self-start;
     }
 
@@ -212,11 +242,28 @@
   }
 
   .heading-settings {
-    @apply border-b border-neutral-500 pb-2 text-right font-medium uppercase text-neutral-500 group-hover:text-white sm:w-48;
+    @apply border-b border-neutral-500 pb-2 text-right font-medium text-neutral-500 uppercase group-hover:text-white sm:w-48;
   }
 
   .group-settings {
     @apply grid gap-4;
+  }
+
+  .select-input,
+  select.input {
+    @apply relative cursor-pointer appearance-none bg-no-repeat pr-14;
+
+    background-image: url('data:image/svg+xml;charset=US-ASCII,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23D4D4D4"><path d="M7 10l5 5 5-5z"/></svg>');
+    background-position: right 12px center;
+    background-size: 24px;
+
+    &.select-input--small,
+    &.input--small {
+      @apply pr-10;
+
+      background-position: right 7px center;
+      background-size: 16px;
+    }
   }
 
   @keyframes move-bg {
@@ -262,9 +309,29 @@
       @apply list-inside list-disc;
     }
   }
-}
 
-@layer utilities {
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+    }
+
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes fade-up {
+    from {
+      transform: translateY(1rem);
+      opacity: 0;
+    }
+
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+
   .animate-fade-up {
     @apply opacity-0;
 
@@ -272,58 +339,11 @@
     animation-duration: 0.5s;
     animation-timing-function: ease;
     animation-fill-mode: forwards;
-
-    @keyframes fade-up {
-      from {
-        transform: translateY(1rem);
-        opacity: 0;
-      }
-
-      to {
-        transform: translateY(0);
-        opacity: 1;
-      }
-    }
   }
 
   .animate-fade-in {
     @apply opacity-0;
 
     animation: fade-in 0.5s ease forwards;
-
-    @keyframes fade-in {
-      from {
-        opacity: 0;
-      }
-
-      to {
-        opacity: 1;
-      }
-    }
-  }
-}
-
-input::-webkit-outer-spin-button,
-input::-webkit-inner-spin-button {
-  @apply appearance-none;
-}
-
-input[type='number'] {
-  appearance: textfield;
-}
-
-.select-input,
-select.input {
-  @apply relative cursor-pointer appearance-none bg-no-repeat pr-14;
-
-  background-image: url('data:image/svg+xml;charset=US-ASCII,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23D4D4D4"><path d="M7 10l5 5 5-5z"/></svg>');
-  background-position: right 12px center;
-  background-size: 24px;
-
-  &--small {
-    @apply pr-10;
-
-    background-position: right 7px center;
-    background-size: 16px;
   }
 }

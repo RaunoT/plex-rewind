@@ -39,7 +39,7 @@ export default function StoryWelcome({
             priority
           />
         </div>
-        <p className='animate-fade-up mb-4 animation-delay-500'>
+        <p className='animate-fade-up animation-delay-500 mb-4'>
           {t.rich('welcome', {
             rewind: (chunks) => (
               <span className='whitespace-nowrap'>
@@ -53,7 +53,7 @@ export default function StoryWelcome({
             <span className='rewind-cat'>{userRewind.user.name}!</span>
           </span>
         </p>
-        <p className='animate-fade-up mb-4 animation-delay-[2000ms]'>
+        <p className='animate-fade-up animation-delay-2000 mb-4'>
           {t('takeYouThrough')}{' '}
           <span className='whitespace-nowrap'>
             {isDefaultPeriod
@@ -81,7 +81,7 @@ export default function StoryWelcome({
                   })}
           </span>
         </p>
-        <p className='animate-fade-up animation-delay-[4000ms]'>
+        <p className='animate-fade-up animation-delay-4000'>
           {t('letsGetStarted')}
         </p>
       </RewindStat>
