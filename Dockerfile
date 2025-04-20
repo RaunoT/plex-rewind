@@ -38,7 +38,7 @@ FROM base AS runner
 WORKDIR /app
 
 # Install openssl in the runner stage
-RUN apt-get update && apt-get install openssl
+RUN apt-get update && apt-get install -y --no-install-recommends openssl
 
 ENV NODE_ENV=production
 ENV BASE_DIR=/app
