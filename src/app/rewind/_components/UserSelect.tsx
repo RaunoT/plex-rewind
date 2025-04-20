@@ -16,8 +16,7 @@ export default function UserSelect({ users, currentUserId }: Props) {
   const selectRef = useRef<HTMLSelectElement>(null)
   const t = useTranslations('UserSelect')
 
-  // eslint-disable-next-line @stylistic/js/padding-line-between-statements
-  const handleChange = (e: ChangeEvent<HTMLSelectElement>) => {
+  function handleChange(e: ChangeEvent<HTMLSelectElement>) {
     const newParams = new URLSearchParams(searchParams.toString())
 
     selectRef.current?.blur()

@@ -13,9 +13,9 @@ const eslintConfig = [
       'prettier',
     ],
     parser: '@typescript-eslint/parser',
-    plugins: ['@typescript-eslint', '@stylistic/js', 'react-compiler'],
+    plugins: ['@typescript-eslint', 'react-compiler', '@stylistic'],
     rules: {
-      '@stylistic/js/padding-line-between-statements': [
+      '@stylistic/padding-line-between-statements': [
         'error',
         { blankLine: 'always', prev: 'return', next: '*' },
         { blankLine: 'always', prev: '*', next: 'return' },
