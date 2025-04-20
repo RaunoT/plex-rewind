@@ -22,9 +22,7 @@ export default function StoryGoodbye({
         <p>
           {t.rich('thanks', {
             plex: (chunks) => <span className='gradient-plex'>{chunks}</span>,
-            user: (chunks) => (
-              <span className='rewind-cat whitespace-nowrap'>{chunks}</span>
-            ),
+            user: (chunks) => <span className='rewind-cat'>{chunks}</span>,
             userValue: userRewind.user.name,
           })}
         </p>
