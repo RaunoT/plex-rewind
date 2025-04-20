@@ -26,6 +26,8 @@ export default function DashboardFilters({
     dashboard: { isPersonal, setIsPersonal, sortBy, setSortBy },
   } = useContext(GlobalContext)
   const t = useTranslations('DashboardFilters')
+
+  // eslint-disable-next-line @stylistic/padding-line-between-statements
   const updateURL = useCallback(() => {
     const params = new URLSearchParams(searchParams.toString())
 
