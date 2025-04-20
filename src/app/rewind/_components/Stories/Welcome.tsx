@@ -48,38 +48,34 @@ export default function StoryWelcome({
               </span>
             ),
           })}
-          <span className='whitespace-nowrap'>
-            {/* eslint-disable-next-line react/jsx-no-literals */}
-            <span className='rewind-cat'>{userRewind.user.name}!</span>
-          </span>
+          {/* eslint-disable-next-line react/jsx-no-literals */}
+          <span className='rewind-cat'>{userRewind.user.name}!</span>
         </p>
         <p className='animate-fade-up animation-delay-2000 mb-4'>
           {t('takeYouThrough')}{' '}
-          <span className='whitespace-nowrap'>
-            {isDefaultPeriod
-              ? t.rich('forPastYear', {
-                  pastYear: (chunks) => (
+          {isDefaultPeriod
+            ? t.rich('forPastYear', {
+                pastYear: (chunks) => (
+                  <span className='rewind-cat'>{chunks}</span>
+                ),
+              })
+            : formattedStartDate === formattedEndDate
+              ? t.rich('singleDate', {
+                  singleDateValue: formattedStartDate,
+                  singleDate: (chunks) => (
                     <span className='rewind-cat'>{chunks}</span>
                   ),
                 })
-              : formattedStartDate === formattedEndDate
-                ? t.rich('singleDate', {
-                    singleDateValue: formattedStartDate,
-                    singleDate: (chunks) => (
-                      <span className='rewind-cat'>{chunks}</span>
-                    ),
-                  })
-                : t.rich('dateRange', {
-                    startDateValue: formattedStartDate,
-                    endDateValue: formattedEndDate,
-                    startDate: (chunks) => (
-                      <span className='rewind-cat'>{chunks}</span>
-                    ),
-                    endDate: (chunks) => (
-                      <span className='rewind-cat'>{chunks}</span>
-                    ),
-                  })}
-          </span>
+              : t.rich('dateRange', {
+                  startDateValue: formattedStartDate,
+                  endDateValue: formattedEndDate,
+                  startDate: (chunks) => (
+                    <span className='rewind-cat'>{chunks}</span>
+                  ),
+                  endDate: (chunks) => (
+                    <span className='rewind-cat'>{chunks}</span>
+                  ),
+                })}
         </p>
         <p className='animate-fade-up animation-delay-4000'>
           {t('letsGetStarted')}
