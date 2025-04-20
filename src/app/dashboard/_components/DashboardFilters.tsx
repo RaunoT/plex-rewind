@@ -2,6 +2,7 @@
 
 import { GlobalContext } from '@/app/_components/GlobalContextProvider'
 import clsx from 'clsx'
+import { useTranslations } from 'next-intl'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { ChangeEvent, useCallback, useContext, useEffect } from 'react'
 
@@ -24,8 +25,9 @@ export default function DashboardFilters({
   const {
     dashboard: { isPersonal, setIsPersonal, sortBy, setSortBy },
   } = useContext(GlobalContext)
+  const t = useTranslations('DashboardFilters')
 
-  // eslint-disable-next-line @stylistic/js/padding-line-between-statements
+  // eslint-disable-next-line @stylistic/padding-line-between-statements
   const updateURL = useCallback(() => {
     const params = new URLSearchParams(searchParams.toString())
 
@@ -41,7 +43,14 @@ export default function DashboardFilters({
       params.delete('sortBy')
     }
 
-    const query = params.toString() ? `?${params.toString()}` : ''
+    const newParamsString = params.toString()
+    const oldParamsString = searchParams.toString()
+
+    if (newParamsString === oldParamsString) {
+      return
+    }
+
+    const query = newParamsString ? `?${newParamsString}` : ''
 
     router.push(`${pathname}${query}`)
   }, [isPersonal, sortBy, pathname, searchParams, router])
@@ -67,38 +76,34 @@ export default function DashboardFilters({
     <div className={clsx('mt-auto flex gap-2 sm:mt-0 sm:gap-3', className)}>
       {personalFilter && (
         <div className='input-wrapper'>
-          <label htmlFor='style-select' className='sr-only'>
-            Style
-          </label>
           <div className='select-wrapper select-wrapper--small'>
             <select
               id='style-select'
               className='input input--small'
               value={isPersonal === 'true' ? 'true' : ''}
               onChange={handlePersonalChange}
+              aria-label={t('type')}
             >
-              <option disabled>Style</option>
-              <option value=''>General</option>
-              <option value='true'>Personal</option>
+              <option disabled>{t('type')}</option>
+              <option value=''>{t('general')}</option>
+              <option value='true'>{t('personal')}</option>
             </select>
           </div>
         </div>
       )}
       {isSortByPlaysActive && (
         <div className='input-wrapper'>
-          <label htmlFor='sort-select' className='sr-only'>
-            Sort by
-          </label>
           <div className='select-wrapper select-wrapper--small'>
             <select
               id='sort-select'
               className='input input--small'
               value={sortBy === 'plays' ? 'plays' : ''}
               onChange={handleSortChange}
+              aria-label={t('sortByLabel')}
             >
-              <option disabled>Sort</option>
-              <option value=''>By duration</option>
-              <option value='plays'>By plays</option>
+              <option disabled>{t('sort')}</option>
+              <option value=''>{t('byDuration')}</option>
+              <option value='plays'>{t('byPlays')}</option>
             </select>
           </div>
         </div>

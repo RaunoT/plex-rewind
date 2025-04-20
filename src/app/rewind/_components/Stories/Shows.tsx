@@ -1,6 +1,7 @@
 import MediaItems from '@/components/MediaItem/MediaItems'
 import { RewindStory } from '@/types/rewind'
 import { PlayCircleIcon } from '@heroicons/react/24/outline'
+import { useTranslations } from 'next-intl'
 import RewindStat from '../RewindStat'
 import StoryWrapper from '../StoryWrapper'
 
@@ -11,29 +12,43 @@ export default function StoryShows({
   resume,
   settings,
 }: RewindStory) {
+  const t = useTranslations('Rewind.Shows')
+
   return (
     <StoryWrapper isPaused={isPaused} pause={pause} resume={resume}>
       {userRewind.shows.duration ? (
         <>
           <RewindStat isPaused={isPaused} scaleDelay={3}>
             <p>
-              <span className='rewind-cat'>
-                TV Shows
-                <PlayCircleIcon />
-              </span>{' '}
-              took up{' '}
-              <span className='rewind-stat'>
-                {userRewind.shows.duration}
-              </span>{' '}
-              of your time on <span className='gradient-plex'>Plex.</span>
+              {t.rich('duration', {
+                library: (chunks) => (
+                  <span className='rewind-cat'>
+                    {chunks}
+                    <PlayCircleIcon />
+                  </span>
+                ),
+                duration: (chunks) => (
+                  <span className='rewind-stat'>{chunks}</span>
+                ),
+                durationValue: userRewind.shows.duration,
+                plex: (chunks) => (
+                  <span className='gradient-plex'>{chunks}</span>
+                ),
+              })}
             </p>
           </RewindStat>
 
           <RewindStat isPaused={isPaused} renderDelay={3} scaleDelay={3}>
             <p>
-              You watched{' '}
-              <span className='rewind-stat'>{userRewind.shows.count}</span>{' '}
-              <span className='rewind-cat'>episodes</span> in total!
+              {t.rich('count', {
+                countValue: userRewind.shows.count,
+                count: (chunks) => (
+                  <span className='rewind-stat'>{chunks}</span>
+                ),
+                episodes: (chunks) => (
+                  <span className='rewind-cat'>{chunks}</span>
+                ),
+              })}
             </p>
           </RewindStat>
 
@@ -44,7 +59,7 @@ export default function StoryShows({
             noScale
           >
             <p className='mb-2'>
-              Your favorite was{' '}
+              {t('favorite')}{' '}
               <span className='rewind-cat'>
                 {userRewind.shows.top[0].title}
               </span>
@@ -64,16 +79,16 @@ export default function StoryShows({
       ) : (
         <RewindStat noScale>
           <p>
-            You didn&apos;t watch any{' '}
-            <span className='rewind-cat'>
-              TV Shows
-              <PlayCircleIcon />
-            </span>{' '}
-            on{' '}
-            <span className='whitespace-nowrap'>
-              <span className='gradient-plex'>Plex</span>{' '}
-              <span className='not-italic'>😥</span>
-            </span>
+            {t.rich('noData', {
+              shows: (chunks) => (
+                <span className='rewind-cat'>
+                  {chunks}
+                  <PlayCircleIcon />
+                </span>
+              ),
+              plex: (chunks) => <span className='gradient-plex'>{chunks}</span>,
+              emoji: (chunks) => <span className='not-italic'>{chunks}</span>,
+            })}
           </p>
         </RewindStat>
       )}

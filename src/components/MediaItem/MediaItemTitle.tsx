@@ -2,15 +2,15 @@
 
 import { TautulliItemRow } from '@/types/tautulli'
 import clsx from 'clsx'
-import { motion, useAnimation } from 'framer-motion'
 import { debounce } from 'lodash'
+import { motion, useAnimation } from 'motion/react'
 import { RefObject, useEffect, useRef } from 'react'
 
 type Props = {
   i: number
   data: TautulliItemRow
   type: string
-  parentRef: RefObject<HTMLDivElement>
+  parentRef: RefObject<HTMLDivElement | null>
   loggedInUserId?: string
 }
 
@@ -87,6 +87,7 @@ export default function MediaItemTitle({
   return (
     <h3 className={clsx('mb-2 flex sm:text-xl', isLoggedIn && 'gradient-plex')}>
       <span className='mr-1.5 inline-flex items-baseline gap-1' ref={numberRef}>
+        {/* eslint-disable-next-line react/jsx-no-literals */}
         <span className={clsx('font-bold', topColors[i] || 'text-white')}>
           #{i + 1}{' '}
         </span>
@@ -128,7 +129,7 @@ export default function MediaItemTitle({
       </span>
       <span className='overflow-hidden'>
         <motion.span
-          className='block whitespace-nowrap font-medium'
+          className='block font-medium whitespace-nowrap'
           animate={controls}
           ref={titleRef}
         >

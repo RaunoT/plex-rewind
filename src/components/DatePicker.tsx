@@ -8,6 +8,7 @@ import {
 } from '@heroicons/react/24/outline'
 import { CalendarDate, parseDate } from '@internationalized/date'
 import clsx from 'clsx'
+import { useTranslations } from 'next-intl'
 import { useState } from 'react'
 import {
   DatePicker as AriaDatePicker,
@@ -47,6 +48,7 @@ export default function DatePicker({
   const [value, setValue] = useState<CalendarDate | null>(
     defaultValue ? parseDate(defaultValue) : null,
   )
+  const t = useTranslations('DatePicker')
 
   return (
     <AriaDatePicker
@@ -61,7 +63,7 @@ export default function DatePicker({
       <Group className='select-wrapper flex cursor-pointer'>
         <div
           className={clsx(
-            'input select-input focus-within:focus-ring !bg-none',
+            'input select-input focus-within:focus-ring bg-none!',
             isOpen && 'focus-ring bg-neutral-400',
           )}
           onClick={() => setIsOpen(true)}
@@ -71,7 +73,7 @@ export default function DatePicker({
               {(segment) => (
                 <DateSegment
                   segment={segment}
-                  className='rounded px-1 uppercase outline-none focus-within:bg-neutral-500 data-[placeholder]:text-neutral-300 data-[type="literal"]:text-neutral-300'
+                  className='rounded-sm px-1 uppercase outline-hidden focus-within:bg-neutral-500 data-placeholder:text-neutral-300 data-[type="literal"]:text-neutral-300'
                 />
               )}
             </DateInput>
@@ -82,7 +84,7 @@ export default function DatePicker({
                 setValue(null)
                 setIsOpen(false)
               }}
-              aria-label='Clear date'
+              aria-label={t('clear')}
               className='link-dark absolute inset-y-0 right-14 my-auto'
             >
               <XCircleIcon className='size-6 text-neutral-300' />
@@ -123,7 +125,7 @@ export default function DatePicker({
                     date={date}
                     className={(state) =>
                       clsx(
-                        'm-px flex size-8 items-center justify-center rounded-full hover:bg-neutral-400 focus:bg-neutral-400 focus:outline-none',
+                        'm-px flex size-8 items-center justify-center rounded-full hover:bg-neutral-400 focus:bg-neutral-400 focus:outline-hidden',
                         state.isOutsideMonth && 'hidden',
                       )
                     }

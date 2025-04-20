@@ -18,7 +18,7 @@ export default function StoryWrapper({
     <>
       {children}
       <button
-        className='absolute -bottom-[2.75rem] right-0 z-10 size-5 sm:-right-4'
+        className='absolute right-0 -bottom-11 z-10 size-5 sm:-right-4'
         onClick={() => (isPaused ? resume() : pause())}
       >
         {isPaused ? <PlayIcon /> : <PauseIcon />}

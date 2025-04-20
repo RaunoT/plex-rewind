@@ -3,12 +3,17 @@ import { DashboardSearchParams } from '@/types/dashboard'
 import { Settings } from '@/types/settings'
 import { fetchOverseerrStats } from '@/utils/fetchOverseerr'
 import fetchTautulli, { getUsersCount } from '@/utils/fetchTautulli'
-import { secondsToTime, timeToSeconds } from '@/utils/formatting'
+import {
+  secondsToTime,
+  timeToSeconds,
+  TranslateFunction,
+} from '@/utils/formatting'
 import getPeriod from '@/utils/getPeriod'
 import getSettings from '@/utils/getSettings'
 import getUsersTop from '@/utils/getUsersTop'
 import { Metadata } from 'next'
 import { getServerSession } from 'next-auth'
+import { getTranslations } from 'next-intl/server'
 import { notFound } from 'next/navigation'
 import { Suspense } from 'react'
 import Dashboard from '../_components/Dashboard'
@@ -18,7 +23,11 @@ export const metadata: Metadata = {
   title: 'Users',
 }
 
-async function getTotalDuration(period: string, settings: Settings) {
+async function getTotalDuration(
+  period: string,
+  settings: Settings,
+  t: TranslateFunction,
+) {
   if (settings.dashboard.activeTotalStatistics.includes('duration')) {
     const totalDuration = await fetchTautulli<{ total_duration: string }>(
       'get_history',
@@ -30,6 +39,7 @@ async function getTotalDuration(period: string, settings: Settings) {
 
     return secondsToTime(
       timeToSeconds(totalDuration?.response?.data?.total_duration || '0'),
+      t,
     )
   }
 
@@ -52,12 +62,13 @@ async function getTotalRequests(period: string, settings: Settings) {
   return undefined
 }
 
-type Props = {
-  searchParams: DashboardSearchParams
-}
-
-async function DashboardUsersContent({ searchParams }: Props) {
+async function DashboardUsersContent({
+  periodSp,
+}: {
+  periodSp: DashboardSearchParams['period']
+}) {
   const settings = getSettings()
+  const t = await getTranslations()
 
   if (!settings.dashboard.isUsersPageActive) {
     return notFound()
@@ -65,11 +76,11 @@ async function DashboardUsersContent({ searchParams }: Props) {
 
   const session = await getServerSession(authOptions)
   const loggedInUserId = session?.user.id
-  const period = getPeriod(searchParams, settings)
+  const period = getPeriod(periodSp, settings)
   const [usersData, totalDuration, usersCount, totalRequests] =
     await Promise.all([
       getUsersTop(loggedInUserId, period.string, period.daysAgo),
-      getTotalDuration(period.string, settings),
+      getTotalDuration(period.string, settings, t),
       getUsersCount(settings),
       getTotalRequests(period.date, settings),
     ])
@@ -88,10 +99,16 @@ async function DashboardUsersContent({ searchParams }: Props) {
   )
 }
 
-export default function DashboardUsersPage({ searchParams }: Props) {
+type Props = {
+  searchParams: Promise<DashboardSearchParams>
+}
+
+export default async function DashboardUsersPage({ searchParams }: Props) {
+  const { period } = await searchParams
+
   return (
-    <Suspense fallback={<DashboardLoader />} key={searchParams.period}>
-      <DashboardUsersContent searchParams={searchParams} />
+    <Suspense fallback={<DashboardLoader />} key={period}>
+      <DashboardUsersContent periodSp={period} />
     </Suspense>
   )
 }

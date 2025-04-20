@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 export default function useTimer(
   time: number,
@@ -7,12 +7,16 @@ export default function useTimer(
   isActive: boolean = true,
 ) {
   const [remaining, setRemaining] = useState<number>(time)
+  const callbackRef = useRef(callback)
 
   useEffect(() => {
-    if (!remaining && isActive && callback) {
-      callback()
+    callbackRef.current = callback
+  }, [callback])
+
+  useEffect(() => {
+    if (!remaining && isActive && callbackRef.current) {
+      callbackRef.current()
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [remaining, isActive])
 
   useEffect(() => {
