@@ -26,8 +26,6 @@ export default function DashboardFilters({
     dashboard: { isPersonal, setIsPersonal, sortBy, setSortBy },
   } = useContext(GlobalContext)
   const t = useTranslations('DashboardFilters')
-
-  // eslint-disable-next-line @stylistic/js/padding-line-between-statements
   const updateURL = useCallback(() => {
     const params = new URLSearchParams(searchParams.toString())
 
@@ -43,7 +41,14 @@ export default function DashboardFilters({
       params.delete('sortBy')
     }
 
-    const query = params.toString() ? `?${params.toString()}` : ''
+    const newParamsString = params.toString()
+    const oldParamsString = searchParams.toString()
+
+    if (newParamsString === oldParamsString) {
+      return
+    }
+
+    const query = newParamsString ? `?${newParamsString}` : ''
 
     router.push(`${pathname}${query}`)
   }, [isPersonal, sortBy, pathname, searchParams, router])
