@@ -11,7 +11,7 @@ import { z } from 'zod'
 import updateSettings from '../../_actions/updateSettings'
 
 export default async function saveDashboardSettings(
-  prevState: SettingsFormInitialState<DashboardSettings>,
+  prevState: SettingsFormInitialState<Partial<DashboardSettings>>,
   formData: FormData,
 ) {
   const t = await getTranslations('Settings.Dashboard')
@@ -40,9 +40,12 @@ export default async function saveDashboardSettings(
         },
       )
       .optional(),
-    startDate: z.string().refine((val) => !isNaN(Date.parse(val)), {
-      message: t('startDateError'),
-    }),
+    startDate: z
+      .string()
+      .refine((val) => !isNaN(Date.parse(val)), {
+        message: t('startDateError'),
+      })
+      .optional(),
     complete: z.boolean(),
   })
   const isActive = formData.get('isActive') === 'on'
