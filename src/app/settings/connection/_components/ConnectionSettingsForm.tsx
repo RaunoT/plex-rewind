@@ -1,7 +1,12 @@
 'use client'
 
-import { Settings } from '@/types/settings'
+import {
+  ConnectionSettings,
+  Settings,
+  SettingsFormInitialState,
+} from '@/types/settings'
 import { useTranslations } from 'next-intl'
+import { useActionState } from 'react'
 import SettingsForm from '../../_components/SettingsForm'
 import saveConnectionSettings from '../_actions/updateConnectionSettings'
 
@@ -9,17 +14,34 @@ type Props = {
   settings: Settings
 }
 
+type ConnectionFormState = SettingsFormInitialState<ConnectionSettings>
+
 export default function ConnectionSettingsForm({ settings }: Props) {
-  const connectionSettings = settings.connection
   const t = useTranslations('Settings')
+  const initialState: ConnectionFormState = {
+    message: '',
+    status: '',
+    fields: {
+      ...settings.connection,
+    },
+  }
+  const [formState, formAction] = useActionState<ConnectionFormState, FormData>(
+    saveConnectionSettings,
+    initialState,
+  )
+  const connectionSettings = {
+    ...settings.connection,
+    ...formState.fields,
+  }
 
   return (
-    <SettingsForm settings={settings} action={saveConnectionSettings}>
+    <SettingsForm formState={formState} formAction={formAction}>
       <section className='group-settings group'>
         {/* eslint-disable-next-line react/jsx-no-literals */}
         <h2 className='heading-settings'>Tautulli</h2>
         <label className='input-wrapper'>
           <input
+            key={`tautulli-url-${connectionSettings.tautulliUrl}`}
             type='url'
             className='input'
             placeholder='http://192.168.1.2:8181'
@@ -34,6 +56,7 @@ export default function ConnectionSettingsForm({ settings }: Props) {
         </label>
         <label className='input-wrapper'>
           <input
+            key={`tautulli-api-key-${connectionSettings.tautulliApiKey}`}
             type='password'
             className='input'
             name='tautulliApiKey'
@@ -50,6 +73,7 @@ export default function ConnectionSettingsForm({ settings }: Props) {
         <h2 className='heading-settings'>Plex</h2>
         <label className='input-wrapper'>
           <input
+            key={`plex-url-${connectionSettings.plexUrl}`}
             type='url'
             className='input'
             placeholder='http://192.168.1.2:32400'
@@ -68,6 +92,7 @@ export default function ConnectionSettingsForm({ settings }: Props) {
         <h2 className='heading-settings'>Overseerr</h2>
         <label className='input-wrapper'>
           <input
+            key={`overseerr-url-${connectionSettings.overseerrUrl}`}
             type='url'
             className='input'
             placeholder='http://192.168.1.2:5055'
@@ -81,6 +106,7 @@ export default function ConnectionSettingsForm({ settings }: Props) {
         </label>
         <label className='input-wrapper'>
           <input
+            key={`overseerr-api-key-${connectionSettings.overseerrApiKey}`}
             type='password'
             className='input'
             name='overseerrApiKey'

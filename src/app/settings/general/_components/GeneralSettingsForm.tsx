@@ -1,11 +1,15 @@
 'use client'
 
-import { Settings } from '@/types/settings'
+import {
+  GeneralSettings,
+  Settings,
+  SettingsFormInitialState,
+} from '@/types/settings'
 import { TautulliLibrary } from '@/types/tautulli'
 import { Bars2Icon } from '@heroicons/react/24/outline'
 import { kebabCase } from 'lodash'
 import { useTranslations } from 'next-intl'
-import { useState } from 'react'
+import { useActionState, useState } from 'react'
 import { Checkbox, CheckboxGroup, Label, Switch } from 'react-aria-components'
 import { ReactSortable } from 'react-sortablejs'
 import SettingsForm from '../../_components/SettingsForm'
@@ -18,18 +22,19 @@ type Props = {
   libraries: TautulliLibrary[]
 }
 
+type GeneralFormState = SettingsFormInitialState<GeneralSettings>
+
 export default function GeneralSettingsForm({ settings, libraries }: Props) {
-  const generalSettings = settings.general
   const [librariesState, setLibrariesState] = useState<SortableLibrary[]>(
     () => {
-      const activeLibraries = generalSettings.activeLibraries
+      const activeLibraries = settings.general.activeLibraries
         .map((libName) =>
           libraries.find((lib) => kebabCase(lib.section_name) === libName),
         )
         .filter((lib): lib is TautulliLibrary => !!lib)
       const inactiveLibraries = libraries.filter(
         (lib) =>
-          !generalSettings.activeLibraries.includes(
+          !settings.general.activeLibraries.includes(
             kebabCase(lib.section_name),
           ),
       )
@@ -41,17 +46,35 @@ export default function GeneralSettingsForm({ settings, libraries }: Props) {
     },
   )
   const t = useTranslations('Settings.General')
+  const initialState: GeneralFormState = {
+    message: '',
+    status: '',
+    fields: {
+      ...settings.general,
+    },
+  }
+  const [formState, formAction] = useActionState<GeneralFormState, FormData>(
+    saveGeneralSettings,
+    initialState,
+  )
+  const generalSettings = {
+    ...settings.general,
+    ...formState.fields,
+  }
 
   return (
     <SettingsForm
-      settings={settings}
-      action={saveGeneralSettings}
+      formState={formState}
+      formAction={formAction}
       hideSubmit={!libraries.length}
     >
       <section className='group-settings group'>
         <h2 className='heading-settings'>{t('libraries')}</h2>
         {libraries.length ? (
           <CheckboxGroup
+            key={`active-libraries-${JSON.stringify(
+              generalSettings.activeLibraries,
+            )}`}
             className='input-wrapper'
             name='activeLibraries'
             defaultValue={generalSettings.activeLibraries}
@@ -65,7 +88,7 @@ export default function GeneralSettingsForm({ settings, libraries }: Props) {
             >
               {librariesState.map((library) => (
                 <Checkbox
-                  key={library.section_id}
+                  key={`library-${library.section_id}`}
                   value={kebabCase(library.section_name)}
                   className='checkbox-wrapper'
                 >
@@ -95,6 +118,7 @@ export default function GeneralSettingsForm({ settings, libraries }: Props) {
           <section className='group-settings group'>
             <h2 className='heading-settings'>{t('media')}</h2>
             <Switch
+              key={`posters-tmdb-${generalSettings.isPostersTmdbOnly}`}
               className='switch items-start'
               name='isPostersTmdbOnly'
               defaultSelected={generalSettings.isPostersTmdbOnly}
@@ -112,6 +136,7 @@ export default function GeneralSettingsForm({ settings, libraries }: Props) {
           <section className='group-settings group'>
             <h2 className='heading-settings'>{t('privacy')}</h2>
             <Switch
+              key={`outside-access-${generalSettings.isOutsideAccess}`}
               className='switch items-start'
               name='isOutsideAccess'
               defaultSelected={generalSettings.isOutsideAccess}
@@ -123,6 +148,7 @@ export default function GeneralSettingsForm({ settings, libraries }: Props) {
               </span>
             </Switch>
             <Switch
+              key={`anonymized-${generalSettings.isAnonymized}`}
               className='switch items-start'
               name='isAnonymized'
               defaultSelected={generalSettings.isAnonymized}
@@ -138,6 +164,7 @@ export default function GeneralSettingsForm({ settings, libraries }: Props) {
             <h2 className='heading-settings'>{t('analytics')}</h2>
             <label className='input-wrapper'>
               <input
+                key={`analytics-id-${generalSettings.googleAnalyticsId}`}
                 type='text'
                 className='input'
                 name='googleAnalyticsId'
