@@ -6,7 +6,7 @@ import { z } from 'zod'
 import updateSettings from '../../_actions/updateSettings'
 
 export default async function saveRewindSettings(
-  prevState: SettingsFormInitialState<RewindSettings>,
+  prevState: SettingsFormInitialState<Partial<RewindSettings>>,
   formData: FormData,
 ) {
   const t = await getTranslations('Settings.Rewind')

@@ -1,31 +1,22 @@
 'use client'
 
-import { Settings } from '@/types/settings'
-import { ReactNode, useActionState } from 'react'
+import { SettingsFormInitialState } from '@/types/settings'
+import { ReactNode } from 'react'
 import SettingsSaveButton from './SettingsSaveButton'
 
 type Props = {
   children: ReactNode
-  settings: Settings
-  // TODO: define action type
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  action: any
+  formState: SettingsFormInitialState<unknown>
+  formAction: (payload: FormData) => void
   hideSubmit?: boolean
 }
 
 export default function SettingsForm({
   children,
-  settings,
-  action,
+  formState,
+  formAction,
   hideSubmit,
 }: Props) {
-  const initialState = {
-    message: '',
-    status: '',
-    fields: settings,
-  }
-  const [formState, formAction] = useActionState(action, initialState)
-
   return (
     <form className='glass-sheet pb-6' action={formAction}>
       <div className='grid gap-4'>
