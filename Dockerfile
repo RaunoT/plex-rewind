@@ -50,13 +50,16 @@ ENV NEXT_TELEMETRY_DISABLED=1
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
+# Create config directory with proper permissions
+RUN mkdir -p /app/config && chown -R nextjs:nodejs /app/config && chmod -R 777 /app/config
+
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/config ./config
 
 # Set the correct permission for prerender cache and config
 RUN mkdir .next
-# Set proper permissions for the config directory
-RUN chown -R nextjs:nodejs /app/config && chmod -R 755 /app/config
+# Ensure the nextjs user has write permissions to the config directory
+RUN chown -R nextjs:nodejs /app/config && chmod -R 777 /app/config
 
 # Automatically leverage output traces to reduce image size
 # https://nextjs.org/docs/advanced-features/output-file-tracing
