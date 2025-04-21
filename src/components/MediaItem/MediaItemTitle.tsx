@@ -2,15 +2,15 @@
 
 import { TautulliItemRow } from '@/types/tautulli'
 import clsx from 'clsx'
-import { motion, useAnimation } from 'framer-motion'
 import { debounce } from 'lodash'
+import { motion, useAnimation } from 'motion/react'
 import { RefObject, useEffect, useRef } from 'react'
 
 type Props = {
   i: number
   data: TautulliItemRow
   type: string
-  parentRef: RefObject<HTMLDivElement>
+  parentRef: RefObject<HTMLDivElement | null>
   loggedInUserId?: string
 }
 
@@ -129,7 +129,7 @@ export default function MediaItemTitle({
       </span>
       <span className='overflow-hidden'>
         <motion.span
-          className='block whitespace-nowrap font-medium'
+          className='block font-medium whitespace-nowrap'
           animate={controls}
           ref={titleRef}
         >

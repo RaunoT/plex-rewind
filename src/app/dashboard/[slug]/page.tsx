@@ -12,17 +12,17 @@ import { Suspense } from 'react'
 import Dashboard from '../_components/Dashboard'
 import DashboardLoader from '../_components/DashboardLoader'
 
-type Props = {
-  params: {
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{
     slug: string
-  }
-  searchParams: DashboardSearchParams
-}
-
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  }>
+}): Promise<Metadata> {
+  const { slug } = await params
   const libraries = await getLibraries()
   const library = libraries.find(
-    (library) => kebabCase(library.section_name) === params.slug,
+    (library) => kebabCase(library.section_name) === slug,
   )
 
   return {
@@ -30,10 +30,20 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
 }
 
-async function DashboardContent({ params, searchParams }: Props) {
+async function DashboardContent({
+  slug,
+  periodSp,
+  personalSp,
+  sortBySp,
+}: {
+  slug: string
+  periodSp: DashboardSearchParams['period']
+  personalSp: DashboardSearchParams['personal']
+  sortBySp: DashboardSearchParams['sortBy']
+}) {
   const libraries = await getLibraries()
   const library = libraries.find(
-    (library) => kebabCase(library.section_name) === params.slug,
+    (library) => kebabCase(library.section_name) === slug,
   )
   const settings = getSettings()
 
@@ -43,10 +53,10 @@ async function DashboardContent({ params, searchParams }: Props) {
 
   const session = await getServerSession(authOptions)
   const loggedInUserId = session?.user.id
-  const period = getPeriod(searchParams, settings)
-  const isPersonal = searchParams.personal === 'true'
+  const period = getPeriod(periodSp, settings)
+  const isPersonal = personalSp === 'true'
   const sortByPlays =
-    searchParams.sortBy === 'plays' && settings.dashboard.isSortByPlaysActive
+    sortBySp === 'plays' && settings.dashboard.isSortByPlaysActive
   const [items, totalDuration, totalSize, serverId] = await Promise.all([
     getItems(
       library,
@@ -86,13 +96,28 @@ async function DashboardContent({ params, searchParams }: Props) {
   )
 }
 
-export default function DashboardPage({ params, searchParams }: Props) {
+type Props = {
+  params: Promise<{
+    slug: string
+  }>
+  searchParams: Promise<DashboardSearchParams>
+}
+
+export default async function DashboardPage({ searchParams, params }: Props) {
+  const { period, personal, sortBy } = await searchParams
+  const { slug } = await params
+
   return (
     <Suspense
       fallback={<DashboardLoader />}
-      key={`period-${searchParams.period}-personal-${searchParams.personal}-sortBy-${searchParams.sortBy}`}
+      key={`period-${period}-personal-${personal}-sortBy-${sortBy}`}
     >
-      <DashboardContent params={params} searchParams={searchParams} />
+      <DashboardContent
+        slug={slug}
+        periodSp={period}
+        personalSp={personal}
+        sortBySp={sortBy}
+      />
     </Suspense>
   )
 }

@@ -1,13 +1,13 @@
-FROM node:22-alpine AS base
+# syntax=docker.io/docker/dockerfile:1
+
+FROM node:22-slim AS base
 
 # Install dependencies only when needed
 FROM base AS deps
-# Check https://github.com/nodejs/docker-node/tree/b4117f9333da4138b03a546ec926ef50a31506c3#nodealpine to understand why libc6-compat might be needed.
-RUN apk add --no-cache libc6-compat
 WORKDIR /app
 
 # Install dependencies based on the preferred package manager
-COPY package.json yarn.lock* package-lock.json* pnpm-lock.yaml* ./
+COPY package.json yarn.lock* package-lock.json* pnpm-lock.yaml* .npmrc* ./
 RUN \
   if [ -f yarn.lock ]; then yarn --frozen-lockfile; \
   elif [ -f package-lock.json ]; then npm ci; \
@@ -38,7 +38,7 @@ FROM base AS runner
 WORKDIR /app
 
 # Install openssl in the runner stage
-RUN apk add --no-cache openssl
+RUN apt-get update && apt-get install -y --no-install-recommends openssl
 
 ENV NODE_ENV=production
 ENV BASE_DIR=/app
@@ -46,6 +46,9 @@ ARG NEXT_PUBLIC_VERSION_TAG
 ENV NEXT_PUBLIC_VERSION_TAG=${NEXT_PUBLIC_VERSION_TAG}
 # Uncomment the following line in case you want to disable telemetry during runtime.
 ENV NEXT_TELEMETRY_DISABLED=1
+
+RUN addgroup --system --gid 1001 nodejs
+RUN adduser --system --uid 1001 nextjs
 
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/config ./config
@@ -55,14 +58,16 @@ RUN mkdir .next
 
 # Automatically leverage output traces to reduce image size
 # https://nextjs.org/docs/advanced-features/output-file-tracing
-COPY --from=builder /app/.next/standalone ./
-COPY --from=builder /app/.next/static ./.next/static
+COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
+COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+
+USER nextjs
 
 EXPOSE 8383
 
 ENV PORT=8383
 
 # server.js is created by next build from the standalone output
-# https://nextjs.org/docs/pages/api-reference/next-config-js/output
-ENV HOSTNAME=0.0.0.0
+# https://nextjs.org/docs/pages/api-reference/config/next-config-js/output
+ENV HOSTNAME="0.0.0.0"
 CMD ["node", "server.js"]

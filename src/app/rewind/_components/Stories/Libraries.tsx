@@ -37,11 +37,12 @@ export default function StoryLibraries({
                 <span className='rewind-stat'>{chunks}</span>
               </span>
             ),
-            sizeValue: bytesToSize(
-              userRewind.libraries_total_size,
-              undefined,
-              translations,
-            ),
+            sizeValue:
+              bytesToSize(
+                userRewind.libraries_total_size,
+                undefined,
+                translations,
+              ) || '',
           })}
         </p>
       </RewindStat>
