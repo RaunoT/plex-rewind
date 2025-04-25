@@ -48,6 +48,7 @@ export const DEFAULT_SETTINGS: Settings = {
     complete: false,
   },
   general: {
+    serverName: '',
     activeLibraries: [],
     isPostersTmdbOnly: false,
     googleAnalyticsId: '',

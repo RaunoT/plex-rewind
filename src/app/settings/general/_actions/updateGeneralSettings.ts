@@ -5,6 +5,7 @@ import { z } from 'zod'
 import updateSettings from '../../_actions/updateSettings'
 
 const schema = z.object({
+  serverName: z.string(),
   activeLibraries: z.array(z.string()),
   isPostersTmdbOnly: z.boolean(),
   googleAnalyticsId: z.string(),
@@ -18,6 +19,7 @@ export default async function saveGeneralSettings(
   formData: FormData,
 ) {
   const data = {
+    serverName: formData.get('serverName') as string,
     activeLibraries: formData.getAll('activeLibraries') as string[],
     isPostersTmdbOnly: formData.get('isPostersTmdbOnly') === 'on',
     googleAnalyticsId: formData.get('googleAnalyticsId') as string,
