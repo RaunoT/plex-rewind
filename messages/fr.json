@@ -96,6 +96,8 @@
     },
     "General": {
       "title": "Paramètres généraux",
+      "config": "Configuration",
+      "serverName": "Nom du serveur",
       "libraries": "Bibliothèques",
       "activeLibraries": "Bibliothèques actives",
       "noLibrariesMessage1": "Veuillez créer une bibliothèque dans Plex pour continuer.",

@@ -96,6 +96,8 @@
     },
     "General": {
       "title": "Allgemeine Einstellungen",
+      "config": "Konfiguration",
+      "serverName": "Servername",
       "libraries": "Bibliotheken",
       "activeLibraries": "Aktive Bibliotheken",
       "noLibrariesMessage1": "Mindestens eine Bibliothek in Plex erstellen um fortzufahren.",

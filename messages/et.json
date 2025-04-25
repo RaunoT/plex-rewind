@@ -96,6 +96,8 @@
     },
     "General": {
       "title": "Üldseaded",
+      "config": "Konfiguratsioon",
+      "serverName": "Server nimi",
       "libraries": "Kogumikud",
       "activeLibraries": "Aktiivsed kogumikud",
       "noLibrariesMessage1": "Palun loo kogumik Plex'is.",
