@@ -2,7 +2,11 @@
 
 import { authOptions } from '@/lib/auth'
 import { Settings } from '@/types/settings'
-import { TautulliLibrary, TautulliUser } from '@/types/tautulli'
+import {
+  TautulliActivity,
+  TautulliLibrary,
+  TautulliUser,
+} from '@/types/tautulli'
 import { kebabCase } from 'lodash'
 import { getServerSession } from 'next-auth'
 import qs from 'qs'
@@ -187,4 +191,10 @@ export async function getUsersCount(settings: Settings) {
   }
 
   return undefined
+}
+
+export async function getActivity() {
+  const res = await fetchTautulli<TautulliActivity>('get_activity')
+
+  return res?.response?.data ?? null
 }

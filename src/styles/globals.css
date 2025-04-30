@@ -29,6 +29,10 @@
   @apply bg-gradient-to-r from-blue-500 to-teal-400 bg-clip-text text-transparent;
 }
 
+@utility gradient-plex {
+  @apply bg-gradient-to-r from-yellow-500 to-yellow-700 bg-clip-text text-transparent;
+}
+
 @utility focus-ring {
   @apply ring-1 ring-neutral-300 focus-visible:outline-none;
 }
@@ -81,10 +85,6 @@
     @apply block w-fit rounded-sm px-1 leading-normal font-semibold uppercase;
 
     font-size: 0.65rem;
-  }
-
-  .gradient-plex {
-    @apply bg-gradient-to-r from-yellow-500 to-yellow-700 bg-clip-text text-transparent;
   }
 
   .rewind-stat {
