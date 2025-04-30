@@ -3,8 +3,9 @@
     "setupRequired": "Setup required",
     "setupRequiredDescription": "This application needs to be configured by an administrator.",
     "loginWithPlex": "Log in with Plex",
-    "rewind": "Start Rewind",
+    "rewind": "Rewind",
     "dashboard": "Dashboard",
+    "activity": "Activity",
     "signOut": "Sign out"
   },
   "Dashboard": {

@@ -117,11 +117,17 @@ export default function Home({ settings, libraries }: Props) {
           </Link>
         )}
 
-        {isLoggedIn && (
-          <button onClick={() => signOut()} className='link mt-16'>
-            {t('signOut')}
-          </button>
-        )}
+        <div className='mt-16'>
+          <Link href='/activity' className='link mb-2 block'>
+            {t('activity')}
+          </Link>
+
+          {isLoggedIn && (
+            <button onClick={() => signOut()} className='link'>
+              {t('signOut')}
+            </button>
+          )}
+        </div>
       </div>
     </div>
   )
