@@ -50,7 +50,7 @@ export default async function updateSettings<K extends keyof SettingsTypeMap>(
 
     if (error instanceof ZodError) {
       return {
-        message: error.errors[0].message,
+        message: error.message,
         status: 'error',
         fields: data,
       }
