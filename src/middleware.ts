@@ -1,6 +1,5 @@
 import { withAuth } from 'next-auth/middleware'
 import { NextResponse } from 'next/server'
-import getSettings from './utils/getSettings'
 import {
   getSettingsPage,
   isInitialSetup,
@@ -10,13 +9,16 @@ import {
 export default withAuth(
   async function middleware(req) {
     const { pathname } = req.nextUrl
-    const settings = getSettings()
-    const res = await fetch(
+    const settingsRes = await fetch(
+      `${process.env.NEXT_PUBLIC_SITE_URL}/api/settings`,
+    )
+    const settings = settingsRes.ok ? await settingsRes.json() : null
+    const missingSettingRes = await fetch(
       `${process.env.NEXT_PUBLIC_SITE_URL}/api/missing-setting`,
     )
 
-    if (res.ok) {
-      const missingSetting = await res.json()
+    if (missingSettingRes.ok && settings) {
+      const missingSetting = await missingSettingRes.json()
 
       if (missingSetting) {
         const isSettingsPage = pathname.includes('settings')
