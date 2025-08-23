@@ -79,6 +79,7 @@ export const DEFAULT_SETTINGS: Settings = {
     startDate: '2010-01-01',
     complete: false,
   },
+  setupComplete: false,
 }
 
 export const SETTINGS_PAGES = [
