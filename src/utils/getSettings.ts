@@ -3,6 +3,7 @@ import fs from 'fs'
 import { merge } from 'lodash'
 import path from 'path'
 import { DEFAULT_SETTINGS } from './constants'
+import { checkRequiredSettings } from './helpers'
 
 export const SETTINGS_PATH = path.join(process.cwd(), 'config/settings.json')
 
@@ -26,6 +27,15 @@ export default function getSettings(): Settings {
   }
 
   const updatedSettings = merge({}, DEFAULT_SETTINGS, settings)
+
+  // Auto-set setupComplete if all required settings are complete
+  if (
+    !updatedSettings.setupComplete &&
+    checkRequiredSettings(updatedSettings) === null
+  ) {
+    updatedSettings.setupComplete = true
+    writeSettings(updatedSettings)
+  }
 
   if (JSON.stringify(updatedSettings) !== JSON.stringify(settings)) {
     writeSettings(updatedSettings)

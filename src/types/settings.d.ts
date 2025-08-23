@@ -61,4 +61,5 @@ export type Settings = {
   general: GeneralSettings
   rewind: RewindSettings
   dashboard: DashboardSettings
+  setupComplete: boolean
 }
