@@ -39,3 +39,14 @@ export function getRewindDateRange(settings: Settings) {
 
   return { startDate, endDate }
 }
+
+export function isInitialSetup(settings: Settings): boolean {
+  // Initial setup is when setupComplete is false, meaning the app has never been fully configured
+  return !settings.setupComplete
+}
+
+export function isPostUpdateMissingSettings(settings: Settings): boolean {
+  // Post-update missing settings is when setupComplete is true (app was configured before)
+  // but there are currently missing required settings (new settings were added)
+  return settings.setupComplete && checkRequiredSettings(settings) !== null
+}

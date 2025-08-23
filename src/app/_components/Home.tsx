@@ -52,7 +52,7 @@ export default function Home({ settings, libraries }: Props) {
 
   return (
     <div className='flex flex-col items-center text-center'>
-      {session?.user.image && (
+      {session?.user?.image && (
         <div className='animate-fade-up relative mb-6 size-24'>
           <Image
             src={session.user.image}

@@ -21,7 +21,8 @@ export default function SettingsNav({ settings }: Props) {
     <nav className='mb-3' aria-label={t('label')}>
       <ul className='nav'>
         {SETTINGS_PAGES.map(({ href, key }) => {
-          const isComplete = settings[key as keyof Settings].complete
+          const isComplete =
+            settings[key as keyof Omit<Settings, 'setupComplete'>].complete
           const isConnectionIncomplete = !settings.connection.complete
           const shouldDisable = isConnectionIncomplete && key !== 'connection'
 
