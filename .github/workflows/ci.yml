@@ -2,6 +2,26 @@ name: CI
 
 on:
   workflow_dispatch:
+    inputs:
+      build_amd64:
+        description: 'Build linux/amd64'
+        type: boolean
+        default: true
+        required: false
+      build_arm64:
+        description: 'Build linux/arm64'
+        type: boolean
+        default: false
+        required: false
+      build_armv7:
+        description: 'Build linux/arm/v7'
+        type: boolean
+        default: false
+        required: false
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   ci:
@@ -13,7 +33,18 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Compute platforms
+        id: platforms
+        run: |
+          platforms=()
+          if [ "${{ inputs.build_amd64 }}" = "true" ]; then platforms+=("linux/amd64"); fi
+          if [ "${{ inputs.build_arm64 }}" = "true" ]; then platforms+=("linux/arm64"); fi
+          if [ "${{ inputs.build_armv7 }}" = "true" ]; then platforms+=("linux/arm/v7"); fi
+          if [ ${#platforms[@]} -eq 0 ]; then platforms=("linux/amd64"); fi
+          echo "platforms=$(IFS=,; echo \"${platforms[*]}\")" >> $GITHUB_OUTPUT
+
       - name: Set up QEMU
+        if: ${{ contains(steps.platforms.outputs.platforms, 'arm64') || contains(steps.platforms.outputs.platforms, '/v7') }}
         uses: docker/setup-qemu-action@v3
 
       - name: Set up Docker Buildx
@@ -31,10 +62,12 @@ jobs:
         with:
           context: .
           push: true
-          platforms: linux/amd64,linux/arm64,linux/arm/v7
+          platforms: ${{ steps.platforms.outputs.platforms }}
           tags: |
             ghcr.io/raunot/plex-rewind:${{ github.sha }}
           build-args: |
             NEXT_PUBLIC_VERSION_TAG=${{ github.sha }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+          provenance: false
+          sbom: false
