@@ -77,4 +77,4 @@ jobs:
         if: env.NEXT_VERSION_TAG
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: npx semantic-release
+        run: pnpm exec semantic-release
