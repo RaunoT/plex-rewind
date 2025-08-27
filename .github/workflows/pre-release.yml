@@ -5,6 +5,10 @@ on:
     branches:
       - develop
 
+concurrency:
+  group: pre-release-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   pre-release:
     name: Publish image and pre-release
@@ -27,12 +31,14 @@ jobs:
           cache: 'pnpm'
 
       - name: Install dependencies
-        run: pnpm install
+        env:
+          HUSKY: 0
+        run: pnpm install --frozen-lockfile --prefer-offline --ignore-scripts
 
       - name: Run Semantic Release dry run
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: npx semantic-release --dry-run
+        run: pnpm exec semantic-release --dry-run
 
       - name: Set up QEMU
         if: env.NEXT_VERSION_TAG
@@ -64,9 +70,11 @@ jobs:
             NEXT_PUBLIC_VERSION_TAG=${{ env.NEXT_VERSION_TAG }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+          provenance: false
+          sbom: false
 
       - name: Run Semantic Release publish
         if: env.NEXT_VERSION_TAG
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: npx semantic-release
+        run: pnpm exec semantic-release

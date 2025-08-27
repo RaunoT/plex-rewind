@@ -2,12 +2,12 @@ import githubSvg from '@/assets/github.svg'
 import { authOptions } from '@/lib/auth'
 import getSettings from '@/utils/getSettings'
 import getVersion from '@/utils/getVersion'
-import { checkRequiredSettings } from '@/utils/helpers'
+import { checkRequiredSettings, isInitialSetup } from '@/utils/helpers'
 import { CurrencyEuroIcon, HeartIcon } from '@heroicons/react/24/outline'
 import { getServerSession } from 'next-auth'
 import { getTranslations } from 'next-intl/server'
 import Image from 'next/image'
-import { notFound } from 'next/navigation'
+import { redirect } from 'next/navigation'
 import { ReactNode } from 'react'
 import PageTitle from '../_components/PageTitle'
 import SettingsNav from './_components/SettingsNav'
@@ -22,13 +22,11 @@ export default async function SettingsLayout({ children }: Props) {
   const version = await getVersion()
   const missingSetting = checkRequiredSettings(settings)
   const t = await getTranslations('Settings')
+  const initialSetupMode = isInitialSetup(settings)
 
-  if (
-    !session?.user.isAdmin &&
-    missingSetting !== 'connection.tautulliUrl' &&
-    missingSetting !== 'connection.tautulliApiKey'
-  ) {
-    return notFound()
+  // Require admin for settings except during initial setup
+  if (!initialSetupMode && !session?.user?.isAdmin) {
+    return redirect('/')
   }
 
   return (

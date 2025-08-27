@@ -71,6 +71,7 @@
     "buyMeACoffee": "Offrez-moi un café",
     "becomeASponsor": "Devenir sponsor",
     "reportAnIssue": "Signaler un problème",
+    "initialSetup": "Enregistrer les paramètres pour continuer",
     "Nav": {
       "label": "Navigation",
       "connection": "Connexion",
