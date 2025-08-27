@@ -41,7 +41,11 @@ export default function DashboardSettingsForm({ settings }: Props) {
   }
 
   return (
-    <SettingsForm formState={formState} formAction={formAction}>
+    <SettingsForm
+      formState={formState}
+      formAction={formAction}
+      isComplete={dashboardSettings.complete}
+    >
       <section className='group-settings group'>
         <h2 className='heading-settings'>{tCommon('status')}</h2>
         <Switch
