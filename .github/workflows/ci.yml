@@ -44,7 +44,7 @@ jobs:
           echo "platforms=$(IFS=,; echo \"${platforms[*]}\")" >> $GITHUB_OUTPUT
 
       - name: Set up QEMU
-        if: ${{ contains(steps.platforms.outputs.platforms, 'arm64') || contains(steps.platforms.outputs.platforms, '/v7') }}
+        if: ${{ contains(steps.platforms.outputs.platforms, 'linux/arm64') || contains(steps.platforms.outputs.platforms, 'linux/arm/v7') }}
         uses: docker/setup-qemu-action@v3
 
       - name: Set up Docker Buildx
