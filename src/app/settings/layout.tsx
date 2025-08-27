@@ -7,7 +7,7 @@ import { CurrencyEuroIcon, HeartIcon } from '@heroicons/react/24/outline'
 import { getServerSession } from 'next-auth'
 import { getTranslations } from 'next-intl/server'
 import Image from 'next/image'
-import { notFound } from 'next/navigation'
+import { redirect } from 'next/navigation'
 import { ReactNode } from 'react'
 import PageTitle from '../_components/PageTitle'
 import SettingsNav from './_components/SettingsNav'
@@ -26,7 +26,7 @@ export default async function SettingsLayout({ children }: Props) {
 
   // Require admin for settings except during initial setup
   if (!initialSetupMode && !session?.user?.isAdmin) {
-    return notFound()
+    return redirect('/')
   }
 
   return (
