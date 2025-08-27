@@ -39,7 +39,11 @@ export default function RewindSettingsForm({ settings }: Props) {
   }
 
   return (
-    <SettingsForm formState={formState} formAction={formAction}>
+    <SettingsForm
+      formState={formState}
+      formAction={formAction}
+      isComplete={rewindSettings.complete}
+    >
       <section className='group-settings group'>
         <h2 className='heading-settings'>{tCommon('status')}</h2>
         <Switch

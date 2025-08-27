@@ -46,7 +46,7 @@ export default async function saveConnectionSettings(
         )
 
         return {
-          message: `Tautulli - ${t('invalidApiKey')}!`,
+          message: `Tautulli - ${t('invalidApiKey')}`,
           status: 'error',
           fields: data,
         }
@@ -55,7 +55,7 @@ export default async function saveConnectionSettings(
       console.error('[CONFIG] - Error testing Tautulli connection!', error)
 
       return {
-        message: `Tautulli - ${t('unableToConnect')}!`,
+        message: `Tautulli - ${t('unableToConnect')}`,
         status: 'error',
         fields: data,
       }
@@ -79,7 +79,7 @@ export default async function saveConnectionSettings(
           )
 
           return {
-            message: `Overseerr - ${t('invalidApiKey')}!`,
+            message: `Overseerr - ${t('invalidApiKey')}`,
             status: 'error',
             fields: data,
           }
@@ -88,7 +88,7 @@ export default async function saveConnectionSettings(
         console.error('[CONFIG] - Error testing Overseerr connection!', error)
 
         return {
-          message: `Overseerr - ${t('unableToConnect')}!`,
+          message: `Overseerr - ${t('unableToConnect')}`,
           status: 'error',
           fields: data,
         }
@@ -104,7 +104,7 @@ export default async function saveConnectionSettings(
       console.error('[CONFIG] - Error testing Plex connection!', error)
 
       return {
-        message: `Plex - ${t('unableToConnect')}!`,
+        message: `Plex - ${t('unableToConnect')}`,
         status: 'error',
         fields: data,
       }

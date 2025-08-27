@@ -30,7 +30,7 @@ jobs:
           node-version: 22
           cache: 'pnpm'
 
-      - name: Install dependencies (no scripts)
+      - name: Install dependencies
         env:
           HUSKY: 0
         run: pnpm install --frozen-lockfile --prefer-offline --ignore-scripts
@@ -56,13 +56,13 @@ jobs:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build and push Docker image (amd64 only)
+      - name: Build and push Docker image
         if: env.NEXT_VERSION_TAG
         uses: docker/build-push-action@v6
         with:
           context: .
           push: true
-          platforms: linux/amd64
+          platforms: linux/amd64,linux/arm64,linux/arm/v7
           tags: |
             ghcr.io/raunot/plex-rewind:develop
             ghcr.io/raunot/plex-rewind:${{ env.NEXT_VERSION_TAG }}
@@ -77,4 +77,4 @@ jobs:
         if: env.NEXT_VERSION_TAG
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: npx semantic-release
+        run: pnpm exec semantic-release

@@ -67,6 +67,7 @@ export default function GeneralSettingsForm({ settings, libraries }: Props) {
       formState={formState}
       formAction={formAction}
       hideSubmit={!libraries.length}
+      isComplete={generalSettings.complete}
     >
       <section className='group-settings group'>
         <h2 className='heading-settings'>{t('libraries')}</h2>

@@ -133,7 +133,7 @@ async function filterBySharedLibraries(
   settings: Settings,
   libraries: TautulliLibrary[],
 ): Promise<TautulliLibrary[]> {
-  if (settings.general.isOutsideAccess) {
+  if (settings.general.isOutsideAccess || !settings.setupComplete) {
     return libraries
   }
 

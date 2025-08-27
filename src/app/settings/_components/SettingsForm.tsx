@@ -1,6 +1,7 @@
 'use client'
 
 import { SettingsFormInitialState } from '@/types/settings'
+import { useTranslations } from 'next-intl'
 import { ReactNode } from 'react'
 import SettingsSaveButton from './SettingsSaveButton'
 
@@ -9,6 +10,7 @@ type Props = {
   formState: SettingsFormInitialState<unknown>
   formAction: (payload: FormData) => void
   hideSubmit?: boolean
+  isComplete?: boolean
 }
 
 export default function SettingsForm({
@@ -16,24 +18,33 @@ export default function SettingsForm({
   formState,
   formAction,
   hideSubmit,
+  isComplete = true,
 }: Props) {
+  const t = useTranslations('Settings')
+
   return (
     <form className='glass-sheet pb-6' action={formAction}>
       <div className='grid gap-4'>
         {children}
         {!hideSubmit && (
           <div className='flex flex-col items-center justify-end gap-2 sm:flex-row sm:gap-4'>
-            <p
-              aria-live='polite'
-              role='status'
-              className={
-                formState.status === 'success'
-                  ? 'text-green-600'
-                  : 'text-red-500'
-              }
-            >
-              {formState.message}
-            </p>
+            {formState.message ? (
+              <p
+                aria-live='polite'
+                role='status'
+                className={
+                  formState.status === 'success'
+                    ? 'text-green-600'
+                    : 'text-red-500'
+                }
+              >
+                {formState.message}
+              </p>
+            ) : (
+              !isComplete && (
+                <p className='text-neutral-400'>{t('initialSetup')}</p>
+              )
+            )}
 
             <SettingsSaveButton />
           </div>

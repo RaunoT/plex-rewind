@@ -1,50 +1,62 @@
 import { withAuth } from 'next-auth/middleware'
 import { NextResponse } from 'next/server'
-import { getSettingsPage } from './utils/helpers'
+import {
+  getSettingsPage,
+  isInitialSetup,
+  isPostUpdateMissingSettings,
+} from './utils/helpers'
 
 export default withAuth(
   async function middleware(req) {
     const { pathname } = req.nextUrl
-    const res = await fetch(
+    const settingsRes = await fetch(
+      `${process.env.NEXT_PUBLIC_SITE_URL}/api/settings`,
+    )
+    const settings = settingsRes.ok ? await settingsRes.json() : null
+    const missingSettingRes = await fetch(
       `${process.env.NEXT_PUBLIC_SITE_URL}/api/missing-setting`,
     )
 
-    if (res.ok) {
-      const missingSetting = await res.json()
+    if (missingSettingRes.ok && settings) {
+      const missingSetting = await missingSettingRes.json()
 
       if (missingSetting) {
-        if (
-          req.nextauth?.token?.isAdmin ||
-          missingSetting === 'connection.tautulliUrl' ||
-          missingSetting === 'connection.tautulliApiKey'
-        ) {
-          let redirectPage = getSettingsPage(missingSetting)
+        const isSettingsPage = pathname.includes('settings')
+        const isAdmin = req.nextauth?.token?.isAdmin
+        const isInitialSetupMode = isInitialSetup(settings)
+        const isPostUpdateMode = isPostUpdateMissingSettings(settings)
 
-          if (missingSetting.startsWith('connection')) {
-            redirectPage = getSettingsPage('connection')
+        // During initial setup, allow access to settings pages for any user (including unauthenticated)
+        if (isInitialSetupMode && isSettingsPage) {
+          return NextResponse.next()
+        }
 
-            if (pathname !== redirectPage && redirectPage) {
-              return NextResponse.redirect(
-                new URL(redirectPage, process.env.NEXT_PUBLIC_SITE_URL),
-              )
-            }
-          } else {
-            if (
-              redirectPage &&
-              pathname !== redirectPage &&
-              !pathname.includes('settings')
-            ) {
-              return NextResponse.redirect(
-                new URL(redirectPage, process.env.NEXT_PUBLIC_SITE_URL),
-              )
-            }
-          }
-        } else {
+        // For post-update missing settings, only allow admin access
+        if (isPostUpdateMode && !isAdmin) {
           if (pathname !== '/') {
             return NextResponse.redirect(
               new URL('/', process.env.NEXT_PUBLIC_SITE_URL),
             )
           }
+
+          return NextResponse.next()
+        }
+
+        // Handle redirects for missing settings
+        let redirectPage = getSettingsPage(missingSetting)
+
+        if (missingSetting.startsWith('connection')) {
+          redirectPage = getSettingsPage('connection')
+        }
+
+        if (
+          redirectPage &&
+          pathname !== redirectPage &&
+          !pathname.includes('settings')
+        ) {
+          return NextResponse.redirect(
+            new URL(redirectPage, process.env.NEXT_PUBLIC_SITE_URL),
+          )
         }
       }
     }

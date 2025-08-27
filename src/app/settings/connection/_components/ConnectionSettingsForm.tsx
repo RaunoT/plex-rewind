@@ -35,7 +35,11 @@ export default function ConnectionSettingsForm({ settings }: Props) {
   }
 
   return (
-    <SettingsForm formState={formState} formAction={formAction}>
+    <SettingsForm
+      formState={formState}
+      formAction={formAction}
+      isComplete={connectionSettings.complete}
+    >
       <section className='group-settings group'>
         {/* eslint-disable-next-line react/jsx-no-literals */}
         <h2 className='heading-settings'>Tautulli</h2>
