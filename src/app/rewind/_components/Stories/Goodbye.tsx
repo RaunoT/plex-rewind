@@ -13,6 +13,7 @@ export default function StoryGoodbye({
   isPaused,
   pause,
   resume,
+  settings,
 }: RewindStory) {
   const t = useTranslations('Rewind.Goodbye')
 
@@ -21,6 +22,7 @@ export default function StoryGoodbye({
       <RewindStat scaleDelay={2} isPaused={isPaused}>
         <p>
           {t.rich('thanks', {
+            serverName: settings.general.serverName || 'Plex',
             plex: (chunks) => <span className='gradient-plex'>{chunks}</span>,
             user: (chunks) => <span className='rewind-cat'>{chunks}</span>,
             userValue: userRewind.user.name,
@@ -78,6 +80,7 @@ export default function StoryGoodbye({
       <RewindStat renderDelay={9} loaderDelay={6} isPaused={isPaused} noScale>
         <p>
           {t.rich('untilThen', {
+            serverName: settings.general.serverName || 'Plex',
             plex: (chunks) => <span className='gradient-plex'>{chunks}</span>,
           })}
         </p>

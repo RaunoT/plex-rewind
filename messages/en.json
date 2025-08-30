@@ -175,17 +175,17 @@
       "top": "Here's your <top>Top {count}</top>"
     },
     "Welcome": {
-      "welcome": "Welcome to your <rewind>Plex Rewind</rewind>",
+      "welcome": "Welcome to your <rewind>{serverName} Rewind</rewind>",
       "takeYouThrough": "We'll take you through your highlights",
       "letsGetStarted": "Let's get started!",
       "forPastYear": "for the <pastYear>past year.</pastYear>",
       "singleDate": "during <singleDate>{singleDateValue}</singleDate>.",
-      "dateRange": "from <startDate>{startDateValue}</startDate> to <endDate>{endDateValue}</endDate>."
+      "dateRange": "from <startDate>{startDateValue}</startDate> to <endDate>{endDateValue}</endDate>"
     },
     "Total": {
-      "duration": "You spent a <total>Total</total> of <duration>{durationValue}</duration> on <plex>Plex!</plex>",
+      "duration": "You spent a <total>Total</total> of <duration>{durationValue}</duration> on <plex>{serverName}!</plex>",
       "percentage": "That's <percentage>{percentageValue}</percentage> of all plays, which totalled <duration>{durationValue}</duration> across all users.",
-      "noData": "You haven't played anything on <plex>Plex</plex> <emoji>😫</emoji>"
+      "noData": "You haven't played anything on <plex>{serverName}</plex> <emoji>😫</emoji>"
     },
     "Users": {
       "top": "Here's how you compared to other <users>Users</users>"
@@ -197,17 +197,17 @@
       "noData": "You didn't listen to any <audio>Audio</audio> from <from>Plex</from>"
     },
     "Libraries": {
-      "filesize": "Did you know the <filesize>Filesize</filesize> of all the available content on <plex>Plex</plex> is <size>{sizeValue}!</size>",
+      "filesize": "Did you know the <filesize>Filesize</filesize> of all the available content on <plex>{serverName}</plex> is <size>{sizeValue}!</size>",
       "libraries": "The current library consists of:",
       "movies": "{count, plural, =1 {Movie} other {Movies}}",
       "episodes": "{count, plural, =1 {Episode} other {Episodes}}",
       "tracks": "{count, plural, =1 {Track} other {Tracks}}"
     },
     "Shows": {
-      "duration": "<library>TV Shows</library> took up <duration>{durationValue}</duration> of your time on <plex>Plex.</plex>",
+      "duration": "<library>TV Shows</library> took up <duration>{durationValue}</duration> of your time on <plex>{serverName}.</plex>",
       "count": "You watched <count>{countValue}</count> <episodes>episodes</episodes> in total!",
       "favorite": "Your favorite was",
-      "noData": "You didn't watch any <shows>TV Shows</shows> on <plex>Plex</plex> <emoji>😥</emoji>"
+      "noData": "You didn't watch any <shows>TV Shows</shows> on <plex>{serverName}</plex> <emoji>😥</emoji>"
     },
     "Requests": {
       "noData": "There weren't any <requests>Requests</requests> <emoji>😲</emoji>",
@@ -222,15 +222,15 @@
       "duration": "<duration>{durationValue}</duration> of your time was spent watching <movies>Movies</movies>",
       "count": "You watched <count>{countValue}</count> <movies>{countValue, plural, =1 {movie} other {movies}}</movies> in total!",
       "favorite": "Your favorite was",
-      "noData": "You didn't watch any <movies>Movies</movies> on <plex>Plex</plex> <emoji>😵‍💫</emoji>"
+      "noData": "You didn't watch any <movies>Movies</movies> on <plex>{serverName}</plex> <emoji>😵‍💫</emoji>"
     },
     "Goodbye": {
-      "thanks": "Thanks for tuning into your <plex>Plex Rewind</plex>, <user>{userValue}!</user>",
+      "thanks": "Thanks for tuning into your <plex>{serverName} Rewind</plex>, <user>{userValue}!</user>",
       "sorry": "Sorry you couldn't find any content to watch or listen to this time around. Better luck next time!",
       "weWillBeBack": "We'll be back next time",
       "weWillBeHere": "Eitherway, we'll be here",
       "insightsAndStats": "with even more <insightsAndStats>insights and stats.</insightsAndStats>",
-      "untilThen": "Until then, keep exploring and enjoying all that <plex>Plex</plex> has to offer.",
+      "untilThen": "Until then, keep exploring and enjoying all that <plex>{serverName}</plex> has to offer.",
       "movies": "Movies",
       "shows": "Shows",
       "tracks": "Tracks",

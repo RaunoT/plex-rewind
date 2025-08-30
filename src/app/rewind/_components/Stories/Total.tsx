@@ -9,6 +9,7 @@ export default function StoryTotal({
   isPaused,
   pause,
   resume,
+  settings,
 }: RewindStory) {
   const t = useTranslations('Rewind.Total')
 
@@ -20,6 +21,7 @@ export default function StoryTotal({
             <p>
               {t.rich('duration', {
                 durationValue: userRewind.duration.user,
+                serverName: settings.general.serverName || 'Plex',
                 total: (chunks) => (
                   <span className='rewind-cat'>
                     {chunks} <ClockIcon />
@@ -56,6 +58,7 @@ export default function StoryTotal({
         <RewindStat noScale>
           <p>
             {t.rich('noData', {
+              serverName: settings.general.serverName || 'Plex',
               plex: (chunks) => <span className='gradient-plex'>{chunks}</span>,
               emoji: (chunks) => <span className='not-italic'>{chunks}</span>,
             })}
