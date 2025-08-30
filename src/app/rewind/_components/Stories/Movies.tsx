@@ -83,6 +83,7 @@ export default function StoryMovies({
                   <FilmIcon />
                 </span>
               ),
+              serverName: settings.general.serverName || 'Plex',
               plex: (chunks) => <span className='gradient-plex'>{chunks}</span>,
               emoji: (chunks) => <span className='not-italic'>{chunks}</span>,
             })}

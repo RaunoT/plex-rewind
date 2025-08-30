@@ -168,7 +168,7 @@
       "top": "Hier sind deine <top>Top {count}</top>"
     },
     "Welcome": {
-      "welcome": "Willkommen zu deinem <rewind>Plex Rewind</rewind>",
+      "welcome": "Willkommen zu deinem <rewind>{serverName} Rewind</rewind>",
       "takeYouThrough": "Lass uns deine Highlights",
       "letsGetStarted": "Los gehts!",
       "forPastYear": "für das <pastYear>letzte Jahr</pastYear> anschauen.",
@@ -176,9 +176,9 @@
       "dateRange": "vom <startDate>{startDateValue}</startDate> bis zum <endDate>{endDateValue}</endDate> anschauen."
     },
     "Total": {
-      "duration": "Du hast <total>insgesamt</total> <duration>{durationValue}</duration> auf <plex>Plex</plex> verbracht!",
+      "duration": "Du hast <total>insgesamt</total> <duration>{durationValue}</duration> auf <plex>{serverName}</plex> verbracht!",
       "percentage": "Das sind <percentage>{percentageValue}</percentage> aller Wiedergaben, welche insgesamt <duration>{durationValue}</duration> betragen.",
-      "noData": "Du hast nichts auf <plex>Plex</plex> abgespielt <emoji>😫</emoji>"
+      "noData": "Du hast nichts auf <plex>{serverName}</plex> abgespielt <emoji>😫</emoji>"
     },
     "Users": {
       "top": "Im Vergleich zu anderen <users>Nutzern</users>"
@@ -190,17 +190,17 @@
       "noData": "Du hast keine <audio>Audio</audio> von <from>Plex</from> angehört"
     },
     "Libraries": {
-      "filesize": "Wusstest du, dass die <filesize>Dateigröße</filesize> der verfügbaren Inhalte auf <plex>Plex</plex> <size>{sizeValue}</size> ist?",
+      "filesize": "Wusstest du, dass die <filesize>Dateigröße</filesize> der verfügbaren Inhalte auf <plex>{serverName}</plex> <size>{sizeValue}</size> ist?",
       "libraries": "Die jetzige Bibliothek beinhaltet:",
       "movies": "{count, plural, =1 {Film} other {Filme}}",
       "episodes": "{count, plural, =1 {Episode} other {Episoden}}",
       "tracks": "{count, plural, =1 {Titel} other {Titel}}"
     },
     "Shows": {
-      "duration": "<library>Serien</library> haben <duration>{durationValue}</duration> deiner Zeit auf <plex>Plex</plex> eingenommen.",
+      "duration": "<library>Serien</library> haben <duration>{durationValue}</duration> deiner Zeit auf <plex>{serverName}</plex> eingenommen.",
       "count": "Du hast insgesamt <count>{countValue}</count> <episodes>Episoden</episodes> geschaut!",
       "favorite": "Deine Lieblingsserie war",
-      "noData": "Du hast keine <shows>Serien</shows> auf <plex>Plex</plex> geschaut <emoji>😥</emoji>"
+      "noData": "Du hast keine <shows>Serien</shows> auf <plex>{serverName}</plex> geschaut <emoji>😥</emoji>"
     },
     "Requests": {
       "noData": "Es gab keine <requests>Anfragen</requests> <emoji>😲</emoji>",
@@ -215,15 +215,15 @@
       "duration": "<duration>{durationValue}</duration> deiner Zeit hast du mit <movies>Filmen</movies> verbracht.",
       "count": "Du hast <count>{countValue}</count> <movies>{countValue, plural, =1 {Film} other {Filme}}</movies> gesehen!",
       "favorite": "Dein Lieblingsfilm war",
-      "noData": "Du hast keine <movies>Filme</movies> auf <plex>Plex</plex> gesehen <emoji>😵‍💫</emoji>"
+      "noData": "Du hast keine <movies>Filme</movies> auf <plex>{serverName}</plex> gesehen <emoji>😵‍💫</emoji>"
     },
     "Goodbye": {
-      "thanks": "Vielen Dank, dass du dir deinen <plex>Plex Rewind</plex> angeschaut hast, <user>{userValue}!</user>",
+      "thanks": "Vielen Dank, dass du dir deinen <plex>{serverName} Rewind</plex> angeschaut hast, <user>{userValue}!</user>",
       "sorry": "Es tut uns leid, dass du keine Inhalte für dich gefunden hast. Mehr Erfolg beim nächsten Mal!",
       "weWillBeBack": "Beim nächsten Mal sind wir wieder",
       "weWillBeHere": "Wir werden dennoch hier sein",
       "insightsAndStats": "mit umso mehr <insightsAndStats>Einblicken und Statistiken</insightsAndStats> hier.",
-      "untilThen": "Bis dahin, erkunde weiterhin alles, was <plex>Plex</plex> anzubieten hat.",
+      "untilThen": "Bis dahin, erkunde weiterhin alles, was <plex>{serverName}</plex> anzubieten hat.",
       "movies": "Filme",
       "shows": "Serien",
       "tracks": "Titel",

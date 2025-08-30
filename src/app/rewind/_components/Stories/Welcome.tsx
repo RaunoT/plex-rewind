@@ -41,6 +41,7 @@ export default function StoryWelcome({
         </div>
         <p className='animate-fade-up animation-delay-500 mb-4'>
           {t.rich('welcome', {
+            serverName: settings.general.serverName || 'Plex',
             rewind: (chunks) => (
               <span className='whitespace-nowrap'>
                 {/* eslint-disable-next-line react/jsx-no-literals */}

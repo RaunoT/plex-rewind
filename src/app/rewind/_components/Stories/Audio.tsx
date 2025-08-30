@@ -83,6 +83,7 @@ export default function StoryAudio({
                   <MusicalNoteIcon />
                 </span>
               ),
+              serverName: settings.general.serverName || 'Plex',
               from: (chunks) => (
                 <span className='whitespace-nowrap'>
                   <span className='gradient-plex'>{chunks}</span>
