@@ -29,8 +29,6 @@ export const PERIODS: { [key: string]: Period } = {
 
 export const META_DESCRIPTION: string =
   "Plex users' statistics and habits in a beautiful and organized manner"
-export const META_TITLE: string = 'Plex Rewind'
-export const META_TITLE_TEMPLATE: string = '%s | Plex Rewind'
 
 export const PLEX_API_ENDPOINT = 'https://plex.tv/api/v2'
 export const PLEX_PRODUCT_NAME = 'Plex Rewind'
@@ -48,6 +46,7 @@ export const DEFAULT_SETTINGS: Settings = {
     complete: false,
   },
   general: {
+    serverName: '',
     activeLibraries: [],
     isPostersTmdbOnly: false,
     googleAnalyticsId: '',

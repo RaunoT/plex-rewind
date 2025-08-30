@@ -97,6 +97,8 @@
     },
     "General": {
       "title": "General settings",
+      "config": "Configuration",
+      "serverName": "Server name",
       "libraries": "Libraries",
       "activeLibraries": "Active libraries",
       "noLibrariesMessage1": "Please create a library in Plex to proceed.",

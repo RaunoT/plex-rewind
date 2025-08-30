@@ -14,6 +14,7 @@ export type ConnectionSettings = {
 }
 
 export type GeneralSettings = {
+  serverName: string
   activeLibraries: string[]
   isPostersTmdbOnly: boolean
   googleAnalyticsId: string

@@ -72,14 +72,20 @@ export default function Home({ settings, libraries }: Props) {
         </>
       ) : (
         <h1 className='animate-fade-up animation-delay-300 mb-6 text-[2.5rem] leading-none font-bold'>
-          <Image
-            src={plexSvg}
-            className='mr-3 mb-0.5 inline h-9 w-auto'
-            alt='Plex logo'
-            priority
-          />
-          {/* eslint-disable-next-line react/jsx-no-literals */}
-          <span>rewind</span>
+          {settings.general.serverName ? (
+            settings.general.serverName
+          ) : (
+            <>
+              <Image
+                src={plexSvg}
+                className='mr-3 mb-0.5 inline h-9 w-auto'
+                alt='Plex logo'
+                priority
+              />
+              {/* eslint-disable-next-line react/jsx-no-literals */}
+              <span>rewind</span>
+            </>
+          )}
         </h1>
       )}
 
