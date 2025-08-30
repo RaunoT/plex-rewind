@@ -52,3 +52,21 @@ export type TautulliItemRow = {
   user_id: number
   rank: number
 }
+
+export type TautulliSession = {
+  session_key: string
+  friendly_name: string
+  player: string
+  product: string
+  state: 'playing' | 'paused'
+  progress_percent: string
+  full_title: string
+  grandparent_title: string
+  thumb: string
+  grandparent_thumb: string
+  user_thumb: string
+}
+
+export type TautulliActivity = {
+  sessions: TautulliSession[]
+}

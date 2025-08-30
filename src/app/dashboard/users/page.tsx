@@ -19,8 +19,12 @@ import { Suspense } from 'react'
 import Dashboard from '../_components/Dashboard'
 import DashboardLoader from '../_components/DashboardLoader'
 
-export const metadata: Metadata = {
-  title: 'Users',
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations('Dashboard')
+
+  return {
+    title: t('usersTitle'),
+  }
 }
 
 async function getTotalDuration(
@@ -69,6 +73,7 @@ async function DashboardUsersContent({
 }) {
   const settings = getSettings()
   const t = await getTranslations()
+  const dashboardT = await getTranslations('Dashboard')
 
   if (!settings.dashboard.isUsersPageActive) {
     return notFound()
@@ -87,7 +92,7 @@ async function DashboardUsersContent({
 
   return (
     <Dashboard
-      title='Users'
+      title={dashboardT('usersTitle')}
       items={usersData}
       totalDuration={totalDuration}
       totalSize={usersCount}

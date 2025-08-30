@@ -11,7 +11,7 @@ export async function generateMetadata(): Promise<Metadata> {
   }
 }
 
-export default async function DashboardSettingsPage() {
+export default function DashboardSettingsPage() {
   const settings = getSettings()
 
   return <DashboardSettingsForm settings={settings} />

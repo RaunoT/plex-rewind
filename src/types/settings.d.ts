@@ -57,10 +57,16 @@ export type DashboardSettings = {
   complete: boolean
 }
 
+export type ActivitySettings = {
+  isActive: boolean
+  complete: boolean
+}
+
 export type Settings = {
   connection: ConnectionSettings
   general: GeneralSettings
   rewind: RewindSettings
   dashboard: DashboardSettings
+  activity: ActivitySettings
   setupComplete: boolean
 }

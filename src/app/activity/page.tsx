@@ -1,18 +1,18 @@
 import getSettings from '@/utils/getSettings'
 import { Metadata } from 'next'
 import { getTranslations } from 'next-intl/server'
-import RewindSettingsForm from './_components/RewindSettingsForm'
+import ActivityContent from './_components/ActivityContent'
 
 export async function generateMetadata(): Promise<Metadata> {
-  const t = await getTranslations('Settings.Rewind')
+  const t = await getTranslations('Activity')
 
   return {
     title: t('title'),
   }
 }
 
-export default function RewindSettingsPage() {
+export default function ActivityPage() {
   const settings = getSettings()
 
-  return <RewindSettingsForm settings={settings} />
+  return <ActivityContent settings={settings} />
 }
