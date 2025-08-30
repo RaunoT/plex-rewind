@@ -65,8 +65,20 @@ export type TautulliSession = {
   thumb: string
   grandparent_thumb: string
   user_thumb: string
+  quality_profile: string
+  stream_bitrate: string
+  stream_video_codec: string
+  stream_video_full_resolution: string
+  stream_video_decision: string
+  stream_audio_codec: string
+  stream_audio_decision: string
+  stream_subtitle_codec: string
+  stream_subtitle_language: string
+  stream_subtitle_decision: string
+  transcode_decision: string
 }
 
 export type TautulliActivity = {
   sessions: TautulliSession[]
+  stream_count: number
 }

@@ -3,11 +3,13 @@
 import CardWrapper from '@/app/_components/CardWrapper'
 import anonymousSvg from '@/components/MediaItem/anonymous.svg'
 import { Settings } from '@/types/settings'
+import { TautulliSession } from '@/types/tautulli'
 import { getActivity } from '@/utils/fetchTautulli'
+import { formatBitrate } from '@/utils/formatting'
 import { PauseIcon, PlayIcon } from '@heroicons/react/24/outline'
 import { useQuery } from '@tanstack/react-query'
+import clsx from 'clsx'
 import Image from 'next/image'
-import { useState } from 'react'
 
 type Props = {
   settings: Settings
@@ -15,7 +17,6 @@ type Props = {
 
 export default function ActivityContent({ settings }: Props) {
   const tautulliUrl = settings.connection.tautulliUrl
-  const [imageSrc, setImageSrc] = useState<string>('')
   const { data, error, isLoading } = useQuery({
     queryKey: ['activity'],
     queryFn: getActivity,
@@ -23,88 +24,194 @@ export default function ActivityContent({ settings }: Props) {
   })
 
   if (isLoading) {
-    return <div>Loading activity...</div>
+    return <p>Loading activity...</p>
   }
 
   if (error) {
-    return <div>Error loading activity: {error.message}</div>
+    return <p>Error loading activity: {error.message}</p>
   }
 
   if (!data || data.sessions.length === 0) {
-    return <div>No current activity</div>
+    return <p>No current activity</p>
   }
 
   return (
-    <ul className='flex flex-wrap gap-4'>
-      {data.sessions.map((session) => (
-        <li key={session.session_key} className='w-full'>
-          <CardWrapper>
-            <div className='mb-8 flex gap-4'>
-              <div className='relative aspect-2/3 h-full w-20 shrink-0 sm:w-[5.35rem] 2xl:w-24'>
+    <CardWrapper>
+      <ul className='space-y-8'>
+        {data.sessions.map((session, index) => (
+          <li
+            key={session.session_key}
+            className={clsx('w-full', {
+              'border-b border-neutral-500 pb-8':
+                index !== data.sessions.length - 1,
+            })}
+          >
+            <div className='flex flex-col gap-4 sm:flex-row'>
+              {/* Poster */}
+              <div className='flex justify-between gap-4'>
+                <div className='relative aspect-2/3 h-full w-20 shrink-0 sm:w-[5.35rem] 2xl:w-24'>
+                  <Image
+                    fill
+                    className='object-cover object-top'
+                    alt={session.grandparent_title + ' poster'}
+                    src={`/api/image?url=${encodeURIComponent(
+                      `${tautulliUrl}/pms_image_proxy?img=${session.grandparent_thumb || session.thumb}&width=300`,
+                    )}`}
+                    sizes='6rem'
+                    priority
+                  />
+                </div>
+
+                <Title session={session} className='!mb-0 flex sm:hidden' />
+              </div>
+
+              {/* Title & progress */}
+              <div className='w-full'>
+                <Title session={session} className='hidden sm:flex' />
+
+                {/* Stream info */}
+                <ul className='flex flex-wrap gap-x-8 gap-y-4 text-xs sm:gap-8 sm:text-sm'>
+                  <li>
+                    <div className='font-semibold text-neutral-400 uppercase'>
+                      Quality
+                    </div>
+                    {session.quality_profile}{' '}
+                    {formatBitrate(session.stream_bitrate)}
+                    {session.transcode_decision && (
+                      <div className='text-xs text-neutral-400'>
+                        {session.transcode_decision}
+                      </div>
+                    )}
+                  </li>
+                  <li>
+                    <div className='font-semibold text-neutral-400 uppercase'>
+                      Video
+                    </div>
+                    <div className='uppercase'>
+                      {session.stream_video_codec}{' '}
+                      {session.stream_video_full_resolution}
+                    </div>
+                    {session.stream_video_decision && (
+                      <div className='text-xs text-neutral-400'>
+                        {session.stream_video_decision}
+                      </div>
+                    )}
+                  </li>
+                  <li>
+                    <div className='font-semibold text-neutral-400 uppercase'>
+                      Audio
+                    </div>
+                    <div className='uppercase'>
+                      {session.stream_audio_codec}
+                    </div>
+                    {session.stream_audio_decision && (
+                      <div className='text-xs text-neutral-400'>
+                        {session.stream_audio_decision}
+                      </div>
+                    )}
+                  </li>
+                  <li>
+                    <div className='font-semibold text-neutral-400 uppercase'>
+                      Subtitles
+                    </div>
+                    <div>
+                      <span className='uppercase'>
+                        {session.stream_subtitle_codec}
+                      </span>{' '}
+                      - {session.stream_subtitle_language}
+                    </div>
+                    {session.stream_subtitle_decision && (
+                      <div className='text-xs text-neutral-400'>
+                        {session.stream_subtitle_decision}
+                      </div>
+                    )}
+                  </li>
+                </ul>
+              </div>
+            </div>
+
+            {/* User info */}
+            <div className='mt-4 flex items-center gap-4'>
+              <div className='relative size-12 shrink-0 rounded-full'>
                 <Image
                   fill
-                  className='object-cover object-top'
-                  alt={session.grandparent_title + ' poster'}
-                  src={`/api/image?url=${encodeURIComponent(
-                    `${tautulliUrl}/pms_image_proxy?img=${session.grandparent_thumb || session.thumb}&width=300`,
-                  )}`}
+                  className='rounded-full object-cover object-top'
+                  alt={
+                    !settings.general.isAnonymized
+                      ? session.friendly_name + ' avatar'
+                      : 'Anonymous avatar'
+                  }
+                  src={
+                    settings.general.isAnonymized
+                      ? anonymousSvg
+                      : `/api/image?url=${encodeURIComponent(
+                          `${tautulliUrl}/pms_image_proxy?img=${session.user_thumb}&width=300`,
+                        )}`
+                  }
                   sizes='6rem'
                   priority
                 />
               </div>
-              <div className='flex w-full items-start justify-between gap-8'>
-                <div className='text-xl font-bold'>{session.full_title}</div>
-                <div className='mt-1 text-sm text-gray-400 sm:mt-0.5 sm:text-base'>
-                  {session.progress_percent}%
-                </div>
-              </div>
-            </div>
-            <div className='flex items-center gap-4'>
-              <div className='relative size-12 shrink-0 rounded-full'>
-                {settings.general.isAnonymized ? (
-                  <div className='flex size-12 items-center justify-center rounded-full bg-gray-600 text-sm font-semibold text-white'>
-                    {session.session_key.slice(-2).toUpperCase()}
-                  </div>
-                ) : (
-                  <Image
-                    fill
-                    className='rounded-full object-cover object-top'
-                    alt={session.friendly_name + ' avatar'}
-                    src={
-                      imageSrc ||
-                      `/api/image?url=${encodeURIComponent(
-                        `${tautulliUrl}/pms_image_proxy?img=${
-                          session.user_thumb
-                        }&width=300`,
-                      )}`
-                    }
-                    sizes='6rem'
-                    priority
-                    onError={() => setImageSrc(anonymousSvg)}
-                  />
-                )}
-              </div>
               <div className='flex w-full items-end justify-between gap-8'>
                 <div>
-                  <div className='font-semibold'>
+                  <div className='text-sm font-semibold sm:text-base'>
                     {settings.general.isAnonymized
-                      ? `User ${session.session_key.slice(-4)}`
+                      ? `Anonymous #${index + 1}`
                       : session.friendly_name}
                   </div>
-                  <div className='text-sm text-gray-400'>
+                  <div className='text-xs text-neutral-400 sm:text-sm'>
                     {session.product} ({session.player})
                   </div>
                 </div>
-                {session.state === 'paused' ? (
-                  <PauseIcon className='size-5' />
-                ) : (
-                  <PlayIcon className='size-5' />
-                )}
               </div>
             </div>
-          </CardWrapper>
-        </li>
-      ))}
-    </ul>
+          </li>
+        ))}
+      </ul>
+    </CardWrapper>
+  )
+}
+
+type TitleProps = {
+  session: TautulliSession
+  className?: string
+}
+
+function Title({ session, className }: TitleProps) {
+  return (
+    <div
+      className={clsx(
+        'mb-4 flex w-full justify-between gap-4 sm:gap-8',
+        className,
+      )}
+    >
+      <div className='flex gap-2'>
+        <PlayState session={session} className='hidden sm:block' />
+        <h2 className='text-lg font-bold sm:text-xl'>{session.full_title}</h2>
+      </div>
+      <div>
+        <PlayState session={session} className='mb-4 sm:hidden' />
+        <div className='text-sm text-neutral-400 sm:mt-0.5 sm:text-base'>
+          {session.progress_percent}%
+        </div>
+      </div>
+    </div>
+  )
+}
+
+type PlayStateProps = {
+  session: TautulliSession
+  className?: string
+}
+
+function PlayState({ session, className }: PlayStateProps) {
+  return (
+    <div className={className}>
+      {session.state === 'paused' ? (
+        <PauseIcon className='mt-[5px] size-5 shrink-0' />
+      ) : (
+        <PlayIcon className='mt-[5px] size-5 shrink-0' />
+      )}
+    </div>
   )
 }

@@ -85,3 +85,10 @@ export function timeToSeconds(time: string): number {
 
   return days + hours + mins + secs
 }
+
+export function formatBitrate(bitrate: number | string): string {
+  const numeric = typeof bitrate === 'string' ? parseFloat(bitrate) : bitrate
+  const megabits = numeric / 1000
+
+  return `${megabits.toFixed(1)} Mbps`
+}

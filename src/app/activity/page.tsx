@@ -7,7 +7,7 @@ import ActivityContent from './_components/ActivityContent'
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations('Activity')
   const activityData = await getActivity()
-  const streamCount = activityData?.sessions?.length || 0
+  const streamCount = activityData?.stream_count || 0
   const title = streamCount > 0 ? `(${streamCount}) ${t('title')}` : t('title')
 
   return {
