@@ -15,7 +15,7 @@ type Props = {
   settings: Settings
 }
 
-export default function ActivityContent({ settings }: Props) {
+export default function Activities({ settings }: Props) {
   const tautulliUrl = settings.connection.tautulliUrl
   const { data, error, isLoading } = useQuery({
     queryKey: ['activity'],
