@@ -1,10 +1,5 @@
 import '@/styles/globals.css'
-import {
-  APP_URL,
-  META_DESCRIPTION,
-  META_TITLE,
-  META_TITLE_TEMPLATE,
-} from '@/utils/constants'
+import { APP_URL, META_DESCRIPTION } from '@/utils/constants'
 import getSettings from '@/utils/getSettings'
 import getVersion from '@/utils/getVersion'
 import { Metadata, Viewport } from 'next'
@@ -16,36 +11,43 @@ import AppProvider from './_components/AppProvider'
 import GoogleAnalytics from './_components/GoogleAnalytics'
 import SessionProviderWrapper from './_components/SessionProvider'
 
-export const metadata: Metadata = {
-  metadataBase: new URL(APP_URL),
-  applicationName: META_TITLE,
-  title: {
-    default: META_TITLE,
-    template: META_TITLE_TEMPLATE,
-  },
-  description: META_DESCRIPTION,
-  manifest: '/manifest.json',
-  appleWebApp: {
-    title: META_TITLE,
-    statusBarStyle: 'black',
-  },
-  openGraph: {
-    type: 'website',
-    siteName: META_TITLE,
+export async function generateMetadata(): Promise<Metadata> {
+  const settings = getSettings()
+  const serverName = settings.general.serverName
+  const baseTitle = serverName ? `${serverName}` : 'Plex Rewind'
+  const titleTemplate = serverName ? `%s | ${serverName}` : '%s | Plex Rewind'
+
+  return {
+    metadataBase: new URL(APP_URL),
+    applicationName: baseTitle,
     title: {
-      default: META_TITLE,
-      template: META_TITLE_TEMPLATE,
+      default: baseTitle,
+      template: titleTemplate,
     },
     description: META_DESCRIPTION,
-  },
-  twitter: {
-    card: 'summary',
-    title: {
-      default: META_TITLE,
-      template: META_TITLE_TEMPLATE,
+    manifest: '/manifest.json',
+    appleWebApp: {
+      title: baseTitle,
+      statusBarStyle: 'black',
     },
-    description: META_DESCRIPTION,
-  },
+    openGraph: {
+      type: 'website',
+      siteName: baseTitle,
+      title: {
+        default: baseTitle,
+        template: titleTemplate,
+      },
+      description: META_DESCRIPTION,
+    },
+    twitter: {
+      card: 'summary',
+      title: {
+        default: baseTitle,
+        template: titleTemplate,
+      },
+      description: META_DESCRIPTION,
+    },
+  }
 }
 
 export const viewport: Viewport = {
