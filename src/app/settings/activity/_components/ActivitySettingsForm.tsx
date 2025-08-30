@@ -46,7 +46,7 @@ export default function ActivitySettingsForm({ settings }: Props) {
       <section className='group-settings group'>
         <h2 className='heading-settings'>{tCommon('status')}</h2>
         <Switch
-          key={`is-active-${activitySettings.isActive}`}
+          key={`is-active-${isActive}`}
           className='switch'
           name='isActive'
           isSelected={isActive}
