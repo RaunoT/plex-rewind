@@ -3,28 +3,16 @@ description:
 globs:
 alwaysApply: true
 ---
+
 # Project Overview
 
 This is a Next.js project built with TypeScript. It uses `tailwindcss` for styling and `react-aria-components` for accessible UI components.
 
 ## Key Files & Directories
 
-*   **`package.json`**: [package.json](mdc:package.json) - Defines project dependencies and scripts. Managed by PNPM ([pnpm-lock.yaml](mdc:pnpm-lock.yaml)).
-*   **`next.config.ts`**: [next.config.ts](mdc:next.config.ts) - Configuration file for the Next.js framework.
-*   **`tsconfig.json`**: [tsconfig.json](mdc:tsconfig.json) - TypeScript compiler options.
-*   **`src/`**: [src](mdc:src) - Contains the main source code for the application (pages, components, etc.).
-*   **`Dockerfile`**: [Dockerfile](mdc:Dockerfile) & `docker-compose.yml`: [docker-compose.yml](mdc:docker-compose.yml) - Configuration for building and running the application with Docker.
-*   **Configuration Files**: Various configuration files for linting (`eslint.config.js`, `stylelint.config.js`), formatting (`prettier.config.js`), commit linting (`commitlint.config.ts`), etc. are present in the root directory.
-
-
-
-
-
-
-
-
-
-
-
-
-
+- **`package.json`**: [package.json](mdc:package.json) - Defines project dependencies and scripts. Managed by PNPM ([pnpm-lock.yaml](mdc:pnpm-lock.yaml)).
+- **`next.config.ts`**: [next.config.ts](mdc:next.config.ts) - Configuration file for the Next.js framework.
+- **`tsconfig.json`**: [tsconfig.json](mdc:tsconfig.json) - TypeScript compiler options.
+- **`src/`**: [src](mdc:src) - Contains the main source code for the application (pages, components, etc.).
+- **`Dockerfile`**: [Dockerfile](mdc:Dockerfile) & `docker-compose.yml`: [docker-compose.yml](mdc:docker-compose.yml) - Configuration for building and running the application with Docker.
+- **Configuration Files**: Various configuration files for linting (`eslint.config.js`, `stylelint.config.js`), formatting (`prettier.config.js`), commit linting (`commitlint.config.ts`), etc. are present in the root directory.
