@@ -125,7 +125,7 @@ export default function Home({ settings, libraries }: Props) {
           <Link
             href='/activity'
             className={clsx(
-              'mx-auto mb-4 block',
+              'mx-auto block',
               !settings.rewind.isActive &&
                 !settings.dashboard.isActive &&
                 isLoggedIn

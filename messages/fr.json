@@ -104,12 +104,9 @@
     },
     "Activity": {
       "title": "Paramètres d'activité",
-      "config": "Configuration",
-      "enableActivityPage": "Activer la page d'activité",
-      "enableActivityPageDescription": "Afficher la page d'activité dans la navigation et permettre l'accès à la surveillance d'activité en temps réel.",
       "privacy": "Confidentialité",
-      "anonymizeUsers": "Anonymiser les utilisateurs",
-      "anonymizeUsersDescription": "Masquer les noms d'utilisateur dans la page d'activité pour la protection de la vie privée."
+      "anonymize": "Anonymiser",
+      "anonymizeDescription": "Masquer les noms d'utilisateurs pour les autres utilisateurs."
     },
     "General": {
       "title": "Paramètres généraux",

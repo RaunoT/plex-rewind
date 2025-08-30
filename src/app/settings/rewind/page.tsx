@@ -11,7 +11,7 @@ export async function generateMetadata(): Promise<Metadata> {
   }
 }
 
-export default async function RewindSettingsPage() {
+export default function RewindSettingsPage() {
   const settings = getSettings()
 
   return <RewindSettingsForm settings={settings} />

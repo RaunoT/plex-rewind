@@ -104,12 +104,9 @@
     },
     "Activity": {
       "title": "Tegevuse seaded",
-      "config": "Konfiguratsioon",
-      "enableActivityPage": "Luba tegevuse leht",
-      "enableActivityPageDescription": "Näita tegevuse lehte navigatsioonis ja võimalda ligipääs reaalajas tegevuse jälgimisele.",
       "privacy": "Privaatsus",
-      "anonymizeUsers": "Anonümiseeri kasutajad",
-      "anonymizeUsersDescription": "Peida kasutajanimed tegevuse lehel privaatsuse kaitseks."
+      "anonymize": "Anonümiseeri",
+      "anonymizeDescription": "Peida teiste kasutajanimed."
     },
     "General": {
       "title": "Üldseaded",

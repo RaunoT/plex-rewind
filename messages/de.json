@@ -104,12 +104,9 @@
     },
     "Activity": {
       "title": "Aktivität Einstellungen",
-      "config": "Konfiguration",
-      "enableActivityPage": "Aktivität Seite aktivieren",
-      "enableActivityPageDescription": "Zeige die Aktivität Seite in der Navigation und erlaube Zugriff auf Echtzeit-Aktivität Überwachung.",
       "privacy": "Datenschutz",
-      "anonymizeUsers": "Benutzer anonymisieren",
-      "anonymizeUsersDescription": "Verstecke Benutzernamen auf der Aktivität Seite zum Datenschutz."
+      "anonymize": "Anonymisieren",
+      "anonymizeDescription": "Nutzernamen vor anderen Nutzern verstecken."
     },
     "General": {
       "title": "Allgemeine Einstellungen",

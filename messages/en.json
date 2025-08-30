@@ -104,12 +104,9 @@
     },
     "Activity": {
       "title": "Activity settings",
-      "config": "Configuration",
-      "enableActivityPage": "Enable Activity page",
-      "enableActivityPageDescription": "Show the Activity page in navigation and allow access to real-time activity monitoring.",
       "privacy": "Privacy",
-      "anonymizeUsers": "Anonymize users",
-      "anonymizeUsersDescription": "Hide usernames in the Activity page for privacy protection."
+      "anonymize": "Anonymize",
+      "anonymizeDescription": "Hide usernames for other users."
     },
     "General": {
       "title": "General settings",
