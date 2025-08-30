@@ -80,8 +80,8 @@ export default function ActivityContent({ settings }: Props) {
               <div className='flex w-full items-end justify-between gap-8'>
                 <div>
                   <div className='font-semibold'>
-                    {settings.activity.isAnonymized 
-                      ? `User ${session.session_key.slice(-4)}` 
+                    {settings.activity.isAnonymized
+                      ? `User ${session.session_key.slice(-4)}`
                       : session.friendly_name}
                   </div>
                   <div className='text-sm text-gray-400'>
