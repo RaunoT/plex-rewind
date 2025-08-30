@@ -5,6 +5,7 @@ import {
   Settings,
   SettingsFormInitialState,
 } from '@/types/settings'
+import { isInitialSetup } from '@/utils/helpers'
 import { useTranslations } from 'next-intl'
 import { useActionState, useState } from 'react'
 import { Switch } from 'react-aria-components'
@@ -18,6 +19,7 @@ type Props = {
 type ActivityFormState = SettingsFormInitialState<ActivitySettings>
 
 export default function ActivitySettingsForm({ settings }: Props) {
+  const initialSetupMode = isInitialSetup(settings)
   const [isActive, setIsActive] = useState<boolean>(settings.activity.isActive)
   const tCommon = useTranslations('Common')
   const initialState: ActivityFormState = {
@@ -40,7 +42,7 @@ export default function ActivitySettingsForm({ settings }: Props) {
     <SettingsForm
       formState={formState}
       formAction={formAction}
-      isComplete={activitySettings.complete}
+      isSetup={!activitySettings.complete && initialSetupMode}
     >
       <section className='group-settings group'>
         <h2 className='heading-settings'>{tCommon('status')}</h2>

@@ -6,6 +6,7 @@ import {
   SettingsFormInitialState,
 } from '@/types/settings'
 import { TautulliLibrary } from '@/types/tautulli'
+import { isInitialSetup } from '@/utils/helpers'
 import { Bars2Icon } from '@heroicons/react/24/outline'
 import { kebabCase } from 'lodash'
 import { useTranslations } from 'next-intl'
@@ -45,6 +46,7 @@ export default function GeneralSettingsForm({ settings, libraries }: Props) {
       }))
     },
   )
+  const initialSetupMode = isInitialSetup(settings)
   const t = useTranslations('Settings.General')
   const initialState: GeneralFormState = {
     message: '',
@@ -67,7 +69,7 @@ export default function GeneralSettingsForm({ settings, libraries }: Props) {
       formState={formState}
       formAction={formAction}
       hideSubmit={!libraries.length}
-      isComplete={generalSettings.complete}
+      isSetup={!generalSettings.complete && initialSetupMode}
     >
       <section className='group-settings group'>
         <h2 className='heading-settings'>{t('config')}</h2>

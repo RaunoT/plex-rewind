@@ -6,6 +6,7 @@ import {
   Settings,
   SettingsFormInitialState,
 } from '@/types/settings'
+import { isInitialSetup } from '@/utils/helpers'
 import { useTranslations } from 'next-intl'
 import { useActionState, useState } from 'react'
 import { Switch } from 'react-aria-components'
@@ -19,6 +20,7 @@ type Props = {
 type RewindFormState = SettingsFormInitialState<Partial<RewindSettings>>
 
 export default function RewindSettingsForm({ settings }: Props) {
+  const initialSetupMode = isInitialSetup(settings)
   const [isActive, setIsActive] = useState<boolean>(settings.rewind.isActive)
   const t = useTranslations('Settings.Rewind')
   const tCommon = useTranslations('Common')
@@ -42,7 +44,7 @@ export default function RewindSettingsForm({ settings }: Props) {
     <SettingsForm
       formState={formState}
       formAction={formAction}
-      isComplete={rewindSettings.complete}
+      isSetup={!rewindSettings.complete && initialSetupMode}
     >
       <section className='group-settings group'>
         <h2 className='heading-settings'>{tCommon('status')}</h2>

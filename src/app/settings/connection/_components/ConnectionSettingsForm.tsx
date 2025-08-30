@@ -5,6 +5,7 @@ import {
   Settings,
   SettingsFormInitialState,
 } from '@/types/settings'
+import { isInitialSetup } from '@/utils/helpers'
 import { useTranslations } from 'next-intl'
 import { useActionState } from 'react'
 import SettingsForm from '../../_components/SettingsForm'
@@ -17,6 +18,7 @@ type Props = {
 type ConnectionFormState = SettingsFormInitialState<ConnectionSettings>
 
 export default function ConnectionSettingsForm({ settings }: Props) {
+  const initialSetupMode = isInitialSetup(settings)
   const t = useTranslations('Settings')
   const initialState: ConnectionFormState = {
     message: '',
@@ -38,7 +40,7 @@ export default function ConnectionSettingsForm({ settings }: Props) {
     <SettingsForm
       formState={formState}
       formAction={formAction}
-      isComplete={connectionSettings.complete}
+      isSetup={!connectionSettings.complete && initialSetupMode}
     >
       <section className='group-settings group'>
         {/* eslint-disable-next-line react/jsx-no-literals */}
