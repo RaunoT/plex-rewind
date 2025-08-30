@@ -10,7 +10,7 @@ export default async function ActivityLayout({ children }: Props) {
   const t = await getTranslations('Activity')
 
   return (
-    <div className='flex w-full max-w-2xl flex-1 flex-col sm:flex-none'>
+    <div className='mb-auto w-full max-w-(--breakpoint-sm)'>
       <PageTitle title={t('title')} />
       {children}
     </div>
