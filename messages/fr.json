@@ -1,5 +1,6 @@
 {
   "Home": {
+    "title": "Accueil",
     "setupRequired": "Configuration requise",
     "setupRequiredDescription": "Cette application doit être configurée par un administrateur.",
     "loginWithPlex": "Se connecter avec Plex",
@@ -8,9 +9,13 @@
     "activity": "Activité",
     "signOut": "Se déconnecter"
   },
+  "Activity": {
+    "title": "Activité"
+  },
   "Dashboard": {
     "noActivity": "Aucune activité pendant cette période.. 😴",
     "title": "Tableau de bord",
+    "usersTitle": "Utilisateurs",
     "users": "utilisateurs",
     "movies": "films",
     "episodes": "épisodes",
@@ -117,6 +122,7 @@
     },
     "Rewind": {
       "title": "Paramètres Rewind",
+      "pageTitle": "Rewind",
       "endDateMustBeAfterStartDateError": "La date de fin doit être après la date de début",
       "startDateMustBeBeforeEndDateError": "La date de début doit être avant la date de fin",
       "cards": "Cartes",

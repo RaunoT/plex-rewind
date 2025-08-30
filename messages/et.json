@@ -1,5 +1,6 @@
 {
   "Home": {
+    "title": "Avaleht",
     "setupRequired": "Seadistamine vajalik",
     "setupRequiredDescription": "Rakendus vajab seadistamist administraatori poolt.",
     "loginWithPlex": "Logi sisse Plex'iga",
@@ -8,9 +9,13 @@
     "activity": "Tegevus",
     "signOut": "Logi välja"
   },
+  "Activity": {
+    "title": "Tegevus"
+  },
   "Dashboard": {
     "noActivity": "Valitud perioodil puudub tegevus.. 😴",
     "title": "Edetabel",
+    "usersTitle": "Kasutajad",
     "users": "kasutajat",
     "movies": "filmi",
     "episodes": "episoodi",
@@ -117,6 +122,7 @@
     },
     "Rewind": {
       "title": "Rewind seaded",
+      "pageTitle": "Rewind",
       "endDateMustBeAfterStartDateError": "Lõpp peab olema pärast algust",
       "startDateMustBeBeforeEndDateError": "Algus peab olema enne lõppu",
       "cards": "Kaardid",
