@@ -168,17 +168,17 @@
       "top": "Voici vos <top>Top {count}</top>"
     },
     "Welcome": {
-      "welcome": "Bienvenue dans votre <rewind>Plex Rewind</rewind>",
+      "welcome": "Bienvenue dans votre <rewind>{serverName} Rewind</rewind>",
       "takeYouThrough": "Nous allons vous faire découvrir vos moments forts",
       "letsGetStarted": "Commençons !",
       "forPastYear": "pour <pastYear>l'année passée.</pastYear>",
       "singleDate": "pendant le <singleDate>{singleDateValue}</singleDate>.",
-      "dateRange": "du <startDate>{startDateValue}</startDate> au <endDate>{endDateValue}</endDate>."
+      "dateRange": "du <startDate>{startDateValue}</startDate> au <endDate>{endDateValue}</endDate>"
     },
     "Total": {
-      "duration": "Vous avez passé un <total>Total</total> de <duration>{durationValue}</duration> sur <plex>Plex !</plex>",
+      "duration": "Vous avez passé un <total>Total</total> de <duration>{durationValue}</duration> sur <plex>{serverName} !</plex>",
       "percentage": "Cela représente <percentage>{percentageValue}</percentage> de toutes les lectures, qui totalisent <duration>{durationValue}</duration> pour tous les utilisateurs.",
-      "noData": "Vous n'avez rien regardé sur <plex>Plex</plex> <emoji>😫</emoji>"
+      "noData": "Vous n'avez rien regardé sur <plex>{serverName}</plex> <emoji>😫</emoji>"
     },
     "Users": {
       "top": "Voici comment vous vous comparez aux autres <users>Utilisateurs</users>"
@@ -190,17 +190,17 @@
       "noData": "Vous n'avez écouté aucune <audio>Musique</audio> depuis <from>Plex</from>"
     },
     "Libraries": {
-      "filesize": "Saviez-vous que la <filesize>Taille</filesize> de tout le contenu disponible sur <plex>Plex</plex> est de <size>{sizeValue} !</size>",
+      "filesize": "Saviez-vous que la <filesize>Taille</filesize> de tout le contenu disponible sur <plex>{serverName}</plex> est de <size>{sizeValue} !</size>",
       "libraries": "La bibliothèque actuelle comprend :",
       "movies": "{count, plural, =1 {Film} other {Films}}",
       "episodes": "{count, plural, =1 {Épisode} other {Épisodes}}",
       "tracks": "{count, plural, =1 {Morceau} other {Morceaux}}"
     },
     "Shows": {
-      "duration": "Les <library>Séries TV</library> ont occupé <duration>{durationValue}</duration> de votre temps sur <plex>Plex.</plex>",
+      "duration": "Les <library>Séries TV</library> ont occupé <duration>{durationValue}</duration> de votre temps sur <plex>{serverName}.</plex>",
       "count": "Vous avez regardé <count>{countValue}</count> <episodes>épisodes</episodes> au total !",
       "favorite": "Votre favori était",
-      "noData": "Vous n'avez regardé aucune <shows>Série TV</shows> sur <plex>Plex</plex> <emoji>😥</emoji>"
+      "noData": "Vous n'avez regardé aucune <shows>Série TV</shows> sur <plex>{serverName}</plex> <emoji>😥</emoji>"
     },
     "Requests": {
       "noData": "Il n'y a eu aucune <requests>Demande</requests> <emoji>😲</emoji>",
@@ -215,15 +215,15 @@
       "duration": "Vous avez passé <duration>{durationValue}</duration> à regarder des <movies>Films</movies>",
       "count": "Vous avez regardé <count>{countValue}</count> <movies>{countValue, plural, =1 {film} other {films}}</movies> au total !",
       "favorite": "Votre favori était",
-      "noData": "Vous n'avez regardé aucun <movies>Film</movies> sur <plex>Plex</plex> <emoji>😵‍💫</emoji>"
+      "noData": "Vous n'avez regardé aucun <movies>Film</movies> sur <plex>{serverName}</plex> <emoji>😵‍💫</emoji>"
     },
     "Goodbye": {
-      "thanks": "Merci d'avoir suivi votre <plex>Plex Rewind</plex>, <user>{userValue} !</user>",
+      "thanks": "Merci d'avoir suivi votre <plex>{serverName} Rewind</plex>, <user>{userValue} !</user>",
       "sorry": "Désolé que vous n'ayez pas trouvé de contenu à regarder ou à écouter cette fois-ci. Bonne chance pour la prochaine fois !",
       "weWillBeBack": "Nous serons de retour la prochaine fois",
       "weWillBeHere": "Dans tous les cas, nous serons là",
       "insightsAndStats": "avec encore plus <insightsAndStats>d'informations et de statistiques.</insightsAndStats>",
-      "untilThen": "D'ici là, continuez à explorer et à profiter de tout ce que <plex>Plex</plex> a à offrir.",
+      "untilThen": "D'ici là, continuez à explorer et à profiter de tout ce que <plex>{serverName}</plex> a à offrir.",
       "movies": "Films",
       "shows": "Séries",
       "tracks": "Morceaux",

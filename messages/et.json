@@ -168,17 +168,17 @@
       "top": "Siin on sinu <top>Top {count}</top>"
     },
     "Welcome": {
-      "welcome": "Tere tulemast oma <rewind>Plex Rewind'i</rewind>",
+      "welcome": "Tere tulemast oma <rewind>{serverName} Rewind'i</rewind>",
       "takeYouThrough": "Vaatame üle su parimad hetked",
       "letsGetStarted": "Hakkame pihta!",
       "forPastYear": "<pastYear>viimase aasta</pastYear> jooksul.",
       "singleDate": "<singleDate>{singleDateValue}</singleDate> jooksul.",
-      "dateRange": "vahemikus <startDate>{startDateValue}</startDate> kuni <endDate>{endDateValue}</endDate>."
+      "dateRange": "vahemikus <startDate>{startDateValue}</startDate> kuni <endDate>{endDateValue}</endDate>"
     },
     "Total": {
-      "duration": "<total>Kokku</total> kulutasid sa <duration>{durationValue}</duration> <plex>Plex'is!</plex>",
+      "duration": "<total>Kokku</total> kulutasid sa <duration>{durationValue}</duration> <plex>{serverName}'is!</plex>",
       "percentage": "See on <percentage>{percentageValue}</percentage> tervest aktiivsusest, mis oli <duration>{durationValue}</duration> kõigi kasutajate peale.",
-      "noData": "Sa ei mänginud midagi <plex>Plex'ist</plex> <emoji>😫</emoji>"
+      "noData": "Sa ei mänginud midagi <plex>{serverName}'ist</plex> <emoji>😫</emoji>"
     },
     "Users": {
       "top": "Siin oled sa võrdluses teiste <users>Kasutajatega</users>"
@@ -190,17 +190,17 @@
       "noData": "Sa ei kuulanud <audio>Audiot</audio> <from>Plex'ist</from>"
     },
     "Libraries": {
-      "filesize": "Kas teadsid, et kõikide kogumike <filesize>Failisuurus</filesize> <plex>Plex'is</plex> on <size>{sizeValue}!</size>",
+      "filesize": "Kas teadsid, et kõikide kogumike <filesize>Failisuurus</filesize> <plex>{serverName}'is</plex> on <size>{sizeValue}!</size>",
       "libraries": "Hetkel on saadaval:",
       "movies": "{count, plural, =1 {Film} other {Filmi}}",
       "episodes": "{count, plural, =1 {Saade} other {Saadet}}",
       "tracks": "{count, plural, =1 {Lugu} other {Lugu}}"
     },
     "Shows": {
-      "duration": "<library>Saated</library> võtsid <duration>{durationValue}</duration> sinu ajast <plex>Plex'is.</plex>",
+      "duration": "<library>Saated</library> võtsid <duration>{durationValue}</duration> sinu ajast <plex>{serverName}'is.</plex>",
       "count": "Sa vaatasid kokku <count>{countValue}</count> <episodes>episoodi</episodes>",
       "favorite": "Sinu lemmik oli",
-      "noData": "Sa ei vaadanud ühtegi <shows>Saadet</shows> <plex>Plex'ist</plex> <emoji>😥</emoji>"
+      "noData": "Sa ei vaadanud ühtegi <shows>Saadet</shows> <plex>{serverName}'ist</plex> <emoji>😥</emoji>"
     },
     "Requests": {
       "noData": "Ühtegi <requests>Tellimust</requests> pole tehtud <emoji>😲</emoji>",
@@ -215,15 +215,15 @@
       "duration": "<duration>{durationValue}</duration> kulus sul <movies>Filmidele</movies>",
       "count": "Vaatasid <count>{countValue}</count> <movies>{countValue, plural, =1 {filmi} other {filmi}}</movies>",
       "favorite": "Sinu lemmik oli",
-      "noData": "Sa ei vaadanud ühtegi <movies>Filmi</movies> <plex>Plex'ist</plex> <emoji>😵‍💫</emoji>"
+      "noData": "Sa ei vaadanud ühtegi <movies>Filmi</movies> <plex>{serverName}'ist</plex> <emoji>😵‍💫</emoji>"
     },
     "Goodbye": {
-      "thanks": "Tänan, et vaatasid oma <plex>Plex Rewind'i</plex>, <user>{userValue}!</user>",
+      "thanks": "Tänan, et vaatasid oma <plex>{serverName} Rewind'i</plex>, <user>{userValue}!</user>",
       "sorry": "Kahju, et sa ei leidnud seekord sisu mida vaadata või kuulata. Loodame, et järgmisel korral läheb paremini!",
       "weWillBeBack": "Oleme tagasi järgmisel korral",
       "weWillBeHere": "Igal juhul oleme olemas ka järgmine kord",
       "insightsAndStats": "veelgi huvitavama <insightsAndStats>statistikaga.</insightsAndStats>",
-      "untilThen": "Seniks, naudi kogu sisu, mis <plex>Plex'il</plex> on pakkuda.",
+      "untilThen": "Seniks, naudi kogu sisu, mis <plex>{serverName}'il</plex> on pakkuda.",
       "movies": "Filmidest",
       "shows": "Saadeteni",
       "tracks": "Lugudeni",
