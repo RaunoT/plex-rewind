@@ -83,7 +83,8 @@
       "connection": "Ühendus",
       "general": "Üldine",
       "rewind": "Rewind",
-      "dashboard": "Edetabel"
+      "dashboard": "Edetabel",
+      "activity": "Tegevus"
     },
     "Connection": {
       "title": "Ühenduse seaded"
@@ -100,6 +101,15 @@
       "customPeriod": "Kohandatud periood",
       "inDays": "Päevades.",
       "startDateHelperText": "Kasutatud kogu ajalise perioodi jaoks."
+    },
+    "Activity": {
+      "title": "Tegevuse seaded",
+      "config": "Konfiguratsioon",
+      "enableActivityPage": "Luba tegevuse leht",
+      "enableActivityPageDescription": "Näita tegevuse lehte navigatsioonis ja võimalda ligipääs reaalajas tegevuse jälgimisele.",
+      "privacy": "Privaatsus",
+      "anonymizeUsers": "Anonümiseeri kasutajad",
+      "anonymizeUsersDescription": "Peida kasutajanimed tegevuse lehel privaatsuse kaitseks."
     },
     "General": {
       "title": "Üldseaded",

@@ -1,6 +1,7 @@
 'use server'
 
 import {
+  ActivitySettings,
   ConnectionSettings,
   DashboardSettings,
   GeneralSettings,
@@ -17,6 +18,7 @@ type SettingsTypeMap = {
   dashboard: Partial<DashboardSettings>
   rewind: Partial<RewindSettings>
   general: GeneralSettings
+  activity: ActivitySettings
 }
 
 export default async function updateSettings<K extends keyof SettingsTypeMap>(

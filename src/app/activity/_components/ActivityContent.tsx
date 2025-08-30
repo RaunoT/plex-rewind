@@ -58,22 +58,32 @@ export default function ActivityContent({ settings }: Props) {
             </div>
             <div className='flex items-center gap-4'>
               <div className='relative size-12 shrink-0 rounded-full'>
-                <Image
-                  fill
-                  className='rounded-full object-cover object-top'
-                  alt={session.friendly_name + ' avatar'}
-                  src={`/api/image?url=${encodeURIComponent(
-                    `${tautulliUrl}/pms_image_proxy?img=${
-                      session.user_thumb
-                    }&width=300`,
-                  )}`}
-                  sizes='6rem'
-                  priority
-                />
+                {settings.activity.isAnonymized ? (
+                  <div className='flex size-12 items-center justify-center rounded-full bg-gray-600 text-sm font-semibold text-white'>
+                    {session.session_key.slice(-2).toUpperCase()}
+                  </div>
+                ) : (
+                  <Image
+                    fill
+                    className='rounded-full object-cover object-top'
+                    alt={session.friendly_name + ' avatar'}
+                    src={`/api/image?url=${encodeURIComponent(
+                      `${tautulliUrl}/pms_image_proxy?img=${
+                        session.user_thumb
+                      }&width=300`,
+                    )}`}
+                    sizes='6rem'
+                    priority
+                  />
+                )}
               </div>
               <div className='flex w-full items-end justify-between gap-8'>
                 <div>
-                  <div className='font-semibold'>{session.friendly_name}</div>
+                  <div className='font-semibold'>
+                    {settings.activity.isAnonymized 
+                      ? `User ${session.session_key.slice(-4)}` 
+                      : session.friendly_name}
+                  </div>
                   <div className='text-sm text-gray-400'>
                     {session.product} ({session.player})
                   </div>

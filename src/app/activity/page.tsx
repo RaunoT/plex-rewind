@@ -1,6 +1,7 @@
 import getSettings from '@/utils/getSettings'
 import { Metadata } from 'next'
 import { getTranslations } from 'next-intl/server'
+import { redirect } from 'next/navigation'
 import ActivityContent from './_components/ActivityContent'
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -13,6 +14,11 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default function ActivityPage() {
   const settings = getSettings()
+
+  // Redirect to home if Activity page is disabled
+  if (!settings.activity.isActive) {
+    redirect('/')
+  }
 
   return <ActivityContent settings={settings} />
 }

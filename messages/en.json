@@ -83,7 +83,8 @@
       "connection": "Connection",
       "general": "General",
       "rewind": "Rewind",
-      "dashboard": "Dashboard"
+      "dashboard": "Dashboard",
+      "activity": "Activity"
     },
     "Connection": {
       "title": "Connection settings"
@@ -100,6 +101,15 @@
       "customPeriod": "Custom period",
       "inDays": "In days.",
       "startDateHelperText": "Used for the all time period."
+    },
+    "Activity": {
+      "title": "Activity settings",
+      "config": "Configuration",
+      "enableActivityPage": "Enable Activity page",
+      "enableActivityPageDescription": "Show the Activity page in navigation and allow access to real-time activity monitoring.",
+      "privacy": "Privacy",
+      "anonymizeUsers": "Anonymize users",
+      "anonymizeUsersDescription": "Hide usernames in the Activity page for privacy protection."
     },
     "General": {
       "title": "General settings",

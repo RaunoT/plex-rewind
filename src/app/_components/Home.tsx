@@ -38,6 +38,10 @@ export default function Home({ settings, libraries }: Props) {
     settings.dashboard.isActive &&
     (isLoggedIn || settings.general.isOutsideAccess) &&
     dashboardSlug
+  const showActivity =
+    !missingSetting &&
+    settings.activity.isActive &&
+    (isLoggedIn || settings.general.isOutsideAccess)
   const dashboardParams = new URLSearchParams({
     ...(isPersonal && { personal: 'true' }),
     ...(period && { period }),
@@ -117,19 +121,21 @@ export default function Home({ settings, libraries }: Props) {
           </Link>
         )}
 
-        <Link
-          href='/activity'
-          className={clsx(
-            'mx-auto mb-4 block',
-            !settings.rewind.isActive &&
-              !settings.dashboard.isActive &&
-              isLoggedIn
-              ? 'button'
-              : 'link',
-          )}
-        >
-          {t('activity')}
-        </Link>
+        {showActivity && (
+          <Link
+            href='/activity'
+            className={clsx(
+              'mx-auto mb-4 block',
+              !settings.rewind.isActive &&
+                !settings.dashboard.isActive &&
+                isLoggedIn
+                ? 'button'
+                : 'link',
+            )}
+          >
+            {t('activity')}
+          </Link>
+        )}
 
         <div className='mt-16'>
           {isLoggedIn && (

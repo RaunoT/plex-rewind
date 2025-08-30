@@ -83,7 +83,8 @@
       "connection": "Verbindungen",
       "general": "Allgemein",
       "rewind": "Rewind",
-      "dashboard": "Dashboard"
+      "dashboard": "Dashboard",
+      "activity": "Aktivität"
     },
     "Connection": {
       "title": "Verbindungseinstellungen"
@@ -100,6 +101,15 @@
       "customPeriod": "benutzerdefinierter Zeitraum",
       "inDays": "In Tagen.",
       "startDateHelperText": "Für den gesamten Zeitraum genutzt."
+    },
+    "Activity": {
+      "title": "Aktivität Einstellungen",
+      "config": "Konfiguration",
+      "enableActivityPage": "Aktivität Seite aktivieren",
+      "enableActivityPageDescription": "Zeige die Aktivität Seite in der Navigation und erlaube Zugriff auf Echtzeit-Aktivität Überwachung.",
+      "privacy": "Datenschutz",
+      "anonymizeUsers": "Benutzer anonymisieren",
+      "anonymizeUsersDescription": "Verstecke Benutzernamen auf der Aktivität Seite zum Datenschutz."
     },
     "General": {
       "title": "Allgemeine Einstellungen",
