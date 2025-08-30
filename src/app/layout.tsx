@@ -14,8 +14,10 @@ import SessionProviderWrapper from './_components/SessionProvider'
 export async function generateMetadata(): Promise<Metadata> {
   const settings = getSettings()
   const serverName = settings.general.serverName
-  const baseTitle = serverName ? `${serverName}` : 'Plex Rewind'
-  const titleTemplate = serverName ? `%s | ${serverName}` : '%s | Plex Rewind'
+  const baseTitle = serverName ? `${serverName} Rewind` : 'Plex Rewind'
+  const titleTemplate = serverName
+    ? `%s | ${serverName} Rewind`
+    : '%s | Plex Rewind'
 
   return {
     metadataBase: new URL(APP_URL),
