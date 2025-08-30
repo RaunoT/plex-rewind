@@ -103,10 +103,7 @@
       "startDateHelperText": "Kasutatud kogu ajalise perioodi jaoks."
     },
     "Activity": {
-      "title": "Tegevuse seaded",
-      "privacy": "Privaatsus",
-      "anonymize": "Anonümiseeri",
-      "anonymizeDescription": "Peida teiste kasutajanimed."
+      "title": "Tegevuse seaded"
     },
     "General": {
       "title": "Üldseaded",

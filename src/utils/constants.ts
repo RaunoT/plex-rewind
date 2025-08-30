@@ -80,7 +80,6 @@ export const DEFAULT_SETTINGS: Settings = {
   },
   activity: {
     isActive: true,
-    isAnonymized: false,
     complete: false,
   },
   setupComplete: false,

@@ -103,10 +103,7 @@
       "startDateHelperText": "Utilisé pour la période tout le temps."
     },
     "Activity": {
-      "title": "Paramètres d'activité",
-      "privacy": "Confidentialité",
-      "anonymize": "Anonymiser",
-      "anonymizeDescription": "Masquer les noms d'utilisateurs pour les autres utilisateurs."
+      "title": "Paramètres d'activité"
     },
     "General": {
       "title": "Paramètres généraux",

@@ -103,10 +103,7 @@
       "startDateHelperText": "Used for the all time period."
     },
     "Activity": {
-      "title": "Activity settings",
-      "privacy": "Privacy",
-      "anonymize": "Anonymize",
-      "anonymizeDescription": "Hide usernames for other users."
+      "title": "Activity settings"
     },
     "General": {
       "title": "General settings",

@@ -59,7 +59,6 @@ export type DashboardSettings = {
 
 export type ActivitySettings = {
   isActive: boolean
-  isAnonymized: boolean
   complete: boolean
 }
 

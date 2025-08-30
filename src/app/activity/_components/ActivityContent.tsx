@@ -1,11 +1,13 @@
 'use client'
 
 import CardWrapper from '@/app/_components/CardWrapper'
+import anonymousSvg from '@/components/MediaItem/anonymous.svg'
 import { Settings } from '@/types/settings'
 import { getActivity } from '@/utils/fetchTautulli'
 import { PauseIcon, PlayIcon } from '@heroicons/react/24/outline'
 import { useQuery } from '@tanstack/react-query'
 import Image from 'next/image'
+import { useState } from 'react'
 
 type Props = {
   settings: Settings
@@ -13,6 +15,7 @@ type Props = {
 
 export default function ActivityContent({ settings }: Props) {
   const tautulliUrl = settings.connection.tautulliUrl
+  const [imageSrc, setImageSrc] = useState<string>('')
   const { data, error, isLoading } = useQuery({
     queryKey: ['activity'],
     queryFn: getActivity,
@@ -58,7 +61,7 @@ export default function ActivityContent({ settings }: Props) {
             </div>
             <div className='flex items-center gap-4'>
               <div className='relative size-12 shrink-0 rounded-full'>
-                {settings.activity.isAnonymized ? (
+                {settings.general.isAnonymized ? (
                   <div className='flex size-12 items-center justify-center rounded-full bg-gray-600 text-sm font-semibold text-white'>
                     {session.session_key.slice(-2).toUpperCase()}
                   </div>
@@ -67,20 +70,24 @@ export default function ActivityContent({ settings }: Props) {
                     fill
                     className='rounded-full object-cover object-top'
                     alt={session.friendly_name + ' avatar'}
-                    src={`/api/image?url=${encodeURIComponent(
-                      `${tautulliUrl}/pms_image_proxy?img=${
-                        session.user_thumb
-                      }&width=300`,
-                    )}`}
+                    src={
+                      imageSrc ||
+                      `/api/image?url=${encodeURIComponent(
+                        `${tautulliUrl}/pms_image_proxy?img=${
+                          session.user_thumb
+                        }&width=300`,
+                      )}`
+                    }
                     sizes='6rem'
                     priority
+                    onError={() => setImageSrc(anonymousSvg)}
                   />
                 )}
               </div>
               <div className='flex w-full items-end justify-between gap-8'>
                 <div>
                   <div className='font-semibold'>
-                    {settings.activity.isAnonymized
+                    {settings.general.isAnonymized
                       ? `User ${session.session_key.slice(-4)}`
                       : session.friendly_name}
                   </div>

@@ -19,7 +19,6 @@ type ActivityFormState = SettingsFormInitialState<ActivitySettings>
 
 export default function ActivitySettingsForm({ settings }: Props) {
   const [isActive, setIsActive] = useState<boolean>(settings.activity.isActive)
-  const t = useTranslations('Settings.Activity')
   const tCommon = useTranslations('Common')
   const initialState: ActivityFormState = {
     message: '',
@@ -58,23 +57,6 @@ export default function ActivitySettingsForm({ settings }: Props) {
           </span>
         </Switch>
       </section>
-      {isActive && (
-        <section className='group-settings group'>
-          <h2 className='heading-settings'>{t('privacy')}</h2>
-          <Switch
-            key={`anonymized-${activitySettings.isAnonymized}`}
-            className='switch items-start'
-            name='isAnonymized'
-            defaultSelected={activitySettings.isAnonymized}
-          >
-            <div className='indicator'></div>
-            <span className='label'>
-              <span className='label-wrapper'>{t('anonymize')}</span>
-              <small>{t('anonymizeDescription')}</small>
-            </span>
-          </Switch>
-        </section>
-      )}
     </SettingsForm>
   )
 }
