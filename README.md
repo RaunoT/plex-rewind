@@ -12,9 +12,11 @@ Present [Plex](https://plex.tv) user statistics and habits in a beautiful and or
 ## Features
 
 - 📱 Fully responsive - viewable, usable & enjoyable on desktop, tablet or mobile, courtesy of [Tailwind.css](https://tailwindcss.com).
-- 🔄 Fully dynamic - the data you're viewing will always be the latest available.
-- 📆 Rewind - allows your Plex users view their statistics and habits for a chosen time period.
+- 🔄 Fully dynamic - the data you're viewing will always be the latest available - using the latest from [TanStack Query](https://tanstack.com/query/latest).
+- 🎭 Anonymization - anonymize usernames for enchanced privacy.
+- 📆 Rewind - allows your users view their statistics and habits for a (customizable) time period.
 - 👀 Dashboard - provides an easily glanceable overview of activity on your server for all your libraries, personalized or general.
+- ⚡ Activity - see what's happening on your server in real time.
 - 📊 Fuelled by data from [Tautulli](https://tautulli.com) - the backbone responsible for the heavy lifting regarding statistics.
 - 🔗 Integrates with [Overseerr](https://overseerr.dev) - show request breakdowns and totals and display request buttons straight under deleted fan-favorite media items.
 - 🔐 Log in with Plex - uses [NextAuth.js](https://next-auth.js.org) to enable secure login and session management with your Plex account.
