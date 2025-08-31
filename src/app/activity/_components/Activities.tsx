@@ -28,6 +28,7 @@ export default function Activities({ settings }: Props) {
     queryKey: ['activity'],
     queryFn: getActivity,
     refetchInterval: 5000,
+    refetchIntervalInBackground: false,
   })
 
   useEffect(() => {
@@ -173,8 +174,9 @@ export default function Activities({ settings }: Props) {
                     {t('audio')} ({session.stream_audio_codec})
                   </div>
                   <div>
-                    {session.stream_audio_language} (
-                    {session.stream_audio_channel_layout})
+                    {session.media_type === 'track'
+                      ? session.stream_audio_channel_layout
+                      : `${session.stream_audio_language} (${session.stream_audio_channel_layout})`}
                   </div>
                   {session.stream_audio_decision && (
                     <div className='text-neutral-400'>
