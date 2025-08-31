@@ -82,7 +82,6 @@ export default function Activities({ settings }: Props) {
                   <div className='mt-2 text-center text-neutral-400'>
                     {calculateETA(session.duration, session.view_offset) && (
                       <div className='text-xs'>
-                        {t('eta')}:{' '}
                         {calculateETA(session.duration, session.view_offset)}
                       </div>
                     )}
