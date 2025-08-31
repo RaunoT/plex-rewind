@@ -33,7 +33,7 @@ export default function DashboardLoader() {
 function ListItem() {
   return (
     <li className='flex gap-3 last:hidden lg:last:flex'>
-      <div className='skeleton aspect-2/3 w-20 shrink-0 rounded-none sm:w-[5.35rem] 2xl:w-24'></div>
+      <div className='skeleton poster'></div>
       <div className='mt-1 w-full sm:mt-2 2xl:mt-[2.125rem]'>
         <div className='skeleton mb-3 w-2/3 sm:w-1/3'></div>
         <ul className='icon-stats-container'>

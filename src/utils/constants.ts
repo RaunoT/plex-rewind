@@ -80,6 +80,7 @@ export const DEFAULT_SETTINGS: Settings = {
   },
   activity: {
     isActive: true,
+    hideLocation: false,
     complete: false,
   },
   setupComplete: false,

@@ -12,7 +12,6 @@
   "Activity": {
     "title": "Aktivität",
     "loading": "Lädt...",
-    "error": "Etwas ist schief gelaufen!",
     "poster": "Poster",
     "avatar": "Avatar",
     "anonymousAvatar": "Anonymer Avatar",
@@ -22,7 +21,8 @@
     "audio": "Audio",
     "subtitles": "Untertitel",
     "location": "Standort",
-    "bandwidth": "Bandbreite"
+    "bandwidth": "Bandbreite",
+    "noActivity": "Keine aktiven Sitzungen.. 😴"
   },
   "Dashboard": {
     "noActivity": "Keine Aktivität in dieser Zeitspanne.. 😴",
@@ -115,7 +115,9 @@
       "startDateHelperText": "Für den gesamten Zeitraum genutzt."
     },
     "Activity": {
-      "title": "Aktivität Einstellungen"
+      "title": "Aktivität Einstellungen",
+      "privacy": "Datenschutz",
+      "hideLocation": "Standortinformationen ausblenden"
     },
     "General": {
       "title": "Allgemeine Einstellungen",

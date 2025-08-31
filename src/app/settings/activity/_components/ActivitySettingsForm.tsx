@@ -22,6 +22,7 @@ export default function ActivitySettingsForm({ settings }: Props) {
   const initialSetupMode = isInitialSetup(settings)
   const [isActive, setIsActive] = useState<boolean>(settings.activity.isActive)
   const tCommon = useTranslations('Common')
+  const t = useTranslations('Settings.Activity')
   const initialState: ActivityFormState = {
     message: '',
     status: '',
@@ -59,6 +60,22 @@ export default function ActivitySettingsForm({ settings }: Props) {
           </span>
         </Switch>
       </section>
+      {isActive && (
+        <section className='group-settings group'>
+          <h2 className='heading-settings'>{t('privacy')}</h2>
+          <Switch
+            key={`hide-location-${settings.activity.hideLocation}`}
+            className='switch'
+            name='hideLocation'
+            defaultSelected={settings.activity.hideLocation}
+          >
+            <div className='indicator'></div>
+            <span className='label'>
+              <span className='label-wrapper'>{t('hideLocation')}</span>
+            </span>
+          </Switch>
+        </section>
+      )}
     </SettingsForm>
   )
 }

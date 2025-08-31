@@ -100,6 +100,10 @@
     }
   }
 
+  .poster {
+    @apply relative aspect-2/3 h-full w-20 shrink-0 !rounded-none sm:w-[5.35rem] 2xl:w-24;
+  }
+
   .link {
     @apply text-neutral-400 hover:text-neutral-500;
   }

@@ -4,6 +4,7 @@ import { getServerSession } from 'next-auth'
 import { getTranslations } from 'next-intl/server'
 import { notFound } from 'next/navigation'
 import { ReactNode } from 'react'
+import CardWrapper from '../_components/CardWrapper'
 import PageTitle from '../_components/PageTitle'
 
 type Props = {
@@ -25,7 +26,9 @@ export default async function ActivityLayout({ children }: Props) {
   return (
     <div className='mb-auto w-full max-w-(--breakpoint-sm)'>
       <PageTitle title={t('title')} />
-      {children}
+      <CardWrapper className='min-h-[288px] sm:min-h-[292px]'>
+        {children}
+      </CardWrapper>
     </div>
   )
 }

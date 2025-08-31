@@ -59,6 +59,7 @@ export type DashboardSettings = {
 
 export type ActivitySettings = {
   isActive: boolean
+  hideLocation: boolean
   complete: boolean
 }
 

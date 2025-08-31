@@ -12,7 +12,6 @@
   "Activity": {
     "title": "Activity",
     "loading": "Loading...",
-    "error": "Something went wrong!",
     "poster": "poster",
     "avatar": "avatar",
     "anonymousAvatar": "Anonymous avatar",
@@ -22,7 +21,8 @@
     "audio": "Audio",
     "subtitles": "Subs",
     "location": "Location",
-    "bandwidth": "Bandwidth"
+    "bandwidth": "Bandwidth",
+    "noActivity": "No active sessions.. 😴"
   },
   "Dashboard": {
     "noActivity": "No activity during this period.. 😴",
@@ -115,7 +115,9 @@
       "startDateHelperText": "Used for the all time period."
     },
     "Activity": {
-      "title": "Activity settings"
+      "title": "Activity settings",
+      "privacy": "Privacy",
+      "hideLocation": "Hide location"
     },
     "General": {
       "title": "General settings",

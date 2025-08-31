@@ -12,7 +12,6 @@
   "Activity": {
     "title": "Tegevus",
     "loading": "Laadimine...",
-    "error": "Midagi läks valesti!",
     "poster": "plakat",
     "avatar": "avatar",
     "anonymousAvatar": "Anonüümne avatar",
@@ -22,7 +21,8 @@
     "audio": "Audio",
     "subtitles": "Subtiitrid",
     "location": "Asukoht",
-    "bandwidth": "Ribalaidus"
+    "bandwidth": "Ribalaidus",
+    "noActivity": "Ühtegi aktiivset sessiooni pole.. 😴"
   },
   "Dashboard": {
     "noActivity": "Valitud perioodil puudub tegevus.. 😴",
@@ -115,7 +115,9 @@
       "startDateHelperText": "Kasutatud kogu ajalise perioodi jaoks."
     },
     "Activity": {
-      "title": "Tegevuse seaded"
+      "title": "Tegevuse seaded",
+      "privacy": "Privaatsus",
+      "hideLocation": "Peida asukohateave"
     },
     "General": {
       "title": "Üldseaded",

@@ -12,7 +12,6 @@
   "Activity": {
     "title": "Activité",
     "loading": "Chargement...",
-    "error": "Quelque chose s'est mal passé !",
     "poster": "affiche",
     "avatar": "avatar",
     "anonymousAvatar": "Avatar anonyme",
@@ -22,7 +21,8 @@
     "audio": "Audio",
     "subtitles": "Sous-titres",
     "location": "Emplacement",
-    "bandwidth": "Bande passante"
+    "bandwidth": "Bande passante",
+    "noActivity": "Aucune session active.. 😴"
   },
   "Dashboard": {
     "noActivity": "Aucune activité pendant cette période.. 😴",
@@ -115,7 +115,9 @@
       "startDateHelperText": "Utilisé pour la période tout le temps."
     },
     "Activity": {
-      "title": "Paramètres d'activité"
+      "title": "Paramètres d'activité",
+      "privacy": "Confidentialité",
+      "hideLocation": "Masquer l'emplacement"
     },
     "General": {
       "title": "Paramètres généraux",

@@ -46,6 +46,9 @@ export default function AppProvider({ children, settings, version }: Props) {
       case pathname.startsWith('/rewind'):
         setSettingsLink('/settings/rewind')
         break
+      case pathname.startsWith('/activity'):
+        setSettingsLink('/settings/activity')
+        break
       default:
         setSettingsLink('/settings/general')
         break
