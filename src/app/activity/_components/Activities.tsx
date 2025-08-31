@@ -208,7 +208,7 @@ export default function Activities({ settings }: Props) {
                           href={`https://ipinfo.io/${session.ip_address_public}`}
                           target='_blank'
                           rel='noopener noreferrer'
-                          className='link-light text-blue-300'
+                          className='link-light text-blue-300 underline'
                         >
                           {session.ip_address_public}
                         </a>
