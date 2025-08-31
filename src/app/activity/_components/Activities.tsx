@@ -2,6 +2,7 @@
 
 import anonymousSvg from '@/components/MediaItem/anonymous.svg'
 import { Settings } from '@/types/settings'
+import { generateDeeplinkUrl } from '@/utils/deeplink'
 import { getActivity } from '@/utils/fetchTautulli'
 import {
   calculateETA,
@@ -18,9 +19,10 @@ import ActivitiesSkeleton from './ActivitiesSkeleton'
 
 type Props = {
   settings: Settings
+  serverId?: string
 }
 
-export default function Activities({ settings }: Props) {
+export default function Activities({ settings, serverId }: Props) {
   const tautulliUrl = settings.connection.tautulliUrl
   const t = useTranslations('Activity')
   const errorT = useTranslations('Error')
@@ -123,7 +125,18 @@ export default function Activities({ settings }: Props) {
                   </p>
                 )}
                 <h2 className='text-sm font-bold sm:text-lg'>
-                  {session.title}
+                  {serverId ? (
+                    <a
+                      href={generateDeeplinkUrl(session.rating_key, serverId)}
+                      target='_blank'
+                      rel='noopener noreferrer'
+                      className='link-light'
+                    >
+                      {session.title}
+                    </a>
+                  ) : (
+                    session.title
+                  )}
                 </h2>
                 {session.parent_title && (
                   <p className='text-xs text-neutral-400 sm:text-sm'>

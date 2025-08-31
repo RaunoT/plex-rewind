@@ -34,6 +34,8 @@ Keep an eye on the [issues page](https://github.com/RaunoT/plex-rewind/issues) t
 
 ![Rewind](https://i.imgur.com/w536oB5.png 'Rewind')
 
+![Activity](https://i.imgur.com/woP4DEh.png 'Activity')
+
 ## Getting started
 
 1. Create a `docker-compose.yml` in your location of choice and run `docker compose up -d`. The app will be available at `http://localhost:8383`.

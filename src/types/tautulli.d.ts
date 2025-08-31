@@ -88,6 +88,7 @@ export type TautulliSession = {
   ip_address?: string
   ip_address_public?: string
   bandwidth: string
+  rating_key: number
 }
 
 export type TautulliActivity = {
