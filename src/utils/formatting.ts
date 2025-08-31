@@ -92,3 +92,35 @@ export function formatBitrate(bitrate: number | string): string {
 
   return `${megabits.toFixed(1)} Mbps`
 }
+
+export function millisecondsToTimeString(milliseconds: number): string {
+  const totalSeconds = Math.floor(milliseconds / 1000)
+  const minutes = Math.floor(totalSeconds / 60)
+  const seconds = totalSeconds % 60
+
+  return `${minutes}:${seconds.toString().padStart(2, '0')}`
+}
+
+export function calculateETA(
+  durationMs?: string,
+  viewOffsetMs?: string,
+): string | null {
+  if (!durationMs || !viewOffsetMs) return null
+
+  const duration = parseInt(durationMs)
+  const viewOffset = parseInt(viewOffsetMs)
+
+  if (isNaN(duration) || isNaN(viewOffset) || duration <= 0) return null
+
+  const remainingMs = duration - viewOffset
+
+  if (remainingMs <= 0) return null
+
+  const now = new Date()
+  const eta = new Date(now.getTime() + remainingMs)
+  // Format as HH:MM
+  const hours = eta.getHours().toString().padStart(2, '0')
+  const minutes = eta.getMinutes().toString().padStart(2, '0')
+
+  return `${hours}:${minutes}`
+}

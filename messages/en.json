@@ -10,7 +10,20 @@
     "signOut": "Sign out"
   },
   "Activity": {
-    "title": "Activity"
+    "title": "Activity",
+    "loading": "Loading...",
+    "error": "Something went wrong!",
+    "poster": "poster",
+    "avatar": "avatar",
+    "anonymousAvatar": "Anonymous avatar",
+    "anonymous": "Anonymous",
+    "eta": "ETA",
+    "quality": "Quality",
+    "video": "Video",
+    "audio": "Audio",
+    "subtitles": "Subs",
+    "location": "Location",
+    "bandwidth": "Bandwidth"
   },
   "Dashboard": {
     "noActivity": "No activity during this period.. 😴",

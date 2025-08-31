@@ -10,7 +10,20 @@
     "signOut": "Abmelden"
   },
   "Activity": {
-    "title": "Aktivität"
+    "title": "Aktivität",
+    "loading": "Lädt...",
+    "error": "Etwas ist schief gelaufen!",
+    "poster": "Poster",
+    "avatar": "Avatar",
+    "anonymousAvatar": "Anonymer Avatar",
+    "anonymous": "Anonym",
+    "eta": "Verbleibend",
+    "quality": "Qualität",
+    "video": "Video",
+    "audio": "Audio",
+    "subtitles": "Untertitel",
+    "location": "Standort",
+    "bandwidth": "Bandbreite"
   },
   "Dashboard": {
     "noActivity": "Keine Aktivität in dieser Zeitspanne.. 😴",

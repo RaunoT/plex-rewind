@@ -44,7 +44,6 @@ export default function StoryRequests({
                     requests: (chunks) => (
                       <span className='rewind-cat'>
                         {chunks}
-                        {/* eslint-disable-next-line react/jsx-no-literals */}
                         <QuestionMarkCircleIcon />.
                       </span>
                     ),

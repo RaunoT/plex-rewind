@@ -60,7 +60,6 @@ export type TautulliSession = {
   product: string
   state: 'playing' | 'paused'
   progress_percent: string
-  full_title: string
   grandparent_title: string
   thumb: string
   grandparent_thumb: string
@@ -69,14 +68,26 @@ export type TautulliSession = {
   stream_bitrate: string
   stream_video_codec: string
   stream_video_full_resolution: string
+  stream_video_dynamic_range: string
   stream_video_decision: string
   stream_audio_codec: string
+  stream_audio_language: string
+  stream_audio_channel_layout: string
   stream_audio_decision: string
   stream_subtitle_codec: string
   stream_subtitle_language: string
   stream_subtitle_decision: string
   transcode_decision: string
   media_type: string
+  duration?: string
+  view_offset?: string
+  title: string
+  parent_title?: string
+  grandparent_title?: string
+  location?: string
+  ip_address?: string
+  ip_address_public?: string
+  bandwidth: string
 }
 
 export type TautulliActivity = {

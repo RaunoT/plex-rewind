@@ -10,7 +10,20 @@
     "signOut": "Logi välja"
   },
   "Activity": {
-    "title": "Tegevus"
+    "title": "Tegevus",
+    "loading": "Laadimine...",
+    "error": "Midagi läks valesti!",
+    "poster": "plakat",
+    "avatar": "avatar",
+    "anonymousAvatar": "Anonüümne avatar",
+    "anonymous": "Anonüümne",
+    "eta": "Aeg",
+    "quality": "Kvaliteet",
+    "video": "Video",
+    "audio": "Audio",
+    "subtitles": "Subtiitrid",
+    "location": "Asukoht",
+    "bandwidth": "Ribalaidus"
   },
   "Dashboard": {
     "noActivity": "Valitud perioodil puudub tegevus.. 😴",
