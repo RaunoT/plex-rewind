@@ -9,7 +9,9 @@ import { formatBitrate } from '@/utils/formatting'
 import { PauseIcon, PlayIcon } from '@heroicons/react/24/outline'
 import { useQuery } from '@tanstack/react-query'
 import clsx from 'clsx'
+import { useTranslations } from 'next-intl'
 import Image from 'next/image'
+import { useEffect } from 'react'
 
 type Props = {
   settings: Settings
@@ -17,11 +19,21 @@ type Props = {
 
 export default function Activities({ settings }: Props) {
   const tautulliUrl = settings.connection.tautulliUrl
+  const t = useTranslations('Activity')
   const { data, error, isLoading } = useQuery({
     queryKey: ['activity'],
     queryFn: getActivity,
     refetchInterval: 5000,
   })
+
+  useEffect(() => {
+    const baseTitle = settings.general.serverName || 'Plex Rewind'
+    const streamCount = data?.stream_count ?? 0
+    const title =
+      streamCount > 0 ? `(${streamCount}) ${t('title')}` : t('title')
+
+    document.title = `${title} | ${baseTitle}`
+  }, [data?.stream_count, settings.general.serverName, t])
 
   if (isLoading) {
     return <p>Loading activity...</p>

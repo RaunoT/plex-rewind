@@ -4,7 +4,6 @@ import { Metadata } from 'next'
 import { getTranslations } from 'next-intl/server'
 import Activities from './_components/Activities'
 
-// TODO: Title should update like activities
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations('Activity')
   const activityData = await getActivity()
