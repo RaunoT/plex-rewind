@@ -95,20 +95,22 @@ export default function Activities({ settings }: Props) {
                       </div>
                     )}
                   </li>
-                  <li>
-                    <div className='font-semibold text-neutral-400 uppercase'>
-                      Video
-                    </div>
-                    <div className='uppercase'>
-                      {session.stream_video_codec}{' '}
-                      {session.stream_video_full_resolution}
-                    </div>
-                    {session.stream_video_decision && (
-                      <div className='text-xs text-neutral-400'>
-                        {session.stream_video_decision}
+                  {session.media_type !== 'track' && (
+                    <li>
+                      <div className='font-semibold text-neutral-400 uppercase'>
+                        Video
                       </div>
-                    )}
-                  </li>
+                      <div className='uppercase'>
+                        {session.stream_video_codec}{' '}
+                        {session.stream_video_full_resolution}
+                      </div>
+                      {session.stream_video_decision && (
+                        <div className='text-xs text-neutral-400'>
+                          {session.stream_video_decision}
+                        </div>
+                      )}
+                    </li>
+                  )}
                   <li>
                     <div className='font-semibold text-neutral-400 uppercase'>
                       Audio
@@ -122,22 +124,24 @@ export default function Activities({ settings }: Props) {
                       </div>
                     )}
                   </li>
-                  <li>
-                    <div className='font-semibold text-neutral-400 uppercase'>
-                      Subtitles
-                    </div>
-                    <div>
-                      <span className='uppercase'>
-                        {session.stream_subtitle_codec}
-                      </span>{' '}
-                      - {session.stream_subtitle_language}
-                    </div>
-                    {session.stream_subtitle_decision && (
-                      <div className='text-xs text-neutral-400'>
-                        {session.stream_subtitle_decision}
+                  {session.media_type !== 'track' && (
+                    <li>
+                      <div className='font-semibold text-neutral-400 uppercase'>
+                        Subtitles
                       </div>
-                    )}
-                  </li>
+                      <div>
+                        <span className='uppercase'>
+                          {session.stream_subtitle_codec}
+                        </span>{' '}
+                        - {session.stream_subtitle_language}
+                      </div>
+                      {session.stream_subtitle_decision && (
+                        <div className='text-xs text-neutral-400'>
+                          {session.stream_subtitle_decision}
+                        </div>
+                      )}
+                    </li>
+                  )}
                 </ul>
               </div>
             </div>

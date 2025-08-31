@@ -76,6 +76,7 @@ export type TautulliSession = {
   stream_subtitle_language: string
   stream_subtitle_decision: string
   transcode_decision: string
+  media_type: string
 }
 
 export type TautulliActivity = {
