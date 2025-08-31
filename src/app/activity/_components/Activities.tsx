@@ -101,11 +101,14 @@ export default function Activities({ settings }: Props) {
               {/* Time */}
               {session.duration && session.view_offset && (
                 <div className='mt-2 text-center text-neutral-400'>
-                  {calculateETA(session.duration, session.view_offset) && (
-                    <div className='text-xs'>
-                      {calculateETA(session.duration, session.view_offset)}
-                    </div>
-                  )}
+                  <div className='text-xs'>
+                    {`${session.progress_percent}% `}
+                    {calculateETA(session.duration, session.view_offset) && (
+                      <>
+                        - {calculateETA(session.duration, session.view_offset)}
+                      </>
+                    )}
+                  </div>
                   <div className='text-[0.625rem]'>
                     {millisecondsToTimeString(parseInt(session.view_offset))} /{' '}
                     {millisecondsToTimeString(parseInt(session.duration))}
