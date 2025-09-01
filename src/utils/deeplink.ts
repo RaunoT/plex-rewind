@@ -11,17 +11,19 @@ export function generateDeeplinkUrl(
   return `https://app.plex.tv/desktop#!/server/${serverId}/details?key=%2Flibrary%2Fmetadata%2F${ratingKey}`
 }
 
-export function getDeeplinkRatingKey(session: TautulliSession): number {
+export function getDeeplinkRatingKeyFromSession(
+  session: TautulliSession,
+): number {
   if (session.media_type === 'track') {
-    return session.grandparent_rating_key!
+    return session.parent_rating_key!
   }
 
   return session.rating_key
 }
 
-export function getDeeplinkRatingKeyForItem(
+export function getDeeplinkRatingKeyFromRow(
   item: TautulliItemRow,
-  type: string,
+  type?: string,
 ): number {
   if (type === 'artist') {
     return item.grandparent_rating_key!

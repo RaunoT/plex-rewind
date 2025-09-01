@@ -2,7 +2,7 @@
 
 import { Settings } from '@/types/settings'
 import { TautulliItemRow } from '@/types/tautulli'
-import { getDeeplinkRatingKeyForItem } from '@/utils/deeplink'
+import { getDeeplinkRatingKeyFromRow } from '@/utils/deeplink'
 import { secondsToTime } from '@/utils/formatting'
 import { slideDown } from '@/utils/motion'
 import {
@@ -113,44 +113,42 @@ export default function MediaItem({
           parentRef={titleContainerRef}
           loggedInUserId={loggedInUserId}
         />
-        {(type === 'movie' || type === 'show' || type === 'artist') && (
-          <div className='relative z-10 mb-3 flex items-center gap-2'>
-            {data.is_deleted ? (
-              isOverseerrActive && (type === 'movie' || type === 'show') ? (
-                <a
-                  href={`${settings.connection.overseerrUrl}/${
-                    type === 'movie' ? 'movie' : 'tv'
-                  }/${data.tmdb_id}`}
-                  target='_blank'
-                  rel='noopener noreferrer'
-                  className='button-card bg-purple-500'
-                >
-                  {t('request')}
-                </a>
-              ) : (
-                <div className='button-card bg-red-500'>{t('deleted')}</div>
-              )
-            ) : (
-              serverId && (
-                <PlexDeeplink
-                  serverId={serverId}
-                  ratingKey={getDeeplinkRatingKeyForItem(data, type)}
-                />
-              )
-            )}
-            {data.imdb_id && (
+        <div className='relative z-10 mb-3 flex items-center gap-2'>
+          {data.is_deleted ? (
+            isOverseerrActive && (type === 'movie' || type === 'show') ? (
               <a
-                href={`https://www.imdb.com/title/${data.imdb_id}`}
+                href={`${settings.connection.overseerrUrl}/${
+                  type === 'movie' ? 'movie' : 'tv'
+                }/${data.tmdb_id}`}
                 target='_blank'
                 rel='noopener noreferrer'
-                className='button-card bg-yellow-500 text-black'
-                // eslint-disable-next-line react/jsx-no-literals
+                className='button-card bg-purple-500'
               >
-                IMDB
+                {t('request')}
               </a>
-            )}
-          </div>
-        )}
+            ) : (
+              <div className='button-card bg-red-500'>{t('deleted')}</div>
+            )
+          ) : (
+            serverId && (
+              <PlexDeeplink
+                serverId={serverId}
+                ratingKey={getDeeplinkRatingKeyFromRow(data, type)}
+              />
+            )
+          )}
+          {data.imdb_id && (
+            <a
+              href={`https://www.imdb.com/title/${data.imdb_id}`}
+              target='_blank'
+              rel='noopener noreferrer'
+              className='button-card bg-yellow-500 text-black'
+              // eslint-disable-next-line react/jsx-no-literals
+            >
+              IMDB
+            </a>
+          )}
+        </div>
         <ul className='icon-stats-container'>
           {(type === 'movie' || type === 'show') &&
             data.year &&
