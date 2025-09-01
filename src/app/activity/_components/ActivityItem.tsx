@@ -33,8 +33,9 @@ export default function ActivityItem({
 }: ActivityItemProps) {
   const { posterUrl, isLoading } = usePoster(session, settings)
   const t = useTranslations('Activity')
-  const { data: userData } = useSession()
-  const isLoggedIn = session.user_id == userData?.user.id
+  const { data: userData, status: userStatus } = useSession()
+  const isLoggedIn = userStatus === 'authenticated'
+  const isCurrentUser = session.user_id == userData?.user.id
 
   return (
     <li
@@ -170,7 +171,8 @@ export default function ActivityItem({
             )}
             {/* Location */}
             {!settings.activity.hideLocation &&
-              !settings.general.isAnonymized && (
+              !settings.general.isAnonymized &&
+              isLoggedIn && (
                 <li className='space-y-0.5'>
                   <div className='font-semibold text-neutral-400 uppercase'>
                     {t('location')} ({session.location})
@@ -210,12 +212,12 @@ export default function ActivityItem({
               fill
               className='rounded-full object-cover object-top'
               alt={
-                settings.general.isAnonymized && !isLoggedIn
+                settings.general.isAnonymized && !isCurrentUser
                   ? t('anonymousAvatar')
                   : session.friendly_name + ' ' + t('avatar')
               }
               src={
-                settings.general.isAnonymized && !isLoggedIn
+                settings.general.isAnonymized && !isCurrentUser
                   ? anonymousSvg
                   : `/api/image?url=${encodeURIComponent(
                       `${settings.connection.tautulliUrl}/pms_image_proxy?img=${session.user_thumb}&width=300`,
@@ -230,10 +232,10 @@ export default function ActivityItem({
             <div
               className={clsx(
                 'text-sm font-semibold sm:text-base',
-                isLoggedIn && 'gradient-plex',
+                isCurrentUser && 'gradient-plex',
               )}
             >
-              {settings.general.isAnonymized && !isLoggedIn
+              {settings.general.isAnonymized && !isCurrentUser
                 ? `${t('anonymous')} #${index + 1}`
                 : session.friendly_name}
             </div>
