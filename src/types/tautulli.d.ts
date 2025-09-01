@@ -51,6 +51,7 @@ export type TautulliItemRow = {
   shows_plays_count: number
   user_id: number
   rank: number
+  grandparent_rating_key?: number
 }
 
 export type TautulliSession = {
@@ -85,6 +86,8 @@ export type TautulliSession = {
   title: string
   parent_title?: string
   grandparent_title?: string
+  parent_rating_key?: number
+  grandparent_rating_key?: number
   location?: string
   ip_address?: string
   ip_address_public?: string

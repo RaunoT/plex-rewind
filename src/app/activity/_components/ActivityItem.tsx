@@ -4,7 +4,10 @@ import anonymousSvg from '@/components/MediaItem/anonymous.svg'
 import { usePoster } from '@/hooks/usePoster'
 import { Settings } from '@/types/settings'
 import { TautulliSession } from '@/types/tautulli'
-import { generateDeeplinkUrl } from '@/utils/deeplink'
+import {
+  generateDeeplinkUrl,
+  getDeeplinkRatingKeyFromSession,
+} from '@/utils/deeplink'
 import {
   calculateETA,
   formatBitrate,
@@ -89,7 +92,10 @@ export default function ActivityItem({
             <h2 className='text-sm font-bold sm:text-lg'>
               {serverId ? (
                 <a
-                  href={generateDeeplinkUrl(session.rating_key, serverId)}
+                  href={generateDeeplinkUrl(
+                    getDeeplinkRatingKeyFromSession(session),
+                    serverId,
+                  )}
                   target='_blank'
                   rel='noopener noreferrer'
                   className='link-light'
