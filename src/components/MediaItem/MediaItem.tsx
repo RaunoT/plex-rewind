@@ -113,42 +113,44 @@ export default function MediaItem({
           parentRef={titleContainerRef}
           loggedInUserId={loggedInUserId}
         />
-        <div className='relative z-10 mb-3 flex items-center gap-2'>
-          {data.is_deleted ? (
-            isOverseerrActive && (type === 'movie' || type === 'show') ? (
+        {(type === 'movie' || type === 'show' || type === 'artist') && (
+          <div className='relative z-10 mb-3 flex items-center gap-2'>
+            {data.is_deleted ? (
+              isOverseerrActive && (type === 'movie' || type === 'show') ? (
+                <a
+                  href={`${settings.connection.overseerrUrl}/${
+                    type === 'movie' ? 'movie' : 'tv'
+                  }/${data.tmdb_id}`}
+                  target='_blank'
+                  rel='noopener noreferrer'
+                  className='button-card bg-purple-500'
+                >
+                  {t('request')}
+                </a>
+              ) : (
+                <div className='button-card bg-red-500'>{t('deleted')}</div>
+              )
+            ) : (
+              serverId && (
+                <PlexDeeplink
+                  serverId={serverId}
+                  ratingKey={getDeeplinkRatingKeyFromRow(data, type)}
+                />
+              )
+            )}
+            {data.imdb_id && (
               <a
-                href={`${settings.connection.overseerrUrl}/${
-                  type === 'movie' ? 'movie' : 'tv'
-                }/${data.tmdb_id}`}
+                href={`https://www.imdb.com/title/${data.imdb_id}`}
                 target='_blank'
                 rel='noopener noreferrer'
-                className='button-card bg-purple-500'
+                className='button-card bg-yellow-500 text-black'
+                // eslint-disable-next-line react/jsx-no-literals
               >
-                {t('request')}
+                IMDB
               </a>
-            ) : (
-              <div className='button-card bg-red-500'>{t('deleted')}</div>
-            )
-          ) : (
-            serverId && (
-              <PlexDeeplink
-                serverId={serverId}
-                ratingKey={getDeeplinkRatingKeyFromRow(data, type)}
-              />
-            )
-          )}
-          {data.imdb_id && (
-            <a
-              href={`https://www.imdb.com/title/${data.imdb_id}`}
-              target='_blank'
-              rel='noopener noreferrer'
-              className='button-card bg-yellow-500 text-black'
-              // eslint-disable-next-line react/jsx-no-literals
-            >
-              IMDB
-            </a>
-          )}
-        </div>
+            )}
+          </div>
+        )}
         <ul className='icon-stats-container'>
           {(type === 'movie' || type === 'show') &&
             data.year &&
