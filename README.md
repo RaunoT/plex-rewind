@@ -34,7 +34,7 @@ Keep an eye on the [issues page](https://github.com/RaunoT/plex-rewind/issues) t
 
 ![Rewind](https://i.imgur.com/w536oB5.png 'Rewind')
 
-![Activity](https://i.imgur.com/Tj9nfXl.png 'Activity')
+![Activity](https://i.imgur.com/AK6RASY.png 'Activity')
 
 ## Getting started
 

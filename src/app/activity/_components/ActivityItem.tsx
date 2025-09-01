@@ -39,6 +39,44 @@ export default function ActivityItem({
   const { data: userData, status: userStatus } = useSession()
   const isLoggedIn = userStatus === 'authenticated'
   const isCurrentUser = session.user_id == userData?.user.id
+  const {
+    bitrate,
+    container,
+    stream_container,
+    video_codec,
+    video_full_resolution,
+    video_dynamic_range,
+    audio_codec,
+    audio_channel_layout,
+    stream_audio_language,
+    stream_audio_channel_layout,
+    stream_subtitle_codec,
+    stream_subtitle_language,
+    stream_subtitle_decision,
+    stream_container_decision,
+    subtitle_codec,
+    grandparent_title,
+    title,
+    parent_title,
+    quality_profile,
+    transcode_decision,
+    stream_bitrate,
+    media_type,
+    stream_video_codec,
+    stream_video_full_resolution,
+    stream_video_dynamic_range,
+    stream_video_decision,
+    stream_audio_codec,
+    stream_audio_decision,
+    location,
+    ip_address_public,
+    ip_address,
+    bandwidth,
+    friendly_name,
+    product,
+    player,
+    state,
+  } = session
 
   return (
     <li
@@ -54,7 +92,7 @@ export default function ActivityItem({
               <Image
                 fill
                 className='object-cover object-top'
-                alt={session.grandparent_title + ' ' + t('poster')}
+                alt={grandparent_title + ' ' + t('poster')}
                 src={posterUrl}
                 sizes='6rem'
                 priority
@@ -83,10 +121,10 @@ export default function ActivityItem({
 
         <div className='w-full'>
           {/* Title */}
-          <div className='mb-2'>
-            {session.grandparent_title && (
+          <div className='mb-4'>
+            {grandparent_title && (
               <p className='text-xs text-neutral-400 sm:text-sm'>
-                {session.grandparent_title}
+                {grandparent_title}
               </p>
             )}
             <h2 className='text-sm font-bold sm:text-lg'>
@@ -100,78 +138,62 @@ export default function ActivityItem({
                   rel='noopener noreferrer'
                   className='link-light'
                 >
-                  {session.title}
+                  {title}
                 </a>
               ) : (
-                session.title
+                title
               )}
             </h2>
-            {session.parent_title && (
+            {parent_title && (
               <p className='text-xs text-neutral-400 sm:text-sm'>
-                {session.parent_title}
+                {parent_title}
               </p>
             )}
           </div>
           {/* Stream info */}
-          <ul className='flex flex-col flex-wrap gap-4 text-xs sm:flex-row sm:gap-x-6'>
+          <ul className='grid gap-x-4 gap-y-2 text-xs sm:grid-cols-2'>
             {/* Quality */}
-            <li className='space-y-0.5'>
-              <div className='font-semibold text-neutral-400 uppercase'>
-                {t('quality')} ({formatBitrate(session.stream_bitrate)})
-              </div>
-              <div>{session.quality_profile}</div>
-              {session.transcode_decision && (
-                <div className='text-neutral-400'>
-                  {session.transcode_decision}
-                </div>
+            <li>
+              {getTitle(t('quality'), quality_profile)}
+              {checkTranscode(
+                formatBitrate(bitrate),
+                formatBitrate(stream_bitrate),
+                transcode_decision,
               )}
             </li>
+            {/* Bandwidth */}
+            <li>
+              {getTitle(t('bandwidth'))}
+              {formatBitrate(bandwidth)}
+            </li>
             {/* Video */}
-            {session.media_type !== 'track' && (
-              <li className='space-y-0.5'>
-                <div className='font-semibold text-neutral-400 uppercase'>
-                  {t('video')} ({session.stream_video_codec})
-                </div>
-                <div>
-                  <span className='uppercase'>
-                    {session.stream_video_full_resolution}
-                  </span>{' '}
-                  ({session.stream_video_dynamic_range})
-                </div>
-                {session.stream_video_decision && (
-                  <div className='text-neutral-400'>
-                    {session.stream_video_decision}
-                  </div>
+            {media_type !== 'track' && (
+              <li>
+                {getTitle(t('video'))}
+                {checkTranscode(
+                  `${video_codec?.toUpperCase()} ${video_full_resolution?.toUpperCase()} ${video_dynamic_range}`,
+                  `${stream_video_codec?.toUpperCase()} ${stream_video_full_resolution?.toUpperCase()} ${stream_video_dynamic_range}`,
+                  stream_video_decision,
                 )}
               </li>
             )}
             {/* Audio */}
-            <li className='space-y-0.5'>
-              <div className='font-semibold text-neutral-400 uppercase'>
-                {t('audio')} ({session.stream_audio_codec})
-              </div>
-              <div>
-                {session.media_type === 'track'
-                  ? session.stream_audio_channel_layout
-                  : `${session.stream_audio_language} (${session.stream_audio_channel_layout})`}
-              </div>
-              {session.stream_audio_decision && (
-                <div className='text-neutral-400'>
-                  {session.stream_audio_decision}
-                </div>
+            <li>
+              {getTitle(t('audio'), stream_audio_language)}
+              {checkTranscode(
+                `${audio_codec?.toUpperCase()} ${audio_channel_layout}`,
+                `${stream_audio_codec?.toUpperCase()} ${stream_audio_channel_layout}`,
+                stream_audio_decision,
               )}
             </li>
-            {/* Subs */}
-            {session.media_type !== 'track' && (
-              <li className='space-y-0.5'>
-                <div className='font-semibold text-neutral-400 uppercase'>
-                  {t('subtitles')} ({session.stream_subtitle_codec})
-                </div>
-                <div>{session.stream_subtitle_language}</div>
-                {session.stream_subtitle_decision && (
-                  <div className='text-neutral-400'>
-                    {session.stream_subtitle_decision}
-                  </div>
+            {/* Subtitles */}
+            {media_type !== 'track' && (
+              <li>
+                {getTitle(t('subtitles'), stream_subtitle_language)}
+                {checkTranscode(
+                  `${stream_subtitle_decision !== 'ignore' ? stream_subtitle_decision + ' ' : ''}${subtitle_codec?.toUpperCase()}`,
+                  stream_subtitle_codec?.toUpperCase(),
+                  stream_subtitle_decision,
                 )}
               </li>
             )}
@@ -179,31 +201,30 @@ export default function ActivityItem({
             {!settings.activity.hideLocation &&
               !settings.general.isAnonymized &&
               isLoggedIn && (
-                <li className='space-y-0.5'>
-                  <div className='font-semibold text-neutral-400 uppercase'>
-                    {t('location')} ({session.location})
-                  </div>
-                  <div>
+                <li>
+                  {getTitle(t('location'), location)}
+                  {ip_address ? (
+                    <span>{ip_address}</span>
+                  ) : (
                     <a
-                      href={`https://ipinfo.io/${session.ip_address_public}`}
+                      href={`https://ipinfo.io/${ip_address_public}`}
                       target='_blank'
                       rel='noopener noreferrer'
                       className='link-light text-blue-300 underline'
                     >
-                      {session.ip_address_public}
+                      {ip_address_public}
                     </a>
-                  </div>
-                  {session.ip_address_public !== session.ip_address && (
-                    <div className='text-neutral-400'>{session.ip_address}</div>
                   )}
                 </li>
               )}
-            {/* Bandwidth */}
-            <li className='space-y-0.5'>
-              <div className='font-semibold text-neutral-400 uppercase'>
-                {t('bandwidth')}
-              </div>
-              <div>{formatBitrate(session.bandwidth)}</div>
+            {/* Container */}
+            <li>
+              {getTitle(t('container'), stream_container_decision)}
+              {checkTranscode(
+                container.toUpperCase(),
+                stream_container.toUpperCase(),
+                stream_container_decision,
+              )}
             </li>
           </ul>
         </div>
@@ -220,7 +241,7 @@ export default function ActivityItem({
               alt={
                 settings.general.isAnonymized && !isCurrentUser
                   ? t('anonymousAvatar')
-                  : session.friendly_name + ' ' + t('avatar')
+                  : friendly_name + ' ' + t('avatar')
               }
               src={
                 settings.general.isAnonymized && !isCurrentUser
@@ -243,16 +264,16 @@ export default function ActivityItem({
             >
               {settings.general.isAnonymized && !isCurrentUser
                 ? `${t('anonymous')} #${index + 1}`
-                : session.friendly_name}
+                : friendly_name}
             </div>
             <div className='text-xs text-neutral-400 sm:text-sm'>
-              {session.product} ({session.player})
+              {product} ({player})
             </div>
           </div>
         </div>
         {/* State */}
         <div>
-          {session.state === 'playing' ? (
+          {state === 'playing' ? (
             <PlayIcon className='size-5' />
           ) : (
             <PauseIcon className='size-5' />
@@ -260,5 +281,33 @@ export default function ActivityItem({
         </div>
       </div>
     </li>
+  )
+}
+
+function checkTranscode(original: string, stream: string, transcode: string) {
+  const showDiff =
+    transcode !== 'direct play' &&
+    transcode !== 'copy' &&
+    transcode !== 'ignore'
+
+  return (
+    <div>
+      <span>{original}</span>
+      {showDiff && (
+        <>
+          {' '}
+          → <span>{stream}</span>
+        </>
+      )}
+    </div>
+  )
+}
+
+function getTitle(title: string, parenthesis?: string) {
+  return (
+    <div className='mb-0.5 font-medium text-neutral-400 uppercase'>
+      <span>{title}</span>
+      {parenthesis && <span> ({parenthesis})</span>}
+    </div>
   )
 }

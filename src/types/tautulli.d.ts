@@ -67,18 +67,28 @@ export type TautulliSession = {
   grandparent_thumb: string
   user_thumb: string
   quality_profile: string
+  bitrate: string
   stream_bitrate: string
+  video_codec: string
   stream_video_codec: string
+  video_full_resolution: string
   stream_video_full_resolution: string
+  video_dynamic_range: string
   stream_video_dynamic_range: string
   stream_video_decision: string
+  audio_codec: string
   stream_audio_codec: string
   stream_audio_language: string
+  audio_channel_layout: string
   stream_audio_channel_layout: string
   stream_audio_decision: string
+  container: string
+  stream_container: string
+  stream_container_decision: string
   stream_subtitle_codec: string
   stream_subtitle_language: string
   stream_subtitle_decision: string
+  subtitle_codec: string
   transcode_decision: string
   media_type: string
   duration?: string
