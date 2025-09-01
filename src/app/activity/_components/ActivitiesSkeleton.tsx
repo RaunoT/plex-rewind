@@ -21,27 +21,28 @@ function ActivitySkeletonItem() {
 
         <div className='w-full'>
           {/* Title */}
-          <div className='mb-3'>
+          <div className='mb-3 sm:mb-5'>
             <div className='skeleton mb-1 w-32'></div>
-            <div className='skeleton mb-1 w-40 sm:py-3'></div>
+            <div className='skeleton mb-1 w-40'></div>
             <div className='skeleton w-28'></div>
           </div>
           {/* Stream info */}
-          <div className='flex flex-col flex-wrap gap-3 text-xs sm:flex-row sm:gap-4 sm:gap-x-6'>
+          <div className='grid gap-x-4 gap-y-2 text-xs sm:grid-cols-2'>
             <div className='space-y-1'>
               <div className='skeleton w-20'></div>
               <div className='skeleton w-16'></div>
-              <div className='skeleton w-12'></div>
             </div>
             <div className='space-y-1'>
               <div className='skeleton w-20'></div>
               <div className='skeleton w-16'></div>
-              <div className='skeleton w-12'></div>
             </div>
             <div className='hidden space-y-1 sm:block'>
               <div className='skeleton w-20'></div>
               <div className='skeleton w-16'></div>
-              <div className='skeleton w-12'></div>
+            </div>
+            <div className='hidden space-y-1 sm:block'>
+              <div className='skeleton w-20'></div>
+              <div className='skeleton w-16'></div>
             </div>
           </div>
         </div>

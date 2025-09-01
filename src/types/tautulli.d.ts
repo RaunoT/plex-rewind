@@ -55,44 +55,53 @@ export type TautulliItemRow = {
 }
 
 export type TautulliSession = {
-  user_id: number
-  session_key: string
-  friendly_name: string
-  player: string
-  product: string
-  state: 'playing' | 'paused'
-  progress_percent: string
-  grandparent_title: string
-  thumb: string
-  grandparent_thumb: string
-  user_thumb: string
-  quality_profile: string
-  stream_bitrate: string
-  stream_video_codec: string
-  stream_video_full_resolution: string
-  stream_video_dynamic_range: string
-  stream_video_decision: string
-  stream_audio_codec: string
-  stream_audio_language: string
-  stream_audio_channel_layout: string
-  stream_audio_decision: string
-  stream_subtitle_codec: string
-  stream_subtitle_language: string
-  stream_subtitle_decision: string
-  transcode_decision: string
-  media_type: string
+  audio_channel_layout: string
+  audio_codec: string
+  bandwidth: string
+  bitrate: string
+  container: string
   duration?: string
-  view_offset?: string
-  title: string
-  parent_title?: string
-  grandparent_title?: string
-  parent_rating_key?: number
+  friendly_name: string
   grandparent_rating_key?: number
-  location?: string
+  grandparent_thumb: string
+  grandparent_title: string
   ip_address?: string
   ip_address_public?: string
-  bandwidth: string
+  location?: string
+  media_type: string
+  parent_rating_key?: number
+  parent_title?: string
+  player: string
+  product: string
+  progress_percent: string
+  quality_profile: string
   rating_key: number
+  session_key: string
+  state: 'playing' | 'paused'
+  stream_audio_channel_layout: string
+  stream_audio_codec: string
+  stream_audio_decision: string
+  stream_audio_language: string
+  stream_bitrate: string
+  stream_container: string
+  stream_container_decision: string
+  stream_subtitle_codec: string
+  stream_subtitle_decision: string
+  stream_subtitle_language: string
+  stream_video_codec: string
+  stream_video_decision: string
+  stream_video_dynamic_range: string
+  stream_video_full_resolution: string
+  subtitle_codec: string
+  thumb: string
+  title: string
+  transcode_decision: string
+  user_id: number
+  user_thumb: string
+  video_codec: string
+  video_dynamic_range: string
+  video_full_resolution: string
+  view_offset?: string
 }
 
 export type TautulliActivity = {

@@ -16,10 +16,11 @@
     "avatar": "avatar",
     "anonymousAvatar": "Anonymous avatar",
     "anonymous": "Anonymous",
+    "container": "Container",
     "quality": "Quality",
     "video": "Video",
     "audio": "Audio",
-    "subtitles": "Subs",
+    "subtitles": "Subtitles",
     "location": "Location",
     "bandwidth": "Bandwidth",
     "noActivity": "No active sessions.. 😴"

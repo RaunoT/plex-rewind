@@ -26,7 +26,7 @@ export default async function ActivityLayout({ children }: Props) {
   return (
     <div className='mb-auto w-full max-w-(--breakpoint-sm)'>
       <PageTitle title={t('title')} />
-      <CardWrapper className='min-h-[288px] sm:min-h-[292px]'>
+      <CardWrapper className='min-h-[252px] sm:min-h-[292px]'>
         {children}
       </CardWrapper>
     </div>
