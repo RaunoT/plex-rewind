@@ -140,7 +140,6 @@
     },
     "Rewind": {
       "title": "Rewind seaded",
-      "pageTitle": "Rewind",
       "endDateMustBeAfterStartDateError": "Lõpp peab olema pärast algust",
       "startDateMustBeBeforeEndDateError": "Algus peab olema enne lõppu",
       "cards": "Kaardid",

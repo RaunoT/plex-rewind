@@ -140,7 +140,6 @@
     },
     "Rewind": {
       "title": "Rewind settings",
-      "pageTitle": "Rewind",
       "endDateMustBeAfterStartDateError": "End date must be after start date",
       "startDateMustBeBeforeEndDateError": "Start date must be before end date",
       "cards": "Cards",
