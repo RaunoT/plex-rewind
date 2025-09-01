@@ -91,7 +91,7 @@ export default function MediaItem({
       animate='show'
       transition={{ delay: i * 0.075 }}
     >
-      <div className='relative aspect-2/3 h-full w-20 shrink-0 sm:w-[5.35rem] 2xl:w-24'>
+      <div className='poster'>
         <Image
           fill
           className='object-cover object-top'

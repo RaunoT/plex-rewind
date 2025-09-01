@@ -1,15 +1,33 @@
 {
   "Home": {
+    "title": "Avaleht",
     "setupRequired": "Seadistamine vajalik",
     "setupRequiredDescription": "Rakendus vajab seadistamist administraatori poolt.",
     "loginWithPlex": "Logi sisse Plex'iga",
     "rewind": "Rewind",
     "dashboard": "Edetabel",
+    "activity": "Tegevus",
     "signOut": "Logi välja"
+  },
+  "Activity": {
+    "title": "Tegevus",
+    "loading": "Laadimine...",
+    "poster": "plakat",
+    "avatar": "avatar",
+    "anonymousAvatar": "Anonüümne avatar",
+    "anonymous": "Anonüümne",
+    "quality": "Kvaliteet",
+    "video": "Video",
+    "audio": "Audio",
+    "subtitles": "Subtiitrid",
+    "location": "Asukoht",
+    "bandwidth": "Ribalaidus",
+    "noActivity": "Ühtegi aktiivset sessiooni pole.. 😴"
   },
   "Dashboard": {
     "noActivity": "Valitud perioodil puudub tegevus.. 😴",
     "title": "Edetabel",
+    "usersTitle": "Kasutajad",
     "users": "kasutajat",
     "movies": "filmi",
     "episodes": "episoodi",
@@ -77,7 +95,8 @@
       "connection": "Ühendus",
       "general": "Üldine",
       "rewind": "Rewind",
-      "dashboard": "Edetabel"
+      "dashboard": "Edetabel",
+      "activity": "Tegevus"
     },
     "Connection": {
       "title": "Ühenduse seaded"
@@ -94,6 +113,11 @@
       "customPeriod": "Kohandatud periood",
       "inDays": "Päevades.",
       "startDateHelperText": "Kasutatud kogu ajalise perioodi jaoks."
+    },
+    "Activity": {
+      "title": "Tegevuse seaded",
+      "privacy": "Privaatsus",
+      "hideLocation": "Peida asukohateave"
     },
     "General": {
       "title": "Üldseaded",
@@ -116,6 +140,7 @@
     },
     "Rewind": {
       "title": "Rewind seaded",
+      "pageTitle": "Rewind",
       "endDateMustBeAfterStartDateError": "Lõpp peab olema pärast algust",
       "startDateMustBeBeforeEndDateError": "Algus peab olema enne lõppu",
       "cards": "Kaardid",

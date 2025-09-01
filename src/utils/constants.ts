@@ -78,6 +78,11 @@ export const DEFAULT_SETTINGS: Settings = {
     startDate: '2010-01-01',
     complete: false,
   },
+  activity: {
+    isActive: true,
+    hideLocation: false,
+    complete: false,
+  },
   setupComplete: false,
 }
 
@@ -86,6 +91,7 @@ export const SETTINGS_PAGES = [
   { href: '/settings/general', key: 'general' },
   { href: '/settings/rewind', key: 'rewind' },
   { href: '/settings/dashboard', key: 'dashboard' },
+  { href: '/settings/activity', key: 'activity' },
 ]
 
 export const TMDB_API_KEY = '4675b5b5d8cd1463ff16adca2680157b'

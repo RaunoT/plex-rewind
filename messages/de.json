@@ -1,15 +1,33 @@
 {
   "Home": {
+    "title": "Startseite",
     "setupRequired": "Setup notwendig",
     "setupRequiredDescription": "Die Anwendung muss von einem Administrator eingerichtet werden.",
     "loginWithPlex": "Mit Plex einloggen",
     "rewind": "Rewind starten",
     "dashboard": "Dashboard",
+    "activity": "Aktivität",
     "signOut": "Abmelden"
+  },
+  "Activity": {
+    "title": "Aktivität",
+    "loading": "Lädt...",
+    "poster": "Poster",
+    "avatar": "Avatar",
+    "anonymousAvatar": "Anonymer Avatar",
+    "anonymous": "Anonym",
+    "quality": "Qualität",
+    "video": "Video",
+    "audio": "Audio",
+    "subtitles": "Untertitel",
+    "location": "Standort",
+    "bandwidth": "Bandbreite",
+    "noActivity": "Keine aktiven Sitzungen.. 😴"
   },
   "Dashboard": {
     "noActivity": "Keine Aktivität in dieser Zeitspanne.. 😴",
     "title": "Dashboard",
+    "usersTitle": "Benutzer",
     "users": "Benutzer",
     "movies": "Filme",
     "episodes": "Episoden",
@@ -77,7 +95,8 @@
       "connection": "Verbindungen",
       "general": "Allgemein",
       "rewind": "Rewind",
-      "dashboard": "Dashboard"
+      "dashboard": "Dashboard",
+      "activity": "Aktivität"
     },
     "Connection": {
       "title": "Verbindungseinstellungen"
@@ -94,6 +113,11 @@
       "customPeriod": "benutzerdefinierter Zeitraum",
       "inDays": "In Tagen.",
       "startDateHelperText": "Für den gesamten Zeitraum genutzt."
+    },
+    "Activity": {
+      "title": "Aktivität Einstellungen",
+      "privacy": "Datenschutz",
+      "hideLocation": "Standortinformationen ausblenden"
     },
     "General": {
       "title": "Allgemeine Einstellungen",
@@ -116,6 +140,7 @@
     },
     "Rewind": {
       "title": "Rewind Einstellungen",
+      "pageTitle": "Rewind",
       "endDateMustBeAfterStartDateError": "Enddatum muss nach dem Startdatum sein",
       "startDateMustBeBeforeEndDateError": "Startdatum muss vor dem Enddatum sein",
       "cards": "Karten",

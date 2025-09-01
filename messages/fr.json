@@ -1,15 +1,33 @@
 {
   "Home": {
+    "title": "Accueil",
     "setupRequired": "Configuration requise",
     "setupRequiredDescription": "Cette application doit être configurée par un administrateur.",
     "loginWithPlex": "Se connecter avec Plex",
     "rewind": "Démarrer Rewind",
     "dashboard": "Tableau de bord",
+    "activity": "Activité",
     "signOut": "Se déconnecter"
+  },
+  "Activity": {
+    "title": "Activité",
+    "loading": "Chargement...",
+    "poster": "affiche",
+    "avatar": "avatar",
+    "anonymousAvatar": "Avatar anonyme",
+    "anonymous": "Anonyme",
+    "quality": "Qualité",
+    "video": "Vidéo",
+    "audio": "Audio",
+    "subtitles": "Sous-titres",
+    "location": "Emplacement",
+    "bandwidth": "Bande passante",
+    "noActivity": "Aucune session active.. 😴"
   },
   "Dashboard": {
     "noActivity": "Aucune activité pendant cette période.. 😴",
     "title": "Tableau de bord",
+    "usersTitle": "Utilisateurs",
     "users": "utilisateurs",
     "movies": "films",
     "episodes": "épisodes",
@@ -77,7 +95,8 @@
       "connection": "Connexion",
       "general": "Général",
       "rewind": "Rewind",
-      "dashboard": "Tableau de bord"
+      "dashboard": "Tableau de bord",
+      "activity": "Activité"
     },
     "Connection": {
       "title": "Paramètres de connexion"
@@ -94,6 +113,11 @@
       "customPeriod": "Période personnalisée",
       "inDays": "En jours.",
       "startDateHelperText": "Utilisé pour la période tout le temps."
+    },
+    "Activity": {
+      "title": "Paramètres d'activité",
+      "privacy": "Confidentialité",
+      "hideLocation": "Masquer l'emplacement"
     },
     "General": {
       "title": "Paramètres généraux",
@@ -116,6 +140,7 @@
     },
     "Rewind": {
       "title": "Paramètres Rewind",
+      "pageTitle": "Rewind",
       "endDateMustBeAfterStartDateError": "La date de fin doit être après la date de début",
       "startDateMustBeBeforeEndDateError": "La date de début doit être avant la date de fin",
       "cards": "Cartes",

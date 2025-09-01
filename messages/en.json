@@ -1,15 +1,33 @@
 {
   "Home": {
+    "title": "Home",
     "setupRequired": "Setup required",
     "setupRequiredDescription": "This application needs to be configured by an administrator.",
     "loginWithPlex": "Log in with Plex",
     "rewind": "Start Rewind",
     "dashboard": "Dashboard",
+    "activity": "Activity",
     "signOut": "Sign out"
+  },
+  "Activity": {
+    "title": "Activity",
+    "loading": "Loading...",
+    "poster": "poster",
+    "avatar": "avatar",
+    "anonymousAvatar": "Anonymous avatar",
+    "anonymous": "Anonymous",
+    "quality": "Quality",
+    "video": "Video",
+    "audio": "Audio",
+    "subtitles": "Subs",
+    "location": "Location",
+    "bandwidth": "Bandwidth",
+    "noActivity": "No active sessions.. 😴"
   },
   "Dashboard": {
     "noActivity": "No activity during this period.. 😴",
     "title": "Dashboard",
+    "usersTitle": "Users",
     "users": "users",
     "movies": "movies",
     "episodes": "episodes",
@@ -77,7 +95,8 @@
       "connection": "Connection",
       "general": "General",
       "rewind": "Rewind",
-      "dashboard": "Dashboard"
+      "dashboard": "Dashboard",
+      "activity": "Activity"
     },
     "Connection": {
       "title": "Connection settings"
@@ -94,6 +113,11 @@
       "customPeriod": "Custom period",
       "inDays": "In days.",
       "startDateHelperText": "Used for the all time period."
+    },
+    "Activity": {
+      "title": "Activity settings",
+      "privacy": "Privacy",
+      "hideLocation": "Hide location"
     },
     "General": {
       "title": "General settings",
@@ -116,6 +140,7 @@
     },
     "Rewind": {
       "title": "Rewind settings",
+      "pageTitle": "Rewind",
       "endDateMustBeAfterStartDateError": "End date must be after start date",
       "startDateMustBeBeforeEndDateError": "Start date must be before end date",
       "cards": "Cards",
