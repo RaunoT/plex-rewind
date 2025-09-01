@@ -34,7 +34,7 @@ export default function ActivityItem({
   const { posterUrl, isLoading } = usePoster(session, settings)
   const t = useTranslations('Activity')
   const { data: userData } = useSession()
-  const isLoggedIn = session.user_id == userData?.user?.id
+  const isLoggedIn = session.user_id == userData?.user.id
 
   return (
     <li
