@@ -11,6 +11,7 @@ const REQUIRED_SETTINGS = [
   'dashboard.customPeriod',
   'dashboard.startDate',
   'dashboard.complete',
+  'activity.complete',
 ]
 
 export function checkRequiredSettings(settings: Settings): string | null {
