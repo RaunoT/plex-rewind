@@ -54,6 +54,7 @@ export type TautulliItemRow = {
 }
 
 export type TautulliSession = {
+  user_id: number
   session_key: string
   friendly_name: string
   player: string
