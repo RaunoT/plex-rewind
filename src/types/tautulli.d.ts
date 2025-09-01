@@ -85,6 +85,8 @@ export type TautulliSession = {
   title: string
   parent_title?: string
   grandparent_title?: string
+  parent_rating_key?: number
+  grandparent_rating_key?: number
   location?: string
   ip_address?: string
   ip_address_public?: string
