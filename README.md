@@ -12,7 +12,7 @@ Present [Plex](https://plex.tv) user statistics and habits in a beautiful and or
 ## Features
 
 - 📱 Fully responsive - viewable, usable & enjoyable on desktop, tablet or mobile, courtesy of [Tailwind.css](https://tailwindcss.com).
-- 🔄 Fully dynamic - the data you're viewing will always be the latest available - using the latest from [TanStack Query](https://tanstack.com/query/latest).
+- 🔄 Fully dynamic - the data you're viewing will always be the latest available, making use of [TanStack Query](https://tanstack.com/query/latest).
 - 🎭 Anonymization - anonymize usernames for enchanced privacy.
 - 📆 Rewind - allows your users view their statistics and habits for a (customizable) time period.
 - 👀 Dashboard - provides an easily glanceable overview of activity on your server for all your libraries, personalized or general.
@@ -34,7 +34,7 @@ Keep an eye on the [issues page](https://github.com/RaunoT/plex-rewind/issues) t
 
 ![Rewind](https://i.imgur.com/w536oB5.png 'Rewind')
 
-![Activity](https://i.imgur.com/woP4DEh.png 'Activity')
+![Activity](https://i.imgur.com/Tj9nfXl.png 'Activity')
 
 ## Getting started
 
