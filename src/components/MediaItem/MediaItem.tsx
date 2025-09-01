@@ -2,6 +2,7 @@
 
 import { Settings } from '@/types/settings'
 import { TautulliItemRow } from '@/types/tautulli'
+import { getDeeplinkRatingKeyForItem } from '@/utils/deeplink'
 import { secondsToTime } from '@/utils/formatting'
 import { slideDown } from '@/utils/motion'
 import {
@@ -112,10 +113,10 @@ export default function MediaItem({
           parentRef={titleContainerRef}
           loggedInUserId={loggedInUserId}
         />
-        {(type === 'movie' || type === 'show') && (
+        {(type === 'movie' || type === 'show' || type === 'artist') && (
           <div className='relative z-10 mb-3 flex items-center gap-2'>
             {data.is_deleted ? (
-              isOverseerrActive ? (
+              isOverseerrActive && (type === 'movie' || type === 'show') ? (
                 <a
                   href={`${settings.connection.overseerrUrl}/${
                     type === 'movie' ? 'movie' : 'tv'
@@ -131,7 +132,10 @@ export default function MediaItem({
               )
             ) : (
               serverId && (
-                <PlexDeeplink serverId={serverId} ratingKey={data.rating_key} />
+                <PlexDeeplink
+                  serverId={serverId}
+                  ratingKey={getDeeplinkRatingKeyForItem(data, type)}
+                />
               )
             )}
             {data.imdb_id && (
