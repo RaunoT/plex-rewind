@@ -12,6 +12,7 @@ import {
 } from '@/utils/formatting'
 import { PauseIcon, PlayIcon } from '@heroicons/react/24/outline'
 import clsx from 'clsx'
+import { useSession } from 'next-auth/react'
 import { useTranslations } from 'next-intl'
 import Image from 'next/image'
 
@@ -32,6 +33,10 @@ export default function ActivityItem({
 }: ActivityItemProps) {
   const { posterUrl, isLoading } = usePoster(session, settings)
   const t = useTranslations('Activity')
+  const { data: userData } = useSession()
+  const isLoggedIn = session.user_id == userData?.user?.id
+
+  console.log(session.user_id, userData?.user?.id)
 
   return (
     <li
@@ -207,12 +212,12 @@ export default function ActivityItem({
               fill
               className='rounded-full object-cover object-top'
               alt={
-                settings.general.isAnonymized
+                settings.general.isAnonymized && !isLoggedIn
                   ? t('anonymousAvatar')
                   : session.friendly_name + ' ' + t('avatar')
               }
               src={
-                settings.general.isAnonymized
+                settings.general.isAnonymized && !isLoggedIn
                   ? anonymousSvg
                   : `/api/image?url=${encodeURIComponent(
                       `${settings.connection.tautulliUrl}/pms_image_proxy?img=${session.user_thumb}&width=300`,
@@ -224,8 +229,13 @@ export default function ActivityItem({
           </div>
           {/* User info */}
           <div>
-            <div className='text-sm font-semibold sm:text-base'>
-              {settings.general.isAnonymized
+            <div
+              className={clsx(
+                'text-sm font-semibold sm:text-base',
+                isLoggedIn && 'gradient-plex',
+              )}
+            >
+              {settings.general.isAnonymized && !isLoggedIn
                 ? `${t('anonymous')} #${index + 1}`
                 : session.friendly_name}
             </div>
