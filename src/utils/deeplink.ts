@@ -15,7 +15,7 @@ export function getDeeplinkRatingKeyFromSession(
   session: TautulliSession,
 ): number {
   if (session.media_type === 'track') {
-    return session.parent_rating_key || session.rating_key
+    return session.parent_rating_key ?? session.rating_key
   }
 
   return session.rating_key
@@ -26,7 +26,7 @@ export function getDeeplinkRatingKeyFromRow(
   type?: string,
 ): number {
   if (type === 'artist') {
-    return item.grandparent_rating_key || item.rating_key
+    return item.grandparent_rating_key ?? item.rating_key
   }
 
   return item.rating_key
