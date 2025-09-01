@@ -6,7 +6,6 @@ import {
   Settings,
   SettingsFormInitialState,
 } from '@/types/settings'
-import { isInitialSetup } from '@/utils/helpers'
 import { useTranslations } from 'next-intl'
 import { useActionState, useState } from 'react'
 import { Checkbox, CheckboxGroup, Label, Switch } from 'react-aria-components'
@@ -20,7 +19,6 @@ type Props = {
 type DashboardFormState = SettingsFormInitialState<Partial<DashboardSettings>>
 
 export default function DashboardSettingsForm({ settings }: Props) {
-  const initialSetupMode = isInitialSetup(settings)
   const isOverseerrActive =
     settings.connection.overseerrUrl && settings.connection.overseerrApiKey
   const t = useTranslations('Settings.Dashboard')
@@ -46,7 +44,7 @@ export default function DashboardSettingsForm({ settings }: Props) {
     <SettingsForm
       formState={formState}
       formAction={formAction}
-      isSetup={!dashboardSettings.complete && initialSetupMode}
+      isSetup={!dashboardSettings.complete}
     >
       <section className='group-settings group'>
         <h2 className='heading-settings'>{tCommon('status')}</h2>
