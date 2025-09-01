@@ -36,8 +36,6 @@ export default function ActivityItem({
   const { data: userData } = useSession()
   const isLoggedIn = session.user_id == userData?.user?.id
 
-  console.log(session.user_id, userData?.user?.id)
-
   return (
     <li
       className={clsx('w-full', {
