@@ -40,9 +40,6 @@ export default function ActivityItem({
   const { data: userData, status: userStatus } = useSession()
   const isLoggedIn = userStatus === 'authenticated'
   const isCurrentUser = session.user_id == userData?.user.id
-
-  console.log(session)
-
   const {
     audio_channel_layout,
     audio_codec,
