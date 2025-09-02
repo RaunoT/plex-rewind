@@ -7,6 +7,55 @@ type GitHubRelease = {
   prerelease: boolean
 }
 
+function compareVersions(current: string, latest: string): boolean {
+  if (!current.includes('develop') || !latest.includes('develop')) {
+    return latest !== current
+  }
+
+  const parseVersion = (version: string) => {
+    // Remove 'v' prefix if present
+    const cleanVersion = version.startsWith('v') ? version.slice(1) : version
+    // Split on '-develop.' to get base version and develop number
+    const parts = cleanVersion.split('-develop.')
+
+    if (parts.length !== 2) return null
+
+    const [baseVersion, developNum] = parts
+    const baseParts = baseVersion.split('.').map(Number)
+    const developNumber = parseInt(developNum, 10)
+
+    return {
+      major: baseParts[0] || 0,
+      minor: baseParts[1] || 0,
+      patch: baseParts[2] || 0,
+      develop: developNumber,
+    }
+  }
+  const currentParsed = parseVersion(current)
+  const latestParsed = parseVersion(latest)
+
+  // Fallback to string comparison if parsing fails
+  if (!currentParsed || !latestParsed) {
+    return latest !== current
+  }
+
+  // Compare base version first
+  if (latestParsed.major !== currentParsed.major) {
+    return latestParsed.major > currentParsed.major
+  }
+
+  if (latestParsed.minor !== currentParsed.minor) {
+    return latestParsed.minor > currentParsed.minor
+  }
+
+  if (latestParsed.patch !== currentParsed.patch) {
+    return latestParsed.patch > currentParsed.patch
+  }
+
+  // Compare develop number
+  return latestParsed.develop > currentParsed.develop
+}
+
 export default async function getVersion(): Promise<Version> {
   const tag = env('NEXT_PUBLIC_VERSION_TAG') || ''
   const isSHA = /^[0-9a-f]{40}$/i.test(tag) // Check if tag is a 40-character SHA
@@ -53,7 +102,7 @@ export default async function getVersion(): Promise<Version> {
   }
 
   return {
-    hasUpdate: latestVersion !== currentVersion,
+    hasUpdate: compareVersions(currentVersion, latestVersion),
     latestVersion,
     currentVersion,
     channel,
