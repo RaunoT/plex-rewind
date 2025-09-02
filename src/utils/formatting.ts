@@ -87,7 +87,16 @@ export function timeToSeconds(time: string): number {
 }
 
 export function formatBitrate(bitrate: number | string): string {
+  if (!bitrate || bitrate === '') {
+    return 'N/A'
+  }
+
   const numeric = typeof bitrate === 'string' ? parseFloat(bitrate) : bitrate
+
+  if (isNaN(numeric) || numeric <= 0) {
+    return 'N/A'
+  }
+
   const megabits = numeric / 1000
 
   return `${megabits.toFixed(1)} Mbps`

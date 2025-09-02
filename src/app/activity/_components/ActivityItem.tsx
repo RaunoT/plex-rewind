@@ -162,10 +162,13 @@ export default function ActivityItem({
               )}
             </li>
             {/* Bandwidth */}
-            <li>
-              {getTitle(t('bandwidth'))}
-              {formatBitrate(bandwidth)}
-            </li>
+            {/* TODO: Tautulli doesn't return bandwidth for tracks */}
+            {media_type !== 'track' && (
+              <li>
+                {getTitle(t('bandwidth'))}
+                {formatBitrate(bandwidth)}
+              </li>
+            )}
             {/* Video */}
             {media_type !== 'track' && (
               <li>
