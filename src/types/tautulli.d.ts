@@ -78,6 +78,7 @@ export type TautulliSession = {
   rating_key: number
   session_key: string
   state: 'playing' | 'paused'
+  transcode_throttled: boolean
   stream_audio_channel_layout: string
   stream_audio_codec: string
   stream_audio_decision: string

@@ -15,6 +15,7 @@ import {
 } from '@/utils/formatting'
 import { PauseIcon, PlayIcon } from '@heroicons/react/24/outline'
 import clsx from 'clsx'
+import { capitalize, toUpper } from 'lodash'
 import { useSession } from 'next-auth/react'
 import { useTranslations } from 'next-intl'
 import Image from 'next/image'
@@ -39,6 +40,9 @@ export default function ActivityItem({
   const { data: userData, status: userStatus } = useSession()
   const isLoggedIn = userStatus === 'authenticated'
   const isCurrentUser = session.user_id == userData?.user.id
+
+  console.log(session)
+
   const {
     audio_channel_layout,
     audio_codec,
@@ -73,6 +77,7 @@ export default function ActivityItem({
     subtitle_codec,
     title,
     transcode_decision,
+    transcode_throttled,
     video_codec,
     video_dynamic_range,
     video_full_resolution,
@@ -152,6 +157,18 @@ export default function ActivityItem({
           </div>
           {/* Stream info */}
           <ul className='grid gap-x-4 gap-y-2 text-xs sm:grid-cols-2'>
+            {/* Stream */}
+            <li>
+              {getTitle(t('stream'))}
+              <div>
+                {capitalize(
+                  transcode_decision === 'copy'
+                    ? 'direct stream'
+                    : transcode_decision,
+                )}
+                {`${transcode_throttled ? ' (throttled)' : ''}`}
+              </div>
+            </li>
             {/* Quality */}
             <li>
               {getTitle(t('quality'), quality_profile)}
@@ -170,40 +187,54 @@ export default function ActivityItem({
             {/* Video */}
             {media_type !== 'track' && (
               <li>
-                {getTitle(t('video'))}
+                {getTitle(t('video'), stream_video_decision)}
                 {checkTranscode(
-                  `${video_codec?.toUpperCase()} ${video_full_resolution?.toUpperCase()} ${video_dynamic_range}`,
-                  `${stream_video_codec?.toUpperCase()} ${stream_video_full_resolution?.toUpperCase()} ${stream_video_dynamic_range}`,
+                  `${toUpper(video_codec)} ${toUpper(video_full_resolution)} ${video_dynamic_range}`,
+                  `${toUpper(stream_video_codec)} ${toUpper(stream_video_full_resolution)} ${stream_video_dynamic_range}`,
                   stream_video_decision,
                 )}
               </li>
             )}
             {/* Audio */}
             <li>
-              {getTitle(t('audio'), stream_audio_language)}
+              {getTitle(t('audio'), stream_audio_decision)}
               {checkTranscode(
-                `${audio_codec?.toUpperCase()} ${audio_channel_layout}`,
-                `${stream_audio_codec?.toUpperCase()} ${stream_audio_channel_layout}`,
+                `${media_type !== 'track' ? `${stream_audio_language} - ` : ''}${toUpper(audio_codec)} ${audio_channel_layout}`,
+                `${toUpper(stream_audio_codec)} ${stream_audio_channel_layout}`,
                 stream_audio_decision,
               )}
             </li>
             {/* Subtitles */}
             {media_type !== 'track' && (
               <li>
-                {getTitle(t('subtitles'), stream_subtitle_language)}
+                {getTitle(t('subtitles'), stream_subtitle_decision)}
                 {checkTranscode(
-                  `${stream_subtitle_decision !== 'ignore' ? stream_subtitle_decision + ' ' : ''}${subtitle_codec?.toUpperCase()}`,
-                  stream_subtitle_codec?.toUpperCase(),
+                  `${stream_subtitle_language} - ${toUpper(subtitle_codec)}`,
+                  toUpper(stream_subtitle_codec),
                   stream_subtitle_decision,
                 )}
               </li>
             )}
+            {/* Container */}
+            <li>
+              {getTitle(
+                t('container'),
+                stream_container_decision === 'transcode'
+                  ? 'converting'
+                  : stream_container_decision,
+              )}
+              {checkTranscode(
+                toUpper(container),
+                toUpper(stream_container),
+                stream_container_decision,
+              )}
+            </li>
             {/* Location */}
             {!settings.activity.hideLocation &&
               !settings.general.isAnonymized &&
               isLoggedIn && (
                 <li>
-                  {getTitle(t('location'), location)}
+                  {getTitle(t('location'), toUpper(location))}
                   {ip_address ? (
                     <span>{ip_address}</span>
                   ) : (
@@ -218,15 +249,6 @@ export default function ActivityItem({
                   )}
                 </li>
               )}
-            {/* Container */}
-            <li>
-              {getTitle(t('container'), stream_container_decision)}
-              {checkTranscode(
-                container?.toUpperCase(),
-                stream_container?.toUpperCase(),
-                stream_container_decision,
-              )}
-            </li>
           </ul>
         </div>
       </div>
@@ -306,10 +328,16 @@ function checkTranscode(original: string, stream: string, transcode: string) {
 }
 
 function getTitle(title: string, parenthesis?: string) {
+  let newTitle = parenthesis
+
+  if (parenthesis === 'copy') {
+    newTitle = 'direct stream'
+  }
+
   return (
-    <div className='mb-0.5 font-medium text-neutral-400 uppercase'>
+    <div className='mb-0.5 font-medium text-neutral-400'>
       <span>{title}</span>
-      {parenthesis && <span> ({parenthesis})</span>}
+      {newTitle && <span> ({newTitle})</span>}
     </div>
   )
 }
