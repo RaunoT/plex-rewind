@@ -43,9 +43,7 @@ export default function StoryWelcome({
           {t.rich('welcome', {
             serverName: settings.general.serverName || 'Plex',
             rewind: (chunks) => (
-              <span className='whitespace-nowrap'>
-                <span className='gradient-plex'>{chunks}</span>
-              </span>
+              <span className='gradient-plex'>{chunks} </span>
             ),
           })}
           <span className='rewind-cat'>{userRewind.user.name}!</span>
