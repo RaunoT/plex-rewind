@@ -286,6 +286,7 @@ export default function ActivityItem({
 
 function checkTranscode(original: string, stream: string, transcode: string) {
   const showDiff =
+    transcode &&
     transcode !== 'direct play' &&
     transcode !== 'copy' &&
     transcode !== 'ignore'
