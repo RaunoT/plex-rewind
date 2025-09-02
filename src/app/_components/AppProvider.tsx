@@ -31,7 +31,7 @@ const queryClient = new QueryClient()
 export default function AppProvider({ children, settings, version }: Props) {
   const pathname = usePathname()
   const missingSetting = checkRequiredSettings(settings)
-  const { data: session } = useSession()
+  const { data: session, status } = useSession()
   const [isSettings, setIsSettings] = useState<boolean>(
     pathname.startsWith('/settings'),
   )
@@ -81,29 +81,35 @@ export default function AppProvider({ children, settings, version }: Props) {
           </div>
 
           <div className='absolute top-3 right-3 flex items-center gap-3 sm:top-4 sm:right-4'>
-            {version.hasUpdate && session?.user.isAdmin && (
-              <a
-                href='https://github.com/RaunoT/plex-rewind/releases'
-                aria-label={t('updateAvailable')}
-                target='_blank'
-                className='link-light'
-              >
-                <ArrowPathIcon className='size-6' />
-              </a>
-            )}
-            {!missingSetting && session?.user.isAdmin && (
-              <Link
-                href={isSettings ? '/' : settingsLink}
-                aria-label={isSettings ? t('closeSettings') : t('openSettings')}
-                className='link-light'
-              >
-                {isSettings ? (
-                  <XCircleIcon className='size-6' />
-                ) : (
-                  <CogIcon className='size-6' />
-                )}
-              </Link>
-            )}
+            {version.hasUpdate &&
+              status === 'authenticated' &&
+              session?.user.isAdmin && (
+                <a
+                  href='https://github.com/RaunoT/plex-rewind/releases'
+                  aria-label={t('updateAvailable')}
+                  target='_blank'
+                  className='link-light'
+                >
+                  <ArrowPathIcon className='size-6' />
+                </a>
+              )}
+            {!missingSetting &&
+              status === 'authenticated' &&
+              session?.user.isAdmin && (
+                <Link
+                  href={isSettings ? '/' : settingsLink}
+                  aria-label={
+                    isSettings ? t('closeSettings') : t('openSettings')
+                  }
+                  className='link-light'
+                >
+                  {isSettings ? (
+                    <XCircleIcon className='size-6' />
+                  ) : (
+                    <CogIcon className='size-6' />
+                  )}
+                </Link>
+              )}
             <LocaleSelect />
           </div>
 

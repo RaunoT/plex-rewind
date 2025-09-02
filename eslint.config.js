@@ -30,7 +30,7 @@ const eslintConfig = [
       'react/jsx-no-literals': [
         1,
         {
-          allowedStrings: [':', '/', '(', ')', '•', '.', ',', '!', '#'],
+          allowedStrings: [':', '/', '(', ')', '•', '.', ',', '!', '#', '→'],
         },
       ],
     },
