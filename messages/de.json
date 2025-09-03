@@ -118,8 +118,7 @@
     },
     "Activity": {
       "title": "Aktivität Einstellungen",
-      "privacy": "Datenschutz",
-      "hideLocation": "Standortinformationen ausblenden"
+      "privacy": "Datenschutz"
     },
     "General": {
       "title": "Allgemeine Einstellungen",

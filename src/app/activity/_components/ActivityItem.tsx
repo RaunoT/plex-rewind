@@ -37,9 +37,9 @@ export default function ActivityItem({
 }: ActivityItemProps) {
   const { posterUrl, isLoading } = usePoster(session, settings)
   const t = useTranslations('Activity')
-  const { data: userData, status: userStatus } = useSession()
-  const isLoggedIn = userStatus === 'authenticated'
-  const isCurrentUser = session.user_id == userData?.user.id
+  const { data: user } = useSession()
+  const isCurrentUser = session.user_id == user?.user.id
+  const isAdmin = user?.user.isAdmin
   const {
     audio_channel_layout,
     audio_codec,
@@ -227,25 +227,23 @@ export default function ActivityItem({
               )}
             </li>
             {/* Location */}
-            {!settings.activity.hideLocation &&
-              !settings.general.isAnonymized &&
-              isLoggedIn && (
-                <li>
-                  {getTitle(t('location'), toUpper(location))}
-                  {ip_address ? (
-                    <span>{ip_address}</span>
-                  ) : (
-                    <a
-                      href={`https://ipinfo.io/${ip_address_public}`}
-                      target='_blank'
-                      rel='noopener noreferrer'
-                      className='link-light text-blue-300 underline'
-                    >
-                      {ip_address_public}
-                    </a>
-                  )}
-                </li>
-              )}
+            {isAdmin && !settings.general.isAnonymized && (
+              <li>
+                {getTitle(t('location'), toUpper(location))}
+                {location === 'wan' ? (
+                  <a
+                    href={`https://ipinfo.io/${ip_address_public}`}
+                    target='_blank'
+                    rel='noopener noreferrer'
+                    className='link-light text-blue-300 underline'
+                  >
+                    {ip_address_public}
+                  </a>
+                ) : (
+                  <span>{ip_address}</span>
+                )}
+              </li>
+            )}
           </ul>
         </div>
       </div>

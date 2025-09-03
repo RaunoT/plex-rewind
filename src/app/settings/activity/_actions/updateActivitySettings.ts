@@ -6,7 +6,6 @@ import updateSettings from '../../_actions/updateSettings'
 
 const schema = z.object({
   isActive: z.boolean(),
-  hideLocation: z.boolean(),
   complete: z.boolean(),
 })
 
@@ -16,7 +15,6 @@ export default async function saveActivitySettings(
 ) {
   const data = {
     isActive: formData.get('isActive') === 'on',
-    hideLocation: formData.get('hideLocation') === 'on',
     complete: true,
   }
 

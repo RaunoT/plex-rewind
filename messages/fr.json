@@ -118,8 +118,7 @@
     },
     "Activity": {
       "title": "Paramètres d'activité",
-      "privacy": "Confidentialité",
-      "hideLocation": "Masquer l'emplacement"
+      "privacy": "Confidentialité"
     },
     "General": {
       "title": "Paramètres généraux",
