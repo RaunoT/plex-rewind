@@ -118,8 +118,7 @@
     },
     "Activity": {
       "title": "Activity settings",
-      "privacy": "Privacy",
-      "hideLocation": "Hide location"
+      "privacy": "Privacy"
     },
     "General": {
       "title": "General settings",

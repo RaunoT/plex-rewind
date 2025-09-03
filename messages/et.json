@@ -118,8 +118,7 @@
     },
     "Activity": {
       "title": "Tegevuse seaded",
-      "privacy": "Privaatsus",
-      "hideLocation": "Peida asukohateave"
+      "privacy": "Privaatsus"
     },
     "General": {
       "title": "Üldseaded",
