@@ -29,6 +29,10 @@
   @apply bg-gradient-to-r from-blue-500 to-teal-400 bg-clip-text text-transparent;
 }
 
+@utility gradient-plex {
+  @apply bg-gradient-to-r from-yellow-500 to-yellow-700 bg-clip-text text-transparent;
+}
+
 @utility focus-ring {
   @apply ring-1 ring-neutral-300 focus-visible:outline-none;
 }
@@ -83,10 +87,6 @@
     font-size: 0.65rem;
   }
 
-  .gradient-plex {
-    @apply bg-gradient-to-r from-yellow-500 to-yellow-700 bg-clip-text text-transparent;
-  }
-
   .rewind-stat {
     @apply gradient-rewind inline-block;
   }
@@ -98,6 +98,10 @@
     > svg {
       @apply ml-1 w-8 text-[#2DACC8];
     }
+  }
+
+  .poster {
+    @apply relative aspect-2/3 h-full w-20 shrink-0 !rounded-none sm:w-[5.35rem] 2xl:w-24;
   }
 
   .link {

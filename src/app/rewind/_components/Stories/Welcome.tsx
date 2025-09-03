@@ -41,14 +41,11 @@ export default function StoryWelcome({
         </div>
         <p className='animate-fade-up animation-delay-500 mb-4'>
           {t.rich('welcome', {
+            serverName: settings.general.serverName || 'Plex',
             rewind: (chunks) => (
-              <span className='whitespace-nowrap'>
-                {/* eslint-disable-next-line react/jsx-no-literals */}
-                <span className='gradient-plex'>{chunks}</span>,
-              </span>
+              <span className='gradient-plex'>{chunks} </span>
             ),
           })}
-          {/* eslint-disable-next-line react/jsx-no-literals */}
           <span className='rewind-cat'>{userRewind.user.name}!</span>
         </p>
         <p className='animate-fade-up animation-delay-2000 mb-4'>

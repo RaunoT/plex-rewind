@@ -1,0 +1,13 @@
+---
+description:
+globs:
+alwaysApply: true
+---
+
+# API Fetch Utilities
+
+This project uses utility functions to interact with external APIs:
+
+- **TMDB**: Data fetching from The Movie Database (TMDB) is handled by utilities in [`src/utils/fetchTmdb.ts`](mdc:src/utils/fetchTmdb.ts).
+- **Tautulli**: Interaction with the Tautulli API is managed through functions in [`src/utils/fetchTautulli.ts`](mdc:src/utils/fetchTautulli.ts). The reference for Tautulli API can be found at https://github.com/Tautulli/Tautulli/wiki/Tautulli-API-Reference.
+- **Overseerr**: Fetching data from Overseerr is done using utilities found in [`src/utils/fetchOverseerr.ts`](mdc:src/utils/fetchOverseerr.ts). The reference is available at https://api-docs.overseerr.dev.

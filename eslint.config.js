@@ -27,7 +27,12 @@ const eslintConfig = [
         { blankLine: 'never', prev: 'let', next: 'let' },
       ],
       'react-compiler/react-compiler': 2,
-      'react/jsx-no-literals': 1,
+      'react/jsx-no-literals': [
+        1,
+        {
+          allowedStrings: [':', '/', '(', ')', '•', '.', ',', '!', '#', '→'],
+        },
+      ],
     },
   }),
 ]

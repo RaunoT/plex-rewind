@@ -10,7 +10,7 @@ type Props = {
   formState: SettingsFormInitialState<unknown>
   formAction: (payload: FormData) => void
   hideSubmit?: boolean
-  isComplete?: boolean
+  isSetup?: boolean
 }
 
 export default function SettingsForm({
@@ -18,7 +18,7 @@ export default function SettingsForm({
   formState,
   formAction,
   hideSubmit,
-  isComplete = true,
+  isSetup,
 }: Props) {
   const t = useTranslations('Settings')
 
@@ -41,9 +41,7 @@ export default function SettingsForm({
                 {formState.message}
               </p>
             ) : (
-              !isComplete && (
-                <p className='text-neutral-400'>{t('initialSetup')}</p>
-              )
+              isSetup && <p className='text-neutral-400'>{t('initialSetup')}</p>
             )}
 
             <SettingsSaveButton />

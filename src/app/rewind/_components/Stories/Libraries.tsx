@@ -16,6 +16,7 @@ export default function StoryLibraries({
   isPaused,
   pause,
   resume,
+  settings,
 }: RewindStory) {
   const translations = useTranslations()
   const t = useTranslations('Rewind.Libraries')
@@ -31,6 +32,7 @@ export default function StoryLibraries({
                 <FolderIcon />
               </span>
             ),
+            serverName: settings.general.serverName || 'Plex',
             plex: (chunks) => <span className='gradient-plex'>{chunks}</span>,
             size: (chunks) => (
               <span className='whitespace-nowrap'>

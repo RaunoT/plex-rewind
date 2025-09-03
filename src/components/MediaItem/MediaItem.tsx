@@ -2,6 +2,7 @@
 
 import { Settings } from '@/types/settings'
 import { TautulliItemRow } from '@/types/tautulli'
+import { getDeeplinkRatingKeyFromRow } from '@/utils/deeplink'
 import { secondsToTime } from '@/utils/formatting'
 import { slideDown } from '@/utils/motion'
 import {
@@ -91,7 +92,7 @@ export default function MediaItem({
       animate='show'
       transition={{ delay: i * 0.075 }}
     >
-      <div className='relative aspect-2/3 h-full w-20 shrink-0 sm:w-[5.35rem] 2xl:w-24'>
+      <div className='poster'>
         <Image
           fill
           className='object-cover object-top'
@@ -112,10 +113,10 @@ export default function MediaItem({
           parentRef={titleContainerRef}
           loggedInUserId={loggedInUserId}
         />
-        {(type === 'movie' || type === 'show') && (
+        {(type === 'movie' || type === 'show' || type === 'artist') && (
           <div className='relative z-10 mb-3 flex items-center gap-2'>
             {data.is_deleted ? (
-              isOverseerrActive ? (
+              isOverseerrActive && (type === 'movie' || type === 'show') ? (
                 <a
                   href={`${settings.connection.overseerrUrl}/${
                     type === 'movie' ? 'movie' : 'tv'
@@ -131,7 +132,10 @@ export default function MediaItem({
               )
             ) : (
               serverId && (
-                <PlexDeeplink serverId={serverId} ratingKey={data.rating_key} />
+                <PlexDeeplink
+                  serverId={serverId}
+                  ratingKey={getDeeplinkRatingKeyFromRow(data, type)}
+                />
               )
             )}
             {data.imdb_id && (

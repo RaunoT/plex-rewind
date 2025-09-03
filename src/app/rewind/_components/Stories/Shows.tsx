@@ -31,6 +31,7 @@ export default function StoryShows({
                   <span className='rewind-stat'>{chunks}</span>
                 ),
                 durationValue: userRewind.shows.duration,
+                serverName: settings.general.serverName || 'Plex',
                 plex: (chunks) => (
                   <span className='gradient-plex'>{chunks}</span>
                 ),
@@ -86,6 +87,7 @@ export default function StoryShows({
                   <PlayCircleIcon />
                 </span>
               ),
+              serverName: settings.general.serverName || 'Plex',
               plex: (chunks) => <span className='gradient-plex'>{chunks}</span>,
               emoji: (chunks) => <span className='not-italic'>{chunks}</span>,
             })}

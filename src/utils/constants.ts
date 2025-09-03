@@ -29,8 +29,6 @@ export const PERIODS: { [key: string]: Period } = {
 
 export const META_DESCRIPTION: string =
   "Plex users' statistics and habits in a beautiful and organized manner"
-export const META_TITLE: string = 'Plex Rewind'
-export const META_TITLE_TEMPLATE: string = '%s | Plex Rewind'
 
 export const PLEX_API_ENDPOINT = 'https://plex.tv/api/v2'
 export const PLEX_PRODUCT_NAME = 'Plex Rewind'
@@ -48,6 +46,7 @@ export const DEFAULT_SETTINGS: Settings = {
     complete: false,
   },
   general: {
+    serverName: '',
     activeLibraries: [],
     isPostersTmdbOnly: false,
     googleAnalyticsId: '',
@@ -79,6 +78,10 @@ export const DEFAULT_SETTINGS: Settings = {
     startDate: '2010-01-01',
     complete: false,
   },
+  activity: {
+    isActive: true,
+    complete: false,
+  },
   setupComplete: false,
 }
 
@@ -87,6 +90,7 @@ export const SETTINGS_PAGES = [
   { href: '/settings/general', key: 'general' },
   { href: '/settings/rewind', key: 'rewind' },
   { href: '/settings/dashboard', key: 'dashboard' },
+  { href: '/settings/activity', key: 'activity' },
 ]
 
 export const TMDB_API_KEY = '4675b5b5d8cd1463ff16adca2680157b'

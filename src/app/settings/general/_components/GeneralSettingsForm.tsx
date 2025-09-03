@@ -67,8 +67,24 @@ export default function GeneralSettingsForm({ settings, libraries }: Props) {
       formState={formState}
       formAction={formAction}
       hideSubmit={!libraries.length}
-      isComplete={generalSettings.complete}
+      isSetup={!generalSettings.complete}
     >
+      <section className='group-settings group'>
+        <h2 className='heading-settings'>{t('config')}</h2>
+        <label className='input-wrapper'>
+          <input
+            key={`server-name-${generalSettings.serverName}`}
+            type='text'
+            className='input'
+            name='serverName'
+            defaultValue={generalSettings.serverName}
+            placeholder='Plex Rewind'
+          />
+          <span className='label'>
+            <span className='label-wrapper'>{t('serverName')}</span>
+          </span>
+        </label>
+      </section>
       <section className='group-settings group'>
         <h2 className='heading-settings'>{t('libraries')}</h2>
         {libraries.length ? (

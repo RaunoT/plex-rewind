@@ -38,7 +38,7 @@ export default function ConnectionSettingsForm({ settings }: Props) {
     <SettingsForm
       formState={formState}
       formAction={formAction}
-      isComplete={connectionSettings.complete}
+      isSetup={!connectionSettings.complete}
     >
       <section className='group-settings group'>
         {/* eslint-disable-next-line react/jsx-no-literals */}
