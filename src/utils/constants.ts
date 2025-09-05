@@ -43,6 +43,8 @@ export const DEFAULT_SETTINGS: Settings = {
     plexUrl: '',
     overseerrUrl: '',
     overseerrApiKey: '',
+    petioUrl: '',
+    petioToken: '',
     complete: false,
   },
   general: {

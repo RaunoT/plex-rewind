@@ -1,4 +1,5 @@
 import { TautulliItem, TautulliItemRow } from '@/types/tautulli'
+import { fetchPetioStats, fetchPetioUserId } from '@/utils/fetchPetio'
 import { fetchOverseerrStats, fetchOverseerrUserId } from './fetchOverseerr'
 import fetchTautulli, {
   getLibraries,
@@ -73,6 +74,8 @@ export default async function getUsersTop(
   ])
   const isOverseerrActive =
     settings.connection.overseerrUrl && settings.connection.overseerrApiKey
+  const isPetioActive =
+    settings.connection.petioUrl && settings.connection.petioToken
 
   let usersRequestsCounts: UserRequestCounts[] = []
 
@@ -91,6 +94,32 @@ export default async function getUsersTop(
             after,
             ...(before ? [before] : []),
           )
+
+          return {
+            requests: userTotal.length,
+          }
+        }
+      }),
+    )
+  }
+
+  if (isPetioActive) {
+    const petioUserIds = await Promise.all(
+      listedUsers.map(
+        async (user) => await fetchPetioUserId(String(user.user_id)),
+      ),
+    )
+
+    usersRequestsCounts = await Promise.all(
+      petioUserIds.map(async (petioId) => {
+        if (petioId) {
+          const userTotal = await fetchPetioStats(
+            `request/archive/${petioId}`,
+            after,
+            ...(before ? [before] : []),
+          )
+
+          if (!userTotal) return { requests: 0 }
 
           return {
             requests: userTotal.length,

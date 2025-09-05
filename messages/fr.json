@@ -87,6 +87,8 @@
     "save": "Enregistrer",
     "apiKey": "Clé API",
     "invalidApiKey": "Clé API invalide !",
+    "token": "Jeton",
+    "invalidToken": "Jeton invalide!",
     "unableToConnect": "Impossible de se connecter !",
     "buyMeACoffee": "Offrez-moi un café",
     "becomeASponsor": "Devenir sponsor",

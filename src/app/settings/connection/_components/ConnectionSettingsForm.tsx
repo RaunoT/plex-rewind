@@ -121,6 +121,36 @@ export default function ConnectionSettingsForm({ settings }: Props) {
           </span>
         </label>
       </section>
+      <section className='group-settings group'>
+        {/* eslint-disable-next-line react/jsx-no-literals */}
+        <h2 className='heading-settings'>Petio</h2>
+        <label className='input-wrapper'>
+          <input
+            key={`petio-url-${connectionSettings.petioUrl}`}
+            type='url'
+            className='input'
+            placeholder='http://192.168.1.2:5055'
+            name='petioUrl'
+            defaultValue={connectionSettings.petioUrl}
+          />
+          <span className='label'>
+            {/* eslint-disable-next-line react/jsx-no-literals */}
+            <span className='label-wrapper'>URL</span>
+          </span>
+        </label>
+        <label className='input-wrapper'>
+          <input
+            key={`petio-token-${connectionSettings.petioToken}`}
+            type='password'
+            className='input'
+            name='petioToken'
+            defaultValue={connectionSettings.petioToken}
+          />
+          <span className='label'>
+            <span className='label-wrapper'>{t('token')}</span>
+          </span>
+        </label>
+      </section>
     </SettingsForm>
   )
 }

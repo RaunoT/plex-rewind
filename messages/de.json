@@ -87,6 +87,8 @@
     "save": "Speichern",
     "apiKey": "API-Schlüssel",
     "invalidApiKey": "Ungültiger API-Schlüssel!",
+    "token": "Token",
+    "invalidToken": "Ungültiges Token!",
     "unableToConnect": "Verbindung fehlgeschlagen!",
     "buyMeACoffee": "Kaffee spenden",
     "becomeASponsor": "Sponsor werden",
