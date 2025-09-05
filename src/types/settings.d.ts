@@ -9,6 +9,8 @@ export type ConnectionSettings = {
   tautulliApiKey: string
   overseerrUrl?: string
   overseerrApiKey?: string
+  petioUrl?: string
+  petioToken?: string
   plexUrl: string
   complete: boolean
 }

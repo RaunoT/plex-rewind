@@ -87,6 +87,8 @@
     "save": "Salvesta",
     "apiKey": "API võti",
     "invalidApiKey": "Vale API võti!",
+    "token": "Märk",
+    "invalidToken": "Kehtetu märk!",
     "unableToConnect": "Ühenduse loomine ebaõnnestus!",
     "buyMeACoffee": "Osta mulle kohvi",
     "becomeASponsor": "Hakka sponsoriks",

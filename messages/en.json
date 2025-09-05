@@ -87,6 +87,8 @@
     "save": "Save",
     "apiKey": "API key",
     "invalidApiKey": "Invalid API key!",
+    "token": "Token",
+    "invalidToken": "Invalid Token!",
     "unableToConnect": "Unable to connect!",
     "buyMeACoffee": "Buy me a coffee",
     "becomeASponsor": "Become a sponsor",

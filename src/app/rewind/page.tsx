@@ -5,11 +5,11 @@ import fetchTautulli, { getLibraries, getServerId } from '@/utils/fetchTautulli'
 import { secondsToTime } from '@/utils/formatting'
 import {
   getLibrariesTotalDuration,
+  getlibrariesTotalSize,
   getRequestsTotals,
   getTopMediaItems,
   getTopMediaStats,
   getUserTotalDuration,
-  getlibrariesTotalSize,
 } from '@/utils/getRewind'
 import getSettings from '@/utils/getSettings'
 import getUsersTop from '@/utils/getUsersTop'
@@ -110,11 +110,11 @@ async function RewindContent({ userId }: { userId?: string }) {
   }
   const isOverseerrActive =
     settings.connection.overseerrUrl && settings.connection.overseerrApiKey
+  const isPetioActive =
+    settings.connection.petioUrl && settings.connection.petioToken
 
-  if (isOverseerrActive) {
-    const requestTotals = await getRequestsTotals(user.id)
-
-    userRewind.requests = requestTotals
+  if (isOverseerrActive || isPetioActive) {
+    userRewind.requests = await getRequestsTotals(user.id)
   }
 
   return (

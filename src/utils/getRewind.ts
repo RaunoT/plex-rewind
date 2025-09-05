@@ -5,6 +5,7 @@ import {
   TautulliMediaReturnType,
   TautulliMediaType,
 } from '@/types/tautulli'
+import { fetchPetioStats } from '@/utils/fetchPetio'
 import { getTranslations } from 'next-intl/server'
 import { fetchOverseerrStats } from './fetchOverseerr'
 import fetchTautulli from './fetchTautulli'
@@ -212,15 +213,47 @@ export async function getTopMediaItems(
 }
 
 export async function getRequestsTotals(userId: string) {
-  const { startDate, endDate } = getRewindDateRange(getSettings())
-  const requests = await fetchOverseerrStats('request', startDate, endDate)
+  const settings = getSettings()
+  const { startDate, endDate } = getRewindDateRange(settings)
+  const isOverseerrActive =
+    Boolean(settings.connection.overseerrUrl) &&
+    Boolean(settings.connection.overseerrApiKey)
+  const isPetioActive =
+    Boolean(settings.connection.petioUrl) &&
+    Boolean(settings.connection.petioToken)
+
+  if (isOverseerrActive) {
+    const requests = await fetchOverseerrStats('request', startDate, endDate)
+
+    return {
+      total: requests.length,
+      movies: requests.filter((request) => request.type === 'movie').length,
+      shows: requests.filter((request) => request.type === 'tv').length,
+      user: requests.filter(
+        (request) => request.requestedBy?.plexId === Number(userId),
+      ).length,
+    }
+  }
+
+  if (isPetioActive) {
+    const requests = await fetchPetioStats(
+      `request/archive/${userId}`,
+      startDate,
+      endDate,
+    )
+
+    return {
+      total: requests.length,
+      movies: requests.filter((request) => request.type === 'movie').length,
+      shows: requests.filter((request) => request.type === 'tv').length,
+      user: requests.filter((request) => request.users.includes(userId)).length,
+    }
+  }
 
   return {
-    total: requests.length,
-    movies: requests.filter((request) => request.type === 'movie').length,
-    shows: requests.filter((request) => request.type === 'tv').length,
-    user: requests.filter(
-      (request) => request.requestedBy.plexId === Number(userId),
-    ).length,
+    total: 0,
+    movies: 0,
+    shows: 0,
+    user: 0,
   }
 }

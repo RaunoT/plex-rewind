@@ -2,6 +2,7 @@ import { authOptions } from '@/lib/auth'
 import { DashboardSearchParams } from '@/types/dashboard'
 import { Settings } from '@/types/settings'
 import { fetchOverseerrStats } from '@/utils/fetchOverseerr'
+import { fetchPetioTotalRequests } from '@/utils/fetchPetio'
 import fetchTautulli, { getUsersCount } from '@/utils/fetchTautulli'
 import {
   secondsToTime,
@@ -53,6 +54,8 @@ async function getTotalDuration(
 async function getTotalRequests(period: string, settings: Settings) {
   const isOverseerrActive =
     settings.connection.overseerrUrl && settings.connection.overseerrApiKey
+  const isPetioActive =
+    settings.connection.petioUrl && settings.connection.petioToken
 
   if (
     settings.dashboard.activeTotalStatistics.includes('requests') &&
@@ -61,6 +64,17 @@ async function getTotalRequests(period: string, settings: Settings) {
     const requests = await fetchOverseerrStats('request', period)
 
     return requests.length.toString()
+  }
+
+  if (
+    settings.dashboard.activeTotalStatistics.includes('requests') &&
+    isPetioActive
+  ) {
+    const stats = await fetchPetioTotalRequests(period)
+
+    if (!stats) return undefined
+
+    return String(stats.total)
   }
 
   return undefined
