@@ -57,6 +57,13 @@ jobs:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Log in to Docker Hub
+        if: env.NEXT_VERSION_TAG
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
       - name: Build and push Docker image
         if: env.NEXT_VERSION_TAG
         uses: docker/build-push-action@v6
@@ -67,6 +74,8 @@ jobs:
           tags: |
             ghcr.io/raunot/plex-rewind:latest
             ghcr.io/raunot/plex-rewind:${{ env.NEXT_VERSION_TAG }}
+            raunoot/plex-rewind:latest
+            raunoot/plex-rewind:${{ env.NEXT_VERSION_TAG }}
           build-args: |
             NEXT_PUBLIC_VERSION_TAG=${{ env.NEXT_VERSION_TAG }}
           cache-from: type=gha
