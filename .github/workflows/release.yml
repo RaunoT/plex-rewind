@@ -74,8 +74,8 @@ jobs:
           tags: |
             ghcr.io/raunot/plex-rewind:latest
             ghcr.io/raunot/plex-rewind:${{ env.NEXT_VERSION_TAG }}
-            raunot/plex-rewind:latest
-            raunot/plex-rewind:${{ env.NEXT_VERSION_TAG }}
+            raunoot/plex-rewind:latest
+            raunoot/plex-rewind:${{ env.NEXT_VERSION_TAG }}
           build-args: |
             NEXT_PUBLIC_VERSION_TAG=${{ env.NEXT_VERSION_TAG }}
           cache-from: type=gha
