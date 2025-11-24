@@ -60,15 +60,9 @@ services:
 
 For those that need it, a simple status page is also available at `/api/status`.
 
-### Unraid
-
-Plex Rewind is also available in the Community Apps store for Unraid. Search for "Plex Rewind" and install it from grtgbln's repository.
-
 ### Updating
 
 To update, run `docker compose pull` and then `docker compose up -d`.
-
-Optionally, you can also set up automatic updates with [Watchtower](https://containrrr.dev/watchtower).
 
 ## Translations
 
@@ -82,11 +76,6 @@ If you like this project and wish to support it, you can do so with a one-time d
 
 - NAS Assist
 
-## Learn More
+## Star History
 
-To learn more about some of the tools used in this project, take a look at the following resources:
-
-- [Tautulli API reference](https://docs.tautulli.com/extending-tautulli/api-reference)
-- [Overseerr API reference](https://api-docs.overseerr.dev)
-- [Next.js docs](https://nextjs.org/docs)
-- [NextAuth.js docs](https://next-auth.js.org/getting-started/introduction)
+[![Star History Chart](https://api.star-history.com/svg?repos=RaunoT/plex-rewind&type=date&legend=top-left)](https://www.star-history.com/#RaunoT/plex-rewind&type=date&legend=top-left)
