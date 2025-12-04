@@ -7,11 +7,12 @@ const nextConfig: NextConfig = {
   reactStrictMode: true,
   output: 'standalone',
   images: {
-    remotePatterns: [
+    localPatterns: [
       {
-        protocol: 'http',
-        hostname: 'localhost',
+        pathname: '/api/image',
       },
+    ],
+    remotePatterns: [
       {
         protocol: 'https',
         hostname: 'plex.tv',
