@@ -1,5 +1,4 @@
 // This type is compatible with next-intl's translation function
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type TranslateFunction = (key: string, params?: any) => string
 
 export function secondsToTime(seconds: number, t: TranslateFunction): string {
