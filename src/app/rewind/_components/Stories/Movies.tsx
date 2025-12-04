@@ -3,19 +3,16 @@ import { RewindStory } from '@/types/rewind'
 import { FilmIcon } from '@heroicons/react/24/outline'
 import { useTranslations } from 'next-intl'
 import RewindStat from '../RewindStat'
-import StoryWrapper from '../StoryWrapper'
 
 export default function StoryMovies({
   userRewind,
   isPaused,
-  pause,
-  resume,
   settings,
 }: RewindStory) {
   const t = useTranslations('Rewind.Movies')
 
   return (
-    <StoryWrapper isPaused={isPaused} pause={pause} resume={resume}>
+    <>
       {userRewind.movies.duration ? (
         <>
           <RewindStat isPaused={isPaused} scaleDelay={3}>
@@ -90,6 +87,6 @@ export default function StoryMovies({
           </p>
         </RewindStat>
       )}
-    </StoryWrapper>
+    </>
   )
 }

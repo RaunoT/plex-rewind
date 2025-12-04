@@ -3,19 +3,16 @@ import { RewindStory } from '@/types/rewind'
 import { MusicalNoteIcon } from '@heroicons/react/24/outline'
 import { useTranslations } from 'next-intl'
 import RewindStat from '../RewindStat'
-import StoryWrapper from '../StoryWrapper'
 
 export default function StoryAudio({
   userRewind,
   isPaused,
-  pause,
-  resume,
   settings,
 }: RewindStory) {
   const t = useTranslations('Rewind.Audio')
 
   return (
-    <StoryWrapper isPaused={isPaused} pause={pause} resume={resume}>
+    <>
       {userRewind.audio.duration ? (
         <>
           <RewindStat isPaused={isPaused} scaleDelay={3}>
@@ -95,6 +92,6 @@ export default function StoryAudio({
           </p>
         </RewindStat>
       )}
-    </StoryWrapper>
+    </>
   )
 }

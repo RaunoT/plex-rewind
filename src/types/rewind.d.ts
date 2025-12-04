@@ -30,8 +30,8 @@ export type UserRewind = {
 
 export type RewindStory = {
   userRewind: UserRewind
-  isPaused: boolean
-  pause: () => void
-  resume: () => void
+  isPaused?: boolean
+  pause?: () => void
+  resume?: () => void
   settings: Settings
 }
