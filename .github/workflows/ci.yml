@@ -13,11 +13,6 @@ on:
         type: boolean
         default: false
         required: false
-      build_armv7:
-        description: 'Build linux/arm/v7'
-        type: boolean
-        default: false
-        required: false
 
 concurrency:
   group: ci-${{ github.ref }}
@@ -39,12 +34,12 @@ jobs:
           platforms=()
           if [ "${{ inputs.build_amd64 }}" = "true" ]; then platforms+=("linux/amd64"); fi
           if [ "${{ inputs.build_arm64 }}" = "true" ]; then platforms+=("linux/arm64"); fi
-          if [ "${{ inputs.build_armv7 }}" = "true" ]; then platforms+=("linux/arm/v7"); fi
           if [ ${#platforms[@]} -eq 0 ]; then platforms=("linux/amd64"); fi
-          echo "platforms=$(IFS=,; echo \"${platforms[*]}\")" >> $GITHUB_OUTPUT
+          platforms_str=$(IFS=,; echo "${platforms[*]}")
+          echo "platforms=$platforms_str" >> $GITHUB_OUTPUT
 
       - name: Set up QEMU
-        if: ${{ contains(steps.platforms.outputs.platforms, 'linux/arm64') || contains(steps.platforms.outputs.platforms, 'linux/arm/v7') }}
+        if: ${{ contains(steps.platforms.outputs.platforms, 'linux/arm64') }}
         uses: docker/setup-qemu-action@v3
 
       - name: Set up Docker Buildx

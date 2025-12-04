@@ -1,7 +1,9 @@
-FROM node:22-slim AS base
+FROM node:22-alpine AS base
 
 # Install dependencies only when needed
 FROM base AS deps
+# Check https://github.com/nodejs/docker-node/tree/b4117f9333da4138b03a546ec926ef50a31506c3#nodealpine to understand why libc6-compat might be needed.
+RUN apk add --no-cache libc6-compat
 WORKDIR /app
 
 # Install dependencies based on the preferred package manager
@@ -24,6 +26,9 @@ COPY . .
 # Uncomment the following line in case you want to disable telemetry during the build.
 ENV NEXT_TELEMETRY_DISABLED=1
 
+ARG NEXT_PUBLIC_VERSION_TAG
+ENV NEXT_PUBLIC_VERSION_TAG=${NEXT_PUBLIC_VERSION_TAG}
+
 RUN \
   if [ -f yarn.lock ]; then yarn run build; \
   elif [ -f package-lock.json ]; then npm run build; \
@@ -36,7 +41,7 @@ FROM base AS runner
 WORKDIR /app
 
 # Install openssl in the runner stage
-RUN apt-get update && apt-get install -y --no-install-recommends openssl
+RUN apk add --no-cache openssl
 
 ENV NODE_ENV=production
 ENV BASE_DIR=/app
