@@ -214,7 +214,7 @@ export default function Stories({ stories, classNames }: Props) {
 
       {/* Story content with tap/hold navigation */}
       <div
-        className='relative flex-1 pt-8 sm:flex sm:flex-col sm:justify-center'
+        className='relative w-full flex-1 pt-8 sm:flex sm:flex-col sm:justify-center'
         onPointerDown={handlePointerDown}
         onPointerUp={handlePointerUp}
         onPointerLeave={handlePointerLeave}
