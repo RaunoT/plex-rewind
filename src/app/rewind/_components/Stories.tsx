@@ -185,9 +185,9 @@ export default function Stories({ stories, classNames }: Props) {
   if (!currentStory) return null
 
   return (
-    <div className={clsx('relative flex flex-1 flex-col', classNames?.main)}>
+    <div className='relative flex flex-1'>
       {/* Progress bar */}
-      <div className='absolute top-0 right-0 left-0 z-20 flex gap-1'>
+      <div className='absolute top-0 right-0 left-0 z-20 flex gap-1 sm:-top-4'>
         {stories.map((_, index) => (
           <button
             key={index}
@@ -214,7 +214,7 @@ export default function Stories({ stories, classNames }: Props) {
 
       {/* Story content with tap/hold navigation */}
       <div
-        className={clsx('relative flex-1', classNames?.storyContainer)}
+        className='relative flex-1 pt-8 sm:flex sm:flex-col sm:justify-center'
         onPointerDown={handlePointerDown}
         onPointerUp={handlePointerUp}
         onPointerLeave={handlePointerLeave}
