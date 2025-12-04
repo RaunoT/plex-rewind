@@ -196,7 +196,7 @@ export default function Stories({ stories, classNames }: Props) {
             aria-label={t('goToStory', { index: index + 1 })}
           >
             <div
-              className='h-full bg-neutral-300 transition-none group-hover:bg-white'
+              className='link-dark h-full bg-white transition-none'
               style={{
                 width:
                   index < currentIndex
