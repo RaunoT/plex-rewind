@@ -5,7 +5,7 @@ import {
   Settings,
   SettingsFormInitialState,
 } from '@/types/settings'
-import { TautulliLibrary } from '@/types/tautulli'
+import { TautulliLibrary, TautulliUser } from '@/types/tautulli'
 import { Bars2Icon } from '@heroicons/react/24/outline'
 import { kebabCase } from 'lodash'
 import { useTranslations } from 'next-intl'
@@ -14,17 +14,23 @@ import { Checkbox, CheckboxGroup, Label, Switch } from 'react-aria-components'
 import { ReactSortable } from 'react-sortablejs'
 import SettingsForm from '../../_components/SettingsForm'
 import saveGeneralSettings from '../_actions/updateGeneralSettings'
+import UserMultiSelect from './UserMultiSelect'
 
 type SortableLibrary = TautulliLibrary & { id: TautulliLibrary['section_id'] }
 
 type Props = {
   settings: Settings
   libraries: TautulliLibrary[]
+  users: TautulliUser[]
 }
 
 type GeneralFormState = SettingsFormInitialState<GeneralSettings>
 
-export default function GeneralSettingsForm({ settings, libraries }: Props) {
+export default function GeneralSettingsForm({
+  settings,
+  libraries,
+  users,
+}: Props) {
   const [librariesState, setLibrariesState] = useState<SortableLibrary[]>(
     () => {
       const activeLibraries = settings.general.activeLibraries
@@ -152,6 +158,13 @@ export default function GeneralSettingsForm({ settings, libraries }: Props) {
           </section>
           <section className='group-settings group'>
             <h2 className='heading-settings'>{t('privacy')}</h2>
+            {users.length > 0 && (
+              <UserMultiSelect
+                key={`active-users-${JSON.stringify(generalSettings.activeUsers)}`}
+                users={users}
+                defaultSelectedIds={generalSettings.activeUsers}
+              />
+            )}
             <Switch
               key={`outside-access-${generalSettings.isOutsideAccess}`}
               className='switch items-start'
