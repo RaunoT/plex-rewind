@@ -187,25 +187,27 @@ export default function Stories({ stories, classNames }: Props) {
   return (
     <div className={clsx('relative flex flex-1 flex-col', classNames?.main)}>
       {/* Progress bar */}
-      <div className='absolute top-0 right-0 left-0 z-20 flex gap-1 px-4 sm:px-0'>
+      <div className='absolute top-0 right-0 left-0 z-20 flex gap-1'>
         {stories.map((_, index) => (
           <button
             key={index}
-            className='group h-1 flex-1 cursor-pointer overflow-hidden rounded-full bg-neutral-500 hover:bg-neutral-400'
+            className='group flex-1 cursor-pointer overflow-hidden py-2'
             onClick={() => goToIndex(index)}
             aria-label={t('goToStory', { index: index + 1 })}
           >
-            <div
-              className='link-dark h-full bg-white transition-none'
-              style={{
-                width:
-                  index < currentIndex
-                    ? '100%'
-                    : index === currentIndex
-                      ? `${progress * 100}%`
-                      : '0%',
-              }}
-            />
+            <span className='block h-0.5 rounded-full bg-neutral-500 group-hover:bg-neutral-400'>
+              <span
+                className='link-dark block h-full bg-white transition-none'
+                style={{
+                  width:
+                    index < currentIndex
+                      ? '100%'
+                      : index === currentIndex
+                        ? `${progress * 100}%`
+                        : '0%',
+                }}
+              />
+            </span>
           </button>
         ))}
       </div>

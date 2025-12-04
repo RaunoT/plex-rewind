@@ -61,11 +61,11 @@
 }
 
 @utility link-light {
-  @apply hover:opacity-80;
+  @apply group-hover:opacity-80 hover:opacity-80;
 }
 
 @utility link-dark {
-  @apply hover:opacity-60;
+  @apply group-hover:opacity-60 hover:opacity-60;
 }
 
 @layer components {
