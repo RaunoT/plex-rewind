@@ -35,7 +35,8 @@ jobs:
           if [ "${{ inputs.build_amd64 }}" = "true" ]; then platforms+=("linux/amd64"); fi
           if [ "${{ inputs.build_arm64 }}" = "true" ]; then platforms+=("linux/arm64"); fi
           if [ ${#platforms[@]} -eq 0 ]; then platforms=("linux/amd64"); fi
-          echo "platforms=$(IFS=,; echo \"${platforms[*]}\")" >> $GITHUB_OUTPUT
+          platforms_str=$(IFS=,; echo "${platforms[*]}")
+          echo "platforms=$platforms_str" >> $GITHUB_OUTPUT
 
       - name: Set up QEMU
         if: ${{ contains(steps.platforms.outputs.platforms, 'linux/arm64') }}
