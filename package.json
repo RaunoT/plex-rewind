@@ -27,7 +27,7 @@
     "@tanstack/react-query": "^5.90.11",
     "lodash": "^4.17.21",
     "motion": "^12.23.25",
-    "next": "16.0.7",
+    "next": "^16.0.7",
     "next-auth": "^4.24.13",
     "next-intl": "^4.5.8",
     "next-runtime-env": "^3.3.0",
@@ -38,7 +38,6 @@
     "react-sortablejs": "^6.1.4",
     "sharp": "^0.34.5",
     "sortablejs": "^1.15.6",
-    "stories-react": "^1.1.2",
     "uuid": "^13.0.0",
     "xml2js": "^0.6.2",
     "zod": "^4.1.13"
@@ -59,7 +58,6 @@
     "@types/react": "19.2.7",
     "@types/react-dom": "19.2.3",
     "@types/sortablejs": "^1.15.9",
-    "@types/uuid": "^11.0.0",
     "@types/xml2js": "^0.4.14",
     "@typescript-eslint/eslint-plugin": "^8.48.1",
     "@typescript-eslint/parser": "^8.48.1",
@@ -90,10 +88,6 @@
   "pnpm": {
     "onlyBuiltDependencies": [
       "sharp"
-    ],
-    "overrides": {
-      "@types/react": "19.2.7",
-      "@types/react-dom": "19.2.3"
-    }
+    ]
   }
 }

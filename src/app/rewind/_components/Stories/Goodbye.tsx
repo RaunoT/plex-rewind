@@ -6,19 +6,16 @@ import {
 } from '@heroicons/react/24/outline'
 import { useTranslations } from 'next-intl'
 import RewindStat from '../RewindStat'
-import StoryWrapper from '../StoryWrapper'
 
 export default function StoryGoodbye({
   userRewind,
   isPaused,
-  pause,
-  resume,
   settings,
 }: RewindStory) {
   const t = useTranslations('Rewind.Goodbye')
 
   return (
-    <StoryWrapper isPaused={isPaused} pause={pause} resume={resume}>
+    <>
       <RewindStat scaleDelay={2} isPaused={isPaused}>
         <p>
           {t.rich('thanks', {
@@ -85,6 +82,6 @@ export default function StoryGoodbye({
           })}
         </p>
       </RewindStat>
-    </StoryWrapper>
+    </>
   )
 }

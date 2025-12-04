@@ -3,20 +3,13 @@ import { RewindStory } from '@/types/rewind'
 import { PlayCircleIcon } from '@heroicons/react/24/outline'
 import { useTranslations } from 'next-intl'
 import RewindStat from '../RewindStat'
-import StoryWrapper from '../StoryWrapper'
 
-export default function StoryShowsTop({
-  userRewind,
-  isPaused,
-  pause,
-  resume,
-  settings,
-}: RewindStory) {
+export default function StoryShowsTop({ userRewind, settings }: RewindStory) {
   const hasTop5 = userRewind.shows.top.length === 5
   const t = useTranslations('Rewind.Common')
 
   return (
-    <StoryWrapper isPaused={isPaused} pause={pause} resume={resume}>
+    <>
       <RewindStat noScale>
         <p className='mb-2'>
           {t.rich('top', {
@@ -40,6 +33,6 @@ export default function StoryShowsTop({
           />
         </div>
       </RewindStat>
-    </StoryWrapper>
+    </>
   )
 }
