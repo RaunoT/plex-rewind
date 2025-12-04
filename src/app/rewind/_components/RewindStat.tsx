@@ -4,7 +4,7 @@ import useTimer from '@/hooks/useTimer'
 import { animateRewindStat, fadeIn } from '@/utils/motion'
 import clsx from 'clsx'
 import { motion } from 'motion/react'
-import { ReactNode, useEffect, useState } from 'react'
+import { ReactNode, useState } from 'react'
 
 type Props = {
   children: ReactNode
@@ -30,18 +30,13 @@ export default function RewindStat({
   isAnimated = true,
 }: Props) {
   const [isComponentShown, setIsComponentShown] = useState<boolean>(false)
-  const [isLoaderShown, setIsLoaderShown] = useState<boolean>(false)
   const scaleTimer = useTimer(
     renderDelay ? renderDelay + scaleDelay : scaleDelay,
     undefined,
     isPaused,
     !!scaleDelay,
   )
-  const loaderTimer = useTimer(
-    loaderDelay,
-    () => setIsLoaderShown(true),
-    isPaused,
-  )
+  const loaderTimer = useTimer(loaderDelay, undefined, isPaused)
   const renderTimer = useTimer(
     renderDelay,
     () => setIsComponentShown(true),
@@ -50,13 +45,7 @@ export default function RewindStat({
 
   useTimer(hideAfter, () => setIsComponentShown(false), isPaused, !!hideAfter)
 
-  useEffect(() => {
-    if (!renderTimer || loaderTimer) {
-      setIsLoaderShown(false)
-    } else {
-      setIsLoaderShown(!isPaused)
-    }
-  }, [isPaused, renderTimer, loaderTimer])
+  const isLoaderShown = !renderTimer && loaderTimer && !isPaused
 
   return isComponentShown ? (
     <motion.div

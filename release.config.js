@@ -1,4 +1,4 @@
-export default {
+const config = {
   plugins: [
     [
       '@semantic-release/commit-analyzer',
@@ -80,3 +80,5 @@ export default {
     },
   ],
 }
+
+export default config

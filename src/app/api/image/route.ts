@@ -24,7 +24,6 @@ export async function GET(request: Request) {
       status: res.status,
       headers: headers,
     })
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
   } catch (error) {
     return new Response('[IMAGE PROXY] - An error occurred', { status: 500 })
   }
