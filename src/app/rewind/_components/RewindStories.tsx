@@ -3,8 +3,7 @@
 import { UserRewind } from '@/types/rewind'
 import { Settings } from '@/types/settings'
 import { FC } from 'react'
-import Stories from 'stories-react'
-import 'stories-react/dist/index.css'
+import Stories from './Stories'
 import StoryAudio from './Stories/Audio'
 import StoryAudioTop from './Stories/AudioTop'
 import StoryGoodbye from './Stories/Goodbye'
@@ -37,7 +36,7 @@ type Props = {
 export default function RewindStories({ userRewind, settings }: Props) {
   function createStory(Component: FC<StoryComponent>, duration: number) {
     return {
-      type: 'component',
+      type: 'component' as const,
       component: (story: Story) => (
         <Component
           userRewind={userRewind}

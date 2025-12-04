@@ -189,6 +189,13 @@
     "loading": "Loading..."
   },
   "Rewind": {
+    "Stories": {
+      "goToStory": "Go to story {index}",
+      "previousStory": "Previous story",
+      "nextStory": "Next story",
+      "pause": "Pause",
+      "resume": "Resume"
+    },
     "Common": {
       "top": "Here's your <top>Top {count}</top>"
     },

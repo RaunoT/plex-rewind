@@ -2,19 +2,16 @@ import { RewindStory } from '@/types/rewind'
 import { ChartPieIcon, ClockIcon } from '@heroicons/react/24/outline'
 import { useTranslations } from 'next-intl'
 import RewindStat from '../RewindStat'
-import StoryWrapper from '../StoryWrapper'
 
 export default function StoryTotal({
   userRewind,
   isPaused,
-  pause,
-  resume,
   settings,
 }: RewindStory) {
   const t = useTranslations('Rewind.Total')
 
   return (
-    <StoryWrapper isPaused={isPaused} pause={pause} resume={resume}>
+    <>
       {userRewind.duration.user ? (
         <>
           <RewindStat isPaused={isPaused} scaleDelay={4}>
@@ -65,6 +62,6 @@ export default function StoryTotal({
           </p>
         </RewindStat>
       )}
-    </StoryWrapper>
+    </>
   )
 }

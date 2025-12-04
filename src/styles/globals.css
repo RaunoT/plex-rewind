@@ -60,6 +60,14 @@
   animation-delay: --value(integer)ms;
 }
 
+@utility link-light {
+  @apply hover:opacity-80;
+}
+
+@utility link-dark {
+  @apply hover:opacity-60;
+}
+
 @layer components {
   .button {
     @apply block w-fit rounded-2xl bg-linear-to-r from-blue-800 to-teal-700 px-8 py-3 text-center font-semibold transition-all;
@@ -106,14 +114,6 @@
 
   .link {
     @apply text-neutral-400 hover:text-neutral-500;
-  }
-
-  .link-light {
-    @apply hover:opacity-80;
-  }
-
-  .link-dark {
-    @apply hover:opacity-60;
   }
 
   .nav {
@@ -176,7 +176,7 @@
   }
 
   .select-wrapper {
-    @apply relative w-full;
+    @apply link-light relative w-full;
 
     &::after {
       @apply pointer-events-none absolute inset-y-2 right-12 -mr-px h-auto w-px bg-neutral-300;

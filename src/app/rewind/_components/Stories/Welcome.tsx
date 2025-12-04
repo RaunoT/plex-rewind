@@ -3,7 +3,6 @@ import { getRewindDateRange } from '@/utils/helpers'
 import { useTranslations } from 'next-intl'
 import Image from 'next/image'
 import RewindStat from '../RewindStat'
-import StoryWrapper from '../StoryWrapper'
 
 function formatDate(dateString: string) {
   const date = new Date(dateString)
@@ -16,8 +15,6 @@ function formatDate(dateString: string) {
 export default function StoryWelcome({
   userRewind,
   isPaused,
-  pause,
-  resume,
   settings,
 }: RewindStory) {
   const { startDate, endDate } = getRewindDateRange(settings)
@@ -27,9 +24,9 @@ export default function StoryWelcome({
   const formattedEndDate = formatDate(endDate)
 
   return (
-    <StoryWrapper isPaused={isPaused} pause={pause} resume={resume}>
-      <RewindStat noScale isAnimated={false}>
-        <div className='animate-fade-up relative mb-8 size-24'>
+    <>
+      <RewindStat isPaused={isPaused} noScale isAnimated={false}>
+        <div className='relative mb-8 size-24'>
           <Image
             src={userRewind.user.image || ''}
             alt={`${userRewind.user.name} profile picture`}
@@ -39,7 +36,7 @@ export default function StoryWelcome({
             priority
           />
         </div>
-        <p className='animate-fade-up animation-delay-500 mb-4'>
+        <p>
           {t.rich('welcome', {
             serverName: settings.general.serverName || 'Plex',
             rewind: (chunks) => (
@@ -48,7 +45,10 @@ export default function StoryWelcome({
           })}
           <span className='rewind-cat'>{userRewind.user.name}!</span>
         </p>
-        <p className='animate-fade-up animation-delay-2000 mb-4'>
+      </RewindStat>
+
+      <RewindStat isPaused={isPaused} renderDelay={2} scaleDelay={2} noScale>
+        <p>
           {t('takeYouThrough')}{' '}
           {isDefaultPeriod
             ? t.rich('forPastYear', {
@@ -74,10 +74,11 @@ export default function StoryWelcome({
                   ),
                 })}
         </p>
-        <p className='animate-fade-up animation-delay-4000'>
-          {t('letsGetStarted')}
-        </p>
       </RewindStat>
-    </StoryWrapper>
+
+      <RewindStat isPaused={isPaused} renderDelay={4} loaderDelay={2} noScale>
+        <p>{t('letsGetStarted')}</p>
+      </RewindStat>
+    </>
   )
 }

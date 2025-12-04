@@ -3,19 +3,12 @@ import { RewindStory } from '@/types/rewind'
 import { UsersIcon } from '@heroicons/react/24/outline'
 import { useTranslations } from 'next-intl'
 import RewindStat from '../RewindStat'
-import StoryWrapper from '../StoryWrapper'
 
-export default function StoryUsersTop({
-  userRewind,
-  isPaused,
-  pause,
-  resume,
-  settings,
-}: RewindStory) {
+export default function StoryUsersTop({ userRewind, settings }: RewindStory) {
   const t = useTranslations('Rewind.Users')
 
   return (
-    <StoryWrapper isPaused={isPaused} pause={pause} resume={resume}>
+    <>
       <RewindStat noScale>
         <p className='mb-2'>
           {t.rich('top', {
@@ -39,6 +32,6 @@ export default function StoryUsersTop({
           />
         </div>
       </RewindStat>
-    </StoryWrapper>
+    </>
   )
 }
