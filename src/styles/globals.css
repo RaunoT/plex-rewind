@@ -26,11 +26,11 @@
 }
 
 @utility gradient-rewind {
-  @apply bg-gradient-to-r from-blue-500 to-teal-400 bg-clip-text text-transparent;
+  @apply bg-linear-to-r from-blue-500 to-teal-400 bg-clip-text text-transparent;
 }
 
 @utility gradient-plex {
-  @apply bg-gradient-to-r from-yellow-500 to-yellow-700 bg-clip-text text-transparent;
+  @apply bg-linear-to-r from-yellow-500 to-yellow-700 bg-clip-text text-transparent;
 }
 
 @utility focus-ring {
@@ -38,7 +38,7 @@
 }
 
 @utility required {
-  &::after {
+  ::after {
     @apply ml-1 align-text-bottom text-red-500 content-['*'];
   }
 }
@@ -62,7 +62,7 @@
 
 @layer components {
   .button {
-    @apply block w-fit rounded-2xl bg-gradient-to-r from-blue-800 to-teal-700 px-8 py-3 text-center font-semibold transition-all;
+    @apply block w-fit rounded-2xl bg-linear-to-r from-blue-800 to-teal-700 px-8 py-3 text-center font-semibold transition-all;
 
     &[disabled] {
       @apply cursor-not-allowed opacity-50;
@@ -101,7 +101,7 @@
   }
 
   .poster {
-    @apply relative aspect-2/3 h-full w-20 shrink-0 !rounded-none sm:w-[5.35rem] 2xl:w-24;
+    @apply relative aspect-2/3 h-full w-20 shrink-0 rounded-none! sm:w-[5.35rem] 2xl:w-24;
   }
 
   .link {

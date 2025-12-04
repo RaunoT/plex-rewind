@@ -1,19 +1,19 @@
-import { FlatCompat } from '@eslint/eslintrc'
+import stylistic from '@stylistic/eslint-plugin'
+import nextConfig from 'eslint-config-next/core-web-vitals'
+import eslintConfigPrettier from 'eslint-config-prettier'
+import reactCompiler from 'eslint-plugin-react-compiler'
 
-const compat = new FlatCompat({
-  baseDirectory: import.meta.dirname,
-  recommendedConfig: {},
-})
 const eslintConfig = [
-  ...compat.config({
-    extends: [
-      'eslint:recommended',
-      'plugin:@typescript-eslint/recommended',
-      'next/core-web-vitals',
-      'prettier',
-    ],
-    parser: '@typescript-eslint/parser',
-    plugins: ['@typescript-eslint', 'react-compiler', '@stylistic'],
+  {
+    ignores: ['public/**', '.next/**', 'node_modules/**'],
+  },
+  ...nextConfig,
+  eslintConfigPrettier,
+  {
+    plugins: {
+      'react-compiler': reactCompiler,
+      '@stylistic': stylistic,
+    },
     rules: {
       '@stylistic/padding-line-between-statements': [
         'error',
@@ -34,7 +34,7 @@ const eslintConfig = [
         },
       ],
     },
-  }),
+  },
 ]
 
 export default eslintConfig

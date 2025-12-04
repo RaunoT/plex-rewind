@@ -1,4 +1,4 @@
-export default {
+const config = {
   '**/*.{js,jsx,ts,tsx}': [
     'prettier --write --cache',
     'eslint --cache --fix',
@@ -7,3 +7,5 @@ export default {
   '**/*.css': 'stylelint --cache --fix',
   '**/*.{css,md,json}': 'prettier --write --cache',
 }
+
+export default config

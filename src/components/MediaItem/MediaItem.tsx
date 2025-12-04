@@ -19,7 +19,7 @@ import clsx from 'clsx'
 import { motion } from 'motion/react'
 import { useTranslations } from 'next-intl'
 import Image from 'next/image'
-import { useEffect, useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 import anonymousSvg from './anonymous.svg'
 import MediaItemTitle from './MediaItemTitle'
 import placeholderSvg from './placeholder.svg'
@@ -63,7 +63,8 @@ export default function MediaItem({
   const isAnonymized = data.user === 'Anonymous'
   const initialImageSrc = isUsers && isAnonymized ? anonymousSvg : posterSrc
   const [imageSrc, setImageSrc] = useState<string>(initialImageSrc)
-  const [dataKey, setDataKey] = useState<number>(0)
+  const [prevInitialImageSrc, setPrevInitialImageSrc] =
+    useState<string>(initialImageSrc)
   const titleContainerRef = useRef<HTMLDivElement>(null)
   const isOverseerrActive =
     settings.connection.overseerrUrl && settings.connection.overseerrApiKey
@@ -73,11 +74,12 @@ export default function MediaItem({
   const isHiddenItem = !isUsers && i > 4
   const isSpecialCase =
     i === 4 && items[5] && String(items[5].user_id) === loggedInUserId
+  const dataKey = `${data.rating_key || data.user_id || i}-${type}`
 
-  useEffect(() => {
-    setDataKey((prevDataKey) => prevDataKey + 1)
+  if (initialImageSrc !== prevInitialImageSrc) {
+    setPrevInitialImageSrc(initialImageSrc)
     setImageSrc(initialImageSrc)
-  }, [data, type, initialImageSrc])
+  }
 
   return (
     <motion.li
