@@ -7,7 +7,7 @@ import {
 } from './utils/helpers'
 
 export default withAuth(
-  async function middleware(req) {
+  async function proxy(req) {
     const { pathname } = req.nextUrl
     const settingsRes = await fetch(
       `${process.env.NEXT_PUBLIC_SITE_URL}/api/settings`,
