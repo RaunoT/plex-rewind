@@ -48,7 +48,7 @@ export const DEFAULT_SETTINGS: Settings = {
   general: {
     serverName: '',
     activeLibraries: [],
-    activeUsers: [],
+    excludedUsers: [],
     isPostersTmdbOnly: false,
     googleAnalyticsId: '',
     isOutsideAccess: false,

@@ -184,11 +184,13 @@ export async function getActiveUsers(): Promise<TautulliUser[]> {
   if (users) {
     users = users.filter((user) => user.is_active && user.username !== 'Local')
 
-    // Filter by activeUsers setting if configured
-    const activeUsers = settings.general.activeUsers
+    // Filter out excludedUsers if configured
+    const excludedUsers = settings.general.excludedUsers
 
-    if (activeUsers && activeUsers.length > 0) {
-      users = users.filter((user) => activeUsers.includes(user.user_id))
+    if (excludedUsers && excludedUsers.length > 0) {
+      users = users.filter(
+        (user) => !excludedUsers.includes(String(user.user_id)),
+      )
     }
   }
 

@@ -7,7 +7,7 @@ import updateSettings from '../../_actions/updateSettings'
 const schema = z.object({
   serverName: z.string(),
   activeLibraries: z.array(z.string()),
-  activeUsers: z.array(z.string()),
+  excludedUsers: z.array(z.string()),
   isPostersTmdbOnly: z.boolean(),
   googleAnalyticsId: z.string(),
   isOutsideAccess: z.boolean(),
@@ -22,7 +22,7 @@ export default async function saveGeneralSettings(
   const data = {
     serverName: formData.get('serverName') as string,
     activeLibraries: formData.getAll('activeLibraries') as string[],
-    activeUsers: formData.getAll('activeUsers') as string[],
+    excludedUsers: formData.getAll('excludedUsers') as string[],
     isPostersTmdbOnly: formData.get('isPostersTmdbOnly') === 'on',
     googleAnalyticsId: formData.get('googleAnalyticsId') as string,
     isOutsideAccess: formData.get('isOutsideAccess') === 'on',

@@ -3,18 +3,18 @@ export default function DashboardLoader() {
     <div className='flex flex-1 animate-pulse flex-col'>
       <div className='mb-2.5 h-8 sm:mb-1 sm:h-10 lg:mb-1.5'>
         <div className='mt-1 flex items-center sm:mt-0'>
-          <div className='skeleton mr-2 ml-0.5 size-6 p-0 sm:-mt-0.5 sm:ml-0 sm:size-8'></div>
-          <div className='skeleton w-32 sm:w-48'></div>
+          <div className='skeleton mr-2 ml-0.5 size-6 p-0 sm:-mt-0.5 sm:ml-0 sm:size-8' />
+          <div className='skeleton w-32 sm:w-48' />
         </div>
       </div>
       <ul className='icon-stats-container mb-1.5 sm:gap-x-3 lg:mb-2'>
         <li className='icon-stat-wrapper icon-stat-wrapper--clean'>
-          <div className='skeleton size-4 p-0'></div>
-          <div className='skeleton w-20'></div>
+          <div className='skeleton size-4 p-0' />
+          <div className='skeleton w-20' />
         </li>
         <li className='icon-stat-wrapper icon-stat-wrapper--clean'>
-          <div className='skeleton size-4 p-0'></div>
-          <div className='skeleton w-20'></div>
+          <div className='skeleton size-4 p-0' />
+          <div className='skeleton w-20' />
         </li>
       </ul>
 
@@ -33,17 +33,17 @@ export default function DashboardLoader() {
 function ListItem() {
   return (
     <li className='flex gap-3 last:hidden lg:last:flex'>
-      <div className='skeleton poster'></div>
+      <div className='skeleton poster' />
       <div className='mt-1 w-full sm:mt-2 2xl:mt-[2.125rem]'>
-        <div className='skeleton mb-3 w-2/3 sm:w-1/3'></div>
+        <div className='skeleton mb-3 w-2/3 sm:w-1/3' />
         <ul className='icon-stats-container'>
           <li className='icon-stat-wrapper icon-stat-wrapper--clean'>
-            <div className='skeleton size-4 p-0'></div>
-            <div className='skeleton w-10'></div>
+            <div className='skeleton size-4 p-0' />
+            <div className='skeleton w-10' />
           </li>
           <li className='icon-stat-wrapper icon-stat-wrapper--clean'>
-            <div className='skeleton size-4 p-0'></div>
-            <div className='skeleton w-10'></div>
+            <div className='skeleton size-4 p-0' />
+            <div className='skeleton w-10' />
           </li>
         </ul>
       </div>

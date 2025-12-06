@@ -51,7 +51,7 @@ export default function ActivitySettingsForm({ settings }: Props) {
           isSelected={isActive}
           onChange={setIsActive}
         >
-          <div className='indicator'></div>
+          <div className='indicator' />
           <span className='label'>
             <span className='label-wrapper'>{tCommon('enabled')}</span>
           </span>

@@ -14,7 +14,6 @@ import { Checkbox, CheckboxGroup, Label, Switch } from 'react-aria-components'
 import { ReactSortable } from 'react-sortablejs'
 import SettingsForm from '../../_components/SettingsForm'
 import saveGeneralSettings from '../_actions/updateGeneralSettings'
-import UserMultiSelect from './UserMultiSelect'
 
 type SortableLibrary = TautulliLibrary & { id: TautulliLibrary['section_id'] }
 
@@ -95,8 +94,8 @@ export default function GeneralSettingsForm({
         <h2 className='heading-settings'>{t('libraries')}</h2>
         {libraries.length ? (
           <CheckboxGroup
-            key={`active-libraries-${JSON.stringify(
-              generalSettings.activeLibraries,
+            key={`active-libraries-${generalSettings.activeLibraries.join(
+              ',',
             )}`}
             className='input-wrapper'
             name='activeLibraries'
@@ -116,7 +115,7 @@ export default function GeneralSettingsForm({
                   className='checkbox-wrapper'
                 >
                   <Bars2Icon className='drag-handle size-4 cursor-move' />
-                  <div className='checkbox' aria-hidden='true'></div>
+                  <div className='checkbox' aria-hidden='true' />
                   {library.section_name}
                 </Checkbox>
               ))}
@@ -146,7 +145,7 @@ export default function GeneralSettingsForm({
               name='isPostersTmdbOnly'
               defaultSelected={generalSettings.isPostersTmdbOnly}
             >
-              <div className='indicator'></div>
+              <div className='indicator' />
               <span className='label'>
                 <span className='label-wrapper'>{t('tmdbOnlyPosters')}</span>
                 <small>
@@ -159,11 +158,29 @@ export default function GeneralSettingsForm({
           <section className='group-settings group'>
             <h2 className='heading-settings'>{t('privacy')}</h2>
             {users.length > 0 && (
-              <UserMultiSelect
-                key={`active-users-${JSON.stringify(generalSettings.activeUsers)}`}
-                users={users}
-                defaultSelectedIds={generalSettings.activeUsers}
-              />
+              <CheckboxGroup
+                key={`excluded-users-${generalSettings.excludedUsers.join(',')}`}
+                className='input-wrapper'
+                name='excludedUsers'
+                defaultValue={generalSettings.excludedUsers}
+              >
+                <div className='peer mr-auto flex flex-wrap gap-2'>
+                  {users.map((user) => (
+                    <Checkbox
+                      key={`user-${user.user_id}`}
+                      value={String(user.user_id)}
+                      className='checkbox-wrapper'
+                    >
+                      <div className='checkbox' aria-hidden='true' />
+                      {user.friendly_name}
+                    </Checkbox>
+                  ))}
+                </div>
+                <Label className='label label--start'>
+                  <span className='label-wrapper'>{t('excludedUsers')}</span>
+                  <small>{t('excludedUsersDescription')}</small>
+                </Label>
+              </CheckboxGroup>
             )}
             <Switch
               key={`outside-access-${generalSettings.isOutsideAccess}`}
@@ -171,7 +188,7 @@ export default function GeneralSettingsForm({
               name='isOutsideAccess'
               defaultSelected={generalSettings.isOutsideAccess}
             >
-              <div className='indicator'></div>
+              <div className='indicator' />
               <span className='label'>
                 <span className='label-wrapper'>{t('outsideAccess')}</span>
                 <small>{t('outsideAccessDescription')}</small>
@@ -183,7 +200,7 @@ export default function GeneralSettingsForm({
               name='isAnonymized'
               defaultSelected={generalSettings.isAnonymized}
             >
-              <div className='indicator'></div>
+              <div className='indicator' />
               <span className='label'>
                 <span className='label-wrapper'>{t('anonymize')}</span>
                 <small>{t('anonymizeDescription')}</small>
