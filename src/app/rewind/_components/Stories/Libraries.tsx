@@ -9,20 +9,17 @@ import {
 import { useTranslations } from 'next-intl'
 import RewindStat from '../RewindStat'
 import StatListItem from '../StatListItem'
-import StoryWrapper from '../StoryWrapper'
 
 export default function StoryLibraries({
   userRewind,
   isPaused,
-  pause,
-  resume,
   settings,
 }: RewindStory) {
   const translations = useTranslations()
   const t = useTranslations('Rewind.Libraries')
 
   return (
-    <StoryWrapper isPaused={isPaused} pause={pause} resume={resume}>
+    <>
       <RewindStat isPaused={isPaused} scaleDelay={3}>
         <p>
           {t.rich('filesize', {
@@ -81,6 +78,6 @@ export default function StoryLibraries({
           })}
         </ul>
       </RewindStat>
-    </StoryWrapper>
+    </>
   )
 }

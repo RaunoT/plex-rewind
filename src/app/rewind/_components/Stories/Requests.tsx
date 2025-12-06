@@ -7,20 +7,17 @@ import {
 import { useTranslations } from 'next-intl'
 import RewindStat from '../RewindStat'
 import StatListItem from '../StatListItem'
-import StoryWrapper from '../StoryWrapper'
 
 export default function StoryRequests({
   userRewind,
   isPaused,
-  pause,
-  resume,
   settings,
 }: RewindStory) {
   const t = useTranslations('Rewind.Requests')
 
   return (
     userRewind.requests && (
-      <StoryWrapper isPaused={isPaused} pause={pause} resume={resume}>
+      <>
         {userRewind.requests.total == 0 ? (
           <RewindStat noScale>
             <p>
@@ -124,7 +121,7 @@ export default function StoryRequests({
             </RewindStat>
           </>
         )}
-      </StoryWrapper>
+      </>
     )
   )
 }

@@ -45,7 +45,7 @@ export default function RewindStat({
 
   useTimer(hideAfter, () => setIsComponentShown(false), isPaused, !!hideAfter)
 
-  const isLoaderShown = !renderTimer && loaderTimer && !isPaused
+  const isLoaderShown = !loaderTimer && renderTimer > 0 && !isPaused
 
   return isComponentShown ? (
     <motion.div

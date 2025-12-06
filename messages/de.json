@@ -193,6 +193,13 @@
     "loading": "Laden..."
   },
   "Rewind": {
+    "Stories": {
+      "goToStory": "Gehe zu Story {index}",
+      "previousStory": "Vorherige Story",
+      "nextStory": "Nächste Story",
+      "pause": "Pausieren",
+      "resume": "Fortsetzen"
+    },
     "Common": {
       "top": "Hier sind deine <top>Top {count}</top>"
     },

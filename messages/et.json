@@ -193,6 +193,13 @@
     "loading": "Laadimine..."
   },
   "Rewind": {
+    "Stories": {
+      "goToStory": "Mine loole {index}",
+      "previousStory": "Eelmine lugu",
+      "nextStory": "Järgmine lugu",
+      "pause": "Peata",
+      "resume": "Jätka"
+    },
     "Common": {
       "top": "Siin on sinu <top>Top {count}</top>"
     },

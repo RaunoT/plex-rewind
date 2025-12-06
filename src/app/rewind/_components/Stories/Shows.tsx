@@ -3,19 +3,16 @@ import { RewindStory } from '@/types/rewind'
 import { PlayCircleIcon } from '@heroicons/react/24/outline'
 import { useTranslations } from 'next-intl'
 import RewindStat from '../RewindStat'
-import StoryWrapper from '../StoryWrapper'
 
 export default function StoryShows({
   userRewind,
   isPaused,
-  pause,
-  resume,
   settings,
 }: RewindStory) {
   const t = useTranslations('Rewind.Shows')
 
   return (
-    <StoryWrapper isPaused={isPaused} pause={pause} resume={resume}>
+    <>
       {userRewind.shows.duration ? (
         <>
           <RewindStat isPaused={isPaused} scaleDelay={3}>
@@ -94,6 +91,6 @@ export default function StoryShows({
           </p>
         </RewindStat>
       )}
-    </StoryWrapper>
+    </>
   )
 }
