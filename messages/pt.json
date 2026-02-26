@@ -1,0 +1,276 @@
+{
+  "Home": {
+    "title": "Início",
+    "setupRequired": "Configuração necessária",
+    "setupRequiredDescription": "Esta aplicação precisa de ser configurada por um administrador.",
+    "loginWithPlex": "Iniciar sessão com Plex",
+    "rewind": "Iniciar Rewind",
+    "dashboard": "Painel",
+    "activity": "Atividade",
+    "signOut": "Terminar sessão"
+  },
+  "Activity": {
+    "title": "Atividade",
+    "loading": "A carregar...",
+    "poster": "capa",
+    "avatar": "avatar",
+    "anonymousAvatar": "Avatar anónimo",
+    "anonymous": "Anónimo",
+    "stream": "Transmissão",
+    "container": "Contentor",
+    "quality": "Qualidade",
+    "video": "Vídeo",
+    "audio": "Áudio",
+    "subtitles": "Legendas",
+    "location": "Localização",
+    "bandwidth": "Largura de banda",
+    "noActivity": "Sem sessões ativas.. 😴"
+  },
+  "Dashboard": {
+    "noActivity": "Sem atividade durante este período.. 😴",
+    "title": "Painel",
+    "usersTitle": "Utilizadores",
+    "users": "utilizadores",
+    "movies": "filmes",
+    "episodes": "episódios",
+    "tracks": "faixas",
+    "requests": "pedidos"
+  },
+  "DashboardFilters": {
+    "type": "Tipo",
+    "general": "Geral",
+    "personal": "Pessoal",
+    "sortByLabel": "Ordenar por",
+    "sort": "Ordenação",
+    "byDuration": "Por duração",
+    "byPlays": "Por reproduções"
+  },
+  "DashboardNavContent": {
+    "label": "Navegação do painel",
+    "users": "Utilizadores"
+  },
+  "Error": {
+    "title": "Ups.. algo correu mal!",
+    "cta": "Tentar novamente"
+  },
+  "PlexDeeplink": {
+    "available": "Disponível"
+  },
+  "PeriodSelectContent": {
+    "7days": "7 dias",
+    "today": "Hoje",
+    "pastYear": "Último ano",
+    "allTime": "Desde sempre",
+    "days": "dias",
+    "label": "Selecionar período"
+  },
+  "NotFound": {
+    "title": "404",
+    "description": "A página solicitada não foi encontrada.",
+    "cta": "Talvez seja melhor recomeçar."
+  },
+  "AppProvider": {
+    "starsAlt": "Fundo com estrelas",
+    "updateAvailable": "Atualização disponível",
+    "closeSettings": "Fechar definições",
+    "openSettings": "Abrir definições"
+  },
+  "Offline": {
+    "title": "Está offline"
+  },
+  "Settings": {
+    "title": "Definições",
+    "getStarted": "Vamos começar",
+    "updateAvailable": "Atualização disponível",
+    "saved": "Definições guardadas!",
+    "genericError": "Algo correu mal!",
+    "save": "Guardar",
+    "apiKey": "Chave API",
+    "invalidApiKey": "Chave API inválida!",
+    "unableToConnect": "Não foi possível ligar!",
+    "buyMeACoffee": "Oferece-me um café",
+    "becomeASponsor": "Torna-te patrocinador",
+    "reportAnIssue": "Reportar um problema",
+    "initialSetup": "Guarda as definições para continuar",
+    "Nav": {
+      "label": "Navegação",
+      "connection": "Ligação",
+      "general": "Geral",
+      "rewind": "Rewind",
+      "dashboard": "Painel",
+      "activity": "Atividade"
+    },
+    "Connection": {
+      "title": "Definições de ligação"
+    },
+    "Dashboard": {
+      "title": "Definições do painel",
+      "customPeriodError": "O período personalizado deve ser > 0 e <= 3000",
+      "startDateError": "Data de início inválida",
+      "usersPage": "Página de utilizadores",
+      "statistics": "Estatísticas",
+      "itemStatistics": "Estatísticas por item",
+      "totalStatistics": "Estatísticas totais",
+      "sortByPlaysFilter": "Filtro por reproduções",
+      "customPeriod": "Período personalizado",
+      "inDays": "Em dias.",
+      "startDateHelperText": "Utilizado para o período desde sempre."
+    },
+    "Activity": {
+      "title": "Definições de atividade",
+      "privacy": "Privacidade"
+    },
+    "General": {
+      "title": "Definições gerais",
+      "config": "Configuração",
+      "serverName": "Nome do servidor",
+      "libraries": "Bibliotecas",
+      "activeLibraries": "Bibliotecas ativas",
+      "noLibrariesMessage1": "Cria uma biblioteca no Plex para continuar.",
+      "noLibrariesMessage2": "O Plex Rewind requer pelo menos uma biblioteca para funcionar.",
+      "media": "Multimédia",
+      "tmdbOnlyPosters": "Apenas capas do TMDB",
+      "tmdbOnlyPostersDescription1": "Ignorar capas do Plex para séries/filmes.",
+      "tmdbOnlyPostersDescription2": "Por defeito, o TMDB é usado como alternativa.",
+      "privacy": "Privacidade",
+      "outsideAccess": "Permitir acesso externo",
+      "outsideAccessDescription": "Acesso sem iniciar sessão.",
+      "anonymize": "Anonimizar",
+      "anonymizeDescription": "Ocultar nomes de utilizador de outros utilizadores.",
+      "analytics": "Análises"
+    },
+    "Rewind": {
+      "title": "Definições do Rewind",
+      "endDateMustBeAfterStartDateError": "A data final deve ser posterior à data inicial",
+      "startDateMustBeBeforeEndDateError": "A data inicial deve ser anterior à data final",
+      "cards": "Cartões",
+      "librariesSizeAndCountCard": "Cartão de tamanho e contagem das bibliotecas",
+      "librariesSizeAndCountCardDescription": "Desative se não quiser depender do Tautulli para estas estatísticas.",
+      "startDateHelperText": "Por defeito, 365 dias atrás.",
+      "endDateHelperText": "Por defeito, hoje."
+    }
+  },
+  "LocaleSelect": {
+    "label": "Selecionar idioma"
+  },
+  "UserSelect": {
+    "label": "Selecionar utilizador"
+  },
+  "Common": {
+    "enabled": "Ativado",
+    "status": "Estado",
+    "year": "Ano",
+    "rating": "Classificação",
+    "duration": "Duração",
+    "plays": "Reproduções",
+    "users": "Utilizadores",
+    "requests": "Pedidos",
+    "count": "Contagem",
+    "size": "Tamanho",
+    "defaults": "Predefinições",
+    "startDate": "Data de início",
+    "endDate": "Data de fim",
+    "profilePictureAlt": "imagem de perfil",
+    "time": {
+      "zero": "0 min",
+      "month": "{count, plural, =1 {# mês} other {# meses}}",
+      "week": "{count, plural, =1 {# semana} other {# semanas}}",
+      "day": "{count, plural, =1 {# dia} other {# dias}}",
+      "hr": "{count, plural, =1 {# h} other {# h}}",
+      "min": "{count, plural, =1 {# min} other {# min}}",
+      "sec": "{count, plural, =1 {# seg} other {# seg}}"
+    },
+    "fileSize": "{value} {unit}"
+  },
+  "DatePicker": {
+    "clear": "Limpar data"
+  },
+  "Loader": {
+    "loading": "A carregar..."
+  }
+}  ,
+  "Rewind": {
+    "Stories": {
+      "goToStory": "Ir para a história {index}",
+      "previousStory": "História anterior",
+      "nextStory": "Próxima história",
+      "pause": "Pausar",
+      "resume": "Retomar"
+    },
+    "Common": {
+      "top": "Aqui está o teu <top>Top {count}</top>"
+    },
+    "Welcome": {
+      "welcome": "Bem-vindo ao teu <rewind>{serverName} Rewind</rewind>",
+      "takeYouThrough": "Vamos mostrar-te os teus destaques",
+      "letsGetStarted": "Vamos começar!",
+      "forPastYear": "referente ao <pastYear>último ano.</pastYear>",
+      "singleDate": "durante <singleDate>{singleDateValue}</singleDate>.",
+      "dateRange": "de <startDate>{startDateValue}</startDate> até <endDate>{endDateValue}</endDate>"
+    },
+    "Total": {
+      "duration": "Passaste um <total>Total</total> de <duration>{durationValue}</duration> no <plex>{serverName}!</plex>",
+      "percentage": "Isso representa <percentage>{percentageValue}</percentage> de todas as reproduções, que totalizaram <duration>{durationValue}</duration> entre todos os utilizadores.",
+      "noData": "Não reproduziste nada no <plex>{serverName}</plex> <emoji>😫</emoji>"
+    },
+    "Users": {
+      "top": "Vê como te comparaste com outros <users>Utilizadores</users>"
+    },
+    "Audio": {
+      "duration": "Para terminar, ouviste <duration>{durationValue}</duration> de <audio>Áudio</audio>",
+      "count": "Ouviste <count>{countValue}</count> <tracks>faixas</tracks> no total!",
+      "favorite": "O teu favorito foi",
+      "noData": "Não ouviste nenhum <audio>Áudio</audio> a partir do <from>Plex</from>"
+    },
+    "Libraries": {
+      "filesize": "Sabias que o <filesize>Tamanho total</filesize> de todo o conteúdo disponível no <plex>{serverName}</plex> é <size>{sizeValue}!</size>",
+      "libraries": "A biblioteca atual é composta por:",
+      "movies": "{count, plural, =1 {Filme} other {Filmes}}",
+      "episodes": "{count, plural, =1 {Episódio} other {Episódios}}",
+      "tracks": "{count, plural, =1 {Faixa} other {Faixas}}"
+    },
+    "Shows": {
+      "duration": "As <library>Séries</library> ocuparam <duration>{durationValue}</duration> do teu tempo no <plex>{serverName}.</plex>",
+      "count": "Viste <count>{countValue}</count> <episodes>episódios</episodes> no total!",
+      "favorite": "A tua favorita foi",
+      "noData": "Não viste nenhuma <shows>Série</shows> no <plex>{serverName}</plex> <emoji>😥</emoji>"
+    },
+    "Requests": {
+      "noData": "Não houve <requests>Pedidos</requests> <emoji>😲</emoji>",
+      "noUserData": "Não fizeste nenhum <requests>Pedido</requests>. Podes fazê-los através de <requestLink>{requestLinkValue}</requestLink>.",
+      "count": "Fizeste <count>{countValue}</count> <requests>{countValue, plural, =1 {Pedido} other {Pedidos}}</requests> de conteúdo",
+      "countTotal": "No total {countValue, plural, =1 {houve} other {houve}} <count>{countValue, plural, =1 {# Pedido} other {# Pedidos}}</count> durante o mesmo período.",
+      "breakdown": "Aqui está a distribuição:",
+      "movies": "{count, plural, =1 {Filme} other {Filmes}}",
+      "shows": "{count, plural, =1 {Série} other {Séries}}"
+    },
+    "Movies": {
+      "duration": "<duration>{durationValue}</duration> do teu tempo foi passado a ver <movies>Filmes</movies>",
+      "count": "Viste <count>{countValue}</count> <movies>{countValue, plural, =1 {filme} other {filmes}}</movies> no total!",
+      "favorite": "O teu favorito foi",
+      "noData": "Não viste nenhum <movies>Filme</movies> no <plex>{serverName}</plex> <emoji>😵‍💫</emoji>"
+    },
+    "Goodbye": {
+      "thanks": "Obrigado por acompanhares o teu <plex>{serverName} Rewind</plex>, <user>{userValue}!</user>",
+      "sorry": "Lamentamos que não tenhas encontrado conteúdo para ver ou ouvir desta vez. Talvez para a próxima!",
+      "weWillBeBack": "Voltaremos na próxima vez",
+      "weWillBeHere": "De qualquer forma, estaremos aqui",
+      "insightsAndStats": "com ainda mais <insightsAndStats>estatísticas e informações.</insightsAndStats>",
+      "untilThen": "Até lá, continua a explorar e a desfrutar de tudo o que o <plex>{serverName}</plex> tem para oferecer.",
+      "movies": "Filmes",
+      "shows": "Séries",
+      "tracks": "Faixas",
+      "fromYourFavorite": "Desde os teus favoritos",
+      "toTheMostEntertaining": "até aos mais divertidos",
+      "andMemorable": "e memoráveis",
+      "itsBeenAJourneyToRemember": ", foi uma jornada memorável."
+    }
+  },
+  "MediaItem": {
+    "request": "Pedido",
+    "deleted": "Eliminado",
+    "statPlays": "{count, plural, =1 {# reprodução} other {# reproduções}}",
+    "statUsers": "{count, plural, =1 {# utilizador} other {# utilizadores}}",
+    "statRequests": "{count, plural, =1 {# pedido} other {# pedidos}}"
+  }
+}
