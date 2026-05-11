@@ -15,7 +15,7 @@ import { useTranslations } from 'next-intl'
 import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { ReactNode, useEffect, useState } from 'react'
+import { ReactNode } from 'react'
 import stars from '../_assets/stars.png'
 import GlobalContextProvider from './GlobalContextProvider'
 import LocaleSelect from './LocaleSelect'
@@ -32,30 +32,15 @@ export default function AppProvider({ children, settings, version }: Props) {
   const pathname = usePathname()
   const missingSetting = checkRequiredSettings(settings)
   const { data: session, status } = useSession()
-  const [isSettings, setIsSettings] = useState<boolean>(
-    pathname.startsWith('/settings'),
-  )
-  const [settingsLink, setSettingsLink] = useState<string>('/settings/general')
   const t = useTranslations('AppProvider')
-
-  useEffect(() => {
-    switch (true) {
-      case pathname.startsWith('/dashboard'):
-        setSettingsLink('/settings/dashboard')
-        break
-      case pathname.startsWith('/rewind'):
-        setSettingsLink('/settings/rewind')
-        break
-      case pathname.startsWith('/activity'):
-        setSettingsLink('/settings/activity')
-        break
-      default:
-        setSettingsLink('/settings/general')
-        break
-    }
-
-    setIsSettings(pathname.startsWith('/settings'))
-  }, [pathname])
+  const isSettings = pathname.startsWith('/settings')
+  const settingsLink = pathname.startsWith('/dashboard')
+    ? '/settings/dashboard'
+    : pathname.startsWith('/rewind')
+      ? '/settings/rewind'
+      : pathname.startsWith('/activity')
+        ? '/settings/activity'
+        : '/settings/general'
 
   return (
     <QueryClientProvider client={queryClient}>

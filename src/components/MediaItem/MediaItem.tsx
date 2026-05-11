@@ -53,13 +53,17 @@ export default function MediaItem({
   const tautulliUrl = settings.connection.tautulliUrl
   const isTmdbPoster = data.thumb?.startsWith('https://image.tmdb.org')
   const isUsers = type === 'users'
+  const thumb = isUsers ? data.user_thumb : data.thumb
+  // user_thumb from Tautulli is often a full plex.tv avatar URL; pms_image_proxy
+  // only handles PMS image paths, so pass full URLs straight through.
+  const isExternalThumb = thumb?.startsWith('http')
   const posterSrc = isTmdbPoster
     ? data.thumb
-    : `/api/image?url=${encodeURIComponent(
-        `${tautulliUrl}/pms_image_proxy?img=${
-          isUsers ? data.user_thumb : data.thumb
-        }&width=300`,
-      )}`
+    : isExternalThumb
+      ? `/api/image?url=${encodeURIComponent(thumb)}`
+      : `/api/image?url=${encodeURIComponent(
+          `${tautulliUrl}/pms_image_proxy?img=${thumb}&width=300`,
+        )}`
   const isAnonymized = data.user === 'Anonymous'
   const initialImageSrc = isUsers && isAnonymized ? anonymousSvg : posterSrc
   const [imageSrc, setImageSrc] = useState<string>(initialImageSrc)

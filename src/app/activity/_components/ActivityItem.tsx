@@ -264,9 +264,11 @@ export default function ActivityItem({
               src={
                 settings.general.isAnonymized && !isCurrentUser
                   ? anonymousSvg
-                  : `/api/image?url=${encodeURIComponent(
-                      `${settings.connection.tautulliUrl}/pms_image_proxy?img=${session.user_thumb}&width=300`,
-                    )}`
+                  : session.user_thumb?.startsWith('http')
+                    ? `/api/image?url=${encodeURIComponent(session.user_thumb)}`
+                    : `/api/image?url=${encodeURIComponent(
+                        `${settings.connection.tautulliUrl}/pms_image_proxy?img=${session.user_thumb}&width=300`,
+                      )}`
               }
               sizes='6rem'
               priority

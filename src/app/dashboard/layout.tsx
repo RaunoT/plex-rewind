@@ -28,9 +28,11 @@ export default async function DashboardLayout({ children }: Props) {
   }
 
   const libraries = await getLibraries()
-  const activeLibraries = settings.general.activeLibraries.map((libSlug) =>
-    libraries.find((lib) => kebabCase(lib.section_name) === libSlug),
-  )
+  const activeLibraries = settings.general.activeLibraries
+    .map((libSlug) =>
+      libraries.find((lib) => kebabCase(lib.section_name) === libSlug),
+    )
+    .filter((lib): lib is TautulliLibrary => lib !== undefined)
   const t = await getTranslations('Dashboard')
 
   return (

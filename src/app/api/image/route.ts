@@ -1,3 +1,5 @@
+import getSettings from '@/utils/getSettings'
+
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url)
@@ -9,7 +11,29 @@ export async function GET(request: Request) {
       })
     }
 
-    const res = await fetch(url)
+    const settings = getSettings()
+    const tautulliUrl = settings.connection.tautulliUrl
+    const tautulliApiKey = settings.connection.tautulliApiKey
+
+    let upstreamUrl = url
+
+    // Tautulli's web /pms_image_proxy route is gated by JWT cookie auth and
+    // ignores the apikey query param — unauthenticated requests get redirected
+    // to the login page. Rewrite to the /api/v2 form, which authenticates via
+    // apikey and dispatches to the same handler.
+    if (
+      tautulliUrl &&
+      tautulliApiKey &&
+      url.startsWith(`${tautulliUrl}/pms_image_proxy`)
+    ) {
+      const query = url
+        .slice(`${tautulliUrl}/pms_image_proxy`.length)
+        .replace(/^\?/, '')
+
+      upstreamUrl = `${tautulliUrl}/api/v2?apikey=${tautulliApiKey}&cmd=pms_image_proxy${query ? '&' + query : ''}`
+    }
+
+    const res = await fetch(upstreamUrl)
 
     if (!res.ok) {
       return new Response('[IMAGE PROXY] - Failed to fetch the image', {
