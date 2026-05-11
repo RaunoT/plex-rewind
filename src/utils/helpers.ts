@@ -44,6 +44,10 @@ export function getRewindDateRange(settings: Settings) {
 export function daysBetween(startDate: string, endDate: string): number {
   const ms = new Date(endDate).getTime() - new Date(startDate).getTime()
 
+  if (!Number.isFinite(ms)) {
+    return 1
+  }
+
   return Math.max(1, Math.ceil(ms / 86400000))
 }
 
