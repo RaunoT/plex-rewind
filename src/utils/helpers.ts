@@ -41,6 +41,16 @@ export function getRewindDateRange(settings: Settings) {
   return { startDate, endDate }
 }
 
+export function daysBetween(startDate: string, endDate: string): number {
+  const ms = new Date(endDate).getTime() - new Date(startDate).getTime()
+
+  if (!Number.isFinite(ms)) {
+    return 1
+  }
+
+  return Math.max(1, Math.ceil(ms / 86400000))
+}
+
 export function isInitialSetup(settings: Settings): boolean {
   // Initial setup is when setupComplete is false, meaning the app has never been fully configured
   return !settings.setupComplete

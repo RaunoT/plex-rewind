@@ -6,6 +6,7 @@ import fetchTautulli, {
   getUsersCount,
 } from './fetchTautulli'
 import getSettings from './getSettings'
+import { daysBetween } from './helpers'
 
 type UserRequestCounts =
   | {
@@ -30,6 +31,11 @@ export default async function getUsersTop(
   }
 
   const activeLibraries = await getLibraries()
+  // Tautulli's get_home_stats has a binding-count bug when before/after are
+  // passed (regression from the SQL injection fix in ae4daba2). Always use
+  // time_range — derive it from the date window when a before/after range is
+  // supplied (e.g. the rewind page).
+  const time_range = before ? daysBetween(after, before) : period || 30
   const userStats = await Promise.all(
     activeLibraries.map((library) =>
       fetchTautulli<TautulliItem>('get_home_stats', {
@@ -37,9 +43,7 @@ export default async function getUsersTop(
         stats_count: allUsersCount,
         stats_type: 'duration',
         section_id: library.section_id,
-        ...(after && before
-          ? { after, before }
-          : { time_range: period || '30' }),
+        time_range,
       }),
     ),
   )

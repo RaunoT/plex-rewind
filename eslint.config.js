@@ -5,7 +5,7 @@ import reactCompiler from 'eslint-plugin-react-compiler'
 
 const eslintConfig = [
   {
-    ignores: ['public/**', '.next/**', 'node_modules/**'],
+    ignores: ['public/**', '.next/**', 'node_modules/**', '.claude/**'],
   },
   ...nextConfig,
   eslintConfigPrettier,
