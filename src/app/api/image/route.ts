@@ -20,17 +20,42 @@ export async function GET(request: Request) {
     // Tautulli's web /pms_image_proxy route is gated by JWT cookie auth and
     // ignores the apikey query param — unauthenticated requests get redirected
     // to the login page. Rewrite to the /api/v2 form, which authenticates via
-    // apikey and dispatches to the same handler.
+    // apikey and dispatches to the same handler. Only forward an allowlisted
+    // set of params so a crafted `?url=` can't smuggle a different `cmd` or
+    // override `apikey` via duplicate query keys.
     if (
       tautulliUrl &&
       tautulliApiKey &&
       url.startsWith(`${tautulliUrl}/pms_image_proxy`)
     ) {
-      const query = url
-        .slice(`${tautulliUrl}/pms_image_proxy`.length)
-        .replace(/^\?/, '')
+      const allowedParams = [
+        'img',
+        'rating_key',
+        'width',
+        'height',
+        'opacity',
+        'background',
+        'blur',
+        'img_format',
+        'fallback',
+        'refresh',
+        'clip',
+      ]
+      const incoming = new URL(url).searchParams
+      const forwarded = new URLSearchParams()
 
-      upstreamUrl = `${tautulliUrl}/api/v2?apikey=${tautulliApiKey}&cmd=pms_image_proxy${query ? '&' + query : ''}`
+      forwarded.set('apikey', tautulliApiKey)
+      forwarded.set('cmd', 'pms_image_proxy')
+
+      for (const key of allowedParams) {
+        const value = incoming.get(key)
+
+        if (value !== null) {
+          forwarded.set(key, value)
+        }
+      }
+
+      upstreamUrl = `${tautulliUrl}/api/v2?${forwarded.toString()}`
     }
 
     const res = await fetch(upstreamUrl)

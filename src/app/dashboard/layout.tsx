@@ -39,7 +39,7 @@ export default async function DashboardLayout({ children }: Props) {
     <div className='flex w-full max-w-2xl flex-1 flex-col lg:max-w-7xl lg:flex-none 2xl:max-w-[90rem]'>
       <PageTitle title={t('title')} />
       <DashboardNav
-        libraries={activeLibraries as TautulliLibrary[]}
+        libraries={activeLibraries}
         isUsersPageActive={settings.dashboard.isUsersPageActive}
       />
       <CardWrapper className='my-3 lg:min-h-[585px] 2xl:min-h-[648px]'>
