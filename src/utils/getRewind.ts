@@ -11,7 +11,7 @@ import fetchTautulli from './fetchTautulli'
 import { secondsToTime, timeToSeconds } from './formatting'
 import getMediaAdditionalData from './getMediaAdditionalData'
 import getSettings from './getSettings'
-import { getRewindDateRange } from './helpers'
+import { daysBetween, getRewindDateRange } from './helpers'
 
 export async function getTopMediaStats(
   userId: string,
@@ -165,17 +165,28 @@ export async function getTopMediaItems(
   userId: string,
   libraries: TautulliLibrary[],
 ) {
+  const statIdMap: Record<TautulliMediaType, string> = {
+    movie: 'top_movies',
+    show: 'top_tv',
+    artist: 'top_music',
+  }
   const { startDate, endDate } = getRewindDateRange(getSettings())
+  // Tautulli's get_home_stats has a binding-count bug when before/after are
+  // passed (regression from the SQL injection fix in ae4daba2). Use time_range
+  // in days instead — Tautulli computes the window as `last N days`.
+  const time_range = daysBetween(startDate, endDate)
   const res = await Promise.all(
-    libraries.map((library) => {
-      return fetchTautulli<TautulliItem[]>('get_home_stats', {
+    libraries.map(async (library) => {
+      const stat = await fetchTautulli<TautulliItem>('get_home_stats', {
+        stat_id: statIdMap[library.section_type],
         user_id: userId,
         section_id: library.section_id,
-        before: endDate,
-        after: startDate,
+        time_range,
         stats_count: 5,
         stats_type: 'duration',
       })
+
+      return { stat, type: library.section_type }
     }),
   )
   const combinedResult: Record<TautulliMediaReturnType, TautulliItemRow[]> = {
@@ -184,19 +195,19 @@ export async function getTopMediaItems(
     audio: [],
   }
 
-  for (const library of res) {
-    for (const topMedia of library?.response?.data || []) {
-      if (topMedia.stat_id === 'top_tv') {
-        combinedResult.shows.push(
-          ...(await getMediaAdditionalData(topMedia.rows, 'tv')),
-        )
-      } else if (topMedia.stat_id === 'top_movies') {
-        combinedResult.movies.push(
-          ...(await getMediaAdditionalData(topMedia.rows, 'movie')),
-        )
-      } else if (topMedia.stat_id === 'top_music') {
-        combinedResult.audio.push(...topMedia.rows)
-      }
+  for (const { stat, type } of res) {
+    const rows = stat?.response?.data?.rows || []
+
+    if (!rows.length) continue
+
+    if (type === 'show') {
+      combinedResult.shows.push(...(await getMediaAdditionalData(rows, 'tv')))
+    } else if (type === 'movie') {
+      combinedResult.movies.push(
+        ...(await getMediaAdditionalData(rows, 'movie')),
+      )
+    } else if (type === 'artist') {
+      combinedResult.audio.push(...rows)
     }
   }
 
