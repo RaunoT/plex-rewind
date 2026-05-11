@@ -133,6 +133,8 @@
       "tmdbOnlyPostersDescription1": "Ignore Plex posters for tv/movies.",
       "tmdbOnlyPostersDescription2": "By default, TMDB is a fallback.",
       "privacy": "Privacy",
+      "excludedUsers": "Excluded users",
+      "excludedUsersDescription": "Selected users will be excluded from statistics.",
       "outsideAccess": "Allow outside access",
       "outsideAccessDescription": "Access without login.",
       "anonymize": "Anonymize",

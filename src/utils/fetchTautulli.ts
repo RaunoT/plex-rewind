@@ -175,19 +175,33 @@ export async function getLibrariesByType(
   return libraries.filter((library) => library.section_type === type)
 }
 
-export async function getUsersCount(settings: Settings) {
-  if (settings.dashboard.activeTotalStatistics.includes('count')) {
-    const usersRes = await fetchTautulli<TautulliUser[]>('get_users')
+export async function getActiveUsers(): Promise<TautulliUser[]> {
+  const settings = getSettings()
+  const usersRes = await fetchTautulli<TautulliUser[]>('get_users')
 
-    let users = usersRes?.response?.data
+  let users = usersRes?.response?.data
 
-    if (users) {
+  if (users) {
+    users = users.filter((user) => user.is_active && user.username !== 'Local')
+
+    // Filter out excludedUsers if configured
+    const excludedUsers = settings.general.excludedUsers
+
+    if (excludedUsers && excludedUsers.length > 0) {
       users = users.filter(
-        (user) => user.is_active && user.username !== 'Local',
+        (user) => !excludedUsers.includes(String(user.user_id)),
       )
     }
+  }
 
-    return users?.length
+  return users || []
+}
+
+export async function getUsersCount(settings: Settings) {
+  if (settings.dashboard.activeTotalStatistics.includes('count')) {
+    const users = await getActiveUsers()
+
+    return users.length
   }
 
   return undefined

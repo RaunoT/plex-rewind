@@ -5,7 +5,7 @@ import {
   Settings,
   SettingsFormInitialState,
 } from '@/types/settings'
-import { TautulliLibrary } from '@/types/tautulli'
+import { TautulliLibrary, TautulliUser } from '@/types/tautulli'
 import { Bars2Icon } from '@heroicons/react/24/outline'
 import { kebabCase } from 'lodash'
 import { useTranslations } from 'next-intl'
@@ -20,11 +20,16 @@ type SortableLibrary = TautulliLibrary & { id: TautulliLibrary['section_id'] }
 type Props = {
   settings: Settings
   libraries: TautulliLibrary[]
+  users: TautulliUser[]
 }
 
 type GeneralFormState = SettingsFormInitialState<GeneralSettings>
 
-export default function GeneralSettingsForm({ settings, libraries }: Props) {
+export default function GeneralSettingsForm({
+  settings,
+  libraries,
+  users,
+}: Props) {
   const [librariesState, setLibrariesState] = useState<SortableLibrary[]>(
     () => {
       const activeLibraries = settings.general.activeLibraries
@@ -89,8 +94,8 @@ export default function GeneralSettingsForm({ settings, libraries }: Props) {
         <h2 className='heading-settings'>{t('libraries')}</h2>
         {libraries.length ? (
           <CheckboxGroup
-            key={`active-libraries-${JSON.stringify(
-              generalSettings.activeLibraries,
+            key={`active-libraries-${generalSettings.activeLibraries.join(
+              ',',
             )}`}
             className='input-wrapper'
             name='activeLibraries'
@@ -110,7 +115,7 @@ export default function GeneralSettingsForm({ settings, libraries }: Props) {
                   className='checkbox-wrapper'
                 >
                   <Bars2Icon className='drag-handle size-4 cursor-move' />
-                  <div className='checkbox' aria-hidden='true'></div>
+                  <div className='checkbox' aria-hidden='true' />
                   {library.section_name}
                 </Checkbox>
               ))}
@@ -140,7 +145,7 @@ export default function GeneralSettingsForm({ settings, libraries }: Props) {
               name='isPostersTmdbOnly'
               defaultSelected={generalSettings.isPostersTmdbOnly}
             >
-              <div className='indicator'></div>
+              <div className='indicator' />
               <span className='label'>
                 <span className='label-wrapper'>{t('tmdbOnlyPosters')}</span>
                 <small>
@@ -152,13 +157,38 @@ export default function GeneralSettingsForm({ settings, libraries }: Props) {
           </section>
           <section className='group-settings group'>
             <h2 className='heading-settings'>{t('privacy')}</h2>
+            {users.length > 0 && (
+              <CheckboxGroup
+                key={`excluded-users-${generalSettings.excludedUsers.join(',')}`}
+                className='input-wrapper'
+                name='excludedUsers'
+                defaultValue={generalSettings.excludedUsers}
+              >
+                <div className='peer mr-auto flex flex-wrap gap-2'>
+                  {users.map((user) => (
+                    <Checkbox
+                      key={`user-${user.user_id}`}
+                      value={String(user.user_id)}
+                      className='checkbox-wrapper'
+                    >
+                      <div className='checkbox' aria-hidden='true' />
+                      {user.friendly_name}
+                    </Checkbox>
+                  ))}
+                </div>
+                <Label className='label label--start'>
+                  <span className='label-wrapper'>{t('excludedUsers')}</span>
+                  <small>{t('excludedUsersDescription')}</small>
+                </Label>
+              </CheckboxGroup>
+            )}
             <Switch
               key={`outside-access-${generalSettings.isOutsideAccess}`}
               className='switch items-start'
               name='isOutsideAccess'
               defaultSelected={generalSettings.isOutsideAccess}
             >
-              <div className='indicator'></div>
+              <div className='indicator' />
               <span className='label'>
                 <span className='label-wrapper'>{t('outsideAccess')}</span>
                 <small>{t('outsideAccessDescription')}</small>
@@ -170,7 +200,7 @@ export default function GeneralSettingsForm({ settings, libraries }: Props) {
               name='isAnonymized'
               defaultSelected={generalSettings.isAnonymized}
             >
-              <div className='indicator'></div>
+              <div className='indicator' />
               <span className='label'>
                 <span className='label-wrapper'>{t('anonymize')}</span>
                 <small>{t('anonymizeDescription')}</small>

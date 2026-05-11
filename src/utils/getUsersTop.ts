@@ -1,9 +1,9 @@
 import { TautulliItem, TautulliItemRow } from '@/types/tautulli'
 import { fetchOverseerrStats, fetchOverseerrUserId } from './fetchOverseerr'
 import fetchTautulli, {
+  getActiveUsers,
   getLibraries,
   getLibrariesByType,
-  getUsersCount,
 } from './fetchTautulli'
 import getSettings from './getSettings'
 import { daysBetween } from './helpers'
@@ -22,7 +22,9 @@ export default async function getUsersTop(
 ): Promise<TautulliItemRow[] | null> {
   const numberOfUsers = 6
   const settings = getSettings()
-  const allUsersCount = await getUsersCount(settings)
+  const activeUsers = await getActiveUsers()
+  const allUsersCount = activeUsers.length
+  const activeUserIds = activeUsers.map((u) => u.user_id)
 
   if (!allUsersCount) {
     console.error('Could not determine the number of users!')
@@ -54,6 +56,11 @@ export default async function getUsersTop(
 
     if (users) {
       users.forEach((user) => {
+        // Only include users that are in the active users list
+        if (!activeUserIds.includes(String(user.user_id))) {
+          return
+        }
+
         if (combinedUserStats[user.user_id]) {
           combinedUserStats[user.user_id].total_duration += user.total_duration
         } else {

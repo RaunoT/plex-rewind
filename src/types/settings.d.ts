@@ -16,6 +16,7 @@ export type ConnectionSettings = {
 export type GeneralSettings = {
   serverName: string
   activeLibraries: string[]
+  excludedUsers: string[]
   isPostersTmdbOnly: boolean
   googleAnalyticsId: string
   isOutsideAccess: boolean

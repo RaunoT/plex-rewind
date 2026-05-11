@@ -55,7 +55,7 @@ export default function DashboardSettingsForm({ settings }: Props) {
           isSelected={isActive}
           onChange={setIsActive}
         >
-          <div className='indicator'></div>
+          <div className='indicator' />
           <span className='label'>
             <span className='label-wrapper'>{tCommon('enabled')}</span>
           </span>
@@ -67,7 +67,7 @@ export default function DashboardSettingsForm({ settings }: Props) {
             name='isUsersPageActive'
             defaultSelected={dashboardSettings.isUsersPageActive}
           >
-            <div className='indicator'></div>
+            <div className='indicator' />
             <span className='label'>
               <span className='label-wrapper'>{t('usersPage')}</span>
             </span>
@@ -79,8 +79,8 @@ export default function DashboardSettingsForm({ settings }: Props) {
           <section className='group-settings group'>
             <h2 className='heading-settings'>{t('statistics')}</h2>
             <CheckboxGroup
-              key={`item-stats-${JSON.stringify(
-                dashboardSettings.activeItemStatistics,
+              key={`item-stats-${dashboardSettings.activeItemStatistics.join(
+                ',',
               )}`}
               className='input-wrapper'
               name='activeItemStatistics'
@@ -92,7 +92,7 @@ export default function DashboardSettingsForm({ settings }: Props) {
                   value='year'
                   className='checkbox-wrapper'
                 >
-                  <div className='checkbox' aria-hidden='true'></div>
+                  <div className='checkbox' aria-hidden='true' />
                   {tCommon('year')}
                 </Checkbox>
                 <Checkbox
@@ -100,7 +100,7 @@ export default function DashboardSettingsForm({ settings }: Props) {
                   value='rating'
                   className='checkbox-wrapper'
                 >
-                  <div className='checkbox' aria-hidden='true'></div>
+                  <div className='checkbox' aria-hidden='true' />
                   {tCommon('rating')}
                 </Checkbox>
                 <Checkbox
@@ -108,7 +108,7 @@ export default function DashboardSettingsForm({ settings }: Props) {
                   value='duration'
                   className='checkbox-wrapper'
                 >
-                  <div className='checkbox' aria-hidden='true'></div>
+                  <div className='checkbox' aria-hidden='true' />
                   {tCommon('duration')}
                 </Checkbox>
                 <Checkbox
@@ -116,7 +116,7 @@ export default function DashboardSettingsForm({ settings }: Props) {
                   value='plays'
                   className='checkbox-wrapper'
                 >
-                  <div className='checkbox' aria-hidden='true'></div>
+                  <div className='checkbox' aria-hidden='true' />
                   {tCommon('plays')}
                 </Checkbox>
                 <Checkbox
@@ -124,7 +124,7 @@ export default function DashboardSettingsForm({ settings }: Props) {
                   value='users'
                   className='checkbox-wrapper'
                 >
-                  <div className='checkbox' aria-hidden='true'></div>
+                  <div className='checkbox' aria-hidden='true' />
                   {tCommon('users')}
                 </Checkbox>
                 {isOverseerrActive && (
@@ -133,7 +133,7 @@ export default function DashboardSettingsForm({ settings }: Props) {
                     value='requests'
                     className='checkbox-wrapper'
                   >
-                    <div className='checkbox' aria-hidden='true'></div>
+                    <div className='checkbox' aria-hidden='true' />
                     {tCommon('requests')}
                   </Checkbox>
                 )}
@@ -143,8 +143,8 @@ export default function DashboardSettingsForm({ settings }: Props) {
               </Label>
             </CheckboxGroup>
             <CheckboxGroup
-              key={`total-stats-${JSON.stringify(
-                dashboardSettings.activeTotalStatistics,
+              key={`total-stats-${dashboardSettings.activeTotalStatistics.join(
+                ',',
               )}`}
               className='input-wrapper'
               name='activeTotalStatistics'
@@ -156,7 +156,7 @@ export default function DashboardSettingsForm({ settings }: Props) {
                   value='size'
                   className='checkbox-wrapper'
                 >
-                  <div className='checkbox' aria-hidden='true'></div>
+                  <div className='checkbox' aria-hidden='true' />
                   {tCommon('size')}
                 </Checkbox>
                 <Checkbox
@@ -164,7 +164,7 @@ export default function DashboardSettingsForm({ settings }: Props) {
                   value='duration'
                   className='checkbox-wrapper'
                 >
-                  <div className='checkbox' aria-hidden='true'></div>
+                  <div className='checkbox' aria-hidden='true' />
                   {tCommon('duration')}
                 </Checkbox>
                 <Checkbox
@@ -172,7 +172,7 @@ export default function DashboardSettingsForm({ settings }: Props) {
                   value='count'
                   className='checkbox-wrapper'
                 >
-                  <div className='checkbox' aria-hidden='true'></div>
+                  <div className='checkbox' aria-hidden='true' />
                   {tCommon('count')}
                 </Checkbox>
                 {isOverseerrActive && (
@@ -181,7 +181,7 @@ export default function DashboardSettingsForm({ settings }: Props) {
                     value='requests'
                     className='checkbox-wrapper'
                   >
-                    <div className='checkbox' aria-hidden='true'></div>
+                    <div className='checkbox' aria-hidden='true' />
                     {tCommon('requests')}
                   </Checkbox>
                 )}
@@ -196,7 +196,7 @@ export default function DashboardSettingsForm({ settings }: Props) {
               name='isSortByPlaysActive'
               defaultSelected={dashboardSettings.isSortByPlaysActive}
             >
-              <div className='indicator'></div>
+              <div className='indicator' />
               <span className='label'>
                 <span className='label-wrapper'>{t('sortByPlaysFilter')}</span>
               </span>
