@@ -105,6 +105,14 @@ export default function GeneralSettingsForm({
               className='peer mr-auto flex flex-wrap gap-2'
               handle='.drag-handle'
               animation={200}
+              // Force the pointer-based fallback on all platforms. React Aria's
+              // Checkbox calls preventDefault on pointer events, which blocks the
+              // browser's native HTML5 drag on desktop (mobile already uses this
+              // fallback, which is why it kept working there).
+              forceFallback
+              // Append the drag clone to <body> so positioned/transformed
+              // ancestors don't offset the ghost from the cursor.
+              fallbackOnBody
             >
               {librariesState.map((library) => (
                 <Checkbox
