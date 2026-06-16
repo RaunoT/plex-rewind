@@ -249,6 +249,10 @@
       "favorite": "Sinu lemmik oli",
       "noData": "Sa ei vaadanud ühtegi <movies>Filmi</movies> <plex>{serverName}'ist</plex> <emoji>😵‍💫</emoji>"
     },
+    "Habits": {
+      "day": "Sinu lemmik vaatamispäev oli <day>{dayValue}</day>",
+      "hour": "Ja kõige sagedamini panid mängima umbes kell <hour>{hourValue}</hour> <emoji>{emojiValue}</emoji>"
+    },
     "Goodbye": {
       "thanks": "Tänan, et vaatasid oma <plex>{serverName} Rewind'i</plex>, <user>{userValue}!</user>",
       "sorry": "Kahju, et sa ei leidnud seekord sisu mida vaadata või kuulata. Loodame, et järgmisel korral läheb paremini!",

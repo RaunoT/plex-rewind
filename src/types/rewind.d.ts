@@ -20,6 +20,13 @@ export type UserRewind = {
   shows: LibraryRewind
   movies: LibraryRewind
   audio: LibraryRewind
+  habits: {
+    peakHour: number | null
+    peakDayIndex: number | null
+    totalPlays: number
+    hourly: number[]
+    daily: number[]
+  }
   duration: {
     user: string
     user_percentage: string

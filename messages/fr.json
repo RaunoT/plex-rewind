@@ -249,6 +249,10 @@
       "favorite": "Votre favori était",
       "noData": "Vous n'avez regardé aucun <movies>Film</movies> sur <plex>{serverName}</plex> <emoji>😵‍💫</emoji>"
     },
+    "Habits": {
+      "day": "Votre jour préféré pour regarder était le <day>{dayValue}</day>",
+      "hour": "Et vous lanciez la lecture surtout vers <hour>{hourValue}</hour> <emoji>{emojiValue}</emoji>"
+    },
     "Goodbye": {
       "thanks": "Merci d'avoir suivi votre <plex>{serverName} Rewind</plex>, <user>{userValue} !</user>",
       "sorry": "Désolé que vous n'ayez pas trouvé de contenu à regarder ou à écouter cette fois-ci. Bonne chance pour la prochaine fois !",

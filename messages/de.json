@@ -249,6 +249,10 @@
       "favorite": "Dein Lieblingsfilm war",
       "noData": "Du hast keine <movies>Filme</movies> auf <plex>{serverName}</plex> gesehen <emoji>😵‍💫</emoji>"
     },
+    "Habits": {
+      "day": "Dein liebster Tag zum Schauen war <day>{dayValue}</day>",
+      "hour": "Und am häufigsten hast du gegen <hour>{hourValue}</hour> Play gedrückt <emoji>{emojiValue}</emoji>"
+    },
     "Goodbye": {
       "thanks": "Vielen Dank, dass du dir deinen <plex>{serverName} Rewind</plex> angeschaut hast, <user>{userValue}!</user>",
       "sorry": "Es tut uns leid, dass du keine Inhalte für dich gefunden hast. Mehr Erfolg beim nächsten Mal!",

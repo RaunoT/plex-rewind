@@ -30,6 +30,14 @@ export type TautulliItem = {
   stat_id: string
 }
 
+export type TautulliGraph = {
+  categories: string[]
+  series: {
+    name: string
+    data: number[]
+  }[]
+}
+
 export type TautulliItemRow = {
   title: string
   year: number | null
