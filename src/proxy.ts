@@ -28,8 +28,8 @@ async function fetchJson<T>(url: string): Promise<T | null> {
     const contentType = res.headers.get('content-type') || ''
 
     if (!contentType.includes('application/json')) {
-      console.error(
-        `[PROXY] - Expected JSON from ${url} but got "${contentType}". Is a reverse proxy intercepting internal requests?`,
+      console.warn(
+        `[PROXY] - Expected JSON from ${url} but received "${contentType}". Skipping settings check for this request.`,
       )
 
       return null
