@@ -146,7 +146,7 @@
       "cards": "Karten",
       "librariesSizeAndCountCard": "Bibliothekengröße & Anzahl Karte",
       "librariesSizeAndCountCardDescription": "Ausschalten, wenn diese Statisiken nicht genutzt werden sollen.",
-      "startDateHelperText": "Standardmäßig die letzten 356 Tage."
+      "startDateHelperText": "Standardmäßig die letzten 365 Tage."
     }
   },
   "LocaleSelect": {
