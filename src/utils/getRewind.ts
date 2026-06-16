@@ -226,7 +226,7 @@ export async function getTopMediaItems(
 // Maps Tautulli's English day-of-week labels to a fixed index (0 = Sunday) so
 // the peak day is resolved from the actual label rather than its array
 // position, which shifts with Tautulli's `week_start_monday` setting.
-const DAY_NAME_TO_INDEX: Record<string, number> = {
+const DAY_NAME_TO_INDEX: Record<string, number | undefined> = {
   Sunday: 0,
   Monday: 1,
   Tuesday: 2,
@@ -239,12 +239,12 @@ const DAY_NAME_TO_INDEX: Record<string, number> = {
 // Sums every series ('TV', 'Movies', 'Music', ...) into a single per-category
 // total, keeping the same order as `categories`.
 function sumGraphSeries(graph?: TautulliGraph): number[] {
-  if (!graph?.categories?.length) {
+  if (!graph?.categories?.length || !Array.isArray(graph.series)) {
     return []
   }
 
   return graph.categories.map((_, index) =>
-    graph.series.reduce((sum, serie) => sum + (serie.data[index] ?? 0), 0),
+    graph.series.reduce((sum, serie) => sum + (serie.data?.[index] ?? 0), 0),
   )
 }
 

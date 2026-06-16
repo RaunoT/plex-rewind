@@ -251,7 +251,7 @@
     },
     "Habits": {
       "day": "Your favorite day to watch was <day>{dayValue}</day>",
-      "hour": "And you pressed play most around <hour>{hourValue}</hour> <emoji>{emojiValue}</emoji>"
+      "hour": "And you pressed play most often around <hour>{hourValue}</hour> <emoji>{emojiValue}</emoji>"
     },
     "Goodbye": {
       "thanks": "Thanks for tuning into your <plex>{serverName} Rewind</plex>, <user>{userValue}!</user>",
