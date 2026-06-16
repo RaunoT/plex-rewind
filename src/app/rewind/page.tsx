@@ -18,7 +18,7 @@ import {
 } from '@/utils/getRewind'
 import getSettings from '@/utils/getSettings'
 import getUsersTop from '@/utils/getUsersTop'
-import { getRewindDateRange } from '@/utils/helpers'
+import { daysBetween, getRewindStartDate } from '@/utils/helpers'
 import { Metadata } from 'next'
 import { getServerSession } from 'next-auth'
 import { getTranslations } from 'next-intl/server'
@@ -62,7 +62,7 @@ async function RewindContent({ userId }: { userId?: string }) {
 
   const t = await getTranslations()
   const libraries = await getLibraries()
-  const { startDate, endDate } = getRewindDateRange(settings)
+  const startDate = getRewindStartDate(settings)
   const [
     topMediaItems,
     topMediaStats,
@@ -79,7 +79,7 @@ async function RewindContent({ userId }: { userId?: string }) {
     getlibrariesTotalSize(libraries),
     getLibrariesTotalDuration(libraries),
     getServerId(),
-    getUsersTop(user.id, startDate, 0, endDate),
+    getUsersTop(user.id, startDate, daysBetween(startDate)),
     getPlaybackHabits(user.id),
   ])
   const userRewind: UserRewind = {

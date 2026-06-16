@@ -1,5 +1,5 @@
 import { RewindStory } from '@/types/rewind'
-import { getRewindDateRange } from '@/utils/helpers'
+import { getRewindStartDate } from '@/utils/helpers'
 import { useTranslations } from 'next-intl'
 import Image from 'next/image'
 import RewindStat from '../RewindStat'
@@ -17,11 +17,12 @@ export default function StoryWelcome({
   isPaused,
   settings,
 }: RewindStory) {
-  const { startDate, endDate } = getRewindDateRange(settings)
-  const isDefaultPeriod = !settings.rewind.startDate && !settings.rewind.endDate
+  const startDate = getRewindStartDate(settings)
+  const isDefaultPeriod = !settings.rewind.startDate
   const t = useTranslations('Rewind.Welcome')
   const formattedStartDate = formatDate(startDate)
-  const formattedEndDate = formatDate(endDate)
+  // The window always runs to now, so the displayed range ends today.
+  const formattedEndDate = formatDate(new Date().toISOString().split('T')[0])
 
   return (
     <>

@@ -33,16 +33,16 @@ export function getSettingsPage(missingSettingKey: string): string | undefined {
     ?.href
 }
 
-export function getRewindDateRange(settings: Settings) {
-  const startDate = settings.rewind.startDate || PERIODS.pastYear.string
-  const endDate =
-    settings.rewind.endDate || new Date().toISOString().split('T')[0]
-
-  return { startDate, endDate }
+export function getRewindStartDate(settings: Settings): string {
+  return settings.rewind.startDate || PERIODS.pastYear.string
 }
 
-export function daysBetween(startDate: string, endDate: string): number {
-  const ms = new Date(endDate).getTime() - new Date(startDate).getTime()
+// Whole-day count from `startDate` up to `endDate` (defaults to now). Used to
+// express the rewind window as a rolling `time_range` for the Tautulli stat and
+// graph endpoints that don't accept before/after.
+export function daysBetween(startDate: string, endDate?: string): number {
+  const end = endDate ? new Date(endDate).getTime() : Date.now()
+  const ms = end - new Date(startDate).getTime()
 
   if (!Number.isFinite(ms)) {
     return 1

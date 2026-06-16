@@ -143,13 +143,10 @@
     },
     "Rewind": {
       "title": "Rewind seaded",
-      "endDateMustBeAfterStartDateError": "Lõpp peab olema pärast algust",
-      "startDateMustBeBeforeEndDateError": "Algus peab olema enne lõppu",
       "cards": "Kaardid",
       "librariesSizeAndCountCard": "Kogumike failisuuruse kaart",
       "librariesSizeAndCountCardDescription": "Lülita välja, kui ei soovi sõltuda Tautulli'st failisuuruste jaoks.",
-      "startDateHelperText": "Vaikimisi 365 päeva tagasi.",
-      "endDateHelperText": "Vaikeväärtuseks on täna."
+      "startDateHelperText": "Vaikimisi 365 päeva tagasi."
     }
   },
   "LocaleSelect": {
@@ -171,7 +168,6 @@
     "size": "Suurus",
     "defaults": "Vaikeväärtused",
     "startDate": "Algus",
-    "endDate": "Lõppkuupäev",
     "profilePictureAlt": "profiilipilt",
     "time": {
       "zero": "0 min",

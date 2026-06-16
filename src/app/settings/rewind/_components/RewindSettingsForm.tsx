@@ -87,13 +87,6 @@ export default function RewindSettingsForm({ settings }: Props) {
               name='startDate'
               defaultValue={rewindSettings.startDate}
             />
-            <DatePicker
-              key={`end-date-${rewindSettings.endDate}`}
-              label={tCommon('endDate')}
-              helperText={t('endDateHelperText')}
-              name='endDate'
-              defaultValue={rewindSettings.endDate}
-            />
           </section>
         </>
       )}

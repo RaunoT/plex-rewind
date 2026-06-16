@@ -143,13 +143,10 @@
     },
     "Rewind": {
       "title": "Rewind settings",
-      "endDateMustBeAfterStartDateError": "End date must be after start date",
-      "startDateMustBeBeforeEndDateError": "Start date must be before end date",
       "cards": "Cards",
       "librariesSizeAndCountCard": "Libraries size & count card",
       "librariesSizeAndCountCardDescription": "Disable if you don't want to rely on Tautulli for these stats.",
-      "startDateHelperText": "Defaults to 365 days ago.",
-      "endDateHelperText": "Defaults to today."
+      "startDateHelperText": "Defaults to 365 days ago."
     }
   },
   "LocaleSelect": {
@@ -171,7 +168,6 @@
     "size": "Size",
     "defaults": "Defaults",
     "startDate": "Start date",
-    "endDate": "End date",
     "profilePictureAlt": "profile picture",
     "time": {
       "zero": "0 mins",

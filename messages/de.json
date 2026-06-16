@@ -143,13 +143,10 @@
     },
     "Rewind": {
       "title": "Rewind Einstellungen",
-      "endDateMustBeAfterStartDateError": "Enddatum muss nach dem Startdatum sein",
-      "startDateMustBeBeforeEndDateError": "Startdatum muss vor dem Enddatum sein",
       "cards": "Karten",
       "librariesSizeAndCountCard": "Bibliothekengröße & Anzahl Karte",
       "librariesSizeAndCountCardDescription": "Ausschalten, wenn diese Statisiken nicht genutzt werden sollen.",
-      "startDateHelperText": "Standardmäßig die letzten 356 Tage.",
-      "endDateHelperText": "Standardmäßig heute."
+      "startDateHelperText": "Standardmäßig die letzten 356 Tage."
     }
   },
   "LocaleSelect": {
@@ -171,7 +168,6 @@
     "size": "Größe",
     "defaults": "Standard",
     "startDate": "Startdatum",
-    "endDate": "Enddatum",
     "profilePictureAlt": "Profilbild",
     "time": {
       "zero": "0 Minuten",
