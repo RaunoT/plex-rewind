@@ -1,7 +1,11 @@
 import { authOptions } from '@/lib/auth'
 import { UserRewind } from '@/types/rewind'
 import { TautulliUser } from '@/types/tautulli'
-import fetchTautulli, { getLibraries, getServerId } from '@/utils/fetchTautulli'
+import {
+  getActiveUsers,
+  getLibraries,
+  getServerId,
+} from '@/utils/fetchTautulli'
 import { secondsToTime } from '@/utils/formatting'
 import {
   getLibrariesTotalDuration,
@@ -35,11 +39,7 @@ async function RewindContent({ userId }: { userId?: string }) {
   let users: TautulliUser[] | undefined
 
   if (session?.user.isAdmin || settings.general.isOutsideAccess) {
-    const res = await fetchTautulli<TautulliUser[]>('get_users')
-
-    users = res?.response?.data?.filter(
-      (user) => user.is_active && user.username !== 'Local',
-    )
+    users = await getActiveUsers()
 
     if (userId && users) {
       const queriedUser = users.find((u) => u.user_id == userId)

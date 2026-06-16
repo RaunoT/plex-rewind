@@ -133,6 +133,8 @@
       "tmdbOnlyPostersDescription1": "Plex Poster für Filme/Serien ignorieren.",
       "tmdbOnlyPostersDescription2": "Es wird TMDB verwendet, wenn kein Poster vorhanden ist.",
       "privacy": "Datenschutz",
+      "excludedUsers": "Ausgeschlossene Benutzer",
+      "excludedUsersDescription": "Ausgewählte Benutzer werden von Statistiken ausgeschlossen.",
       "outsideAccess": "Zugang von Außen zulassen",
       "outsideAccessDescription": "Zugang ohne Anmeldung.",
       "anonymize": "Anonymisieren",
