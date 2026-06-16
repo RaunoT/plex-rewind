@@ -133,6 +133,8 @@
       "tmdbOnlyPostersDescription1": "Plex Poster für Filme/Serien ignorieren.",
       "tmdbOnlyPostersDescription2": "Es wird TMDB verwendet, wenn kein Poster vorhanden ist.",
       "privacy": "Datenschutz",
+      "excludedUsers": "Ausgeschlossene Benutzer",
+      "excludedUsersDescription": "Ausgewählte Benutzer werden von Statistiken ausgeschlossen.",
       "outsideAccess": "Zugang von Außen zulassen",
       "outsideAccessDescription": "Zugang ohne Anmeldung.",
       "anonymize": "Anonymisieren",
@@ -141,13 +143,10 @@
     },
     "Rewind": {
       "title": "Rewind Einstellungen",
-      "endDateMustBeAfterStartDateError": "Enddatum muss nach dem Startdatum sein",
-      "startDateMustBeBeforeEndDateError": "Startdatum muss vor dem Enddatum sein",
       "cards": "Karten",
       "librariesSizeAndCountCard": "Bibliothekengröße & Anzahl Karte",
       "librariesSizeAndCountCardDescription": "Ausschalten, wenn diese Statisiken nicht genutzt werden sollen.",
-      "startDateHelperText": "Standardmäßig die letzten 356 Tage.",
-      "endDateHelperText": "Standardmäßig heute."
+      "startDateHelperText": "Standardmäßig die letzten 365 Tage."
     }
   },
   "LocaleSelect": {
@@ -169,7 +168,6 @@
     "size": "Größe",
     "defaults": "Standard",
     "startDate": "Startdatum",
-    "endDate": "Enddatum",
     "profilePictureAlt": "Profilbild",
     "time": {
       "zero": "0 Minuten",
@@ -248,6 +246,10 @@
       "count": "Du hast <count>{countValue}</count> <movies>{countValue, plural, =1 {Film} other {Filme}}</movies> gesehen!",
       "favorite": "Dein Lieblingsfilm war",
       "noData": "Du hast keine <movies>Filme</movies> auf <plex>{serverName}</plex> gesehen <emoji>😵‍💫</emoji>"
+    },
+    "Habits": {
+      "day": "Dein liebster Tag zum Schauen war <day>{dayValue}</day>",
+      "hour": "Und am häufigsten hast du gegen <hour>{hourValue}</hour> Play gedrückt <emoji>{emojiValue}</emoji>"
     },
     "Goodbye": {
       "thanks": "Vielen Dank, dass du dir deinen <plex>{serverName} Rewind</plex> angeschaut hast, <user>{userValue}!</user>",

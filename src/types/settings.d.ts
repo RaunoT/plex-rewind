@@ -16,6 +16,7 @@ export type ConnectionSettings = {
 export type GeneralSettings = {
   serverName: string
   activeLibraries: string[]
+  excludedUsers: string[]
   isPostersTmdbOnly: boolean
   googleAnalyticsId: string
   isOutsideAccess: boolean
@@ -27,7 +28,6 @@ export type RewindSettings = {
   isActive: boolean
   isLibrariesSizeAndCountActive: boolean
   startDate?: string
-  endDate?: string
   complete: boolean
 }
 

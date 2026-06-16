@@ -133,6 +133,8 @@
       "tmdbOnlyPostersDescription1": "Ignorer les affiches Plex pour les séries/films.",
       "tmdbOnlyPostersDescription2": "Par défaut, TMDB est un recours.",
       "privacy": "Confidentialité",
+      "excludedUsers": "Utilisateurs exclus",
+      "excludedUsersDescription": "Les utilisateurs sélectionnés seront exclus des statistiques.",
       "outsideAccess": "Autoriser l'accès externe",
       "outsideAccessDescription": "Accès sans connexion.",
       "anonymize": "Anonymiser",
@@ -141,13 +143,10 @@
     },
     "Rewind": {
       "title": "Paramètres Rewind",
-      "endDateMustBeAfterStartDateError": "La date de fin doit être après la date de début",
-      "startDateMustBeBeforeEndDateError": "La date de début doit être avant la date de fin",
       "cards": "Cartes",
       "librariesSizeAndCountCard": "Carte taille et nombre de bibliothèques",
       "librariesSizeAndCountCardDescription": "Désactiver si vous ne voulez pas dépendre de Tautulli pour ces statistiques.",
-      "startDateHelperText": "Par défaut, 365 jours avant.",
-      "endDateHelperText": "Par défaut, aujourd'hui."
+      "startDateHelperText": "Par défaut, 365 jours avant."
     }
   },
   "LocaleSelect": {
@@ -169,7 +168,6 @@
     "size": "Taille",
     "defaults": "Par défaut",
     "startDate": "Date de début",
-    "endDate": "Date de fin",
     "profilePictureAlt": "photo de profil",
     "time": {
       "zero": "0 min",
@@ -248,6 +246,10 @@
       "count": "Vous avez regardé <count>{countValue}</count> <movies>{countValue, plural, =1 {film} other {films}}</movies> au total !",
       "favorite": "Votre favori était",
       "noData": "Vous n'avez regardé aucun <movies>Film</movies> sur <plex>{serverName}</plex> <emoji>😵‍💫</emoji>"
+    },
+    "Habits": {
+      "day": "Votre jour préféré pour regarder était le <day>{dayValue}</day>",
+      "hour": "Et vous lanciez la lecture surtout vers <hour>{hourValue}</hour> <emoji>{emojiValue}</emoji>"
     },
     "Goodbye": {
       "thanks": "Merci d'avoir suivi votre <plex>{serverName} Rewind</plex>, <user>{userValue} !</user>",

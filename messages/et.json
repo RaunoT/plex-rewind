@@ -133,6 +133,8 @@
       "tmdbOnlyPostersDescription1": "Ära kasuta Plex'i postreid.",
       "tmdbOnlyPostersDescription2": "Vaikimisi kasutatakse TMDB'd ainult kui postrid puuduvad.",
       "privacy": "Privaatsus",
+      "excludedUsers": "Välistatud kasutajad",
+      "excludedUsersDescription": "Valitud kasutajad jäetakse statistikast välja.",
       "outsideAccess": "Luba väline ligipääs",
       "outsideAccessDescription": "Ligipääs ilma sisselogimiseta.",
       "anonymize": "Anonümiseeri",
@@ -141,13 +143,10 @@
     },
     "Rewind": {
       "title": "Rewind seaded",
-      "endDateMustBeAfterStartDateError": "Lõpp peab olema pärast algust",
-      "startDateMustBeBeforeEndDateError": "Algus peab olema enne lõppu",
       "cards": "Kaardid",
       "librariesSizeAndCountCard": "Kogumike failisuuruse kaart",
       "librariesSizeAndCountCardDescription": "Lülita välja, kui ei soovi sõltuda Tautulli'st failisuuruste jaoks.",
-      "startDateHelperText": "Vaikimisi 365 päeva tagasi.",
-      "endDateHelperText": "Vaikeväärtuseks on täna."
+      "startDateHelperText": "Vaikimisi 365 päeva tagasi."
     }
   },
   "LocaleSelect": {
@@ -169,7 +168,6 @@
     "size": "Suurus",
     "defaults": "Vaikeväärtused",
     "startDate": "Algus",
-    "endDate": "Lõppkuupäev",
     "profilePictureAlt": "profiilipilt",
     "time": {
       "zero": "0 min",
@@ -248,6 +246,10 @@
       "count": "Vaatasid <count>{countValue}</count> <movies>{countValue, plural, =1 {filmi} other {filmi}}</movies>",
       "favorite": "Sinu lemmik oli",
       "noData": "Sa ei vaadanud ühtegi <movies>Filmi</movies> <plex>{serverName}'ist</plex> <emoji>😵‍💫</emoji>"
+    },
+    "Habits": {
+      "day": "Sinu lemmik vaatamispäev oli <day>{dayValue}</day>",
+      "hour": "Ja kõige sagedamini panid mängima umbes kell <hour>{hourValue}</hour> <emoji>{emojiValue}</emoji>"
     },
     "Goodbye": {
       "thanks": "Tänan, et vaatasid oma <plex>{serverName} Rewind'i</plex>, <user>{userValue}!</user>",

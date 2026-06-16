@@ -1,12 +1,11 @@
 import { TautulliItem, TautulliItemRow } from '@/types/tautulli'
 import { fetchOverseerrStats, fetchOverseerrUserId } from './fetchOverseerr'
 import fetchTautulli, {
+  getActiveUsers,
   getLibraries,
   getLibrariesByType,
-  getUsersCount,
 } from './fetchTautulli'
 import getSettings from './getSettings'
-import { daysBetween } from './helpers'
 
 type UserRequestCounts =
   | {
@@ -18,29 +17,32 @@ export default async function getUsersTop(
   loggedInUserId: string,
   after: string,
   period?: number,
-  before?: string,
 ): Promise<TautulliItemRow[] | null> {
   const numberOfUsers = 6
   const settings = getSettings()
-  const allUsersCount = await getUsersCount(settings)
+  const excludedUsers = settings.general.excludedUsers
+  const activeUsers = await getActiveUsers(settings)
 
-  if (!allUsersCount) {
+  if (!activeUsers.length) {
     console.error('Could not determine the number of users!')
 
     return null
   }
 
   const activeLibraries = await getLibraries()
-  // Tautulli's get_home_stats has a binding-count bug when before/after are
-  // passed (regression from the SQL injection fix in ae4daba2). Always use
-  // time_range — derive it from the date window when a before/after range is
-  // supplied (e.g. the rewind page).
-  const time_range = before ? daysBetween(after, before) : period || 30
+  // get_home_stats only reliably accepts a `time_range` in days (last N days
+  // from today), so callers pass the window length as `period`. The per-user
+  // history counts below use `after` directly, also anchored to now.
+  const time_range = period || 30
+  // get_home_stats can't exclude users itself, so it still ranks excluded
+  // users. Request enough rows that they can't push the users we want to keep
+  // out of the window before we filter them out below.
+  const statsCount = activeUsers.length + excludedUsers.length
   const userStats = await Promise.all(
     activeLibraries.map((library) =>
       fetchTautulli<TautulliItem>('get_home_stats', {
         stat_id: 'top_users',
-        stats_count: allUsersCount,
+        stats_count: statsCount,
         stats_type: 'duration',
         section_id: library.section_id,
         time_range,
@@ -54,6 +56,10 @@ export default async function getUsersTop(
 
     if (users) {
       users.forEach((user) => {
+        if (excludedUsers.includes(String(user.user_id))) {
+          return
+        }
+
         if (combinedUserStats[user.user_id]) {
           combinedUserStats[user.user_id].total_duration += user.total_duration
         } else {
@@ -93,7 +99,6 @@ export default async function getUsersTop(
           const userTotal = await fetchOverseerrStats(
             `user/${overseerrId}/requests`,
             after,
-            ...(before ? [before] : []),
           )
 
           return {
@@ -117,7 +122,6 @@ export default async function getUsersTop(
             user_id: user.user_id,
             after: after,
             section_id: movieLib.section_id,
-            ...(before && { before }),
           },
         )
 
@@ -131,7 +135,6 @@ export default async function getUsersTop(
             user_id: user.user_id,
             after: after,
             section_id: showLib.section_id,
-            ...(before && { before }),
           },
         )
 
@@ -145,7 +148,6 @@ export default async function getUsersTop(
             user_id: user.user_id,
             after: after,
             section_id: audioLibItem.section_id,
-            ...(before && { before }),
           },
         )
 

@@ -48,6 +48,7 @@ export const DEFAULT_SETTINGS: Settings = {
   general: {
     serverName: '',
     activeLibraries: [],
+    excludedUsers: [],
     isPostersTmdbOnly: false,
     googleAnalyticsId: '',
     isOutsideAccess: false,
@@ -58,7 +59,6 @@ export const DEFAULT_SETTINGS: Settings = {
     isActive: true,
     isLibrariesSizeAndCountActive: true,
     startDate: '',
-    endDate: '',
     complete: false,
   },
   dashboard: {

@@ -133,6 +133,8 @@
       "tmdbOnlyPostersDescription1": "Ignore Plex posters for tv/movies.",
       "tmdbOnlyPostersDescription2": "By default, TMDB is a fallback.",
       "privacy": "Privacy",
+      "excludedUsers": "Excluded users",
+      "excludedUsersDescription": "Selected users will be excluded from statistics.",
       "outsideAccess": "Allow outside access",
       "outsideAccessDescription": "Access without login.",
       "anonymize": "Anonymize",
@@ -141,13 +143,10 @@
     },
     "Rewind": {
       "title": "Rewind settings",
-      "endDateMustBeAfterStartDateError": "End date must be after start date",
-      "startDateMustBeBeforeEndDateError": "Start date must be before end date",
       "cards": "Cards",
       "librariesSizeAndCountCard": "Libraries size & count card",
       "librariesSizeAndCountCardDescription": "Disable if you don't want to rely on Tautulli for these stats.",
-      "startDateHelperText": "Defaults to 365 days ago.",
-      "endDateHelperText": "Defaults to today."
+      "startDateHelperText": "Defaults to 365 days ago."
     }
   },
   "LocaleSelect": {
@@ -169,7 +168,6 @@
     "size": "Size",
     "defaults": "Defaults",
     "startDate": "Start date",
-    "endDate": "End date",
     "profilePictureAlt": "profile picture",
     "time": {
       "zero": "0 mins",
@@ -248,6 +246,10 @@
       "count": "You watched <count>{countValue}</count> <movies>{countValue, plural, =1 {movie} other {movies}}</movies> in total!",
       "favorite": "Your favorite was",
       "noData": "You didn't watch any <movies>Movies</movies> on <plex>{serverName}</plex> <emoji>😵‍💫</emoji>"
+    },
+    "Habits": {
+      "day": "Your favorite day to watch was <day>{dayValue}</day>",
+      "hour": "And you pressed play most often around <hour>{hourValue}</hour> <emoji>{emojiValue}</emoji>"
     },
     "Goodbye": {
       "thanks": "Thanks for tuning into your <plex>{serverName} Rewind</plex>, <user>{userValue}!</user>",

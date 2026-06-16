@@ -5,7 +5,7 @@ import {
   Settings,
   SettingsFormInitialState,
 } from '@/types/settings'
-import { TautulliLibrary } from '@/types/tautulli'
+import { TautulliLibrary, TautulliUser } from '@/types/tautulli'
 import { Bars2Icon } from '@heroicons/react/24/outline'
 import { kebabCase } from 'lodash'
 import { useTranslations } from 'next-intl'
@@ -20,11 +20,16 @@ type SortableLibrary = TautulliLibrary & { id: TautulliLibrary['section_id'] }
 type Props = {
   settings: Settings
   libraries: TautulliLibrary[]
+  users: TautulliUser[]
 }
 
 type GeneralFormState = SettingsFormInitialState<GeneralSettings>
 
-export default function GeneralSettingsForm({ settings, libraries }: Props) {
+export default function GeneralSettingsForm({
+  settings,
+  libraries,
+  users,
+}: Props) {
   const [librariesState, setLibrariesState] = useState<SortableLibrary[]>(
     () => {
       const activeLibraries = settings.general.activeLibraries
@@ -89,9 +94,7 @@ export default function GeneralSettingsForm({ settings, libraries }: Props) {
         <h2 className='heading-settings'>{t('libraries')}</h2>
         {libraries.length ? (
           <CheckboxGroup
-            key={`active-libraries-${JSON.stringify(
-              generalSettings.activeLibraries,
-            )}`}
+            key={`active-libraries-${generalSettings.activeLibraries.join(',')}`}
             className='input-wrapper'
             name='activeLibraries'
             defaultValue={generalSettings.activeLibraries}
@@ -102,6 +105,14 @@ export default function GeneralSettingsForm({ settings, libraries }: Props) {
               className='peer mr-auto flex flex-wrap gap-2'
               handle='.drag-handle'
               animation={200}
+              // Force the pointer-based fallback on all platforms. React Aria's
+              // Checkbox calls preventDefault on pointer events, which blocks the
+              // browser's native HTML5 drag on desktop (mobile already uses this
+              // fallback, which is why it kept working there).
+              forceFallback
+              // Append the drag clone to <body> so positioned/transformed
+              // ancestors don't offset the ghost from the cursor.
+              fallbackOnBody
             >
               {librariesState.map((library) => (
                 <Checkbox
@@ -152,6 +163,42 @@ export default function GeneralSettingsForm({ settings, libraries }: Props) {
           </section>
           <section className='group-settings group'>
             <h2 className='heading-settings'>{t('privacy')}</h2>
+            {users.length > 0 ? (
+              <CheckboxGroup
+                key={`excluded-users-${generalSettings.excludedUsers.join(',')}`}
+                className='input-wrapper'
+                name='excludedUsers'
+                defaultValue={generalSettings.excludedUsers}
+              >
+                <div className='peer mr-auto flex flex-wrap gap-2'>
+                  {users.map((user) => (
+                    <Checkbox
+                      key={`user-${user.user_id}`}
+                      value={String(user.user_id)}
+                      className='checkbox-wrapper'
+                    >
+                      <div className='checkbox' aria-hidden='true'></div>
+                      {user.friendly_name}
+                    </Checkbox>
+                  ))}
+                </div>
+                <Label className='label label--start'>
+                  <span className='label-wrapper'>{t('excludedUsers')}</span>
+                  <small>{t('excludedUsersDescription')}</small>
+                </Label>
+              </CheckboxGroup>
+            ) : (
+              // Preserve saved exclusions when the user list can't be loaded so
+              // submitting the form doesn't silently clear them.
+              generalSettings.excludedUsers.map((userId) => (
+                <input
+                  key={`excluded-user-${userId}`}
+                  type='hidden'
+                  name='excludedUsers'
+                  value={userId}
+                />
+              ))
+            )}
             <Switch
               key={`outside-access-${generalSettings.isOutsideAccess}`}
               className='switch items-start'

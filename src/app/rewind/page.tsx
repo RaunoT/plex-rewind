@@ -1,10 +1,15 @@
 import { authOptions } from '@/lib/auth'
 import { UserRewind } from '@/types/rewind'
 import { TautulliUser } from '@/types/tautulli'
-import fetchTautulli, { getLibraries, getServerId } from '@/utils/fetchTautulli'
+import {
+  getActiveUsers,
+  getLibraries,
+  getServerId,
+} from '@/utils/fetchTautulli'
 import { secondsToTime } from '@/utils/formatting'
 import {
   getLibrariesTotalDuration,
+  getPlaybackHabits,
   getRequestsTotals,
   getTopMediaItems,
   getTopMediaStats,
@@ -13,7 +18,7 @@ import {
 } from '@/utils/getRewind'
 import getSettings from '@/utils/getSettings'
 import getUsersTop from '@/utils/getUsersTop'
-import { getRewindDateRange } from '@/utils/helpers'
+import { daysBetween, getRewindStartDate } from '@/utils/helpers'
 import { Metadata } from 'next'
 import { getServerSession } from 'next-auth'
 import { getTranslations } from 'next-intl/server'
@@ -35,11 +40,7 @@ async function RewindContent({ userId }: { userId?: string }) {
   let users: TautulliUser[] | undefined
 
   if (session?.user.isAdmin || settings.general.isOutsideAccess) {
-    const res = await fetchTautulli<TautulliUser[]>('get_users')
-
-    users = res?.response?.data?.filter(
-      (user) => user.is_active && user.username !== 'Local',
-    )
+    users = await getActiveUsers(settings)
 
     if (userId && users) {
       const queriedUser = users.find((u) => u.user_id == userId)
@@ -61,7 +62,7 @@ async function RewindContent({ userId }: { userId?: string }) {
 
   const t = await getTranslations()
   const libraries = await getLibraries()
-  const { startDate, endDate } = getRewindDateRange(settings)
+  const startDate = getRewindStartDate(settings)
   const [
     topMediaItems,
     topMediaStats,
@@ -70,6 +71,7 @@ async function RewindContent({ userId }: { userId?: string }) {
     librariesTotalDuration,
     serverId,
     usersTop,
+    habits,
   ] = await Promise.all([
     getTopMediaItems(user.id, libraries),
     getTopMediaStats(user.id, libraries),
@@ -77,7 +79,8 @@ async function RewindContent({ userId }: { userId?: string }) {
     getlibrariesTotalSize(libraries),
     getLibrariesTotalDuration(libraries),
     getServerId(),
-    getUsersTop(user.id, startDate, 0, endDate),
+    getUsersTop(user.id, startDate, daysBetween(startDate)),
+    getPlaybackHabits(user.id),
   ])
   const userRewind: UserRewind = {
     duration: {
@@ -103,6 +106,7 @@ async function RewindContent({ userId }: { userId?: string }) {
       count: topMediaStats.audio.count,
       duration: topMediaStats.audio.duration,
     },
+    habits: habits,
     libraries: libraries,
     libraries_total_size: librariesTotalSize,
     server_id: serverId,
