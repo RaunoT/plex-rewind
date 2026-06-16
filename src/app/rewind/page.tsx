@@ -39,7 +39,7 @@ async function RewindContent({ userId }: { userId?: string }) {
   let users: TautulliUser[] | undefined
 
   if (session?.user.isAdmin || settings.general.isOutsideAccess) {
-    users = await getActiveUsers()
+    users = await getActiveUsers(settings)
 
     if (userId && users) {
       const queriedUser = users.find((u) => u.user_id == userId)

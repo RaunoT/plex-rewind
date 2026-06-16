@@ -23,7 +23,7 @@ export default async function getUsersTop(
   const numberOfUsers = 6
   const settings = getSettings()
   const excludedUsers = settings.general.excludedUsers
-  const activeUsers = await getActiveUsers()
+  const activeUsers = await getActiveUsers(settings)
 
   if (!activeUsers.length) {
     console.error('Could not determine the number of users!')

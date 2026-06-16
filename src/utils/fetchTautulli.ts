@@ -175,8 +175,9 @@ export async function getLibrariesByType(
   return libraries.filter((library) => library.section_type === type)
 }
 
-export async function getActiveUsers(): Promise<TautulliUser[]> {
-  const settings = getSettings()
+export async function getActiveUsers(
+  settings: Settings = getSettings(),
+): Promise<TautulliUser[]> {
   const usersRes = await fetchTautulli<TautulliUser[]>('get_users')
   const excludedUsers = settings.general.excludedUsers
   const users = usersRes?.response?.data?.filter(
@@ -191,7 +192,7 @@ export async function getActiveUsers(): Promise<TautulliUser[]> {
 
 export async function getUsersCount(settings: Settings) {
   if (settings.dashboard.activeTotalStatistics.includes('count')) {
-    const users = await getActiveUsers()
+    const users = await getActiveUsers(settings)
 
     return users.length
   }

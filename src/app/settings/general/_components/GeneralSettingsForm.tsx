@@ -94,9 +94,7 @@ export default function GeneralSettingsForm({
         <h2 className='heading-settings'>{t('libraries')}</h2>
         {libraries.length ? (
           <CheckboxGroup
-            key={`active-libraries-${JSON.stringify(
-              generalSettings.activeLibraries,
-            )}`}
+            key={`active-libraries-${generalSettings.activeLibraries.join(',')}`}
             className='input-wrapper'
             name='activeLibraries'
             defaultValue={generalSettings.activeLibraries}
@@ -157,7 +155,7 @@ export default function GeneralSettingsForm({
           </section>
           <section className='group-settings group'>
             <h2 className='heading-settings'>{t('privacy')}</h2>
-            {users.length > 0 && (
+            {users.length > 0 ? (
               <CheckboxGroup
                 key={`excluded-users-${generalSettings.excludedUsers.join(',')}`}
                 className='input-wrapper'
@@ -181,6 +179,17 @@ export default function GeneralSettingsForm({
                   <small>{t('excludedUsersDescription')}</small>
                 </Label>
               </CheckboxGroup>
+            ) : (
+              // Preserve saved exclusions when the user list can't be loaded so
+              // submitting the form doesn't silently clear them.
+              generalSettings.excludedUsers.map((userId) => (
+                <input
+                  key={`excluded-user-${userId}`}
+                  type='hidden'
+                  name='excludedUsers'
+                  value={userId}
+                />
+              ))
             )}
             <Switch
               key={`outside-access-${generalSettings.isOutsideAccess}`}
