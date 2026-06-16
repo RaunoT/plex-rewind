@@ -1,4 +1,5 @@
 import {
+  TautulliGraph,
   TautulliItem,
   TautulliItemRow,
   TautulliLibrary,
@@ -220,6 +221,90 @@ export async function getTopMediaItems(
   combinedResult.audio = sortAndSlice(combinedResult.audio)
 
   return combinedResult
+}
+
+// Maps Tautulli's English day-of-week labels to a fixed index (0 = Sunday) so
+// the peak day is resolved from the actual label rather than its array
+// position, which shifts with Tautulli's `week_start_monday` setting.
+const DAY_NAME_TO_INDEX: Record<string, number | undefined> = {
+  Sunday: 0,
+  Monday: 1,
+  Tuesday: 2,
+  Wednesday: 3,
+  Thursday: 4,
+  Friday: 5,
+  Saturday: 6,
+}
+
+// Sums every series ('TV', 'Movies', 'Music', ...) into a single per-category
+// total, keeping the same order as `categories`.
+function sumGraphSeries(graph?: TautulliGraph): number[] {
+  if (!graph?.categories?.length || !Array.isArray(graph.series)) {
+    return []
+  }
+
+  return graph.categories.map((_, index) =>
+    graph.series.reduce((sum, serie) => sum + (serie.data?.[index] ?? 0), 0),
+  )
+}
+
+function peakIndex(totals: number[]): number | null {
+  if (!totals.length) {
+    return null
+  }
+
+  let maxIndex = 0
+
+  for (let i = 1; i < totals.length; i++) {
+    if (totals[i] > totals[maxIndex]) {
+      maxIndex = i
+    }
+  }
+
+  return totals[maxIndex] > 0 ? maxIndex : null
+}
+
+export async function getPlaybackHabits(userId: string) {
+  const { startDate, endDate } = getRewindDateRange(getSettings())
+  // Like getTopMediaItems, the graph endpoints only accept a `time_range` in
+  // days (last N days), not before/after — so a custom range is approximated
+  // by its length, consistent with the rest of the rewind.
+  const time_range = daysBetween(startDate, endDate)
+  const [hourRes, dayRes] = await Promise.all([
+    fetchTautulli<TautulliGraph>('get_plays_by_hourofday', {
+      user_id: userId,
+      time_range,
+      y_axis: 'plays',
+    }),
+    fetchTautulli<TautulliGraph>('get_plays_by_dayofweek', {
+      user_id: userId,
+      time_range,
+      y_axis: 'plays',
+    }),
+  ])
+  // `hourly` already lines up with the hour (categories are '00'..'23').
+  const hourly = sumGraphSeries(hourRes?.response?.data)
+  const dayData = dayRes?.response?.data
+  const dayTotals = sumGraphSeries(dayData)
+  // Normalize day-of-week into a fixed Sunday-first order resolved from
+  // Tautulli's English labels, whose array order shifts with week_start_monday.
+  const daily = Array<number>(7).fill(0)
+
+  dayData?.categories.forEach((name, position) => {
+    const index = DAY_NAME_TO_INDEX[name]
+
+    if (index !== undefined) {
+      daily[index] = dayTotals[position]
+    }
+  })
+
+  return {
+    peakHour: peakIndex(hourly),
+    peakDayIndex: peakIndex(daily),
+    totalPlays: hourly.reduce((sum, plays) => sum + plays, 0),
+    hourly,
+    daily,
+  }
 }
 
 export async function getRequestsTotals(userId: string) {
