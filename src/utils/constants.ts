@@ -59,7 +59,6 @@ export const DEFAULT_SETTINGS: Settings = {
     isActive: true,
     isLibrariesSizeAndCountActive: true,
     startDate: '',
-    endDate: '',
     complete: false,
   },
   dashboard: {

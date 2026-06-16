@@ -6,7 +6,6 @@ import fetchTautulli, {
   getLibrariesByType,
 } from './fetchTautulli'
 import getSettings from './getSettings'
-import { daysBetween } from './helpers'
 
 type UserRequestCounts =
   | {
@@ -18,7 +17,6 @@ export default async function getUsersTop(
   loggedInUserId: string,
   after: string,
   period?: number,
-  before?: string,
 ): Promise<TautulliItemRow[] | null> {
   const numberOfUsers = 6
   const settings = getSettings()
@@ -32,11 +30,10 @@ export default async function getUsersTop(
   }
 
   const activeLibraries = await getLibraries()
-  // Tautulli's get_home_stats has a binding-count bug when before/after are
-  // passed (regression from the SQL injection fix in ae4daba2). Always use
-  // time_range — derive it from the date window when a before/after range is
-  // supplied (e.g. the rewind page).
-  const time_range = before ? daysBetween(after, before) : period || 30
+  // get_home_stats only reliably accepts a `time_range` in days (last N days
+  // from today), so callers pass the window length as `period`. The per-user
+  // history counts below use `after` directly, also anchored to now.
+  const time_range = period || 30
   // get_home_stats can't exclude users itself, so it still ranks excluded
   // users. Request enough rows that they can't push the users we want to keep
   // out of the window before we filter them out below.
@@ -102,7 +99,6 @@ export default async function getUsersTop(
           const userTotal = await fetchOverseerrStats(
             `user/${overseerrId}/requests`,
             after,
-            ...(before ? [before] : []),
           )
 
           return {
@@ -126,7 +122,6 @@ export default async function getUsersTop(
             user_id: user.user_id,
             after: after,
             section_id: movieLib.section_id,
-            ...(before && { before }),
           },
         )
 
@@ -140,7 +135,6 @@ export default async function getUsersTop(
             user_id: user.user_id,
             after: after,
             section_id: showLib.section_id,
-            ...(before && { before }),
           },
         )
 
@@ -154,7 +148,6 @@ export default async function getUsersTop(
             user_id: user.user_id,
             after: after,
             section_id: audioLibItem.section_id,
-            ...(before && { before }),
           },
         )
 

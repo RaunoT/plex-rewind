@@ -12,7 +12,7 @@ import fetchTautulli from './fetchTautulli'
 import { secondsToTime, timeToSeconds } from './formatting'
 import getMediaAdditionalData from './getMediaAdditionalData'
 import getSettings from './getSettings'
-import { daysBetween, getRewindDateRange } from './helpers'
+import { daysBetween, getRewindStartDate } from './helpers'
 
 export async function getTopMediaStats(
   userId: string,
@@ -31,14 +31,13 @@ export async function getTopMediaStats(
   }
 
   async function fetchLibraryData(library: TautulliLibrary) {
-    const { startDate, endDate } = getRewindDateRange(getSettings())
+    const startDate = getRewindStartDate(getSettings())
     const res = await fetchTautulli<{
       recordsFiltered: number
       total_duration: string
     }>('get_history', {
       user_id: userId,
       after: startDate,
-      before: endDate,
       length: 0,
       media_type: mediaTypeMap[library.section_type],
       section_id: library.section_id,
@@ -107,13 +106,12 @@ export async function getlibrariesTotalSize(libraries: TautulliLibrary[]) {
 }
 
 export async function getLibrariesTotalDuration(libraries: TautulliLibrary[]) {
-  const { startDate, endDate } = getRewindDateRange(getSettings())
+  const startDate = getRewindStartDate(getSettings())
   const res = await Promise.all(
     libraries.map((library) => {
       return fetchTautulli<{ total_duration: string }>('get_history', {
         section_id: library.section_id,
         after: startDate,
-        before: endDate,
         length: 0,
       })
     }),
@@ -136,14 +134,13 @@ export async function getUserTotalDuration(
   userId: string,
   libraries: TautulliLibrary[],
 ) {
-  const { startDate, endDate } = getRewindDateRange(getSettings())
+  const startDate = getRewindStartDate(getSettings())
   const res = await Promise.all(
     libraries.map((library) => {
       return fetchTautulli<{ total_duration: string }>('get_history', {
         user_id: userId,
         section_id: library.section_id,
         after: startDate,
-        before: endDate,
         length: 0,
       })
     }),
@@ -171,11 +168,11 @@ export async function getTopMediaItems(
     show: 'top_tv',
     artist: 'top_music',
   }
-  const { startDate, endDate } = getRewindDateRange(getSettings())
-  // Tautulli's get_home_stats has a binding-count bug when before/after are
-  // passed (regression from the SQL injection fix in ae4daba2). Use time_range
-  // in days instead — Tautulli computes the window as `last N days`.
-  const time_range = daysBetween(startDate, endDate)
+  const startDate = getRewindStartDate(getSettings())
+  // get_home_stats only reliably accepts a `time_range` in days (Tautulli
+  // computes the window as `last N days` from today), so the rewind window
+  // always runs from startDate up to now.
+  const time_range = daysBetween(startDate)
   const res = await Promise.all(
     libraries.map(async (library) => {
       const stat = await fetchTautulli<TautulliItem>('get_home_stats', {
@@ -265,11 +262,10 @@ function peakIndex(totals: number[]): number | null {
 }
 
 export async function getPlaybackHabits(userId: string) {
-  const { startDate, endDate } = getRewindDateRange(getSettings())
+  const startDate = getRewindStartDate(getSettings())
   // Like getTopMediaItems, the graph endpoints only accept a `time_range` in
-  // days (last N days), not before/after — so a custom range is approximated
-  // by its length, consistent with the rest of the rewind.
-  const time_range = daysBetween(startDate, endDate)
+  // days (last N days from today), so the window runs from startDate up to now.
+  const time_range = daysBetween(startDate)
   const [hourRes, dayRes] = await Promise.all([
     fetchTautulli<TautulliGraph>('get_plays_by_hourofday', {
       user_id: userId,
@@ -308,8 +304,8 @@ export async function getPlaybackHabits(userId: string) {
 }
 
 export async function getRequestsTotals(userId: string) {
-  const { startDate, endDate } = getRewindDateRange(getSettings())
-  const requests = await fetchOverseerrStats('request', startDate, endDate)
+  const startDate = getRewindStartDate(getSettings())
+  const requests = await fetchOverseerrStats('request', startDate)
 
   return {
     total: requests.length,

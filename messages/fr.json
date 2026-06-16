@@ -143,13 +143,10 @@
     },
     "Rewind": {
       "title": "Paramètres Rewind",
-      "endDateMustBeAfterStartDateError": "La date de fin doit être après la date de début",
-      "startDateMustBeBeforeEndDateError": "La date de début doit être avant la date de fin",
       "cards": "Cartes",
       "librariesSizeAndCountCard": "Carte taille et nombre de bibliothèques",
       "librariesSizeAndCountCardDescription": "Désactiver si vous ne voulez pas dépendre de Tautulli pour ces statistiques.",
-      "startDateHelperText": "Par défaut, 365 jours avant.",
-      "endDateHelperText": "Par défaut, aujourd'hui."
+      "startDateHelperText": "Par défaut, 365 jours avant."
     }
   },
   "LocaleSelect": {
@@ -171,7 +168,6 @@
     "size": "Taille",
     "defaults": "Par défaut",
     "startDate": "Date de début",
-    "endDate": "Date de fin",
     "profilePictureAlt": "photo de profil",
     "time": {
       "zero": "0 min",
