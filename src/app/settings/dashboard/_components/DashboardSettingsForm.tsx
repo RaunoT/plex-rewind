@@ -79,8 +79,8 @@ export default function DashboardSettingsForm({ settings }: Props) {
           <section className='group-settings group'>
             <h2 className='heading-settings'>{t('statistics')}</h2>
             <CheckboxGroup
-              key={`item-stats-${JSON.stringify(
-                dashboardSettings.activeItemStatistics,
+              key={`item-stats-${dashboardSettings.activeItemStatistics.join(
+                ',',
               )}`}
               className='input-wrapper'
               name='activeItemStatistics'
@@ -143,8 +143,8 @@ export default function DashboardSettingsForm({ settings }: Props) {
               </Label>
             </CheckboxGroup>
             <CheckboxGroup
-              key={`total-stats-${JSON.stringify(
-                dashboardSettings.activeTotalStatistics,
+              key={`total-stats-${dashboardSettings.activeTotalStatistics.join(
+                ',',
               )}`}
               className='input-wrapper'
               name='activeTotalStatistics'

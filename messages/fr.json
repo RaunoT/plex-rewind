@@ -133,6 +133,8 @@
       "tmdbOnlyPostersDescription1": "Ignorer les affiches Plex pour les séries/films.",
       "tmdbOnlyPostersDescription2": "Par défaut, TMDB est un recours.",
       "privacy": "Confidentialité",
+      "excludedUsers": "Utilisateurs exclus",
+      "excludedUsersDescription": "Les utilisateurs sélectionnés seront exclus des statistiques.",
       "outsideAccess": "Autoriser l'accès externe",
       "outsideAccessDescription": "Accès sans connexion.",
       "anonymize": "Anonymiser",

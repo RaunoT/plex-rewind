@@ -133,6 +133,8 @@
       "tmdbOnlyPostersDescription1": "Ära kasuta Plex'i postreid.",
       "tmdbOnlyPostersDescription2": "Vaikimisi kasutatakse TMDB'd ainult kui postrid puuduvad.",
       "privacy": "Privaatsus",
+      "excludedUsers": "Välistatud kasutajad",
+      "excludedUsersDescription": "Valitud kasutajad jäetakse statistikast välja.",
       "outsideAccess": "Luba väline ligipääs",
       "outsideAccessDescription": "Ligipääs ilma sisselogimiseta.",
       "anonymize": "Anonümiseeri",
