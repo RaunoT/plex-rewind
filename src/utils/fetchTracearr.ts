@@ -66,6 +66,7 @@ type HistoryCache = {
 }
 
 const PAGE_SIZE = 100
+const MAX_PAGES = 5000
 const MAX_RATE_LIMIT_RETRIES = 3
 const REQUEST_TIMEOUT = 30 * 1000
 const CACHE_TTL = 5 * 60 * 1000
@@ -97,6 +98,7 @@ const LIBRARY_NAMES: Record<TautulliMediaType, string> = {
 const historyCaches = new Map<string, HistoryCache>()
 
 let historyQueue: Promise<unknown> = Promise.resolve()
+let warnedMissingServerId = ''
 
 export function getTracearrUrl(settings: Settings = getSettings()): string {
   return settings.connection.tracearrUrl.replace(/\/+$/, '')
@@ -231,10 +233,11 @@ async function fetchAllPages<T>(
   params?: QueryParams,
 ): Promise<T[] | null> {
   const items: T[] = []
+  const seenCursors = new Set<string>()
 
   let cursor: string | undefined
 
-  do {
+  for (let pageCount = 0; pageCount < MAX_PAGES; pageCount++) {
     const page = await fetchTracearr<TracearrCursorPage<T>>(path, {
       ...params,
       pageSize: PAGE_SIZE,
@@ -245,9 +248,33 @@ async function fetchAllPages<T>(
       return null
     }
 
+    if (!Array.isArray(page.data)) {
+      console.error(`[TRACEARR] - Unexpected response for '${path}'!`)
+
+      return null
+    }
+
     items.push(...page.data)
-    cursor = page.meta.nextCursor ?? undefined
-  } while (cursor)
+    cursor = page.meta?.nextCursor ?? undefined
+
+    if (!cursor) {
+      return items
+    }
+
+    if (seenCursors.has(cursor)) {
+      console.warn(
+        `[TRACEARR] - '${path}' repeated a pagination cursor! Stopping at ${items.length} items.`,
+      )
+
+      return items
+    }
+
+    seenCursors.add(cursor)
+  }
+
+  console.warn(
+    `[TRACEARR] - '${path}' has more than ${MAX_PAGES} pages! Stopping at ${items.length} items.`,
+  )
 
   return items
 }
@@ -255,7 +282,7 @@ async function fetchAllPages<T>(
 const getServers = cached<TracearrServer[]>(async () => {
   const res = await fetchTracearr<TracearrServersResponse>('servers')
 
-  return res?.data ?? null
+  return Array.isArray(res?.data) ? res.data : null
 })
 
 // Rewind is built around one Plex server, its owner and its deeplinks, so
@@ -289,10 +316,20 @@ async function getPlexServerId(): Promise<string | null> {
     return null
   }
 
-  const server = selectPlexServer(
-    servers,
-    getSettings().connection.tracearrServerId,
-  )
+  const { tracearrServerId } = getSettings().connection
+
+  let server = selectPlexServer(servers, tracearrServerId)
+
+  if (!server && tracearrServerId) {
+    server = selectPlexServer(servers, '')
+
+    if (server && warnedMissingServerId !== tracearrServerId) {
+      warnedMissingServerId = tracearrServerId
+      console.warn(
+        `[TRACEARR] - The saved Plex server '${tracearrServerId}' no longer exists! Using '${server.server_name}' instead.`,
+      )
+    }
+  }
 
   if (!server) {
     console.error(
@@ -316,7 +353,7 @@ const getPlexUsers = cached<TracearrPlexUser[]>(async () => {
   }
 
   return users.flatMap((user) => {
-    const accounts = user.accounts.filter(
+    const accounts = (user.accounts ?? []).filter(
       (account) => account.server_id === serverId && !account.removed_at,
     )
 
@@ -564,7 +601,7 @@ const getLibraryRollups = cached<TracearrLibrary[]>(async () => {
     getPlexServerId(),
   ])
 
-  if (!res || !serverId) {
+  if (!res || !serverId || !Array.isArray(res.data)) {
     return null
   }
 
@@ -656,7 +693,7 @@ export async function isTracearrMediaDeleted(
     getPlexServerId(),
   ])
   const availability =
-    media?.availability.filter((item) => item.server_id === serverId) ?? []
+    media?.availability?.filter((item) => item.server_id === serverId) ?? []
 
   return (
     availability.length > 0 && availability.every((item) => item.removed_at)

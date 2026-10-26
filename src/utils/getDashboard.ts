@@ -147,7 +147,7 @@ export async function getTotalSize(
       },
     )
 
-    return bytesToSize(totalSize?.response?.data.total_file_size || 0, 2, t)
+    return bytesToSize(totalSize?.response?.data?.total_file_size || 0, 2, t)
   }
 
   return undefined

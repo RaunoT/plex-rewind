@@ -25,6 +25,7 @@ type OverseerrRequestItem = {
 }
 
 const PAGE_SIZE = 20
+const REQUEST_TIMEOUT_MS = 15_000
 
 export default async function fetchOverseerr<T>(
   endpoint: string,
@@ -61,6 +62,7 @@ export default async function fetchOverseerr<T>(
       next: {
         revalidate: cache ? 3600 : 0,
       },
+      signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
     })
 
     if (!res.ok) {
@@ -73,12 +75,18 @@ export default async function fetchOverseerr<T>(
       return null
     }
 
-    return res.json()
+    return await res.json()
   } catch (error) {
-    console.error(
-      `[OVERSEERR] - Error fetching from API! The endpoint was '${endpoint}'.\n`,
-      error,
-    )
+    if (error instanceof Error && error.name === 'TimeoutError') {
+      console.error(
+        `[OVERSEERR] - API request timed out after ${REQUEST_TIMEOUT_MS / 1000}s! The endpoint was '${endpoint}'.`,
+      )
+    } else {
+      console.error(
+        `[OVERSEERR] - Error fetching from API! The endpoint was '${endpoint}'.\n`,
+        error,
+      )
+    }
 
     return null
   }
