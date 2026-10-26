@@ -9,12 +9,12 @@ Please follow the guidelines below.
 ### Tools
 
 - [Git](https://git-scm.com) for source control
-- [NodeJS](https://nodejs.org) (22.x or higher)
+- [NodeJS](https://nodejs.org) (24.x or higher)
 - [VSCode](https://code.visualstudio.com) is highly recommended as an editor
 
   > Upon opening the project, a few extensions will be automatically recommended for install. These are highly recommended to install and will make development easier. You can find the list in `.vscode/extensions.json`.
 
-- [pnpm](https://pnpm.io) as a package manager
+- [pnpm](https://pnpm.io) as a package manager. The version is pinned in `package.json`, so enabling it with `corepack enable pnpm` picks the right one.
 
 ### Getting Started
 

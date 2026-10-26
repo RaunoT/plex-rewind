@@ -1,4 +1,3 @@
-import { TautulliUser } from '@/types/tautulli'
 import { AuthOptions } from 'next-auth'
 import CredentialsProvider from 'next-auth/providers/credentials'
 import qs from 'qs'
@@ -9,7 +8,7 @@ import {
   PLEX_API_ENDPOINT,
   PLEX_PRODUCT_NAME,
 } from '../utils/constants'
-import fetchTautulli from '../utils/fetchTautulli'
+import { getServerUser } from '../utils/fetchTautulli'
 
 function getClientIdentifier(): string {
   const clientId = localStorage.getItem('plexClientId') || uuidv4()
@@ -68,16 +67,10 @@ export const authOptions: AuthOptions = {
           }
 
           if (res.ok && userData) {
-            const checkUserRes = await fetchTautulli<TautulliUser>('get_user', {
-              user_id: userData.id,
-            })
-            const checkUser = checkUserRes?.response?.data
-            const userValid =
-              checkUser?.email === userData.email && checkUser?.is_active
-            const userAdmin = checkUser?.is_admin === 1
+            const serverUser = await getServerUser(userData.id, userData.email)
 
-            if (userValid) {
-              userData.isAdmin = userAdmin
+            if (serverUser) {
+              userData.isAdmin = serverUser.isAdmin
               console.log('[AUTH] - User logged in with data:', userData)
 
               return userData

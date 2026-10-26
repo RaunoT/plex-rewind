@@ -1,26 +1,51 @@
 'use server'
 
-import { ConnectionSettings, SettingsFormInitialState } from '@/types/settings'
+import {
+  ConnectionSettings,
+  SettingsFormInitialState,
+  StatisticsSource,
+} from '@/types/settings'
+import { TracearrServersResponse } from '@/types/tracearr'
+import { selectPlexServer } from '@/utils/fetchTracearr'
 import { getTranslations } from 'next-intl/server'
 import { z } from 'zod'
 import updateSettings from '../../_actions/updateSettings'
 
-const schema = z.object({
-  tautulliUrl: z.string().url(),
+// Only the selected statistics source has to be filled in.
+const baseSchema = z.object({
+  tautulliUrl: z.string().url().or(z.literal('')),
   tautulliApiKey: z.string(),
+  tracearrUrl: z.string().url().or(z.literal('')),
+  tracearrApiKey: z.string(),
+  tracearrServerId: z.string(),
   overseerrUrl: z.string().url().optional().or(z.literal('')),
   overseerrApiKey: z.string().optional(),
   plexUrl: z.string().url(),
   complete: z.boolean(),
 })
+const schema = z.discriminatedUnion('statisticsSource', [
+  baseSchema.extend({
+    statisticsSource: z.literal('tautulli'),
+    tautulliUrl: z.string().url(),
+  }),
+  baseSchema.extend({
+    statisticsSource: z.literal('tracearr'),
+    tracearrUrl: z.string().url(),
+    tracearrApiKey: z.string().min(1),
+  }),
+])
 
 export default async function saveConnectionSettings(
   prevState: SettingsFormInitialState<ConnectionSettings>,
   formData: FormData,
 ) {
   const data = {
+    statisticsSource: formData.get('statisticsSource') as StatisticsSource,
     tautulliUrl: formData.get('tautulliUrl') as string,
     tautulliApiKey: formData.get('tautulliApiKey') as string,
+    tracearrUrl: formData.get('tracearrUrl') as string,
+    tracearrApiKey: formData.get('tracearrApiKey') as string,
+    tracearrServerId: (formData.get('tracearrServerId') as string | null) ?? '',
     overseerrUrl: formData.get('overseerrUrl') as string,
     overseerrApiKey: formData.get('overseerrApiKey') as string,
     plexUrl: formData.get('plexUrl') as string,
@@ -29,35 +54,98 @@ export default async function saveConnectionSettings(
   const t = await getTranslations('Settings')
 
   try {
-    // Test Tautulli
-    try {
-      const res = await fetch(
-        `${data.tautulliUrl}/api/v2?apikey=${data.tautulliApiKey}&cmd=status`,
-        {
-          cache: 'no-store',
-        },
-      )
-
-      if (!res.ok) {
-        console.error(
-          '[CONFIG] - Error testing Tautulli connection!',
-          res.status,
-          res.statusText,
+    if (data.statisticsSource === 'tracearr') {
+      // Test Tracearr
+      try {
+        const res = await fetch(
+          `${data.tracearrUrl.replace(/\/+$/, '')}/api/v2/public/servers`,
+          {
+            headers: {
+              Authorization: `Bearer ${data.tracearrApiKey}`,
+            },
+            cache: 'no-store',
+          },
         )
 
+        if (!res.ok) {
+          console.error(
+            '[CONFIG] - Error testing Tracearr connection!',
+            res.status,
+            res.statusText,
+          )
+
+          return {
+            message: `Tracearr - ${t('invalidApiKey')}`,
+            status: 'error',
+            fields: data,
+          }
+        }
+
+        const servers: TracearrServersResponse = await res.json()
+        const plexServers = servers.data
+          .filter((server) => server.server_type === 'plex')
+          .map(({ server_id, server_name }) => ({ server_id, server_name }))
+
+        if (!plexServers.length) {
+          return {
+            message: `Tracearr - ${t('noPlexServer')}`,
+            status: 'error',
+            fields: data,
+          }
+        }
+
+        const server = selectPlexServer(servers.data, data.tracearrServerId)
+
+        if (!server) {
+          return {
+            message: `Tracearr - ${t('choosePlexServer')}`,
+            status: 'error',
+            fields: data,
+            tracearrServers: plexServers,
+          }
+        }
+
+        data.tracearrServerId = server.server_id
+      } catch (error) {
+        console.error('[CONFIG] - Error testing Tracearr connection!', error)
+
         return {
-          message: `Tautulli - ${t('invalidApiKey')}`,
+          message: `Tracearr - ${t('unableToConnect')}`,
           status: 'error',
           fields: data,
         }
       }
-    } catch (error) {
-      console.error('[CONFIG] - Error testing Tautulli connection!', error)
+    } else {
+      // Test Tautulli
+      try {
+        const res = await fetch(
+          `${data.tautulliUrl}/api/v2?apikey=${data.tautulliApiKey}&cmd=status`,
+          {
+            cache: 'no-store',
+          },
+        )
 
-      return {
-        message: `Tautulli - ${t('unableToConnect')}`,
-        status: 'error',
-        fields: data,
+        if (!res.ok) {
+          console.error(
+            '[CONFIG] - Error testing Tautulli connection!',
+            res.status,
+            res.statusText,
+          )
+
+          return {
+            message: `Tautulli - ${t('invalidApiKey')}`,
+            status: 'error',
+            fields: data,
+          }
+        }
+      } catch (error) {
+        console.error('[CONFIG] - Error testing Tautulli connection!', error)
+
+        return {
+          message: `Tautulli - ${t('unableToConnect')}`,
+          status: 'error',
+          fields: data,
+        }
       }
     }
 

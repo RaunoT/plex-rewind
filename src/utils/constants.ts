@@ -38,8 +38,12 @@ export const APP_URL = env('NEXT_PUBLIC_SITE_URL') || 'http://localhost:8383'
 
 export const DEFAULT_SETTINGS: Settings = {
   connection: {
+    statisticsSource: 'tautulli',
     tautulliUrl: '',
     tautulliApiKey: '',
+    tracearrUrl: '',
+    tracearrApiKey: '',
+    tracearrServerId: '',
     plexUrl: '',
     overseerrUrl: '',
     overseerrApiKey: '',

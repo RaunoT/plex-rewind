@@ -2,10 +2,14 @@ import { Settings } from '@/types/settings'
 import { TautulliItem, TautulliLibrary } from '@/types/tautulli'
 import { getTranslations } from 'next-intl/server'
 import fetchTautulli from './fetchTautulli'
+import { getTracearrLibrariesSize } from './fetchTracearr'
 import { bytesToSize, secondsToTime, timeToSeconds } from './formatting'
 import getMediaAdditionalData, {
   mapWatchedDataByRatingKey,
 } from './getMediaAdditionalData'
+import getSettings from './getSettings'
+import { getTracearrItems, getTracearrTotalDuration } from './getTracearrStats'
+import { isTracearrSource } from './helpers'
 
 const statIdMap = {
   movie: 'top_movies',
@@ -24,6 +28,10 @@ export async function getItems(
   userId?: string,
   sortByPlays?: boolean,
 ) {
+  if (isTracearrSource(getSettings())) {
+    return getTracearrItems(library, period, userId, sortByPlays)
+  }
+
   const sectionType = library.section_type
   const itemsRes = await fetchTautulli<TautulliItem>('get_home_stats', {
     stat_id: statIdMap[sectionType],
@@ -89,6 +97,18 @@ export async function getTotalDuration(
   userId?: string,
 ) {
   if (settings.dashboard.activeTotalStatistics.includes('duration')) {
+    const t = await getTranslations()
+
+    if (isTracearrSource(settings)) {
+      const totalDuration = await getTracearrTotalDuration({
+        since: period,
+        userId: userId || undefined,
+        libraries: [library],
+      })
+
+      return secondsToTime(totalDuration, t)
+    }
+
     const totalDuration = await fetchTautulli<{ total_duration: string }>(
       'get_history',
       {
@@ -98,7 +118,6 @@ export async function getTotalDuration(
         user_id: userId ? userId : '',
       },
     )
-    const t = await getTranslations()
 
     return secondsToTime(
       timeToSeconds(totalDuration?.response?.data?.total_duration || '0'),
@@ -114,6 +133,12 @@ export async function getTotalSize(
   settings: Settings,
 ) {
   if (settings.dashboard.activeTotalStatistics.includes('size')) {
+    const t = await getTranslations()
+
+    if (isTracearrSource(settings)) {
+      return bytesToSize(await getTracearrLibrariesSize([library]), 2, t)
+    }
+
     const totalSize = await fetchTautulli<{ total_file_size: number }>(
       'get_library_media_info',
       {
@@ -121,7 +146,6 @@ export async function getTotalSize(
         length: 0,
       },
     )
-    const t = await getTranslations()
 
     return bytesToSize(totalSize?.response?.data.total_file_size || 0, 2, t)
   }

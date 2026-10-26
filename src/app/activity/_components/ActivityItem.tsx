@@ -227,7 +227,7 @@ export default function ActivityItem({
               )}
             </li>
             {/* Location */}
-            {isAdmin && !settings.general.isAnonymized && (
+            {isAdmin && !settings.general.isAnonymized && location && (
               <li>
                 {getTitle(t('location'), toUpper(location))}
                 {location === 'wan' ? (

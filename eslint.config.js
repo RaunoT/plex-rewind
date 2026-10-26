@@ -1,7 +1,6 @@
 import stylistic from '@stylistic/eslint-plugin'
 import nextConfig from 'eslint-config-next/core-web-vitals'
 import eslintConfigPrettier from 'eslint-config-prettier'
-import reactCompiler from 'eslint-plugin-react-compiler'
 
 const eslintConfig = [
   {
@@ -11,7 +10,6 @@ const eslintConfig = [
   eslintConfigPrettier,
   {
     plugins: {
-      'react-compiler': reactCompiler,
       '@stylistic': stylistic,
     },
     rules: {
@@ -26,7 +24,6 @@ const eslintConfig = [
         { blankLine: 'never', prev: 'const', next: 'const' },
         { blankLine: 'never', prev: 'let', next: 'let' },
       ],
-      'react-compiler/react-compiler': 2,
       'react/jsx-no-literals': [
         1,
         {

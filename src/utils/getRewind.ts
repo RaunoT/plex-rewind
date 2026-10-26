@@ -9,10 +9,17 @@ import {
 import { getTranslations } from 'next-intl/server'
 import { fetchOverseerrStats } from './fetchOverseerr'
 import fetchTautulli from './fetchTautulli'
+import { getTracearrLibrariesSize } from './fetchTracearr'
 import { secondsToTime, timeToSeconds } from './formatting'
 import getMediaAdditionalData from './getMediaAdditionalData'
 import getSettings from './getSettings'
-import { daysBetween, getRewindStartDate } from './helpers'
+import {
+  getTracearrPlaysByTime,
+  getTracearrTopMediaItems,
+  getTracearrTopMediaStats,
+  getTracearrTotalDuration,
+} from './getTracearrStats'
+import { daysBetween, getRewindStartDate, isTracearrSource } from './helpers'
 
 export async function getTopMediaStats(
   userId: string,
@@ -28,6 +35,28 @@ export async function getTopMediaStats(
     show: 'shows',
     movie: 'movies',
     artist: 'audio',
+  }
+
+  if (isTracearrSource(getSettings())) {
+    const stats = await getTracearrTopMediaStats(userId, libraries)
+    const libraryResults = libraries.map(
+      (library) => typeToResultMap[library.section_type],
+    )
+
+    function formatStats(type: TautulliMediaReturnType) {
+      return {
+        count: stats[type].count,
+        duration: libraryResults.includes(type)
+          ? secondsToTime(stats[type].duration, t)
+          : '',
+      }
+    }
+
+    return {
+      shows: formatStats('shows'),
+      movies: formatStats('movies'),
+      audio: formatStats('audio'),
+    }
   }
 
   async function fetchLibraryData(library: TautulliLibrary) {
@@ -83,6 +112,10 @@ export async function getTopMediaStats(
 }
 
 export async function getlibrariesTotalSize(libraries: TautulliLibrary[]) {
+  if (isTracearrSource(getSettings())) {
+    return getTracearrLibrariesSize(libraries)
+  }
+
   const res = await Promise.all(
     libraries.map((library) =>
       fetchTautulli<{ total_file_size: number }>('get_library_media_info', {
@@ -106,7 +139,13 @@ export async function getlibrariesTotalSize(libraries: TautulliLibrary[]) {
 }
 
 export async function getLibrariesTotalDuration(libraries: TautulliLibrary[]) {
-  const startDate = getRewindStartDate(getSettings())
+  const settings = getSettings()
+  const startDate = getRewindStartDate(settings)
+
+  if (isTracearrSource(settings)) {
+    return getTracearrTotalDuration({ since: startDate, libraries })
+  }
+
   const res = await Promise.all(
     libraries.map((library) => {
       return fetchTautulli<{ total_duration: string }>('get_history', {
@@ -134,7 +173,13 @@ export async function getUserTotalDuration(
   userId: string,
   libraries: TautulliLibrary[],
 ) {
-  const startDate = getRewindStartDate(getSettings())
+  const settings = getSettings()
+  const startDate = getRewindStartDate(settings)
+
+  if (isTracearrSource(settings)) {
+    return getTracearrTotalDuration({ since: startDate, userId, libraries })
+  }
+
   const res = await Promise.all(
     libraries.map((library) => {
       return fetchTautulli<{ total_duration: string }>('get_history', {
@@ -168,7 +213,13 @@ export async function getTopMediaItems(
     show: 'top_tv',
     artist: 'top_music',
   }
-  const startDate = getRewindStartDate(getSettings())
+  const settings = getSettings()
+
+  if (isTracearrSource(settings)) {
+    return getTracearrTopMediaItems(userId, libraries)
+  }
+
+  const startDate = getRewindStartDate(settings)
   // get_home_stats only reliably accepts a `time_range` in days (Tautulli
   // computes the window as `last N days` from today), so the rewind window
   // always runs from startDate up to now.
@@ -261,7 +312,7 @@ function peakIndex(totals: number[]): number | null {
   return totals[maxIndex] > 0 ? maxIndex : null
 }
 
-export async function getPlaybackHabits(userId: string) {
+async function getTautulliPlaysByTime(userId: string) {
   const startDate = getRewindStartDate(getSettings())
   // Like getTopMediaItems, the graph endpoints only accept a `time_range` in
   // days (last N days from today), so the window runs from startDate up to now.
@@ -293,6 +344,14 @@ export async function getPlaybackHabits(userId: string) {
       daily[index] = dayTotals[position]
     }
   })
+
+  return { hourly, daily }
+}
+
+export async function getPlaybackHabits(userId: string) {
+  const { hourly, daily } = isTracearrSource(getSettings())
+    ? await getTracearrPlaysByTime(userId)
+    : await getTautulliPlaysByTime(userId)
 
   return {
     peakHour: peakIndex(hourly),

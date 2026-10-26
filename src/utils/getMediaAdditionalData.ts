@@ -1,7 +1,9 @@
 import { TautulliItemRow } from '@/types/tautulli'
 import fetchTautulli from './fetchTautulli'
 import fetchTmdb from './fetchTmdb'
+import { isTracearrMediaDeleted } from './fetchTracearr'
 import getSettings from './getSettings'
+import { isTracearrSource } from './helpers'
 
 type TmdbItem = {
   results: [
@@ -18,6 +20,8 @@ export default async function getMediaAdditionalData(
   type: 'movie' | 'tv',
   usersWatchedData?: TautulliItemRow[],
 ): Promise<TautulliItemRow[]> {
+  const settings = getSettings()
+  const isTracearr = isTracearrSource(settings)
   const ratingKeys: number[] = []
 
   media.map((mediaItem) => {
@@ -26,12 +30,12 @@ export default async function getMediaAdditionalData(
 
   const additionalData = await Promise.all(
     ratingKeys.map(async (key, i) => {
-      const mediaTautulli = await fetchTautulli<TautulliItemRow>(
-        'get_metadata',
-        {
-          rating_key: key,
-        },
-      )
+      // Tracearr's plays already carry the poster.
+      const mediaTautulli = isTracearr
+        ? null
+        : await fetchTautulli<TautulliItemRow>('get_metadata', {
+            rating_key: key,
+          })
       const mediaTautulliData = mediaTautulli?.response?.data
       // Tautulli doesn't return rating for removed items, so we're using TMDB
       const mediaTmdb = await fetchTmdb<TmdbItem>(`search/${type}`, {
@@ -41,7 +45,8 @@ export default async function getMediaAdditionalData(
       const tmdbResult = mediaTmdb?.results?.[0]
       const tmdbId = tmdbResult?.id
 
-      let poster = mediaTautulliData?.thumb || ''
+      let poster =
+        (isTracearr ? media[i].thumb : mediaTautulliData?.thumb) || ''
       let imdbId = null
 
       if (tmdbId) {
@@ -50,7 +55,6 @@ export default async function getMediaAdditionalData(
         )
       }
 
-      const settings = getSettings()
       const isPostersTmdbOnly = settings.general.isPostersTmdbOnly
 
       // Test if thumb exists, if not, fetch from TMDB
@@ -68,9 +72,11 @@ export default async function getMediaAdditionalData(
         year: tmdbResult?.first_air_date
           ? new Date(tmdbResult.first_air_date).getFullYear()
           : null,
-        is_deleted: mediaTautulliData
-          ? Object.keys(mediaTautulliData).length === 0
-          : false,
+        is_deleted: isTracearr
+          ? await isTracearrMediaDeleted(media[i].media_id)
+          : mediaTautulliData
+            ? Object.keys(mediaTautulliData).length === 0
+            : false,
         rating: tmdbResult?.vote_average
           ? tmdbResult.vote_average.toFixed(1)
           : null,

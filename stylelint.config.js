@@ -3,6 +3,8 @@ const config = {
   extends: ['stylelint-config-standard', 'stylelint-config-tailwindcss'],
   rules: {
     'at-rule-no-deprecated': null,
+    // The CSS syntax doesn't know Tailwind's class lists.
+    'at-rule-prelude-no-invalid': [true, { ignoreAtRules: ['media', 'apply'] }],
     'selector-class-pattern': [
       '^[a-z]+(?:-[a-z]+)*(?:--[a-z]+(?:-[a-z]+)*)?$',
       {

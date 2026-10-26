@@ -4,9 +4,15 @@ export type SettingsFormInitialState<T> = {
   fields: T
 }
 
+export type StatisticsSource = 'tautulli' | 'tracearr'
+
 export type ConnectionSettings = {
+  statisticsSource: StatisticsSource
   tautulliUrl: string
   tautulliApiKey: string
+  tracearrUrl: string
+  tracearrApiKey: string
+  tracearrServerId: string
   overseerrUrl?: string
   overseerrApiKey?: string
   plexUrl: string
@@ -32,18 +38,10 @@ export type RewindSettings = {
 }
 
 export type DashboardItemStatistics = (
-  | 'year'
-  | 'rating'
-  | 'duration'
-  | 'plays'
-  | 'users'
-  | 'requests'
+  'year' | 'rating' | 'duration' | 'plays' | 'users' | 'requests'
 )[]
 export type DashboardTotalStatistics = (
-  | 'size'
-  | 'duration'
-  | 'count'
-  | 'requests'
+  'size' | 'duration' | 'count' | 'requests'
 )[]
 
 export type DashboardSettings = {
