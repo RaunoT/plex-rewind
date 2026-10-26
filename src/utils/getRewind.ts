@@ -247,22 +247,35 @@ export async function getTopMediaItems(
     movies: [],
     audio: [],
   }
+  const rowsByLibrary = await Promise.all(
+    res.map(async ({ stat, type }) => {
+      const rows = stat?.response?.data?.rows || []
 
-  for (const { stat, type } of res) {
-    const rows = stat?.response?.data?.rows || []
+      if (!rows.length) {
+        return rows
+      }
 
-    if (!rows.length) continue
+      if (type === 'show') {
+        return getMediaAdditionalData(rows, 'tv')
+      }
 
+      if (type === 'movie') {
+        return getMediaAdditionalData(rows, 'movie')
+      }
+
+      return rows
+    }),
+  )
+
+  res.forEach(({ type }, i) => {
     if (type === 'show') {
-      combinedResult.shows.push(...(await getMediaAdditionalData(rows, 'tv')))
+      combinedResult.shows.push(...rowsByLibrary[i])
     } else if (type === 'movie') {
-      combinedResult.movies.push(
-        ...(await getMediaAdditionalData(rows, 'movie')),
-      )
+      combinedResult.movies.push(...rowsByLibrary[i])
     } else if (type === 'artist') {
-      combinedResult.audio.push(...rows)
+      combinedResult.audio.push(...rowsByLibrary[i])
     }
-  }
+  })
 
   function sortAndSlice(list: TautulliItemRow[]) {
     return list.sort((a, b) => b.total_duration - a.total_duration).slice(0, 5)

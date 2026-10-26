@@ -145,6 +145,7 @@ export async function getTotalSize(
         section_id: library.section_id,
         length: 0,
       },
+      true,
     )
 
     return bytesToSize(totalSize?.response?.data?.total_file_size || 0, 2, t)
