@@ -1,15 +1,14 @@
 import { RewindStory } from '@/types/rewind'
 import { getRewindStartDate } from '@/utils/helpers'
-import { useTranslations } from 'next-intl'
+import { useLocale, useTranslations } from 'next-intl'
 import Image from 'next/image'
 import RewindStat from '../RewindStat'
 
-function formatDate(dateString: string) {
-  const date = new Date(dateString)
-  const month = date.toLocaleString('default', { month: 'short' })
-  const year = date.getFullYear()
-
-  return `${month} ${year}`
+function formatDate(dateString: string, locale: string) {
+  return new Intl.DateTimeFormat(locale, {
+    month: 'short',
+    year: 'numeric',
+  }).format(new Date(dateString))
 }
 
 export default function StoryWelcome({
@@ -20,9 +19,13 @@ export default function StoryWelcome({
   const startDate = getRewindStartDate(settings)
   const isDefaultPeriod = !settings.rewind.startDate
   const t = useTranslations('Rewind.Welcome')
-  const formattedStartDate = formatDate(startDate)
+  const locale = useLocale()
+  const formattedStartDate = formatDate(startDate, locale)
   // The window always runs to now, so the displayed range ends today.
-  const formattedEndDate = formatDate(new Date().toISOString().split('T')[0])
+  const formattedEndDate = formatDate(
+    new Date().toISOString().split('T')[0],
+    locale,
+  )
 
   return (
     <>

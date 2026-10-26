@@ -185,7 +185,7 @@
       "min": "{count, plural, =1 {# min} other {# min}}",
       "sec": "{count, plural, =1 {# sek} other {# sek}}"
     },
-    "fileSize": "{value} {unit}"
+    "fileSize": "{value, number} {unit}"
   },
   "DatePicker": {
     "clear": "Tühjenda kuupäev"

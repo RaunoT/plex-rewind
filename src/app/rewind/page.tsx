@@ -21,7 +21,7 @@ import getUsersTop from '@/utils/getUsersTop'
 import { daysBetween, getRewindStartDate } from '@/utils/helpers'
 import { Metadata } from 'next'
 import { getServerSession } from 'next-auth'
-import { getTranslations } from 'next-intl/server'
+import { getLocale, getTranslations } from 'next-intl/server'
 import { notFound } from 'next/navigation'
 import { Suspense } from 'react'
 import RewindStories from './_components/RewindStories'
@@ -61,6 +61,7 @@ async function RewindContent({ userId }: { userId?: string }) {
   }
 
   const t = await getTranslations()
+  const locale = await getLocale()
   const libraries = await getLibraries()
   const startDate = getRewindStartDate(settings)
   const [
@@ -85,9 +86,11 @@ async function RewindContent({ userId }: { userId?: string }) {
   const userRewind: UserRewind = {
     duration: {
       user: secondsToTime(userTotalDuration, t),
-      user_percentage: `${Math.round(
-        (userTotalDuration * 100) / librariesTotalDuration,
-      )}%`,
+      user_percentage: new Intl.NumberFormat(locale, {
+        style: 'percent',
+      }).format(
+        Math.round((userTotalDuration * 100) / librariesTotalDuration) / 100,
+      ),
       total: secondsToTime(librariesTotalDuration, t),
     },
     usersTop: usersTop,

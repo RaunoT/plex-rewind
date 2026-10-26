@@ -185,7 +185,7 @@
       "min": "{count, plural, =1 {# Minute} other {# Minuten}}",
       "sec": "{count, plural, =1 {# Sekunde} other {# Sekunden}}"
     },
-    "fileSize": "{value} {unit}"
+    "fileSize": "{value, number} {unit}"
   },
   "DatePicker": {
     "clear": "Datum löschen"

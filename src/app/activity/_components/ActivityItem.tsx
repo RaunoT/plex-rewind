@@ -17,7 +17,7 @@ import { PauseIcon, PlayIcon } from '@heroicons/react/24/outline'
 import clsx from 'clsx'
 import { capitalize, toUpper } from 'lodash'
 import { useSession } from 'next-auth/react'
-import { useTranslations } from 'next-intl'
+import { useLocale, useTranslations } from 'next-intl'
 import Image from 'next/image'
 
 type ActivityItemProps = {
@@ -37,6 +37,7 @@ export default function ActivityItem({
 }: ActivityItemProps) {
   const { posterUrl, isLoading } = usePoster(session, settings)
   const t = useTranslations('Activity')
+  const locale = useLocale()
   const { data: user } = useSession()
   const isCurrentUser = session.user_id == user?.user.id
   const isAdmin = user?.user.isAdmin
@@ -170,8 +171,8 @@ export default function ActivityItem({
             <li>
               {getTitle(t('quality'), quality_profile)}
               {checkTranscode(
-                formatBitrate(bitrate),
-                formatBitrate(stream_bitrate),
+                formatBitrate(bitrate, locale),
+                formatBitrate(stream_bitrate, locale),
                 transcode_decision,
               )}
             </li>
@@ -179,7 +180,7 @@ export default function ActivityItem({
             {/* TODO: Tautulli doesn't return bandwidth for tracks sometimes */}
             <li>
               {getTitle(t('bandwidth'))}
-              {formatBitrate(bandwidth)}
+              {formatBitrate(bandwidth, locale)}
             </li>
             {/* Video */}
             {media_type !== 'track' && (

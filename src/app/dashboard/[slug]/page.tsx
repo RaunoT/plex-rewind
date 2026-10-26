@@ -7,6 +7,7 @@ import getSettings from '@/utils/getSettings'
 import { kebabCase } from 'lodash'
 import { Metadata } from 'next'
 import { getServerSession } from 'next-auth'
+import { getLocale } from 'next-intl/server'
 import { notFound } from 'next/navigation'
 import { Suspense } from 'react'
 import Dashboard from '../_components/Dashboard'
@@ -79,7 +80,8 @@ async function DashboardContent({
     library.section_type === 'movie'
       ? Number(library.count)
       : Number(library.child_count)
-  const count = isCountActive ? countValue.toLocaleString('en-US') : undefined
+  const locale = await getLocale()
+  const count = isCountActive ? countValue.toLocaleString(locale) : undefined
 
   return (
     <Dashboard
