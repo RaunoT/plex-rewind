@@ -41,7 +41,7 @@ export default function StoryRequests({
                     requests: (chunks) => (
                       <span className='rewind-cat'>
                         {chunks}
-                        <QuestionMarkCircleIcon />.
+                        <QuestionMarkCircleIcon />
                       </span>
                     ),
                     requestLink: (chunks) => (

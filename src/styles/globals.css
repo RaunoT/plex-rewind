@@ -331,3 +331,35 @@
     animation: fade-in 0.5s ease forwards;
   }
 }
+
+@keyframes story-progress {
+  from {
+    transform: scaleX(0);
+  }
+
+  to {
+    transform: scaleX(1);
+  }
+}
+
+/* The duration comes from the story, so it is set inline */
+.animate-story-progress {
+  animation: story-progress linear forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bg-twinkling,
+  .bg-clouds {
+    animation: none;
+  }
+
+  .animate-fade-up,
+  .animate-fade-in {
+    animation: none;
+    opacity: 1;
+  }
+
+  .animate-pulse {
+    animation: none;
+  }
+}

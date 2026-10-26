@@ -199,13 +199,15 @@
       "previousStory": "Vorherige Story",
       "nextStory": "Nächste Story",
       "pause": "Pausieren",
-      "resume": "Fortsetzen"
+      "resume": "Fortsetzen",
+      "label": "Rewind-Stories",
+      "storyPosition": "Story {current} von {total}"
     },
     "Common": {
       "top": "Hier sind deine <top>Top {count}</top>"
     },
     "Welcome": {
-      "welcome": "Willkommen zu deinem <rewind>{serverName} Rewind</rewind>",
+      "welcome": "Willkommen zu deinem <rewind>{serverName} Rewind</rewind> <user>{userValue}!</user>",
       "takeYouThrough": "Lass uns deine Highlights",
       "letsGetStarted": "Los gehts!",
       "forPastYear": "für das <pastYear>letzte Jahr</pastYear> anschauen.",
@@ -256,7 +258,9 @@
     },
     "Habits": {
       "day": "Dein liebster Tag zum Schauen war <day>{dayValue}</day>",
-      "hour": "Und am häufigsten hast du gegen <hour>{hourValue}</hour> Play gedrückt <emoji>{emojiValue}</emoji>"
+      "hour": "Und am häufigsten hast du gegen <hour>{hourValue}</hour> Play gedrückt <emoji>{emojiValue}</emoji>",
+      "dayChart": "Balkendiagramm der Wiedergaben pro Wochentag. Aktivster Tag: {dayValue} mit {count, plural, =1 {# Wiedergabe} other {# Wiedergaben}}.",
+      "hourChart": "Balkendiagramm der Wiedergaben pro Stunde des Tages. Aktivste Stunde: {hourValue} mit {count, plural, =1 {# Wiedergabe} other {# Wiedergaben}}."
     },
     "Goodbye": {
       "thanks": "Vielen Dank, dass du dir deinen <plex>{serverName} Rewind</plex> angeschaut hast, <user>{userValue}!</user>",
@@ -265,13 +269,16 @@
       "weWillBeHere": "Wir werden dennoch hier sein",
       "insightsAndStats": "mit umso mehr <insightsAndStats>Einblicken und Statistiken</insightsAndStats> hier.",
       "untilThen": "Bis dahin, erkunde weiterhin alles, was <plex>{serverName}</plex> anzubieten hat.",
-      "movies": "Filme",
-      "shows": "Serien",
-      "tracks": "Titel",
-      "fromYourFavorite": "Deine liebsten",
-      "toTheMostEntertaining": "den unterhaltsamsten",
-      "andMemorable": "und unvergessliche",
-      "itsBeenAJourneyToRemember": ", es war ein erinnerungswürdiger Weg!"
+      "journey": {
+        "movies": "Mit deinen liebsten <movies>Filmen</movies> war es ein erinnerungswürdiger Weg!",
+        "shows": "Mit den unterhaltsamsten <shows>Serien</shows> war es ein erinnerungswürdiger Weg!",
+        "audio": "Mit den unvergesslichsten <tracks>Titeln</tracks> war es ein erinnerungswürdiger Weg!",
+        "moviesShows": "Von deinen liebsten <movies>Filmen</movies> bis zu den unterhaltsamsten <shows>Serien</shows> war es ein erinnerungswürdiger Weg!",
+        "moviesAudio": "Von deinen liebsten <movies>Filmen</movies> bis zu den unvergesslichsten <tracks>Titeln</tracks> war es ein erinnerungswürdiger Weg!",
+        "showsAudio": "Von den unterhaltsamsten <shows>Serien</shows> bis zu den unvergesslichsten <tracks>Titeln</tracks> war es ein erinnerungswürdiger Weg!",
+        "moviesShowsAudio": "Von deinen liebsten <movies>Filmen</movies> über die unterhaltsamsten <shows>Serien</shows> bis zu den unvergesslichsten <tracks>Titeln</tracks> war es ein erinnerungswürdiger Weg!",
+        "none": "Es war ein erinnerungswürdiger Weg!"
+      }
     }
   },
   "MediaItem": {

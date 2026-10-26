@@ -1,5 +1,6 @@
 'use client'
 
+import usePrefersReducedMotion from '@/hooks/usePrefersReducedMotion'
 import { TautulliItemRow } from '@/types/tautulli'
 import clsx from 'clsx'
 import { debounce } from 'lodash'
@@ -28,8 +29,17 @@ export default function MediaItemTitle({
   const isCurrentUser = String(data.user_id) === loggedInUserId
   const controls = useAnimation()
   const isUsersDashboard = type === 'users'
+  const title = isUsersDashboard ? data.friendly_name : data.title
+  const shouldReduceMotion = usePrefersReducedMotion()
 
   useEffect(() => {
+    if (shouldReduceMotion) {
+      controls.stop()
+      controls.set({ x: 0 })
+
+      return
+    }
+
     function checkWidth() {
       const titleElement = titleRef.current
       const parentElement = parentRef.current
@@ -82,7 +92,7 @@ export default function MediaItemTitle({
       window.removeEventListener('resize', debouncedRestartAnimation)
       debouncedRestartAnimation.cancel()
     }
-  }, [controls, parentRef])
+  }, [controls, parentRef, shouldReduceMotion])
 
   return (
     <h3
@@ -130,11 +140,15 @@ export default function MediaItemTitle({
       </span>
       <span className='overflow-hidden'>
         <motion.span
-          className='block font-medium whitespace-nowrap'
+          className={clsx(
+            'block font-medium whitespace-nowrap',
+            shouldReduceMotion && 'truncate',
+          )}
           animate={controls}
           ref={titleRef}
+          title={shouldReduceMotion ? title : undefined}
         >
-          {isUsersDashboard ? data.friendly_name : data.title}
+          {title}
         </motion.span>
       </span>
     </h3>

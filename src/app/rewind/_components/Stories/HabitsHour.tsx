@@ -1,6 +1,7 @@
 import { RewindStory } from '@/types/rewind'
 import { ClockIcon } from '@heroicons/react/24/outline'
 import { useLocale, useTranslations } from 'next-intl'
+import { useMemo } from 'react'
 import RewindBarChart from '../RewindBarChart'
 import RewindStat from '../RewindStat'
 
@@ -10,11 +11,8 @@ import RewindStat from '../RewindStat'
 const ANCHOR_HOURS = [6, 12, 18]
 const MIN_LABEL_GAP = 3
 
-function formatHour(hour: number, locale: string) {
-  return new Intl.DateTimeFormat(locale, {
-    hour: 'numeric',
-    timeZone: 'UTC',
-  }).format(new Date(Date.UTC(2024, 0, 1, hour)))
+function formatHour(hour: number, formatter: Intl.DateTimeFormat) {
+  return formatter.format(new Date(Date.UTC(2024, 0, 1, hour)))
 }
 
 function hourEmoji(hour: number) {
@@ -31,7 +29,12 @@ function hourEmoji(hour: number) {
 
 export default function StoryHabitsHour({ userRewind, isPaused }: RewindStory) {
   const t = useTranslations('Rewind.Habits')
+  const tCommon = useTranslations('Common')
   const locale = useLocale()
+  const formatter = useMemo(
+    () => new Intl.DateTimeFormat(locale, { hour: 'numeric', timeZone: 'UTC' }),
+    [locale],
+  )
   const { peakHour, hourly } = userRewind.habits
 
   if (peakHour === null) {
@@ -47,15 +50,16 @@ export default function StoryHabitsHour({ userRewind, isPaused }: RewindStory) {
   }
 
   const labels = Array.from({ length: 24 }, (_, hour) =>
-    labelledHours.has(hour) ? formatHour(hour, locale) : null,
+    labelledHours.has(hour) ? formatHour(hour, formatter) : null,
   )
+  const peakHourLabel = formatHour(peakHour, formatter)
 
   return (
     <>
       <RewindStat isPaused={isPaused} scaleDelay={3}>
         <p>
           {t.rich('hour', {
-            hourValue: formatHour(peakHour, locale),
+            hourValue: peakHourLabel,
             emojiValue: hourEmoji(peakHour),
             hour: (chunks) => (
               <span className='rewind-cat'>
@@ -69,7 +73,16 @@ export default function StoryHabitsHour({ userRewind, isPaused }: RewindStory) {
       </RewindStat>
 
       <RewindStat isPaused={isPaused} renderDelay={3} noScale className='pt-4'>
-        <RewindBarChart data={hourly} labels={labels} peakIndex={peakHour} />
+        <RewindBarChart
+          data={hourly}
+          labels={labels}
+          peakIndex={peakHour}
+          axisLabel={tCommon('plays')}
+          ariaLabel={t('hourChart', {
+            hourValue: peakHourLabel,
+            count: hourly[peakHour],
+          })}
+        />
       </RewindStat>
     </>
   )

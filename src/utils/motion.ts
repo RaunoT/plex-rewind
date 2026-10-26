@@ -33,3 +33,7 @@ export const animateRewindStat = {
     lineHeight: '22px',
   },
 }
+
+export const instantTransition = {
+  duration: 0,
+}

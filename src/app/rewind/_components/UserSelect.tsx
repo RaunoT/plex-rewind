@@ -25,10 +25,10 @@ export default function UserSelect({ users, currentUserId }: Props) {
   }
 
   return (
-    <div className='input-wrapper absolute bottom-4 left-4 z-10'>
+    <div className='input-wrapper absolute bottom-4 left-4 z-10 max-w-[calc(100%-10rem)]'>
       <div className='select-wrapper select-wrapper--small'>
         <select
-          className='input input--small'
+          className='input input--small truncate'
           value={currentUserId}
           onChange={handleChange}
           ref={selectRef}
