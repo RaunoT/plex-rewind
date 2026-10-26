@@ -4,6 +4,10 @@ import createNextIntlPlugin from 'next-intl/plugin'
 const nextConfig: NextConfig = {
   reactStrictMode: true,
   output: 'standalone',
+  // Settings are read from the config volume at runtime, never bundled
+  outputFileTracingExcludes: {
+    '/*': ['config/**'],
+  },
   images: {
     localPatterns: [
       {

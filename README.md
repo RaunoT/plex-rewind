@@ -49,6 +49,9 @@ services:
       - NEXTAUTH_SECRET= # (required) used to encrypt auth JWT token, generate one with `openssl rand -base64 32`
       - NEXTAUTH_URL=http://localhost:8383 # (required) change to your domain if you are exposing the app to the internet
       - NEXT_PUBLIC_SITE_URL=http://localhost:8383 # (required) change to your domain if you are exposing the app to the internet
+      - PUID=1000 # (optional) user ID the app runs as, defaults to 1000
+      - PGID=1000 # (optional) group ID the app runs as, defaults to 1000
+      - TZ=Europe/London # (optional) your timezone, used for viewing habits and finish times
     volumes:
       - ./config:/app/config
     ports:
@@ -74,6 +77,10 @@ A few things work differently with Tracearr:
 ### Updating
 
 To update, run `docker compose pull` and then `docker compose up -d`.
+
+### Upgrading from older versions
+
+Older versions ran the app as root, so your `./config` folder may be owned by root. The container now starts as root only to fix the ownership of `./config`, then switches to the user set by `PUID` and `PGID` (`1000` by default). You don't need to change anything. To have the files in `./config` owned by a specific user instead, set `PUID` and `PGID` to that user's IDs. To keep running as root like before, set `PUID=0`.
 
 ## Translations
 

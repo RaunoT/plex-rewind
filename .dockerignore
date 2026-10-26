@@ -5,3 +5,17 @@ npm-debug.log
 README.md
 .next
 .git
+.github
+.husky
+.vscode
+.claude
+coverage
+*.tsbuildinfo
+.eslintcache
+.stylelintcache
+.env*
+!.env.example
+config/*
+!config/.gitkeep
+public/sw.js
+public/swe-worker-*.js
