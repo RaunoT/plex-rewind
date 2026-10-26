@@ -341,7 +341,7 @@ async function getTautulliPlaysByTime(userId: string) {
   // Tautulli's English labels, whose array order shifts with week_start_monday.
   const daily = Array<number>(7).fill(0)
 
-  dayData?.categories.forEach((name, position) => {
+  dayData?.categories?.forEach((name, position) => {
     const index = DAY_NAME_TO_INDEX[name]
 
     if (index !== undefined) {

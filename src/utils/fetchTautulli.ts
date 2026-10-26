@@ -8,6 +8,7 @@ import {
 import { kebabCase } from 'lodash'
 import { getServerSession } from 'next-auth'
 import qs from 'qs'
+import { cache } from 'react'
 import {
   getTracearrActivity,
   getTracearrLibraries,
@@ -19,6 +20,8 @@ import { isTracearrSource } from './helpers'
 
 type TautulliResponse<T> = {
   response: {
+    result: string
+    message?: string | null
     data: T
   }
 }
@@ -26,6 +29,18 @@ type TautulliResponse<T> = {
 type QueryParams = {
   [key: string]: string | number
 }
+
+const REQUEST_TIMEOUT_MS = 30_000
+const PLEX_IDENTITY_TIMEOUT_MS = 10_000
+// The timeout signal opts requests out of fetch's per-render deduplication, so
+// lookups repeated by a page's layout, metadata and content share one call.
+const fetchLibraries = cache(() =>
+  fetchTautulli<TautulliLibrary[]>('get_libraries'),
+)
+const fetchUsers = cache(() => fetchTautulli<TautulliUser[]>('get_users'))
+const fetchUser = cache((userId: string) =>
+  fetchTautulli<TautulliUser>('get_user', { user_id: userId }),
+)
 
 export default async function fetchTautulli<T>(
   query: string,
@@ -55,6 +70,7 @@ export default async function fetchTautulli<T>(
       next: {
         revalidate: cache ? 3600 : 0,
       },
+      signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
     })
 
     if (!res.ok) {
@@ -63,14 +79,33 @@ export default async function fetchTautulli<T>(
         res.status,
         res.statusText,
       )
+
+      return null
     }
 
-    return res.json()
+    const data: TautulliResponse<T> = await res.json()
+
+    if (data?.response?.result !== 'success') {
+      console.error(
+        `[TAUTULLI] - API returned an error! The query was '${query}'.\n`,
+        data?.response?.message ?? 'Unexpected response',
+      )
+
+      return null
+    }
+
+    return data
   } catch (error) {
-    console.error(
-      `[TAUTULLI] - Error fetching from API! The query was '${query}'.\n`,
-      error,
-    )
+    if (error instanceof Error && error.name === 'TimeoutError') {
+      console.error(
+        `[TAUTULLI] - API request timed out after ${REQUEST_TIMEOUT_MS / 1000}s! The query was '${query}'.`,
+      )
+    } else {
+      console.error(
+        `[TAUTULLI] - Error fetching from API! The query was '${query}'.\n`,
+        error,
+      )
+    }
 
     return null
   }
@@ -86,12 +121,30 @@ async function getPlexMachineIdentifier(plexUrl: string): Promise<string> {
       next: {
         revalidate: 3600,
       },
+      signal: AbortSignal.timeout(PLEX_IDENTITY_TIMEOUT_MS),
     })
+
+    if (!res.ok) {
+      console.error(
+        `[PLEX] - Couldn't get server ID from ${plexUrl}!`,
+        res.status,
+        res.statusText,
+      )
+
+      return ''
+    }
+
     const data = await res.json()
 
     return data?.MediaContainer?.machineIdentifier ?? ''
   } catch (error) {
-    console.error(`[PLEX] - Couldn't get server ID from ${plexUrl}!`, error)
+    if (error instanceof Error && error.name === 'TimeoutError') {
+      console.error(
+        `[PLEX] - Getting server ID from ${plexUrl} timed out after ${PLEX_IDENTITY_TIMEOUT_MS / 1000}s!`,
+      )
+    } else {
+      console.error(`[PLEX] - Couldn't get server ID from ${plexUrl}!`, error)
+    }
 
     return ''
   }
@@ -104,7 +157,16 @@ export async function getServerId(): Promise<string> {
     return getPlexMachineIdentifier(settings.connection.plexUrl)
   }
 
-  const plexUrl = new URL(settings.connection.plexUrl)
+  let plexUrl: URL
+
+  try {
+    plexUrl = new URL(settings.connection.plexUrl)
+  } catch {
+    console.error('[PLEX] - The Plex URL is not configured correctly!')
+
+    return ''
+  }
+
   const plexHost = plexUrl.hostname
   const plexPort = plexUrl.port
   const serverIdPromise = await fetchTautulli<{ identifier: string }>(
@@ -142,10 +204,9 @@ export async function getLibraries(
     )
   }
 
-  const libraries = (await fetchTautulli<TautulliLibrary[]>('get_libraries'))
-    ?.response?.data
+  const libraries = (await fetchLibraries())?.response?.data
 
-  if (!libraries) {
+  if (!Array.isArray(libraries)) {
     console.warn('[TAUTULLI] - No libraries found!')
 
     return []
@@ -191,9 +252,7 @@ async function filterBySharedLibraries(
     return []
   }
 
-  const userDataResponse = await fetchTautulli<TautulliUser>('get_user', {
-    user_id: userId,
-  })
+  const userDataResponse = await fetchUser(userId)
 
   if (!userDataResponse) {
     console.warn(`[TAUTULLI] - Could not fetch user data for user ID ${userId}`)
@@ -202,7 +261,7 @@ async function filterBySharedLibraries(
   }
 
   return libraries.filter((library) =>
-    userDataResponse.response.data.shared_libraries.includes(
+    userDataResponse.response.data?.shared_libraries?.includes(
       library.section_id,
     ),
   )
@@ -224,12 +283,14 @@ export async function getUsers(
     return getTracearrUsers()
   }
 
-  const usersRes = await fetchTautulli<TautulliUser[]>('get_users')
-  const users = usersRes?.response?.data?.filter(
-    (user) => user.is_active && user.username !== 'Local',
-  )
+  const usersRes = await fetchUsers()
+  const users = usersRes?.response?.data
 
-  return users ?? []
+  if (!Array.isArray(users)) {
+    return []
+  }
+
+  return users.filter((user) => user.is_active && user.username !== 'Local')
 }
 
 export async function getActiveUsers(
@@ -251,9 +312,7 @@ export async function getServerUser(
     return user ? { isAdmin: user.isAdmin } : null
   }
 
-  const userRes = await fetchTautulli<TautulliUser>('get_user', {
-    user_id: userId,
-  })
+  const userRes = await fetchUser(userId)
   const user = userRes?.response?.data
 
   if (user?.email !== email || !user?.is_active) {
