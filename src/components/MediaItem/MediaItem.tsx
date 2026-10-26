@@ -89,11 +89,16 @@ export default function MediaItem({
   return (
     <motion.li
       key={dataKey}
-      className={clsx('flex gap-3 2xl:items-center', {
-        'hidden lg:flex':
-          !rows && (isHiddenUser || isHiddenItem || isSpecialCase),
-        hidden: rows && (isHiddenUser || isSpecialCase),
-      })}
+      // Motion animates with inline styles, which important utilities override
+      // for visitors who prefer reduced motion, including during hydration.
+      className={clsx(
+        'flex gap-3 motion-reduce:transform-none! motion-reduce:opacity-100! 2xl:items-center',
+        {
+          'hidden lg:flex':
+            !rows && (isHiddenUser || isHiddenItem || isSpecialCase),
+          hidden: rows && (isHiddenUser || isSpecialCase),
+        },
+      )}
       variants={slideDown}
       initial='hidden'
       animate='show'
