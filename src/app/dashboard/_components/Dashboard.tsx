@@ -42,13 +42,12 @@ export default async function Dashboard({
   const tCommon = await getTranslations('Common')
   const countNumber = count ? Number(count.replace(/\D/g, '')) : 0
 
-  function renderFilters(className?: string, syncUrl?: boolean) {
+  function renderFilters(className?: string) {
     if (type !== 'users') {
       return (
         <Suspense>
           <DashboardFilters
             className={className}
-            syncUrl={syncUrl}
             isSortByPlaysActive={settings.dashboard.isSortByPlaysActive}
             personalFilter={isLoggedIn}
           />
@@ -64,7 +63,7 @@ export default async function Dashboard({
           {getTitleIcon(type)}
           {title}
         </h2>
-        {renderFilters('hidden sm:flex', true)}
+        {renderFilters('hidden sm:flex')}
       </div>
       <ul className='icon-stats-container mb-1 sm:gap-x-3'>
         {!!totalSize && (

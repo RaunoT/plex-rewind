@@ -29,6 +29,14 @@ type Props = {
   children: ReactNode
 }
 
+export function readStorage(key: string): string | undefined {
+  try {
+    return localStorage.getItem(key) || undefined
+  } catch {
+    return undefined
+  }
+}
+
 function writeStorage(key: string, value?: string) {
   try {
     localStorage.setItem(key, value || '')

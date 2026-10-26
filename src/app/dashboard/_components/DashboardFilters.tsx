@@ -1,47 +1,48 @@
 'use client'
 
-import { GlobalContext } from '@/app/_components/GlobalContextProvider'
+import {
+  GlobalContext,
+  readStorage,
+} from '@/app/_components/GlobalContextProvider'
 import { DashboardSearchParams } from '@/types/dashboard'
 import clsx from 'clsx'
 import { useTranslations } from 'next-intl'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
-import {
-  ChangeEvent,
-  useCallback,
-  useContext,
-  useEffect,
-  useId,
-  useRef,
-} from 'react'
+import { ChangeEvent, useCallback, useContext, useEffect, useId } from 'react'
 
 type Props = {
   className?: string
   isSortByPlaysActive: boolean
   personalFilter: boolean
-  syncUrl?: boolean
 }
+
+// Saved filters are applied once per page load, when a dashboard is opened
+// without any in its URL. After that the URL is the only source of truth, so
+// Back and Forward keep working.
+let hasRestoredSavedFilters = false
 
 export default function DashboardFilters({
   className,
   isSortByPlaysActive,
   personalFilter,
-  syncUrl = false,
 }: Props) {
   const id = useId()
   const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()
-  const personalParam = searchParams.get('personal')
-  const sortByParam = searchParams.get('sortBy')
-  const urlFilters = `${personalParam}|${sortByParam}`
-  const adoptedUrlFiltersRef = useRef<string | null>(null)
+  const isPersonal: DashboardSearchParams['personal'] =
+    searchParams.get('personal') === 'true' ? 'true' : undefined
+  const sortBy: DashboardSearchParams['sortBy'] =
+    searchParams.get('sortBy') === 'plays' ? 'plays' : undefined
+  const hasUrlFilters =
+    searchParams.has('personal') || searchParams.has('sortBy')
   const {
-    dashboard: { isPersonal, setIsPersonal, sortBy, setSortBy },
+    dashboard: { setIsPersonal, setSortBy },
   } = useContext(GlobalContext)
   const t = useTranslations('DashboardFilters')
 
   // eslint-disable-next-line @stylistic/padding-line-between-statements
-  const updateURL = useCallback(
+  const getUrl = useCallback(
     (
       personal: DashboardSearchParams['personal'],
       sort: DashboardSearchParams['sortBy'],
@@ -60,68 +61,56 @@ export default function DashboardFilters({
         params.delete('sortBy')
       }
 
-      const newParamsString = params.toString()
-      const oldParamsString = searchParams.toString()
+      const query = params.toString()
 
-      if (newParamsString === oldParamsString) {
-        return
-      }
-
-      const query = newParamsString ? `?${newParamsString}` : ''
-
-      router.push(`${pathname}${query}`)
+      return query ? `${pathname}?${query}` : pathname
     },
-    [pathname, searchParams, router],
+    [pathname, searchParams],
   )
 
   function handlePersonalChange(e: ChangeEvent<HTMLSelectElement>) {
-    setIsPersonal(e.target.value === 'true' ? 'true' : undefined)
+    router.push(getUrl(e.target.value === 'true' ? 'true' : undefined, sortBy))
   }
 
   function handleSortChange(e: ChangeEvent<HTMLSelectElement>) {
-    setSortBy(e.target.value === 'plays' ? 'plays' : undefined)
+    router.push(
+      getUrl(isPersonal, e.target.value === 'plays' ? 'plays' : undefined),
+    )
   }
 
-  // Filters in a new URL win over the context. A filter missing from the URL
-  // keeps the saved one, which is then pushed to the URL by the owner.
   useEffect(() => {
-    const isUrlAdopted = adoptedUrlFiltersRef.current === urlFilters
-    const personal =
-      !isUrlAdopted && personalParam !== null
-        ? personalParam === 'true'
+    if (!hasRestoredSavedFilters) {
+      hasRestoredSavedFilters = true
+
+      const savedPersonal =
+        personalFilter && readStorage('dashboardPersonal') === 'true'
           ? 'true'
           : undefined
-        : isPersonal
-    const sort =
-      !isUrlAdopted && sortByParam !== null
-        ? sortByParam === 'plays'
+      const savedSort =
+        isSortByPlaysActive && readStorage('dashboardSort') === 'plays'
           ? 'plays'
           : undefined
-        : sortBy
 
-    adoptedUrlFiltersRef.current = urlFilters
+      if (!hasUrlFilters && (savedPersonal || savedSort)) {
+        router.replace(getUrl(savedPersonal, savedSort))
 
-    if (personal !== isPersonal) {
-      setIsPersonal(personal)
+        return
+      }
     }
 
-    if (sort !== sortBy) {
-      setSortBy(sort)
-    }
-
-    if (syncUrl) {
-      updateURL(personal, sort)
-    }
+    // Remembered for the next visit and for the links on the home page
+    setIsPersonal(isPersonal)
+    setSortBy(sortBy)
   }, [
+    getUrl,
+    hasUrlFilters,
     isPersonal,
-    sortBy,
-    personalParam,
-    sortByParam,
-    urlFilters,
-    syncUrl,
-    updateURL,
+    isSortByPlaysActive,
+    personalFilter,
+    router,
     setIsPersonal,
     setSortBy,
+    sortBy,
   ])
 
   return (
