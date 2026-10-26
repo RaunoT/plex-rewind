@@ -247,22 +247,29 @@ export default async function saveConnectionSettings(
   }
 
   const previousSettings = getSettings()
-  const result = await updateSettings(schema, data, 'connection')
-
-  // Libraries are matched by name, which differs between the sources.
-  if (
-    result.status === 'success' &&
+  const isSourceSwitch =
     previousSettings.connection.statisticsSource !== data.statisticsSource &&
-    previousSettings.general.complete
-  ) {
-    await updateSettings(
+    previousSettings.general.complete &&
+    schema.safeParse(data).success
+
+  // Libraries are matched by name, which differs between the sources. General
+  // is marked incomplete first, so a failed write never leaves the new source
+  // saved with the old source's libraries still counted as set up.
+  if (isSourceSwitch) {
+    const generalResult = await updateSettings(
       generalSchema,
       { ...previousSettings.general, complete: false },
       'general',
     )
 
-    return { ...result, message: t('savedChooseLibraries') }
+    if (generalResult.status !== 'success') {
+      return { ...generalResult, fields: data }
+    }
   }
 
-  return result
+  const result = await updateSettings(schema, data, 'connection')
+
+  return isSourceSwitch && result.status === 'success'
+    ? { ...result, message: t('savedChooseLibraries') }
+    : result
 }
