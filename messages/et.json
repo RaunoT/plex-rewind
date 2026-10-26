@@ -222,7 +222,7 @@
     },
     "Audio": {
       "duration": "Lõpetuseks kuulasid sa <duration>{durationValue}</duration> <audio>Audiot</audio>",
-      "count": "Kokku kuulasid sa <count>{countValue}</count> <tracks>lugu!</tracks>",
+      "count": "Kokku kuulasid sa <count>{countValue, number}</count> <tracks>lugu!</tracks>",
       "favorite": "Sinu lemmik oli",
       "noData": "Sa ei kuulanud <audio>Audiot</audio> <from>Plex'ist</from>"
     },
@@ -235,14 +235,14 @@
     },
     "Shows": {
       "duration": "<library>Saated</library> võtsid <duration>{durationValue}</duration> sinu ajast <plex>{serverName}'is.</plex>",
-      "count": "Sa vaatasid kokku <count>{countValue}</count> <episodes>episoodi</episodes>",
+      "count": "Sa vaatasid kokku <count>{countValue, number}</count> <episodes>episoodi</episodes>",
       "favorite": "Sinu lemmik oli",
       "noData": "Sa ei vaadanud ühtegi <shows>Saadet</shows> <plex>{serverName}'ist</plex> <emoji>😥</emoji>"
     },
     "Requests": {
       "noData": "Ühtegi <requests>Tellimust</requests> pole tehtud <emoji>😲</emoji>",
       "noUserData": "Sa ei teinud ühtegi <requests>Tellimust</requests>. Sa saad seda teha lingilt <requestLink>{requestLinkValue}</requestLink>.",
-      "count": "Sa tegid <count>{countValue}</count> sisu <requests>{countValue, plural, =1 {Tellimuse} other {Tellimust}}</requests>",
+      "count": "Sa tegid <count>{countValue, number}</count> sisu <requests>{countValue, plural, =1 {Tellimuse} other {Tellimust}}</requests>",
       "countTotal": "Kokku tehti samal perioodil <count>{countValue, plural, =1 {# Tellimus} other {# Tellimust}}</count>",
       "breakdown": "Siin on täpsem jaotus:",
       "movies": "{count, plural, =1 {Film} other {Filmi}}",
@@ -250,7 +250,7 @@
     },
     "Movies": {
       "duration": "<duration>{durationValue}</duration> kulus sul <movies>Filmidele</movies>",
-      "count": "Vaatasid <count>{countValue}</count> <movies>{countValue, plural, =1 {filmi} other {filmi}}</movies>",
+      "count": "Vaatasid <count>{countValue, number}</count> <movies>{countValue, plural, =1 {filmi} other {filmi}}</movies>",
       "favorite": "Sinu lemmik oli",
       "noData": "Sa ei vaadanud ühtegi <movies>Filmi</movies> <plex>{serverName}'ist</plex> <emoji>😵‍💫</emoji>"
     },

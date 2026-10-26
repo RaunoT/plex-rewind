@@ -222,7 +222,7 @@
     },
     "Audio": {
       "duration": "Abschließend hast du <duration>{durationValue}</duration> <audio>Audio</audio> gehört.",
-      "count": "Du hast <count>{countValue}</count> <tracks>Titel</tracks> insgesamt angehört!",
+      "count": "Du hast <count>{countValue, number}</count> <tracks>Titel</tracks> insgesamt angehört!",
       "favorite": "Dein Lieblingstitel war",
       "noData": "Du hast keine <audio>Audio</audio> von <from>Plex</from> angehört"
     },
@@ -235,14 +235,14 @@
     },
     "Shows": {
       "duration": "<library>Serien</library> haben <duration>{durationValue}</duration> deiner Zeit auf <plex>{serverName}</plex> eingenommen.",
-      "count": "Du hast insgesamt <count>{countValue}</count> <episodes>Episoden</episodes> geschaut!",
+      "count": "Du hast insgesamt <count>{countValue, number}</count> <episodes>Episoden</episodes> geschaut!",
       "favorite": "Deine Lieblingsserie war",
       "noData": "Du hast keine <shows>Serien</shows> auf <plex>{serverName}</plex> geschaut <emoji>😥</emoji>"
     },
     "Requests": {
       "noData": "Es gab keine <requests>Anfragen</requests> <emoji>😲</emoji>",
       "noUserData": "Du hast keine <requests>Anfragen</requests> gestellt. Stelle sie via <requestLink>{requestLinkValue}</requestLink>.",
-      "count": "Du hast <count>{countValue}</count> <requests>{countValue, plural, =1 {Anfrage} other {Anfragen}}</requests> gestellt.",
+      "count": "Du hast <count>{countValue, number}</count> <requests>{countValue, plural, =1 {Anfrage} other {Anfragen}}</requests> gestellt.",
       "countTotal": "Insgesamt gab es <count>{countValue, plural, =1 {# Anfrage} other {# Anfragen}}</count> in der gleichen Zeit.",
       "breakdown": "Hier ist die Aufteilung:",
       "movies": "{count, plural, =1 {Film} other {Filme}}",
@@ -250,7 +250,7 @@
     },
     "Movies": {
       "duration": "<duration>{durationValue}</duration> deiner Zeit hast du mit <movies>Filmen</movies> verbracht.",
-      "count": "Du hast <count>{countValue}</count> <movies>{countValue, plural, =1 {Film} other {Filme}}</movies> gesehen!",
+      "count": "Du hast <count>{countValue, number}</count> <movies>{countValue, plural, =1 {Film} other {Filme}}</movies> gesehen!",
       "favorite": "Dein Lieblingsfilm war",
       "noData": "Du hast keine <movies>Filme</movies> auf <plex>{serverName}</plex> gesehen <emoji>😵‍💫</emoji>"
     },
