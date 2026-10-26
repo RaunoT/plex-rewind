@@ -18,10 +18,16 @@ type Props = {
   settings: PublicSettings
   missingSetting: string | null
   libraries: TautulliLibrary[]
+  siteUrl: string
 }
 
-export default function Home({ settings, missingSetting, libraries }: Props) {
-  const { isLoading, handleLogin } = usePlexAuth()
+export default function Home({
+  settings,
+  missingSetting,
+  libraries,
+  siteUrl,
+}: Props) {
+  const { isLoading, handleLogin } = usePlexAuth(siteUrl)
   const {
     dashboard: { isPersonal, period, sortBy },
   } = useContext(GlobalContext)

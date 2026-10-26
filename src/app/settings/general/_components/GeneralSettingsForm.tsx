@@ -6,20 +6,14 @@ import {
   SettingsFormInitialState,
 } from '@/types/settings'
 import { TautulliLibrary, TautulliUser } from '@/types/tautulli'
-import {
-  Bars2Icon,
-  ChevronDownIcon,
-  ChevronUpIcon,
-} from '@heroicons/react/24/outline'
 import { kebabCase } from 'lodash'
+import { Reorder } from 'motion/react'
 import { useTranslations } from 'next-intl'
 import { useActionState, useEffect, useRef, useState } from 'react'
 import { Checkbox, CheckboxGroup, Label, Switch } from 'react-aria-components'
-import { ReactSortable } from 'react-sortablejs'
 import SettingsForm from '../../_components/SettingsForm'
 import saveGeneralSettings from '../_actions/updateGeneralSettings'
-
-type SortableLibrary = TautulliLibrary & { id: TautulliLibrary['section_id'] }
+import SortableLibrary from './SortableLibrary'
 
 type Props = {
   settings: PublicSettings
@@ -34,7 +28,7 @@ export default function GeneralSettingsForm({
   libraries,
   users,
 }: Props) {
-  const [librariesState, setLibrariesState] = useState<SortableLibrary[]>(
+  const [librariesState, setLibrariesState] = useState<TautulliLibrary[]>(
     () => {
       const activeLibraries = settings.general.activeLibraries
         .map((libName) =>
@@ -48,10 +42,7 @@ export default function GeneralSettingsForm({
           ),
       )
 
-      return [...activeLibraries, ...inactiveLibraries].map((lib) => ({
-        ...lib,
-        id: lib.section_id,
-      }))
+      return [...activeLibraries, ...inactiveLibraries]
     },
   )
   const [moveAnnouncement, setMoveAnnouncement] = useState<string>('')
@@ -149,60 +140,24 @@ export default function GeneralSettingsForm({
             name='activeLibraries'
             defaultValue={generalSettings.activeLibraries}
           >
-            <ReactSortable
-              list={librariesState}
-              setList={setLibrariesState}
-              onEnd={handleSortEnd}
+            <Reorder.Group
+              as='div'
+              axis='y'
+              values={librariesState}
+              onReorder={setLibrariesState}
               className='peer mr-auto flex flex-col gap-2'
-              handle='.drag-handle'
-              animation={200}
-              // Force the pointer-based fallback on all platforms. React Aria's
-              // Checkbox calls preventDefault on pointer events, which blocks the
-              // browser's native HTML5 drag on desktop (mobile already uses this
-              // fallback, which is why it kept working there).
-              forceFallback
-              // Append the drag clone to <body> so positioned/transformed
-              // ancestors don't offset the ghost from the cursor.
-              fallbackOnBody
             >
               {librariesState.map((library, index) => (
-                <div
+                <SortableLibrary
                   key={`library-${library.section_id}`}
-                  className='flex items-center gap-1'
-                >
-                  <div className='drag-handle flex size-8 shrink-0 cursor-move touch-none items-center justify-center sm:size-6'>
-                    <Bars2Icon className='size-5' />
-                  </div>
-                  <Checkbox
-                    value={kebabCase(library.section_name)}
-                    className='checkbox-wrapper flex-1'
-                  >
-                    <div className='checkbox' aria-hidden='true'></div>
-                    {library.section_name}
-                  </Checkbox>
-                  <button
-                    type='button'
-                    className='link-light focus-visible:focus-ring ml-1 flex size-8 shrink-0 items-center justify-center rounded-lg disabled:pointer-events-none disabled:opacity-30 sm:size-6'
-                    aria-label={t('moveUp', { name: library.section_name })}
-                    data-move={`${library.section_id}-up`}
-                    disabled={index === 0}
-                    onClick={() => moveLibrary(index, -1)}
-                  >
-                    <ChevronUpIcon className='size-5' />
-                  </button>
-                  <button
-                    type='button'
-                    className='link-light focus-visible:focus-ring flex size-8 shrink-0 items-center justify-center rounded-lg disabled:pointer-events-none disabled:opacity-30 sm:size-6'
-                    aria-label={t('moveDown', { name: library.section_name })}
-                    data-move={`${library.section_id}-down`}
-                    disabled={index === librariesState.length - 1}
-                    onClick={() => moveLibrary(index, 1)}
-                  >
-                    <ChevronDownIcon className='size-5' />
-                  </button>
-                </div>
+                  library={library}
+                  isFirst={index === 0}
+                  isLast={index === librariesState.length - 1}
+                  onMove={(offset) => moveLibrary(index, offset)}
+                  onDragEnd={handleSortEnd}
+                />
               ))}
-            </ReactSortable>
+            </Reorder.Group>
             <p aria-live='polite' role='status' className='sr-only'>
               {moveAnnouncement}
             </p>

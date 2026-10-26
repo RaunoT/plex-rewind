@@ -1,10 +1,6 @@
 import qs from 'qs'
 import { v4 as uuidv4 } from 'uuid'
-import {
-  APP_URL,
-  PLEX_API_ENDPOINT,
-  PLEX_PRODUCT_NAME,
-} from '../utils/constants'
+import { PLEX_API_ENDPOINT, PLEX_PRODUCT_NAME } from '../utils/constants'
 
 // Runs in the browser: the Plex PIN flow happens client-side and only the
 // resulting token is sent to the server for sign-in.
@@ -45,9 +41,9 @@ async function fetchPlexPins(): Promise<PlexPinResponse> {
   }
 }
 
-export async function createPlexAuthUrl() {
+export async function createPlexAuthUrl(siteUrl: string) {
   const { id, code } = await fetchPlexPins()
-  const forwardUrl = `${APP_URL}?plexPinId=${id}`
+  const forwardUrl = `${siteUrl}?plexPinId=${id}`
   const clientIdentifier = getClientIdentifier()
 
   if (!forwardUrl) {

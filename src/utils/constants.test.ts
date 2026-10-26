@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { getPeriods } from './constants'
+import { getPeriods, getSiteUrl } from './constants'
 
 describe('getPeriods', () => {
   beforeEach(() => {
@@ -48,5 +48,23 @@ describe('getPeriods', () => {
     expect(getPeriods(new Date('2024-12-31T12:00:00Z')).pastYear.daysAgo).toBe(
       366,
     )
+  })
+})
+
+describe('getSiteUrl', () => {
+  afterEach(() => {
+    vi.unstubAllEnvs()
+  })
+
+  it('reads the site URL when it is called', () => {
+    vi.stubEnv('NEXT_PUBLIC_SITE_URL', 'https://rewind.example.com')
+
+    expect(getSiteUrl()).toBe('https://rewind.example.com')
+  })
+
+  it('falls back to the default port', () => {
+    vi.stubEnv('NEXT_PUBLIC_SITE_URL', '')
+
+    expect(getSiteUrl()).toBe('http://localhost:8383')
   })
 })
