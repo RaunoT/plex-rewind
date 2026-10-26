@@ -3,7 +3,7 @@ import { signIn } from 'next-auth/react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
 
-export default function usePlexAuth() {
+export default function usePlexAuth(siteUrl: string) {
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -42,7 +42,7 @@ export default function usePlexAuth() {
   }, [searchParams])
 
   const handleLogin = async () => {
-    const plexUrl = await createPlexAuthUrl()
+    const plexUrl = await createPlexAuthUrl(siteUrl)
 
     router.push(plexUrl)
   }

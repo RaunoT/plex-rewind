@@ -1,3 +1,4 @@
+import { getSiteUrl } from '@/utils/constants'
 import { getLibraries } from '@/utils/fetchTautulli'
 import getSettings from '@/utils/getSettings'
 import { checkRequiredSettings } from '@/utils/helpers'
@@ -15,6 +16,7 @@ export default async function HomePage() {
         settings={toPublicSettings(settings)}
         missingSetting={checkRequiredSettings(settings)}
         libraries={libraries}
+        siteUrl={getSiteUrl()}
       />
     </Suspense>
   )
