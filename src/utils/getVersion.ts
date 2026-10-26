@@ -7,7 +7,7 @@ type GitHubRelease = {
   prerelease: boolean
 }
 
-function compareVersions(current: string, latest: string): boolean {
+export function compareVersions(current: string, latest: string): boolean {
   if (!current.includes('develop') || !latest.includes('develop')) {
     return latest !== current
   }

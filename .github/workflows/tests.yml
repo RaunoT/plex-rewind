@@ -29,5 +29,8 @@ jobs:
       - name: Lint code and check formatting
         run: pnpm lint:all
 
+      - name: Run tests
+        run: pnpm test
+
       - name: Build
         run: pnpm build
