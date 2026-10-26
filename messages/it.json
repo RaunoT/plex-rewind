@@ -266,7 +266,7 @@
     },
     "Requests": {
       "noData": "Non ci sono state <requests>Richieste</requests> <emoji>😲</emoji>",
-      "noUserData": "Non hai fatto nessuna <requests>Richiesta</requests>. Puoi farne da <requestLink>{requestLinkValue}</requestLink>.",
+      "noUserData": "Non hai fatto nessuna <requests>Richiesta</requests>. Puoi farne tramite <requestLink>{requestLinkValue}</requestLink>."
       "count": "Hai fatto <count>{countValue, number}</count> <requests>{countValue, plural, =1 {Richiesta} other {Richieste}}</requests> di contenuti",
       "countTotal": "In tutto {countValue, plural, =1 {c'è stata} other {ci sono state}} <count>{countValue, plural, =1 {# Richiesta} other {# Richieste}}</count> nello stesso periodo.",
       "breakdown": "Ecco il dettaglio:",
