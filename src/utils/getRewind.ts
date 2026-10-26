@@ -79,19 +79,13 @@ export async function getTopMediaStats(
   }
 
   const results = await Promise.all(libraries.map(fetchLibraryData))
-  const combinedResult = {
-    shows: {
-      count: 0,
-      duration: '',
-    },
-    movies: {
-      count: 0,
-      duration: '',
-    },
-    audio: {
-      count: 0,
-      duration: '',
-    },
+  const stats: Record<
+    TautulliMediaReturnType,
+    { count: number; seconds: number; hasData: boolean }
+  > = {
+    shows: { count: 0, seconds: 0, hasData: false },
+    movies: { count: 0, seconds: 0, hasData: false },
+    audio: { count: 0, seconds: 0, hasData: false },
   }
 
   for (const library of results) {
@@ -99,16 +93,26 @@ export async function getTopMediaStats(
     const resultType = typeToResultMap[library.type]
 
     if (resultType && data) {
-      combinedResult[resultType].count += data.recordsFiltered
-      combinedResult[resultType].duration = secondsToTime(
-        timeToSeconds(combinedResult[resultType].duration) +
-          timeToSeconds(data.total_duration),
-        t,
-      )
+      stats[resultType].count += data.recordsFiltered
+      stats[resultType].seconds += timeToSeconds(data.total_duration)
+      stats[resultType].hasData = true
     }
   }
 
-  return combinedResult
+  function formatStats(type: TautulliMediaReturnType) {
+    return {
+      count: stats[type].count,
+      duration: stats[type].hasData
+        ? secondsToTime(stats[type].seconds, t)
+        : '',
+    }
+  }
+
+  return {
+    shows: formatStats('shows'),
+    movies: formatStats('movies'),
+    audio: formatStats('audio'),
+  }
 }
 
 export async function getlibrariesTotalSize(libraries: TautulliLibrary[]) {
