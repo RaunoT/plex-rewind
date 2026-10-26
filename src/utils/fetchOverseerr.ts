@@ -114,12 +114,12 @@ async function fetchOverseerrPages<T>(
 
   const firstPage = await fetchPage(1)
 
-  if (!firstPage || !firstPage.results) {
+  if (!firstPage || !Array.isArray(firstPage.results)) {
     return null
   }
 
   const items = [...firstPage.results]
-  const totalPages = firstPage.pageInfo.pages
+  const totalPages = firstPage.pageInfo?.pages ?? 1
 
   let nextPage = 2
   let lastPage = firstPage.results
