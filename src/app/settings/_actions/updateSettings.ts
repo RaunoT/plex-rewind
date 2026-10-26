@@ -1,5 +1,3 @@
-'use server'
-
 import {
   ActivitySettings,
   ConnectionSettings,
@@ -7,8 +5,7 @@ import {
   GeneralSettings,
   RewindSettings,
 } from '@/types/settings'
-import getSettings, { SETTINGS_PATH } from '@/utils/getSettings'
-import { promises as fs } from 'fs'
+import getSettings, { writeSettings } from '@/utils/getSettings'
 import { getTranslations } from 'next-intl/server'
 import { revalidatePath } from 'next/cache'
 import { ZodError, ZodSchema } from 'zod'
@@ -29,16 +26,15 @@ export default async function updateSettings<K extends keyof SettingsTypeMap>(
   const t = await getTranslations('Settings')
 
   try {
-    schema.parse(data)
-
+    const parsed = schema.parse(data)
     const settings = getSettings()
 
     settings[key] = {
       ...settings[key],
-      ...data,
+      ...parsed,
     }
 
-    await fs.writeFile(SETTINGS_PATH, JSON.stringify(settings), 'utf8')
+    writeSettings(settings)
 
     revalidatePath('/')
 
@@ -52,7 +48,7 @@ export default async function updateSettings<K extends keyof SettingsTypeMap>(
 
     if (error instanceof ZodError) {
       return {
-        message: error.message,
+        message: formatZodError(error),
         status: 'error',
         fields: data,
       }
@@ -64,4 +60,16 @@ export default async function updateSettings<K extends keyof SettingsTypeMap>(
       fields: data,
     }
   }
+}
+
+function formatZodError(error: ZodError): string {
+  const issue = error.issues[0]
+  const field = issue.path.map(String).join('.')
+
+  // Custom messages are already written for the form
+  if (!field || issue.code === 'custom') {
+    return issue.message
+  }
+
+  return `${field}: ${issue.message}`
 }
