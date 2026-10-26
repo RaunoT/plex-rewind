@@ -24,17 +24,26 @@
     "subtitles": "Untertitel",
     "location": "Standort",
     "bandwidth": "Bandbreite",
-    "noActivity": "Keine aktiven Sitzungen.. 😴"
+    "noActivity": "Keine aktiven Sitzungen.. 😴",
+    "decision": {
+      "directPlay": "Direktwiedergabe",
+      "directStream": "Direktstream",
+      "transcode": "Transkodierung",
+      "burn": "Einbrennen",
+      "ignore": "ignoriert",
+      "converting": "Konvertierung",
+      "throttled": "gedrosselt"
+    }
   },
   "Dashboard": {
     "noActivity": "Keine Aktivität in dieser Zeitspanne.. 😴",
     "title": "Dashboard",
     "usersTitle": "Benutzer",
-    "users": "Benutzer",
-    "movies": "Filme",
-    "episodes": "Episoden",
-    "tracks": "Titel",
-    "requests": "Anfragen"
+    "users": "{count, plural, =1 {# Benutzer} other {# Benutzer}}",
+    "movies": "{count, plural, =1 {Film} other {Filme}}",
+    "episodes": "{count, plural, =1 {Episode} other {Episoden}}",
+    "tracks": "{count, plural, =1 {Titel} other {Titel}}",
+    "requests": "{count, plural, =1 {Anfrage} other {Anfragen}}"
   },
   "DashboardFilters": {
     "type": "Typ",
@@ -61,7 +70,7 @@
     "today": "Heute",
     "pastYear": "Letztes Jahr",
     "allTime": "Gesamte Zeit",
-    "days": "tage",
+    "days": "{count, plural, =1 {# Tag} other {# Tage}}",
     "label": "Zeitraum auswählen"
   },
   "NotFound": {
@@ -70,13 +79,13 @@
     "cta": "Bitte von vorne beginnen."
   },
   "AppProvider": {
-    "starsAlt": "Hintergrund Sterne",
     "updateAvailable": "Aktualisierung verfügbar",
     "closeSettings": "Einstellungen schließen",
     "openSettings": "Einstellungen öffnen"
   },
   "Offline": {
-    "title": "Du bist offline"
+    "title": "Du bist offline",
+    "retry": "Erneut versuchen"
   },
   "Settings": {
     "title": "Einstellungen",
@@ -100,7 +109,9 @@
       "general": "Allgemein",
       "rewind": "Rewind",
       "dashboard": "Dashboard",
-      "activity": "Aktivität"
+      "activity": "Aktivität",
+      "complete": "Abgeschlossen",
+      "incomplete": "Unvollständig"
     },
     "Connection": {
       "title": "Verbindungseinstellungen",
@@ -133,6 +144,9 @@
       "serverName": "Servername",
       "libraries": "Bibliotheken",
       "activeLibraries": "Aktive Bibliotheken",
+      "moveUp": "{name} nach oben verschieben",
+      "moveDown": "{name} nach unten verschieben",
+      "movedTo": "{name} an Position {position} von {total} verschoben",
       "noLibrariesMessage1": "Mindestens eine Bibliothek in Plex erstellen um fortzufahren.",
       "noLibrariesMessage2": "Plex Rewind benötigt mindestens eine Bibliothek um zu funktionieren.",
       "media": "Medien",
@@ -188,12 +202,14 @@
     "fileSize": "{value, number} {unit}"
   },
   "DatePicker": {
-    "clear": "Datum löschen"
+    "clear": "Datum löschen",
+    "open": "Kalender öffnen"
   },
   "Loader": {
     "loading": "Laden..."
   },
   "Rewind": {
+    "title": "Rewind",
     "Stories": {
       "goToStory": "Gehe zu Story {index}",
       "previousStory": "Vorherige Story",
@@ -279,6 +295,9 @@
     "deleted": "Gelöscht",
     "statPlays": "{count, plural, =1 {# Wiedergabe} other {# Wiedergaben}}",
     "statUsers": "{count, plural, =1 {# Benutzer} other {# Benutzer}}",
-    "statRequests": "{count, plural, =1 {# Anfrage} other {# Anfragen}}"
+    "statRequests": "{count, plural, =1 {# Anfrage} other {# Anfragen}}",
+    "labelShows": "Serien",
+    "labelMovies": "Filme",
+    "labelAudio": "Musik"
   }
 }

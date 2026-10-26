@@ -24,17 +24,26 @@
     "subtitles": "Sous-titres",
     "location": "Emplacement",
     "bandwidth": "Bande passante",
-    "noActivity": "Aucune session active.. 😴"
+    "noActivity": "Aucune session active.. 😴",
+    "decision": {
+      "directPlay": "lecture directe",
+      "directStream": "flux direct",
+      "transcode": "transcodage",
+      "burn": "incrustation",
+      "ignore": "ignoré",
+      "converting": "conversion",
+      "throttled": "limité"
+    }
   },
   "Dashboard": {
     "noActivity": "Aucune activité pendant cette période.. 😴",
     "title": "Tableau de bord",
     "usersTitle": "Utilisateurs",
-    "users": "utilisateurs",
-    "movies": "films",
-    "episodes": "épisodes",
-    "tracks": "morceaux",
-    "requests": "demandes"
+    "users": "{count, plural, =1 {# utilisateur} other {# utilisateurs}}",
+    "movies": "{count, plural, =1 {film} other {films}}",
+    "episodes": "{count, plural, =1 {épisode} other {épisodes}}",
+    "tracks": "{count, plural, =1 {morceau} other {morceaux}}",
+    "requests": "{count, plural, =1 {demande} other {demandes}}"
   },
   "DashboardFilters": {
     "type": "Type",
@@ -61,7 +70,7 @@
     "today": "Aujourd'hui",
     "pastYear": "Année passée",
     "allTime": "Tout le temps",
-    "days": "jours",
+    "days": "{count, plural, =1 {# jour} other {# jours}}",
     "label": "Sélection de période"
   },
   "NotFound": {
@@ -70,13 +79,13 @@
     "cta": "Il serait peut-être préférable de recommencer."
   },
   "AppProvider": {
-    "starsAlt": "Fond étoilé",
     "updateAvailable": "Mise à jour disponible",
     "closeSettings": "Fermer les paramètres",
     "openSettings": "Ouvrir les paramètres"
   },
   "Offline": {
-    "title": "Vous êtes hors ligne"
+    "title": "Vous êtes hors ligne",
+    "retry": "Réessayer"
   },
   "Settings": {
     "title": "Paramètres",
@@ -100,7 +109,9 @@
       "general": "Général",
       "rewind": "Rewind",
       "dashboard": "Tableau de bord",
-      "activity": "Activité"
+      "activity": "Activité",
+      "complete": "Terminé",
+      "incomplete": "Incomplet"
     },
     "Connection": {
       "title": "Paramètres de connexion",
@@ -133,6 +144,9 @@
       "serverName": "Nom du serveur",
       "libraries": "Bibliothèques",
       "activeLibraries": "Bibliothèques actives",
+      "moveUp": "Déplacer {name} vers le haut",
+      "moveDown": "Déplacer {name} vers le bas",
+      "movedTo": "{name} déplacé à la position {position} sur {total}",
       "noLibrariesMessage1": "Veuillez créer une bibliothèque dans Plex pour continuer.",
       "noLibrariesMessage2": "Plex Rewind nécessite au moins une bibliothèque pour fonctionner.",
       "media": "Médias",
@@ -188,12 +202,14 @@
     "fileSize": "{value, number} {unit}"
   },
   "DatePicker": {
-    "clear": "Effacer la date"
+    "clear": "Effacer la date",
+    "open": "Ouvrir le calendrier"
   },
   "Loader": {
     "loading": "Chargement..."
   },
   "Rewind": {
+    "title": "Rewind",
     "Stories": {
       "goToStory": "Aller à l'histoire {index}",
       "previousStory": "Histoire précédente",
@@ -242,7 +258,7 @@
     "Requests": {
       "noData": "Il n'y a eu aucune <requests>Demande</requests> <emoji>😲</emoji>",
       "noUserData": "Vous n'avez fait aucune <requests>Demande</requests>. Vous pouvez en faire via <requestLink>{requestLinkValue}</requestLink>.",
-      "count": "Vous avez fait <count>{countValue, number}</count> de contenu <requests>{countValue, plural, =1 {Demande} other {Demandes}}</requests>",
+      "count": "Vous avez fait <count>{countValue, number}</count> <requests>{countValue, plural, =1 {Demande} other {Demandes}}</requests> de contenu",
       "countTotal": "Au total, il y {countValue, plural, =1 {a eu} other {a eu}} <count>{countValue, plural, =1 {# Demande} other {# Demandes}}</count> pendant la même période.",
       "breakdown": "Voici la répartition :",
       "movies": "{count, plural, =1 {Film} other {Films}}",
@@ -279,6 +295,9 @@
     "deleted": "Supprimé",
     "statPlays": "{count, plural, =1 {# lecture} other {# lectures}}",
     "statUsers": "{count, plural, =1 {# utilisateur} other {# utilisateurs}}",
-    "statRequests": "{count, plural, =1 {# demande} other {# demandes}}"
+    "statRequests": "{count, plural, =1 {# demande} other {# demandes}}",
+    "labelShows": "Séries",
+    "labelMovies": "Films",
+    "labelAudio": "Musique"
   }
 }

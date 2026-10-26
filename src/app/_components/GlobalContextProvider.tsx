@@ -29,48 +29,65 @@ type Props = {
   children: ReactNode
 }
 
+function writeStorage(key: string, value?: string) {
+  try {
+    localStorage.setItem(key, value || '')
+  } catch {}
+}
+
 export default function GlobalContextProvider({ children }: Props) {
-  const [isPersonal, setIsPersonal] = useState<
-    DashboardSearchParams['personal']
-  >(() => {
-    if (typeof window !== 'undefined') {
-      return localStorage.getItem(
-        'dashboardPersonal',
-      ) as DashboardSearchParams['personal']
-    }
-
-    return undefined
-  })
-  const [period, setPeriod] = useState<DashboardSearchParams['period']>(() => {
-    if (typeof window !== 'undefined') {
-      return localStorage.getItem(
-        'dashboardPeriod',
-      ) as DashboardSearchParams['period']
-    }
-
-    return undefined
-  })
-  const [sortBy, setSortBy] = useState<DashboardSearchParams['sortBy']>(() => {
-    if (typeof window !== 'undefined') {
-      return localStorage.getItem(
-        'dashboardSort',
-      ) as DashboardSearchParams['sortBy']
-    }
-
-    return undefined
-  })
+  const [isPersonal, setIsPersonal] =
+    useState<DashboardSearchParams['personal']>(undefined)
+  const [period, setPeriod] =
+    useState<DashboardSearchParams['period']>(undefined)
+  const [sortBy, setSortBy] =
+    useState<DashboardSearchParams['sortBy']>(undefined)
+  const [isHydrated, setIsHydrated] = useState<boolean>(false)
 
   useEffect(() => {
-    localStorage.setItem('dashboardPersonal', isPersonal || '')
-  }, [isPersonal])
+    try {
+      // Read after mount so the first client render matches the server HTML
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setIsPersonal(
+        (prev) =>
+          prev ??
+          ((localStorage.getItem('dashboardPersonal') ||
+            undefined) as DashboardSearchParams['personal']),
+      )
+      setPeriod(
+        (prev) =>
+          prev ??
+          ((localStorage.getItem('dashboardPeriod') ||
+            undefined) as DashboardSearchParams['period']),
+      )
+      setSortBy(
+        (prev) =>
+          prev ??
+          ((localStorage.getItem('dashboardSort') ||
+            undefined) as DashboardSearchParams['sortBy']),
+      )
+    } catch {}
+
+    setIsHydrated(true)
+  }, [])
 
   useEffect(() => {
-    localStorage.setItem('dashboardPeriod', period || '')
-  }, [period])
+    if (isHydrated) {
+      writeStorage('dashboardPersonal', isPersonal)
+    }
+  }, [isHydrated, isPersonal])
 
   useEffect(() => {
-    localStorage.setItem('dashboardSort', sortBy || '')
-  }, [sortBy])
+    if (isHydrated) {
+      writeStorage('dashboardPeriod', period)
+    }
+  }, [isHydrated, period])
+
+  useEffect(() => {
+    if (isHydrated) {
+      writeStorage('dashboardSort', sortBy)
+    }
+  }, [isHydrated, sortBy])
 
   return (
     <GlobalContext.Provider

@@ -2,6 +2,10 @@
 
 import { PublicSettings } from '@/types/settings'
 import { SETTINGS_PAGES } from '@/utils/constants'
+import {
+  CheckCircleIcon,
+  ExclamationCircleIcon,
+} from '@heroicons/react/16/solid'
 import clsx from 'clsx'
 import { useTranslations } from 'next-intl'
 import Link from 'next/link'
@@ -40,7 +44,19 @@ export default function SettingsNav({ settings, missingSetting }: Props) {
                 aria-current={pathname === href && 'page'}
                 aria-disabled={shouldDisable && 'true'}
               >
+                {missingSetting &&
+                  (isComplete ? (
+                    <CheckCircleIcon className='mr-1 inline size-4 align-text-bottom' />
+                  ) : (
+                    <ExclamationCircleIcon className='mr-1 inline size-4 align-text-bottom' />
+                  ))}
                 {t(key)}
+                {missingSetting && (
+                  <span className='sr-only'>
+                    {' '}
+                    {isComplete ? t('complete') : t('incomplete')}
+                  </span>
+                )}
               </Link>
             </li>
           )

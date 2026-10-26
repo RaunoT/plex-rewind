@@ -39,7 +39,7 @@ export default function PeriodSelectContent({ settings }: Props) {
   const periodOptions = [
     { label: t('7days'), value: '7days' },
     {
-      label: customPeriod > 1 ? `${customPeriod} ${t('days')}` : t('today'),
+      label: customPeriod > 1 ? t('days', { count: customPeriod }) : t('today'),
       value: 'custom',
     },
     { label: t('pastYear'), value: 'pastYear' },
@@ -91,8 +91,10 @@ export default function PeriodSelectContent({ settings }: Props) {
             <Link
               href={`${pathname}${getUpdatedQueryParams(isDefault ? '' : value)}`}
               className='nav-link'
-              aria-selected={
-                isDefault ? isDefaultSelected : periodParam === value
+              aria-current={
+                (isDefault ? isDefaultSelected : periodParam === value)
+                  ? 'true'
+                  : undefined
               }
               onClick={() =>
                 setPeriod(

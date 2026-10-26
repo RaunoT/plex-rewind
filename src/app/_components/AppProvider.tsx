@@ -56,7 +56,7 @@ export default function AppProvider({
             <div className='relative h-screen w-screen'>
               <Image
                 src={stars}
-                alt={t('starsAlt')}
+                alt=''
                 className='object-cover'
                 fill
                 priority

@@ -93,9 +93,7 @@ export default function MediaItem({
         <Image
           fill
           className='object-cover object-top'
-          alt={
-            isUsers ? data.friendly_name + ' avatar' : data.title + ' poster'
-          }
+          alt=''
           src={imageSrc}
           sizes='10rem'
           onError={() => setImageSrc(placeholderSvg)}
@@ -120,12 +118,12 @@ export default function MediaItem({
                   }/${data.tmdb_id}`}
                   target='_blank'
                   rel='noopener noreferrer'
-                  className='button-card bg-purple-500'
+                  className='button-card bg-purple-600'
                 >
                   {t('request')}
                 </a>
               ) : (
-                <div className='button-card bg-red-500'>{t('deleted')}</div>
+                <div className='button-card bg-red-600'>{t('deleted')}</div>
               )
             ) : (
               serverId && (
@@ -180,18 +178,21 @@ export default function MediaItem({
                 {data.shows_plays_count > 0 && (
                   <li className='icon-stat-wrapper'>
                     <PlayCircleIcon />
+                    <span className='sr-only'>{t('labelShows')}</span>{' '}
                     {t('statPlays', { count: data.shows_plays_count })}
                   </li>
                 )}
                 {data.movies_plays_count > 0 && (
                   <li className='icon-stat-wrapper'>
                     <FilmIcon />
+                    <span className='sr-only'>{t('labelMovies')}</span>{' '}
                     {t('statPlays', { count: data.movies_plays_count })}
                   </li>
                 )}
                 {data.audio_plays_count > 0 && (
                   <li className='icon-stat-wrapper'>
                     <MusicalNoteIcon />
+                    <span className='sr-only'>{t('labelAudio')}</span>{' '}
                     {t('statPlays', { count: data.audio_plays_count })}
                   </li>
                 )}
@@ -209,7 +210,7 @@ export default function MediaItem({
               </li>
             ))}
           {/* Users watched */}
-          {activeStats.includes('users') && data.users_watched && (
+          {activeStats.includes('users') && !!data.users_watched && (
             <li className='icon-stat-wrapper'>
               <UserIcon />
               {t('statUsers', { count: data.users_watched })}

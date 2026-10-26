@@ -24,17 +24,26 @@
     "subtitles": "Subtitles",
     "location": "Location",
     "bandwidth": "Bandwidth",
-    "noActivity": "No active sessions.. 😴"
+    "noActivity": "No active sessions.. 😴",
+    "decision": {
+      "directPlay": "direct play",
+      "directStream": "direct stream",
+      "transcode": "transcode",
+      "burn": "burn",
+      "ignore": "ignore",
+      "converting": "converting",
+      "throttled": "throttled"
+    }
   },
   "Dashboard": {
     "noActivity": "No activity during this period.. 😴",
     "title": "Dashboard",
     "usersTitle": "Users",
-    "users": "users",
-    "movies": "movies",
-    "episodes": "episodes",
-    "tracks": "tracks",
-    "requests": "requests"
+    "users": "{count, plural, =1 {# user} other {# users}}",
+    "movies": "{count, plural, =1 {movie} other {movies}}",
+    "episodes": "{count, plural, =1 {episode} other {episodes}}",
+    "tracks": "{count, plural, =1 {track} other {tracks}}",
+    "requests": "{count, plural, =1 {request} other {requests}}"
   },
   "DashboardFilters": {
     "type": "Type",
@@ -61,7 +70,7 @@
     "today": "Today",
     "pastYear": "Past year",
     "allTime": "All time",
-    "days": "days",
+    "days": "{count, plural, =1 {# day} other {# days}}",
     "label": "Period select"
   },
   "NotFound": {
@@ -70,13 +79,13 @@
     "cta": "Might be better to start over."
   },
   "AppProvider": {
-    "starsAlt": "Stars background",
     "updateAvailable": "Update available",
     "closeSettings": "Close settings",
     "openSettings": "Open settings"
   },
   "Offline": {
-    "title": "You are offline"
+    "title": "You are offline",
+    "retry": "Try again"
   },
   "Settings": {
     "title": "Settings",
@@ -100,7 +109,9 @@
       "general": "General",
       "rewind": "Rewind",
       "dashboard": "Dashboard",
-      "activity": "Activity"
+      "activity": "Activity",
+      "complete": "Complete",
+      "incomplete": "Incomplete"
     },
     "Connection": {
       "title": "Connection settings",
@@ -133,6 +144,9 @@
       "serverName": "Server name",
       "libraries": "Libraries",
       "activeLibraries": "Active libraries",
+      "moveUp": "Move {name} up",
+      "moveDown": "Move {name} down",
+      "movedTo": "{name} moved to position {position} of {total}",
       "noLibrariesMessage1": "Please create a library in Plex to proceed.",
       "noLibrariesMessage2": "Plex Rewind requires at least one library to function.",
       "media": "Media",
@@ -188,12 +202,14 @@
     "fileSize": "{value, number} {unit}"
   },
   "DatePicker": {
-    "clear": "Clear date"
+    "clear": "Clear date",
+    "open": "Open calendar"
   },
   "Loader": {
     "loading": "Loading..."
   },
   "Rewind": {
+    "title": "Rewind",
     "Stories": {
       "goToStory": "Go to story {index}",
       "previousStory": "Previous story",
@@ -279,6 +295,9 @@
     "deleted": "Deleted",
     "statPlays": "{count, plural, =1 {# play} other {# plays}}",
     "statUsers": "{count, plural, =1 {# user} other {# users}}",
-    "statRequests": "{count, plural, =1 {# request} other {# requests}}"
+    "statRequests": "{count, plural, =1 {# request} other {# requests}}",
+    "labelShows": "TV shows",
+    "labelMovies": "Movies",
+    "labelAudio": "Music"
   }
 }

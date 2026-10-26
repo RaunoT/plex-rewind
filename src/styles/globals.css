@@ -30,16 +30,16 @@
 }
 
 @utility gradient-plex {
-  @apply bg-linear-to-r from-yellow-500 to-yellow-700 bg-clip-text text-transparent;
+  @apply bg-linear-to-r from-yellow-400 to-yellow-500 bg-clip-text text-transparent;
 }
 
 @utility focus-ring {
-  @apply ring-1 ring-neutral-300 focus-visible:outline-none;
+  @apply ring-2 ring-neutral-200 focus-visible:outline-none;
 }
 
 @utility required {
   ::after {
-    @apply ml-1 align-text-bottom text-red-500 content-['*'];
+    @apply ml-1 align-text-bottom text-red-300 content-['*'];
   }
 }
 
@@ -85,14 +85,12 @@
     }
 
     &.button--plex {
-      @apply from-yellow-500 to-yellow-700;
+      @apply from-yellow-500 to-yellow-600 text-black;
     }
   }
 
   .button-card {
-    @apply block w-fit rounded-sm px-1 leading-normal font-semibold uppercase;
-
-    font-size: 0.65rem;
+    @apply block w-fit rounded-sm px-1.5 py-1 text-xs leading-4 font-semibold uppercase;
   }
 
   .rewind-stat {
@@ -113,18 +111,18 @@
   }
 
   .link {
-    @apply text-neutral-400 hover:text-neutral-500;
+    @apply text-neutral-400 hover:text-white;
   }
 
   .nav {
-    @apply flex flex-wrap items-center justify-center gap-3 gap-y-1 text-xs font-medium uppercase sm:gap-4 sm:text-sm 2xl:text-base;
+    @apply flex flex-wrap items-center justify-center gap-3 gap-y-0 text-xs font-medium uppercase sm:gap-4 sm:text-sm 2xl:text-base;
   }
 
   .nav-link {
-    @apply text-neutral-400 hover:text-white aria-disabled:pointer-events-none aria-disabled:cursor-not-allowed aria-disabled:opacity-50;
+    @apply inline-block py-2 text-neutral-400 hover:text-white aria-disabled:pointer-events-none aria-disabled:cursor-not-allowed aria-disabled:opacity-50 sm:py-1;
 
-    &[aria-selected='true'],
-    &[aria-current='page'] {
+    &[aria-current='page'],
+    &[aria-current='true'] {
       @apply text-white;
     }
   }
@@ -137,7 +135,7 @@
     @apply flex items-center gap-1 rounded-full bg-neutral-600/50 py-0.5 pr-3 pl-2 italic sm:gap-2;
 
     > svg {
-      @apply size-5 text-black;
+      @apply size-5 text-neutral-300;
     }
 
     &.icon-stat-wrapper--clean {
@@ -150,10 +148,10 @@
   }
 
   .input {
-    @apply block w-full rounded-xl border-none bg-neutral-500 px-3 py-2 placeholder:text-neutral-400 focus-within:bg-neutral-400;
+    @apply block w-full rounded-xl border-none bg-neutral-500 px-3 py-2 placeholder:text-neutral-50 placeholder:italic;
 
     &:focus {
-      @apply focus-ring bg-neutral-400 placeholder:text-neutral-300;
+      @apply focus-ring;
     }
 
     &[required] + .label > .label-wrapper {
@@ -197,7 +195,7 @@
     }
 
     > small {
-      @apply block text-xs text-neutral-400;
+      @apply block text-xs text-neutral-300;
     }
   }
 
@@ -236,7 +234,7 @@
 
     &:focus-within {
       .checkbox {
-        @apply focus-ring bg-neutral-400;
+        @apply focus-ring;
       }
     }
   }
@@ -246,7 +244,7 @@
   }
 
   .heading-settings {
-    @apply border-b border-neutral-500 pb-2 text-right font-medium text-neutral-500 uppercase group-hover:text-white sm:w-48;
+    @apply border-b border-neutral-500 pb-2 text-right font-medium text-neutral-300 uppercase group-hover:text-white sm:w-48;
   }
 
   .group-settings {

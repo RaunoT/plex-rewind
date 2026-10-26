@@ -24,17 +24,26 @@
     "subtitles": "Subtiitrid",
     "location": "Asukoht",
     "bandwidth": "Ribalaidus",
-    "noActivity": "Ühtegi aktiivset sessiooni pole.. 😴"
+    "noActivity": "Ühtegi aktiivset sessiooni pole.. 😴",
+    "decision": {
+      "directPlay": "otsemäng",
+      "directStream": "otsevoog",
+      "transcode": "transkodeerimine",
+      "burn": "põletamine",
+      "ignore": "ignoreeritud",
+      "converting": "teisendamine",
+      "throttled": "piiratud"
+    }
   },
   "Dashboard": {
     "noActivity": "Valitud perioodil puudub tegevus.. 😴",
     "title": "Edetabel",
     "usersTitle": "Kasutajad",
-    "users": "kasutajat",
-    "movies": "filmi",
-    "episodes": "episoodi",
-    "tracks": "lugu",
-    "requests": "tellimust"
+    "users": "{count, plural, =1 {# kasutaja} other {# kasutajat}}",
+    "movies": "{count, plural, =1 {film} other {filmi}}",
+    "episodes": "{count, plural, =1 {episood} other {episoodi}}",
+    "tracks": "{count, plural, =1 {lugu} other {lugu}}",
+    "requests": "{count, plural, =1 {tellimus} other {tellimust}}"
   },
   "DashboardFilters": {
     "type": "Tüüp",
@@ -61,7 +70,7 @@
     "today": "Täna",
     "pastYear": "Viimane aasta",
     "allTime": "Kokku",
-    "days": "päeva",
+    "days": "{count, plural, =1 {# päev} other {# päeva}}",
     "label": "Perioodi valik"
   },
   "NotFound": {
@@ -70,13 +79,13 @@
     "cta": "Ehk on parem alustada uuesti."
   },
   "AppProvider": {
-    "starsAlt": "Tähtedega taust",
     "updateAvailable": "Uuendus saadaval",
     "closeSettings": "Sulge seaded",
     "openSettings": "Ava seaded"
   },
   "Offline": {
-    "title": "Ühendus puudub"
+    "title": "Ühendus puudub",
+    "retry": "Proovi uuesti"
   },
   "Settings": {
     "title": "Seaded",
@@ -100,7 +109,9 @@
       "general": "Üldine",
       "rewind": "Rewind",
       "dashboard": "Edetabel",
-      "activity": "Tegevus"
+      "activity": "Tegevus",
+      "complete": "Lõpetatud",
+      "incomplete": "Lõpetamata"
     },
     "Connection": {
       "title": "Ühenduse seaded",
@@ -133,6 +144,9 @@
       "serverName": "Server nimi",
       "libraries": "Kogumikud",
       "activeLibraries": "Aktiivsed kogumikud",
+      "moveUp": "Liiguta {name} üles",
+      "moveDown": "Liiguta {name} alla",
+      "movedTo": "{name} liigutati kohale {position} (kokku {total})",
       "noLibrariesMessage1": "Palun loo kogumik Plex'is.",
       "noLibrariesMessage2": "Plex Rewind vajab toimimiseks vähemalt ühte kogumikku.",
       "media": "Meedia",
@@ -188,12 +202,14 @@
     "fileSize": "{value, number} {unit}"
   },
   "DatePicker": {
-    "clear": "Tühjenda kuupäev"
+    "clear": "Tühjenda kuupäev",
+    "open": "Ava kalender"
   },
   "Loader": {
     "loading": "Laadimine..."
   },
   "Rewind": {
+    "title": "Rewind",
     "Stories": {
       "goToStory": "Mine loole {index}",
       "previousStory": "Eelmine lugu",
@@ -230,7 +246,7 @@
       "filesize": "Kas teadsid, et kõikide kogumike <filesize>Failisuurus</filesize> <plex>{serverName}'is</plex> on <size>{sizeValue}!</size>",
       "libraries": "Hetkel on saadaval:",
       "movies": "{count, plural, =1 {Film} other {Filmi}}",
-      "episodes": "{count, plural, =1 {Saade} other {Saadet}}",
+      "episodes": "{count, plural, =1 {Osa} other {Osa}}",
       "tracks": "{count, plural, =1 {Lugu} other {Lugu}}"
     },
     "Shows": {
@@ -279,6 +295,9 @@
     "deleted": "Kustutatud",
     "statPlays": "{count, plural, =1 {# mängimine} other {# mängimist}}",
     "statUsers": "{count, plural, =1 {# kasutaja} other {# kasutajat}}",
-    "statRequests": "{count, plural, =1 {# tellimus} other {# tellimust}}"
+    "statRequests": "{count, plural, =1 {# tellimus} other {# tellimust}}",
+    "labelShows": "Seriaalid",
+    "labelMovies": "Filmid",
+    "labelAudio": "Muusika"
   }
 }
