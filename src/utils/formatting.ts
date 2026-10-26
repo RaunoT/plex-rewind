@@ -112,9 +112,11 @@ export function formatBitrate(
 }
 
 export function formatRating(rating: string, locale: string): string {
-  const numeric = parseFloat(rating)
+  const numeric = Number(rating)
 
-  return isNaN(numeric) ? rating : formatOneDecimal(numeric, locale)
+  return rating.trim() === '' || !Number.isFinite(numeric)
+    ? rating
+    : formatOneDecimal(numeric, locale)
 }
 
 export function millisecondsToTimeString(milliseconds: number): string {
