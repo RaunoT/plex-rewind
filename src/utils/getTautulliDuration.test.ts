@@ -5,6 +5,13 @@ import { getTautulliTotalDuration } from './getTautulliDuration'
 vi.mock('./fetchTautulli', () => ({ default: vi.fn() }))
 
 const fetchMock = vi.mocked(fetchTautulli)
+
+function historyResponse(totalDuration: string) {
+  return {
+    response: { result: 'success', data: { total_duration: totalDuration } },
+  } as Awaited<ReturnType<typeof fetchTautulli>>
+}
+
 const durations: Record<string, string> = {
   all: '10 hrs',
   '2': '1 hr 30 mins',
@@ -14,11 +21,9 @@ const durations: Record<string, string> = {
 describe('getTautulliTotalDuration', () => {
   beforeEach(() => {
     fetchMock.mockReset()
-    fetchMock.mockImplementation(async (_query, params) => ({
-      response: {
-        data: { total_duration: durations[String(params?.user_id ?? 'all')] },
-      },
-    }))
+    fetchMock.mockImplementation(async (_query, params) =>
+      historyResponse(durations[String(params?.user_id ?? 'all')]),
+    )
   })
 
   it('reads the total from the history of the section', async () => {
@@ -73,11 +78,9 @@ describe('getTautulliTotalDuration', () => {
   })
 
   it('never goes below zero', async () => {
-    fetchMock.mockImplementation(async (_query, params) => ({
-      response: {
-        data: { total_duration: params?.user_id ? '5 hrs' : '1 hr' },
-      },
-    }))
+    fetchMock.mockImplementation(async (_query, params) =>
+      historyResponse(params?.user_id ? '5 hrs' : '1 hr'),
+    )
 
     expect(
       await getTautulliTotalDuration({
