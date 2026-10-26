@@ -1,12 +1,17 @@
 import { DashboardSearchParams } from '@/types/dashboard'
 import { Settings } from '@/types/settings'
-import { PERIODS } from './constants'
+import { getPeriods, Period } from './constants'
 
 export default function getPeriod(
   periodSearchParam: DashboardSearchParams['period'],
   settings: Settings,
-) {
-  const customPeriod = parseInt(settings.dashboard.customPeriod)
+): Period {
+  // The settings form only accepts whole days, but an older or hand-edited
+  // value must not turn into NaN or a period that starts now.
+  const customPeriod = Math.max(
+    1,
+    parseInt(settings.dashboard.customPeriod) || 1,
+  )
 
   function getCustomPeriod() {
     const startDate = new Date(Date.now() - customPeriod * 24 * 60 * 60 * 1000)
@@ -31,20 +36,22 @@ export default function getPeriod(
     }
   }
 
-  function getPeriodFromKey(key: string) {
+  function getPeriodFromKey(key: string): Period | undefined {
     switch (key) {
       case 'custom':
         return getCustomPeriod()
       case 'allTime':
         return getAllTimePeriod()
+      case '7days':
+      case 'pastYear':
+        return getPeriods()[key]
       default:
-        return PERIODS[key]
+        return undefined
     }
   }
 
-  const period =
+  return (
     (periodSearchParam && getPeriodFromKey(periodSearchParam)) ||
-    getPeriodFromKey('custom')
-
-  return period
+    getCustomPeriod()
+  )
 }

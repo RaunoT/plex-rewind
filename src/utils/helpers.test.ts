@@ -5,7 +5,9 @@ import { DEFAULT_SETTINGS } from './constants'
 import {
   checkRequiredSettings,
   daysBetween,
+  getRewindStartDate,
   getSettingsPage,
+  hasRewindPlays,
   isInitialSetup,
   isPostUpdateMissingSettings,
 } from './helpers'
@@ -106,5 +108,52 @@ describe('daysBetween', () => {
   it('never returns less than one day', () => {
     expect(daysBetween('2026-04-01')).toBe(1)
     expect(daysBetween('not a date')).toBe(1)
+  })
+})
+
+describe('getRewindStartDate', () => {
+  beforeEach(() => {
+    vi.useFakeTimers()
+    vi.setSystemTime(new Date('2026-03-10T12:00:00Z'))
+  })
+
+  afterEach(() => {
+    vi.useRealTimers()
+  })
+
+  it('prefers the configured start date', () => {
+    const settings = completeSettings()
+
+    settings.rewind.startDate = '2025-06-01'
+
+    expect(getRewindStartDate(settings)).toBe('2025-06-01')
+  })
+
+  it('defaults to a year before now, as of the call', () => {
+    expect(getRewindStartDate(completeSettings())).toBe('2025-03-10')
+
+    vi.setSystemTime(new Date('2026-09-20T12:00:00Z'))
+
+    expect(getRewindStartDate(completeSettings())).toBe('2025-09-20')
+  })
+})
+
+describe('hasRewindPlays', () => {
+  const none = { count: 0, duration: '0 mins', top: [] }
+
+  it('is false when nothing was played', () => {
+    expect(hasRewindPlays({ shows: none, movies: none, audio: none })).toBe(
+      false,
+    )
+  })
+
+  it('is true when any media type has plays', () => {
+    expect(
+      hasRewindPlays({
+        shows: none,
+        movies: none,
+        audio: { ...none, count: 3 },
+      }),
+    ).toBe(true)
   })
 })

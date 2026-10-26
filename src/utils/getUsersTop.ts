@@ -1,5 +1,10 @@
 import { Settings } from '@/types/settings'
-import { TautulliItem, TautulliItemRow } from '@/types/tautulli'
+import {
+  TautulliItem,
+  TautulliItemRow,
+  TautulliLibrary,
+} from '@/types/tautulli'
+import { sum } from 'lodash'
 import { fetchOverseerrStats, fetchOverseerrUserId } from './fetchOverseerr'
 import fetchTautulli, {
   getActiveUsers,
@@ -159,55 +164,39 @@ async function getTautulliPlaysCounts(
     getLibrariesByType('artist'),
   ])
 
+  // Only the match count is needed, so no history rows are requested.
+  async function countPlays(userId: number, libraries: TautulliLibrary[]) {
+    const counts = await Promise.all(
+      libraries.map(async (library) => {
+        const history = await fetchTautulli<{ recordsFiltered: number }>(
+          'get_history',
+          {
+            user_id: userId,
+            after,
+            section_id: library.section_id,
+            length: 0,
+          },
+        )
+
+        return history?.response?.data?.recordsFiltered || 0
+      }),
+    )
+
+    return sum(counts)
+  }
+
   return Promise.all(
     users.map(async (user) => {
-      let moviesPlaysCount = 0
-      let showsPlaysCount = 0
-      let audioPlaysCount = 0
-
-      for (const movieLib of moviesLib) {
-        const userMovies = await fetchTautulli<{ recordsFiltered: number }>(
-          'get_history',
-          {
-            user_id: user.user_id,
-            after: after,
-            section_id: movieLib.section_id,
-          },
-        )
-
-        moviesPlaysCount += userMovies?.response?.data?.recordsFiltered || 0
-      }
-
-      for (const showLib of showsLib) {
-        const userShows = await fetchTautulli<{ recordsFiltered: number }>(
-          'get_history',
-          {
-            user_id: user.user_id,
-            after: after,
-            section_id: showLib.section_id,
-          },
-        )
-
-        showsPlaysCount += userShows?.response?.data?.recordsFiltered || 0
-      }
-
-      for (const audioLibItem of audioLib) {
-        const userAudio = await fetchTautulli<{ recordsFiltered: number }>(
-          'get_history',
-          {
-            user_id: user.user_id,
-            after: after,
-            section_id: audioLibItem.section_id,
-          },
-        )
-
-        audioPlaysCount += userAudio?.response?.data?.recordsFiltered || 0
-      }
+      const [movies, shows, audio] = await Promise.all([
+        countPlays(user.user_id, moviesLib),
+        countPlays(user.user_id, showsLib),
+        countPlays(user.user_id, audioLib),
+      ])
 
       return {
-        movies_plays_count: moviesPlaysCount,
-        shows_plays_count: showsPlaysCount,
-        audio_plays_count: audioPlaysCount,
+        movies_plays_count: movies,
+        shows_plays_count: shows,
+        audio_plays_count: audio,
       }
     }),
   )
@@ -226,6 +215,10 @@ async function getStatsWithLoggedInUser(
 
   let slicedUsers = users.slice(0, numberOfUsers)
 
+  if (!loggedInUser) {
+    return slicedUsers
+  }
+
   if (loggedInUserRank === -1 || loggedInUserRank >= numberOfUsers) {
     slicedUsers = users.slice(0, numberOfUsers - 1)
     loggedInUser.rank =
@@ -238,7 +231,7 @@ async function getStatsWithLoggedInUser(
 
 async function getInactiveUserInTimePeriod(
   id: string,
-): Promise<TautulliItemRow> {
+): Promise<TautulliItemRow | null> {
   if (isTracearrSource(getSettings())) {
     return getTracearrInactiveUser(id)
   }
@@ -246,7 +239,12 @@ async function getInactiveUserInTimePeriod(
   const user = await fetchTautulli<TautulliItemRow>('get_user', {
     user_id: id,
   })
-  const nonActive = user?.response?.data ?? ({} as TautulliItemRow)
+  const nonActive = user?.response?.data
+
+  // Without a user ID the play counts would be for the whole server.
+  if (nonActive?.user_id == null) {
+    return null
+  }
 
   nonActive.total_duration = 0
 

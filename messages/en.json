@@ -27,6 +27,7 @@
     "noActivity": "No active sessions.. 😴"
   },
   "Dashboard": {
+    "sizePartial": "{size} (partial)",
     "noActivity": "No activity during this period.. 😴",
     "title": "Dashboard",
     "usersTitle": "Users",
@@ -112,7 +113,7 @@
     },
     "Dashboard": {
       "title": "Dashboard settings",
-      "customPeriodError": "Custom period must be > 0 and <= 3000",
+      "customPeriodError": "Custom period must be a whole number > 0 and <= 3000",
       "startDateError": "Invalid start date",
       "usersPage": "Users page",
       "statistics": "Statistics",
@@ -141,7 +142,7 @@
       "tmdbOnlyPostersDescription2": "By default, TMDB is a fallback.",
       "privacy": "Privacy",
       "excludedUsers": "Excluded users",
-      "excludedUsersDescription": "Selected users will be excluded from statistics.",
+      "excludedUsersDescription": "Selected users are left out of user rankings and total durations. With Tautulli, top movies, shows and artists still include their plays.",
       "outsideAccess": "Allow outside access",
       "outsideAccessDescription": "Access without login.",
       "anonymize": "Anonymize",
@@ -228,6 +229,8 @@
     },
     "Libraries": {
       "filesize": "Did you know the <filesize>Filesize</filesize> of all the available content on <plex>{serverName}</plex> is <size>{sizeValue}!</size>",
+      "sizePartial": "Some libraries have no size data. Enable “Calculate Total File Sizes” in Tautulli.",
+      "sizePartialTracearr": "Some libraries have no size data in Tracearr.",
       "libraries": "The current library consists of:",
       "movies": "{count, plural, =1 {Movie} other {Movies}}",
       "episodes": "{count, plural, =1 {Episode} other {Episodes}}",

@@ -27,6 +27,7 @@
     "noActivity": "Ühtegi aktiivset sessiooni pole.. 😴"
   },
   "Dashboard": {
+    "sizePartial": "{size} (osaline)",
     "noActivity": "Valitud perioodil puudub tegevus.. 😴",
     "title": "Edetabel",
     "usersTitle": "Kasutajad",
@@ -112,7 +113,7 @@
     },
     "Dashboard": {
       "title": "Edetabeli seaded",
-      "customPeriodError": "Kohandatud periood peab olema > 0 ja <= 3000",
+      "customPeriodError": "Kohandatud periood peab olema täisarv > 0 ja <= 3000",
       "startDateError": "Vale algusaeg",
       "usersPage": "Kasutajate leht",
       "statistics": "Statistika",
@@ -141,7 +142,7 @@
       "tmdbOnlyPostersDescription2": "Vaikimisi kasutatakse TMDB'd ainult kui postrid puuduvad.",
       "privacy": "Privaatsus",
       "excludedUsers": "Välistatud kasutajad",
-      "excludedUsersDescription": "Valitud kasutajad jäetakse statistikast välja.",
+      "excludedUsersDescription": "Valitud kasutajad jäetakse välja kasutajate pingeridadest ja koguajast. Tautulli puhul sisaldavad enim vaadatud filmid, saated ja esitajad endiselt nende vaatamisi.",
       "outsideAccess": "Luba väline ligipääs",
       "outsideAccessDescription": "Ligipääs ilma sisselogimiseta.",
       "anonymize": "Anonümiseeri",
@@ -228,6 +229,8 @@
     },
     "Libraries": {
       "filesize": "Kas teadsid, et kõikide kogumike <filesize>Failisuurus</filesize> <plex>{serverName}'is</plex> on <size>{sizeValue}!</size>",
+      "sizePartial": "Mõne kogumiku suurus on teadmata. Lülita Tautullis sisse „Calculate Total File Sizes“.",
+      "sizePartialTracearr": "Tracearr'is puuduvad mõne kogumiku suuruse andmed.",
       "libraries": "Hetkel on saadaval:",
       "movies": "{count, plural, =1 {Film} other {Filmi}}",
       "episodes": "{count, plural, =1 {Saade} other {Saadet}}",

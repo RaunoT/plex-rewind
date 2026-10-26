@@ -27,6 +27,7 @@
     "noActivity": "Nessuna sessione attiva… 😴"
   },
   "Dashboard": {
+    "sizePartial": "{size} (parziale)",
     "noActivity": "Nessuna attività in questo periodo… 😴",
     "title": "Dashboard",
     "usersTitle": "Utenti",
@@ -112,7 +113,7 @@
     },
     "Dashboard": {
       "title": "Impostazioni della dashboard",
-      "customPeriodError": "Il periodo personalizzato deve essere > 0 e <= 3000",
+      "customPeriodError": "Il periodo personalizzato deve essere un numero intero > 0 e <= 3000",
       "startDateError": "Data di inizio non valida",
       "usersPage": "Pagina degli utenti",
       "statistics": "Statistiche",
@@ -141,7 +142,7 @@
       "tmdbOnlyPostersDescription2": "Di norma, TMDB è solo una riserva.",
       "privacy": "Privacy",
       "excludedUsers": "Utenti esclusi",
-      "excludedUsersDescription": "Gli utenti selezionati saranno esclusi dalle statistiche.",
+      "excludedUsersDescription": "Gli utenti selezionati sono esclusi dalle classifiche degli utenti e dalle durate totali. Con Tautulli, i film, le serie e gli artisti più visti includono comunque le loro riproduzioni.",
       "outsideAccess": "Consenti l'accesso esterno",
       "outsideAccessDescription": "Accesso senza login.",
       "anonymize": "Anonimizza",
@@ -228,6 +229,8 @@
     },
     "Libraries": {
       "filesize": "Lo sapevi che la <filesize>Dimensione</filesize> di tutti i contenuti disponibili su <plex>{serverName}</plex> è di <size>{sizeValue}!</size>",
+      "sizePartial": "Alcune librerie non hanno dati sulle dimensioni. Attiva “Calculate Total File Sizes” in Tautulli.",
+      "sizePartialTracearr": "Alcune librerie non hanno dati sulle dimensioni in Tracearr.",
       "libraries": "La libreria oggi contiene:",
       "movies": "{count, plural, =1 {Film} other {Film}}",
       "episodes": "{count, plural, =1 {Episodio} other {Episodi}}",

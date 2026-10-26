@@ -1,4 +1,5 @@
 import { RewindStory } from '@/types/rewind'
+import { hasRewindPlays } from '@/utils/helpers'
 import {
   FilmIcon,
   MusicalNoteIcon,
@@ -13,6 +14,7 @@ export default function StoryGoodbye({
   settings,
 }: RewindStory) {
   const t = useTranslations('Rewind.Goodbye')
+  const hasPlays = hasRewindPlays(userRewind)
 
   return (
     <>
@@ -27,7 +29,7 @@ export default function StoryGoodbye({
         </p>
       </RewindStat>
       <RewindStat renderDelay={2} scaleDelay={4} isPaused={isPaused}>
-        {userRewind.duration.user ? (
+        {hasPlays ? (
           <p>
             {t('fromYourFavorite')}{' '}
             {userRewind.movies.duration && (
@@ -66,7 +68,7 @@ export default function StoryGoodbye({
         isPaused={isPaused}
       >
         <p>
-          {userRewind.duration.user ? t('weWillBeBack') : t('weWillBeHere')}{' '}
+          {hasPlays ? t('weWillBeBack') : t('weWillBeHere')}{' '}
           {t.rich('insightsAndStats', {
             insightsAndStats: (chunks) => (
               <span className='rewind-cat'>{chunks}</span>

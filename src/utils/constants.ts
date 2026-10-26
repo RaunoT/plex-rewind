@@ -1,30 +1,35 @@
 import { Settings } from '@/types/settings'
 import { env } from 'next-runtime-env'
 
-const DAYS_AGO_7: Date = new Date(new Date().setDate(new Date().getDate() - 7))
-const PAST_YEAR: Date = new Date(
-  new Date().setFullYear(new Date().getFullYear() - 1),
-)
-
 export type Period = {
   date: string
   string: string
   daysAgo: number
 }
 
-export const PERIODS: { [key: string]: Period } = {
-  '7days': {
-    date: DAYS_AGO_7.toISOString(),
-    string: DAYS_AGO_7.toISOString().split('T')[0],
-    daysAgo: 7,
-  },
-  pastYear: {
-    date: PAST_YEAR.toISOString(),
-    string: PAST_YEAR.toISOString().split('T')[0],
-    daysAgo: Math.ceil(
-      (new Date().getTime() - PAST_YEAR.getTime()) / (1000 * 3600 * 24),
+function createPeriod(date: Date, daysAgo: number): Period {
+  return {
+    date: date.toISOString(),
+    string: date.toISOString().split('T')[0],
+    daysAgo,
+  }
+}
+
+// Computed per call, as a module-level constant would freeze at server start.
+export function getPeriods(now: Date = new Date()) {
+  const daysAgo7 = new Date(now)
+  const pastYear = new Date(now)
+
+  daysAgo7.setDate(daysAgo7.getDate() - 7)
+  pastYear.setFullYear(pastYear.getFullYear() - 1)
+
+  return {
+    '7days': createPeriod(daysAgo7, 7),
+    pastYear: createPeriod(
+      pastYear,
+      Math.ceil((now.getTime() - pastYear.getTime()) / (1000 * 3600 * 24)),
     ),
-  },
+  }
 }
 
 export const META_DESCRIPTION: string =

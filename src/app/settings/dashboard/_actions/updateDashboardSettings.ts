@@ -38,9 +38,9 @@ export default async function saveDashboardSettings(
       .string()
       .refine(
         (value) => {
-          const number = parseFloat(value)
+          const number = Number(value)
 
-          return number > 0 && number <= 3000
+          return /^\d+$/.test(value) && number > 0 && number <= 3000
         },
         {
           message: t('customPeriodError'),

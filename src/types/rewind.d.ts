@@ -18,6 +18,7 @@ export type UserRewind = {
   usersTop: TautulliItemRow[] | null
   libraries: TautulliLibrary[]
   libraries_total_size: number
+  libraries_size_is_partial: boolean
   requests?: {
     total: number
     movies: number

@@ -6,6 +6,7 @@ import {
   TautulliMediaReturnType,
   TautulliMediaType,
 } from '@/types/tautulli'
+import { sum } from 'lodash'
 import { getTranslations } from 'next-intl/server'
 import { fetchOverseerrStats } from './fetchOverseerr'
 import fetchTautulli from './fetchTautulli'
@@ -13,6 +14,7 @@ import { getTracearrLibrariesSize } from './fetchTracearr'
 import { secondsToTime, timeToSeconds } from './formatting'
 import getMediaAdditionalData from './getMediaAdditionalData'
 import getSettings from './getSettings'
+import { getTautulliTotalDuration } from './getTautulliDuration'
 import {
   getTracearrPlaysByTime,
   getTracearrTopMediaItems,
@@ -20,6 +22,7 @@ import {
   getTracearrTotalDuration,
 } from './getTracearrStats'
 import { daysBetween, getRewindStartDate, isTracearrSource } from './helpers'
+import { LibrariesSize, sumLibrariesSize } from './librariesSize'
 
 export async function getTopMediaStats(
   userId: string,
@@ -115,31 +118,34 @@ export async function getTopMediaStats(
   }
 }
 
-export async function getlibrariesTotalSize(libraries: TautulliLibrary[]) {
+export async function getlibrariesTotalSize(
+  libraries: TautulliLibrary[],
+): Promise<LibrariesSize> {
   if (isTracearrSource(getSettings())) {
     return getTracearrLibrariesSize(libraries)
   }
 
   const res = await Promise.all(
     libraries.map((library) =>
-      fetchTautulli<{ total_file_size: number }>('get_library_media_info', {
-        section_id: library.section_id,
-        length: 0,
-      }),
+      fetchTautulli<{ total_file_size?: number }>(
+        'get_library_media_info',
+        {
+          section_id: library.section_id,
+          length: 0,
+        },
+        true,
+      ),
     ),
   )
 
-  let totalSize = 0
-
-  for (const library of res) {
-    const librarySize = library?.response?.data?.total_file_size
-
-    if (librarySize) {
-      totalSize += librarySize
-    }
-  }
-
-  return totalSize
+  // Tautulli only reports a size for TV and music libraries once "Calculate
+  // Total File Sizes" is enabled.
+  return sumLibrariesSize(
+    libraries.map((library, i) => ({
+      size: res[i]?.response?.data?.total_file_size,
+      hasItems: Number(library.count) > 0 || Number(library.child_count) > 0,
+    })),
+  )
 }
 
 export async function getLibrariesTotalDuration(libraries: TautulliLibrary[]) {
@@ -150,27 +156,17 @@ export async function getLibrariesTotalDuration(libraries: TautulliLibrary[]) {
     return getTracearrTotalDuration({ since: startDate, libraries })
   }
 
-  const res = await Promise.all(
-    libraries.map((library) => {
-      return fetchTautulli<{ total_duration: string }>('get_history', {
-        section_id: library.section_id,
+  const durations = await Promise.all(
+    libraries.map((library) =>
+      getTautulliTotalDuration({
         after: startDate,
-        length: 0,
-      })
-    }),
+        sectionId: library.section_id,
+        excludedUsers: settings.general.excludedUsers,
+      }),
+    ),
   )
 
-  let totalDuration = 0
-
-  for (const library of res) {
-    const duration = library?.response?.data?.total_duration
-
-    if (duration) {
-      totalDuration += timeToSeconds(duration)
-    }
-  }
-
-  return totalDuration
+  return sum(durations)
 }
 
 export async function getUserTotalDuration(

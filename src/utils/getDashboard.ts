@@ -3,11 +3,12 @@ import { TautulliItem, TautulliLibrary } from '@/types/tautulli'
 import { getTranslations } from 'next-intl/server'
 import fetchTautulli from './fetchTautulli'
 import { getTracearrLibrariesSize } from './fetchTracearr'
-import { bytesToSize, secondsToTime, timeToSeconds } from './formatting'
+import { bytesToSize, secondsToTime } from './formatting'
 import getMediaAdditionalData, {
   mapWatchedDataByRatingKey,
 } from './getMediaAdditionalData'
 import getSettings from './getSettings'
+import { getTautulliTotalDuration } from './getTautulliDuration'
 import { getTracearrItems, getTracearrTotalDuration } from './getTracearrStats'
 import { isTracearrSource } from './helpers'
 
@@ -109,20 +110,14 @@ export async function getTotalDuration(
       return secondsToTime(totalDuration, t)
     }
 
-    const totalDuration = await fetchTautulli<{ total_duration: string }>(
-      'get_history',
-      {
-        section_id: library.section_id,
-        after: period,
-        length: 0,
-        user_id: userId ? userId : '',
-      },
-    )
+    const totalDuration = await getTautulliTotalDuration({
+      after: period,
+      sectionId: library.section_id,
+      userId,
+      excludedUsers: settings.general.excludedUsers,
+    })
 
-    return secondsToTime(
-      timeToSeconds(totalDuration?.response?.data?.total_duration || '0'),
-      t,
-    )
+    return secondsToTime(totalDuration, t)
   }
 
   return undefined
@@ -136,7 +131,14 @@ export async function getTotalSize(
     const t = await getTranslations()
 
     if (isTracearrSource(settings)) {
-      return bytesToSize(await getTracearrLibrariesSize([library]), 2, t)
+      const { size, isPartial } = await getTracearrLibrariesSize([library])
+      const formattedSize = bytesToSize(size, 2, t)
+
+      // A Tracearr library spans every Plex library of its type, so only some
+      // of them can be missing a size. Tautulli reports one library at a time.
+      return formattedSize && isPartial
+        ? t('Dashboard.sizePartial', { size: formattedSize })
+        : formattedSize
     }
 
     const totalSize = await fetchTautulli<{ total_file_size: number }>(

@@ -120,7 +120,8 @@ async function RewindContent({ userId }: { userId?: string }) {
     },
     habits: habits,
     libraries: libraries,
-    libraries_total_size: librariesTotalSize,
+    libraries_total_size: librariesTotalSize.size,
+    libraries_size_is_partial: librariesTotalSize.isPartial,
     server_id: serverId,
     user: user,
   }
