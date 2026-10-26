@@ -15,7 +15,6 @@ type InvalidFile = {
   key: string
   problem: string
   remedy: string
-  backedUp: boolean
 }
 
 export const SETTINGS_PATH = path.join(process.cwd(), 'config/settings.json')
@@ -28,6 +27,9 @@ let cached: CachedSettings | undefined
 let invalid: InvalidFile | undefined
 let lastLoggedError: string | undefined
 let hasLoggedWriteError = false
+// Set while the file on disk couldn't be read, so it may hold changes the
+// cached settings don't have. It's only replaced once a copy has been kept.
+let needsBackupBeforeWrite = false
 
 export default function getSettings(): Settings {
   let key: string
@@ -38,6 +40,8 @@ export default function getSettings(): Settings {
     if (getErrorCode(error) === 'ENOENT') {
       return createDefaultSettings()
     }
+
+    needsBackupBeforeWrite = true
 
     return fallBackToLastKnownGood(
       `[SETTINGS] - Unable to access ${SETTINGS_PATH} (${getErrorMessage(error)}).`,
@@ -68,7 +72,11 @@ export function writeSettings(settings: Settings): void {
   }
   const content = `${JSON.stringify(toWrite, undefined, 2)}\n`
 
-  backUpInvalidFile()
+  if (needsBackupBeforeWrite && settingsFileExists() && !backUpSettingsFile()) {
+    throw new Error(
+      `[SETTINGS] - ${SETTINGS_PATH} could not be read or backed up, so it was not replaced.`,
+    )
+  }
 
   try {
     writeAtomically(content)
@@ -86,6 +94,7 @@ export function writeSettings(settings: Settings): void {
   }
 
   invalid = undefined
+  needsBackupBeforeWrite = false
   lastLoggedError = undefined
 
   try {
@@ -110,6 +119,8 @@ function loadSettings(key: string): Settings {
       return handleInvalidFile(key, error.message)
     }
 
+    needsBackupBeforeWrite = true
+
     return fallBackToLastKnownGood(
       `[SETTINGS] - Unable to read ${SETTINGS_PATH} (${getErrorMessage(error)}).`,
       'Make sure the file is readable.',
@@ -125,6 +136,7 @@ function loadSettings(key: string): Settings {
   settings.setupComplete = isSetupComplete(settings)
   cached = { key, settings }
   invalid = undefined
+  needsBackupBeforeWrite = false
   lastLoggedError = undefined
 
   if (!isEqual(settings, saved)) {
@@ -163,17 +175,21 @@ function handleInvalidFile(key: string, reason: string): Settings {
 
   let remedy = 'Fix the file, or remove it to start the setup again.'
 
-  if (!cached) {
+  // With a last known good copy the file is only backed up once it is about
+  // to be replaced by a save
+  if (cached) {
+    needsBackupBeforeWrite = true
+  } else {
     const backupPath = backUpSettingsFile()
 
     if (backupPath) {
       remedy += ` A copy of the file was saved to ${backupPath}.`
     }
+
+    needsBackupBeforeWrite = !backupPath
   }
 
-  // With a last known good copy the file is only backed up once it is about
-  // to be replaced by a save
-  invalid = { key, problem, remedy, backedUp: !cached }
+  invalid = { key, problem, remedy }
 
   return fallBackToLastKnownGood(problem, remedy)
 }
@@ -264,18 +280,16 @@ function copyFileOwner(fd: number, { mode, uid, gid }: fs.Stats): void {
   })
 }
 
-function backUpInvalidFile(): void {
-  if (!invalid || invalid.backedUp) {
-    return
+// Anything but a missing file counts as existing, so a file that can't even be
+// checked is never replaced without a backup
+function settingsFileExists(): boolean {
+  try {
+    fs.statSync(SETTINGS_PATH)
+
+    return true
+  } catch (error) {
+    return getErrorCode(error) !== 'ENOENT'
   }
-
-  invalid.backedUp = true
-
-  ignoreErrors(() => {
-    if (getFileKey(fs.statSync(SETTINGS_PATH)) === invalid?.key) {
-      backUpSettingsFile()
-    }
-  })
 }
 
 function backUpSettingsFile(): string | undefined {

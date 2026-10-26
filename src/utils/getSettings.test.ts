@@ -333,6 +333,69 @@ describe('getSettings with an invalid file', () => {
   })
 })
 
+describe('getSettings with a file that cannot be read', () => {
+  it('backs the file up before a save replaces it', async () => {
+    fs.writeFileSync(settingsPath, JSON.stringify(DEFAULT_SETTINGS))
+
+    const { default: getSettings, writeSettings } = await loadModule()
+    const settings = getSettings()
+    const readFileSync = fs.readFileSync
+
+    editSettingsFile(JSON.stringify({ general: { serverName: 'Edited' } }))
+    vi.spyOn(fs, 'readFileSync').mockImplementation(((
+      file: fs.PathOrFileDescriptor,
+      options?: BufferEncoding,
+    ) => {
+      if (file === settingsPath) {
+        throw errnoError('EIO')
+      }
+
+      return readFileSync(file, options as 'utf-8')
+    }) as typeof fs.readFileSync)
+
+    expect(getSettings().general.serverName).toBe('')
+
+    vi.mocked(fs.readFileSync).mockRestore()
+    settings.general.serverName = 'Saved'
+    writeSettings(settings)
+
+    expect(readSavedSettings().general.serverName).toBe('Saved')
+    expect(listBackups()).toHaveLength(1)
+    expect(
+      JSON.parse(
+        fs.readFileSync(
+          path.join(path.dirname(settingsPath), listBackups()[0]),
+          'utf-8',
+        ),
+      ).general.serverName,
+    ).toBe('Edited')
+  })
+
+  it('refuses to replace the file when it cannot be backed up', async () => {
+    fs.writeFileSync(settingsPath, JSON.stringify(DEFAULT_SETTINGS))
+
+    const { default: getSettings, writeSettings } = await loadModule()
+    const settings = getSettings()
+
+    editSettingsFile(JSON.stringify({ general: { serverName: 'Edited' } }))
+    vi.spyOn(fs, 'readFileSync').mockImplementation(() => {
+      throw errnoError('EIO')
+    })
+    vi.spyOn(fs, 'copyFileSync').mockImplementation(() => {
+      throw errnoError('EIO')
+    })
+
+    getSettings()
+
+    expect(() => writeSettings(settings)).toThrow(/not replaced/)
+
+    vi.restoreAllMocks()
+
+    expect(readSavedSettings().general.serverName).toBe('Edited')
+    expect(listBackups()).toHaveLength(0)
+  })
+})
+
 describe('writeSettings', () => {
   it('writes readable JSON and leaves no temporary files', async () => {
     const { writeSettings } = await loadModule()
