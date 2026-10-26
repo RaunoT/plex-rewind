@@ -26,7 +26,7 @@ function flatten(messages: Messages, prefix = ''): Record<string, string> {
 
 // Collects argument names and rich-text tags (`{count}`, `<b>`). A minimal ICU
 // walk is needed so plural/select branch bodies like `other {Movies}` aren't
-// mistaken for arguments.
+// mistaken for arguments, and quoted text like `'{literal}'` is skipped.
 function placeholders(message: string): string[] {
   const found = new Set<string>()
 
@@ -79,9 +79,41 @@ function placeholders(message: string): string[] {
     i++ // }
   }
 
+  // ICU apostrophes: `''` is a literal apostrophe, and an apostrophe before
+  // a syntax character quotes everything up to the next lone apostrophe.
+  function skipQuote() {
+    if (message[i + 1] === "'") {
+      i += 2
+
+      return
+    }
+
+    if (!'{}#|<>'.includes(message[i + 1] ?? '')) {
+      i++
+
+      return
+    }
+
+    i++
+
+    while (i < message.length) {
+      if (message[i] === "'" && message[i + 1] === "'") {
+        i += 2
+      } else if (message[i] === "'") {
+        i++
+
+        return
+      } else {
+        i++
+      }
+    }
+  }
+
   function parseMessage() {
     while (i < message.length && message[i] !== '}') {
-      if (message[i] === '{') {
+      if (message[i] === "'") {
+        skipQuote()
+      } else if (message[i] === '{') {
         parseArgument()
       } else {
         const tag = message.slice(i).match(/^<\/?([a-zA-Z]\w*)>/)
@@ -100,6 +132,21 @@ function placeholders(message: string): string[] {
 
   return [...found].sort()
 }
+
+describe('placeholders', () => {
+  it('reads arguments, plural branches and tags', () => {
+    expect(
+      placeholders(
+        '<b>{name}</b> has {count, plural, =1 {# play} other {# plays}}',
+      ),
+    ).toEqual(['<b>', 'count', 'name'])
+  })
+
+  it('ignores quoted text and keeps literal apostrophes', () => {
+    expect(placeholders("{value} '{unit}'")).toEqual(['value'])
+    expect(placeholders("It's {count} o''clock, '<b>'")).toEqual(['count'])
+  })
+})
 
 const reference = flatten(loadMessages('en'))
 
