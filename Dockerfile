@@ -6,15 +6,9 @@ FROM base AS deps
 RUN apk add --no-cache libc6-compat
 WORKDIR /app
 
-# Install dependencies based on the preferred package manager
-COPY package.json yarn.lock* package-lock.json* pnpm-lock.yaml* pnpm-workspace.yaml* .npmrc* ./
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml .npmrc* ./
 ENV HUSKY=0
-RUN \
-  if [ -f yarn.lock ]; then yarn --frozen-lockfile; \
-  elif [ -f package-lock.json ]; then npm ci; \
-  elif [ -f pnpm-lock.yaml ]; then corepack enable pnpm && pnpm i --frozen-lockfile; \
-  else echo "Lockfile not found." && exit 1; \
-  fi
+RUN corepack enable pnpm && pnpm i --frozen-lockfile
 
 # Rebuild the source code only when needed
 FROM base AS builder
@@ -30,37 +24,33 @@ ENV NEXT_TELEMETRY_DISABLED=1
 ARG NEXT_PUBLIC_VERSION_TAG
 ENV NEXT_PUBLIC_VERSION_TAG=${NEXT_PUBLIC_VERSION_TAG}
 
-RUN \
-  if [ -f yarn.lock ]; then yarn run build; \
-  elif [ -f package-lock.json ]; then npm run build; \
-  elif [ -f pnpm-lock.yaml ]; then corepack enable pnpm && pnpm run build; \
-  else echo "Lockfile not found." && exit 1; \
-  fi
+RUN corepack enable pnpm && pnpm run build
 
 # Production image, copy all the files and run next
 FROM base AS runner
 WORKDIR /app
 
-# Install openssl in the runner stage
-RUN apk add --no-cache openssl
+# su-exec lets the entrypoint drop root privileges
+RUN apk add --no-cache su-exec
 
 ENV NODE_ENV=production
-ENV BASE_DIR=/app
 ARG NEXT_PUBLIC_VERSION_TAG
 ENV NEXT_PUBLIC_VERSION_TAG=${NEXT_PUBLIC_VERSION_TAG}
 # Uncomment the following line in case you want to disable telemetry during runtime.
 ENV NEXT_TELEMETRY_DISABLED=1
 
 COPY --from=builder /app/public ./public
-COPY --from=builder /app/config ./config
-
-# Set the correct permission for prerender cache and config
-RUN mkdir .next
 
 # Automatically leverage output traces to reduce image size
 # https://nextjs.org/docs/advanced-features/output-file-tracing
 COPY --from=builder /app/.next/standalone ./
 COPY --from=builder /app/.next/static ./.next/static
+
+# The app saves settings to config and Next.js writes its caches to .next/cache,
+# so both need to be writable by the node user (the entrypoint fixes config on start)
+RUN mkdir -p config .next/cache && chown -R node:node config .next/cache
+
+COPY --chmod=755 docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 
 EXPOSE 8383
 
@@ -69,4 +59,9 @@ ENV PORT=8383
 # server.js is created by next build from the standalone output
 # https://nextjs.org/docs/pages/api-reference/config/next-config-js/output
 ENV HOSTNAME="0.0.0.0"
+
+HEALTHCHECK --interval=30s --timeout=15s --start-period=30s --retries=3 \
+  CMD wget -qO /dev/null "http://127.0.0.1:${PORT}/api/status" || exit 1
+
+ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
 CMD ["node", "server.js"]
