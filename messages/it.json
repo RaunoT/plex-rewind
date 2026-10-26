@@ -199,13 +199,15 @@
       "previousStory": "Storia precedente",
       "nextStory": "Storia successiva",
       "pause": "Pausa",
-      "resume": "Riprendi"
+      "resume": "Riprendi",
+      "label": "Storie del Rewind",
+      "storyPosition": "Storia {current} di {total}"
     },
     "Common": {
       "top": "Ecco la tua <top>Top {count}</top>"
     },
     "Welcome": {
-      "welcome": "Ti diamo il benvenuto nel tuo <rewind>{serverName} Rewind</rewind>",
+      "welcome": "Ti diamo il benvenuto nel tuo <rewind>{serverName} Rewind</rewind>, <user>{userValue}!</user>",
       "takeYouThrough": "Ripercorriamo insieme i tuoi momenti migliori",
       "letsGetStarted": "Cominciamo!",
       "forPastYear": "<pastYear>dell'ultimo anno.</pastYear>",
@@ -256,7 +258,9 @@
     },
     "Habits": {
       "day": "Il giorno in cui hai guardato di più è stato <day>{dayValue}</day>",
-      "hour": "E hai premuto play più spesso verso le <hour>{hourValue}</hour> <emoji>{emojiValue}</emoji>"
+      "hour": "E hai premuto play più spesso verso le <hour>{hourValue}</hour> <emoji>{emojiValue}</emoji>",
+      "dayChart": "Grafico a barre delle riproduzioni per giorno della settimana. Giorno più attivo: {dayValue} con {count, plural, =1 {# riproduzione} other {# riproduzioni}}.",
+      "hourChart": "Grafico a barre delle riproduzioni per ora del giorno. Ora più attiva: {hourValue} con {count, plural, =1 {# riproduzione} other {# riproduzioni}}."
     },
     "Goodbye": {
       "thanks": "Grazie per aver seguito il tuo <plex>{serverName} Rewind</plex>, <user>{userValue}!</user>",
@@ -265,13 +269,16 @@
       "weWillBeHere": "In ogni caso, noi saremo qui",
       "insightsAndStats": "con ancora più <insightsAndStats>curiosità e statistiche.</insightsAndStats>",
       "untilThen": "Fino ad allora, continua a esplorare e a goderti tutto quello che <plex>{serverName}</plex> ha da offrire.",
-      "movies": "Film",
-      "shows": "Serie",
-      "tracks": "Brani",
-      "fromYourFavorite": "Dai tuoi preferiti tra i",
-      "toTheMostEntertaining": "alle più divertenti tra le",
-      "andMemorable": "e ai più memorabili tra i",
-      "itsBeenAJourneyToRemember": ", è stato un viaggio da ricordare."
+      "journey": {
+        "movies": "Dai tuoi <movies>Film</movies> preferiti, è stato un viaggio da ricordare.",
+        "shows": "Dalle <shows>Serie</shows> più divertenti, è stato un viaggio da ricordare.",
+        "audio": "Dai <tracks>Brani</tracks> più memorabili, è stato un viaggio da ricordare.",
+        "moviesShows": "Dai tuoi <movies>Film</movies> preferiti alle <shows>Serie</shows> più divertenti, è stato un viaggio da ricordare.",
+        "moviesAudio": "Dai tuoi <movies>Film</movies> preferiti ai <tracks>Brani</tracks> più memorabili, è stato un viaggio da ricordare.",
+        "showsAudio": "Dalle <shows>Serie</shows> più divertenti ai <tracks>Brani</tracks> più memorabili, è stato un viaggio da ricordare.",
+        "moviesShowsAudio": "Dai tuoi <movies>Film</movies> preferiti alle <shows>Serie</shows> più divertenti e ai <tracks>Brani</tracks> più memorabili, è stato un viaggio da ricordare.",
+        "none": "È stato un viaggio da ricordare."
+      }
     }
   },
   "MediaItem": {
