@@ -1,5 +1,3 @@
-'use server'
-
 import getSettings from './getSettings'
 
 type OverseerrResponse<T> = {

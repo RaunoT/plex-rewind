@@ -1,9 +1,10 @@
 'use client'
 
-import { Settings } from '@/types/settings'
+import { PublicSettings } from '@/types/settings'
 import { TautulliItemRow } from '@/types/tautulli'
 import { getDeeplinkRatingKeyFromRow } from '@/utils/deeplink'
 import { formatRating, secondsToTime } from '@/utils/formatting'
+import { getImageProxyUrl } from '@/utils/imageProxy'
 import { slideDown } from '@/utils/motion'
 import {
   CalendarDaysIcon,
@@ -31,7 +32,7 @@ type Props = {
   type: 'movie' | 'show' | 'artist' | 'users'
   serverId: string
   activeStats: string[]
-  settings: Settings
+  settings: PublicSettings
   loggedInUserId?: string
   items: TautulliItemRow[]
   rows?: boolean
@@ -51,28 +52,17 @@ export default function MediaItem({
   const translations = useTranslations()
   const t = useTranslations('MediaItem')
   const locale = useLocale()
-  const tautulliUrl = settings.connection.tautulliUrl
   const isTmdbPoster = data.thumb?.startsWith('https://image.tmdb.org')
   const isUsers = type === 'users'
   const thumb = isUsers ? data.user_thumb : data.thumb
-  // user_thumb from Tautulli is often a full plex.tv avatar URL; pms_image_proxy
-  // only handles PMS image paths, so pass full URLs straight through.
-  const isExternalThumb = thumb?.startsWith('http')
-  const posterSrc = isTmdbPoster
-    ? data.thumb
-    : isExternalThumb
-      ? `/api/image?url=${encodeURIComponent(thumb)}`
-      : `/api/image?url=${encodeURIComponent(
-          `${tautulliUrl}/pms_image_proxy?img=${thumb}&width=300`,
-        )}`
+  const posterSrc = isTmdbPoster ? data.thumb : getImageProxyUrl(thumb)
   const isAnonymized = data.user === 'Anonymous'
   const initialImageSrc = isUsers && isAnonymized ? anonymousSvg : posterSrc
   const [imageSrc, setImageSrc] = useState<string>(initialImageSrc)
   const [prevInitialImageSrc, setPrevInitialImageSrc] =
     useState<string>(initialImageSrc)
   const titleContainerRef = useRef<HTMLDivElement>(null)
-  const isOverseerrActive =
-    settings.connection.overseerrUrl && settings.connection.overseerrApiKey
+  const isOverseerrActive = settings.connection.isOverseerrActive
   // Hidden conditional
   const isLoggedInUser = String(data.user_id) === loggedInUserId
   const isHiddenUser = isUsers && i > 4 && !isLoggedInUser

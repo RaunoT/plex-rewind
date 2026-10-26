@@ -1,5 +1,3 @@
-'use server'
-
 import { authOptions } from '@/lib/auth'
 import { Settings } from '@/types/settings'
 import {

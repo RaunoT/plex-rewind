@@ -1,9 +1,11 @@
+import { canViewStats } from '@/lib/access'
 import { authOptions } from '@/lib/auth'
 import { DashboardSearchParams } from '@/types/dashboard'
 import { getLibraries, getServerId } from '@/utils/fetchTautulli'
 import { getItems, getTotalDuration, getTotalSize } from '@/utils/getDashboard'
 import getPeriod from '@/utils/getPeriod'
 import getSettings from '@/utils/getSettings'
+import { toPublicSettings } from '@/utils/publicSettings'
 import { kebabCase } from 'lodash'
 import { Metadata } from 'next'
 import { getServerSession } from 'next-auth'
@@ -53,24 +55,19 @@ async function DashboardContent({
   }
 
   const session = await getServerSession(authOptions)
+
+  if (!settings.dashboard.isActive || !canViewStats(settings, session)) {
+    return notFound()
+  }
+
   const loggedInUserId = session?.user.id
   const period = getPeriod(periodSp, settings)
-  const isPersonal = personalSp === 'true'
+  const personalUserId = personalSp === 'true' ? loggedInUserId : undefined
   const sortByPlays =
     sortBySp === 'plays' && settings.dashboard.isSortByPlaysActive
   const [items, totalDuration, totalSize, serverId] = await Promise.all([
-    getItems(
-      library,
-      period.daysAgo,
-      isPersonal && session?.user.id,
-      sortByPlays,
-    ),
-    getTotalDuration(
-      library,
-      period.string,
-      settings,
-      isPersonal && session?.user.id,
-    ),
+    getItems(library, period.daysAgo, personalUserId, sortByPlays),
+    getTotalDuration(library, period.string, settings, personalUserId),
     getTotalSize(library, settings),
     getServerId(),
   ])
@@ -92,7 +89,7 @@ async function DashboardContent({
       type={library.section_type}
       serverId={serverId}
       count={count}
-      settings={settings}
+      settings={toPublicSettings(settings)}
       loggedInUserId={loggedInUserId}
     />
   )

@@ -2,7 +2,7 @@
 
 import {
   ActivitySettings,
-  Settings,
+  PublicSettings,
   SettingsFormInitialState,
 } from '@/types/settings'
 import { useTranslations } from 'next-intl'
@@ -12,7 +12,7 @@ import SettingsForm from '../../_components/SettingsForm'
 import saveActivitySettings from '../_actions/updateActivitySettings'
 
 type Props = {
-  settings: Settings
+  settings: PublicSettings
 }
 
 type ActivityFormState = SettingsFormInitialState<ActivitySettings>

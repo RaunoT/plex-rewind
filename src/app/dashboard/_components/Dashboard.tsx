@@ -1,5 +1,5 @@
 import MediaItems from '@/components/MediaItem/MediaItems'
-import { Settings } from '@/types/settings'
+import { PublicSettings } from '@/types/settings'
 import { TautulliItemRow } from '@/types/tautulli'
 import {
   ClockIcon,
@@ -22,7 +22,7 @@ type Props = {
   type: 'movie' | 'show' | 'artist' | 'users'
   serverId?: string
   count?: string
-  settings: Settings
+  settings: PublicSettings
   loggedInUserId?: string
 }
 

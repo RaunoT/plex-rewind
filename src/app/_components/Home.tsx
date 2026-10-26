@@ -3,9 +3,8 @@
 import plexSvg from '@/assets/plex.svg'
 import Loader from '@/components/Loader'
 import usePlexAuth from '@/hooks/usePlexAuth'
-import { Settings } from '@/types/settings'
+import { PublicSettings } from '@/types/settings'
 import { TautulliLibrary } from '@/types/tautulli'
-import { checkRequiredSettings } from '@/utils/helpers'
 import clsx from 'clsx'
 import { kebabCase } from 'lodash'
 import { signOut, useSession } from 'next-auth/react'
@@ -16,13 +15,13 @@ import { useContext } from 'react'
 import { GlobalContext } from './GlobalContextProvider'
 
 type Props = {
-  settings: Settings
+  settings: PublicSettings
+  missingSetting: string | null
   libraries: TautulliLibrary[]
 }
 
-export default function Home({ settings, libraries }: Props) {
+export default function Home({ settings, missingSetting, libraries }: Props) {
   const { isLoading, handleLogin } = usePlexAuth()
-  const missingSetting = checkRequiredSettings(settings)
   const {
     dashboard: { isPersonal, period, sortBy },
   } = useContext(GlobalContext)

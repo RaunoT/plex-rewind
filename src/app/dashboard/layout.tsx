@@ -4,6 +4,7 @@ import { authOptions } from '@/lib/auth'
 import { TautulliLibrary } from '@/types/tautulli'
 import { getLibraries } from '@/utils/fetchTautulli'
 import getSettings from '@/utils/getSettings'
+import { toPublicSettings } from '@/utils/publicSettings'
 import { kebabCase } from 'lodash'
 import { getServerSession } from 'next-auth'
 import { getTranslations } from 'next-intl/server'
@@ -45,7 +46,7 @@ export default async function DashboardLayout({ children }: Props) {
       <CardWrapper className='my-3 lg:min-h-[585px] 2xl:min-h-[648px]'>
         {children}
       </CardWrapper>
-      <PeriodSelect settings={settings} />
+      <PeriodSelect settings={toPublicSettings(settings)} />
     </div>
   )
 }

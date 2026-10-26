@@ -1,22 +1,12 @@
 import { AuthOptions } from 'next-auth'
 import CredentialsProvider from 'next-auth/providers/credentials'
-import qs from 'qs'
-import { v4 as uuidv4 } from 'uuid'
 import { parseStringPromise } from 'xml2js'
-import {
-  APP_URL,
-  PLEX_API_ENDPOINT,
-  PLEX_PRODUCT_NAME,
-} from '../utils/constants'
+import { PLEX_API_ENDPOINT } from '../utils/constants'
 import { getServerUser } from '../utils/fetchTautulli'
 
-function getClientIdentifier(): string {
-  const clientId = localStorage.getItem('plexClientId') || uuidv4()
-
-  localStorage.setItem('plexClientId', clientId)
-
-  return clientId
-}
+// Admin rights and server membership are re-checked this often, so changes
+// in Tautulli/Tracearr reach existing sessions.
+const USER_RECHECK_INTERVAL = 60 * 60 * 1000
 
 export const authOptions: AuthOptions = {
   providers: [
@@ -41,9 +31,7 @@ export const authOptions: AuthOptions = {
             headers: {
               'X-Plex-Token': authToken,
             },
-            next: {
-              revalidate: 3600,
-            },
+            cache: 'no-store',
           })
 
           if (!res.ok) {
@@ -52,6 +40,8 @@ export const authOptions: AuthOptions = {
               res.status,
               res.statusText,
             )
+
+            return null
           }
 
           const xmlData = await res.text()
@@ -65,19 +55,18 @@ export const authOptions: AuthOptions = {
             image: thumb,
             isAdmin: false,
           }
+          const serverUser = await getServerUser(userData.id, userData.email)
 
-          if (res.ok && userData) {
-            const serverUser = await getServerUser(userData.id, userData.email)
+          if (serverUser) {
+            userData.isAdmin = serverUser.isAdmin
+            console.log(`[AUTH] - User ${userData.id} logged in.`)
 
-            if (serverUser) {
-              userData.isAdmin = serverUser.isAdmin
-              console.log('[AUTH] - User logged in with data:', userData)
-
-              return userData
-            } else {
-              console.error('[AUTH] - User does not belong to this server!')
-            }
+            return userData
           }
+
+          console.error(
+            `[AUTH] - User ${userData.id} does not belong to this server!`,
+          )
 
           return null
         } catch (error) {
@@ -105,127 +94,21 @@ export const authOptions: AuthOptions = {
       if (user) {
         token.id = user.id
         token.isAdmin = user.isAdmin
+        token.checkedAt = Date.now()
+      } else if (Date.now() - (token.checkedAt ?? 0) > USER_RECHECK_INTERVAL) {
+        const serverUser = await getServerUser(token.id, token.email ?? '')
+
+        if (!serverUser) {
+          console.warn(
+            `[AUTH] - User ${token.id} no longer belongs to this server, removing admin rights.`,
+          )
+        }
+
+        token.isAdmin = serverUser?.isAdmin ?? false
+        token.checkedAt = Date.now()
       }
 
       return token
     },
   },
-}
-
-type PlexPinResponse = {
-  id: number
-  code: string
-}
-
-async function fetchPlexPins(): Promise<PlexPinResponse> {
-  const clientIdentifier = getClientIdentifier()
-
-  try {
-    const res = await fetch(`${PLEX_API_ENDPOINT}/pins?strong=true`, {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'X-Plex-Product': PLEX_PRODUCT_NAME,
-        'X-Plex-Client-Identifier': clientIdentifier,
-      },
-    })
-
-    if (!res.ok) {
-      console.error(
-        '[AUTH] - Plex PIN generation failed!',
-        res.status,
-        res.statusText,
-      )
-    }
-
-    return res.json()
-  } catch (error) {
-    console.error('[AUTH] - Error generating Plex PIN!', error)
-    throw error
-  }
-}
-
-export async function createPlexAuthUrl() {
-  const { id, code } = await fetchPlexPins()
-  const forwardUrl = `${APP_URL}?plexPinId=${id}`
-  const clientIdentifier = getClientIdentifier()
-
-  if (!forwardUrl) {
-    console.error('[AUTH] - Base url is not configured!')
-  }
-
-  const authAppUrl =
-    'https://app.plex.tv/auth#?' +
-    qs.stringify({
-      clientID: clientIdentifier,
-      code,
-      forwardUrl,
-      context: {
-        device: {
-          product: PLEX_PRODUCT_NAME,
-        },
-      },
-    })
-
-  return authAppUrl
-}
-
-export async function getPlexAuthToken(pinId: string) {
-  const clientIdentifier = getClientIdentifier()
-
-  try {
-    const res = await fetch(`${PLEX_API_ENDPOINT}/pins/${pinId}`, {
-      method: 'GET',
-      headers: {
-        Accept: 'application/json',
-        'X-Plex-Client-Identifier': clientIdentifier,
-      },
-    })
-
-    if (!res.ok) {
-      console.error(
-        '[AUTH] - Getting Plex auth token failed!',
-        res.status,
-        res.statusText,
-      )
-    }
-
-    const data = await res.json()
-
-    return data.authToken
-  } catch (error) {
-    console.error('[AUTH] - Error getting Plex auth token!', error)
-  }
-}
-
-export async function verifyPlexAuthToken(authToken: string) {
-  const clientIdentifier = getClientIdentifier()
-
-  try {
-    const res = await fetch(`${PLEX_API_ENDPOINT}/user?strong=true`, {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'X-Plex-Token': authToken,
-        'X-Plex-Product': PLEX_PRODUCT_NAME,
-        'X-Plex-Client-Identifier': clientIdentifier,
-      },
-    })
-
-    if (!res.ok) {
-      console.error(
-        '[AUTH] - Plex auth token verification failed!',
-        res.status,
-        res.statusText,
-      )
-    }
-
-    if (res.status === 401) {
-      return false
-    } else if (res.status === 200) {
-      return true
-    }
-  } catch (error) {
-    console.error('[AUTH] - Error verifying Plex auth token!', error)
-  }
 }

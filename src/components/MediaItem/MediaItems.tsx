@@ -1,4 +1,4 @@
-import { Settings } from '@/types/settings'
+import { PublicSettings } from '@/types/settings'
 import { TautulliItemRow } from '@/types/tautulli'
 import clsx from 'clsx'
 import MediaItem from './MediaItem'
@@ -8,7 +8,7 @@ type Props = {
   type: 'movie' | 'show' | 'artist' | 'users'
   serverId: string
   rows?: boolean
-  settings: Settings
+  settings: PublicSettings
   loggedInUserId?: string
 }
 

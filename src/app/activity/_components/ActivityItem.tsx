@@ -2,7 +2,7 @@
 
 import anonymousSvg from '@/components/MediaItem/anonymous.svg'
 import { usePoster } from '@/hooks/usePoster'
-import { Settings } from '@/types/settings'
+import { PublicSettings } from '@/types/settings'
 import { TautulliSession } from '@/types/tautulli'
 import {
   generateDeeplinkUrl,
@@ -14,6 +14,7 @@ import {
   formatPercent,
   millisecondsToTimeString,
 } from '@/utils/formatting'
+import { getImageProxyUrl } from '@/utils/imageProxy'
 import { PauseIcon, PlayIcon } from '@heroicons/react/24/outline'
 import clsx from 'clsx'
 import { capitalize, toUpper } from 'lodash'
@@ -25,7 +26,7 @@ type ActivityItemProps = {
   session: TautulliSession
   index: number
   totalSessions: number
-  settings: Settings
+  settings: PublicSettings
   serverId?: string
 }
 
@@ -40,7 +41,7 @@ export default function ActivityItem({
   const t = useTranslations('Activity')
   const locale = useLocale()
   const { data: user } = useSession()
-  const isCurrentUser = session.user_id == user?.user.id
+  const isCurrentUser = String(session.user_id) === user?.user.id
   const isAdmin = user?.user.isAdmin
   const {
     audio_channel_layout,
@@ -266,11 +267,7 @@ export default function ActivityItem({
               src={
                 settings.general.isAnonymized && !isCurrentUser
                   ? anonymousSvg
-                  : session.user_thumb?.startsWith('http')
-                    ? `/api/image?url=${encodeURIComponent(session.user_thumb)}`
-                    : `/api/image?url=${encodeURIComponent(
-                        `${settings.connection.tautulliUrl}/pms_image_proxy?img=${session.user_thumb}&width=300`,
-                      )}`
+                  : getImageProxyUrl(session.user_thumb)
               }
               sizes='6rem'
               priority

@@ -3,7 +3,7 @@
 import DatePicker from '@/components/DatePicker'
 import {
   DashboardSettings,
-  Settings,
+  PublicSettings,
   SettingsFormInitialState,
 } from '@/types/settings'
 import { useTranslations } from 'next-intl'
@@ -13,14 +13,13 @@ import SettingsForm from '../../_components/SettingsForm'
 import saveDashboardSettings from '../_actions/updateDashboardSettings'
 
 type Props = {
-  settings: Settings
+  settings: PublicSettings
 }
 
 type DashboardFormState = SettingsFormInitialState<Partial<DashboardSettings>>
 
 export default function DashboardSettingsForm({ settings }: Props) {
-  const isOverseerrActive =
-    settings.connection.overseerrUrl && settings.connection.overseerrApiKey
+  const isOverseerrActive = settings.connection.isOverseerrActive
   const t = useTranslations('Settings.Dashboard')
   const tCommon = useTranslations('Common')
   const [isActive, setIsActive] = useState<boolean>(settings.dashboard.isActive)

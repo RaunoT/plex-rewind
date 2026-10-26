@@ -89,6 +89,10 @@ export const DEFAULT_SETTINGS: Settings = {
   setupComplete: false,
 }
 
+// Google tag IDs: G-XXXXXXX (GA4), UA-XXXXX-Y (Universal Analytics), GT-/AW-/DC-.
+export const GOOGLE_ANALYTICS_ID_PATTERN =
+  /^(G|GT|AW|DC)-[A-Z0-9]+$|^UA-\d+-\d+$/i
+
 export const SETTINGS_PAGES = [
   { href: '/settings/connection', key: 'connection' },
   { href: '/settings/general', key: 'general' },

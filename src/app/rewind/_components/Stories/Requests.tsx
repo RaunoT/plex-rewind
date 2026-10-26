@@ -54,9 +54,8 @@ export default function StoryRequests({
                         {chunks}
                       </a>
                     ),
-                    requestLinkValue: settings.connection.overseerrUrl
-                      ?.split('//')
-                      .pop(),
+                    requestLinkValue:
+                      settings.connection.overseerrUrl.split('//').pop() ?? '',
                   })}
                 </p>
               </RewindStat>

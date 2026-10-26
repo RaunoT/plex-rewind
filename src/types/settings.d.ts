@@ -68,3 +68,16 @@ export type Settings = {
   activity: ActivitySettings
   setupComplete: boolean
 }
+
+// What may be sent to the browser: no API keys or internal service URLs.
+export type PublicConnectionSettings = Pick<
+  ConnectionSettings,
+  'statisticsSource' | 'complete'
+> & {
+  overseerrUrl: string
+  isOverseerrActive: boolean
+}
+
+export type PublicSettings = Omit<Settings, 'connection'> & {
+  connection: PublicConnectionSettings
+}

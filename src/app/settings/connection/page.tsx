@@ -1,3 +1,4 @@
+import { requireSettingsAccess } from '@/lib/access'
 import { getTracearrPlexServers } from '@/utils/fetchTracearr'
 import getSettings from '@/utils/getSettings'
 import { isTracearrSource } from '@/utils/helpers'
@@ -14,6 +15,8 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function ConnectionSettingsPage() {
+  await requireSettingsAccess()
+
   const settings = getSettings()
   const tracearrServers = isTracearrSource(settings)
     ? await getTracearrPlexServers()

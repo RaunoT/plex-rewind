@@ -2,14 +2,14 @@
 
 import { GlobalContext } from '@/app/_components/GlobalContextProvider'
 import { DashboardSearchParams } from '@/types/dashboard'
-import { Settings } from '@/types/settings'
+import { PublicSettings } from '@/types/settings'
 import { useTranslations } from 'next-intl'
 import Link from 'next/link'
 import { usePathname, useSearchParams } from 'next/navigation'
 import { useContext, useEffect } from 'react'
 
 type Props = {
-  settings: Settings
+  settings: PublicSettings
 }
 
 function getPeriodValue(period: string, customPeriod: number): number {

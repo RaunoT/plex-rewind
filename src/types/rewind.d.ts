@@ -1,4 +1,12 @@
-import { TautulliLibrary } from './tautulli'
+import { PublicSettings } from './settings'
+import { TautulliItemRow, TautulliLibrary } from './tautulli'
+
+export type RewindUser = {
+  id: string
+  name: string
+  image?: string | null
+  isAdmin: boolean
+}
 
 type LibraryRewind = {
   count: number
@@ -32,7 +40,7 @@ export type UserRewind = {
     user_percentage: string
     total: string
   }
-  user: User
+  user: RewindUser
 }
 
 export type RewindStory = {
@@ -40,5 +48,5 @@ export type RewindStory = {
   isPaused?: boolean
   pause?: () => void
   resume?: () => void
-  settings: Settings
+  settings: PublicSettings
 }

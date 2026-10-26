@@ -1,5 +1,6 @@
 'use server'
 
+import { denySettingsAccess } from '@/lib/access'
 import {
   DashboardItemStatistics,
   DashboardSettings,
@@ -14,6 +15,12 @@ export default async function saveDashboardSettings(
   prevState: SettingsFormInitialState<Partial<DashboardSettings>>,
   formData: FormData,
 ) {
+  const denied = await denySettingsAccess(prevState)
+
+  if (denied) {
+    return denied
+  }
+
   const t = await getTranslations('Settings.Dashboard')
   const schema = z.object({
     isActive: z.boolean(),

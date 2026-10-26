@@ -1,5 +1,5 @@
 import { authOptions } from '@/lib/auth'
-import { UserRewind } from '@/types/rewind'
+import { RewindUser, UserRewind } from '@/types/rewind'
 import { TautulliUser } from '@/types/tautulli'
 import {
   getActiveUsers,
@@ -19,6 +19,7 @@ import {
 import getSettings from '@/utils/getSettings'
 import getUsersTop from '@/utils/getUsersTop'
 import { daysBetween, getRewindStartDate } from '@/utils/helpers'
+import { toPublicSettings } from '@/utils/publicSettings'
 import { Metadata } from 'next'
 import { getServerSession } from 'next-auth'
 import { getLocale, getTranslations } from 'next-intl/server'
@@ -36,7 +37,16 @@ async function RewindContent({ userId }: { userId?: string }) {
   const session = await getServerSession(authOptions)
   const settings = getSettings()
 
-  let user = session?.user
+  if (!settings.rewind.isActive) {
+    return notFound()
+  }
+
+  let user: RewindUser | undefined = session?.user && {
+    id: session.user.id,
+    name: session.user.name ?? '',
+    image: session.user.image,
+    isAdmin: session.user.isAdmin,
+  }
   let users: TautulliUser[] | undefined
 
   if (session?.user.isAdmin || settings.general.isOutsideAccess) {
@@ -125,7 +135,10 @@ async function RewindContent({ userId }: { userId?: string }) {
 
   return (
     <>
-      <RewindStories userRewind={userRewind} settings={settings} />
+      <RewindStories
+        userRewind={userRewind}
+        settings={toPublicSettings(settings)}
+      />
       {session?.user.isAdmin && users && (
         <UserSelect users={users} currentUserId={user.id} />
       )}

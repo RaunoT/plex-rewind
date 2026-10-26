@@ -31,9 +31,16 @@ const nextConfig: NextConfig = {
       {
         source: '/(.*)',
         headers: [
+          // includeSubDomains/preload would commit every self-hosted domain's
+          // subdomains to HTTPS, which isn't this app's call to make.
           {
             key: 'Strict-Transport-Security',
-            value: 'max-age=63072000; includeSubDomains; preload',
+            value: 'max-age=63072000',
+          },
+          {
+            key: 'Content-Security-Policy',
+            value:
+              "base-uri 'self'; form-action 'self'; frame-ancestors 'self'; object-src 'none'",
           },
           {
             key: 'X-Frame-Options',

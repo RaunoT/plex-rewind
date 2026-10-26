@@ -1,15 +1,15 @@
 'use client'
 
-import { Settings } from '@/types/settings'
-import { getActivity } from '@/utils/fetchTautulli'
+import { PublicSettings } from '@/types/settings'
 import { useQuery } from '@tanstack/react-query'
 import { useTranslations } from 'next-intl'
 import { useEffect } from 'react'
+import getActivity from '../_actions/getActivity'
 import ActivitiesSkeleton from './ActivitiesSkeleton'
 import ActivityItem from './ActivityItem'
 
 type Props = {
-  settings: Settings
+  settings: PublicSettings
   serverId?: string
 }
 

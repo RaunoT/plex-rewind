@@ -1,32 +1,17 @@
 'use client'
 
-import { Settings } from '@/types/settings'
+import getTmdbPoster from '@/app/activity/_actions/getTmdbPoster'
+import { PublicSettings } from '@/types/settings'
 import { TautulliSession } from '@/types/tautulli'
-import fetchTmdb from '@/utils/fetchTmdb'
+import { getImageProxyUrl } from '@/utils/imageProxy'
 import { useQuery } from '@tanstack/react-query'
 
-type TmdbSearchResult = {
-  results: Array<{
-    id: number
-    poster_path: string | null
-  }>
-}
-
-type TmdbMovieDetails = {
-  poster_path: string | null
-}
-
-export function usePoster(session: TautulliSession, settings: Settings) {
+export function usePoster(session: TautulliSession, settings: PublicSettings) {
   const { media_type, title, grandparent_title, grandparent_thumb, thumb } =
     session
-  const tautulliUrl = settings.connection.tautulliUrl
   const originalPoster = grandparent_thumb || thumb
-  // Tracearr sessions carry a full poster URL instead of a Plex image path.
-  const posterUrl = originalPoster?.startsWith('http')
-    ? originalPoster
-    : `${tautulliUrl}/pms_image_proxy?img=${originalPoster}&width=300`
   const tautulliPoster = originalPoster
-    ? `/api/image?url=${encodeURIComponent(posterUrl)}`
+    ? getImageProxyUrl(originalPoster)
     : null
   const shouldFetchTmdb =
     (media_type === 'episode' || media_type === 'movie') &&
@@ -35,37 +20,9 @@ export function usePoster(session: TautulliSession, settings: Settings) {
     queryKey: ['tmdb-poster', media_type, title, grandparent_title],
     queryFn: async (): Promise<string | null> => {
       try {
-        let searchTitle: string
-        let searchType: 'movie' | 'tv'
-
-        if (media_type === 'episode') {
-          searchTitle = grandparent_title
-          searchType = 'tv'
-        } else {
-          searchTitle = title
-          searchType = 'movie'
-        }
-
-        // Search for the content
-        const searchResult = await fetchTmdb<TmdbSearchResult>(
-          `search/${searchType}`,
-          {
-            query: searchTitle,
-          },
-        )
-        const tmdbId = searchResult?.results?.[0].id
-
-        if (!tmdbId) return null
-
-        const details = await fetchTmdb<TmdbMovieDetails>(
-          `${searchType}/${tmdbId}`,
-        )
-
-        if (details?.poster_path) {
-          return `https://image.tmdb.org/t/p/w300${details.poster_path}`
-        }
-
-        return null
+        return media_type === 'episode'
+          ? await getTmdbPoster('tv', grandparent_title)
+          : await getTmdbPoster('movie', title)
       } catch (error) {
         console.error('Error fetching TMDB poster:', error)
 

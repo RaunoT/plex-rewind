@@ -1,3 +1,4 @@
+import { canViewStats } from '@/lib/access'
 import { authOptions } from '@/lib/auth'
 import { DashboardSearchParams } from '@/types/dashboard'
 import { Settings } from '@/types/settings'
@@ -13,6 +14,7 @@ import getSettings from '@/utils/getSettings'
 import { getTracearrTotalDuration } from '@/utils/getTracearrStats'
 import getUsersTop from '@/utils/getUsersTop'
 import { isTracearrSource } from '@/utils/helpers'
+import { toPublicSettings } from '@/utils/publicSettings'
 import { Metadata } from 'next'
 import { getServerSession } from 'next-auth'
 import { getTranslations } from 'next-intl/server'
@@ -80,17 +82,21 @@ async function DashboardUsersContent({
   const settings = getSettings()
   const t = await getTranslations()
   const dashboardT = await getTranslations('Dashboard')
+  const session = await getServerSession(authOptions)
 
-  if (!settings.dashboard.isUsersPageActive) {
+  if (
+    !settings.dashboard.isActive ||
+    !settings.dashboard.isUsersPageActive ||
+    !canViewStats(settings, session)
+  ) {
     return notFound()
   }
 
-  const session = await getServerSession(authOptions)
   const loggedInUserId = session?.user.id
   const period = getPeriod(periodSp, settings)
   const [usersData, totalDuration, usersCount, totalRequests] =
     await Promise.all([
-      getUsersTop(loggedInUserId, period.string, period.daysAgo),
+      getUsersTop(loggedInUserId ?? '', period.string, period.daysAgo),
       getTotalDuration(period.string, settings, t),
       getUsersCount(settings),
       getTotalRequests(period.date, settings),
@@ -103,7 +109,7 @@ async function DashboardUsersContent({
       totalDuration={totalDuration}
       totalSize={usersCount}
       type='users'
-      settings={settings}
+      settings={toPublicSettings(settings)}
       count={totalRequests}
       loggedInUserId={loggedInUserId}
     />

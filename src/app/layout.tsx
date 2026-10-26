@@ -2,6 +2,7 @@ import '@/styles/globals.css'
 import { APP_URL, META_DESCRIPTION } from '@/utils/constants'
 import getSettings from '@/utils/getSettings'
 import getVersion from '@/utils/getVersion'
+import { checkRequiredSettings } from '@/utils/helpers'
 import { SerwistProvider } from '@serwist/next/react'
 import { Metadata, Viewport } from 'next'
 import { NextIntlClientProvider } from 'next-intl'
@@ -79,7 +80,10 @@ export default async function RootLayout({ children }: Props) {
               <GoogleAnalytics id={settings.general.googleAnalyticsId} />
             )}
             <SessionProviderWrapper>
-              <AppProvider settings={settings} version={version}>
+              <AppProvider
+                missingSetting={checkRequiredSettings(settings)}
+                version={version}
+              >
                 {children}
               </AppProvider>
             </SessionProviderWrapper>

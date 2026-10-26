@@ -1,7 +1,7 @@
 'use client'
 
 import { UserRewind } from '@/types/rewind'
-import { Settings } from '@/types/settings'
+import { PublicSettings } from '@/types/settings'
 import { FC } from 'react'
 import Stories from './Stories'
 import StoryAudio from './Stories/Audio'
@@ -27,12 +27,12 @@ type Story = {
 
 type StoryComponent = {
   userRewind: UserRewind
-  settings: Settings
+  settings: PublicSettings
 } & Story
 
 type Props = {
   userRewind: UserRewind
-  settings: Settings
+  settings: PublicSettings
 }
 
 export default function RewindStories({ userRewind, settings }: Props) {
@@ -52,8 +52,7 @@ export default function RewindStories({ userRewind, settings }: Props) {
     }
   }
 
-  const isOverseerrActive =
-    settings.connection.overseerrUrl && settings.connection.overseerrApiKey
+  const isOverseerrActive = settings.connection.isOverseerrActive
   const isLibrariesSizeAndCountActive =
     settings.rewind.isLibrariesSizeAndCountActive
   const hasMovieLibraries = userRewind.libraries.some(

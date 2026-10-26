@@ -1,20 +1,19 @@
 'use client'
 
-import { Settings } from '@/types/settings'
+import { PublicSettings } from '@/types/settings'
 import { SETTINGS_PAGES } from '@/utils/constants'
-import { checkRequiredSettings } from '@/utils/helpers'
 import clsx from 'clsx'
 import { useTranslations } from 'next-intl'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 
 type Props = {
-  settings: Settings
+  settings: PublicSettings
+  missingSetting: string | null
 }
 
-export default function SettingsNav({ settings }: Props) {
+export default function SettingsNav({ settings, missingSetting }: Props) {
   const pathname = usePathname()
-  const missingSetting = checkRequiredSettings(settings)
   const t = useTranslations('Settings.Nav')
 
   return (
@@ -22,7 +21,8 @@ export default function SettingsNav({ settings }: Props) {
       <ul className='nav'>
         {SETTINGS_PAGES.map(({ href, key }) => {
           const isComplete =
-            settings[key as keyof Omit<Settings, 'setupComplete'>].complete
+            settings[key as keyof Omit<PublicSettings, 'setupComplete'>]
+              .complete
           const isConnectionIncomplete = !settings.connection.complete
           const shouldDisable = isConnectionIncomplete && key !== 'connection'
 

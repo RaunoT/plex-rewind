@@ -2,8 +2,8 @@
 
 import DatePicker from '@/components/DatePicker'
 import {
+  PublicSettings,
   RewindSettings,
-  Settings,
   SettingsFormInitialState,
 } from '@/types/settings'
 import { useTranslations } from 'next-intl'
@@ -13,7 +13,7 @@ import SettingsForm from '../../_components/SettingsForm'
 import saveRewindSettings from '../_actions/updateRewindSettings'
 
 type Props = {
-  settings: Settings
+  settings: PublicSettings
 }
 
 type RewindFormState = SettingsFormInitialState<Partial<RewindSettings>>

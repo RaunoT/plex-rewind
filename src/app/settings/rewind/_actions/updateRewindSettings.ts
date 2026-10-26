@@ -1,5 +1,6 @@
 'use server'
 
+import { denySettingsAccess } from '@/lib/access'
 import { RewindSettings, SettingsFormInitialState } from '@/types/settings'
 import { z } from 'zod'
 import updateSettings from '../../_actions/updateSettings'
@@ -8,6 +9,12 @@ export default async function saveRewindSettings(
   prevState: SettingsFormInitialState<Partial<RewindSettings>>,
   formData: FormData,
 ) {
+  const denied = await denySettingsAccess(prevState)
+
+  if (denied) {
+    return denied
+  }
+
   const schema = z.object({
     isActive: z.boolean(),
     isLibrariesSizeAndCountActive: z.boolean().optional(),

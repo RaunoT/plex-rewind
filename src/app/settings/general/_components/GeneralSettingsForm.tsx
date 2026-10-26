@@ -2,7 +2,7 @@
 
 import {
   GeneralSettings,
-  Settings,
+  PublicSettings,
   SettingsFormInitialState,
 } from '@/types/settings'
 import { TautulliLibrary, TautulliUser } from '@/types/tautulli'
@@ -18,7 +18,7 @@ import saveGeneralSettings from '../_actions/updateGeneralSettings'
 type SortableLibrary = TautulliLibrary & { id: TautulliLibrary['section_id'] }
 
 type Props = {
-  settings: Settings
+  settings: PublicSettings
   libraries: TautulliLibrary[]
   users: TautulliUser[]
 }

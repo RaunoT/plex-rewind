@@ -1,5 +1,6 @@
 'use server'
 
+import { denySettingsAccess } from '@/lib/access'
 import { ActivitySettings, SettingsFormInitialState } from '@/types/settings'
 import { z } from 'zod'
 import updateSettings from '../../_actions/updateSettings'
@@ -13,6 +14,12 @@ export default async function saveActivitySettings(
   prevState: SettingsFormInitialState<ActivitySettings>,
   formData: FormData,
 ) {
+  const denied = await denySettingsAccess(prevState)
+
+  if (denied) {
+    return denied
+  }
+
   const data = {
     isActive: formData.get('isActive') === 'on',
     complete: true,

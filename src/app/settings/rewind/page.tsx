@@ -1,4 +1,6 @@
+import { requireSettingsAccess } from '@/lib/access'
 import getSettings from '@/utils/getSettings'
+import { toPublicSettings } from '@/utils/publicSettings'
 import { Metadata } from 'next'
 import { getTranslations } from 'next-intl/server'
 import RewindSettingsForm from './_components/RewindSettingsForm'
@@ -11,8 +13,10 @@ export async function generateMetadata(): Promise<Metadata> {
   }
 }
 
-export default function RewindSettingsPage() {
+export default async function RewindSettingsPage() {
+  await requireSettingsAccess()
+
   const settings = getSettings()
 
-  return <RewindSettingsForm settings={settings} />
+  return <RewindSettingsForm settings={toPublicSettings(settings)} />
 }

@@ -1,5 +1,6 @@
 'use server'
 
+import { denySettingsAccess } from '@/lib/access'
 import {
   ConnectionSettings,
   SettingsFormInitialState,
@@ -39,6 +40,12 @@ export default async function saveConnectionSettings(
   prevState: SettingsFormInitialState<ConnectionSettings>,
   formData: FormData,
 ) {
+  const denied = await denySettingsAccess(prevState)
+
+  if (denied) {
+    return denied
+  }
+
   const data = {
     statisticsSource: formData.get('statisticsSource') as StatisticsSource,
     tautulliUrl: formData.get('tautulliUrl') as string,

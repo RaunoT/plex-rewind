@@ -1,4 +1,6 @@
+import { requireSettingsAccess } from '@/lib/access'
 import getSettings from '@/utils/getSettings'
+import { toPublicSettings } from '@/utils/publicSettings'
 import { Metadata } from 'next'
 import { getTranslations } from 'next-intl/server'
 import DashboardSettingsForm from './_components/DashboardSettingsForm'
@@ -11,8 +13,10 @@ export async function generateMetadata(): Promise<Metadata> {
   }
 }
 
-export default function DashboardSettingsPage() {
+export default async function DashboardSettingsPage() {
+  await requireSettingsAccess()
+
   const settings = getSettings()
 
-  return <DashboardSettingsForm settings={settings} />
+  return <DashboardSettingsForm settings={toPublicSettings(settings)} />
 }

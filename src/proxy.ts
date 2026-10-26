@@ -1,57 +1,31 @@
 import { Settings } from '@/types/settings'
 import { withAuth } from 'next-auth/middleware'
 import { NextResponse } from 'next/server'
+import getSettings from './utils/getSettings'
 import {
+  checkRequiredSettings,
   getSettingsPage,
   isInitialSetup,
   isPostUpdateMissingSettings,
 } from './utils/helpers'
 
-// The middleware reads settings from the app's own API. Fetching the public
-// URL (NEXT_PUBLIC_SITE_URL) makes the container round-trip back through any
-// reverse proxy (e.g. Cloudflare tunnel), which can return an HTML challenge or
-// error page with a 200 status and break JSON parsing (see issue #359). Always
-// hit the server over the internal loopback address instead. The Docker image
-// sets PORT=8383; locally Next.js defaults to 3000 when PORT is unset.
-const INTERNAL_BASE_URL = `http://127.0.0.1:${process.env.PORT || '3000'}`
-
-// Safely parse a fetch response as JSON. A reverse proxy can return HTML with a
-// 200 status, so guard against non-JSON bodies instead of throwing.
-async function fetchJson<T>(url: string): Promise<T | null> {
+// The proxy runs on the Node.js runtime, so it reads the settings file
+// directly instead of going through an HTTP round trip.
+function readSettings(): Settings | null {
   try {
-    const res = await fetch(url)
-
-    if (!res.ok) {
-      return null
-    }
-
-    const contentType = res.headers.get('content-type') || ''
-
-    if (!contentType.includes('application/json')) {
-      console.warn(
-        `[PROXY] - Expected JSON from ${url} but received "${contentType}". Skipping settings check for this request.`,
-      )
-
-      return null
-    }
-
-    return await res.json()
+    return getSettings()
   } catch (error) {
-    console.error(`[PROXY] - Failed to fetch ${url}!`, error)
+    console.error('[PROXY] - Failed to read settings!', error)
 
     return null
   }
 }
 
 export default withAuth(
-  async function proxy(req) {
+  function proxy(req) {
     const { pathname } = req.nextUrl
-    const settings = await fetchJson<Settings>(
-      `${INTERNAL_BASE_URL}/api/settings`,
-    )
-    const missingSetting = await fetchJson<string>(
-      `${INTERNAL_BASE_URL}/api/missing-setting`,
-    )
+    const settings = readSettings()
+    const missingSetting = settings ? checkRequiredSettings(settings) : null
 
     if (missingSetting && settings) {
       const isSettingsPage = pathname.includes('settings')
@@ -67,9 +41,7 @@ export default withAuth(
       // For post-update missing settings, only allow admin access
       if (isPostUpdateMode && !isAdmin) {
         if (pathname !== '/') {
-          return NextResponse.redirect(
-            new URL('/', process.env.NEXT_PUBLIC_SITE_URL),
-          )
+          return NextResponse.redirect(new URL('/', req.nextUrl))
         }
 
         return NextResponse.next()
@@ -87,9 +59,7 @@ export default withAuth(
         pathname !== redirectPage &&
         !pathname.includes('settings')
       ) {
-        return NextResponse.redirect(
-          new URL(redirectPage, process.env.NEXT_PUBLIC_SITE_URL),
-        )
+        return NextResponse.redirect(new URL(redirectPage, req.nextUrl))
       }
     }
 
@@ -110,7 +80,8 @@ export const config = {
      * - _next/static (static files)
      * - _next/image (image optimization files)
      * - favicon.ico (favicon file)
+     * - files with an extension (sw.js, manifest.json, images, ...)
      */
-    '/((?!api|_next/static|_next/image|favicon.ico).*)',
+    '/((?!api|_next/static|_next/image|favicon.ico|.*\\.[\\w]+$).*)',
   ],
 }

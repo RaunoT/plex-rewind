@@ -43,7 +43,7 @@ export function getSettingsPage(missingSettingKey: string): string | undefined {
     ?.href
 }
 
-export function getRewindStartDate(settings: Settings): string {
+export function getRewindStartDate(settings: Pick<Settings, 'rewind'>): string {
   return settings.rewind.startDate || PERIODS.pastYear.string
 }
 

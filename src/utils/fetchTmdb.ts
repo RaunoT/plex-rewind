@@ -1,5 +1,3 @@
-'use server'
-
 import qs from 'qs'
 import { TMDB_API_KEY } from './constants'
 

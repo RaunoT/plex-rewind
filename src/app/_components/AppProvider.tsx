@@ -1,8 +1,6 @@
 'use client'
 
 import { Version } from '@/types'
-import { Settings } from '@/types/settings'
-import { checkRequiredSettings } from '@/utils/helpers'
 import {
   ArrowPathIcon,
   CogIcon,
@@ -22,15 +20,18 @@ import LocaleSelect from './LocaleSelect'
 
 type Props = {
   children: ReactNode
-  settings: Settings
+  missingSetting: string | null
   version: Version
 }
 
 const queryClient = new QueryClient()
 
-export default function AppProvider({ children, settings, version }: Props) {
+export default function AppProvider({
+  children,
+  missingSetting,
+  version,
+}: Props) {
   const pathname = usePathname()
-  const missingSetting = checkRequiredSettings(settings)
   const { data: session, status } = useSession()
   const t = useTranslations('AppProvider')
   const isSettings = pathname.startsWith('/settings')

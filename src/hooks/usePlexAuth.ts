@@ -1,4 +1,4 @@
-import { createPlexAuthUrl, getPlexAuthToken } from '@/lib/auth'
+import { createPlexAuthUrl, getPlexAuthToken } from '@/lib/plexAuth'
 import { signIn } from 'next-auth/react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
@@ -16,6 +16,11 @@ export default function usePlexAuth() {
 
       try {
         const plexAuthToken = await getPlexAuthToken(plexPinId)
+
+        if (!plexAuthToken) {
+          return
+        }
+
         const res = await signIn('plex', {
           authToken: plexAuthToken,
           callbackUrl: '/',
