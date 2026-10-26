@@ -6,6 +6,7 @@ import {
   SettingsFormInitialState,
   StatisticsSource,
 } from '@/types/settings'
+import { TracearrPlexServer } from '@/types/tracearr'
 import clsx from 'clsx'
 import { useTranslations } from 'next-intl'
 import { useActionState, useState } from 'react'
@@ -14,11 +15,17 @@ import saveConnectionSettings from '../_actions/updateConnectionSettings'
 
 type Props = {
   settings: Settings
+  tracearrServers: TracearrPlexServer[]
 }
 
-type ConnectionFormState = SettingsFormInitialState<ConnectionSettings>
+type ConnectionFormState = SettingsFormInitialState<ConnectionSettings> & {
+  tracearrServers?: TracearrPlexServer[]
+}
 
-export default function ConnectionSettingsForm({ settings }: Props) {
+export default function ConnectionSettingsForm({
+  settings,
+  tracearrServers: initialTracearrServers,
+}: Props) {
   const t = useTranslations('Settings')
   const initialState: ConnectionFormState = {
     message: '',
@@ -39,6 +46,8 @@ export default function ConnectionSettingsForm({ settings }: Props) {
     connectionSettings.statisticsSource,
   )
   const isTracearr = statisticsSource === 'tracearr'
+  // Saving returns the servers when several Plex servers need a choice.
+  const tracearrServers = formState.tracearrServers ?? initialTracearrServers
 
   return (
     <SettingsForm
@@ -51,9 +60,10 @@ export default function ConnectionSettingsForm({ settings }: Props) {
         <label className='input-wrapper'>
           <span className='select-wrapper'>
             <select
+              key={`statistics-source-${connectionSettings.statisticsSource}`}
               className='input'
               name='statisticsSource'
-              value={statisticsSource}
+              defaultValue={connectionSettings.statisticsSource}
               onChange={(e) =>
                 setStatisticsSource(e.target.value as StatisticsSource)
               }
@@ -136,6 +146,31 @@ export default function ConnectionSettingsForm({ settings }: Props) {
             <span className='label-wrapper'>{t('apiKey')}</span>
           </span>
         </label>
+        {tracearrServers.length > 1 && (
+          <label className='input-wrapper'>
+            <span className='select-wrapper'>
+              <select
+                key={`tracearr-server-${tracearrServers.length}-${connectionSettings.tracearrServerId}`}
+                className='input'
+                name='tracearrServerId'
+                required={isTracearr}
+                defaultValue={connectionSettings.tracearrServerId}
+              >
+                <option value='' disabled>
+                  {t('Connection.chooseServer')}
+                </option>
+                {tracearrServers.map((server) => (
+                  <option key={server.server_id} value={server.server_id}>
+                    {server.server_name}
+                  </option>
+                ))}
+              </select>
+            </span>
+            <span className='label'>
+              <span className='label-wrapper'>{t('Connection.server')}</span>
+            </span>
+          </label>
+        )}
       </section>
       <section className='group-settings group'>
         {/* eslint-disable-next-line react/jsx-no-literals */}

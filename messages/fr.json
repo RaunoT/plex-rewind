@@ -89,6 +89,7 @@
     "invalidApiKey": "Clé API invalide !",
     "unableToConnect": "Impossible de se connecter !",
     "noPlexServer": "Aucun serveur Plex trouvé !",
+    "choosePlexServer": "Choisissez le serveur Plex à utiliser !",
     "buyMeACoffee": "Offrez-moi un café",
     "becomeASponsor": "Devenir sponsor",
     "reportAnIssue": "Signaler un problème",
@@ -105,7 +106,9 @@
       "title": "Paramètres de connexion",
       "statistics": "Statistiques",
       "source": "Source",
-      "tracearrDescription": "Les bibliothèques sont regroupées par type de média."
+      "tracearrDescription": "Les bibliothèques sont regroupées par type de média.",
+      "server": "Serveur",
+      "chooseServer": "Choisissez un serveur"
     },
     "Dashboard": {
       "title": "Paramètres du tableau de bord",

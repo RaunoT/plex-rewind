@@ -11,6 +11,7 @@ import {
   TracearrHistoryRecord,
   TracearrLibrary,
   TracearrMedia,
+  TracearrPlexServer,
   TracearrServer,
   TracearrServersResponse,
   TracearrStream,
@@ -57,11 +58,10 @@ export type TracearrPlexUser = {
 }
 
 type HistoryCache = {
-  key: string
-  since: number
   plays: TracearrPlay[]
   fetchedAt: number
   fullyFetchedAt: number
+  usedAt: number
 }
 
 const PAGE_SIZE = 100
@@ -74,6 +74,7 @@ const DAY = 24 * 60 * 60 * 1000
 // refresh re-reads a wider window than the time since the last fetch.
 const HISTORY_REFRESH_OVERLAP = 2 * DAY
 const HISTORY_FULL_REFRESH = DAY
+const HISTORY_CACHE_IDLE = 60 * 60 * 1000
 // Plex numbers the server owner's local account 1.
 const PLEX_OWNER_ACCOUNT_ID = '1'
 const PLAY_MEDIA_TYPES: TracearrPlayMediaType[] = ['movie', 'episode', 'track']
@@ -92,8 +93,8 @@ const LIBRARY_NAMES: Record<TautulliMediaType, string> = {
   show: 'TV Shows',
   artist: 'Music',
 }
+const historyCaches = new Map<string, HistoryCache>()
 
-let historyCache: HistoryCache | null = null
 let historyQueue: Promise<unknown> = Promise.resolve()
 
 export function getTracearrUrl(settings: Settings = getSettings()): string {
@@ -102,8 +103,9 @@ export function getTracearrUrl(settings: Settings = getSettings()): string {
 
 function getCacheKey(): string {
   const settings = getSettings()
+  const { tracearrApiKey, tracearrServerId } = settings.connection
 
-  return `${getTracearrUrl(settings)}|${settings.connection.tracearrApiKey}`
+  return `${getTracearrUrl(settings)}|${tracearrApiKey}|${tracearrServerId}`
 }
 
 // Caches a successful result for `ttl` and shares one in-flight request
@@ -247,43 +249,72 @@ async function fetchAllPages<T>(
   return items
 }
 
-// Rewind is built around a single Plex server, so Jellyfin and Emby servers
-// tracked by the same Tracearr instance are left out.
-const getPlexServers = cached<TracearrServer[]>(async () => {
+const getServers = cached<TracearrServer[]>(async () => {
   const res = await fetchTracearr<TracearrServersResponse>('servers')
 
-  return res?.data.filter((server) => server.server_type === 'plex') ?? null
+  return res?.data ?? null
 })
 
-async function getPlexServerFilter() {
-  const servers = await getPlexServers()
+// Rewind is built around one Plex server, its owner and its deeplinks, so
+// every other server Tracearr tracks is left out. Without a saved choice, the
+// only Plex server is used.
+export function selectPlexServer(
+  servers: TracearrServer[],
+  serverId: string,
+): TracearrServer | undefined {
+  const plexServers = servers.filter((server) => server.server_type === 'plex')
+
+  if (serverId) {
+    return plexServers.find((server) => server.server_id === serverId)
+  }
+
+  return plexServers.length === 1 ? plexServers[0] : undefined
+}
+
+export async function getTracearrPlexServers(): Promise<TracearrPlexServer[]> {
+  const servers = (await getServers()) ?? []
+
+  return servers
+    .filter((server) => server.server_type === 'plex')
+    .map(({ server_id, server_name }) => ({ server_id, server_name }))
+}
+
+async function getPlexServerId(): Promise<string | null> {
+  const servers = await getServers()
 
   if (!servers) {
     return null
   }
 
-  return {
-    serverIds: servers.map((server) => server.server_id),
-    // The API filters by a single server, so several Plex servers are
-    // filtered after fetching instead.
-    serverId: servers.length === 1 ? servers[0].server_id : undefined,
+  const server = selectPlexServer(
+    servers,
+    getSettings().connection.tracearrServerId,
+  )
+
+  if (!server) {
+    console.error(
+      '[TRACEARR] - No Plex server selected! Choose one in the connection settings.',
+    )
+
+    return null
   }
+
+  return server.server_id
 }
 
 const getPlexUsers = cached<TracearrPlexUser[]>(async () => {
-  const [users, filter] = await Promise.all([
+  const [users, serverId] = await Promise.all([
     fetchAllPages<TracearrUser>('users'),
-    getPlexServerFilter(),
+    getPlexServerId(),
   ])
 
-  if (!users || !filter) {
+  if (!users || !serverId) {
     return null
   }
 
   return users.flatMap((user) => {
     const accounts = user.accounts.filter(
-      (account) =>
-        filter.serverIds.includes(account.server_id) && !account.removed_at,
+      (account) => account.server_id === serverId && !account.removed_at,
     )
 
     if (!accounts.length) {
@@ -333,9 +364,11 @@ export async function getTracearrUser(
 function getCachedAvatars(): Map<string, string> {
   const avatars = new Map<string, string>()
 
-  for (const play of historyCache?.plays ?? []) {
-    if (play.avatar && !avatars.has(play.identityId)) {
-      avatars.set(play.identityId, play.avatar)
+  for (const cache of historyCaches.values()) {
+    for (const play of cache.plays) {
+      if (play.avatar && !avatars.has(play.identityId)) {
+        avatars.set(play.identityId, play.avatar)
+      }
     }
   }
 
@@ -399,21 +432,15 @@ function toPlay(record: TracearrHistoryRecord): TracearrPlay | null {
 }
 
 async function fetchPlays(since: number): Promise<TracearrPlay[] | null> {
-  const filter = await getPlexServerFilter()
+  const serverId = await getPlexServerId()
 
-  if (!filter) {
+  if (!serverId) {
     return null
-  }
-
-  if (!filter.serverIds.length) {
-    console.warn('[TRACEARR] - No Plex servers found!')
-
-    return []
   }
 
   const records = await fetchAllPages<TracearrHistoryRecord>('history', {
     since: new Date(since).toISOString(),
-    server_id: filter.serverId,
+    server_id: serverId,
   })
 
   if (!records) {
@@ -421,72 +448,82 @@ async function fetchPlays(since: number): Promise<TracearrPlay[] | null> {
   }
 
   return records.flatMap((record) => {
-    const play = filter.serverIds.includes(record.server_id)
-      ? toPlay(record)
-      : null
+    const play = record.server_id === serverId ? toPlay(record) : null
 
     return play ? [play] : []
   })
 }
 
-// Every statistic is computed from the same plays, so one window of history is
-// kept in memory. Later requests refetch only the newest plays, and a request
-// further back than the cached window replaces it.
+// Tracearr applies a window to the segments of a play, so the same play can
+// count differently in a shorter window. Each window keeps its own plays, and
+// later requests refetch only the newest of them.
 async function loadPlays(since: number): Promise<TracearrPlay[] | null> {
-  const key = getCacheKey()
+  const key = `${getCacheKey()}|${since}`
   const now = Date.now()
-  const cache = historyCache?.key === key ? historyCache : null
-  const isCovered = cache !== null && since >= cache.since
+  const cache = historyCaches.get(key)
 
-  if (cache && isCovered && now - cache.fetchedAt < CACHE_TTL) {
+  if (cache && now - cache.fetchedAt < CACHE_TTL) {
+    cache.usedAt = now
+
     return cache.plays
   }
 
-  if (cache && isCovered && now - cache.fullyFetchedAt < HISTORY_FULL_REFRESH) {
-    const refreshSince = Math.max(
-      cache.since,
+  if (cache && now - cache.fullyFetchedAt < HISTORY_FULL_REFRESH) {
+    let refreshSince = Math.max(
+      since,
       cache.fetchedAt - HISTORY_REFRESH_OVERLAP,
     )
-    const recentPlays = await fetchPlays(refreshSince)
-
-    if (!recentPlays) {
-      return cache.plays
-    }
+    let recentPlays: TracearrPlay[] = []
 
     // A play resumed across `refreshSince` comes back with only its newer
-    // segments, so the copy with more watch time wins.
-    const playsById = new Map<string, TracearrPlay>()
+    // segments, so it's read again from where it started.
+    for (;;) {
+      const fetchedPlays = await fetchPlays(refreshSince)
 
-    for (const play of [
-      ...recentPlays,
-      ...cache.plays.filter((play) => play.startedAt < refreshSince),
-    ]) {
-      const existing = playsById.get(play.id)
-
-      if (!existing || play.durationMs > existing.durationMs) {
-        playsById.set(play.id, play)
+      if (!fetchedPlays) {
+        return cache.plays
       }
+
+      const fetchedIds = new Set(fetchedPlays.map((play) => play.id))
+      const resumedSince = Math.min(
+        ...cache.plays
+          .filter(
+            (play) => play.startedAt < refreshSince && fetchedIds.has(play.id),
+          )
+          .map((play) => play.startedAt),
+      )
+
+      recentPlays = fetchedPlays
+
+      if (!Number.isFinite(resumedSince)) {
+        break
+      }
+
+      refreshSince = resumedSince
     }
 
-    historyCache = { ...cache, plays: [...playsById.values()], fetchedAt: now }
+    const plays = [
+      ...recentPlays,
+      ...cache.plays.filter((play) => play.startedAt < refreshSince),
+    ]
 
-    return historyCache.plays
+    historyCaches.set(key, { ...cache, plays, fetchedAt: now, usedAt: now })
+
+    return plays
   }
 
-  const fetchSince = cache ? Math.min(since, cache.since) : since
-  const plays = await fetchPlays(fetchSince)
+  const plays = await fetchPlays(since)
 
   if (!plays) {
-    return cache && isCovered ? cache.plays : null
+    return cache?.plays ?? null
   }
 
-  historyCache = {
-    key,
-    since: fetchSince,
+  historyCaches.set(key, {
     plays,
     fetchedAt: now,
     fullyFetchedAt: now,
-  }
+    usedAt: now,
+  })
 
   return plays
 }
@@ -502,30 +539,33 @@ export async function getTracearrPlays(
     return []
   }
 
-  // Whole days keep the cached window stable between requests.
-  const fetchSince = new Date(sinceTime).setUTCHours(0, 0, 0, 0)
-  const run = historyQueue.then(() => loadPlays(fetchSince))
+  // Windows start at a whole UTC day, so requests for the same period share
+  // one cache.
+  const windowStart = new Date(sinceTime).setUTCHours(0, 0, 0, 0)
+  const run = historyQueue.then(() => loadPlays(windowStart))
 
   historyQueue = run.catch(() => undefined)
 
-  const plays = await run
+  for (const [key, cache] of historyCaches) {
+    if (Date.now() - cache.usedAt > HISTORY_CACHE_IDLE) {
+      historyCaches.delete(key)
+    }
+  }
 
-  return plays?.filter((play) => play.startedAt >= sinceTime) ?? []
+  return (await run) ?? []
 }
 
 const getLibraryRollups = cached<TracearrLibrary[]>(async () => {
-  const [res, filter] = await Promise.all([
+  const [res, serverId] = await Promise.all([
     fetchTracearr<{ data: TracearrLibrary[] }>('libraries'),
-    getPlexServerFilter(),
+    getPlexServerId(),
   ])
 
-  if (!res || !filter) {
+  if (!res || !serverId) {
     return null
   }
 
-  return res.data.filter((library) =>
-    filter.serverIds.includes(library.server_id),
-  )
+  return res.data.filter((library) => library.server_id === serverId)
 })
 
 function getLibraryType(library: TracearrLibrary): TautulliMediaType | null {
@@ -608,14 +648,12 @@ export async function isTracearrMediaDeleted(
     return false
   }
 
-  const [media, filter] = await Promise.all([
+  const [media, serverId] = await Promise.all([
     fetchTracearr<TracearrMedia>(`media/${mediaId}`),
-    getPlexServerFilter(),
+    getPlexServerId(),
   ])
   const availability =
-    media?.availability.filter((item) =>
-      filter?.serverIds.includes(item.server_id),
-    ) ?? []
+    media?.availability.filter((item) => item.server_id === serverId) ?? []
 
   return (
     availability.length > 0 && availability.every((item) => item.removed_at)
@@ -638,11 +676,13 @@ function toSession(
   stream: TracearrStream,
   users: TracearrPlexUser[],
 ): TautulliSession {
-  const user = users.find(
+  // Streams only carry a display name, which two users can share.
+  const matchingUsers = users.filter(
     (user) =>
       user.friendlyName === stream.username ||
       user.username === stream.username,
   )
+  const user = matchingUsers.length === 1 ? matchingUsers[0] : undefined
   const durationMs = stream.duration_ms ?? 0
   const videoDecision = stream.video_decision
     ? DECISIONS[stream.video_decision]
@@ -723,17 +763,17 @@ function toSession(
 }
 
 const getStreams = cached<TautulliActivity>(async () => {
-  const [filter, users] = await Promise.all([
-    getPlexServerFilter(),
+  const [serverId, users] = await Promise.all([
+    getPlexServerId(),
     getTracearrPlexUsers(),
   ])
 
-  if (!filter) {
+  if (!serverId) {
     return null
   }
 
   const res = await fetchTracearr<TracearrStreamsResponse>('streams', {
-    server_id: filter.serverId,
+    server_id: serverId,
   })
 
   if (!res) {
@@ -741,7 +781,7 @@ const getStreams = cached<TautulliActivity>(async () => {
   }
 
   const sessions = (res.data ?? [])
-    .filter((stream) => filter.serverIds.includes(stream.server_id))
+    .filter((stream) => stream.server_id === serverId)
     .map((stream) => toSession(stream, users))
 
   return {

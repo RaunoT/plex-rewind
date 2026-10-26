@@ -43,6 +43,7 @@ export const DEFAULT_SETTINGS: Settings = {
     tautulliApiKey: '',
     tracearrUrl: '',
     tracearrApiKey: '',
+    tracearrServerId: '',
     plexUrl: '',
     overseerrUrl: '',
     overseerrApiKey: '',

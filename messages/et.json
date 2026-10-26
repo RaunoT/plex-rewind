@@ -89,6 +89,7 @@
     "invalidApiKey": "Vale API võti!",
     "unableToConnect": "Ühenduse loomine ebaõnnestus!",
     "noPlexServer": "Plex serverit ei leitud!",
+    "choosePlexServer": "Vali, millist Plex serverit kasutada!",
     "buyMeACoffee": "Osta mulle kohvi",
     "becomeASponsor": "Hakka sponsoriks",
     "reportAnIssue": "Teata probleemist",
@@ -105,7 +106,9 @@
       "title": "Ühenduse seaded",
       "statistics": "Statistika",
       "source": "Allikas",
-      "tracearrDescription": "Teegid on rühmitatud meediatüübi järgi."
+      "tracearrDescription": "Teegid on rühmitatud meediatüübi järgi.",
+      "server": "Server",
+      "chooseServer": "Vali server"
     },
     "Dashboard": {
       "title": "Edetabeli seaded",

@@ -67,7 +67,7 @@ For those that need it, a simple status page is also available at `/api/status`.
 A few things work differently with Tracearr:
 
 - Tracearr doesn't expose library names, so the dashboard and Rewind show one library per media type: _Movies_, _TV Shows_ and _Music_.
-- Only Plex servers are included. Jellyfin and Emby servers tracked by the same Tracearr instance are ignored.
+- Only one Plex server is used. If Tracearr tracks more than one, choose it under _Settings → Connection_. Jellyfin and Emby servers are ignored.
 - Statistics are calculated from the watch history, which is cached for 5 minutes. The first load of a long period, such as a full year of Rewind on a busy server, can take a while.
 - Viewing habits use the timezone of the Plex Rewind container, so set `TZ` if it differs from your own.
 

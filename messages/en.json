@@ -89,6 +89,7 @@
     "invalidApiKey": "Invalid API key!",
     "unableToConnect": "Unable to connect!",
     "noPlexServer": "No Plex server found!",
+    "choosePlexServer": "Choose which Plex server to use!",
     "buyMeACoffee": "Buy me a coffee",
     "becomeASponsor": "Become a sponsor",
     "reportAnIssue": "Report an issue",
@@ -105,7 +106,9 @@
       "title": "Connection settings",
       "statistics": "Statistics",
       "source": "Source",
-      "tracearrDescription": "Libraries are grouped by media type."
+      "tracearrDescription": "Libraries are grouped by media type.",
+      "server": "Server",
+      "chooseServer": "Choose a server"
     },
     "Dashboard": {
       "title": "Dashboard settings",

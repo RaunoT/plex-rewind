@@ -23,6 +23,11 @@ export type TracearrServersResponse = {
   tracearr_version: string
 }
 
+export type TracearrPlexServer = Pick<
+  TracearrServer,
+  'server_id' | 'server_name'
+>
+
 export type TracearrUserAccount = {
   server_id: string
   server_type: TracearrServerType

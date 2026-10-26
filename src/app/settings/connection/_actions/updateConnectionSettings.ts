@@ -6,6 +6,7 @@ import {
   StatisticsSource,
 } from '@/types/settings'
 import { TracearrServersResponse } from '@/types/tracearr'
+import { selectPlexServer } from '@/utils/fetchTracearr'
 import { getTranslations } from 'next-intl/server'
 import { z } from 'zod'
 import updateSettings from '../../_actions/updateSettings'
@@ -16,6 +17,7 @@ const baseSchema = z.object({
   tautulliApiKey: z.string(),
   tracearrUrl: z.string().url().or(z.literal('')),
   tracearrApiKey: z.string(),
+  tracearrServerId: z.string(),
   overseerrUrl: z.string().url().optional().or(z.literal('')),
   overseerrApiKey: z.string().optional(),
   plexUrl: z.string().url(),
@@ -43,6 +45,7 @@ export default async function saveConnectionSettings(
     tautulliApiKey: formData.get('tautulliApiKey') as string,
     tracearrUrl: formData.get('tracearrUrl') as string,
     tracearrApiKey: formData.get('tracearrApiKey') as string,
+    tracearrServerId: (formData.get('tracearrServerId') as string | null) ?? '',
     overseerrUrl: formData.get('overseerrUrl') as string,
     overseerrApiKey: formData.get('overseerrApiKey') as string,
     plexUrl: formData.get('plexUrl') as string,
@@ -79,14 +82,30 @@ export default async function saveConnectionSettings(
         }
 
         const servers: TracearrServersResponse = await res.json()
+        const plexServers = servers.data
+          .filter((server) => server.server_type === 'plex')
+          .map(({ server_id, server_name }) => ({ server_id, server_name }))
 
-        if (!servers.data.some((server) => server.server_type === 'plex')) {
+        if (!plexServers.length) {
           return {
             message: `Tracearr - ${t('noPlexServer')}`,
             status: 'error',
             fields: data,
           }
         }
+
+        const server = selectPlexServer(servers.data, data.tracearrServerId)
+
+        if (!server) {
+          return {
+            message: `Tracearr - ${t('choosePlexServer')}`,
+            status: 'error',
+            fields: data,
+            tracearrServers: plexServers,
+          }
+        }
+
+        data.tracearrServerId = server.server_id
       } catch (error) {
         console.error('[CONFIG] - Error testing Tracearr connection!', error)
 

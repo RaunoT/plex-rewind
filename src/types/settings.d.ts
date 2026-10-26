@@ -12,6 +12,7 @@ export type ConnectionSettings = {
   tautulliApiKey: string
   tracearrUrl: string
   tracearrApiKey: string
+  tracearrServerId: string
   overseerrUrl?: string
   overseerrApiKey?: string
   plexUrl: string
