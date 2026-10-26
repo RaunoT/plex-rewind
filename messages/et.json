@@ -27,6 +27,7 @@
     "noActivity": "Ühtegi aktiivset sessiooni pole.. 😴"
   },
   "Dashboard": {
+    "sizePartial": "{size} (osaline)",
     "noActivity": "Valitud perioodil puudub tegevus.. 😴",
     "title": "Edetabel",
     "usersTitle": "Kasutajad",
@@ -34,8 +35,7 @@
     "movies": "filmi",
     "episodes": "episoodi",
     "tracks": "lugu",
-    "requests": "tellimust",
-    "sizePartial": "{size} (osaline)"
+    "requests": "tellimust"
   },
   "DashboardFilters": {
     "type": "Tüüp",

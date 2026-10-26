@@ -27,6 +27,7 @@
     "noActivity": "Nessuna sessione attiva… 😴"
   },
   "Dashboard": {
+    "sizePartial": "{size} (parziale)",
     "noActivity": "Nessuna attività in questo periodo… 😴",
     "title": "Dashboard",
     "usersTitle": "Utenti",
@@ -34,8 +35,7 @@
     "movies": "film",
     "episodes": "episodi",
     "tracks": "brani",
-    "requests": "richieste",
-    "sizePartial": "{size} (parziale)"
+    "requests": "richieste"
   },
   "DashboardFilters": {
     "type": "Tipo",
