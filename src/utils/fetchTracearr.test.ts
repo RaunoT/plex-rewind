@@ -230,15 +230,16 @@ describe('server selection', () => {
 })
 
 describe('malformed responses', () => {
-  it('returns no library size when the libraries are not a list', async () => {
+  it('falls back to empty libraries when the libraries are not a list', async () => {
     route({
       servers: () => ({ data: [plexServer('s1')] }),
       libraries: () => ({ error: 'nope' }),
     })
 
-    const { getTracearrLibrariesSize } = await load()
+    const { getTracearrLibraries } = await load()
+    const libraries = await getTracearrLibraries()
 
-    await expect(getTracearrLibrariesSize([])).resolves.toBe(0)
+    expect(libraries.map((library) => library.count)).toEqual(['0', '0', '0'])
   })
 
   it('does not mark media as deleted without availability', async () => {
