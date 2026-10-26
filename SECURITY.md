@@ -2,7 +2,7 @@
 
 ## Supported versions
 
-Only the latest release receives security fixes. Please update before reporting, in case the problem is already fixed (see [Updating](README.md#updating)). Pre-release builds from the `develop` branch are for testing and are fixed forward.
+Fixes only go into new releases, so please check the latest release before reporting, in case the problem is already fixed (see [Updating](README.md#updating)). Pre-release builds from the `develop` branch are for testing.
 
 ## Reporting a vulnerability
 
@@ -21,7 +21,7 @@ Please leave out real API keys, tokens and your `NEXTAUTH_SECRET`.
 
 ## What to expect
 
-Plex Rewind is maintained by one person in their spare time. I aim to reply within 7 days and to keep you updated until the report is resolved. Confirmed issues are fixed in a new release and published as a security advisory, crediting you unless you prefer not to be named. Please keep the details private until the fix is out.
+Plex Rewind is a free-time, open-source project, with no support commitments or response times. Reports are looked at when time allows. If a fix is made, it ships in a new release and may be published as a security advisory, crediting you unless you prefer not to be named. Please keep the details private in the meantime.
 
 ## Scope
 
