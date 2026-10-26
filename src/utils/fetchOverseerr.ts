@@ -84,101 +84,151 @@ export default async function fetchOverseerr<T>(
   }
 }
 
+// Overseerr doesn't cap `take`, so lists are read in fewer, larger pages.
+const LIST_PAGE_SIZE = 100
+const MAX_CONCURRENT_PAGES = 4
+const USER_IDS_TTL = 60 * 1000
+
+type UserIdsCache = {
+  key: string
+  expiresAt: number
+  load: Promise<Map<string, number> | null>
+}
+
+let userIdsCache: UserIdsCache | null = null
+
+// Reads a paginated list, a few pages at a time. `isPastEnd` is given each
+// batch's last page and stops the paging once nothing further is needed.
+async function fetchOverseerrPages<T>(
+  endpoint: string,
+  params: Record<string, string> = {},
+  isPastEnd: (page: T[]) => boolean = () => false,
+): Promise<T[] | null> {
+  function fetchPage(page: number) {
+    return fetchOverseerr<OverseerrResponse<T>>(endpoint, undefined, {
+      ...params,
+      take: String(LIST_PAGE_SIZE),
+      skip: String(LIST_PAGE_SIZE * (page - 1)),
+    })
+  }
+
+  const firstPage = await fetchPage(1)
+
+  if (!firstPage || !firstPage.results) {
+    return null
+  }
+
+  const items = [...firstPage.results]
+  const totalPages = firstPage.pageInfo.pages
+
+  let nextPage = 2
+  let lastPage = firstPage.results
+
+  while (nextPage <= totalPages && !isPastEnd(lastPage)) {
+    const batchSize = Math.min(MAX_CONCURRENT_PAGES, totalPages - nextPage + 1)
+    const batch = await Promise.all(
+      Array.from({ length: batchSize }, (_, i) => fetchPage(nextPage + i)),
+    )
+
+    for (const res of batch) {
+      items.push(...(res?.results || []))
+    }
+
+    lastPage = batch[batch.length - 1]?.results || []
+    nextPage += batchSize
+  }
+
+  return items
+}
+
 export async function fetchOverseerrStats(
   req: string,
   startDate: string,
   endDate?: string,
 ): Promise<OverseerrRequestItem[]> {
-  let requestsArr: OverseerrRequestItem[] = []
+  const start = new Date(startDate).getTime()
+  const end = endDate ? new Date(endDate).getTime() : Date.now()
+  // Requests come newest first, so a page that is entirely older than the
+  // window means the rest is too.
+  const requests = await fetchOverseerrPages<OverseerrRequestItem>(
+    req,
+    { sort: 'added' },
+    (page) =>
+      page.length > 0 &&
+      page.every((request) => new Date(request.createdAt).getTime() < start),
+  )
 
-  async function fetchRequests(
-    page: number,
-  ): Promise<OverseerrResponse<OverseerrRequestItem> | null> {
-    return await fetchOverseerr<OverseerrResponse<OverseerrRequestItem>>(
-      req,
-      undefined,
-      {
-        skip: String(PAGE_SIZE * (page - 1)),
-      },
-    )
-  }
-
-  // Fetch the first page to determine total pages
-  const firstPage = await fetchRequests(1)
-
-  if (!firstPage || !firstPage.results) {
+  if (!requests) {
     console.error('[OVERSEERR] - No requests data found!')
 
     return []
   }
 
-  const totalPages = firstPage.pageInfo.pages
-  const promises = []
+  return requests.filter((request) => {
+    const requestDate = new Date(request.createdAt).getTime()
 
-  // Fetch remaining pages in parallel
-  for (let page = 2; page <= totalPages; page++) {
-    promises.push(fetchRequests(page))
-  }
-
-  const results = await Promise.all(promises)
-  const allRequests = [firstPage, ...results].flatMap(
-    (res) => res?.results || [],
-  )
-  const filteredRequests = allRequests.filter((request) => {
-    const requestDate = new Date(request.createdAt)
-    const startDateObj = new Date(startDate)
-    const endDateObj = endDate ? new Date(endDate) : new Date()
-
-    return requestDate >= startDateObj && requestDate <= endDateObj
+    return requestDate >= start && requestDate <= end
   })
-
-  requestsArr = [...requestsArr, ...filteredRequests]
-
-  return requestsArr
 }
 
-export async function fetchOverseerrUserId(
-  plexId: string,
-): Promise<number | null> {
-  let userId: number | null = null
+async function loadOverseerrUserIds(): Promise<Map<string, number> | null> {
+  const users = await fetchOverseerrPages<OverseerrUser>('user')
 
-  async function fetchUsers(
-    page: number,
-  ): Promise<OverseerrResponse<OverseerrUser> | null> {
-    return await fetchOverseerr<OverseerrResponse<OverseerrUser>>(
-      `user`,
-      undefined,
-      {
-        skip: String(PAGE_SIZE * (page - 1)),
-      },
-    )
-  }
-
-  // Fetch the first page to determine total pages
-  const firstPage = await fetchUsers(1)
-
-  if (!firstPage || !firstPage.results) {
+  if (!users) {
     console.error(`[OVERSEERR] - No user data found!`)
 
     return null
   }
 
-  const totalPages = firstPage.pageInfo.pages
-  const promises = []
+  const userIds = new Map<string, number>()
 
-  // Fetch remaining pages in parallel
-  for (let page = 2; page <= totalPages; page++) {
-    promises.push(fetchUsers(page))
+  for (const user of users) {
+    if (!userIds.has(String(user.plexId))) {
+      userIds.set(String(user.plexId), user.id)
+    }
   }
 
-  const results = await Promise.all(promises)
-  const allUsers = [firstPage, ...results].flatMap((res) => res?.results || [])
-  const user = allUsers.find((user) => String(user.plexId) === plexId)
+  return userIds
+}
 
-  if (user) {
-    userId = user.id
-  } else {
+// The top users list looks up several users at once, so they share one scan
+// of the user list.
+function getOverseerrUserIds(): Promise<Map<string, number> | null> {
+  const { overseerrUrl, overseerrApiKey } = getSettings().connection
+  const key = `${overseerrUrl}|${overseerrApiKey}`
+
+  if (userIdsCache?.key === key && userIdsCache.expiresAt > Date.now()) {
+    return userIdsCache.load
+  }
+
+  const load = loadOverseerrUserIds()
+  const forgetFailure = () => {
+    if (userIdsCache?.load === load) {
+      userIdsCache = null
+    }
+  }
+
+  userIdsCache = { key, expiresAt: Date.now() + USER_IDS_TTL, load }
+  load.then((userIds) => userIds || forgetFailure(), forgetFailure)
+
+  return load
+}
+
+export async function fetchOverseerrUserId(
+  plexId: string,
+): Promise<number | null> {
+  const userIds = await getOverseerrUserIds()
+
+  if (!userIds) {
+    return null
+  }
+
+  const userId = userIds.get(plexId)
+
+  if (userId === undefined) {
     console.error(`[OVERSEERR] - No matching user found for plexId ${plexId}!`)
+
+    return null
   }
 
   return userId

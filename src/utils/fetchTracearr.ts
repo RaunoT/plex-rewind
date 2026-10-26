@@ -144,12 +144,12 @@ function cached<T>(load: () => Promise<T | null>, ttl = CACHE_TTL) {
   }
 }
 
-function toAbsoluteUrl(url: string | null): string {
+function toAbsoluteUrl(url: string | null, baseUrl: string): string {
   if (!url) {
     return ''
   }
 
-  return url.startsWith('/') ? `${getTracearrUrl()}${url}` : url
+  return url.startsWith('/') ? `${baseUrl}${url}` : url
 }
 
 export default async function fetchTracearr<T>(
@@ -406,7 +406,10 @@ export async function getTracearrUsers(): Promise<TautulliUser[]> {
   })
 }
 
-function toPlay(record: TracearrHistoryRecord): TracearrPlay | null {
+function toPlay(
+  record: TracearrHistoryRecord,
+  baseUrl: string,
+): TracearrPlay | null {
   const mediaType = record.media_type as TracearrPlayMediaType
 
   if (!PLAY_MEDIA_TYPES.includes(mediaType)) {
@@ -422,7 +425,7 @@ function toPlay(record: TracearrHistoryRecord): TracearrPlay | null {
     showTitle: record.show_title,
     artistName: record.artist_name,
     year: record.year,
-    thumb: toAbsoluteUrl(record.poster_url),
+    thumb: toAbsoluteUrl(record.poster_url, baseUrl),
     ratingKey: record.rating_key,
     grandparentRatingKey: record.grandparent_rating_key,
     mediaId: record.media_id,
@@ -430,7 +433,7 @@ function toPlay(record: TracearrHistoryRecord): TracearrPlay | null {
     imdbId: record.imdb_id,
     tmdbId: record.tmdb_id,
     identityId: record.user.id,
-    avatar: toAbsoluteUrl(record.user.avatar_url),
+    avatar: toAbsoluteUrl(record.user.avatar_url, baseUrl),
   }
 }
 
@@ -441,6 +444,7 @@ async function fetchPlays(since: number): Promise<TracearrPlay[] | null> {
     return null
   }
 
+  const baseUrl = getTracearrUrl()
   const records = await fetchAllPages<TracearrHistoryRecord>('history', {
     since: new Date(since).toISOString(),
     server_id: serverId,
@@ -451,7 +455,7 @@ async function fetchPlays(since: number): Promise<TracearrPlay[] | null> {
   }
 
   return records.flatMap((record) => {
-    const play = record.server_id === serverId ? toPlay(record) : null
+    const play = record.server_id === serverId ? toPlay(record, baseUrl) : null
 
     return play ? [play] : []
   })
@@ -678,6 +682,7 @@ const CHANNEL_LAYOUTS: Record<number, string> = {
 function toSession(
   stream: TracearrStream,
   users: TracearrPlexUser[],
+  baseUrl: string,
 ): TautulliSession {
   // Streams only carry a display name, which two users can share.
   const matchingUsers = users.filter(
@@ -749,7 +754,7 @@ function toSession(
     stream_video_dynamic_range: stream.stream_video_details?.dynamicRange ?? '',
     stream_video_full_resolution: streamHeight ? `${streamHeight}p` : '',
     subtitle_codec: stream.subtitle_info?.codec ?? '',
-    thumb: toAbsoluteUrl(stream.poster_url),
+    thumb: toAbsoluteUrl(stream.poster_url, baseUrl),
     title: stream.media_title,
     transcode_decision: stream.is_transcode
       ? 'transcode'
@@ -757,7 +762,10 @@ function toSession(
         ? 'copy'
         : 'direct play',
     user_id: Number(user?.plexId) || 0,
-    user_thumb: toAbsoluteUrl(stream.user_avatar_url ?? stream.user_thumb),
+    user_thumb: toAbsoluteUrl(
+      stream.user_avatar_url ?? stream.user_thumb,
+      baseUrl,
+    ),
     video_codec: stream.source_video_codec ?? '',
     video_dynamic_range: stream.source_video_details?.dynamicRange ?? '',
     video_full_resolution: stream.resolution ?? '',
@@ -783,9 +791,10 @@ const getStreams = cached<TautulliActivity>(async () => {
     return null
   }
 
+  const baseUrl = getTracearrUrl()
   const sessions = (res.data ?? [])
     .filter((stream) => stream.server_id === serverId)
-    .map((stream) => toSession(stream, users))
+    .map((stream) => toSession(stream, users, baseUrl))
 
   return {
     sessions,
