@@ -3,7 +3,7 @@
 import { Settings } from '@/types/settings'
 import { TautulliItemRow } from '@/types/tautulli'
 import { getDeeplinkRatingKeyFromRow } from '@/utils/deeplink'
-import { secondsToTime } from '@/utils/formatting'
+import { formatRating, secondsToTime } from '@/utils/formatting'
 import { slideDown } from '@/utils/motion'
 import {
   CalendarDaysIcon,
@@ -17,7 +17,7 @@ import {
 } from '@heroicons/react/24/outline'
 import clsx from 'clsx'
 import { motion } from 'motion/react'
-import { useTranslations } from 'next-intl'
+import { useLocale, useTranslations } from 'next-intl'
 import Image from 'next/image'
 import { useRef, useState } from 'react'
 import anonymousSvg from './anonymous.svg'
@@ -50,6 +50,7 @@ export default function MediaItem({
 }: Props) {
   const translations = useTranslations()
   const t = useTranslations('MediaItem')
+  const locale = useLocale()
   const tautulliUrl = settings.connection.tautulliUrl
   const isTmdbPoster = data.thumb?.startsWith('https://image.tmdb.org')
   const isUsers = type === 'users'
@@ -172,7 +173,7 @@ export default function MediaItem({
             activeStats.includes('rating') && (
               <li className='icon-stat-wrapper'>
                 <StarIcon />
-                {data.rating}
+                {formatRating(data.rating, locale)}
               </li>
             )}
           {/* Duration */}

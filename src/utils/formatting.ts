@@ -85,7 +85,17 @@ export function timeToSeconds(time: string): number {
   return days + hours + mins + secs
 }
 
-export function formatBitrate(bitrate: number | string): string {
+function formatOneDecimal(value: number, locale: string): string {
+  return value.toLocaleString(locale, {
+    minimumFractionDigits: 1,
+    maximumFractionDigits: 1,
+  })
+}
+
+export function formatBitrate(
+  bitrate: number | string,
+  locale: string,
+): string {
   if (!bitrate || bitrate === '') {
     return 'N/A'
   }
@@ -98,7 +108,21 @@ export function formatBitrate(bitrate: number | string): string {
 
   const megabits = numeric / 1000
 
-  return `${megabits.toFixed(1)} Mbps`
+  return `${formatOneDecimal(megabits, locale)} Mbps`
+}
+
+export function formatRating(rating: string, locale: string): string {
+  const numeric = Number(rating)
+
+  return rating.trim() === '' || !Number.isFinite(numeric)
+    ? rating
+    : formatOneDecimal(numeric, locale)
+}
+
+export function formatPercent(percent: number, locale: string): string {
+  return new Intl.NumberFormat(locale, { style: 'percent' }).format(
+    percent / 100,
+  )
 }
 
 export function millisecondsToTimeString(milliseconds: number): string {
