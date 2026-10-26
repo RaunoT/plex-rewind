@@ -23,7 +23,7 @@ Present [Plex](https://plex.tv) user statistics and habits in a beautiful and or
 - 🚀 PWA support - installable on mobile devices and desktops thanks to [Serwist](https://github.com/serwist/serwist).
 - 🐳 Easy deployment - run the application in a containerized environment with [Docker](https://www.docker.com).
 - ✨ Beautiful animations with [Motion](https://motion.dev).
-- 🌐 Multi-language support - currently supporting English, Estonian, French and German. See [translations](#translations) for more information.
+- 🌐 Multi-language support - currently supporting English, Estonian, French, German and Italian. See [translations](#translations) for more information.
 - ⭐ All of this and more - powered by [Next.js](https://nextjs.org).
 
 Keep an eye on the [issues page](https://github.com/RaunoT/plex-rewind/issues) to see what new features have already been requested or to make your own request!
