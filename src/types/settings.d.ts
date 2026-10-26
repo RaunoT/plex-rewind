@@ -32,18 +32,10 @@ export type RewindSettings = {
 }
 
 export type DashboardItemStatistics = (
-  | 'year'
-  | 'rating'
-  | 'duration'
-  | 'plays'
-  | 'users'
-  | 'requests'
+  'year' | 'rating' | 'duration' | 'plays' | 'users' | 'requests'
 )[]
 export type DashboardTotalStatistics = (
-  | 'size'
-  | 'duration'
-  | 'count'
-  | 'requests'
+  'size' | 'duration' | 'count' | 'requests'
 )[]
 
 export type DashboardSettings = {
