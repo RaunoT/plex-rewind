@@ -3,11 +3,20 @@
 import { denySettingsAccess } from '@/lib/access'
 import {
   ConnectionSettings,
+  GeneralSettings,
   SettingsFormInitialState,
   StatisticsSource,
 } from '@/types/settings'
 import { TracearrServersResponse } from '@/types/tracearr'
+import {
+  ConnectionError,
+  getFetchError,
+  getStatusError,
+  getTautulliResultError,
+} from '@/utils/connectionErrors'
 import { selectPlexServer } from '@/utils/fetchTracearr'
+import getSettings from '@/utils/getSettings'
+import { normalizeUrl } from '@/utils/url'
 import { getTranslations } from 'next-intl/server'
 import { z } from 'zod'
 import updateSettings from '../../_actions/updateSettings'
@@ -35,6 +44,45 @@ const schema = z.discriminatedUnion('statisticsSource', [
     tracearrApiKey: z.string().min(1),
   }),
 ])
+// The saved general settings are already valid, only `complete` is flipped.
+const generalSchema = z.custom<GeneralSettings>(
+  (value) => typeof (value as GeneralSettings)?.complete === 'boolean',
+)
+
+type TestResult =
+  | { response: Response; error?: never }
+  | { response?: never; error: ConnectionError }
+
+async function testRequest(
+  service: string,
+  url: string,
+  init?: RequestInit,
+): Promise<TestResult> {
+  try {
+    return { response: await fetch(url, { ...init, cache: 'no-store' }) }
+  } catch (error) {
+    console.error(`[CONFIG] - Error testing ${service} connection!`, error)
+
+    return { error: getFetchError(error) }
+  }
+}
+
+function getResponseError(
+  service: string,
+  response: Response,
+): ConnectionError | null {
+  if (response.ok) {
+    return null
+  }
+
+  console.error(
+    `[CONFIG] - Error testing ${service} connection!`,
+    response.status,
+    response.statusText,
+  )
+
+  return getStatusError(response.status)
+}
 
 export default async function saveConnectionSettings(
   prevState: SettingsFormInitialState<ConnectionSettings>,
@@ -48,160 +96,144 @@ export default async function saveConnectionSettings(
 
   const data = {
     statisticsSource: formData.get('statisticsSource') as StatisticsSource,
-    tautulliUrl: formData.get('tautulliUrl') as string,
+    tautulliUrl: normalizeUrl(formData.get('tautulliUrl') as string),
     tautulliApiKey: formData.get('tautulliApiKey') as string,
-    tracearrUrl: formData.get('tracearrUrl') as string,
+    tracearrUrl: normalizeUrl(formData.get('tracearrUrl') as string),
     tracearrApiKey: formData.get('tracearrApiKey') as string,
     tracearrServerId: (formData.get('tracearrServerId') as string | null) ?? '',
-    overseerrUrl: formData.get('overseerrUrl') as string,
+    overseerrUrl: normalizeUrl(formData.get('overseerrUrl') as string),
     overseerrApiKey: formData.get('overseerrApiKey') as string,
-    plexUrl: formData.get('plexUrl') as string,
+    plexUrl: normalizeUrl(formData.get('plexUrl') as string),
     complete: true,
   }
   const t = await getTranslations('Settings')
+  const fail = (service: string, { key, values }: ConnectionError) => ({
+    message: `${service} - ${t(key, values)}`,
+    status: 'error',
+    fields: data,
+  })
 
   try {
     if (data.statisticsSource === 'tracearr') {
-      // Test Tracearr
-      try {
-        const res = await fetch(
-          `${data.tracearrUrl.replace(/\/+$/, '')}/api/v2/public/servers`,
-          {
-            headers: {
-              Authorization: `Bearer ${data.tracearrApiKey}`,
-            },
-            cache: 'no-store',
-          },
-        )
+      const { response, error } = await testRequest(
+        'Tracearr',
+        `${data.tracearrUrl}/api/v2/public/servers`,
+        { headers: { Authorization: `Bearer ${data.tracearrApiKey}` } },
+      )
 
-        if (!res.ok) {
-          console.error(
-            '[CONFIG] - Error testing Tracearr connection!',
-            res.status,
-            res.statusText,
-          )
+      if (error) {
+        return fail('Tracearr', error)
+      }
 
-          return {
-            message: `Tracearr - ${t('invalidApiKey')}`,
-            status: 'error',
-            fields: data,
-          }
-        }
+      const responseError = getResponseError('Tracearr', response)
 
-        const servers: TracearrServersResponse = await res.json()
-        const plexServers = servers.data
-          .filter((server) => server.server_type === 'plex')
-          .map(({ server_id, server_name }) => ({ server_id, server_name }))
+      if (responseError) {
+        return fail('Tracearr', responseError)
+      }
 
-        if (!plexServers.length) {
-          return {
-            message: `Tracearr - ${t('noPlexServer')}`,
-            status: 'error',
-            fields: data,
-          }
-        }
+      const servers: TracearrServersResponse | null = await response
+        .json()
+        .catch(() => null)
 
-        const server = selectPlexServer(servers.data, data.tracearrServerId)
+      if (!Array.isArray(servers?.data)) {
+        return fail('Tracearr', getStatusError(response.status))
+      }
 
-        if (!server) {
-          return {
-            message: `Tracearr - ${t('choosePlexServer')}`,
-            status: 'error',
-            fields: data,
-            tracearrServers: plexServers,
-          }
-        }
+      const plexServers = servers.data
+        .filter((server) => server.server_type === 'plex')
+        .map(({ server_id, server_name }) => ({ server_id, server_name }))
 
-        data.tracearrServerId = server.server_id
-      } catch (error) {
-        console.error('[CONFIG] - Error testing Tracearr connection!', error)
-
+      if (!plexServers.length) {
         return {
-          message: `Tracearr - ${t('unableToConnect')}`,
+          message: `Tracearr - ${t('noPlexServer')}`,
           status: 'error',
           fields: data,
         }
       }
+
+      const server = selectPlexServer(servers.data, data.tracearrServerId)
+
+      if (!server) {
+        return {
+          message: `Tracearr - ${t('choosePlexServer')}`,
+          status: 'error',
+          fields: data,
+          tracearrServers: plexServers,
+        }
+      }
+
+      data.tracearrServerId = server.server_id
     } else {
-      // Test Tautulli
-      try {
-        const res = await fetch(
-          `${data.tautulliUrl}/api/v2?apikey=${data.tautulliApiKey}&cmd=status`,
-          {
-            cache: 'no-store',
-          },
+      const { response, error } = await testRequest(
+        'Tautulli',
+        `${data.tautulliUrl}/api/v2?apikey=${data.tautulliApiKey}&cmd=status`,
+      )
+
+      if (error) {
+        return fail('Tautulli', error)
+      }
+
+      const responseError = getResponseError('Tautulli', response)
+
+      if (responseError) {
+        return fail('Tautulli', responseError)
+      }
+
+      const resultError = getTautulliResultError(
+        await response.json().catch(() => null),
+        response.status,
+      )
+
+      if (resultError) {
+        console.error(
+          '[CONFIG] - Error testing Tautulli connection!',
+          resultError.key,
         )
 
-        if (!res.ok) {
-          console.error(
-            '[CONFIG] - Error testing Tautulli connection!',
-            res.status,
-            res.statusText,
-          )
-
-          return {
-            message: `Tautulli - ${t('invalidApiKey')}`,
-            status: 'error',
-            fields: data,
-          }
-        }
-      } catch (error) {
-        console.error('[CONFIG] - Error testing Tautulli connection!', error)
-
-        return {
-          message: `Tautulli - ${t('unableToConnect')}`,
-          status: 'error',
-          fields: data,
-        }
+        return fail('Tautulli', resultError)
       }
     }
 
-    // Test Overseerr
     if (data.overseerrUrl && data.overseerrApiKey) {
-      try {
-        const res = await fetch(`${data.overseerrUrl}/api/v1/user`, {
-          headers: {
-            'X-API-KEY': data.overseerrApiKey,
-          },
-          cache: 'no-store',
-        })
+      const { response, error } = await testRequest(
+        'Overseerr',
+        `${data.overseerrUrl}/api/v1/user`,
+        { headers: { 'X-API-KEY': data.overseerrApiKey } },
+      )
 
-        if (!res.ok) {
-          console.error(
-            '[CONFIG] - Error testing Overseerr connection!',
-            res.status,
-            res.statusText,
-          )
+      if (error) {
+        return fail('Overseerr', error)
+      }
 
-          return {
-            message: `Overseerr - ${t('invalidApiKey')}`,
-            status: 'error',
-            fields: data,
-          }
-        }
-      } catch (error) {
-        console.error('[CONFIG] - Error testing Overseerr connection!', error)
+      const responseError = getResponseError('Overseerr', response)
 
-        return {
-          message: `Overseerr - ${t('unableToConnect')}`,
-          status: 'error',
-          fields: data,
-        }
+      if (responseError) {
+        return fail('Overseerr', responseError)
       }
     }
 
-    // Test Plex
+    // Any answer means the server is reachable.
     try {
       await fetch(data.plexUrl, {
         cache: 'no-store',
       })
     } catch (error) {
-      console.error('[CONFIG] - Error testing Plex connection!', error)
+      const plexError = getFetchError(error)
 
-      return {
-        message: `Plex - ${t('unableToConnect')}`,
-        status: 'error',
-        fields: data,
+      // Tautulli only gets the host and port, so an untrusted certificate is
+      // harmless there. Tracearr reads the server identity from this URL,
+      // which needs a verified connection.
+      if (
+        plexError.key === 'certificateError' &&
+        data.statisticsSource === 'tautulli'
+      ) {
+        console.warn(
+          '[CONFIG] - Plex certificate could not be verified! Continuing, as only the hostname and port are used.',
+        )
+      } else {
+        console.error('[CONFIG] - Error testing Plex connection!', error)
+
+        return fail('Plex', plexError)
       }
     }
   } catch (error) {
@@ -214,5 +246,23 @@ export default async function saveConnectionSettings(
     }
   }
 
-  return await updateSettings(schema, data, 'connection')
+  const previousSettings = getSettings()
+  const result = await updateSettings(schema, data, 'connection')
+
+  // Libraries are matched by name, which differs between the sources.
+  if (
+    result.status === 'success' &&
+    previousSettings.connection.statisticsSource !== data.statisticsSource &&
+    previousSettings.general.complete
+  ) {
+    await updateSettings(
+      generalSchema,
+      { ...previousSettings.general, complete: false },
+      'general',
+    )
+
+    return { ...result, message: t('savedChooseLibraries') }
+  }
+
+  return result
 }
