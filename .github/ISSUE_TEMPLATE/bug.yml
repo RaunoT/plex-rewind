@@ -2,11 +2,74 @@ name: 🐛 Bug report
 description: Report a problem
 labels: ['type:bug', 'awaiting triage']
 body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting a bug! Most problems depend on how Plex Rewind is set up, so the details below help a lot. Please check the [README](https://github.com/RaunoT/plex-rewind#getting-started) and search existing issues first.
   - type: input
     id: version
     attributes:
-      label: Plex Rewind Version
-      description: What version of Plex Rewind are you running? You can find this at the bottom of the settings page.
+      label: Plex Rewind version
+      description: You can find this at the bottom of the settings page, or at `/api/status`.
+      placeholder: v1.2.3
+    validations:
+      required: true
+  - type: dropdown
+    id: deployment
+    attributes:
+      label: Deployment method
+      options:
+        - Docker Compose
+        - Docker (docker run)
+        - Unraid
+        - Other (describe in additional context)
+    validations:
+      required: true
+  - type: dropdown
+    id: statistics-source
+    attributes:
+      label: Statistics source
+      description: Which one are you using under Settings → Connection?
+      options:
+        - Tautulli
+        - Tracearr
+    validations:
+      required: true
+  - type: input
+    id: statistics-source-version
+    attributes:
+      label: Tautulli or Tracearr version
+      description: For example Tautulli v2.15 or Tracearr v2.0.
+    validations:
+      required: true
+  - type: input
+    id: reverse-proxy
+    attributes:
+      label: Reverse proxy
+      description: Which one, for example Nginx, Traefik, Caddy or a Cloudflare Tunnel. Write "none" if you connect directly.
+    validations:
+      required: true
+  - type: dropdown
+    id: site-url
+    attributes:
+      label: NEXTAUTH_URL and NEXT_PUBLIC_SITE_URL
+      description: Pick the form that matches your two URL variables. There is no need to share your real domain or IP.
+      options:
+        - 'http://localhost:8383'
+        - 'http://<LAN IP>:8383'
+        - 'https://<your domain>'
+        - 'http://<your domain>'
+        - Other (describe in additional context)
+    validations:
+      required: true
+  - type: dropdown
+    id: plex-url-scheme
+    attributes:
+      label: Plex URL scheme
+      description: The scheme of the Plex URL under Settings → Connection.
+      options:
+        - 'http://'
+        - 'https://'
     validations:
       required: true
   - type: textarea
@@ -32,12 +95,24 @@ body:
     attributes:
       label: Screenshots
       description: If applicable, please provide screenshots depicting the problem.
+  - type: markdown
+    attributes:
+      value: |
+        ### Logs
+
+        **Redact API keys, tokens and `NEXTAUTH_SECRET` before pasting any logs or config.** Replace them with `REDACTED`.
   - type: textarea
     id: logs
     attributes:
       label: Logs
-      description: Please copy and paste any relevant log output.
+      description: Container logs (`docker logs plex-rewind`) and any browser console errors. Redact secrets first, as noted above.
       render: shell
+  - type: markdown
+    attributes:
+      value: |
+        ### Client details
+
+        Only needed for display or layout problems. Feel free to skip these otherwise.
   - type: dropdown
     id: platform
     attributes:
@@ -46,29 +121,21 @@ body:
         - desktop
         - smartphone
         - tablet
-    validations:
-      required: true
   - type: input
     id: device
     attributes:
       label: Device
       description: For example - iPhone 15 Pro, Samsung Galaxy S22
-    validations:
-      required: true
   - type: input
     id: os
     attributes:
       label: Operating System
       description: For example - iOS 17.1, Windows 11, Android 14.0
-    validations:
-      required: true
   - type: input
     id: browser
     attributes:
       label: Browser and version
       description: For example - Chrome 120.0.6099.129, Safari 17.2, Firefox 121.0
-    validations:
-      required: true
   - type: textarea
     id: additional-context
     attributes:

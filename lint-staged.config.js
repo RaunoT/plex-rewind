@@ -2,10 +2,11 @@ const config = {
   '**/*.{js,jsx,ts,tsx}': [
     'prettier --write --cache',
     'eslint --cache --fix',
-    'bash -c tsc --noEmit --skipLibCheck',
+    // A function entry runs the command once, without the staged file list.
+    () => 'tsc --noEmit',
   ],
-  '**/*.css': 'stylelint --cache --fix',
-  '**/*.{css,md,json}': 'prettier --write --cache',
+  '**/*.css': ['stylelint --cache --fix', 'prettier --write --cache'],
+  '**/*.{md,json}': 'prettier --write --cache',
 }
 
 export default config
