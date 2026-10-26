@@ -88,6 +88,7 @@
     "apiKey": "Clé API",
     "invalidApiKey": "Clé API invalide !",
     "unableToConnect": "Impossible de se connecter !",
+    "noPlexServer": "Aucun serveur Plex trouvé !",
     "buyMeACoffee": "Offrez-moi un café",
     "becomeASponsor": "Devenir sponsor",
     "reportAnIssue": "Signaler un problème",
@@ -101,7 +102,10 @@
       "activity": "Activité"
     },
     "Connection": {
-      "title": "Paramètres de connexion"
+      "title": "Paramètres de connexion",
+      "statistics": "Statistiques",
+      "source": "Source",
+      "tracearrDescription": "Les bibliothèques sont regroupées par type de média."
     },
     "Dashboard": {
       "title": "Paramètres du tableau de bord",
@@ -145,7 +149,7 @@
       "title": "Paramètres Rewind",
       "cards": "Cartes",
       "librariesSizeAndCountCard": "Carte taille et nombre de bibliothèques",
-      "librariesSizeAndCountCardDescription": "Désactiver si vous ne voulez pas dépendre de Tautulli pour ces statistiques.",
+      "librariesSizeAndCountCardDescription": "Désactiver si vous ne voulez pas dépendre de Tautulli ou Tracearr pour ces statistiques.",
       "startDateHelperText": "Par défaut, 365 jours avant."
     }
   },

@@ -88,6 +88,7 @@
     "apiKey": "API-Schlüssel",
     "invalidApiKey": "Ungültiger API-Schlüssel!",
     "unableToConnect": "Verbindung fehlgeschlagen!",
+    "noPlexServer": "Kein Plex-Server gefunden!",
     "buyMeACoffee": "Kaffee spenden",
     "becomeASponsor": "Sponsor werden",
     "reportAnIssue": "Problem melden",
@@ -101,7 +102,10 @@
       "activity": "Aktivität"
     },
     "Connection": {
-      "title": "Verbindungseinstellungen"
+      "title": "Verbindungseinstellungen",
+      "statistics": "Statistiken",
+      "source": "Quelle",
+      "tracearrDescription": "Bibliotheken werden nach Medientyp gruppiert."
     },
     "Dashboard": {
       "title": "Dashboard Einstellungen",

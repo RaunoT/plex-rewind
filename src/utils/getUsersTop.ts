@@ -1,3 +1,4 @@
+import { Settings } from '@/types/settings'
 import { TautulliItem, TautulliItemRow } from '@/types/tautulli'
 import { fetchOverseerrStats, fetchOverseerrUserId } from './fetchOverseerr'
 import fetchTautulli, {
@@ -6,12 +7,22 @@ import fetchTautulli, {
   getLibrariesByType,
 } from './fetchTautulli'
 import getSettings from './getSettings'
+import {
+  getTracearrInactiveUser,
+  getTracearrUsersTop,
+} from './getTracearrStats'
+import { isTracearrSource } from './helpers'
 
 type UserRequestCounts =
   | {
       requests: number
     }
   | undefined
+
+type UserPlaysCounts = Pick<
+  TautulliItemRow,
+  'movies_plays_count' | 'shows_plays_count' | 'audio_plays_count'
+>
 
 export default async function getUsersTop(
   loggedInUserId: string,
@@ -20,6 +31,70 @@ export default async function getUsersTop(
 ): Promise<TautulliItemRow[] | null> {
   const numberOfUsers = 6
   const settings = getSettings()
+  const isTracearr = isTracearrSource(settings)
+  const users = isTracearr
+    ? await getTracearrUsersTop(after, await getLibraries())
+    : await getTautulliUsersTop(settings, period)
+
+  if (!users) {
+    return null
+  }
+
+  const isAnonymousAccess = settings.general.isOutsideAccess && !loggedInUserId
+  const listedUsers = isAnonymousAccess
+    ? users.slice(0, numberOfUsers)
+    : await getStatsWithLoggedInUser(loggedInUserId, users, numberOfUsers)
+  const isOverseerrActive =
+    settings.connection.overseerrUrl && settings.connection.overseerrApiKey
+
+  let usersRequestsCounts: UserRequestCounts[] = []
+
+  if (isOverseerrActive) {
+    const overseerrUserIds = await Promise.all(
+      listedUsers.map(
+        async (user) => await fetchOverseerrUserId(String(user.user_id)),
+      ),
+    )
+
+    usersRequestsCounts = await Promise.all(
+      overseerrUserIds.map(async (overseerrId) => {
+        if (overseerrId) {
+          const userTotal = await fetchOverseerrStats(
+            `user/${overseerrId}/requests`,
+            after,
+          )
+
+          return {
+            requests: userTotal.length,
+          }
+        }
+      }),
+    )
+  }
+
+  // Tracearr's ranking already counts the plays
+  const usersPlaysCounts = isTracearr
+    ? listedUsers
+    : await getTautulliPlaysCounts(listedUsers, after)
+
+  listedUsers.map((user, i) => {
+    user.requests = usersRequestsCounts[i]?.requests || 0
+    user.movies_plays_count = usersPlaysCounts[i].movies_plays_count
+    user.shows_plays_count = usersPlaysCounts[i].shows_plays_count
+    user.audio_plays_count = usersPlaysCounts[i].audio_plays_count
+  })
+
+  if (settings.general.isAnonymized) {
+    return anonymizeUsers(listedUsers, loggedInUserId)
+  }
+
+  return listedUsers
+}
+
+async function getTautulliUsersTop(
+  settings: Settings,
+  period?: number,
+): Promise<TautulliItemRow[] | null> {
   const excludedUsers = settings.general.excludedUsers
   const activeUsers = await getActiveUsers(settings)
 
@@ -69,48 +144,23 @@ export default async function getUsersTop(
     }
   })
 
-  const users = Object.values(combinedUserStats).sort(
+  return Object.values(combinedUserStats).sort(
     (a, b) => b.total_duration - a.total_duration,
   )
-  const isAnonymousAccess = settings.general.isOutsideAccess && !loggedInUserId
-  const listedUsers = isAnonymousAccess
-    ? users.slice(0, numberOfUsers)
-    : await getStatsWithLoggedInUser(loggedInUserId, users, numberOfUsers)
+}
+
+async function getTautulliPlaysCounts(
+  users: TautulliItemRow[],
+  after: string,
+): Promise<UserPlaysCounts[]> {
   const [moviesLib, showsLib, audioLib] = await Promise.all([
     getLibrariesByType('movie'),
     getLibrariesByType('show'),
     getLibrariesByType('artist'),
   ])
-  const isOverseerrActive =
-    settings.connection.overseerrUrl && settings.connection.overseerrApiKey
 
-  let usersRequestsCounts: UserRequestCounts[] = []
-
-  if (isOverseerrActive) {
-    const overseerrUserIds = await Promise.all(
-      listedUsers.map(
-        async (user) => await fetchOverseerrUserId(String(user.user_id)),
-      ),
-    )
-
-    usersRequestsCounts = await Promise.all(
-      overseerrUserIds.map(async (overseerrId) => {
-        if (overseerrId) {
-          const userTotal = await fetchOverseerrStats(
-            `user/${overseerrId}/requests`,
-            after,
-          )
-
-          return {
-            requests: userTotal.length,
-          }
-        }
-      }),
-    )
-  }
-
-  const usersPlaysAndDurations = await Promise.all(
-    listedUsers.map(async (user) => {
+  return Promise.all(
+    users.map(async (user) => {
       let moviesPlaysCount = 0
       let showsPlaysCount = 0
       let audioPlaysCount = 0
@@ -161,19 +211,6 @@ export default async function getUsersTop(
       }
     }),
   )
-
-  listedUsers.map((user, i) => {
-    user.requests = usersRequestsCounts[i]?.requests || 0
-    user.movies_plays_count = usersPlaysAndDurations[i].movies_plays_count
-    user.shows_plays_count = usersPlaysAndDurations[i].shows_plays_count
-    user.audio_plays_count = usersPlaysAndDurations[i].audio_plays_count
-  })
-
-  if (settings.general.isAnonymized) {
-    return anonymizeUsers(listedUsers, loggedInUserId)
-  }
-
-  return listedUsers
 }
 
 async function getStatsWithLoggedInUser(
@@ -202,6 +239,10 @@ async function getStatsWithLoggedInUser(
 async function getInactiveUserInTimePeriod(
   id: string,
 ): Promise<TautulliItemRow> {
+  if (isTracearrSource(getSettings())) {
+    return getTracearrInactiveUser(id)
+  }
+
   const user = await fetchTautulli<TautulliItemRow>('get_user', {
     user_id: id,
   })

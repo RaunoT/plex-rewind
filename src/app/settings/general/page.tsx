@@ -1,5 +1,4 @@
-import { TautulliUser } from '@/types/tautulli'
-import fetchTautulli, { getLibraries } from '@/utils/fetchTautulli'
+import { getLibraries, getUsers } from '@/utils/fetchTautulli'
 import getSettings from '@/utils/getSettings'
 import { Metadata } from 'next'
 import { getTranslations } from 'next-intl/server'
@@ -11,17 +10,6 @@ export async function generateMetadata(): Promise<Metadata> {
   return {
     title: t('title'),
   }
-}
-
-// All active users (without applying the exclusion filter) so that already
-// excluded users stay visible in the form and can be re-included.
-async function getUsers(): Promise<TautulliUser[]> {
-  const res = await fetchTautulli<TautulliUser[]>('get_users')
-  const users = res?.response?.data?.filter(
-    (user) => user.is_active && user.username !== 'Local',
-  )
-
-  return users ?? []
 }
 
 export default async function GeneralSettingsPage() {

@@ -1,9 +1,11 @@
-import { Settings } from '@/types/settings'
+import { Settings, StatisticsSource } from '@/types/settings'
 import { PERIODS, SETTINGS_PAGES } from './constants'
 
+const SOURCE_REQUIRED_SETTINGS: Record<StatisticsSource, string[]> = {
+  tautulli: ['connection.tautulliUrl', 'connection.tautulliApiKey'],
+  tracearr: ['connection.tracearrUrl', 'connection.tracearrApiKey'],
+}
 const REQUIRED_SETTINGS = [
-  'connection.tautulliUrl',
-  'connection.tautulliApiKey',
   'connection.plexUrl',
   'connection.complete',
   'general.complete',
@@ -14,8 +16,16 @@ const REQUIRED_SETTINGS = [
   'activity.complete',
 ]
 
+export function isTracearrSource(settings: Settings): boolean {
+  return settings.connection.statisticsSource === 'tracearr'
+}
+
 export function checkRequiredSettings(settings: Settings): string | null {
-  for (const key of REQUIRED_SETTINGS) {
+  const sourceRequiredSettings = isTracearrSource(settings)
+    ? SOURCE_REQUIRED_SETTINGS.tracearr
+    : SOURCE_REQUIRED_SETTINGS.tautulli
+
+  for (const key of [...sourceRequiredSettings, ...REQUIRED_SETTINGS]) {
     const keys = key.split('.')
     // @ts-expect-error - TODO: we know this is safe, but should still look to resolve without exception
     const settingValue = keys.reduce((acc, curr) => acc && acc[curr], settings)

@@ -10,7 +10,14 @@ import {
 import { kebabCase } from 'lodash'
 import { getServerSession } from 'next-auth'
 import qs from 'qs'
+import {
+  getTracearrActivity,
+  getTracearrLibraries,
+  getTracearrUser,
+  getTracearrUsers,
+} from './fetchTracearr'
 import getSettings from './getSettings'
+import { isTracearrSource } from './helpers'
 
 type TautulliResponse<T> = {
   response: {
@@ -71,8 +78,34 @@ export default async function fetchTautulli<T>(
   }
 }
 
+// Plex answers /identity without a token.
+async function getPlexMachineIdentifier(plexUrl: string): Promise<string> {
+  try {
+    const res = await fetch(`${plexUrl}/identity`, {
+      headers: {
+        Accept: 'application/json',
+      },
+      next: {
+        revalidate: 3600,
+      },
+    })
+    const data = await res.json()
+
+    return data?.MediaContainer?.machineIdentifier ?? ''
+  } catch (error) {
+    console.error(`[PLEX] - Couldn't get server ID from ${plexUrl}!`, error)
+
+    return ''
+  }
+}
+
 export async function getServerId(): Promise<string> {
   const settings = getSettings()
+
+  if (isTracearrSource(settings)) {
+    return getPlexMachineIdentifier(settings.connection.plexUrl)
+  }
+
   const plexUrl = new URL(settings.connection.plexUrl)
   const plexHost = plexUrl.hostname
   const plexPort = plexUrl.port
@@ -101,6 +134,16 @@ export async function getLibraries(
   excludeInactive = true,
 ): Promise<TautulliLibrary[]> {
   const settings = getSettings()
+
+  // Tracearr doesn't know which libraries are shared with a user.
+  if (isTracearrSource(settings)) {
+    return filterByActiveLibraries(
+      excludeInactive,
+      settings,
+      await getTracearrLibraries(),
+    )
+  }
+
   const libraries = (await fetchTautulli<TautulliLibrary[]>('get_libraries'))
     ?.response?.data
 
@@ -175,19 +218,51 @@ export async function getLibrariesByType(
   return libraries.filter((library) => library.section_type === type)
 }
 
-export async function getActiveUsers(
+// Includes excluded users, so that the settings can list them.
+export async function getUsers(
   settings: Settings = getSettings(),
 ): Promise<TautulliUser[]> {
+  if (isTracearrSource(settings)) {
+    return getTracearrUsers()
+  }
+
   const usersRes = await fetchTautulli<TautulliUser[]>('get_users')
-  const excludedUsers = settings.general.excludedUsers
   const users = usersRes?.response?.data?.filter(
-    (user) =>
-      user.is_active &&
-      user.username !== 'Local' &&
-      !excludedUsers.includes(String(user.user_id)),
+    (user) => user.is_active && user.username !== 'Local',
   )
 
   return users ?? []
+}
+
+export async function getActiveUsers(
+  settings: Settings = getSettings(),
+): Promise<TautulliUser[]> {
+  const users = await getUsers(settings)
+  const excludedUsers = settings.general.excludedUsers
+
+  return users.filter((user) => !excludedUsers.includes(String(user.user_id)))
+}
+
+export async function getServerUser(
+  userId: string,
+  email: string,
+): Promise<{ isAdmin: boolean } | null> {
+  if (isTracearrSource(getSettings())) {
+    const user = await getTracearrUser(userId)
+
+    return user ? { isAdmin: user.isAdmin } : null
+  }
+
+  const userRes = await fetchTautulli<TautulliUser>('get_user', {
+    user_id: userId,
+  })
+  const user = userRes?.response?.data
+
+  if (user?.email !== email || !user?.is_active) {
+    return null
+  }
+
+  return { isAdmin: user.is_admin === 1 }
 }
 
 export async function getUsersCount(settings: Settings) {
@@ -201,6 +276,10 @@ export async function getUsersCount(settings: Settings) {
 }
 
 export async function getActivity() {
+  if (isTracearrSource(getSettings())) {
+    return getTracearrActivity()
+  }
+
   const res = await fetchTautulli<TautulliActivity>('get_activity')
 
   return res?.response?.data ?? null

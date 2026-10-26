@@ -88,6 +88,7 @@
     "apiKey": "API key",
     "invalidApiKey": "Invalid API key!",
     "unableToConnect": "Unable to connect!",
+    "noPlexServer": "No Plex server found!",
     "buyMeACoffee": "Buy me a coffee",
     "becomeASponsor": "Become a sponsor",
     "reportAnIssue": "Report an issue",
@@ -101,7 +102,10 @@
       "activity": "Activity"
     },
     "Connection": {
-      "title": "Connection settings"
+      "title": "Connection settings",
+      "statistics": "Statistics",
+      "source": "Source",
+      "tracearrDescription": "Libraries are grouped by media type."
     },
     "Dashboard": {
       "title": "Dashboard settings",
@@ -145,7 +149,7 @@
       "title": "Rewind settings",
       "cards": "Cards",
       "librariesSizeAndCountCard": "Libraries size & count card",
-      "librariesSizeAndCountCardDescription": "Disable if you don't want to rely on Tautulli for these stats.",
+      "librariesSizeAndCountCardDescription": "Disable if you don't want to rely on Tautulli or Tracearr for these stats.",
       "startDateHelperText": "Defaults to 365 days ago."
     }
   },

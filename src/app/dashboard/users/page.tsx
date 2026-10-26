@@ -10,7 +10,9 @@ import {
 } from '@/utils/formatting'
 import getPeriod from '@/utils/getPeriod'
 import getSettings from '@/utils/getSettings'
+import { getTracearrTotalDuration } from '@/utils/getTracearrStats'
 import getUsersTop from '@/utils/getUsersTop'
+import { isTracearrSource } from '@/utils/helpers'
 import { Metadata } from 'next'
 import { getServerSession } from 'next-auth'
 import { getTranslations } from 'next-intl/server'
@@ -33,6 +35,10 @@ async function getTotalDuration(
   t: TranslateFunction,
 ) {
   if (settings.dashboard.activeTotalStatistics.includes('duration')) {
+    if (isTracearrSource(settings)) {
+      return secondsToTime(await getTracearrTotalDuration({ since: period }), t)
+    }
+
     const totalDuration = await fetchTautulli<{ total_duration: string }>(
       'get_history',
       {

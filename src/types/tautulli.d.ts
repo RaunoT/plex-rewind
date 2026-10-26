@@ -60,6 +60,7 @@ export type TautulliItemRow = {
   user_id: number
   rank: number
   grandparent_rating_key?: number
+  media_id?: string | null
 }
 
 export type TautulliSession = {

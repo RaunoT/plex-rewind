@@ -21,10 +21,12 @@ export function usePoster(session: TautulliSession, settings: Settings) {
     session
   const tautulliUrl = settings.connection.tautulliUrl
   const originalPoster = grandparent_thumb || thumb
+  // Tracearr sessions carry a full poster URL instead of a Plex image path.
+  const posterUrl = originalPoster?.startsWith('http')
+    ? originalPoster
+    : `${tautulliUrl}/pms_image_proxy?img=${originalPoster}&width=300`
   const tautulliPoster = originalPoster
-    ? `/api/image?url=${encodeURIComponent(
-        `${tautulliUrl}/pms_image_proxy?img=${originalPoster}&width=300`,
-      )}`
+    ? `/api/image?url=${encodeURIComponent(posterUrl)}`
     : null
   const shouldFetchTmdb =
     (media_type === 'episode' || media_type === 'movie') &&

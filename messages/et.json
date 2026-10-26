@@ -88,6 +88,7 @@
     "apiKey": "API võti",
     "invalidApiKey": "Vale API võti!",
     "unableToConnect": "Ühenduse loomine ebaõnnestus!",
+    "noPlexServer": "Plex serverit ei leitud!",
     "buyMeACoffee": "Osta mulle kohvi",
     "becomeASponsor": "Hakka sponsoriks",
     "reportAnIssue": "Teata probleemist",
@@ -101,7 +102,10 @@
       "activity": "Tegevus"
     },
     "Connection": {
-      "title": "Ühenduse seaded"
+      "title": "Ühenduse seaded",
+      "statistics": "Statistika",
+      "source": "Allikas",
+      "tracearrDescription": "Teegid on rühmitatud meediatüübi järgi."
     },
     "Dashboard": {
       "title": "Edetabeli seaded",
@@ -145,7 +149,7 @@
       "title": "Rewind seaded",
       "cards": "Kaardid",
       "librariesSizeAndCountCard": "Kogumike failisuuruse kaart",
-      "librariesSizeAndCountCardDescription": "Lülita välja, kui ei soovi sõltuda Tautulli'st failisuuruste jaoks.",
+      "librariesSizeAndCountCardDescription": "Lülita välja, kui ei soovi sõltuda Tautulli'st või Tracearr'ist failisuuruste jaoks.",
       "startDateHelperText": "Vaikimisi 365 päeva tagasi."
     }
   },

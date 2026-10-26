@@ -7,7 +7,7 @@
 
 A Plex Rewind application inspired by the likes of [Spotify Wrapped](https://www.spotify.com/us/wrapped) and [Tautulli](https://tautulli.com).
 
-Present [Plex](https://plex.tv) user statistics and habits in a beautiful and organized manner - as a web application application powered by [Next.js](https://nextjs.org) and [Tailwind.css](https://tailwindcss.com), using data from [Tautulli](https://tautulli.com), [Overseerr](https://overseerr.dev) and [Plex](https://plex.tv). You can also disable the Rewind functionality and just use it as an easily sharable Dashboard for your Plex users or vice versa!
+Present [Plex](https://plex.tv) user statistics and habits in a beautiful and organized manner - as a web application application powered by [Next.js](https://nextjs.org) and [Tailwind.css](https://tailwindcss.com), using data from [Tautulli](https://tautulli.com) or [Tracearr](https://github.com/connorgallopo/Tracearr), [Overseerr](https://overseerr.dev) and [Plex](https://plex.tv). You can also disable the Rewind functionality and just use it as an easily sharable Dashboard for your Plex users or vice versa!
 
 ## Features
 
@@ -17,7 +17,7 @@ Present [Plex](https://plex.tv) user statistics and habits in a beautiful and or
 - 📆 Rewind - allows your users view their statistics and habits for a (customizable) time period.
 - 👀 Dashboard - provides an easily glanceable overview of activity on your server for all your libraries, personalized or general.
 - ⚡ Activity - see what's happening on your server in real time, enabled by [TanStack Query](https://tanstack.com/query/latest).
-- 📊 Fuelled by data from [Tautulli](https://tautulli.com) - the backbone responsible for the heavy lifting regarding statistics.
+- 📊 Fuelled by data from [Tautulli](https://tautulli.com) or [Tracearr](https://github.com/connorgallopo/Tracearr) - the backbone responsible for the heavy lifting regarding statistics.
 - 🔗 Integrates with [Overseerr](https://overseerr.dev) - show request breakdowns and totals and display request buttons straight under deleted fan-favorite media items.
 - 🔐 Log in with Plex - uses [NextAuth.js](https://next-auth.js.org) to enable secure login and session management with your Plex account.
 - 🚀 PWA support - installable on mobile devices and desktops thanks to [Serwist](https://github.com/serwist/serwist).
@@ -59,6 +59,17 @@ services:
 > _NOTE: If you run into authentication issues, try setting `NEXTAUTH_URL` and `NEXT_PUBLIC_SITE_URL` to your external Docker IP, instead of localhost. For example `http://192.168.1.1:8383`._
 
 For those that need it, a simple status page is also available at `/api/status`.
+
+### Tracearr
+
+[Tracearr](https://github.com/connorgallopo/Tracearr) (2.0 or newer) can be used as the statistics source instead of Tautulli. Choose it under _Settings → Connection_ and enter its URL and a public API key, which you can create in Tracearr under _Settings → Data & API → API_.
+
+A few things work differently with Tracearr:
+
+- Tracearr doesn't expose library names, so the dashboard and Rewind show one library per media type: _Movies_, _TV Shows_ and _Music_.
+- Only Plex servers are included. Jellyfin and Emby servers tracked by the same Tracearr instance are ignored.
+- Statistics are calculated from the watch history, which is cached for 5 minutes. The first load of a long period, such as a full year of Rewind on a busy server, can take a while.
+- Viewing habits use the timezone of the Plex Rewind container, so set `TZ` if it differs from your own.
 
 ### Updating
 

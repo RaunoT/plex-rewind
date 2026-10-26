@@ -4,9 +4,14 @@ export type SettingsFormInitialState<T> = {
   fields: T
 }
 
+export type StatisticsSource = 'tautulli' | 'tracearr'
+
 export type ConnectionSettings = {
+  statisticsSource: StatisticsSource
   tautulliUrl: string
   tautulliApiKey: string
+  tracearrUrl: string
+  tracearrApiKey: string
   overseerrUrl?: string
   overseerrApiKey?: string
   plexUrl: string
