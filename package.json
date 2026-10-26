@@ -12,6 +12,8 @@
     "lint:css": "stylelint --cache \"**/*.css\"",
     "lint:all": "pnpm lint && pnpm lint:types && pnpm lint:css && pnpm format:check",
     "lint:all:fix": "eslint . --fix && pnpm lint:types && stylelint --cache --fix \"**/*.css\" && pnpm format",
+    "test": "vitest run",
+    "test:watch": "vitest",
     "format": "prettier --write --cache .",
     "format:check": "prettier --check --cache .",
     "prepare": "husky",
@@ -85,6 +87,7 @@
     "stylelint-config-standard": "^40.0.0",
     "stylelint-config-tailwindcss": "^1.0.1",
     "tailwindcss": "^4.3.3",
-    "typescript": "^6.0.3"
+    "typescript": "^6.0.3",
+    "vitest": "^5.0.5"
   }
 }
