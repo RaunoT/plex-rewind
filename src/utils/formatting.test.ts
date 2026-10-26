@@ -14,22 +14,40 @@ const t: TranslateFunction = (key, params) => translator(key as never, params)
 const MINUTE = 60
 const HOUR = 60 * MINUTE
 const DAY = 24 * HOUR
+const MONTH = 2629746
 
 describe('secondsToTime', () => {
-  it('returns the zero label for zero or negative input', () => {
+  it('returns the zero label for zero, negative or non-finite input', () => {
     expect(secondsToTime(0, t)).toBe('0 mins')
     expect(secondsToTime(-5, t)).toBe('0 mins')
+    expect(secondsToTime(0.4, t)).toBe('0 mins')
+    expect(secondsToTime(NaN, t)).toBe('0 mins')
   })
 
-  it('shows seconds only under half a minute', () => {
+  it('shows seconds only under a minute', () => {
     expect(secondsToTime(1, t)).toBe('1 sec')
     expect(secondsToTime(29, t)).toBe('29 secs')
-    expect(secondsToTime(45, t)).toBe('1 min')
+    expect(secondsToTime(45, t)).toBe('45 secs')
+    expect(secondsToTime(59, t)).toBe('59 secs')
   })
 
   it('rounds leftover seconds to the nearest minute', () => {
     expect(secondsToTime(MINUTE + 29, t)).toBe('1 min')
     expect(secondsToTime(MINUTE + 30, t)).toBe('2 mins')
+    expect(secondsToTime(59.6, t)).toBe('1 min')
+  })
+
+  it('carries a rounded-up minute into the next unit', () => {
+    expect(secondsToTime(HOUR - 30, t)).toBe('1 hr')
+    expect(secondsToTime(2 * HOUR - 30, t)).toBe('2 hrs')
+    expect(secondsToTime(DAY - 30, t)).toBe('1 day')
+    expect(secondsToTime(HOUR + 59 * MINUTE + 29, t)).toBe('1 hr 59 mins')
+  })
+
+  it('drops seconds next to a larger unit', () => {
+    expect(secondsToTime(DAY + 10, t)).toBe('1 day')
+    expect(secondsToTime(DAY + 40, t)).toBe('1 day 1 min')
+    expect(secondsToTime(MONTH + 10, t)).toBe('1 month')
   })
 
   it('shows at most two units', () => {
@@ -39,7 +57,8 @@ describe('secondsToTime', () => {
 
   it('uses weeks and months for long durations', () => {
     expect(secondsToTime(8 * DAY, t)).toBe('1 week 1 day')
-    expect(secondsToTime(2629746 + 14 * DAY, t)).toBe('1 month 2 weeks')
+    expect(secondsToTime(MONTH + 14 * DAY, t)).toBe('1 month 2 weeks')
+    expect(secondsToTime(2 * MONTH, t)).toBe('2 months')
   })
 })
 

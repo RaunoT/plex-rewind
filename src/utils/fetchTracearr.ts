@@ -22,6 +22,7 @@ import { sumBy } from 'lodash'
 import { unstable_rethrow } from 'next/navigation'
 import qs from 'qs'
 import getSettings from './getSettings'
+import { LibrariesSize, sumLibrariesSize } from './librariesSize'
 
 type QueryParams = {
   [key: string]: string | number | undefined
@@ -630,17 +631,21 @@ export async function getTracearrLibraries(): Promise<TautulliLibrary[]> {
 
 export async function getTracearrLibrariesSize(
   libraries: TautulliLibrary[],
-): Promise<number> {
+): Promise<LibrariesSize> {
   const rollups = (await getLibraryRollups()) ?? []
   const types = libraries.map((library) => library.section_type)
 
-  return sumBy(
-    rollups.filter((library) => {
-      const type = getLibraryType(library)
+  return sumLibrariesSize(
+    rollups
+      .filter((library) => {
+        const type = getLibraryType(library)
 
-      return type && types.includes(type)
-    }),
-    'total_file_size',
+        return type && types.includes(type)
+      })
+      .map((library) => ({
+        size: library.total_file_size,
+        hasItems: library.item_count > 0,
+      })),
   )
 }
 

@@ -2,7 +2,9 @@
 export type TranslateFunction = (key: string, params?: any) => string
 
 export function secondsToTime(seconds: number, t: TranslateFunction): string {
-  if (seconds <= 0) {
+  const totalSeconds = Math.round(seconds)
+
+  if (!Number.isFinite(totalSeconds) || totalSeconds <= 0) {
     return t('Common.time.zero')
   }
 
@@ -17,7 +19,7 @@ export function secondsToTime(seconds: number, t: TranslateFunction): string {
   const maxUnits = 2
   const result = []
 
-  let remainingSeconds = Math.round(seconds)
+  let remainingSeconds = totalSeconds
   let unitCount = 0
 
   for (const { label, duration } of units) {
@@ -25,22 +27,18 @@ export function secondsToTime(seconds: number, t: TranslateFunction): string {
       break
     }
 
-    let value = Math.floor(remainingSeconds / duration)
-
-    // Handle rounding for minutes if seconds are present
-    if (label === 'min' && remainingSeconds % duration >= 30) {
-      value++ // Round up to the next minute if 30 or more seconds remain
-      remainingSeconds = 0 // Reset remaining seconds after rounding up
-    } else {
-      remainingSeconds %= duration
+    // Rounding to whole minutes before the split keeps 59 min 30 sec from
+    // becoming "60 mins". It happens after the months, which aren't a whole
+    // number of minutes.
+    if (label === 'week' && totalSeconds >= 60) {
+      remainingSeconds = Math.round(remainingSeconds / 60) * 60
     }
 
-    if (value > 0 || (unitCount === 0 && remainingSeconds === 0)) {
-      // Special case for seconds: only include if it's the only unit
-      if (label === 'sec' && unitCount > 0) {
-        break
-      }
+    const value = Math.floor(remainingSeconds / duration)
 
+    remainingSeconds %= duration
+
+    if (value > 0) {
       result.push(t(`Common.time.${label}`, { count: value }))
       unitCount++
     }

@@ -44,6 +44,15 @@ export default function StoryLibraries({
               ) || '',
           })}
         </p>
+        {userRewind.libraries_size_is_partial && (
+          <p className='mt-2 text-base text-neutral-300 not-italic'>
+            {t(
+              settings.connection.statisticsSource === 'tracearr'
+                ? 'sizePartialTracearr'
+                : 'sizePartial',
+            )}
+          </p>
+        )}
       </RewindStat>
 
       <RewindStat isPaused={isPaused} renderDelay={3} noScale>

@@ -11,6 +11,7 @@ import {
 import getMediaAdditionalData from './getMediaAdditionalData'
 import getSettings from './getSettings'
 import { getRewindStartDate } from './helpers'
+import { filterPlays, getExcludedIdentityIds } from './tracearrPlays'
 
 type PlaysQuery = {
   since: string | Date
@@ -47,9 +48,10 @@ async function getPlays({
   userId,
   libraries,
 }: PlaysQuery): Promise<TracearrPlay[]> {
+  const excludedUsers = getSettings().general.excludedUsers
   const [plays, users] = await Promise.all([
     getTracearrPlays(since),
-    userId ? getTracearrPlexUsers() : [],
+    userId || excludedUsers.length ? getTracearrPlexUsers() : [],
   ])
   const identityId = users.find((user) => user.plexId === userId)?.identityId
   const mediaTypes = libraries?.map(
@@ -60,11 +62,15 @@ async function getPlays({
     return []
   }
 
-  return plays.filter(
-    (play) =>
-      (!mediaTypes || mediaTypes.includes(play.mediaType)) &&
-      (!identityId || play.identityId === identityId),
-  )
+  return filterPlays(plays, {
+    since,
+    mediaTypes,
+    identityId,
+    // A user's own stats still show when they're excluded from the server's.
+    excludedIdentityIds: userId
+      ? []
+      : getExcludedIdentityIds(users, excludedUsers),
+  })
 }
 
 function getDuration(plays: TracearrPlay[]): number {
@@ -246,7 +252,6 @@ export async function getTracearrUsersTop(
   since: string,
   libraries: TautulliLibrary[],
 ): Promise<TautulliItemRow[]> {
-  const excludedUsers = getSettings().general.excludedUsers
   const [plays, users] = await Promise.all([
     getPlays({ since, libraries }),
     getTracearrPlexUsers(),
@@ -257,7 +262,7 @@ export async function getTracearrUsersTop(
     .flatMap(([identityId, userPlays]) => {
       const user = usersByIdentity.get(identityId)
 
-      if (!user || excludedUsers.includes(user.plexId)) {
+      if (!user) {
         return []
       }
 

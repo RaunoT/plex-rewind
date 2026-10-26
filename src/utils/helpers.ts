@@ -1,5 +1,6 @@
+import { UserRewind } from '@/types/rewind'
 import { Settings, StatisticsSource } from '@/types/settings'
-import { PERIODS, SETTINGS_PAGES } from './constants'
+import { getPeriods, SETTINGS_PAGES } from './constants'
 
 const SOURCE_REQUIRED_SETTINGS: Record<StatisticsSource, string[]> = {
   tautulli: ['connection.tautulliUrl', 'connection.tautulliApiKey'],
@@ -44,7 +45,17 @@ export function getSettingsPage(missingSettingKey: string): string | undefined {
 }
 
 export function getRewindStartDate(settings: Pick<Settings, 'rewind'>): string {
-  return settings.rewind.startDate || PERIODS.pastYear.string
+  return settings.rewind.startDate || getPeriods().pastYear.string
+}
+
+// The formatted durations in a rewind are always truthy ("0 mins"), so whether
+// the user played anything comes from the play counts.
+export function hasRewindPlays({
+  shows,
+  movies,
+  audio,
+}: Pick<UserRewind, 'shows' | 'movies' | 'audio'>): boolean {
+  return shows.count + movies.count + audio.count > 0
 }
 
 // Whole-day count from `startDate` up to `endDate` (defaults to now). Used to

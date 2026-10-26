@@ -3,14 +3,11 @@ import { authOptions } from '@/lib/auth'
 import { DashboardSearchParams } from '@/types/dashboard'
 import { Settings } from '@/types/settings'
 import { fetchOverseerrStats } from '@/utils/fetchOverseerr'
-import fetchTautulli, { getUsersCount } from '@/utils/fetchTautulli'
-import {
-  secondsToTime,
-  timeToSeconds,
-  TranslateFunction,
-} from '@/utils/formatting'
+import { getUsersCount } from '@/utils/fetchTautulli'
+import { secondsToTime, TranslateFunction } from '@/utils/formatting'
 import getPeriod from '@/utils/getPeriod'
 import getSettings from '@/utils/getSettings'
+import { getTautulliTotalDuration } from '@/utils/getTautulliDuration'
 import { getTracearrTotalDuration } from '@/utils/getTracearrStats'
 import getUsersTop from '@/utils/getUsersTop'
 import { isTracearrSource } from '@/utils/helpers'
@@ -41,16 +38,11 @@ async function getTotalDuration(
       return secondsToTime(await getTracearrTotalDuration({ since: period }), t)
     }
 
-    const totalDuration = await fetchTautulli<{ total_duration: string }>(
-      'get_history',
-      {
-        after: period,
-        length: 0,
-      },
-    )
-
     return secondsToTime(
-      timeToSeconds(totalDuration?.response?.data?.total_duration || '0'),
+      await getTautulliTotalDuration({
+        after: period,
+        excludedUsers: settings.general.excludedUsers,
+      }),
       t,
     )
   }
