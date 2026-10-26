@@ -6,7 +6,7 @@ import {
   getLibraries,
   getServerId,
 } from '@/utils/fetchTautulli'
-import { secondsToTime } from '@/utils/formatting'
+import { formatPercent, secondsToTime } from '@/utils/formatting'
 import {
   getLibrariesTotalDuration,
   getPlaybackHabits,
@@ -86,10 +86,9 @@ async function RewindContent({ userId }: { userId?: string }) {
   const userRewind: UserRewind = {
     duration: {
       user: secondsToTime(userTotalDuration, t),
-      user_percentage: new Intl.NumberFormat(locale, {
-        style: 'percent',
-      }).format(
-        Math.round((userTotalDuration * 100) / librariesTotalDuration) / 100,
+      user_percentage: formatPercent(
+        Math.round((userTotalDuration * 100) / librariesTotalDuration),
+        locale,
       ),
       total: secondsToTime(librariesTotalDuration, t),
     },

@@ -119,6 +119,12 @@ export function formatRating(rating: string, locale: string): string {
     : formatOneDecimal(numeric, locale)
 }
 
+export function formatPercent(percent: number, locale: string): string {
+  return new Intl.NumberFormat(locale, { style: 'percent' }).format(
+    percent / 100,
+  )
+}
+
 export function millisecondsToTimeString(milliseconds: number): string {
   const totalSeconds = Math.floor(milliseconds / 1000)
   const minutes = Math.floor(totalSeconds / 60)

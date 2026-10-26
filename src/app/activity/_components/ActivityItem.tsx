@@ -11,6 +11,7 @@ import {
 import {
   calculateETA,
   formatBitrate,
+  formatPercent,
   millisecondsToTimeString,
 } from '@/utils/formatting'
 import { PauseIcon, PlayIcon } from '@heroicons/react/24/outline'
@@ -106,7 +107,7 @@ export default function ActivityItem({
           {session.duration && session.view_offset && (
             <div className='mt-2 text-center text-neutral-400'>
               <div className='text-xs'>
-                {`${session.progress_percent}% `}
+                {`${formatPercent(Number(session.progress_percent), locale)} `}
                 {calculateETA(session.duration, session.view_offset) && (
                   <>
                     {'- '}
