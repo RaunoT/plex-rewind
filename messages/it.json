@@ -185,7 +185,7 @@
       "min": "{count, plural, =1 {# min} other {# min}}",
       "sec": "{count, plural, =1 {# sec} other {# sec}}"
     },
-    "fileSize": "{value} {unit}"
+    "fileSize": "{value, number} {unit}"
   },
   "DatePicker": {
     "clear": "Cancella la data"
