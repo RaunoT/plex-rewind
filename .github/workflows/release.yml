@@ -110,6 +110,18 @@ jobs:
         if: env.NEXT_VERSION_TAG
         run: bash .github/scripts/smoke-test.sh plex-rewind:smoke
 
+      # If main moved on while this run was building, the queued run for the
+      # newer commit publishes the release, so don't push images for this one.
+      - name: Skip publishing if main has moved on
+        if: env.NEXT_VERSION_TAG
+        run: |
+          latest="$(git ls-remote origin refs/heads/main | cut -f1)"
+
+          if [ "$latest" != "$GITHUB_SHA" ]; then
+            echo "main is at $latest, not $GITHUB_SHA. The newer run publishes the release."
+            echo "NEXT_VERSION_TAG=" >> "$GITHUB_ENV"
+          fi
+
       - name: Log in to GitHub Container Registry
         if: env.NEXT_VERSION_TAG
         uses: docker/login-action@81c6f93d4bc991e510b342a00b419b3bb4efc5c6 # v4.7.0
