@@ -1,5 +1,7 @@
 'use client'
 
+import usePrefersReducedMotion from '@/hooks/usePrefersReducedMotion'
+import { instantTransition } from '@/utils/motion'
 import clsx from 'clsx'
 import { motion } from 'motion/react'
 
@@ -7,6 +9,8 @@ type Props = {
   data: number[]
   peakIndex: number | null
   labels?: (string | null)[]
+  ariaLabel: string
+  axisLabel: string
   className?: string
 }
 
@@ -55,18 +59,27 @@ export default function RewindBarChart({
   data,
   peakIndex,
   labels,
+  ariaLabel,
+  axisLabel,
   className,
 }: Props) {
   const { niceMax, ticks } = getScale(Math.max(...data, 1))
+  const shouldReduceMotion = usePrefersReducedMotion()
 
   return (
-    <div className={clsx('w-full not-italic', className)}>
+    <div
+      className={clsx('w-full not-italic', className)}
+      role='img'
+      aria-label={ariaLabel}
+    >
+      <p className='mb-1 ml-10 text-xs text-neutral-500'>{axisLabel}</p>
+
       <div className='flex'>
         <div className='relative mr-2 h-56 w-8 shrink-0 sm:h-40'>
           {ticks.map((tick) => (
             <span
               key={tick}
-              className='absolute right-0 -translate-y-1/2 text-xs text-neutral-500 tabular-nums'
+              className='absolute right-0 -translate-y-1/2 text-xs whitespace-nowrap text-neutral-500 tabular-nums'
               style={{ bottom: `${(tick / niceMax) * 100}%` }}
             >
               {tick}
@@ -102,13 +115,17 @@ export default function RewindBarChart({
                         : 'bg-linear-to-t from-blue-600 to-teal-400',
                     )}
                     style={{ height: `${heightPercentage}%` }}
-                    initial={{ scaleY: 0 }}
+                    initial={shouldReduceMotion ? false : { scaleY: 0 }}
                     animate={{ scaleY: 1 }}
-                    transition={{
-                      delay: index * 0.025,
-                      duration: 0.5,
-                      ease: 'easeOut',
-                    }}
+                    transition={
+                      shouldReduceMotion
+                        ? instantTransition
+                        : {
+                            delay: index * 0.025,
+                            duration: 0.5,
+                            ease: 'easeOut',
+                          }
+                    }
                   />
                 </div>
               )

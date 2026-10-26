@@ -1,7 +1,9 @@
+import anonymousSvg from '@/components/MediaItem/anonymous.svg'
 import { RewindStory } from '@/types/rewind'
 import { getRewindStartDate } from '@/utils/helpers'
 import { useLocale, useTranslations } from 'next-intl'
 import Image from 'next/image'
+import { useState } from 'react'
 import RewindStat from '../RewindStat'
 
 function formatDate(dateString: string, locale: string) {
@@ -20,6 +22,7 @@ export default function StoryWelcome({
   const startDate = getRewindStartDate(settings)
   const isDefaultPeriod = !settings.rewind.startDate
   const t = useTranslations('Rewind.Welcome')
+  const tCommon = useTranslations('Common')
   const locale = useLocale()
   const formattedStartDate = formatDate(startDate, locale)
   // The window always runs to now, so the displayed range ends today.
@@ -27,16 +30,20 @@ export default function StoryWelcome({
     new Date().toISOString().split('T')[0],
     locale,
   )
+  const [imageSrc, setImageSrc] = useState<string>(
+    userRewind.user.image || anonymousSvg,
+  )
 
   return (
     <>
       <RewindStat isPaused={isPaused} noScale isAnimated={false}>
         <div className='relative mb-8 size-24'>
           <Image
-            src={userRewind.user.image || ''}
-            alt={`${userRewind.user.name} profile picture`}
+            src={imageSrc}
+            alt={`${userRewind.user.name} ${tCommon('profilePictureAlt')}`}
             className='rounded-full object-cover'
             sizes='10rem'
+            onError={() => setImageSrc(anonymousSvg)}
             fill
             priority
           />
@@ -44,11 +51,10 @@ export default function StoryWelcome({
         <p>
           {t.rich('welcome', {
             serverName: settings.general.serverName || 'Plex',
-            rewind: (chunks) => (
-              <span className='gradient-plex'>{chunks} </span>
-            ),
+            userValue: userRewind.user.name,
+            rewind: (chunks) => <span className='gradient-plex'>{chunks}</span>,
+            user: (chunks) => <span className='rewind-cat'>{chunks}</span>,
           })}
-          <span className='rewind-cat'>{userRewind.user.name}!</span>
         </p>
       </RewindStat>
 

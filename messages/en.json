@@ -204,13 +204,15 @@
       "previousStory": "Previous story",
       "nextStory": "Next story",
       "pause": "Pause",
-      "resume": "Resume"
+      "resume": "Resume",
+      "label": "Rewind stories",
+      "storyPosition": "Story {current} of {total}"
     },
     "Common": {
       "top": "Here's your <top>Top {count}</top>"
     },
     "Welcome": {
-      "welcome": "Welcome to your <rewind>{serverName} Rewind</rewind>",
+      "welcome": "Welcome to your <rewind>{serverName} Rewind</rewind> <user>{userValue}!</user>",
       "takeYouThrough": "We'll take you through your highlights",
       "letsGetStarted": "Let's get started!",
       "forPastYear": "for the <pastYear>past year.</pastYear>",
@@ -263,22 +265,27 @@
     },
     "Habits": {
       "day": "Your favorite day to watch was <day>{dayValue}</day>",
-      "hour": "And you pressed play most often around <hour>{hourValue}</hour> <emoji>{emojiValue}</emoji>"
+      "hour": "And you pressed play most often around <hour>{hourValue}</hour> <emoji>{emojiValue}</emoji>",
+      "dayChart": "Bar chart of plays per day of the week. Busiest day: {dayValue} with {count, plural, =1 {# play} other {# plays}}.",
+      "hourChart": "Bar chart of plays per hour of the day. Busiest hour: {hourValue} with {count, plural, =1 {# play} other {# plays}}."
     },
     "Goodbye": {
       "thanks": "Thanks for tuning into your <plex>{serverName} Rewind</plex>, <user>{userValue}!</user>",
       "sorry": "Sorry you couldn't find any content to watch or listen to this time around. Better luck next time!",
       "weWillBeBack": "We'll be back next time",
-      "weWillBeHere": "Eitherway, we'll be here",
+      "weWillBeHere": "Either way, we'll be here",
       "insightsAndStats": "with even more <insightsAndStats>insights and stats.</insightsAndStats>",
       "untilThen": "Until then, keep exploring and enjoying all that <plex>{serverName}</plex> has to offer.",
-      "movies": "Movies",
-      "shows": "Shows",
-      "tracks": "Tracks",
-      "fromYourFavorite": "From your favorite",
-      "toTheMostEntertaining": "to the most entertaining",
-      "andMemorable": "and memorable",
-      "itsBeenAJourneyToRemember": ", it's been a journey to remember."
+      "journey": {
+        "movies": "From your favorite <movies>Movies</movies>, it's been a journey to remember.",
+        "shows": "From the most entertaining <shows>Shows</shows>, it's been a journey to remember.",
+        "audio": "From your most memorable <tracks>Tracks</tracks>, it's been a journey to remember.",
+        "moviesShows": "From your favorite <movies>Movies</movies> to the most entertaining <shows>Shows</shows>, it's been a journey to remember.",
+        "moviesAudio": "From your favorite <movies>Movies</movies> to the most memorable <tracks>Tracks</tracks>, it's been a journey to remember.",
+        "showsAudio": "From the most entertaining <shows>Shows</shows> to the most memorable <tracks>Tracks</tracks>, it's been a journey to remember.",
+        "moviesShowsAudio": "From your favorite <movies>Movies</movies> to the most entertaining <shows>Shows</shows> and memorable <tracks>Tracks</tracks>, it's been a journey to remember.",
+        "none": "It's been a journey to remember."
+      }
     }
   },
   "MediaItem": {

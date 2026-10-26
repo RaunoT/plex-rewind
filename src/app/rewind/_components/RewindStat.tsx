@@ -1,7 +1,8 @@
 'use client'
 
+import usePrefersReducedMotion from '@/hooks/usePrefersReducedMotion'
 import useTimer from '@/hooks/useTimer'
-import { animateRewindStat, fadeIn } from '@/utils/motion'
+import { animateRewindStat, fadeIn, instantTransition } from '@/utils/motion'
 import clsx from 'clsx'
 import { motion } from 'motion/react'
 import { ReactNode, useState } from 'react'
@@ -30,6 +31,7 @@ export default function RewindStat({
   isAnimated = true,
 }: Props) {
   const [isComponentShown, setIsComponentShown] = useState<boolean>(false)
+  const shouldReduceMotion = usePrefersReducedMotion()
   const scaleTimer = useTimer(
     renderDelay ? renderDelay + scaleDelay : scaleDelay,
     undefined,
@@ -50,27 +52,28 @@ export default function RewindStat({
   return isComponentShown ? (
     <motion.div
       className={clsx(
-        'mb-4 text-3xl leading-tight italic last-of-type:mb-0 sm:text-4xl',
+        'mb-4 text-3xl leading-tight [overflow-wrap:anywhere] italic last-of-type:mb-0 sm:text-4xl',
         className,
       )}
       variants={isAnimated ? animateRewindStat : undefined}
-      initial='hidden'
+      initial={shouldReduceMotion ? false : 'hidden'}
       animate={noScale || scaleTimer ? ['show'] : ['show', 'scaleDown']}
+      transition={shouldReduceMotion ? instantTransition : undefined}
       style={{ originX: 0, originY: '100%' }}
     >
       <div>{children}</div>
     </motion.div>
   ) : isLoaderShown ? (
-    <Loader />
+    <Loader shouldReduceMotion={shouldReduceMotion} />
   ) : null
 }
 
-function Loader() {
+function Loader({ shouldReduceMotion }: { shouldReduceMotion: boolean }) {
   return (
     <motion.div
       className='skeleton skeleton--no-animate flex w-fit items-center gap-2'
       variants={fadeIn}
-      initial='hidden'
+      initial={shouldReduceMotion ? false : 'hidden'}
       animate='show'
     >
       <span className='size-1 animate-pulse rounded-full bg-white'></span>

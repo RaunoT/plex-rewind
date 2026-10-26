@@ -204,13 +204,15 @@
       "previousStory": "Histoire précédente",
       "nextStory": "Histoire suivante",
       "pause": "Pause",
-      "resume": "Reprendre"
+      "resume": "Reprendre",
+      "label": "Histoires du Rewind",
+      "storyPosition": "Histoire {current} sur {total}"
     },
     "Common": {
       "top": "Voici vos <top>Top {count}</top>"
     },
     "Welcome": {
-      "welcome": "Bienvenue dans votre <rewind>{serverName} Rewind</rewind>",
+      "welcome": "Bienvenue dans votre <rewind>{serverName} Rewind</rewind> <user>{userValue} !</user>",
       "takeYouThrough": "Nous allons vous faire découvrir vos moments forts",
       "letsGetStarted": "Commençons !",
       "forPastYear": "pour <pastYear>l'année passée.</pastYear>",
@@ -263,7 +265,9 @@
     },
     "Habits": {
       "day": "Votre jour préféré pour regarder était le <day>{dayValue}</day>",
-      "hour": "Et vous lanciez la lecture surtout vers <hour>{hourValue}</hour> <emoji>{emojiValue}</emoji>"
+      "hour": "Et vous lanciez la lecture surtout vers <hour>{hourValue}</hour> <emoji>{emojiValue}</emoji>",
+      "dayChart": "Diagramme à barres des lectures par jour de la semaine. Jour le plus actif : {dayValue} avec {count, plural, =1 {# lecture} other {# lectures}}.",
+      "hourChart": "Diagramme à barres des lectures par heure de la journée. Heure la plus active : {hourValue} avec {count, plural, =1 {# lecture} other {# lectures}}."
     },
     "Goodbye": {
       "thanks": "Merci d'avoir suivi votre <plex>{serverName} Rewind</plex>, <user>{userValue} !</user>",
@@ -272,13 +276,16 @@
       "weWillBeHere": "Dans tous les cas, nous serons là",
       "insightsAndStats": "avec encore plus <insightsAndStats>d'informations et de statistiques.</insightsAndStats>",
       "untilThen": "D'ici là, continuez à explorer et à profiter de tout ce que <plex>{serverName}</plex> a à offrir.",
-      "movies": "Films",
-      "shows": "Séries",
-      "tracks": "Morceaux",
-      "fromYourFavorite": "De votre favori",
-      "toTheMostEntertaining": "au plus divertissant",
-      "andMemorable": "et mémorable",
-      "itsBeenAJourneyToRemember": ", ce fut un voyage inoubliable."
+      "journey": {
+        "movies": "De vos <movies>Films</movies> préférés, ce fut un voyage inoubliable.",
+        "shows": "Des <shows>Séries</shows> les plus divertissantes, ce fut un voyage inoubliable.",
+        "audio": "Des <tracks>Morceaux</tracks> les plus mémorables, ce fut un voyage inoubliable.",
+        "moviesShows": "De vos <movies>Films</movies> préférés aux <shows>Séries</shows> les plus divertissantes, ce fut un voyage inoubliable.",
+        "moviesAudio": "De vos <movies>Films</movies> préférés aux <tracks>Morceaux</tracks> les plus mémorables, ce fut un voyage inoubliable.",
+        "showsAudio": "Des <shows>Séries</shows> les plus divertissantes aux <tracks>Morceaux</tracks> les plus mémorables, ce fut un voyage inoubliable.",
+        "moviesShowsAudio": "De vos <movies>Films</movies> préférés aux <shows>Séries</shows> les plus divertissantes et aux <tracks>Morceaux</tracks> les plus mémorables, ce fut un voyage inoubliable.",
+        "none": "Ce fut un voyage inoubliable."
+      }
     }
   },
   "MediaItem": {

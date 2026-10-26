@@ -204,13 +204,15 @@
       "previousStory": "Eelmine lugu",
       "nextStory": "Järgmine lugu",
       "pause": "Peata",
-      "resume": "Jätka"
+      "resume": "Jätka",
+      "label": "Rewind'i lood",
+      "storyPosition": "{current}. lugu {total}-st"
     },
     "Common": {
       "top": "Siin on sinu <top>Top {count}</top>"
     },
     "Welcome": {
-      "welcome": "Tere tulemast oma <rewind>{serverName} Rewind'i</rewind>",
+      "welcome": "Tere tulemast oma <rewind>{serverName} Rewind'i</rewind> <user>{userValue}!</user>",
       "takeYouThrough": "Vaatame üle su parimad hetked",
       "letsGetStarted": "Hakkame pihta!",
       "forPastYear": "<pastYear>viimase aasta</pastYear> jooksul.",
@@ -263,7 +265,9 @@
     },
     "Habits": {
       "day": "Sinu lemmik vaatamispäev oli <day>{dayValue}</day>",
-      "hour": "Ja kõige sagedamini panid mängima umbes kell <hour>{hourValue}</hour> <emoji>{emojiValue}</emoji>"
+      "hour": "Ja kõige sagedamini panid mängima umbes kell <hour>{hourValue}</hour> <emoji>{emojiValue}</emoji>",
+      "dayChart": "Tulpdiagramm mängimistest nädalapäevade kaupa. Kõige aktiivsem päev: {dayValue}, {count, plural, =1 {# mängimine} other {# mängimist}}.",
+      "hourChart": "Tulpdiagramm mängimistest kellaaegade kaupa. Kõige aktiivsem tund: {hourValue}, {count, plural, =1 {# mängimine} other {# mängimist}}."
     },
     "Goodbye": {
       "thanks": "Tänan, et vaatasid oma <plex>{serverName} Rewind'i</plex>, <user>{userValue}!</user>",
@@ -272,13 +276,16 @@
       "weWillBeHere": "Igal juhul oleme olemas ka järgmine kord",
       "insightsAndStats": "veelgi huvitavama <insightsAndStats>statistikaga.</insightsAndStats>",
       "untilThen": "Seniks, naudi kogu sisu, mis <plex>{serverName}'il</plex> on pakkuda.",
-      "movies": "Filmidest",
-      "shows": "Saadeteni",
-      "tracks": "Lugudeni",
-      "fromYourFavorite": "Sinu lemmikutest",
-      "toTheMostEntertaining": "kõige huvitavamate",
-      "andMemorable": "ja meeldejäävate",
-      "itsBeenAJourneyToRemember": ", see on olnud meeldejääv teekond."
+      "journey": {
+        "movies": "Sinu lemmikutest <movies>Filmidest</movies> alates on see olnud meeldejääv teekond.",
+        "shows": "Kõige huvitavamatest <shows>Saadetest</shows> alates on see olnud meeldejääv teekond.",
+        "audio": "Kõige meeldejäävamatest <tracks>Lugudest</tracks> alates on see olnud meeldejääv teekond.",
+        "moviesShows": "Sinu lemmikutest <movies>Filmidest</movies> kõige huvitavamate <shows>Saadeteni</shows>, see on olnud meeldejääv teekond.",
+        "moviesAudio": "Sinu lemmikutest <movies>Filmidest</movies> kõige meeldejäävamate <tracks>Lugudeni</tracks>, see on olnud meeldejääv teekond.",
+        "showsAudio": "Kõige huvitavamatest <shows>Saadetest</shows> kõige meeldejäävamate <tracks>Lugudeni</tracks>, see on olnud meeldejääv teekond.",
+        "moviesShowsAudio": "Sinu lemmikutest <movies>Filmidest</movies> kõige huvitavamate <shows>Saadeteni</shows> ja meeldejäävate <tracks>Lugudeni</tracks>, see on olnud meeldejääv teekond.",
+        "none": "See on olnud meeldejääv teekond."
+      }
     }
   },
   "MediaItem": {
