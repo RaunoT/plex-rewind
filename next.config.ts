@@ -1,8 +1,6 @@
-import withSerwistInit from '@serwist/next'
 import { NextConfig } from 'next'
 import createNextIntlPlugin from 'next-intl/plugin'
 
-const isDev = process.env.NODE_ENV !== 'production'
 const nextConfig: NextConfig = {
   reactStrictMode: true,
   output: 'standalone',
@@ -58,14 +56,6 @@ const nextConfig: NextConfig = {
     ]
   },
 }
-const revision = crypto.randomUUID()
-const withSerwist = withSerwistInit({
-  cacheOnNavigation: true,
-  swSrc: 'src/lib/sw.ts',
-  swDest: 'public/sw.js',
-  disable: isDev,
-  additionalPrecacheEntries: [{ url: '/~offline', revision }],
-})
 const withNextIntl = createNextIntlPlugin()
 
-export default withSerwist(withNextIntl(nextConfig))
+export default withNextIntl(nextConfig)

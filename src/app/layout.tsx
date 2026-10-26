@@ -2,6 +2,7 @@ import '@/styles/globals.css'
 import { APP_URL, META_DESCRIPTION } from '@/utils/constants'
 import getSettings from '@/utils/getSettings'
 import getVersion from '@/utils/getVersion'
+import { SerwistProvider } from '@serwist/next/react'
 import { Metadata, Viewport } from 'next'
 import { NextIntlClientProvider } from 'next-intl'
 import { getLocale } from 'next-intl/server'
@@ -69,16 +70,21 @@ export default async function RootLayout({ children }: Props) {
         <PublicEnvScript />
       </head>
       <body className='h-full min-h-dvh bg-black text-white'>
-        <NextIntlClientProvider>
-          {settings.general.googleAnalyticsId && (
-            <GoogleAnalytics id={settings.general.googleAnalyticsId} />
-          )}
-          <SessionProviderWrapper>
-            <AppProvider settings={settings} version={version}>
-              {children}
-            </AppProvider>
-          </SessionProviderWrapper>
-        </NextIntlClientProvider>
+        <SerwistProvider
+          swUrl='/sw.js'
+          disable={process.env.NODE_ENV === 'development'}
+        >
+          <NextIntlClientProvider>
+            {settings.general.googleAnalyticsId && (
+              <GoogleAnalytics id={settings.general.googleAnalyticsId} />
+            )}
+            <SessionProviderWrapper>
+              <AppProvider settings={settings} version={version}>
+                {children}
+              </AppProvider>
+            </SessionProviderWrapper>
+          </NextIntlClientProvider>
+        </SerwistProvider>
       </body>
     </html>
   )
