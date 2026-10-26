@@ -82,7 +82,7 @@ export default function Home({ settings, missingSetting, libraries }: Props) {
               <Image
                 src={plexSvg}
                 className='mr-3 mb-0.5 inline h-9 w-auto'
-                alt='Plex logo'
+                alt='Plex'
                 priority
               />
               {/* eslint-disable-next-line react/jsx-no-literals */}

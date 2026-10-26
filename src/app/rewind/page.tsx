@@ -29,8 +29,12 @@ import RewindStories from './_components/RewindStories'
 import UserSelect from './_components/UserSelect'
 import Loading from './loading'
 
-export const metadata: Metadata = {
-  title: 'Rewind',
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations('Rewind')
+
+  return {
+    title: t('title'),
+  }
 }
 
 async function RewindContent({ userId }: { userId?: string }) {

@@ -42,7 +42,7 @@ export async function generateMetadata(): Promise<Metadata> {
       description: META_DESCRIPTION,
     },
     twitter: {
-      card: 'summary',
+      card: 'summary_large_image',
       title: {
         default: baseTitle,
         template: titleTemplate,

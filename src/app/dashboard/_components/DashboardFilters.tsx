@@ -1,10 +1,14 @@
 'use client'
 
-import { GlobalContext } from '@/app/_components/GlobalContextProvider'
+import {
+  GlobalContext,
+  readStorage,
+} from '@/app/_components/GlobalContextProvider'
+import { DashboardSearchParams } from '@/types/dashboard'
 import clsx from 'clsx'
 import { useTranslations } from 'next-intl'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
-import { ChangeEvent, useCallback, useContext, useEffect } from 'react'
+import { ChangeEvent, useCallback, useContext, useEffect, useId } from 'react'
 
 type Props = {
   className?: string
@@ -12,65 +16,102 @@ type Props = {
   personalFilter: boolean
 }
 
+// Saved filters are applied once per page load, when a dashboard is opened
+// without any in its URL. After that the URL is the only source of truth, so
+// Back and Forward keep working.
+let hasRestoredSavedFilters = false
+
 export default function DashboardFilters({
   className,
   isSortByPlaysActive,
   personalFilter,
 }: Props) {
+  const id = useId()
   const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()
-  const personalParam = searchParams.get('personal')
-  const sortByParam = searchParams.get('sortBy')
+  const isPersonal: DashboardSearchParams['personal'] =
+    searchParams.get('personal') === 'true' ? 'true' : undefined
+  const sortBy: DashboardSearchParams['sortBy'] =
+    searchParams.get('sortBy') === 'plays' ? 'plays' : undefined
+  const hasUrlFilters =
+    searchParams.has('personal') || searchParams.has('sortBy')
   const {
-    dashboard: { isPersonal, setIsPersonal, sortBy, setSortBy },
+    dashboard: { setIsPersonal, setSortBy },
   } = useContext(GlobalContext)
   const t = useTranslations('DashboardFilters')
 
   // eslint-disable-next-line @stylistic/padding-line-between-statements
-  const updateURL = useCallback(() => {
-    const params = new URLSearchParams(searchParams.toString())
+  const getUrl = useCallback(
+    (
+      personal: DashboardSearchParams['personal'],
+      sort: DashboardSearchParams['sortBy'],
+    ) => {
+      const params = new URLSearchParams(searchParams.toString())
 
-    if (isPersonal === 'true') {
-      params.set('personal', 'true')
-    } else {
-      params.delete('personal')
-    }
+      if (personal === 'true') {
+        params.set('personal', 'true')
+      } else {
+        params.delete('personal')
+      }
 
-    if (sortBy === 'plays') {
-      params.set('sortBy', 'plays')
-    } else {
-      params.delete('sortBy')
-    }
+      if (sort === 'plays') {
+        params.set('sortBy', 'plays')
+      } else {
+        params.delete('sortBy')
+      }
 
-    const newParamsString = params.toString()
-    const oldParamsString = searchParams.toString()
+      const query = params.toString()
 
-    if (newParamsString === oldParamsString) {
-      return
-    }
-
-    const query = newParamsString ? `?${newParamsString}` : ''
-
-    router.push(`${pathname}${query}`)
-  }, [isPersonal, sortBy, pathname, searchParams, router])
+      return query ? `${pathname}?${query}` : pathname
+    },
+    [pathname, searchParams],
+  )
 
   function handlePersonalChange(e: ChangeEvent<HTMLSelectElement>) {
-    setIsPersonal(e.target.value === 'true' ? 'true' : undefined)
+    router.push(getUrl(e.target.value === 'true' ? 'true' : undefined, sortBy))
   }
 
   function handleSortChange(e: ChangeEvent<HTMLSelectElement>) {
-    setSortBy(e.target.value === 'plays' ? 'plays' : undefined)
+    router.push(
+      getUrl(isPersonal, e.target.value === 'plays' ? 'plays' : undefined),
+    )
   }
 
   useEffect(() => {
-    updateURL()
-  }, [isPersonal, sortBy, updateURL])
+    if (!hasRestoredSavedFilters) {
+      hasRestoredSavedFilters = true
 
-  useEffect(() => {
-    setIsPersonal(personalParam === 'true' ? 'true' : undefined)
-    setSortBy(sortByParam === 'plays' ? 'plays' : undefined)
-  }, [setIsPersonal, setSortBy, personalParam, sortByParam])
+      const savedPersonal =
+        personalFilter && readStorage('dashboardPersonal') === 'true'
+          ? 'true'
+          : undefined
+      const savedSort =
+        isSortByPlaysActive && readStorage('dashboardSort') === 'plays'
+          ? 'plays'
+          : undefined
+
+      if (!hasUrlFilters && (savedPersonal || savedSort)) {
+        router.replace(getUrl(savedPersonal, savedSort))
+
+        return
+      }
+    }
+
+    // Remembered for the next visit and for the links on the home page
+    setIsPersonal(isPersonal)
+    setSortBy(sortBy)
+  }, [
+    getUrl,
+    hasUrlFilters,
+    isPersonal,
+    isSortByPlaysActive,
+    personalFilter,
+    router,
+    setIsPersonal,
+    setSortBy,
+    sortBy,
+  ])
 
   return (
     <div className={clsx('mt-auto flex gap-2 sm:mt-0 sm:gap-3', className)}>
@@ -78,7 +119,7 @@ export default function DashboardFilters({
         <div className='input-wrapper'>
           <div className='select-wrapper select-wrapper--small'>
             <select
-              id='style-select'
+              id={`${id}-style`}
               className='input input--small'
               value={isPersonal === 'true' ? 'true' : ''}
               onChange={handlePersonalChange}
@@ -95,7 +136,7 @@ export default function DashboardFilters({
         <div className='input-wrapper'>
           <div className='select-wrapper select-wrapper--small'>
             <select
-              id='sort-select'
+              id={`${id}-sort`}
               className='input input--small'
               value={sortBy === 'plays' ? 'plays' : ''}
               onChange={handleSortChange}

@@ -22,6 +22,14 @@ import { useSession } from 'next-auth/react'
 import { useLocale, useTranslations } from 'next-intl'
 import Image from 'next/image'
 
+const DECISION_KEYS: Record<string, string> = {
+  'direct play': 'directPlay',
+  copy: 'directStream',
+  transcode: 'transcode',
+  burn: 'burn',
+  ignore: 'ignore',
+}
+
 type ActivityItemProps = {
   session: TautulliSession
   index: number
@@ -83,6 +91,12 @@ export default function ActivityItem({
     video_full_resolution,
   } = session
 
+  function formatDecision(decision?: string) {
+    return decision && DECISION_KEYS[decision]
+      ? t(`decision.${DECISION_KEYS[decision]}`)
+      : decision
+  }
+
   return (
     <li
       className={clsx('w-full', {
@@ -97,7 +111,7 @@ export default function ActivityItem({
               <Image
                 fill
                 className='object-cover object-top'
-                alt={grandparent_title + ' ' + t('poster')}
+                alt={`${grandparent_title || title} ${t('poster')}`}
                 src={posterUrl}
                 sizes='6rem'
                 priority
@@ -161,12 +175,8 @@ export default function ActivityItem({
             <li>
               {getTitle(t('stream'))}
               <div>
-                {capitalize(
-                  transcode_decision === 'copy'
-                    ? 'direct stream'
-                    : transcode_decision,
-                )}
-                {`${transcode_throttled ? ' (throttled)' : ''}`}
+                {capitalize(formatDecision(transcode_decision))}
+                {transcode_throttled ? ` (${t('decision.throttled')})` : ''}
               </div>
             </li>
             {/* Quality */}
@@ -187,7 +197,7 @@ export default function ActivityItem({
             {/* Video */}
             {media_type !== 'track' && (
               <li>
-                {getTitle(t('video'), stream_video_decision)}
+                {getTitle(t('video'), formatDecision(stream_video_decision))}
                 {checkTranscode(
                   `${toUpper(video_codec)} ${toUpper(video_full_resolution)} ${video_dynamic_range}`,
                   `${toUpper(stream_video_codec)} ${toUpper(stream_video_full_resolution)} ${stream_video_dynamic_range}`,
@@ -197,7 +207,7 @@ export default function ActivityItem({
             )}
             {/* Audio */}
             <li>
-              {getTitle(t('audio'), stream_audio_decision)}
+              {getTitle(t('audio'), formatDecision(stream_audio_decision))}
               {checkTranscode(
                 `${media_type !== 'track' ? `${stream_audio_language} - ` : ''}${toUpper(audio_codec)} ${audio_channel_layout}`,
                 `${toUpper(stream_audio_codec)} ${stream_audio_channel_layout}`,
@@ -207,7 +217,10 @@ export default function ActivityItem({
             {/* Subtitles */}
             {media_type !== 'track' && (
               <li>
-                {getTitle(t('subtitles'), stream_subtitle_decision)}
+                {getTitle(
+                  t('subtitles'),
+                  formatDecision(stream_subtitle_decision),
+                )}
                 {checkTranscode(
                   `${stream_subtitle_language} - ${toUpper(subtitle_codec)}`,
                   toUpper(stream_subtitle_codec),
@@ -220,8 +233,8 @@ export default function ActivityItem({
               {getTitle(
                 t('container'),
                 stream_container_decision === 'transcode'
-                  ? 'converting'
-                  : stream_container_decision,
+                  ? t('decision.converting')
+                  : formatDecision(stream_container_decision),
               )}
               {checkTranscode(
                 toUpper(container),
@@ -324,16 +337,10 @@ function checkTranscode(original: string, stream: string, transcode: string) {
 }
 
 function getTitle(title: string, parenthesis?: string) {
-  let newTitle = parenthesis
-
-  if (parenthesis === 'copy') {
-    newTitle = 'direct stream'
-  }
-
   return (
     <div className='mb-0.5 font-medium text-neutral-400'>
       <span>{title}</span>
-      {newTitle && <span> ({newTitle})</span>}
+      {parenthesis && <span> ({parenthesis})</span>}
     </div>
   )
 }

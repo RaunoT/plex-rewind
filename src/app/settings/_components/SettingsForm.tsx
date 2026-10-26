@@ -1,6 +1,7 @@
 'use client'
 
 import { SettingsFormInitialState } from '@/types/settings'
+import clsx from 'clsx'
 import { useTranslations } from 'next-intl'
 import { ReactNode } from 'react'
 import SettingsSaveButton from './SettingsSaveButton'
@@ -28,21 +29,21 @@ export default function SettingsForm({
         {children}
         {!hideSubmit && (
           <div className='flex flex-col items-center justify-end gap-2 sm:flex-row sm:gap-4'>
-            {formState.message ? (
-              <p
-                aria-live='polite'
-                role='status'
-                className={
-                  formState.status === 'success'
-                    ? 'text-green-600'
-                    : 'text-red-500'
-                }
-              >
-                {formState.message}
-              </p>
-            ) : (
-              isSetup && <p className='text-neutral-400'>{t('initialSetup')}</p>
+            {!formState.message && isSetup && (
+              <p className='text-neutral-300'>{t('initialSetup')}</p>
             )}
+            <p
+              aria-live='polite'
+              role='status'
+              className={clsx(
+                formState.status === 'success'
+                  ? 'text-green-400'
+                  : 'text-red-300',
+                !formState.message && 'sr-only',
+              )}
+            >
+              {formState.message}
+            </p>
 
             <SettingsSaveButton />
           </div>

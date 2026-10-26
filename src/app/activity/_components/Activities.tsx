@@ -39,9 +39,9 @@ export default function Activities({ settings, serverId }: Props) {
   if (error || !data) {
     return (
       <div className='flex flex-1 flex-col justify-center text-center'>
-        <h1 className='mb-4 text-3xl leading-tight italic sm:text-4xl'>
+        <h2 className='mb-4 text-3xl leading-tight italic sm:text-4xl'>
           {errorT('title')}
-        </h1>
+        </h2>
         <button
           className='link mx-auto w-fit'
           onClick={() => window.location.reload()}
@@ -55,9 +55,9 @@ export default function Activities({ settings, serverId }: Props) {
   if (!data.sessions.length) {
     return (
       <div className='flex flex-1 flex-col justify-center text-center text-neutral-300'>
-        <h2 className='text-2xl italic last:mb-0 sm:text-3xl'>
+        <p className='text-2xl italic last:mb-0 sm:text-3xl'>
           {t('noActivity')}
-        </h2>
+        </p>
       </div>
     )
   }

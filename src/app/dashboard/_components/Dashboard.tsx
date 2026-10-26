@@ -39,6 +39,8 @@ export default async function Dashboard({
 }: Props) {
   const isLoggedIn = !!loggedInUserId
   const t = await getTranslations('Dashboard')
+  const tCommon = await getTranslations('Common')
+  const countNumber = count ? Number(count.replace(/\D/g, '')) : 0
 
   function renderFilters(className?: string) {
     if (type !== 'users') {
@@ -64,11 +66,19 @@ export default async function Dashboard({
         {renderFilters('hidden sm:flex')}
       </div>
       <ul className='icon-stats-container mb-1 sm:gap-x-3'>
-        {totalSize && (
+        {!!totalSize && (
           <li className='icon-stat-wrapper icon-stat-wrapper--clean'>
-            {type === 'users' ? <UserIcon /> : <FolderIcon />}
-            {totalSize}
-            {type === 'users' && ` ${t('users')}`}
+            {type === 'users' ? (
+              <>
+                <UserIcon />
+                {t('users', { count: Number(totalSize) })}
+              </>
+            ) : (
+              <>
+                <FolderIcon />
+                <span className='sr-only'>{tCommon('size')}</span> {totalSize}
+              </>
+            )}
           </li>
         )}
         {count && (
@@ -78,12 +88,12 @@ export default async function Dashboard({
               <span>{count}</span>&nbsp;
               <span>
                 {type === 'movie'
-                  ? t('movies')
+                  ? t('movies', { count: countNumber })
                   : type === 'show'
-                    ? t('episodes')
+                    ? t('episodes', { count: countNumber })
                     : type === 'artist'
-                      ? t('tracks')
-                      : t('requests')}
+                      ? t('tracks', { count: countNumber })
+                      : t('requests', { count: countNumber })}
               </span>
             </span>
           </li>
@@ -91,6 +101,7 @@ export default async function Dashboard({
         {totalDuration && (
           <li className='icon-stat-wrapper icon-stat-wrapper--clean'>
             <ClockIcon />
+            <span className='sr-only'>{tCommon('duration')}</span>{' '}
             {totalDuration}
           </li>
         )}
@@ -106,9 +117,9 @@ export default async function Dashboard({
         />
       ) : (
         <div className='flex flex-1 flex-col justify-center text-center text-neutral-300'>
-          <h2 className='mb-4 py-32 text-2xl leading-tight italic last:mb-0 sm:text-3xl'>
+          <p className='mb-4 py-32 text-2xl leading-tight italic last:mb-0 sm:text-3xl'>
             {t('noActivity')}
-          </h2>
+          </p>
         </div>
       )}
 
