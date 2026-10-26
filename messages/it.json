@@ -222,7 +222,7 @@
     },
     "Audio": {
       "duration": "Per finire, hai ascoltato <duration>{durationValue}</duration> di <audio>Audio</audio>",
-      "count": "Hai ascoltato <count>{countValue}</count> <tracks>brani</tracks> in tutto!",
+      "count": "Hai ascoltato <count>{countValue, number}</count> <tracks>brani</tracks> in tutto!",
       "favorite": "Il tuo preferito è stato",
       "noData": "Non hai ascoltato nessun <audio>Audio</audio> da <from>Plex</from>"
     },
@@ -235,14 +235,14 @@
     },
     "Shows": {
       "duration": "Le <library>Serie TV</library> ti hanno preso <duration>{durationValue}</duration> su <plex>{serverName}.</plex>",
-      "count": "Hai guardato <count>{countValue}</count> <episodes>episodi</episodes> in tutto!",
+      "count": "Hai guardato <count>{countValue, number}</count> <episodes>episodi</episodes> in tutto!",
       "favorite": "La tua preferita è stata",
       "noData": "Non hai guardato nessuna <shows>Serie TV</shows> su <plex>{serverName}</plex> <emoji>😥</emoji>"
     },
     "Requests": {
       "noData": "Non ci sono state <requests>Richieste</requests> <emoji>😲</emoji>",
       "noUserData": "Non hai fatto nessuna <requests>Richiesta</requests>. Puoi farle da <requestLink>{requestLinkValue}</requestLink>.",
-      "count": "Hai fatto <count>{countValue}</count> <requests>{countValue, plural, =1 {Richiesta} other {Richieste}}</requests> di contenuti",
+      "count": "Hai fatto <count>{countValue, number}</count> <requests>{countValue, plural, =1 {Richiesta} other {Richieste}}</requests> di contenuti",
       "countTotal": "In tutto {countValue, plural, =1 {c'è stata} other {ci sono state}} <count>{countValue, plural, =1 {# Richiesta} other {# Richieste}}</count> nello stesso periodo.",
       "breakdown": "Ecco il dettaglio:",
       "movies": "{count, plural, =1 {Film} other {Film}}",
@@ -250,7 +250,7 @@
     },
     "Movies": {
       "duration": "Hai passato <duration>{durationValue}</duration> del tuo tempo a guardare <movies>Film</movies>",
-      "count": "Hai guardato <count>{countValue}</count> <movies>{countValue, plural, =1 {film} other {film}}</movies> in tutto!",
+      "count": "Hai guardato <count>{countValue, number}</count> <movies>{countValue, plural, =1 {film} other {film}}</movies> in tutto!",
       "favorite": "Il tuo preferito è stato",
       "noData": "Non hai guardato nessun <movies>Film</movies> su <plex>{serverName}</plex> <emoji>😵‍💫</emoji>"
     },
