@@ -89,6 +89,7 @@ export default async function getVersion(): Promise<Version> {
       )
 
       if (!res.ok) {
+        lastFailedAt = Date.now()
         console.error(
           '[GITHUB] - API request failed',
           res.status,
@@ -100,6 +101,7 @@ export default async function getVersion(): Promise<Version> {
         if (Array.isArray(data)) {
           const latestRelease = data.find(
             (release: GitHubRelease) =>
+              typeof release?.tag_name === 'string' &&
               !release.draft &&
               (isDevelop ? release.prerelease : !release.prerelease),
           )

@@ -138,6 +138,22 @@ describe('pagination', () => {
     )
   })
 
+  it('gives up when paging takes too long', async () => {
+    let page = 0
+    let now = Date.now()
+
+    vi.spyOn(Date, 'now').mockImplementation(() => (now += 60 * 1000))
+    route(pagedUsers(() => `cursor-${page++}`))
+
+    const { getTracearrPlexUsers } = await load()
+
+    await expect(getTracearrPlexUsers()).resolves.toEqual([])
+    expect(requestsTo('users').length).toBeLessThan(30)
+    expect(console.error).toHaveBeenCalledWith(
+      expect.stringContaining('took longer than 20 minutes'),
+    )
+  })
+
   it('treats a page without a list of items as a failure', async () => {
     route({
       servers: () => ({ data: [plexServer('s1')] }),
@@ -246,6 +262,17 @@ describe('malformed responses', () => {
     route({
       servers: () => ({ data: [plexServer('s1')] }),
       'media/m1': () => ({ id: 'm1' }),
+    })
+
+    const { isTracearrMediaDeleted } = await load()
+
+    await expect(isTracearrMediaDeleted('m1')).resolves.toBe(false)
+  })
+
+  it('does not mark media as deleted when availability is not a list', async () => {
+    route({
+      servers: () => ({ data: [plexServer('s1')] }),
+      'media/m1': () => ({ id: 'm1', availability: {} }),
     })
 
     const { isTracearrMediaDeleted } = await load()

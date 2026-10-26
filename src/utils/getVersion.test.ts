@@ -6,6 +6,9 @@ vi.mock('next-runtime-env', () => ({ env: vi.fn() }))
 
 const fetchMock = vi.fn()
 
+// Failed checks are skipped for a while, so every test starts later than the last
+let clock = Date.UTC(2026, 0, 1)
+
 describe('compareVersions', () => {
   it('reports an update when a stable version differs', () => {
     expect(compareVersions('v5.1.0', 'v5.2.0')).toBe(true)
@@ -28,12 +31,16 @@ describe('getVersion', () => {
   ]
 
   beforeEach(() => {
+    clock += 24 * 60 * 60 * 1000
+    vi.useFakeTimers({ toFake: ['Date'] })
+    vi.setSystemTime(clock)
     vi.stubGlobal('fetch', fetchMock)
     vi.spyOn(console, 'error').mockImplementation(() => {})
     vi.mocked(env).mockReturnValue('5.0.0')
   })
 
   afterEach(() => {
+    vi.useRealTimers()
     vi.restoreAllMocks()
     vi.unstubAllGlobals()
     fetchMock.mockReset()
@@ -85,6 +92,32 @@ describe('getVersion', () => {
       latestVersion: 'v5.0.0',
       hasUpdate: false,
     })
+  })
+
+  it('ignores releases without a tag name', async () => {
+    fetchMock.mockResolvedValue(
+      Response.json([{ draft: false, prerelease: false }, ...releases]),
+    )
+
+    const version = await getVersion()
+
+    expect(version.latestVersion).toBe('v5.1.0')
+  })
+
+  it('waits 15 minutes before checking again after a failed response', async () => {
+    fetchMock.mockImplementation(async () =>
+      Response.json({ message: 'rate limit' }, { status: 403 }),
+    )
+
+    await getVersion()
+    await getVersion()
+
+    expect(fetchMock).toHaveBeenCalledTimes(1)
+
+    vi.setSystemTime(clock + 16 * 60 * 1000)
+    await getVersion()
+
+    expect(fetchMock).toHaveBeenCalledTimes(2)
   })
 
   it('keeps the current version when the request fails', async () => {

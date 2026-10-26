@@ -67,6 +67,8 @@ type HistoryCache = {
 
 const PAGE_SIZE = 100
 const MAX_PAGES = 5000
+// Bounds the whole paging run, since each page can take up to the timeout
+const PAGINATION_DEADLINE = 20 * 60 * 1000
 const MAX_RATE_LIMIT_RETRIES = 3
 const REQUEST_TIMEOUT = 30 * 1000
 const CACHE_TTL = 5 * 60 * 1000
@@ -234,10 +236,19 @@ async function fetchAllPages<T>(
 ): Promise<T[] | null> {
   const items: T[] = []
   const seenCursors = new Set<string>()
+  const deadline = Date.now() + PAGINATION_DEADLINE
 
   let cursor: string | undefined
 
   for (let pageCount = 0; pageCount < MAX_PAGES; pageCount++) {
+    if (Date.now() > deadline) {
+      console.error(
+        `[TRACEARR] - Reading '${path}' took longer than ${PAGINATION_DEADLINE / 60000} minutes! Giving up after ${items.length} items.`,
+      )
+
+      return null
+    }
+
     const page = await fetchTracearr<TracearrCursorPage<T>>(path, {
       ...params,
       pageSize: PAGE_SIZE,
@@ -692,8 +703,9 @@ export async function isTracearrMediaDeleted(
     fetchTracearr<TracearrMedia>(`media/${mediaId}`),
     getPlexServerId(),
   ])
-  const availability =
-    media?.availability?.filter((item) => item.server_id === serverId) ?? []
+  const availability = Array.isArray(media?.availability)
+    ? media.availability.filter((item) => item.server_id === serverId)
+    : []
 
   return (
     availability.length > 0 && availability.every((item) => item.removed_at)
