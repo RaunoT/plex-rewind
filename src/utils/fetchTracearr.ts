@@ -19,6 +19,7 @@ import {
   TracearrUser,
 } from '@/types/tracearr'
 import { sumBy } from 'lodash'
+import { unstable_rethrow } from 'next/navigation'
 import qs from 'qs'
 import getSettings from './getSettings'
 
@@ -213,6 +214,8 @@ export default async function fetchTracearr<T>(
 
       return await res.json()
     } catch (error) {
+      // Next.js marks a route dynamic by throwing from fetch while rendering.
+      unstable_rethrow(error)
       console.error(
         `[TRACEARR] - Error fetching from API! The path was '${path}'.\n`,
         error,
