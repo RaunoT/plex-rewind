@@ -8,6 +8,7 @@ function formatDate(dateString: string, locale: string) {
   return new Intl.DateTimeFormat(locale, {
     month: 'short',
     year: 'numeric',
+    timeZone: 'UTC',
   }).format(new Date(dateString))
 }
 
