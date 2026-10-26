@@ -77,6 +77,8 @@ To update, run `docker compose pull` and then `docker compose up -d`.
 
 ## Translations
 
+The application follows the browser's language when it's one of the supported ones, and falls back to English otherwise. A language picked from the language menu takes precedence over the browser's.
+
 To help translate the application to your language, create a new `<language-code>.json` in the `messages` directory and translate the strings, using `en.json` as a reference. Once the translation is complete, create a pull request for review.
 
 ## Donate
