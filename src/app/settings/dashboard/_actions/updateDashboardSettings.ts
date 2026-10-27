@@ -28,7 +28,16 @@ export default async function saveDashboardSettings(
     isUsersPageActive: z.boolean().optional(),
     activeItemStatistics: z
       .array(
-        z.enum(['year', 'rating', 'duration', 'plays', 'users', 'requests']),
+        z.enum([
+          'year',
+          'tmdbRating',
+          'imdbRating',
+          'rottenTomatoesRating',
+          'duration',
+          'plays',
+          'users',
+          'requests',
+        ]),
       )
       .optional(),
     activeTotalStatistics: z

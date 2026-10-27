@@ -1,7 +1,14 @@
 import { ConnectionSettings } from '@/types/settings'
 import { normalizeUrl } from './url'
 
-type Service = 'Tautulli' | 'Tracearr' | 'Overseerr'
+type Service = 'Tautulli' | 'Tracearr' | 'Overseerr' | 'MDBList'
+
+type ApiKey = {
+  service: Service
+  key: keyof ConnectionSettings & `${string}ApiKey`
+  // Unset for services with a fixed address
+  url?: keyof ConnectionSettings & `${string}Url`
+}
 
 // Saved API keys never go back to the browser, not even to the settings form.
 // The form gets this stand-in for a stored key, and saving it unchanged keeps
@@ -9,11 +16,12 @@ type Service = 'Tautulli' | 'Tracearr' | 'Overseerr'
 // doesn't lose it.
 export const SAVED_API_KEY = 'saved-api-key'
 
-const API_KEYS = [
+const API_KEYS: ApiKey[] = [
   { service: 'Tautulli', key: 'tautulliApiKey', url: 'tautulliUrl' },
   { service: 'Tracearr', key: 'tracearrApiKey', url: 'tracearrUrl' },
   { service: 'Overseerr', key: 'overseerrApiKey', url: 'overseerrUrl' },
-] as const
+  { service: 'MDBList', key: 'mdblistApiKey' },
+]
 
 export function maskApiKeys<T extends Partial<ConnectionSettings>>(
   connection: T,
@@ -44,13 +52,13 @@ export function restoreApiKeys(
     }
 
     // Clearing the URL turns the service off.
-    if (!connection[url]) {
+    if (url && !connection[url]) {
       connection[key] = ''
 
       continue
     }
 
-    if (!saved[key] || connection[url] !== normalizeUrl(saved[url])) {
+    if (!saved[key] || (url && connection[url] !== normalizeUrl(saved[url]))) {
       return { connection, needsKey: service }
     }
 
