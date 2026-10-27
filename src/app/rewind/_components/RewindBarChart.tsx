@@ -74,10 +74,16 @@ export default function RewindBarChart({
       role='img'
       aria-label={ariaLabel}
     >
-      <p className='mb-1 ml-10 text-xs text-neutral-500'>{axisLabel}</p>
+      {/* The axis column is as wide as its label or counts, whichever is
+          wider, so a long label in another language never spills out */}
+      <div className='grid grid-cols-[auto_1fr] gap-x-2'>
+        {/* Clear of the top count, which sits half above the plot */}
+        <p className='mb-4 text-right text-xs whitespace-nowrap text-neutral-500'>
+          {axisLabel}
+        </p>
+        <div aria-hidden />
 
-      <div className='flex'>
-        <div className='relative mr-2 h-56 w-8 shrink-0 sm:h-40'>
+        <div className='relative h-56 min-w-8 sm:h-40'>
           {ticks.map((tick) => (
             <span
               key={tick}
@@ -132,34 +138,34 @@ export default function RewindBarChart({
             })}
           </div>
         </div>
-      </div>
 
-      {labels && (
-        <div className='mt-2 flex'>
-          <div className='mr-2 w-8 shrink-0' aria-hidden />
-          <div className='relative h-4 flex-1'>
-            {labels.map((label, index) =>
-              label ? (
-                <span
-                  key={index}
-                  className={clsx(
-                    'absolute top-0 text-xs whitespace-nowrap',
-                    index === peakIndex
-                      ? 'text-plex font-semibold'
-                      : 'text-neutral-400',
-                  )}
-                  style={{
-                    left: `${((index + 0.5) / labels.length) * 100}%`,
-                    transform: labelTransform(index, labels.length),
-                  }}
-                >
-                  {label}
-                </span>
-              ) : null,
-            )}
-          </div>
-        </div>
-      )}
+        {labels && (
+          <>
+            <div aria-hidden />
+            <div className='relative mt-2 h-4'>
+              {labels.map((label, index) =>
+                label ? (
+                  <span
+                    key={index}
+                    className={clsx(
+                      'absolute top-0 text-xs whitespace-nowrap',
+                      index === peakIndex
+                        ? 'text-plex font-semibold'
+                        : 'text-neutral-400',
+                    )}
+                    style={{
+                      left: `${((index + 0.5) / labels.length) * 100}%`,
+                      transform: labelTransform(index, labels.length),
+                    }}
+                  >
+                    {label}
+                  </span>
+                ) : null,
+              )}
+            </div>
+          </>
+        )}
+      </div>
     </div>
   )
 }
