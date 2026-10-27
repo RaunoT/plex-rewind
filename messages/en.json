@@ -59,7 +59,7 @@
     "movies": "{count, plural, one {movie} other {movies}}",
     "episodes": "{count, plural, one {episode} other {episodes}}",
     "tracks": "{count, plural, one {track} other {tracks}}",
-    "requests": "{count, plural, one {request} other {requests}}",
+    "requests": "{count, plural, one {# request} other {# requests}}",
     "durationWatched": "{duration} watched",
     "durationListened": "{duration} listened"
   },
@@ -161,7 +161,7 @@
       "itemStatistics": "Item statistics",
       "itemStatisticsDescription": "Shown for each title and user in the dashboard and Rewind lists.",
       "totalStatistics": "Total statistics",
-      "totalStatisticsDescription": "Shown below each dashboard list. Count is the number of movies, episodes or tracks in the library.",
+      "totalStatisticsDescription": "Watch time and requests cover the selected period and are shown next to the filters. Size and count are shown below each list. Count is the number of movies, episodes or tracks in the library.",
       "sortFilter": "Sort filter",
       "sortFilterDescription": "Lets viewers sort the dashboard by watch time. Otherwise, lists are sorted by plays.",
       "customPeriod": "Custom period",

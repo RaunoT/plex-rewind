@@ -59,7 +59,7 @@
     "movies": "{count, plural, one {film} other {film}}",
     "episodes": "{count, plural, one {episodio} other {episodi}}",
     "tracks": "{count, plural, one {brano} other {brani}}",
-    "requests": "{count, plural, one {richiesta} other {richieste}}",
+    "requests": "{count, plural, one {# richiesta} other {# richieste}}",
     "durationWatched": "{duration} di visione",
     "durationListened": "{duration} di ascolto"
   },
@@ -161,7 +161,7 @@
       "itemStatistics": "Statistiche per titolo",
       "itemStatisticsDescription": "Mostrate per ogni titolo e utente negli elenchi della dashboard e del Rewind.",
       "totalStatistics": "Statistiche totali",
-      "totalStatisticsDescription": "Mostrate sotto ogni elenco della dashboard. Il numero indica quanti film, episodi o brani ci sono nella libreria.",
+      "totalStatisticsDescription": "Il tempo di visualizzazione e le richieste riguardano il periodo scelto e sono mostrati accanto ai filtri. Dimensione e numero sono mostrati sotto ogni elenco. Il numero indica quanti film, episodi o brani ci sono nella libreria.",
       "sortFilter": "Filtro di ordinamento",
       "sortFilterDescription": "Permette di ordinare la dashboard per tempo di visualizzazione. Altrimenti gli elenchi sono ordinati per riproduzioni.",
       "customPeriod": "Periodo personalizzato",

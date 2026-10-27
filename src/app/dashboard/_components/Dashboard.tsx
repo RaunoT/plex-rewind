@@ -5,10 +5,12 @@ import { PublicSettings } from '@/types/settings'
 import { TautulliItemRow } from '@/types/tautulli'
 import { getTranslations } from 'next-intl/server'
 import { ReactNode } from 'react'
+import DashboardHeader from './DashboardHeader'
 
 type Props = {
   items?: TautulliItemRow[] | null
   totalDuration?: string
+  totalRequests?: number
   totalSize?: string | number
   type: 'movie' | 'show' | 'artist' | 'users'
   serverId?: string
@@ -21,6 +23,7 @@ type Props = {
 export default async function Dashboard({
   items,
   totalDuration,
+  totalRequests,
   totalSize,
   type,
   serverId = '',
@@ -35,7 +38,27 @@ export default async function Dashboard({
 
   return (
     <>
-      <div className='mb-4'>{toolbar}</div>
+      <DashboardHeader
+        periodStats={
+          <>
+            {!!totalDuration && (
+              <li className='icon-stat-wrapper icon-stat-wrapper--clean'>
+                <STAT_ICONS.duration />
+                {t(type === 'artist' ? 'durationListened' : 'durationWatched', {
+                  duration: totalDuration,
+                })}
+              </li>
+            )}
+            {totalRequests !== undefined && (
+              <li className='icon-stat-wrapper icon-stat-wrapper--clean'>
+                <STAT_ICONS.requests />
+                {t('requests', { count: totalRequests })}
+              </li>
+            )}
+          </>
+        }
+        toolbar={toolbar}
+      />
 
       <CardWrapper>
         {items?.length ? (
@@ -55,7 +78,7 @@ export default async function Dashboard({
         )}
       </CardWrapper>
 
-      <ul className='icon-stats-container mt-4 justify-center gap-x-3 text-neutral-300'>
+      <ul className='icon-stats-container mt-4 justify-center gap-x-3 text-neutral-300 empty:hidden'>
         {!!totalSize && (
           <li className='icon-stat-wrapper icon-stat-wrapper--clean'>
             {type === 'users' ? (
@@ -71,13 +94,9 @@ export default async function Dashboard({
             )}
           </li>
         )}
-        {count && (
+        {count && type !== 'users' && (
           <li className='icon-stat-wrapper icon-stat-wrapper--clean'>
-            {type === 'users' ? (
-              <STAT_ICONS.requests />
-            ) : (
-              <MediaIcon type={type} />
-            )}
+            <MediaIcon type={type} />
             <span>
               <span>{count}</span>&nbsp;
               <span>
@@ -85,20 +104,9 @@ export default async function Dashboard({
                   ? t('movies', { count: countNumber })
                   : type === 'show'
                     ? t('episodes', { count: countNumber })
-                    : type === 'artist'
-                      ? t('tracks', { count: countNumber })
-                      : t('requests', { count: countNumber })}
+                    : t('tracks', { count: countNumber })}
               </span>
             </span>
-          </li>
-        )}
-        {totalDuration && (
-          <li className='icon-stat-wrapper icon-stat-wrapper--clean'>
-            <STAT_ICONS.duration />
-            {/* Named, as it covers the period while the rest are all-time */}
-            {t(type === 'artist' ? 'durationListened' : 'durationWatched', {
-              duration: totalDuration,
-            })}
           </li>
         )}
       </ul>
