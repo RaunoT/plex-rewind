@@ -13,7 +13,7 @@
     },
     "rewind": "Rewind",
     "signOut": "Logi välja",
-    "greeting": "Tere, {name}",
+    "greeting": "Tere, {name} 👋",
     "rewindDescription": "Sinu vaatamise tipphetked, lugu loo haaval.",
     "streams": "{count, plural, =0 {Midagi ei mängi} one {# voog} other {# voogu}}",
     "mostWatched": "Enim vaadatud",

@@ -13,7 +13,7 @@
     },
     "rewind": "Rewind starten",
     "signOut": "Abmelden",
-    "greeting": "Hallo, {name}",
+    "greeting": "Hallo, {name} 👋",
     "rewindDescription": "Deine Highlights, Geschichte für Geschichte.",
     "streams": "{count, plural, =0 {Nichts läuft} one {# Stream} other {# Streams}}",
     "mostWatched": "Am meisten gesehen",

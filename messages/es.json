@@ -13,7 +13,7 @@
     },
     "rewind": "Empezar Rewind",
     "signOut": "Cerrar sesión",
-    "greeting": "Hola, {name}",
+    "greeting": "Hola, {name} 👋",
     "rewindDescription": "Tus momentos destacados, una historia a la vez.",
     "streams": "{count, plural, =0 {Nada en reproducción} one {# en reproducción} other {# en reproducción}}",
     "mostWatched": "Lo más visto",
