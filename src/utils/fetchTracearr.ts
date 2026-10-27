@@ -19,7 +19,7 @@ import {
   TracearrStreamsResponse,
   TracearrUser,
 } from '@/types/tracearr'
-import { sumBy } from 'lodash'
+import { minBy, sumBy } from 'lodash'
 import { unstable_rethrow } from 'next/navigation'
 import qs from 'qs'
 import getSettings from './getSettings'
@@ -675,7 +675,8 @@ function getStartedAt(record: TracearrHistoryRecord): number {
 
 // History only pages back from the newest play, so the time between the oldest
 // play found so far and the last time known to have none is halved until it's
-// under a day.
+// under a day. That day is then read in full, since each lookup only returned
+// the newest play before its cutoff.
 async function findFirstPlay(
   identityId: string,
   serverId: string,
@@ -683,7 +684,11 @@ async function findFirstPlay(
   let firstPlay = await fetchLatestPlay(identityId, serverId)
   let noPlaysUntil = EARLIEST_PLAY
 
-  while (firstPlay && getStartedAt(firstPlay) - noPlaysUntil > DAY) {
+  if (!firstPlay || !Number.isFinite(getStartedAt(firstPlay))) {
+    return firstPlay
+  }
+
+  while (getStartedAt(firstPlay) - noPlaysUntil > DAY) {
     const middle = Math.floor((noPlaysUntil + getStartedAt(firstPlay)) / 2)
     const play = await fetchLatestPlay(identityId, serverId, middle)
 
@@ -697,7 +702,16 @@ async function findFirstPlay(
     }
   }
 
-  return firstPlay
+  const lastDay = await fetchAllPages<TracearrHistoryRecord>('history', {
+    user_id: identityId,
+    server_id: serverId,
+    since: new Date(
+      Math.min(noPlaysUntil, getStartedAt(firstPlay)),
+    ).toISOString(),
+    until: firstPlay.started_at,
+  })
+
+  return lastDay ? minBy([firstPlay, ...lastDay], getStartedAt) : undefined
 }
 
 export async function getTracearrFirstPlay(
