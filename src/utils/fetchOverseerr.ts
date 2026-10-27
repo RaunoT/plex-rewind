@@ -147,11 +147,13 @@ async function fetchOverseerrPages<T>(
   return items
 }
 
+// Null when Overseerr fails, so callers can leave the requests out instead of
+// showing none
 export async function fetchOverseerrStats(
   req: string,
   startDate: string,
   endDate?: string,
-): Promise<OverseerrRequestItem[]> {
+): Promise<OverseerrRequestItem[] | null> {
   const start = new Date(startDate).getTime()
   const end = endDate ? new Date(endDate).getTime() : Date.now()
   // Both `request` and `user/{id}/requests` list the newest first by default,
@@ -168,7 +170,7 @@ export async function fetchOverseerrStats(
   if (!requests) {
     console.error('[OVERSEERR] - No requests data found!')
 
-    return []
+    return null
   }
 
   return requests.filter((request) => {

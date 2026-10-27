@@ -52,7 +52,7 @@ async function getTotalRequests(period: string, settings: Settings) {
   ) {
     const requests = await fetchOverseerrStats('request', period)
 
-    return requests.length.toString()
+    return requests?.length.toString()
   }
 
   return undefined

@@ -112,6 +112,10 @@ export async function getRequestsTotals(userId: string) {
   const startDate = getRewindStartDate(getSettings())
   const requests = await fetchOverseerrStats('request', startDate)
 
+  if (!requests) {
+    return null
+  }
+
   return {
     total: requests.length,
     movies: requests.filter((request) => request.type === 'movie').length,

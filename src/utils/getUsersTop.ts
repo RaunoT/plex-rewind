@@ -49,7 +49,7 @@ export default async function getUsersTop(
           )
 
           return {
-            requests: userTotal.length,
+            requests: userTotal?.length ?? 0,
           }
         }
       }),

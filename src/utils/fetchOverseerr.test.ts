@@ -182,7 +182,7 @@ describe('fetchOverseerrStats', () => {
     expect(stats).toHaveLength(20)
   })
 
-  it('returns nothing when Overseerr fails', async () => {
+  it('returns null, not an empty list, when Overseerr fails', async () => {
     vi.spyOn(console, 'error').mockImplementation(() => {})
     vi.stubGlobal(
       'fetch',
@@ -191,7 +191,7 @@ describe('fetchOverseerrStats', () => {
 
     const { fetchOverseerrStats } = await load()
 
-    expect(await fetchOverseerrStats('request', '2020-01-01')).toEqual([])
+    expect(await fetchOverseerrStats('request', '2020-01-01')).toBeNull()
   })
 })
 
