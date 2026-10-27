@@ -17,7 +17,7 @@ type Props = {
 // Shown until there's something to browse: before logging in, or while an
 // admin still has to finish the setup
 export default function Home({ settings, missingSetting, siteUrl }: Props) {
-  const { isLoading, handleLogin } = usePlexAuth(siteUrl)
+  const { isLoading, error, handleLogin } = usePlexAuth(siteUrl)
   const { data: session, status } = useSession()
   const isLoggedIn = status === 'authenticated'
   const t = useTranslations('Home')
@@ -70,6 +70,11 @@ export default function Home({ settings, missingSetting, siteUrl }: Props) {
           <button className='button button--plex w-full' onClick={handleLogin}>
             {t('loginWithPlex')}
           </button>
+        )}
+        {error && (
+          <p role='alert' className='text-sm text-red-300'>
+            {t(`loginError.${error}`)}
+          </p>
         )}
         {isLoggedIn && (
           <button

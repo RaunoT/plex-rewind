@@ -4,6 +4,13 @@
     "setupRequired": "Setup notwendig",
     "setupRequiredDescription": "Die Anwendung muss von einem Administrator eingerichtet werden.",
     "loginWithPlex": "Mit Plex einloggen",
+    "loginError": {
+      "plexUnavailable": "Plex ist nicht erreichbar. Versuche es gleich noch einmal.",
+      "plexNotConfirmed": "Plex hat die Anmeldung nicht bestätigt. Versuche es noch einmal.",
+      "plexAccount": "Dein Plex-Konto konnte nicht geladen werden. Versuche es noch einmal.",
+      "noAccess": "Dieses Plex-Konto hat keinen Zugriff auf diesen Server.",
+      "unknown": "Anmeldung fehlgeschlagen. Versuche es noch einmal."
+    },
     "rewind": "Rewind starten",
     "dashboard": "Dashboard",
     "activity": "Aktivität",

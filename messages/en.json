@@ -4,6 +4,13 @@
     "setupRequired": "Setup required",
     "setupRequiredDescription": "This application needs to be configured by an administrator.",
     "loginWithPlex": "Log in with Plex",
+    "loginError": {
+      "plexUnavailable": "Couldn't reach Plex. Try again in a moment.",
+      "plexNotConfirmed": "Plex didn't confirm the login. Try again.",
+      "plexAccount": "Couldn't load your Plex account. Try again.",
+      "noAccess": "This Plex account doesn't have access to this server.",
+      "unknown": "Login failed. Try again."
+    },
     "rewind": "Start Rewind",
     "dashboard": "Dashboard",
     "activity": "Activity",

@@ -4,6 +4,13 @@
     "setupRequired": "Seadistamine vajalik",
     "setupRequiredDescription": "Rakendus vajab seadistamist administraatori poolt.",
     "loginWithPlex": "Logi sisse Plex'iga",
+    "loginError": {
+      "plexUnavailable": "Plexiga ei saanud ühendust. Proovi hetke pärast uuesti.",
+      "plexNotConfirmed": "Plex ei kinnitanud sisselogimist. Proovi uuesti.",
+      "plexAccount": "Sinu Plexi kontot ei õnnestunud laadida. Proovi uuesti.",
+      "noAccess": "Sellel Plexi kontol pole ligipääsu sellele serverile.",
+      "unknown": "Sisselogimine ebaõnnestus. Proovi uuesti."
+    },
     "rewind": "Rewind",
     "dashboard": "Edetabel",
     "activity": "Tegevus",
