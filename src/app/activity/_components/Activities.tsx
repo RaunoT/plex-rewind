@@ -61,11 +61,7 @@ export default function Activities({ settings, serverId }: Props) {
   }
 
   if (!data.sessions.length) {
-    return (
-      <div className='flex flex-1 flex-col justify-center text-center text-neutral-300'>
-        <p className='text-2xl last:mb-0 sm:text-3xl'>{t('noActivity')}</p>
-      </div>
-    )
+    return <StatusMessage title='😴' description={t('noActivity')} isInCard />
   }
 
   return (
