@@ -1,5 +1,6 @@
 'use client'
 
+import { trackEvent } from '@/utils/analytics'
 import { REWIND_CONTROLS_ID } from '@/utils/constants'
 import {
   ChevronLeftIcon,
@@ -47,6 +48,8 @@ export const StoryClockContext = createContext<StoryClock>({
 export const StoryRestartContext = createContext<() => void>(() => {})
 
 type Story = {
+  // Names the story in analytics
+  id: string
   type: 'component'
   component: (props: StoryProps) => ReactNode
   duration: number
@@ -120,7 +123,10 @@ export default function Stories({ stories }: Props) {
   const isHoldingRef = useRef(false)
   const shouldRestoreFocusRef = useRef(false)
   const shouldSeekToEndRef = useRef(false)
+  const trackedIndexRef = useRef<number | null>(null)
+  const hasTrackedCompleteRef = useRef(false)
   const currentStory = stories[currentIndex]
+  const currentStoryId = currentStory?.id
   const duration = currentStory?.duration || DEFAULT_DURATION
   const isPaused = isManuallyPaused || isHolding || isHidden
   const isFinished = elapsed >= duration
@@ -337,6 +343,26 @@ export default function Stories({ stories }: Props) {
 
     return () => window.removeEventListener('keydown', handleKeyDown)
   }, [goToNext, goToPrev, togglePause])
+
+  useEffect(() => {
+    // The refs keep Strict Mode's second run, or a re-render, from counting
+    // the same view again
+    if (!currentStoryId || trackedIndexRef.current === currentIndex) {
+      return
+    }
+
+    trackedIndexRef.current = currentIndex
+    trackEvent('rewind_story_view', {
+      story: currentStoryId,
+      story_number: currentIndex + 1,
+      story_count: stories.length,
+    })
+
+    if (currentIndex === stories.length - 1 && !hasTrackedCompleteRef.current) {
+      hasTrackedCompleteRef.current = true
+      trackEvent('rewind_complete', { story_count: stories.length })
+    }
+  }, [currentIndex, currentStoryId, stories.length])
 
   useEffect(() => {
     if (shouldRestoreFocusRef.current) {

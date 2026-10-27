@@ -96,6 +96,7 @@ export default async function RootLayout({ children }: Props) {
             {settings.general.googleAnalyticsId && (
               <GoogleAnalytics
                 id={settings.general.googleAnalyticsId}
+                isSignedIn={!!session}
                 nonce={nonce}
               />
             )}
