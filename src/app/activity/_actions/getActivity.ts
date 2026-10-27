@@ -4,8 +4,8 @@ import { canViewStats } from '@/lib/access'
 import { authOptions } from '@/lib/auth'
 import { Settings } from '@/types/settings'
 import { TautulliActivity, TautulliSession } from '@/types/tautulli'
-import { getActivity as fetchActivity } from '@/utils/fetchTautulli'
 import getSettings from '@/utils/getSettings'
+import { getActivity as fetchActivity } from '@/utils/statsSource'
 import { getServerSession, Session } from 'next-auth'
 
 // Only the fields the activity page renders are sent to the browser.

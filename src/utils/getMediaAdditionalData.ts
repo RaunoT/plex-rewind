@@ -1,11 +1,14 @@
 import { TautulliItemRow } from '@/types/tautulli'
-import fetchTautulli from './fetchTautulli'
 import fetchTmdb from './fetchTmdb'
-import { isTracearrMediaDeleted } from './fetchTracearr'
 import getSettings from './getSettings'
-import { isTracearrSource } from './helpers'
 
 type TmdbMediaType = 'movie' | 'tv'
+
+// What the statistics source knows about an item
+export type SourceMediaData = {
+  thumb: string
+  isDeleted: boolean
+}
 
 type TmdbSearch = {
   results?: { id: number }[]
@@ -72,40 +75,17 @@ async function getTmdbData(item: TautulliItemRow, type: TmdbMediaType) {
   return { tmdbId, details }
 }
 
-async function getSourceData(item: TautulliItemRow, isTracearr: boolean) {
-  // Tracearr's plays already carry the poster.
-  if (isTracearr) {
-    return {
-      thumb: item.thumb,
-      isDeleted: await isTracearrMediaDeleted(item.media_id),
-    }
-  }
-
-  const res = await fetchTautulli<TautulliItemRow>(
-    'get_metadata',
-    { rating_key: item.rating_key },
-    true,
-  )
-  const metadata = res?.response?.data
-
-  return {
-    thumb: metadata?.thumb || '',
-    isDeleted: metadata ? Object.keys(metadata).length === 0 : false,
-  }
-}
-
 export default async function getMediaAdditionalData(
   media: TautulliItemRow[],
   type: TmdbMediaType,
+  getSourceData: (item: TautulliItemRow) => Promise<SourceMediaData>,
   usersWatchedData?: TautulliItemRow[],
 ): Promise<TautulliItemRow[]> {
-  const settings = getSettings()
-  const isTracearr = isTracearrSource(settings)
-  const isPostersTmdbOnly = settings.general.isPostersTmdbOnly
+  const isPostersTmdbOnly = getSettings().general.isPostersTmdbOnly
   const additionalData = await Promise.all(
     media.map(async (item) => {
       const [source, { tmdbId, details }] = await Promise.all([
-        getSourceData(item, isTracearr),
+        getSourceData(item),
         getTmdbData(item, type),
       ])
 

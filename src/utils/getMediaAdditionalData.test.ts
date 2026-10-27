@@ -3,18 +3,18 @@ import { TautulliItemRow } from '@/types/tautulli'
 import { cloneDeep } from 'lodash'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { DEFAULT_SETTINGS } from './constants'
-import fetchTautulli from './fetchTautulli'
 import fetchTmdb from './fetchTmdb'
-import { isTracearrMediaDeleted } from './fetchTracearr'
 import getMediaAdditionalData, {
   getTmdbSearchParams,
+  SourceMediaData,
 } from './getMediaAdditionalData'
 import getSettings from './getSettings'
 
-vi.mock('./fetchTautulli', () => ({ default: vi.fn() }))
 vi.mock('./fetchTmdb', () => ({ default: vi.fn() }))
-vi.mock('./fetchTracearr', () => ({ isTracearrMediaDeleted: vi.fn() }))
 vi.mock('./getSettings', () => ({ default: vi.fn() }))
+
+const getSourceData =
+  vi.fn<(item: TautulliItemRow) => Promise<SourceMediaData>>()
 
 type TmdbResponses = Record<string, unknown>
 
@@ -57,8 +57,8 @@ function mockTmdb(responses: TmdbResponses) {
   )
 }
 
-function mockTautulliMetadata(data: unknown) {
-  vi.mocked(fetchTautulli).mockResolvedValue({ response: { data } } as never)
+function mockSourceData(data: Partial<SourceMediaData>) {
+  getSourceData.mockResolvedValue({ thumb: '', isDeleted: false, ...data })
 }
 
 function tmdbEndpoints() {
@@ -68,7 +68,7 @@ function tmdbEndpoints() {
 beforeEach(() => {
   vi.resetAllMocks()
   mockSettings()
-  mockTautulliMetadata({ thumb: '/plex/thumb' })
+  mockSourceData({ thumb: '/plex/thumb' })
 })
 
 describe('getTmdbSearchParams', () => {
@@ -103,7 +103,7 @@ describe('getMediaAdditionalData', () => {
       },
     })
 
-    const [item] = await getMediaAdditionalData([row()], 'movie')
+    const [item] = await getMediaAdditionalData([row()], 'movie', getSourceData)
 
     expect(fetchTmdb).toHaveBeenCalledTimes(2)
     expect(fetchTmdb).toHaveBeenNthCalledWith(1, 'search/movie', {
@@ -132,6 +132,7 @@ describe('getMediaAdditionalData', () => {
     const [item] = await getMediaAdditionalData(
       [row({ tmdb_id: 438631, imdb_id: 'tt1160419' })],
       'movie',
+      getSourceData,
     )
 
     expect(tmdbEndpoints()).toEqual(['movie/438631'])
@@ -148,6 +149,7 @@ describe('getMediaAdditionalData', () => {
     const [item] = await getMediaAdditionalData(
       [row({ tmdb_id: 438631 })],
       'movie',
+      getSourceData,
     )
 
     expect(item.imdb_id).toBe('tt1160419')
@@ -159,7 +161,7 @@ describe('getMediaAdditionalData', () => {
       .mockResolvedValueOnce({ results: [{ id: 1 }] } as never)
       .mockResolvedValueOnce({ vote_average: 6 } as never)
 
-    const [item] = await getMediaAdditionalData([row()], 'movie')
+    const [item] = await getMediaAdditionalData([row()], 'movie', getSourceData)
 
     expect(fetchTmdb).toHaveBeenNthCalledWith(1, 'search/movie', {
       query: 'Dune',
@@ -174,7 +176,11 @@ describe('getMediaAdditionalData', () => {
   it('does not search again when there was no year to drop', async () => {
     mockTmdb({ 'search/movie': { results: [] } })
 
-    const [item] = await getMediaAdditionalData([row({ year: null })], 'movie')
+    const [item] = await getMediaAdditionalData(
+      [row({ year: null })],
+      'movie',
+      getSourceData,
+    )
 
     expect(tmdbEndpoints()).toEqual(['search/movie'])
     expect(item.tmdb_id).toBeNull()
@@ -187,7 +193,11 @@ describe('getMediaAdditionalData', () => {
       'tv/70523': { first_air_date: '2017-12-01' },
     })
 
-    await getMediaAdditionalData([row({ title: 'Dark', year: 2017 })], 'tv')
+    await getMediaAdditionalData(
+      [row({ title: 'Dark', year: 2017 })],
+      'tv',
+      getSourceData,
+    )
 
     expect(fetchTmdb).toHaveBeenNthCalledWith(1, 'search/tv', {
       query: 'Dark',
@@ -204,6 +214,7 @@ describe('getMediaAdditionalData', () => {
     const [withoutYear, withYear] = await getMediaAdditionalData(
       [row({ year: null }), row({ year: 2017 })],
       'tv',
+      getSourceData,
     )
 
     expect(withoutYear.year).toBe(2018)
@@ -213,7 +224,11 @@ describe('getMediaAdditionalData', () => {
   it('keeps a show year when TMDB finds nothing', async () => {
     mockTmdb({ 'search/tv': { results: [] } })
 
-    const [item] = await getMediaAdditionalData([row({ year: 2017 })], 'tv')
+    const [item] = await getMediaAdditionalData(
+      [row({ year: 2017 })],
+      'tv',
+      getSourceData,
+    )
 
     expect(item.year).toBe(2017)
   })
@@ -224,19 +239,23 @@ describe('getMediaAdditionalData', () => {
       'movie/1': { first_air_date: '1999-01-01' },
     })
 
-    const [item] = await getMediaAdditionalData([row({ year: 2021 })], 'movie')
+    const [item] = await getMediaAdditionalData(
+      [row({ year: 2021 })],
+      'movie',
+      getSourceData,
+    )
 
     expect(item.year).toBe(2021)
   })
 
   it('uses the TMDB poster when there is no other', async () => {
-    mockTautulliMetadata({ thumb: '' })
+    mockSourceData({ thumb: '' })
     mockTmdb({
       'search/movie': { results: [{ id: 1 }] },
       'movie/1': { poster_path: '/dune.jpg' },
     })
 
-    const [item] = await getMediaAdditionalData([row()], 'movie')
+    const [item] = await getMediaAdditionalData([row()], 'movie', getSourceData)
 
     expect(item.thumb).toBe('https://image.tmdb.org/t/p/w300//dune.jpg')
   })
@@ -250,19 +269,19 @@ describe('getMediaAdditionalData', () => {
       'movie/1': { poster_path: '/dune.jpg' },
     })
 
-    const [item] = await getMediaAdditionalData([row()], 'movie')
+    const [item] = await getMediaAdditionalData([row()], 'movie', getSourceData)
 
     expect(item.thumb).toBe('https://image.tmdb.org/t/p/w300//dune.jpg')
   })
 
-  it('reads Tautulli metadata with caching, alongside TMDB', async () => {
+  it('reads the source alongside TMDB', async () => {
     const calls: string[] = []
 
-    vi.mocked(fetchTautulli).mockImplementation(async () => {
-      calls.push('tautulli')
+    getSourceData.mockImplementation(async () => {
+      calls.push('source')
       await new Promise((resolve) => setTimeout(resolve, 5))
 
-      return { response: { data: { thumb: '/plex/thumb' } } } as never
+      return { thumb: '/plex/thumb', isDeleted: false }
     })
     vi.mocked(fetchTmdb).mockImplementation(async (endpoint) => {
       calls.push(endpoint)
@@ -270,44 +289,18 @@ describe('getMediaAdditionalData', () => {
       return (endpoint === 'search/movie' ? { results: [] } : null) as never
     })
 
-    await getMediaAdditionalData([row({ year: null })], 'movie')
+    await getMediaAdditionalData([row({ year: null })], 'movie', getSourceData)
 
-    expect(calls.slice(0, 2).sort()).toEqual(['search/movie', 'tautulli'])
-    expect(fetchTautulli).toHaveBeenCalledWith(
-      'get_metadata',
-      { rating_key: 10 },
-      true,
-    )
+    expect(calls.slice(0, 2).sort()).toEqual(['search/movie', 'source'])
   })
 
-  it('marks an item Tautulli no longer has as deleted', async () => {
-    mockTautulliMetadata({})
+  it('marks an item the source no longer has as deleted', async () => {
+    mockSourceData({ isDeleted: true })
     mockTmdb({})
 
-    const [item] = await getMediaAdditionalData([row()], 'movie')
+    const [item] = await getMediaAdditionalData([row()], 'movie', getSourceData)
 
     expect(item.is_deleted).toBe(true)
-  })
-
-  it('uses Tracearr for the poster and deleted state', async () => {
-    mockSettings((settings) => {
-      settings.connection.statisticsSource = 'tracearr'
-    })
-    vi.mocked(isTracearrMediaDeleted).mockResolvedValue(true)
-    mockTmdb({
-      'search/movie': { results: [{ id: 1 }] },
-      'movie/1': { poster_path: '/dune.jpg' },
-    })
-
-    const [item] = await getMediaAdditionalData(
-      [row({ thumb: 'http://tracearr/poster', media_id: 'm1' })],
-      'movie',
-    )
-
-    expect(fetchTautulli).not.toHaveBeenCalled()
-    expect(isTracearrMediaDeleted).toHaveBeenCalledWith('m1')
-    expect(item.is_deleted).toBe(true)
-    expect(item.thumb).toBe('http://tracearr/poster')
   })
 
   it('adds how many users watched each item', async () => {
@@ -316,6 +309,7 @@ describe('getMediaAdditionalData', () => {
     const [item] = await getMediaAdditionalData(
       [row({ rating_key: 10 })],
       'movie',
+      getSourceData,
       [row({ rating_key: 10, users_watched: 4 })],
     )
 

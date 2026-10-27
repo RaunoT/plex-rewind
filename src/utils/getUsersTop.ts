@@ -1,33 +1,13 @@
-import { Settings } from '@/types/settings'
-import {
-  TautulliItem,
-  TautulliItemRow,
-  TautulliLibrary,
-} from '@/types/tautulli'
-import { sum } from 'lodash'
+import { TautulliItemRow } from '@/types/tautulli'
 import { fetchOverseerrStats, fetchOverseerrUserId } from './fetchOverseerr'
-import fetchTautulli, {
-  getActiveUsers,
-  getLibraries,
-  getLibrariesByType,
-} from './fetchTautulli'
 import getSettings from './getSettings'
-import {
-  getTracearrInactiveUser,
-  getTracearrUsersTop,
-} from './getTracearrStats'
-import { isTracearrSource } from './helpers'
+import { getLibraries, getStatsSource } from './statsSource'
 
 type UserRequestCounts =
   | {
       requests: number
     }
   | undefined
-
-type UserPlaysCounts = Pick<
-  TautulliItemRow,
-  'movies_plays_count' | 'shows_plays_count' | 'audio_plays_count'
->
 
 export default async function getUsersTop(
   loggedInUserId: string,
@@ -36,10 +16,9 @@ export default async function getUsersTop(
 ): Promise<TautulliItemRow[] | null> {
   const numberOfUsers = 6
   const settings = getSettings()
-  const isTracearr = isTracearrSource(settings)
-  const users = isTracearr
-    ? await getTracearrUsersTop(after, await getLibraries())
-    : await getTautulliUsersTop(settings, period)
+  const source = getStatsSource(settings)
+  const libraries = await getLibraries()
+  const users = await source.getTopUsers({ since: after, period, libraries })
 
   if (!users) {
     return null
@@ -77,10 +56,11 @@ export default async function getUsersTop(
     )
   }
 
-  // Tracearr's ranking already counts the plays
-  const usersPlaysCounts = isTracearr
-    ? listedUsers
-    : await getTautulliPlaysCounts(listedUsers, after)
+  const usersPlaysCounts = await source.getPlaysCounts(
+    listedUsers,
+    after,
+    libraries,
+  )
 
   listedUsers.map((user, i) => {
     user.requests = usersRequestsCounts[i]?.requests || 0
@@ -96,112 +76,6 @@ export default async function getUsersTop(
   return listedUsers
 }
 
-async function getTautulliUsersTop(
-  settings: Settings,
-  period?: number,
-): Promise<TautulliItemRow[] | null> {
-  const excludedUsers = settings.general.excludedUsers
-  const activeUsers = await getActiveUsers(settings)
-
-  if (!activeUsers.length) {
-    console.error('Could not determine the number of users!')
-
-    return null
-  }
-
-  const activeLibraries = await getLibraries()
-  // get_home_stats only reliably accepts a `time_range` in days (last N days
-  // from today), so callers pass the window length as `period`. The per-user
-  // history counts below use `after` directly, also anchored to now.
-  const time_range = period || 30
-  // get_home_stats can't exclude users itself, so it still ranks excluded
-  // users. Request enough rows that they can't push the users we want to keep
-  // out of the window before we filter them out below.
-  const statsCount = activeUsers.length + excludedUsers.length
-  const userStats = await Promise.all(
-    activeLibraries.map((library) =>
-      fetchTautulli<TautulliItem>('get_home_stats', {
-        stat_id: 'top_users',
-        stats_count: statsCount,
-        stats_type: 'duration',
-        section_id: library.section_id,
-        time_range,
-      }),
-    ),
-  )
-  const combinedUserStats: { [userId: string]: TautulliItemRow } = {}
-
-  userStats.forEach((stat) => {
-    const users = stat?.response?.data?.rows
-
-    if (users) {
-      users.forEach((user) => {
-        if (excludedUsers.includes(String(user.user_id))) {
-          return
-        }
-
-        if (combinedUserStats[user.user_id]) {
-          combinedUserStats[user.user_id].total_duration += user.total_duration
-        } else {
-          combinedUserStats[user.user_id] = { ...user }
-        }
-      })
-    }
-  })
-
-  return Object.values(combinedUserStats).sort(
-    (a, b) => b.total_duration - a.total_duration,
-  )
-}
-
-async function getTautulliPlaysCounts(
-  users: TautulliItemRow[],
-  after: string,
-): Promise<UserPlaysCounts[]> {
-  const [moviesLib, showsLib, audioLib] = await Promise.all([
-    getLibrariesByType('movie'),
-    getLibrariesByType('show'),
-    getLibrariesByType('artist'),
-  ])
-
-  // Only the match count is needed, so no history rows are requested.
-  async function countPlays(userId: number, libraries: TautulliLibrary[]) {
-    const counts = await Promise.all(
-      libraries.map(async (library) => {
-        const history = await fetchTautulli<{ recordsFiltered: number }>(
-          'get_history',
-          {
-            user_id: userId,
-            after,
-            section_id: library.section_id,
-            length: 0,
-          },
-        )
-
-        return history?.response?.data?.recordsFiltered || 0
-      }),
-    )
-
-    return sum(counts)
-  }
-
-  return Promise.all(
-    users.map(async (user) => {
-      const [movies, shows, audio] = await Promise.all([
-        countPlays(user.user_id, moviesLib),
-        countPlays(user.user_id, showsLib),
-        countPlays(user.user_id, audioLib),
-      ])
-
-      return {
-        movies_plays_count: movies,
-        shows_plays_count: shows,
-        audio_plays_count: audio,
-      }
-    }),
-  )
-}
-
 async function getStatsWithLoggedInUser(
   userId: string,
   users: TautulliItemRow[],
@@ -211,7 +85,7 @@ async function getStatsWithLoggedInUser(
     (user) => String(user.user_id) == userId,
   )
   const loggedInUser =
-    users[loggedInUserRank] || (await getInactiveUserInTimePeriod(userId))
+    users[loggedInUserRank] || (await getStatsSource().getInactiveUser(userId))
 
   let slicedUsers = users.slice(0, numberOfUsers)
 
@@ -227,28 +101,6 @@ async function getStatsWithLoggedInUser(
   }
 
   return slicedUsers
-}
-
-async function getInactiveUserInTimePeriod(
-  id: string,
-): Promise<TautulliItemRow | null> {
-  if (isTracearrSource(getSettings())) {
-    return getTracearrInactiveUser(id)
-  }
-
-  const user = await fetchTautulli<TautulliItemRow>('get_user', {
-    user_id: id,
-  })
-  const nonActive = user?.response?.data
-
-  // Without a user ID the play counts would be for the whole server.
-  if (nonActive?.user_id == null) {
-    return null
-  }
-
-  nonActive.total_duration = 0
-
-  return nonActive
 }
 
 function anonymizeUsers(
