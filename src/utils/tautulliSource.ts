@@ -66,6 +66,28 @@ const DAY_NAME_TO_INDEX: Record<string, number | undefined> = {
   Friday: 5,
   Saturday: 6,
 }
+const EMPTY_USER_ROW: TautulliItemRow = {
+  title: '',
+  year: null,
+  total_plays: 0,
+  total_duration: 0,
+  users_watched: undefined,
+  rating_key: 0,
+  thumb: '',
+  is_deleted: false,
+  rating: null,
+  tmdb_id: null,
+  imdb_id: null,
+  user_thumb: '',
+  user: '',
+  friendly_name: '',
+  requests: 0,
+  audio_plays_count: 0,
+  movies_plays_count: 0,
+  shows_plays_count: 0,
+  user_id: 0,
+  rank: 0,
+}
 // The timeout signal opts requests out of fetch's per-render deduplication, so
 // lookups repeated by a page's layout, metadata and content share one call.
 const fetchLibraries = cache(() =>
@@ -434,19 +456,22 @@ async function getPlaysCounts(
 }
 
 async function getInactiveUser(id: string): Promise<TautulliItemRow | null> {
-  const user = await fetchTautulli<TautulliItemRow>('get_user', {
-    user_id: id,
-  })
-  const nonActive = user?.response?.data
+  const user = (await fetchUser(id))?.response?.data
 
   // Without a user ID the play counts would be for the whole server.
-  if (nonActive?.user_id == null) {
+  if (user?.user_id == null) {
     return null
   }
 
-  nonActive.total_duration = 0
-
-  return nonActive
+  // Only what a ranking row shows. The row reaches the browser, and get_user
+  // also returns the user's email and shared libraries.
+  return {
+    ...EMPTY_USER_ROW,
+    user_id: Number(user.user_id),
+    user: user.username,
+    friendly_name: user.friendly_name,
+    user_thumb: user.user_thumb,
+  }
 }
 
 async function getMediaStats(

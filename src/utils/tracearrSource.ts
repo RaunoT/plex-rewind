@@ -8,7 +8,7 @@ import {
   TopUsersQuery,
 } from '@/types/statsSource'
 import { TautulliItemRow, TautulliLibrary } from '@/types/tautulli'
-import { countBy, groupBy, sumBy, uniqBy } from 'lodash'
+import { countBy, groupBy, orderBy, sumBy, uniqBy } from 'lodash'
 import {
   getTracearrActivity,
   getTracearrLibraries,
@@ -143,34 +143,75 @@ function getDuration(plays: TracearrPlay[]): number {
   return Math.round(sumBy(plays, 'durationMs') / 1000)
 }
 
-function getItemKey(play: TracearrPlay): string {
+function getMediaId(play: TracearrPlay): string | null {
   switch (play.mediaType) {
+    case 'movie':
+      return play.mediaId
     case 'episode':
-      return (
-        play.showMediaId ??
-        play.grandparentRatingKey ??
-        play.showTitle ??
-        play.title
-      )
-    case 'track':
-      return play.grandparentRatingKey ?? play.artistName ?? play.title
+      return play.showMediaId
     default:
-      return play.mediaId ?? play.ratingKey ?? play.title
+      return null
   }
 }
 
-// Episodes roll up into their show and tracks into their artist, like
-// Tautulli's top_tv and top_music stats.
+function getRatingKey(play: TracearrPlay): string | null {
+  return play.mediaType === 'movie' ? play.ratingKey : play.grandparentRatingKey
+}
+
+function getTitleKey(play: TracearrPlay): string {
+  switch (play.mediaType) {
+    case 'episode':
+      return (play.showTitle || play.title).trim().toLowerCase()
+    case 'track':
+      return (play.artistName || play.title).trim().toLowerCase()
+    default:
+      return `${play.title.trim().toLowerCase()}|${play.year ?? ''}`
+  }
+}
+
+// Plex gives an item a new rating key when it's re-added, and imported
+// history has none, so plays group by Tracearr's media id and otherwise by
+// title, like Tautulli's top_movies, top_tv and top_music stats.
+function groupPlays(plays: TracearrPlay[]): TracearrPlay[][] {
+  const mediaIdsByTitle = new Map<string, string>()
+
+  for (const play of plays) {
+    const mediaId = getMediaId(play)
+    const titleKey = getTitleKey(play)
+
+    if (mediaId && !mediaIdsByTitle.has(titleKey)) {
+      mediaIdsByTitle.set(titleKey, mediaId)
+    }
+  }
+
+  return Object.values(
+    groupBy(plays, (play) => {
+      const titleKey = getTitleKey(play)
+
+      return (
+        getMediaId(play) ?? mediaIdsByTitle.get(titleKey) ?? `title:${titleKey}`
+      )
+    }),
+  )
+}
+
+// Episodes roll up into their show and tracks into their artist. The newest
+// play with a rating key and a poster points at the current library item.
+// Without one, the rating key matters more than the poster, as it's what the
+// Plex link needs, and the poster can come from any play.
 function toItemRow(plays: TracearrPlay[]): TautulliItemRow {
-  const [play] = plays
+  const newestFirst = orderBy(plays, 'startedAt', 'desc')
+  const play =
+    newestFirst.find((play) => getRatingKey(play) && play.thumb) ??
+    newestFirst.find(getRatingKey) ??
+    newestFirst[0]
   const isMovie = play.mediaType === 'movie'
   const titleByType: Record<TracearrPlayMediaType, string | null> = {
     movie: play.title,
     episode: play.showTitle,
     track: play.artistName,
   }
-  const ratingKey =
-    Number(isMovie ? play.ratingKey : play.grandparentRatingKey) || 0
+  const ratingKey = Number(getRatingKey(play)) || 0
 
   return {
     ...EMPTY_ROW,
@@ -181,10 +222,10 @@ function toItemRow(plays: TracearrPlay[]): TautulliItemRow {
     users_watched: uniqBy(plays, 'identityId').length,
     rating_key: ratingKey,
     grandparent_rating_key: ratingKey,
-    thumb: play.thumb,
+    thumb: play.thumb || newestFirst.find((play) => play.thumb)?.thumb || '',
     tmdb_id: isMovie ? play.tmdbId : null,
     imdb_id: isMovie ? play.imdbId : null,
-    media_id: isMovie ? play.mediaId : play.showMediaId,
+    media_id: newestFirst.map(getMediaId).find(Boolean) ?? null,
   }
 }
 
@@ -193,7 +234,7 @@ function getTopItems(
   count: number,
   sortByPlays = false,
 ): TautulliItemRow[] {
-  return Object.values(groupBy(plays, getItemKey))
+  return groupPlays(plays)
     .map(toItemRow)
     .sort((a, b) =>
       sortByPlays

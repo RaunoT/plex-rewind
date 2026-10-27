@@ -157,6 +157,39 @@ describe('getMediaStats', () => {
   })
 })
 
+describe('getInactiveUser', () => {
+  it('keeps only what a ranking row shows', async () => {
+    fetchMock.mockResolvedValue(
+      tautulliData({
+        user_id: 7,
+        username: 'alice',
+        friendly_name: 'Alice',
+        user_thumb: 'https://plex.tv/users/a/avatar',
+        email: 'alice@example.com',
+        shared_libraries: ['1', '2'],
+      }),
+    )
+
+    const row = await tautulliSource.getInactiveUser('7')
+
+    expect(row).toMatchObject({
+      user_id: 7,
+      user: 'alice',
+      friendly_name: 'Alice',
+      user_thumb: 'https://plex.tv/users/a/avatar',
+      total_duration: 0,
+    })
+    expect(JSON.stringify(row)).not.toContain('alice@example.com')
+    expect(row).not.toHaveProperty('shared_libraries')
+  })
+
+  it('returns null for an unknown user', async () => {
+    fetchMock.mockResolvedValue(tautulliData({}))
+
+    await expect(tautulliSource.getInactiveUser('8')).resolves.toBeNull()
+  })
+})
+
 describe('getServerUser', () => {
   const jane = { email: 'jane@example.com', is_active: 1, is_admin: 0 }
 

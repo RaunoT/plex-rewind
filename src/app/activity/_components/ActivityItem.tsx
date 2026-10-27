@@ -2,6 +2,7 @@
 
 import Avatar from '@/components/Avatar'
 import anonymousSvg from '@/components/MediaItem/anonymous.svg'
+import placeholderSvg from '@/components/MediaItem/placeholder.svg'
 import SkeletonLine from '@/components/SkeletonLine'
 import { useMediaDetails } from '@/hooks/useMediaDetails'
 import { PublicSettings } from '@/types/settings'
@@ -15,6 +16,7 @@ import {
   formatBitrate,
   formatChannels,
   formatCodec,
+  formatDevice,
   formatDynamicRange,
   formatPercent,
   formatRating,
@@ -23,6 +25,7 @@ import {
 } from '@/utils/formatting'
 import { ArrowTurnDownRightIcon } from '@heroicons/react/16/solid'
 import {
+  ArrowPathIcon,
   CalendarDaysIcon,
   PauseIcon,
   PlayIcon,
@@ -33,7 +36,7 @@ import { capitalize, toUpper } from 'lodash'
 import { useSession } from 'next-auth/react'
 import { useLocale, useTranslations } from 'next-intl'
 import Image from 'next/image'
-import { ReactNode } from 'react'
+import { ReactNode, useState } from 'react'
 
 type DecisionKind = 'directPlay' | 'directStream' | 'transcode'
 
@@ -58,6 +61,7 @@ export default function ActivityItem({
   const { data: user } = useSession()
   const isCurrentUser = String(session.user_id) === user?.user.id
   const isAdmin = user?.user.isAdmin
+  const [failedPosterUrl, setFailedPosterUrl] = useState<string | null>(null)
   const {
     audio_atmos,
     audio_channel_layout,
@@ -137,7 +141,11 @@ export default function ActivityItem({
   const isAnonymous = settings.general.isAnonymized && !isCurrentUser
   const isVideo = media_type === 'episode' || media_type === 'movie'
   const subtitle = [grandparent_title, parent_title].filter(Boolean).join(' · ')
-  const eta = calculateETA(session.duration, session.view_offset)
+  const eta = calculateETA(session.duration, session.view_offset, locale)
+  const device = formatDevice(product, player)
+  // Only Tautulli reports buffering, and anything unexpected reads as paused
+  const playbackState =
+    state === 'playing' || state === 'buffering' ? state : 'paused'
 
   return (
     <li className='w-full py-6 first:pt-0 last:pb-0 sm:py-8'>
@@ -172,26 +180,35 @@ export default function ActivityItem({
           >
             {isAnonymous ? `${t('anonymous')} #${index + 1}` : friendly_name}
           </span>
-          <span className='truncate text-neutral-400'>
-            {product} ({player})
-          </span>
+          {device && (
+            <span className='truncate text-neutral-400'>{device}</span>
+          )}
         </div>
         <span className='icon-stat-wrapper shrink-0 text-xs sm:text-sm'>
-          {state === 'playing' ? <PlayIcon /> : <PauseIcon />}
-          {state === 'playing' ? t('playing') : t('paused')}
+          {playbackState === 'playing' && <PlayIcon />}
+          {playbackState === 'buffering' && (
+            <ArrowPathIcon className='motion-safe:animate-spin' />
+          )}
+          {playbackState === 'paused' && <PauseIcon />}
+          {t(playbackState)}
         </span>
       </div>
 
       {/* What is playing, beside its poster */}
       <div className='flex gap-4'>
         <div className={clsx('poster', { skeleton: isPosterLoading })}>
-          {!isPosterLoading && posterUrl && (
+          {!isPosterLoading && (
             <Image
               fill
               className='object-cover object-top'
               alt={`${grandparent_title || title} ${t('poster')}`}
-              src={posterUrl}
+              src={
+                posterUrl && posterUrl !== failedPosterUrl
+                  ? posterUrl
+                  : placeholderSvg
+              }
               sizes='6rem'
+              onError={() => setFailedPosterUrl(posterUrl)}
               priority
             />
           )}
@@ -398,9 +415,10 @@ function joinParts(...parts: string[]) {
   return parts.filter(Boolean).join(' ')
 }
 
-// What it becomes, only when Plex converts it to something else
+// What it becomes, only when Plex converts a known source to something else.
+// Without the source, the stream is shown in its place instead.
 function getConversion(source: string, stream: string, decision?: string) {
-  return isTranscoding(decision) && stream && stream !== source
+  return isTranscoding(decision) && source && stream && stream !== source
     ? stream
     : undefined
 }

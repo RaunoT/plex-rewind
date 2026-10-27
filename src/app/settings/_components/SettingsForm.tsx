@@ -49,8 +49,8 @@ export default function SettingsForm({
                 role='status'
                 className={clsx(
                   formState.status === 'success'
-                    ? 'text-green-400'
-                    : 'text-red-300',
+                    ? 'text-success'
+                    : 'text-danger',
                   !formState.message && 'sr-only',
                 )}
               >

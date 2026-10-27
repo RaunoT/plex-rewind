@@ -1,6 +1,6 @@
+import { MEDIA_ICONS } from '@/components/icons'
 import MediaItems from '@/components/MediaItem/MediaItems'
 import { RewindStory } from '@/types/rewind'
-import { PlayCircleIcon } from '@heroicons/react/24/outline'
 import { useTranslations } from 'next-intl'
 import RewindStat from '../RewindStat'
 
@@ -16,7 +16,7 @@ export default function StoryShowsTop({ userRewind, settings }: RewindStory) {
             top: (chunks) => (
               <span className='rewind-cat'>
                 {chunks}
-                <PlayCircleIcon />
+                <MEDIA_ICONS.show />
               </span>
             ),
             count: hasTop5 ? '5' : '',

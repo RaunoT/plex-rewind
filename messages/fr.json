@@ -39,6 +39,7 @@
     "noActivity": "Aucune session active.. 😴",
     "playing": "En lecture",
     "paused": "En pause",
+    "buffering": "Mise en mémoire tampon",
     "endsAt": "Se termine à {time}",
     "convertedTo": "converti en",
     "decision": {
@@ -57,7 +58,9 @@
     "movies": "{count, plural, =1 {film} other {films}}",
     "episodes": "{count, plural, =1 {épisode} other {épisodes}}",
     "tracks": "{count, plural, =1 {morceau} other {morceaux}}",
-    "requests": "{count, plural, =1 {demande} other {demandes}}"
+    "requests": "{count, plural, =1 {demande} other {demandes}}",
+    "durationWatched": "{duration} de visionnage",
+    "durationListened": "{duration} d'écoute"
   },
   "DashboardFilters": {
     "type": "Type",
@@ -77,7 +80,8 @@
     "cta": "Réessayer"
   },
   "PlexDeeplink": {
-    "available": "Disponible"
+    "available": "Disponible",
+    "availableLabel": "Disponible : ouvrir {title} dans Plex"
   },
   "PeriodSelectContent": {
     "7days": "7 jours",
@@ -112,6 +116,7 @@
     "savedChooseLibraries": "Paramètres enregistrés ! Choisissez vos bibliothèques dans Général.",
     "genericError": "Quelque chose s'est mal passé !",
     "save": "Enregistrer",
+    "reenterApiKey": "Saisissez à nouveau la clé API après avoir modifié l'URL.",
     "apiKey": "Clé API",
     "invalidApiKey": "Clé API invalide !",
     "unableToConnect": "Impossible de se connecter !",
@@ -326,6 +331,9 @@
     "statRequests": "{count, plural, =1 {# demande} other {# demandes}}",
     "labelShows": "Séries",
     "labelMovies": "Films",
-    "labelAudio": "Musique"
+    "labelAudio": "Musique",
+    "you": "(vous)",
+    "requestLabel": "Demander {title}",
+    "imdbLabel": "{title} sur IMDb"
   }
 }
