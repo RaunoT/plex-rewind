@@ -77,7 +77,7 @@ export default function StoryLibraries({ userRewind, settings }: RewindStory) {
       {libraryItems.length > 0 && (
         <RewindStat renderDelay={3} noScale>
           <p>{t('libraries')}</p>
-          <ul className='list mt-2'>
+          <ul className='mt-2'>
             {libraryItems.map((item) => (
               <StatListItem key={item.id} {...item.props} />
             ))}

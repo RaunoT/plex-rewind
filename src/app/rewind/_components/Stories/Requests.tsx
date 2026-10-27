@@ -92,7 +92,7 @@ export default function StoryRequests({ userRewind, settings }: RewindStory) {
 
             <RewindStat renderDelay={6} noScale loaderDelay={3}>
               <p>{t('breakdown')}</p>
-              <ul className='list'>
+              <ul className='mt-2'>
                 <StatListItem
                   count={userRewind.requests.movies}
                   name={t('movies', { count: userRewind.requests.movies })}

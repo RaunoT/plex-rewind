@@ -40,10 +40,6 @@
   }
 }
 
-@utility container {
-  @apply mx-auto px-4;
-}
-
 /* Every page with a header shares one width */
 @utility page-width {
   @apply w-full max-w-4xl;
@@ -175,14 +171,6 @@
 
       &:hover:not([disabled]) {
         @apply bg-plex brightness-110;
-      }
-    }
-
-    &.button--glass {
-      @apply bg-white/10 text-white;
-
-      &:hover:not([disabled]) {
-        @apply bg-white/15;
       }
     }
   }
@@ -405,7 +393,6 @@
     background-position: right 12px center;
     background-size: 24px;
 
-    &.select-input--small,
     &.input--small {
       @apply pr-8;
 
