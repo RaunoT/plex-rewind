@@ -1,5 +1,6 @@
 import { NextConfig } from 'next'
 import createNextIntlPlugin from 'next-intl/plugin'
+import { BASE_CSP_DIRECTIVES } from './src/utils/csp'
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
@@ -36,10 +37,10 @@ const nextConfig: NextConfig = {
             key: 'Strict-Transport-Security',
             value: 'max-age=63072000',
           },
+          // Pages get a stricter policy with a script nonce from the proxy.
           {
             key: 'Content-Security-Policy',
-            value:
-              "base-uri 'self'; form-action 'self'; frame-ancestors 'self'; object-src 'none'",
+            value: BASE_CSP_DIRECTIVES.join('; '),
           },
           {
             key: 'X-Frame-Options',
