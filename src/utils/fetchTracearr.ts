@@ -231,10 +231,16 @@ export default async function fetchTracearr<T>(
   }
 }
 
-async function fetchAllPages<T>(
+type PagesResult<T> = {
+  items: T[]
+  // False when paging stopped early, so there are pages that weren't read
+  isComplete: boolean
+}
+
+async function fetchPages<T>(
   path: string,
   params?: QueryParams,
-): Promise<T[] | null> {
+): Promise<PagesResult<T> | null> {
   const items: T[] = []
   const seenCursors = new Set<string>()
   const deadline = Date.now() + PAGINATION_DEADLINE
@@ -270,7 +276,7 @@ async function fetchAllPages<T>(
     cursor = page.meta?.nextCursor ?? undefined
 
     if (!cursor) {
-      return items
+      return { items, isComplete: true }
     }
 
     if (seenCursors.has(cursor)) {
@@ -278,7 +284,7 @@ async function fetchAllPages<T>(
         `[TRACEARR] - '${path}' repeated a pagination cursor! Stopping at ${items.length} items.`,
       )
 
-      return items
+      return { items, isComplete: false }
     }
 
     seenCursors.add(cursor)
@@ -288,7 +294,15 @@ async function fetchAllPages<T>(
     `[TRACEARR] - '${path}' has more than ${MAX_PAGES} pages! Stopping at ${items.length} items.`,
   )
 
-  return items
+  return { items, isComplete: false }
+}
+
+// Whatever was read, even when paging stopped early
+async function fetchAllPages<T>(
+  path: string,
+  params?: QueryParams,
+): Promise<T[] | null> {
+  return (await fetchPages<T>(path, params))?.items ?? null
 }
 
 const getServers = cached<TracearrServer[]>(async () => {
@@ -354,17 +368,23 @@ async function getPlexServerId(): Promise<string | null> {
   return server.server_id
 }
 
-const getPlexUsers = cached<TracearrPlexUser[]>(async () => {
-  const [users, serverId] = await Promise.all([
-    fetchAllPages<TracearrUser>('users'),
+type PlexUsers = {
+  users: TracearrPlexUser[]
+  // False when paging stopped early, so a user may be on an unread page
+  isComplete: boolean
+}
+
+const getPlexUsers = cached<PlexUsers>(async () => {
+  const [pages, serverId] = await Promise.all([
+    fetchPages<TracearrUser>('users'),
     getPlexServerId(),
   ])
 
-  if (!users || !serverId) {
+  if (!pages || !serverId) {
     return null
   }
 
-  return users.flatMap((user) => {
+  const users = pages.items.flatMap((user) => {
     const accounts = (user.accounts ?? []).filter(
       (account) => account.server_id === serverId && !account.removed_at,
     )
@@ -398,18 +418,29 @@ const getPlexUsers = cached<TracearrPlexUser[]>(async () => {
       },
     ]
   })
+
+  return { users, isComplete: pages.isComplete }
 })
 
+// A list that stopped early is still good for the stats, which count who it has
 export async function getTracearrPlexUsers(): Promise<TracearrPlexUser[]> {
-  return (await getPlexUsers()) ?? []
+  return (await getPlexUsers())?.users ?? []
 }
 
+// Null when Tracearr couldn't be asked, or when the list stopped early and the
+// user isn't in it. Undefined when the whole list doesn't have the user.
 export async function getTracearrUser(
   plexId: string,
-): Promise<TracearrPlexUser | undefined> {
-  const users = await getTracearrPlexUsers()
+): Promise<TracearrPlexUser | null | undefined> {
+  const list = await getPlexUsers()
 
-  return users.find((user) => user.plexId === plexId)
+  if (!list) {
+    return null
+  }
+
+  const user = list.users.find((user) => user.plexId === plexId)
+
+  return user ?? (list.isComplete ? undefined : null)
 }
 
 // `/users` has no avatars, so they come from the plays already in memory.

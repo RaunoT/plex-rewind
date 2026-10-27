@@ -2,6 +2,7 @@ import {
   DurationQuery,
   MediaStats,
   PlaysByTime,
+  ServerMembership,
   StatsSource,
   TopMediaItems,
   TopUsersQuery,
@@ -96,12 +97,16 @@ async function getServerId(): Promise<string> {
   }
 }
 
-async function getServerUser(
-  userId: string,
-): Promise<{ isAdmin: boolean } | null> {
+async function getServerUser(userId: string): Promise<ServerMembership> {
   const user = await getTracearrUser(userId)
 
-  return user ? { isAdmin: user.isAdmin } : null
+  if (user === null) {
+    return { status: 'unavailable' }
+  }
+
+  return user
+    ? { status: 'member', isAdmin: user.isAdmin }
+    : { status: 'notMember' }
 }
 
 async function getPlays({

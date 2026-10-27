@@ -1,4 +1,6 @@
+import { ServerMembership } from '@/types/statsSource'
 import { AuthOptions, User } from 'next-auth'
+import { JWT } from 'next-auth/jwt'
 import CredentialsProvider from 'next-auth/providers/credentials'
 import { PLEX_API_ENDPOINT } from '../utils/constants'
 import { getServerUser } from '../utils/statsSource'
@@ -7,6 +9,10 @@ import { LoginError } from './loginError'
 // Admin rights and server membership are re-checked this often, so changes
 // in Tautulli/Tracearr reach existing sessions.
 const USER_RECHECK_INTERVAL = 60 * 60 * 1000
+// A check that couldn't reach them is retried sooner
+const USER_RETRY_INTERVAL = 5 * 60 * 1000
+
+export const MAX_CACHED_CHECKS = 500
 
 type PlexUser = {
   id: number
@@ -54,7 +60,15 @@ export async function authorizePlexUser(authToken: string): Promise<User> {
   const id = String(plexUser.id)
   const serverUser = await getServerUser(id, plexUser.email)
 
-  if (!serverUser) {
+  if (serverUser.status === 'unavailable') {
+    console.error(
+      `[AUTH] - Couldn't check if user ${id} belongs to this server!`,
+    )
+
+    throw new LoginError('unknown')
+  }
+
+  if (serverUser.status === 'notMember') {
     console.error(`[AUTH] - User ${id} does not belong to this server!`)
 
     throw new LoginError('noAccess')
@@ -69,6 +83,111 @@ export async function authorizePlexUser(authToken: string): Promise<User> {
     image: plexUser.thumb,
     isAdmin: serverUser.isAdmin,
   }
+}
+
+type Check = {
+  result: ServerMembership
+  checkedAt: number
+}
+
+// Pages and the proxy can't save a refreshed token, so a stale cookie would
+// look the user up again on every request, each waiting out the source's
+// timeout during an outage. The proxy and the app are bundled apart and each
+// keep their own copy, which only means one more lookup per interval.
+const checks = new Map<string, Check>()
+
+function isCurrent({ result, checkedAt }: Check): boolean {
+  const interval =
+    result.status === 'member' ? USER_RECHECK_INTERVAL : USER_RETRY_INTERVAL
+
+  return Date.now() - checkedAt < interval
+}
+
+function rememberCheck(key: string, check: Check) {
+  // Deleting first moves the user to the end, which keeps the oldest first
+  checks.delete(key)
+  checks.set(key, check)
+
+  if (checks.size <= MAX_CACHED_CHECKS) {
+    return
+  }
+
+  for (const [otherKey, other] of checks) {
+    if (!isCurrent(other)) {
+      checks.delete(otherKey)
+    }
+  }
+
+  for (const oldestKey of checks.keys()) {
+    if (checks.size <= MAX_CACHED_CHECKS) {
+      break
+    }
+
+    checks.delete(oldestKey)
+  }
+}
+
+async function checkServerUser(token: JWT): Promise<Check> {
+  const key = `${token.id}|${token.email ?? ''}`
+  const known = checks.get(key)
+
+  if (known && isCurrent(known)) {
+    return known
+  }
+
+  const result = await getServerUser(token.id, token.email ?? '').catch(
+    (error: unknown) => {
+      console.error(`[AUTH] - Error checking user ${token.id}!`, error)
+
+      return { status: 'unavailable' } as const
+    },
+  )
+
+  if (result.status === 'notMember') {
+    console.warn(
+      `[AUTH] - User ${token.id} no longer belongs to this server, signing them out.`,
+    )
+  }
+
+  if (result.status === 'unavailable') {
+    console.warn(
+      `[AUTH] - Couldn't check user ${token.id}, keeping their session for now.`,
+    )
+  }
+
+  const check = { result, checkedAt: Date.now() }
+
+  rememberCheck(key, check)
+
+  return check
+}
+
+// Brings the token up to date with the server once a check is due. For a user
+// who no longer belongs to the server it throws, which is how a jwt callback
+// ends a session in next-auth v4: the session cookie is cleared and
+// getServerSession returns null.
+export async function recheckServerUser(token: JWT): Promise<JWT> {
+  if (Date.now() - (token.checkedAt ?? 0) <= USER_RECHECK_INTERVAL) {
+    return token
+  }
+
+  const { result, checkedAt } = await checkServerUser(token)
+
+  if (result.status === 'notMember') {
+    throw new Error(`User ${token.id} no longer belongs to this server`)
+  }
+
+  if (result.status === 'unavailable') {
+    // Counts as checked earlier, so the next check comes after the retry interval
+    token.checkedAt = checkedAt - USER_RECHECK_INTERVAL + USER_RETRY_INTERVAL
+
+    return token
+  }
+
+  token.isAdmin = result.isAdmin
+  token.checkedAt = checkedAt
+
+  return token
 }
 
 export const authOptions: AuthOptions = {
@@ -120,20 +239,11 @@ export const authOptions: AuthOptions = {
         token.id = user.id
         token.isAdmin = user.isAdmin
         token.checkedAt = Date.now()
-      } else if (Date.now() - (token.checkedAt ?? 0) > USER_RECHECK_INTERVAL) {
-        const serverUser = await getServerUser(token.id, token.email ?? '')
 
-        if (!serverUser) {
-          console.warn(
-            `[AUTH] - User ${token.id} no longer belongs to this server, removing admin rights.`,
-          )
-        }
-
-        token.isAdmin = serverUser?.isAdmin ?? false
-        token.checkedAt = Date.now()
+        return token
       }
 
-      return token
+      return recheckServerUser(token)
     },
   },
 }

@@ -189,3 +189,38 @@ describe('getInactiveUser', () => {
     await expect(tautulliSource.getInactiveUser('8')).resolves.toBeNull()
   })
 })
+
+describe('getServerUser', () => {
+  const jane = { email: 'jane@example.com', is_active: 1, is_admin: 0 }
+
+  it('finds an active user with the same email', async () => {
+    fetchMock.mockResolvedValue(tautulliData({ ...jane, is_admin: 1 }))
+
+    await expect(
+      tautulliSource.getServerUser('5', 'jane@example.com'),
+    ).resolves.toEqual({ status: 'member', isAdmin: true })
+    expect(fetchMock).toHaveBeenCalledWith('get_user', { user_id: '5' })
+  })
+
+  it('does not count a user who is inactive or has another email', async () => {
+    fetchMock.mockResolvedValue(tautulliData({ ...jane, is_active: 0 }))
+
+    await expect(
+      tautulliSource.getServerUser('5', 'jane@example.com'),
+    ).resolves.toEqual({ status: 'notMember' })
+
+    fetchMock.mockResolvedValue(tautulliData(jane))
+
+    await expect(
+      tautulliSource.getServerUser('5', 'john@example.com'),
+    ).resolves.toEqual({ status: 'notMember' })
+  })
+
+  it('reports an outage when Tautulli does not answer', async () => {
+    fetchMock.mockResolvedValue(null)
+
+    await expect(
+      tautulliSource.getServerUser('5', 'jane@example.com'),
+    ).resolves.toEqual({ status: 'unavailable' })
+  })
+})

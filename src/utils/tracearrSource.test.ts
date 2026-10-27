@@ -5,6 +5,7 @@ import { DEFAULT_SETTINGS } from './constants'
 import {
   getTracearrPlays,
   getTracearrPlexUsers,
+  getTracearrUser,
   isTracearrMediaDeleted,
   TracearrPlay,
 } from './fetchTracearr'
@@ -15,6 +16,7 @@ vi.mock('./fetchTracearr', async (importOriginal) => ({
   ...(await importOriginal<typeof import('./fetchTracearr')>()),
   getTracearrPlays: vi.fn(),
   getTracearrPlexUsers: vi.fn(),
+  getTracearrUser: vi.fn(),
   isTracearrMediaDeleted: vi.fn(),
 }))
 vi.mock('./getSettings', () => ({ default: vi.fn() }))
@@ -279,6 +281,40 @@ describe('getTopMediaItems', () => {
       year: 1984,
       total_plays: 1,
       media_id: null,
+    })
+  })
+})
+
+describe('getServerUser', () => {
+  it('finds a user Tracearr lists for the server', async () => {
+    vi.mocked(getTracearrUser).mockResolvedValue({
+      identityId: 'alice',
+      plexId: '1',
+      username: 'alice',
+      friendlyName: 'Alice',
+      email: '',
+      isAdmin: true,
+    })
+
+    await expect(tracearrSource.getServerUser('1', '')).resolves.toEqual({
+      status: 'member',
+      isAdmin: true,
+    })
+  })
+
+  it('does not count a user Tracearr does not list', async () => {
+    vi.mocked(getTracearrUser).mockResolvedValue(undefined)
+
+    await expect(tracearrSource.getServerUser('1', '')).resolves.toEqual({
+      status: 'notMember',
+    })
+  })
+
+  it('reports an outage when Tracearr does not answer', async () => {
+    vi.mocked(getTracearrUser).mockResolvedValue(null)
+
+    await expect(tracearrSource.getServerUser('1', '')).resolves.toEqual({
+      status: 'unavailable',
     })
   })
 })

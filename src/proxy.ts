@@ -1,6 +1,8 @@
 import { Settings } from '@/types/settings'
+import { decode } from 'next-auth/jwt'
 import { withAuth } from 'next-auth/middleware'
 import { NextRequest, NextResponse } from 'next/server'
+import { recheckServerUser } from './lib/auth'
 import { createNonce, getContentSecurityPolicy } from './utils/csp'
 import getSettings from './utils/getSettings'
 import {
@@ -89,6 +91,16 @@ export default withAuth(
   {
     callbacks: {
       authorized: () => true,
+    },
+    // withAuth only decodes the cookie, so the token gets the same re-check as
+    // getServerSession. A removed user's re-check throws, which leaves no token.
+    // The cookie isn't refreshed here, so the re-check remembers its results.
+    jwt: {
+      decode: async (params) => {
+        const token = await decode(params)
+
+        return token && recheckServerUser(token)
+      },
     },
   },
 )

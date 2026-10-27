@@ -4,6 +4,7 @@ import {
   DurationQuery,
   MediaStats,
   PlaysByTime,
+  ServerMembership,
   StatsSource,
   TopMediaItems,
   TopUsersQuery,
@@ -222,15 +223,21 @@ async function getUsers(): Promise<TautulliUser[]> {
 async function getServerUser(
   userId: string,
   email: string,
-): Promise<{ isAdmin: boolean } | null> {
+): Promise<ServerMembership> {
   const userRes = await fetchUser(userId)
-  const user = userRes?.response?.data
 
-  if (user?.email !== email || !user?.is_active) {
-    return null
+  // No response is an outage or a misconfiguration, not an answer about the user
+  if (!userRes) {
+    return { status: 'unavailable' }
   }
 
-  return { isAdmin: user.is_admin === 1 }
+  const user = userRes.response?.data
+
+  if (user?.email !== email || !user?.is_active) {
+    return { status: 'notMember' }
+  }
+
+  return { status: 'member', isAdmin: user.is_admin === 1 }
 }
 
 async function getActivity(): Promise<TautulliActivity | null> {
