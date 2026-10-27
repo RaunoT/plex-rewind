@@ -321,12 +321,6 @@ export async function getTracearrPlexServers(): Promise<TracearrPlexServer[]> {
     .map(({ server_id, server_name }) => ({ server_id, server_name }))
 }
 
-// Every other lookup starts from the cached server list, so asking costs no
-// extra call
-export async function isTracearrReachable(): Promise<boolean> {
-  return (await getServers()) !== null
-}
-
 async function getPlexServerId(): Promise<string | null> {
   const servers = await getServers()
 
@@ -617,18 +611,36 @@ export async function getTracearrPlays(
   return (await run) ?? []
 }
 
-const getLibraryRollups = cached<TracearrLibrary[]>(async () => {
-  const [res, serverId] = await Promise.all([
-    fetchTracearr<{ data: TracearrLibrary[] }>('libraries'),
+const getAllLibraries = cached<TracearrLibrary[]>(async () => {
+  const res = await fetchTracearr<{ data: TracearrLibrary[] }>('libraries')
+
+  return Array.isArray(res?.data) ? res.data : null
+})
+
+async function getLibraryRollups(): Promise<TracearrLibrary[] | null> {
+  const [libraries, serverId] = await Promise.all([
+    getAllLibraries(),
     getPlexServerId(),
   ])
 
-  if (!res || !serverId || !Array.isArray(res.data)) {
+  if (!libraries || !serverId) {
     return null
   }
 
-  return res.data.filter((library) => library.server_id === serverId)
-})
+  return libraries.filter((library) => library.server_id === serverId)
+}
+
+// Built from the same two lists as the libraries, so whether Tracearr counts as
+// reachable never disagrees with the libraries shown. A missing Plex server
+// choice is a setup problem, not an outage. Costs no extra call.
+export async function isTracearrReachable(): Promise<boolean> {
+  const [libraries, servers] = await Promise.all([
+    getAllLibraries(),
+    getServers(),
+  ])
+
+  return libraries !== null && servers !== null
+}
 
 function getLibraryType(library: TracearrLibrary): TautulliMediaType | null {
   if (library.track_count) {

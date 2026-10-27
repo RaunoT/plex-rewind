@@ -179,9 +179,10 @@ describe('isStatsSourceReachable', () => {
     fetchMock.mockRejectedValue(new TypeError('fetch failed'))
 
     await expect(isStatsSourceReachable(settings)).resolves.toBe(false)
-    expect(String(fetchMock.mock.calls[0][0])).toBe(
+    expect(fetchMock.mock.calls.map(([url]) => String(url)).sort()).toEqual([
+      'http://tracearr:3000/api/v2/public/libraries',
       'http://tracearr:3000/api/v2/public/servers',
-    )
+    ])
   })
 })
 
@@ -208,6 +209,60 @@ describe('getReachableLibraries', () => {
     fetchMock.mockResolvedValue(new Response('nope', { status: 500 }))
 
     await expect(getReachableLibraries()).resolves.toBeNull()
+  })
+
+  describe('with Tracearr', () => {
+    function useTracearr(url: string, libraries: () => Response) {
+      const settings = testSettings()
+
+      settings.connection.statisticsSource = 'tracearr'
+      // The URL keeps Tracearr's cached lists from leaking into other tests
+      settings.connection.tracearrUrl = url
+      settings.connection.tracearrApiKey = 'key'
+      vi.mocked(getSettings).mockReturnValue(settings)
+      fetchMock.mockImplementation(async (input: string) =>
+        input.endsWith('/servers')
+          ? Response.json({
+              data: [
+                { server_id: 's1', server_name: 'Plex', server_type: 'plex' },
+              ],
+            })
+          : libraries(),
+      )
+    }
+
+    it('returns null when the libraries request fails, whatever else answers', async () => {
+      useTracearr(
+        'http://tracearr-down:3000',
+        () => new Response('nope', { status: 500 }),
+      )
+
+      await expect(getReachableLibraries()).resolves.toBeNull()
+    })
+
+    it('returns the libraries the same response describes', async () => {
+      useTracearr('http://tracearr-up:3000', () =>
+        Response.json({
+          data: [
+            {
+              server_id: 's1',
+              movie_count: 3,
+              show_count: 0,
+              episode_count: 0,
+              track_count: 0,
+              item_count: 3,
+              total_file_size: 1,
+            },
+          ],
+        }),
+      )
+
+      const libraries = await getReachableLibraries()
+
+      expect(libraries?.map((library) => library.section_name)).toEqual([
+        'Movies',
+      ])
+    })
   })
 })
 
