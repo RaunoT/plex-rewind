@@ -1,25 +1,37 @@
+import {
+  DurationQuery,
+  MediaStats,
+  PlaysByTime,
+  StatsSource,
+  TopMediaItems,
+  TopUsersQuery,
+} from '@/types/statsSource'
 import { TautulliItemRow, TautulliLibrary } from '@/types/tautulli'
 import { countBy, groupBy, sumBy, uniqBy } from 'lodash'
 import {
+  getTracearrActivity,
+  getTracearrLibraries,
+  getTracearrLibrariesSize,
   getTracearrPlays,
   getTracearrPlexUsers,
+  getTracearrUser,
   getTracearrUsers,
+  isTracearrMediaDeleted,
   TRACEARR_MEDIA_TYPES,
   TracearrPlay,
   TracearrPlayMediaType,
 } from './fetchTracearr'
-import getMediaAdditionalData from './getMediaAdditionalData'
+import getMediaAdditionalData, {
+  SourceMediaData,
+} from './getMediaAdditionalData'
 import getSettings from './getSettings'
-import { getRewindStartDate } from './helpers'
 import { filterPlays, getExcludedIdentityIds } from './tracearrPlays'
 
-type PlaysQuery = {
+type PlaysQuery = Omit<DurationQuery, 'since'> & {
   since: string | Date
-  userId?: string
-  // Leaving out libraries keeps plays of every media type.
-  libraries?: TautulliLibrary[]
 }
 
+const PLEX_IDENTITY_TIMEOUT_MS = 10_000
 const EMPTY_ROW: TautulliItemRow = {
   title: '',
   year: null,
@@ -41,6 +53,55 @@ const EMPTY_ROW: TautulliItemRow = {
   shows_plays_count: 0,
   user_id: 0,
   rank: 0,
+}
+
+// Plex answers /identity without a token.
+async function getServerId(): Promise<string> {
+  const plexUrl = getSettings().connection.plexUrl
+
+  try {
+    const res = await fetch(`${plexUrl}/identity`, {
+      headers: {
+        Accept: 'application/json',
+      },
+      next: {
+        revalidate: 3600,
+      },
+      signal: AbortSignal.timeout(PLEX_IDENTITY_TIMEOUT_MS),
+    })
+
+    if (!res.ok) {
+      console.error(
+        `[PLEX] - Couldn't get server ID from ${plexUrl}!`,
+        res.status,
+        res.statusText,
+      )
+
+      return ''
+    }
+
+    const data = await res.json()
+
+    return data?.MediaContainer?.machineIdentifier ?? ''
+  } catch (error) {
+    if (error instanceof Error && error.name === 'TimeoutError') {
+      console.error(
+        `[PLEX] - Getting server ID from ${plexUrl} timed out after ${PLEX_IDENTITY_TIMEOUT_MS / 1000}s!`,
+      )
+    } else {
+      console.error(`[PLEX] - Couldn't get server ID from ${plexUrl}!`, error)
+    }
+
+    return ''
+  }
+}
+
+async function getServerUser(
+  userId: string,
+): Promise<{ isAdmin: boolean } | null> {
+  const user = await getTracearrUser(userId)
+
+  return user ? { isAdmin: user.isAdmin } : null
 }
 
 async function getPlays({
@@ -137,6 +198,16 @@ function getTopItems(
     .slice(0, count)
 }
 
+// Tracearr's plays already carry the poster.
+export async function getTracearrMediaData(
+  item: TautulliItemRow,
+): Promise<SourceMediaData> {
+  return {
+    thumb: item.thumb,
+    isDeleted: await isTracearrMediaDeleted(item.media_id),
+  }
+}
+
 async function addAdditionalData(
   items: TautulliItemRow[],
   mediaType: TracearrPlayMediaType,
@@ -145,10 +216,14 @@ async function addAdditionalData(
     return items
   }
 
-  return getMediaAdditionalData(items, mediaType === 'movie' ? 'movie' : 'tv')
+  return getMediaAdditionalData(
+    items,
+    mediaType === 'movie' ? 'movie' : 'tv',
+    getTracearrMediaData,
+  )
 }
 
-export async function getTracearrItems(
+async function getTracearrItems(
   library: TautulliLibrary,
   period: number,
   userId?: string,
@@ -169,28 +244,26 @@ export async function getTracearrItems(
   return addAdditionalData(items, mediaType)
 }
 
-export async function getTracearrTotalDuration(
-  query: PlaysQuery,
-): Promise<number> {
+async function getTracearrTotalDuration(query: DurationQuery): Promise<number> {
   return getDuration(await getPlays(query))
 }
 
-export async function getTracearrTopMediaStats(
+async function getTracearrTopMediaStats(
   userId: string,
   libraries: TautulliLibrary[],
-) {
-  const plays = await getPlays({
-    since: getRewindStartDate(getSettings()),
-    userId,
-    libraries,
-  })
+  since: string,
+): Promise<MediaStats> {
+  const plays = await getPlays({ since, userId, libraries })
+  const mediaTypes = libraries.map(
+    (library) => TRACEARR_MEDIA_TYPES[library.section_type],
+  )
 
   function getStats(mediaType: TracearrPlayMediaType) {
     const typePlays = plays.filter((play) => play.mediaType === mediaType)
 
     return {
       count: typePlays.length,
-      duration: getDuration(typePlays),
+      duration: mediaTypes.includes(mediaType) ? getDuration(typePlays) : null,
     }
   }
 
@@ -201,15 +274,12 @@ export async function getTracearrTopMediaStats(
   }
 }
 
-export async function getTracearrTopMediaItems(
+async function getTracearrTopMediaItems(
   userId: string,
   libraries: TautulliLibrary[],
-) {
-  const plays = await getPlays({
-    since: getRewindStartDate(getSettings()),
-    userId,
-    libraries,
-  })
+  since: string,
+): Promise<TopMediaItems> {
+  const plays = await getPlays({ since, userId, libraries })
 
   function getTop(mediaType: TracearrPlayMediaType) {
     const items = getTopItems(
@@ -230,11 +300,11 @@ export async function getTracearrTopMediaItems(
 }
 
 // Hours and days are in the Plex Rewind server's timezone.
-export async function getTracearrPlaysByTime(userId: string) {
-  const plays = await getPlays({
-    since: getRewindStartDate(getSettings()),
-    userId,
-  })
+async function getTracearrPlaysByTime(
+  userId: string,
+  since: string,
+): Promise<PlaysByTime> {
+  const plays = await getPlays({ since, userId })
   const hourly = Array<number>(24).fill(0)
   const daily = Array<number>(7).fill(0)
 
@@ -248,10 +318,10 @@ export async function getTracearrPlaysByTime(userId: string) {
   return { hourly, daily }
 }
 
-export async function getTracearrUsersTop(
-  since: string,
-  libraries: TautulliLibrary[],
-): Promise<TautulliItemRow[]> {
+async function getTracearrUsersTop({
+  since,
+  libraries,
+}: TopUsersQuery): Promise<TautulliItemRow[]> {
   const [plays, users] = await Promise.all([
     getPlays({ since, libraries }),
     getTracearrPlexUsers(),
@@ -286,7 +356,7 @@ export async function getTracearrUsersTop(
     .sort((a, b) => b.total_duration - a.total_duration)
 }
 
-export async function getTracearrInactiveUser(
+async function getTracearrInactiveUser(
   plexId: string,
 ): Promise<TautulliItemRow> {
   const users = await getTracearrUsers()
@@ -300,3 +370,24 @@ export async function getTracearrInactiveUser(
     user_id: Number(plexId),
   }
 }
+
+const tracearrSource: StatsSource = {
+  getServerId,
+  // Tracearr doesn't know which libraries are shared with a user.
+  getLibraries: getTracearrLibraries,
+  getLibrariesSize: getTracearrLibrariesSize,
+  getUsers: getTracearrUsers,
+  getServerUser,
+  getActivity: getTracearrActivity,
+  getTotalDuration: getTracearrTotalDuration,
+  getTopItems: getTracearrItems,
+  getTopUsers: getTracearrUsersTop,
+  // The ranking already counts each user's plays.
+  getPlaysCounts: async (users) => users,
+  getInactiveUser: getTracearrInactiveUser,
+  getMediaStats: getTracearrTopMediaStats,
+  getTopMediaItems: getTracearrTopMediaItems,
+  getPlaysByTime: getTracearrPlaysByTime,
+}
+
+export default tracearrSource

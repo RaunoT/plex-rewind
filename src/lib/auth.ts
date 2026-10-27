@@ -1,7 +1,7 @@
 import { AuthOptions, User } from 'next-auth'
 import CredentialsProvider from 'next-auth/providers/credentials'
 import { PLEX_API_ENDPOINT } from '../utils/constants'
-import { getServerUser } from '../utils/fetchTautulli'
+import { getServerUser } from '../utils/statsSource'
 import { LoginError } from './loginError'
 
 // Admin rights and server membership are re-checked this often, so changes

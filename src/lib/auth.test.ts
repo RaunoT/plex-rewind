@@ -1,10 +1,10 @@
 import { CredentialsConfig } from 'next-auth/providers/credentials'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { getServerUser } from '../utils/fetchTautulli'
+import { getServerUser } from '../utils/statsSource'
 import { authOptions, authorizePlexUser } from './auth'
 import { LoginError, toLoginErrorCode } from './loginError'
 
-vi.mock('../utils/fetchTautulli', () => ({ getServerUser: vi.fn() }))
+vi.mock('../utils/statsSource', () => ({ getServerUser: vi.fn() }))
 
 const fetchMock = vi.fn()
 // Trimmed from what plex.tv/api/v2/user returns for `Accept: application/json`

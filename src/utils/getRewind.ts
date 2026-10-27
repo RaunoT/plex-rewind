@@ -1,113 +1,30 @@
-import {
-  TautulliGraph,
-  TautulliItem,
-  TautulliItemRow,
-  TautulliLibrary,
-  TautulliMediaReturnType,
-  TautulliMediaType,
-} from '@/types/tautulli'
-import { sum } from 'lodash'
+import { TautulliLibrary, TautulliMediaReturnType } from '@/types/tautulli'
 import { getTranslations } from 'next-intl/server'
 import { fetchOverseerrStats } from './fetchOverseerr'
-import fetchTautulli from './fetchTautulli'
-import { getTracearrLibrariesSize } from './fetchTracearr'
-import { secondsToTime, timeToSeconds } from './formatting'
-import getMediaAdditionalData from './getMediaAdditionalData'
+import { secondsToTime } from './formatting'
 import getSettings from './getSettings'
-import { getTautulliTotalDuration } from './getTautulliDuration'
-import {
-  getTracearrPlaysByTime,
-  getTracearrTopMediaItems,
-  getTracearrTopMediaStats,
-  getTracearrTotalDuration,
-} from './getTracearrStats'
-import { daysBetween, getRewindStartDate, isTracearrSource } from './helpers'
-import { LibrariesSize, sumLibrariesSize } from './librariesSize'
+import { getRewindStartDate } from './helpers'
+import { LibrariesSize } from './librariesSize'
+import { getStatsSource } from './statsSource'
 
 export async function getTopMediaStats(
   userId: string,
   libraries: TautulliLibrary[],
 ) {
   const t = await getTranslations()
-  const mediaTypeMap: Record<TautulliMediaType, string> = {
-    movie: 'movie',
-    show: 'episode',
-    artist: 'track',
-  }
-  const typeToResultMap: Record<TautulliMediaType, TautulliMediaReturnType> = {
-    show: 'shows',
-    movie: 'movies',
-    artist: 'audio',
-  }
-
-  if (isTracearrSource(getSettings())) {
-    const stats = await getTracearrTopMediaStats(userId, libraries)
-    const libraryResults = libraries.map(
-      (library) => typeToResultMap[library.section_type],
-    )
-
-    function formatStats(type: TautulliMediaReturnType) {
-      return {
-        count: stats[type].count,
-        duration: libraryResults.includes(type)
-          ? secondsToTime(stats[type].duration, t)
-          : '',
-      }
-    }
-
-    return {
-      shows: formatStats('shows'),
-      movies: formatStats('movies'),
-      audio: formatStats('audio'),
-    }
-  }
-
-  async function fetchLibraryData(library: TautulliLibrary) {
-    const startDate = getRewindStartDate(getSettings())
-    const res = await fetchTautulli<{
-      recordsFiltered: number
-      total_duration: string
-    }>('get_history', {
-      user_id: userId,
-      after: startDate,
-      length: 0,
-      media_type: mediaTypeMap[library.section_type],
-      section_id: library.section_id,
-    })
-
-    return {
-      response: res?.response.data,
-      type: library.section_type,
-    }
-  }
-
-  const results = await Promise.all(libraries.map(fetchLibraryData))
-  const stats: Record<
-    TautulliMediaReturnType,
-    { count: number; seconds: number; hasData: boolean }
-  > = {
-    shows: { count: 0, seconds: 0, hasData: false },
-    movies: { count: 0, seconds: 0, hasData: false },
-    audio: { count: 0, seconds: 0, hasData: false },
-  }
-
-  for (const library of results) {
-    const data = library.response
-    const resultType = typeToResultMap[library.type]
-
-    if (resultType && data) {
-      stats[resultType].count += data.recordsFiltered
-      stats[resultType].seconds += timeToSeconds(data.total_duration)
-      stats[resultType].hasData = true
-    }
-  }
+  const settings = getSettings()
+  const stats = await getStatsSource(settings).getMediaStats(
+    userId,
+    libraries,
+    getRewindStartDate(settings),
+  )
 
   function formatStats(type: TautulliMediaReturnType) {
+    const { count, duration } = stats[type]
+
     return {
-      count: stats[type].count,
-      duration: stats[type].hasData
-        ? secondsToTime(stats[type].seconds, t)
-        : '',
+      count,
+      duration: duration === null ? '' : secondsToTime(duration, t),
     }
   }
 
@@ -121,52 +38,16 @@ export async function getTopMediaStats(
 export async function getlibrariesTotalSize(
   libraries: TautulliLibrary[],
 ): Promise<LibrariesSize> {
-  if (isTracearrSource(getSettings())) {
-    return getTracearrLibrariesSize(libraries)
-  }
-
-  const res = await Promise.all(
-    libraries.map((library) =>
-      fetchTautulli<{ total_file_size?: number }>(
-        'get_library_media_info',
-        {
-          section_id: library.section_id,
-          length: 0,
-        },
-        true,
-      ),
-    ),
-  )
-
-  // Tautulli only reports a size for TV and music libraries once "Calculate
-  // Total File Sizes" is enabled.
-  return sumLibrariesSize(
-    libraries.map((library, i) => ({
-      size: res[i]?.response?.data?.total_file_size,
-      hasItems: Number(library.count) > 0 || Number(library.child_count) > 0,
-    })),
-  )
+  return getStatsSource().getLibrariesSize(libraries)
 }
 
 export async function getLibrariesTotalDuration(libraries: TautulliLibrary[]) {
   const settings = getSettings()
-  const startDate = getRewindStartDate(settings)
 
-  if (isTracearrSource(settings)) {
-    return getTracearrTotalDuration({ since: startDate, libraries })
-  }
-
-  const durations = await Promise.all(
-    libraries.map((library) =>
-      getTautulliTotalDuration({
-        after: startDate,
-        sectionId: library.section_id,
-        excludedUsers: settings.general.excludedUsers,
-      }),
-    ),
-  )
-
-  return sum(durations)
+  return getStatsSource(settings).getTotalDuration({
+    since: getRewindStartDate(settings),
+    libraries,
+  })
 }
 
 export async function getUserTotalDuration(
@@ -174,138 +55,24 @@ export async function getUserTotalDuration(
   libraries: TautulliLibrary[],
 ) {
   const settings = getSettings()
-  const startDate = getRewindStartDate(settings)
 
-  if (isTracearrSource(settings)) {
-    return getTracearrTotalDuration({ since: startDate, userId, libraries })
-  }
-
-  const res = await Promise.all(
-    libraries.map((library) => {
-      return fetchTautulli<{ total_duration: string }>('get_history', {
-        user_id: userId,
-        section_id: library.section_id,
-        after: startDate,
-        length: 0,
-      })
-    }),
-  )
-
-  let totalDuration = 0
-
-  for (const library of res) {
-    const duration = library?.response?.data?.total_duration
-
-    if (duration) {
-      totalDuration += timeToSeconds(duration)
-    }
-  }
-
-  return totalDuration
+  return getStatsSource(settings).getTotalDuration({
+    since: getRewindStartDate(settings),
+    userId,
+    libraries,
+  })
 }
 
 export async function getTopMediaItems(
   userId: string,
   libraries: TautulliLibrary[],
 ) {
-  const statIdMap: Record<TautulliMediaType, string> = {
-    movie: 'top_movies',
-    show: 'top_tv',
-    artist: 'top_music',
-  }
   const settings = getSettings()
 
-  if (isTracearrSource(settings)) {
-    return getTracearrTopMediaItems(userId, libraries)
-  }
-
-  const startDate = getRewindStartDate(settings)
-  // get_home_stats only reliably accepts a `time_range` in days (Tautulli
-  // computes the window as `last N days` from today), so the rewind window
-  // always runs from startDate up to now.
-  const time_range = daysBetween(startDate)
-  const res = await Promise.all(
-    libraries.map(async (library) => {
-      const stat = await fetchTautulli<TautulliItem>('get_home_stats', {
-        stat_id: statIdMap[library.section_type],
-        user_id: userId,
-        section_id: library.section_id,
-        time_range,
-        stats_count: 5,
-        stats_type: 'duration',
-      })
-
-      return { stat, type: library.section_type }
-    }),
-  )
-  const combinedResult: Record<TautulliMediaReturnType, TautulliItemRow[]> = {
-    shows: [],
-    movies: [],
-    audio: [],
-  }
-  const rowsByLibrary = await Promise.all(
-    res.map(async ({ stat, type }) => {
-      const rows = stat?.response?.data?.rows || []
-
-      if (!rows.length) {
-        return rows
-      }
-
-      if (type === 'show') {
-        return getMediaAdditionalData(rows, 'tv')
-      }
-
-      if (type === 'movie') {
-        return getMediaAdditionalData(rows, 'movie')
-      }
-
-      return rows
-    }),
-  )
-
-  res.forEach(({ type }, i) => {
-    if (type === 'show') {
-      combinedResult.shows.push(...rowsByLibrary[i])
-    } else if (type === 'movie') {
-      combinedResult.movies.push(...rowsByLibrary[i])
-    } else if (type === 'artist') {
-      combinedResult.audio.push(...rowsByLibrary[i])
-    }
-  })
-
-  function sortAndSlice(list: TautulliItemRow[]) {
-    return list.sort((a, b) => b.total_duration - a.total_duration).slice(0, 5)
-  }
-
-  combinedResult.shows = sortAndSlice(combinedResult.shows)
-  combinedResult.movies = sortAndSlice(combinedResult.movies)
-  combinedResult.audio = sortAndSlice(combinedResult.audio)
-
-  return combinedResult
-}
-
-// Maps Tautulli's English day-of-week labels to a fixed index (0 = Sunday) so
-// the peak day is resolved from the actual label rather than its array
-// position, which shifts with Tautulli's `week_start_monday` setting.
-const DAY_NAME_TO_INDEX: Record<string, number | undefined> = {
-  Sunday: 0,
-  Monday: 1,
-  Tuesday: 2,
-  Wednesday: 3,
-  Thursday: 4,
-  Friday: 5,
-  Saturday: 6,
-}
-
-// Sums every series ('TV', 'Movies', 'Music', ...) into a single per-category
-// total, keeping the same order as `categories`.
-function sumGraphSeries(graph?: TautulliGraph): number[] {
-  if (!graph?.categories?.length || !Array.isArray(graph.series)) {
-    return []
-  }
-
-  return graph.categories.map((_, index) =>
-    graph.series.reduce((sum, serie) => sum + (serie.data?.[index] ?? 0), 0),
+  return getStatsSource(settings).getTopMediaItems(
+    userId,
+    libraries,
+    getRewindStartDate(settings),
   )
 }
 
@@ -325,46 +92,12 @@ function peakIndex(totals: number[]): number | null {
   return totals[maxIndex] > 0 ? maxIndex : null
 }
 
-async function getTautulliPlaysByTime(userId: string) {
-  const startDate = getRewindStartDate(getSettings())
-  // Like getTopMediaItems, the graph endpoints only accept a `time_range` in
-  // days (last N days from today), so the window runs from startDate up to now.
-  const time_range = daysBetween(startDate)
-  const [hourRes, dayRes] = await Promise.all([
-    fetchTautulli<TautulliGraph>('get_plays_by_hourofday', {
-      user_id: userId,
-      time_range,
-      y_axis: 'plays',
-    }),
-    fetchTautulli<TautulliGraph>('get_plays_by_dayofweek', {
-      user_id: userId,
-      time_range,
-      y_axis: 'plays',
-    }),
-  ])
-  // `hourly` already lines up with the hour (categories are '00'..'23').
-  const hourly = sumGraphSeries(hourRes?.response?.data)
-  const dayData = dayRes?.response?.data
-  const dayTotals = sumGraphSeries(dayData)
-  // Normalize day-of-week into a fixed Sunday-first order resolved from
-  // Tautulli's English labels, whose array order shifts with week_start_monday.
-  const daily = Array<number>(7).fill(0)
-
-  dayData?.categories?.forEach((name, position) => {
-    const index = DAY_NAME_TO_INDEX[name]
-
-    if (index !== undefined) {
-      daily[index] = dayTotals[position]
-    }
-  })
-
-  return { hourly, daily }
-}
-
 export async function getPlaybackHabits(userId: string) {
-  const { hourly, daily } = isTracearrSource(getSettings())
-    ? await getTracearrPlaysByTime(userId)
-    : await getTautulliPlaysByTime(userId)
+  const settings = getSettings()
+  const { hourly, daily } = await getStatsSource(settings).getPlaysByTime(
+    userId,
+    getRewindStartDate(settings),
+  )
 
   return {
     peakHour: peakIndex(hourly),

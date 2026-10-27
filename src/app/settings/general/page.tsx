@@ -1,7 +1,7 @@
 import { requireSettingsAccess } from '@/lib/access'
-import { getLibraries, getUsers } from '@/utils/fetchTautulli'
 import getSettings from '@/utils/getSettings'
 import { toPublicSettings } from '@/utils/publicSettings'
+import { getLibraries, getUsers } from '@/utils/statsSource'
 import { Metadata } from 'next'
 import { getTranslations } from 'next-intl/server'
 import GeneralSettingsForm from './_components/GeneralSettingsForm'
