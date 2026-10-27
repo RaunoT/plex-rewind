@@ -4,11 +4,7 @@ import { ChartPieIcon, ClockIcon } from '@heroicons/react/24/outline'
 import { useTranslations } from 'next-intl'
 import RewindStat from '../RewindStat'
 
-export default function StoryTotal({
-  userRewind,
-  isPaused,
-  settings,
-}: RewindStory) {
+export default function StoryTotal({ userRewind, settings }: RewindStory) {
   const t = useTranslations('Rewind.Total')
   const percentage = parseFloat(userRewind.duration.user_percentage)
   // Not shown when it can't be worked out, or when the user is excluded from
@@ -19,7 +15,7 @@ export default function StoryTotal({
     <>
       {hasRewindPlays(userRewind) ? (
         <>
-          <RewindStat isPaused={isPaused} scaleDelay={4}>
+          <RewindStat scaleDelay={4}>
             <p>
               {t.rich('duration', {
                 durationValue: userRewind.duration.user,
@@ -32,15 +28,13 @@ export default function StoryTotal({
                 duration: (chunks) => (
                   <span className='rewind-stat'>{chunks}</span>
                 ),
-                plex: (chunks) => (
-                  <span className='gradient-plex'>{chunks}</span>
-                ),
+                plex: (chunks) => chunks,
               })}
             </p>
           </RewindStat>
 
           {hasPercentage && (
-            <RewindStat isPaused={isPaused} renderDelay={4} noScale>
+            <RewindStat renderDelay={4} noScale>
               <p>
                 {t.rich('percentage', {
                   durationValue: userRewind.duration.total,
@@ -63,7 +57,7 @@ export default function StoryTotal({
           <p>
             {t.rich('noData', {
               serverName: settings.general.serverName || 'Plex',
-              plex: (chunks) => <span className='gradient-plex'>{chunks}</span>,
+              plex: (chunks) => chunks,
               emoji: (chunks) => <span className='not-italic'>{chunks}</span>,
             })}
           </p>

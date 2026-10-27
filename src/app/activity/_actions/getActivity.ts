@@ -10,6 +10,7 @@ import { getServerSession, Session } from 'next-auth'
 
 // Only the fields the activity page renders are sent to the browser.
 const SESSION_FIELDS = [
+  'audio_atmos',
   'audio_channel_layout',
   'audio_codec',
   'bandwidth',
@@ -33,7 +34,7 @@ const SESSION_FIELDS = [
   'rating_key',
   'session_key',
   'state',
-  'transcode_throttled',
+  'stream_audio_atmos',
   'stream_audio_channel_layout',
   'stream_audio_codec',
   'stream_audio_decision',
@@ -58,6 +59,7 @@ const SESSION_FIELDS = [
   'video_dynamic_range',
   'video_full_resolution',
   'view_offset',
+  'year',
 ] as const satisfies readonly (keyof TautulliSession)[]
 
 function toPublicSession(

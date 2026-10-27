@@ -7,7 +7,12 @@
     "rewind": "Démarrer Rewind",
     "dashboard": "Tableau de bord",
     "activity": "Activité",
-    "signOut": "Se déconnecter"
+    "signOut": "Se déconnecter",
+    "greeting": "Bonjour, {name}",
+    "rewindDescription": "Vos moments forts, une histoire à la fois.",
+    "streams": "{count, plural, =0 {Aucune lecture} =1 {# lecture} other {# lectures}}",
+    "mostWatched": "Le plus regardé",
+    "mostListened": "Le plus écouté"
   },
   "Activity": {
     "title": "Activité",
@@ -25,14 +30,15 @@
     "location": "Emplacement",
     "bandwidth": "Bande passante",
     "noActivity": "Aucune session active.. 😴",
+    "playing": "En lecture",
+    "paused": "En pause",
+    "endsAt": "Se termine à {time}",
+    "convertedTo": "converti en",
     "decision": {
       "directPlay": "lecture directe",
       "directStream": "flux direct",
       "transcode": "transcodage",
-      "burn": "incrustation",
-      "ignore": "ignoré",
-      "converting": "conversion",
-      "throttled": "limité"
+      "burnedIn": "Incrustés"
     }
   },
   "Dashboard": {
@@ -84,6 +90,9 @@
     "closeSettings": "Fermer les paramètres",
     "openSettings": "Ouvrir les paramètres"
   },
+  "Sidebar": {
+    "label": "Navigation principale"
+  },
   "Offline": {
     "title": "Vous êtes hors ligne",
     "retry": "Réessayer"
@@ -122,7 +131,6 @@
       "title": "Paramètres de connexion",
       "statistics": "Statistiques",
       "source": "Source",
-      "tracearrDescription": "Les bibliothèques sont regroupées par type de média.",
       "server": "Serveur",
       "chooseServer": "Choisissez un serveur"
     },
@@ -134,7 +142,7 @@
       "statistics": "Statistiques",
       "itemStatistics": "Statistiques des éléments",
       "totalStatistics": "Statistiques totales",
-      "sortByPlaysFilter": "Filtre de tri par lectures",
+      "sortFilter": "Filtre de tri",
       "customPeriod": "Période personnalisée",
       "inDays": "En jours.",
       "startDateHelperText": "Utilisé pour la période tout le temps."
@@ -171,7 +179,6 @@
       "title": "Paramètres Rewind",
       "cards": "Cartes",
       "librariesSizeAndCountCard": "Carte taille et nombre de bibliothèques",
-      "librariesSizeAndCountCardDescription": "Désactiver si vous ne voulez pas dépendre de Tautulli ou Tracearr pour ces statistiques.",
       "startDateHelperText": "Par défaut, 365 jours avant."
     }
   },
@@ -217,8 +224,8 @@
     "title": "Rewind",
     "Stories": {
       "goToStory": "Aller à l'histoire {index}",
-      "previousStory": "Histoire précédente",
-      "nextStory": "Histoire suivante",
+      "previous": "Précédent",
+      "next": "Suivant",
       "pause": "Pause",
       "resume": "Reprendre",
       "label": "Histoires du Rewind",

@@ -15,10 +15,12 @@ export default function StatListItem({ count, name, icon, library }: Props) {
   return (
     <li className='my-2 last:my-0'>
       {library && (
-        <div className='gradient-plex mb-1 text-base lg:text-lg'>{library}</div>
+        <div className='mb-1 text-base text-neutral-400 lg:text-lg'>
+          {library}
+        </div>
       )}
       <span className='font-semibold'>{count.toLocaleString(locale)}</span>
-      <span className='gradient-rewind mx-2'>•</span>
+      <span className='mx-2 text-neutral-600'>•</span>
       <span className='rewind-cat'>
         {name}
         {icon}

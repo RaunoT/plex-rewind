@@ -1,6 +1,18 @@
 @import 'tailwindcss';
 
+@theme {
+  --color-plex: #e5a00d;
+}
+
 @layer base {
+  :root {
+    color-scheme: dark;
+  }
+
+  ::selection {
+    @apply bg-white/25 text-white;
+  }
+
   input::-webkit-outer-spin-button,
   input::-webkit-inner-spin-button {
     @apply appearance-none;
@@ -8,6 +20,11 @@
 
   input[type='number'] {
     appearance: textfield;
+  }
+
+  /* Native option lists don't inherit the translucent select background */
+  option {
+    @apply bg-neutral-900 text-white;
   }
 
   button,
@@ -25,16 +42,30 @@
   @apply mx-auto px-4;
 }
 
-@utility gradient-rewind {
-  @apply bg-linear-to-r from-blue-500 to-teal-400 bg-clip-text text-transparent;
-}
-
-@utility gradient-plex {
-  @apply bg-linear-to-r from-yellow-400 to-yellow-500 bg-clip-text text-transparent;
+/* Every page with a header shares one width */
+@utility page-width {
+  @apply w-full max-w-4xl;
 }
 
 @utility focus-ring {
   @apply ring-2 ring-neutral-200 focus-visible:outline-none;
+}
+
+@utility glass {
+  @apply bg-white/3 backdrop-blur-2xl backdrop-saturate-150;
+
+  box-shadow:
+    inset 0 1px 0 0 rgb(255 255 255 / 10%),
+    0 24px 48px -24px rgb(0 0 0 / 70%);
+}
+
+@utility glass-pill {
+  @apply glass rounded-full;
+
+  box-shadow:
+    inset 0 0 0 1px rgb(255 255 255 / 10%),
+    inset 0 1px 0 0 rgb(255 255 255 / 8%),
+    0 16px 32px -16px rgb(0 0 0 / 60%);
 }
 
 @utility required {
@@ -44,11 +75,7 @@
 }
 
 @utility skeleton {
-  @apply animate-pulse rounded-full bg-neutral-500 px-4 py-2;
-}
-
-@utility skeleton--large {
-  @apply px-6 py-3;
+  @apply animate-pulse rounded-full bg-white/10;
 }
 
 @utility skeleton--no-animate {
@@ -61,97 +88,201 @@
 }
 
 @utility link-light {
-  @apply group-hover:opacity-80 hover:opacity-80;
+  @apply transition-opacity group-hover:opacity-80 hover:opacity-80;
 }
 
 @utility link-dark {
-  @apply group-hover:opacity-60 hover:opacity-60;
+  @apply transition-opacity group-hover:opacity-60 hover:opacity-60;
 }
 
 @layer components {
+  .glass-sheet {
+    @apply glass relative rounded-3xl p-5;
+
+    background-image: linear-gradient(
+      to bottom,
+      rgb(255 255 255 / 4%),
+      transparent 40%
+    );
+
+    /* Light catching the edge, brighter at the top left */
+    &::before {
+      @apply pointer-events-none absolute inset-0 rounded-[inherit] p-px content-[''];
+
+      background: linear-gradient(
+        150deg,
+        rgb(255 255 255 / 28%),
+        rgb(255 255 255 / 6%) 30%,
+        rgb(255 255 255 / 3%) 70%,
+        rgb(255 255 255 / 12%)
+      );
+      mask:
+        linear-gradient(#000 0 0) content-box exclude,
+        linear-gradient(#000 0 0);
+    }
+  }
+
+  .icon-button {
+    @apply focus-visible:focus-ring flex size-8 shrink-0 items-center justify-center rounded-full text-neutral-300 transition hover:bg-white/10 hover:text-white disabled:cursor-not-allowed disabled:bg-transparent disabled:text-neutral-300 disabled:opacity-30;
+  }
+
   .button {
-    @apply block w-fit rounded-2xl bg-linear-to-r from-blue-800 to-teal-700 px-8 py-3 text-center font-semibold transition-all;
+    @apply flex w-fit items-center justify-center gap-2 rounded-full bg-white px-6 py-2.5 text-center font-semibold text-black transition duration-200 select-none;
 
     &[disabled] {
       @apply cursor-not-allowed opacity-50;
     }
 
     &:hover:not([disabled]) {
-      @apply opacity-75;
+      @apply bg-neutral-200;
+    }
+
+    &:active:not([disabled]) {
+      @apply scale-[0.98];
+    }
+
+    &:focus-visible {
+      @apply focus-ring ring-offset-2 ring-offset-black;
     }
 
     &.button-sm {
-      @apply rounded-xl px-4 py-1 text-sm;
+      @apply px-4 py-1.5 text-sm;
     }
 
     &.button--plex {
-      @apply from-yellow-500 to-yellow-600 text-black;
+      @apply bg-plex;
+
+      &:hover:not([disabled]) {
+        @apply bg-plex brightness-110;
+      }
+    }
+
+    &.button--glass {
+      @apply bg-white/10 text-white;
+
+      &:hover:not([disabled]) {
+        @apply bg-white/15;
+      }
     }
   }
 
   .button-card {
-    @apply block w-fit rounded-sm px-1.5 py-1 text-xs leading-4 font-semibold uppercase;
+    @apply inline-flex h-6 w-fit shrink-0 items-center gap-1.5 rounded-md bg-white/10 px-2 text-xs font-medium whitespace-nowrap text-neutral-100;
+
+    > svg {
+      @apply size-3.5 shrink-0;
+    }
+
+    &:is(a) {
+      @apply focus-visible:focus-ring transition-colors hover:bg-white/20;
+    }
+
+    /* IMDb's own tag, so it reads as the link it is */
+    &.button-card--imdb {
+      @apply bg-[#f5c518] px-1.5 font-extrabold tracking-tight text-black hover:bg-[#ffd84d];
+    }
   }
 
+  /* Sized and set to the surrounding text so the logo's lowercase letters and
+     baseline line up with the font's */
+  .plex-logo {
+    @apply mr-[0.3em] inline h-[0.88em] w-auto align-[-0.164em];
+  }
+
+  /* Stories highlight the stats in Plex gold against near-white text */
   .rewind-stat {
-    @apply gradient-rewind inline-block;
+    @apply text-plex inline-block font-semibold;
   }
 
   .rewind-cat {
-    @apply gradient-rewind inline-flex items-center;
+    @apply text-plex inline-flex items-center font-semibold;
 
+    /* Sized to the text, so icons shrink along with a statement */
     > img,
     > svg {
-      @apply ml-1 w-8 text-[#2DACC8];
+      @apply text-plex/80 ml-[0.15em] w-[0.9em];
     }
   }
 
   .poster {
-    @apply relative aspect-2/3 h-full w-20 shrink-0 rounded-none! sm:w-[5.35rem] 2xl:w-24;
+    @apply relative aspect-2/3 h-full w-14 shrink-0 overflow-hidden rounded-md! shadow-lg ring-1 shadow-black/40 ring-white/10 sm:w-16;
   }
 
   .link {
-    @apply text-neutral-400 hover:text-white;
+    @apply text-neutral-400 transition-colors hover:text-white;
   }
 
   .nav {
-    @apply flex flex-wrap items-center justify-center gap-3 gap-y-0 text-xs font-medium uppercase sm:gap-4 sm:text-sm 2xl:text-base;
+    @apply glass-pill mx-auto flex w-fit max-w-full items-center gap-0.5 overflow-x-auto p-1 text-xs font-medium sm:text-sm;
+
+    scrollbar-width: none;
   }
 
   .nav-link {
-    @apply inline-block py-2 text-neutral-400 hover:text-white aria-disabled:pointer-events-none aria-disabled:cursor-not-allowed aria-disabled:opacity-50 sm:py-1;
+    @apply inline-block rounded-full px-3 py-1.5 whitespace-nowrap text-neutral-300 transition-colors hover:bg-white/5 hover:text-white aria-disabled:pointer-events-none aria-disabled:cursor-not-allowed aria-disabled:opacity-50 sm:px-3.5;
+
+    &:focus-visible {
+      @apply focus-ring;
+    }
 
     &[aria-current='page'],
     &[aria-current='true'] {
-      @apply text-white;
+      @apply bg-white/15 text-white;
+
+      box-shadow:
+        inset 0 1px 0 0 rgb(255 255 255 / 15%),
+        0 2px 8px -2px rgb(0 0 0 / 40%);
+    }
+  }
+
+  .sidebar-link {
+    @apply focus-visible:focus-ring flex items-center gap-3 rounded-xl px-3 py-2 text-sm font-medium text-neutral-300 transition-colors hover:bg-white/5 hover:text-white;
+
+    > svg {
+      @apply size-5 shrink-0 text-neutral-400 transition-colors;
+    }
+
+    &[aria-current='page'] {
+      @apply bg-white/15 text-white;
+
+      box-shadow: inset 0 1px 0 0 rgb(255 255 255 / 10%);
+
+      > svg {
+        @apply text-white;
+      }
+    }
+  }
+
+  .menu-item {
+    @apply flex cursor-pointer items-center gap-3 rounded-xl px-3 py-2 text-sm text-neutral-200 outline-none data-focused:bg-white/10 data-focused:text-white;
+
+    > svg {
+      @apply size-5 shrink-0 text-neutral-400;
     }
   }
 
   .icon-stats-container {
-    @apply flex flex-wrap items-center gap-2 text-xs sm:text-sm lg:text-base;
+    @apply flex flex-wrap items-center gap-1.5 text-xs text-neutral-100 sm:text-sm;
   }
 
+  /* Darker than the card, so the text stands out against it */
   .icon-stat-wrapper {
-    @apply flex items-center gap-1 rounded-full bg-neutral-600/50 py-0.5 pr-3 pl-2 italic sm:gap-2;
+    @apply flex items-center gap-1 rounded-full bg-black/25 py-0.5 pr-2.5 pl-2 whitespace-nowrap tabular-nums ring-1 ring-white/10 ring-inset;
 
     > svg {
-      @apply size-5 text-neutral-300;
+      @apply size-4 shrink-0 text-neutral-400;
     }
 
     &.icon-stat-wrapper--clean {
-      @apply bg-transparent p-0 not-italic;
+      @apply bg-transparent p-0 ring-0;
     }
   }
 
-  .glass-sheet {
-    @apply rounded-3xl bg-neutral-200/20 p-4 backdrop-blur-lg sm:p-8 2xl:p-10;
-  }
-
   .input {
-    @apply block w-full rounded-xl border-none bg-neutral-500 px-3 py-2 placeholder:text-neutral-50 placeholder:italic;
+    @apply block w-full rounded-xl border-none bg-white/10 px-3 py-2 text-white transition-colors placeholder:text-neutral-400 hover:bg-white/15;
 
     &:focus {
-      @apply focus-ring;
+      @apply focus-ring bg-white/15;
     }
 
     &[required] + .label > .label-wrapper {
@@ -159,7 +290,7 @@
     }
 
     &.input--small {
-      @apply px-2 py-1 text-sm;
+      @apply rounded-full px-3 py-1 text-sm;
     }
   }
 
@@ -174,28 +305,18 @@
   }
 
   .select-wrapper {
-    @apply link-light relative w-full;
-
-    &::after {
-      @apply pointer-events-none absolute inset-y-2 right-12 -mr-px h-auto w-px bg-neutral-300;
-
-      content: '';
-    }
-
-    &.select-wrapper--small::after {
-      @apply right-7;
-    }
+    @apply relative w-full;
   }
 
   .label {
-    @apply text-xs text-neutral-300 peer-focus-within:text-white sm:w-48 sm:shrink-0 sm:text-right sm:text-sm;
+    @apply text-xs text-neutral-100 transition-colors peer-focus-within:text-white sm:w-48 sm:shrink-0 sm:text-right sm:text-sm;
 
     &.label--start {
       @apply mt-0.5 self-start;
     }
 
     > small {
-      @apply block text-xs text-neutral-300;
+      @apply mt-0.5 block text-xs text-neutral-400;
     }
   }
 
@@ -203,15 +324,15 @@
     @apply flex w-fit items-center justify-end gap-2 sm:flex-row-reverse;
 
     .indicator {
-      @apply relative h-6 w-12 shrink-0 cursor-pointer rounded-full bg-neutral-500;
+      @apply relative h-6 w-11 shrink-0 cursor-pointer rounded-full bg-white/15 transition-colors duration-200;
 
       &::after {
-        @apply absolute inset-y-0 left-0.5 my-auto size-5 rounded-full bg-white transition content-[''];
+        @apply absolute inset-y-0 left-0.5 my-auto size-5 rounded-full bg-white shadow-md shadow-black/30 transition content-[''];
       }
     }
 
     &[data-selected='true'] .indicator {
-      @apply bg-neutral-400 after:translate-x-6;
+      @apply bg-neutral-400 after:translate-x-5;
     }
 
     &:focus-within {
@@ -226,10 +347,14 @@
   }
 
   .checkbox-wrapper {
-    @apply flex cursor-pointer items-center gap-1;
+    @apply flex cursor-pointer items-center gap-2;
 
-    &[data-selected='true'] .checkbox::after {
-      @apply absolute inset-0 text-center text-white content-['\2713'];
+    &[data-selected='true'] .checkbox {
+      @apply bg-white;
+
+      &::after {
+        @apply absolute inset-0 text-center text-sm leading-6 font-bold text-black content-['\2713'];
+      }
     }
 
     &:focus-within {
@@ -240,11 +365,11 @@
   }
 
   .checkbox {
-    @apply relative size-6 rounded-lg bg-neutral-500;
+    @apply relative size-6 shrink-0 rounded-lg bg-white/15 transition-colors;
   }
 
   .heading-settings {
-    @apply border-b border-neutral-500 pb-2 text-right font-medium text-neutral-300 uppercase group-hover:text-white sm:w-48;
+    @apply border-b border-white/10 pb-2 text-left text-xs font-semibold tracking-widest text-neutral-400 uppercase sm:w-48 sm:text-right;
   }
 
   .group-settings {
@@ -253,7 +378,7 @@
 
   .select-input,
   select.input {
-    @apply relative cursor-pointer appearance-none bg-no-repeat pr-14;
+    @apply relative cursor-pointer appearance-none bg-no-repeat pr-12;
 
     background-image: url('data:image/svg+xml;charset=US-ASCII,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23D4D4D4"><path d="M7 10l5 5 5-5z"/></svg>');
     background-position: right 12px center;
@@ -261,10 +386,10 @@
 
     &.select-input--small,
     &.input--small {
-      @apply pr-10;
+      @apply pr-8;
 
-      background-position: right 7px center;
-      background-size: 16px;
+      background-position: right 8px center;
+      background-size: 18px;
     }
   }
 
@@ -330,21 +455,6 @@
   }
 }
 
-@keyframes story-progress {
-  from {
-    transform: scaleX(0);
-  }
-
-  to {
-    transform: scaleX(1);
-  }
-}
-
-/* The duration comes from the story, so it is set inline */
-.animate-story-progress {
-  animation: story-progress linear forwards;
-}
-
 @media (prefers-reduced-motion: reduce) {
   .bg-twinkling,
   .bg-clouds {
@@ -359,5 +469,9 @@
 
   .animate-pulse {
     animation: none;
+  }
+
+  .button:active:not([disabled]) {
+    @apply scale-100;
   }
 }

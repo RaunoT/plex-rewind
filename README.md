@@ -11,18 +11,17 @@ Present [Plex](https://plex.tv) user statistics and habits in a beautiful and or
 
 ## Features
 
-- 📱 Fully responsive - viewable, usable & enjoyable on desktop, tablet or mobile, courtesy of [Tailwind.css](https://tailwindcss.com).
+- 📱 Fully responsive - viewable, usable & enjoyable on desktop, tablet or mobile.
 - 🔄 Fully dynamic - the data you're viewing will always be the latest available.
 - 🎭 Anonymization - anonymize user info for enhanced privacy.
 - 📆 Rewind - allows your users view their statistics and habits for a (customizable) time period.
 - 👀 Dashboard - provides an easily glanceable overview of activity on your server for all your libraries, personalized or general.
-- ⚡ Activity - see what's happening on your server in real time, enabled by [TanStack Query](https://tanstack.com/query/latest).
+- ⚡ Activity - see what's happening on your server in real time.
 - 📊 Fuelled by data from [Tautulli](https://tautulli.com) or [Tracearr](https://github.com/connorgallopo/Tracearr) - the backbone responsible for the heavy lifting regarding statistics.
-- 🔗 Integrates with [Overseerr](https://overseerr.dev) - show request breakdowns and totals and display request buttons straight under deleted fan-favorite media items.
-- 🔐 Log in with Plex - uses [NextAuth.js](https://next-auth.js.org) to enable secure login and session management with your Plex account.
-- 🚀 PWA support - installable on mobile devices and desktops thanks to [Serwist](https://github.com/serwist/serwist).
+- 🔗 Integrates with [Seerr](https://seerr.dev) - show request breakdowns and totals and display request buttons next to deleted fan-favorite media items.
+- 🔐 Log in with Plex - secure login and session management with your Plex account.
+- 🚀 PWA support - installable on mobile devices and desktops.
 - 🐳 Easy deployment - run the application in a containerized environment with [Docker](https://www.docker.com).
-- ✨ Beautiful animations with [Motion](https://motion.dev).
 - 🌐 Multi-language support - currently supporting English, Estonian, French, German and Italian. See [translations](#translations) for more information.
 - ⭐ All of this and more - powered by [Next.js](https://nextjs.org).
 
@@ -30,11 +29,13 @@ Keep an eye on the [issues page](https://github.com/RaunoT/plex-rewind/issues) t
 
 ## Preview
 
-![Dashboard](https://i.imgur.com/6UKEp7v.png 'Dashboard')
+![Home](.github/screenshots/home.webp 'Home')
 
-![Rewind](https://i.imgur.com/w536oB5.png 'Rewind')
+![Dashboard](.github/screenshots/dashboard.webp 'Dashboard')
 
-![Activity](https://i.imgur.com/AP8tu0m.png 'Activity')
+![Rewind](.github/screenshots/rewind.webp 'Rewind')
+
+![Activity](.github/screenshots/activity.webp 'Activity')
 
 ## Getting started
 
@@ -49,9 +50,9 @@ services:
       - NEXTAUTH_SECRET= # (required) used to encrypt auth JWT token, generate one with `openssl rand -base64 32`
       - NEXTAUTH_URL=http://localhost:8383 # (required) change to your domain if you are exposing the app to the internet
       - NEXT_PUBLIC_SITE_URL=http://localhost:8383 # (required) change to your domain if you are exposing the app to the internet
+      - TZ=Europe/London # (optional) your timezone, used for viewing habits and finish times
       - PUID=1000 # (optional) user ID the app runs as, defaults to 1000
       - PGID=1000 # (optional) group ID the app runs as, defaults to 1000
-      - TZ=Europe/London # (optional) your timezone, used for viewing habits and finish times
     volumes:
       - ./config:/app/config
     ports:
@@ -62,25 +63,6 @@ services:
 > _NOTE: If you run into authentication issues, try setting `NEXTAUTH_URL` and `NEXT_PUBLIC_SITE_URL` to your external Docker IP, instead of localhost. For example `http://192.168.1.1:8383`._
 
 For those that need it, a simple status page is also available at `/api/status`.
-
-### Tracearr
-
-[Tracearr](https://github.com/connorgallopo/Tracearr) (2.0 or newer) can be used as the statistics source instead of Tautulli. Choose it under _Settings → Connection_ and enter its URL and a public API key, which you can create in Tracearr under _Settings → Data & API → API_.
-
-A few things work differently with Tracearr:
-
-- Tracearr doesn't expose library names, so the dashboard and Rewind show one library per media type: _Movies_, _TV Shows_ and _Music_.
-- Only one Plex server is used. If Tracearr tracks more than one, choose it under _Settings → Connection_. Jellyfin and Emby servers are ignored.
-- Statistics are calculated from the watch history, which is cached for 5 minutes. The first load of a long period, such as a full year of Rewind on a busy server, can take a while.
-- Viewing habits use the timezone of the Plex Rewind container, so set `TZ` if it differs from your own.
-
-### Updating
-
-To update, run `docker compose pull` and then `docker compose up -d`.
-
-### Upgrading from older versions
-
-Older versions ran the app as root, so your `./config` folder may be owned by root. The container now starts as root only to fix the ownership of `./config`, then switches to the user set by `PUID` and `PGID` (`1000` by default). You don't need to change anything. To have the files in `./config` owned by a specific user instead, set `PUID` and `PGID` to that user's IDs. To keep running as root like before, set `PUID=0`.
 
 ## Translations
 

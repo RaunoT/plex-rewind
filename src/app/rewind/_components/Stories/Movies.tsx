@@ -4,18 +4,14 @@ import { FilmIcon } from '@heroicons/react/24/outline'
 import { useTranslations } from 'next-intl'
 import RewindStat from '../RewindStat'
 
-export default function StoryMovies({
-  userRewind,
-  isPaused,
-  settings,
-}: RewindStory) {
+export default function StoryMovies({ userRewind, settings }: RewindStory) {
   const t = useTranslations('Rewind.Movies')
 
   return (
     <>
       {userRewind.movies.duration ? (
         <>
-          <RewindStat isPaused={isPaused} scaleDelay={3}>
+          <RewindStat scaleDelay={3}>
             <p>
               {t.rich('duration', {
                 durationValue: userRewind.movies.duration,
@@ -32,7 +28,7 @@ export default function StoryMovies({
             </p>
           </RewindStat>
 
-          <RewindStat isPaused={isPaused} renderDelay={3} scaleDelay={3}>
+          <RewindStat renderDelay={3} scaleDelay={3}>
             <p>
               {t.rich('count', {
                 countValue: userRewind.movies.count,
@@ -46,12 +42,7 @@ export default function StoryMovies({
             </p>
           </RewindStat>
 
-          <RewindStat
-            isPaused={isPaused}
-            renderDelay={6}
-            loaderDelay={3}
-            noScale
-          >
+          <RewindStat renderDelay={6} loaderDelay={3} noScale>
             <p className='mb-2'>
               {t('favorite')}{' '}
               <span className='rewind-cat'>
@@ -59,7 +50,7 @@ export default function StoryMovies({
               </span>
             </p>
 
-            <div className='text-base not-italic'>
+            <div className='text-base leading-normal font-normal tracking-normal'>
               <MediaItems
                 type='movie'
                 items={Array(userRewind.movies.top[0])}
@@ -81,7 +72,7 @@ export default function StoryMovies({
                 </span>
               ),
               serverName: settings.general.serverName || 'Plex',
-              plex: (chunks) => <span className='gradient-plex'>{chunks}</span>,
+              plex: (chunks) => chunks,
               emoji: (chunks) => <span className='not-italic'>{chunks}</span>,
             })}
           </p>

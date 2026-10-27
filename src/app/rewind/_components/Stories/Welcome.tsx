@@ -1,9 +1,7 @@
-import anonymousSvg from '@/components/MediaItem/anonymous.svg'
+import Avatar from '@/components/Avatar'
 import { RewindStory } from '@/types/rewind'
 import { getRewindStartDate } from '@/utils/helpers'
 import { useLocale, useTranslations } from 'next-intl'
-import Image from 'next/image'
-import { useState } from 'react'
 import RewindStat from '../RewindStat'
 
 function formatDate(dateString: string, locale: string) {
@@ -14,11 +12,7 @@ function formatDate(dateString: string, locale: string) {
   }).format(new Date(dateString))
 }
 
-export default function StoryWelcome({
-  userRewind,
-  isPaused,
-  settings,
-}: RewindStory) {
+export default function StoryWelcome({ userRewind, settings }: RewindStory) {
   const startDate = getRewindStartDate(settings)
   const isDefaultPeriod = !settings.rewind.startDate
   const t = useTranslations('Rewind.Welcome')
@@ -30,21 +24,16 @@ export default function StoryWelcome({
     new Date().toISOString().split('T')[0],
     locale,
   )
-  const [imageSrc, setImageSrc] = useState<string>(
-    userRewind.user.image || anonymousSvg,
-  )
 
   return (
     <>
-      <RewindStat isPaused={isPaused} noScale isAnimated={false}>
-        <div className='relative mb-8 size-24'>
-          <Image
-            src={imageSrc}
+      <RewindStat noScale isAnimated={false}>
+        <div className='relative mb-8 size-24 overflow-hidden rounded-full'>
+          <Avatar
+            src={userRewind.user.image}
+            name={userRewind.user.name}
             alt={`${userRewind.user.name} ${tCommon('profilePictureAlt')}`}
-            className='rounded-full object-cover'
             sizes='10rem'
-            onError={() => setImageSrc(anonymousSvg)}
-            fill
             priority
           />
         </div>
@@ -52,13 +41,13 @@ export default function StoryWelcome({
           {t.rich('welcome', {
             serverName: settings.general.serverName || 'Plex',
             userValue: userRewind.user.name,
-            rewind: (chunks) => <span className='gradient-plex'>{chunks}</span>,
+            rewind: (chunks) => chunks,
             user: (chunks) => <span className='rewind-cat'>{chunks}</span>,
           })}
         </p>
       </RewindStat>
 
-      <RewindStat isPaused={isPaused} renderDelay={2} scaleDelay={2} noScale>
+      <RewindStat renderDelay={2} scaleDelay={2} noScale>
         <p>
           {t('takeYouThrough')}{' '}
           {isDefaultPeriod
@@ -87,7 +76,7 @@ export default function StoryWelcome({
         </p>
       </RewindStat>
 
-      <RewindStat isPaused={isPaused} renderDelay={4} loaderDelay={2} noScale>
+      <RewindStat renderDelay={4} loaderDelay={2} noScale>
         <p>{t('letsGetStarted')}</p>
       </RewindStat>
     </>

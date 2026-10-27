@@ -79,7 +79,7 @@ export default function RewindBarChart({
           {ticks.map((tick) => (
             <span
               key={tick}
-              className='absolute right-0 -translate-y-1/2 text-xs whitespace-nowrap text-neutral-500 tabular-nums'
+              className='absolute right-0 translate-y-1/2 text-xs whitespace-nowrap text-neutral-500 tabular-nums'
               style={{ bottom: `${(tick / niceMax) * 100}%` }}
             >
               {tick}
@@ -110,9 +110,7 @@ export default function RewindBarChart({
                   <motion.div
                     className={clsx(
                       'w-full origin-bottom rounded-t-sm',
-                      isPeak
-                        ? 'bg-linear-to-t from-yellow-600 to-yellow-300'
-                        : 'bg-linear-to-t from-blue-600 to-teal-400',
+                      isPeak ? 'bg-plex' : 'bg-white/20',
                     )}
                     style={{ height: `${heightPercentage}%` }}
                     initial={shouldReduceMotion ? false : { scaleY: 0 }}
@@ -145,7 +143,7 @@ export default function RewindBarChart({
                   className={clsx(
                     'absolute top-0 text-xs whitespace-nowrap',
                     index === peakIndex
-                      ? 'gradient-plex font-semibold'
+                      ? 'text-plex font-semibold'
                       : 'text-neutral-400',
                   )}
                   style={{

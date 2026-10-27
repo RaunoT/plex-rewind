@@ -8,24 +8,19 @@ import { motion, useAnimation } from 'motion/react'
 import { RefObject, useEffect, useRef } from 'react'
 
 type Props = {
-  i: number
   data: TautulliItemRow
   type: string
   parentRef: RefObject<HTMLDivElement | null>
   loggedInUserId?: string
 }
 
-const topColors = ['text-yellow-300', 'text-gray-300', 'text-yellow-700']
-
 export default function MediaItemTitle({
-  i,
   data,
   type,
   parentRef,
   loggedInUserId,
 }: Props) {
   const titleRef = useRef<HTMLSpanElement>(null)
-  const numberRef = useRef<HTMLSpanElement>(null)
   const isCurrentUser = String(data.user_id) === loggedInUserId
   const controls = useAnimation()
   const isUsersDashboard = type === 'users'
@@ -43,15 +38,12 @@ export default function MediaItemTitle({
     function checkWidth() {
       const titleElement = titleRef.current
       const parentElement = parentRef.current
-      const numberElement = numberRef.current
 
-      if (titleElement && parentElement && numberElement) {
-        const numberWidth = numberElement.clientWidth + 6
+      if (titleElement && parentElement) {
         const scrollDuration = 5
         const pauseDuration = 1
         const totalDuration = 2 * scrollDuration + 3 * pauseDuration
-        const excessWidth =
-          titleElement.scrollWidth + numberWidth - parentElement.clientWidth
+        const excessWidth = titleElement.scrollWidth - parentElement.clientWidth
 
         if (excessWidth > 0) {
           controls.start({
@@ -96,48 +88,11 @@ export default function MediaItemTitle({
 
   return (
     <h3
-      className={clsx('mb-2 flex sm:text-xl', isCurrentUser && 'gradient-plex')}
+      className={clsx(
+        'mb-0.5 flex font-medium sm:text-lg',
+        isCurrentUser && 'text-plex',
+      )}
     >
-      <span className='mr-1.5 inline-flex items-baseline gap-1' ref={numberRef}>
-        <span className={clsx('font-bold', topColors[i] || 'text-white')}>
-          #{i + 1}{' '}
-        </span>
-        {i < 3 && (
-          <svg width='16px' viewBox='0 0 300.439 300.439'>
-            <path
-              className='fill-orange-700'
-              d='M276.967,0h-84.498L70.415,178.385h84.498L276.967,0z'
-            />
-            <path
-              className='fill-orange-600'
-              d='M23.472,0h84.498l122.053,178.385h-84.498L23.472,0z'
-            />
-            <path
-              className={
-                i === 0
-                  ? 'fill-yellow-300'
-                  : i === 1
-                    ? 'fill-gray-300'
-                    : 'fill-yellow-700'
-              }
-              d='M154.914,93.887c57.271,0,103.276,46.005,103.276,103.276s-46.005,103.276-103.276,103.276
-                S51.638,254.434,51.638,197.163S97.643,93.887,154.914,93.887z'
-            />
-            <path
-              className={
-                i === 0
-                  ? 'fill-yellow-500'
-                  : i === 1
-                    ? 'fill-gray-400'
-                    : 'fill-yellow-800'
-              }
-              d='M154.914,122.053c-41.31,0-75.11,33.799-75.11,75.11s33.799,75.11,75.11,75.11
-                s75.11-33.799,75.11-75.11S196.224,122.053,154.914,122.053z M154.914,253.495c-30.983,0-56.332-25.35-56.332-56.332
-                s25.35-56.332,56.332-56.332s56.332,25.35,56.332,56.332S185.896,253.495,154.914,253.495z'
-            />
-          </svg>
-        )}
-      </span>
       <span className='overflow-hidden'>
         <motion.span
           className={clsx(

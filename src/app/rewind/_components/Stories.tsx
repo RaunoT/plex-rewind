@@ -1,15 +1,16 @@
 'use client'
 
+import { REWIND_CONTROLS_ID } from '@/utils/constants'
 import {
   ChevronLeftIcon,
   ChevronRightIcon,
   PauseIcon,
   PlayIcon,
 } from '@heroicons/react/24/outline'
-import clsx from 'clsx'
 import { MotionConfig } from 'motion/react'
 import { useTranslations } from 'next-intl'
 import {
+  createContext,
   Fragment,
   PointerEvent,
   ReactNode,
@@ -20,12 +21,27 @@ import {
   useState,
   useSyncExternalStore,
 } from 'react'
+import { createPortal } from 'react-dom'
 
 type StoryProps = {
-  isPaused: boolean
   pause: () => void
   resume: () => void
 }
+
+type StoryClock = {
+  // Milliseconds since the story started
+  elapsed: number
+  isPaused: boolean
+  registerReveal: (at: number) => () => void
+}
+
+// One clock per story that each statement reads to know what to show, so the
+// controls can step from statement to statement
+export const StoryClockContext = createContext<StoryClock>({
+  elapsed: 0,
+  isPaused: false,
+  registerReveal: () => () => {},
+})
 
 type Story = {
   type: 'component'
@@ -43,6 +59,7 @@ type Props = {
 
 const HOLD_THRESHOLD = 200 // ms to distinguish tap from hold
 const DEFAULT_DURATION = 5000
+const TICK = 100
 // Anything that already owns Space/arrow keys or taps must not drive the stories
 const INTERACTIVE_SELECTOR = [
   'button',
@@ -86,6 +103,10 @@ export default function Stories({ stories }: Props) {
   const [isManuallyPaused, setIsManuallyPaused] = useState(false)
   const [isHolding, setIsHolding] = useState(false)
   const [announcement, setAnnouncement] = useState('')
+  const [controlsSlot, setControlsSlot] = useState<HTMLElement | null>(null)
+  const [elapsed, setElapsed] = useState(0)
+  // When each statement of the current story appears
+  const [reveals, setReveals] = useState<number[]>([])
   const isHidden = useSyncExternalStore(
     subscribeToVisibility,
     getIsHidden,
@@ -95,11 +116,22 @@ export default function Stories({ stories }: Props) {
   const holdTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const isHoldingRef = useRef(false)
   const shouldRestoreFocusRef = useRef(false)
+  const shouldSeekToEndRef = useRef(false)
   const currentStory = stories[currentIndex]
   const duration = currentStory?.duration || DEFAULT_DURATION
   const isPaused = isManuallyPaused || isHolding || isHidden
+  const isFinished = elapsed >= duration
+  const revealPoints = useMemo(
+    () => [...new Set(reveals)].sort((a, b) => a - b),
+    [reveals],
+  )
+  const nextReveal = revealPoints.find((at) => at > elapsed)
+  const shownReveals = revealPoints.filter((at) => at <= elapsed)
+  const canGoBack = currentIndex > 0 || shownReveals.length > 1
+  const canGoForward =
+    currentIndex < stories.length - 1 || nextReveal !== undefined
   const goTo = useCallback(
-    (index: number, isManual: boolean) => {
+    (index: number, isManual: boolean, isAtEnd = false) => {
       if (index < 0 || index >= stories.length || index === currentIndex) {
         return
       }
@@ -109,6 +141,9 @@ export default function Stories({ stories }: Props) {
         shouldRestoreFocusRef.current = true
       }
 
+      // Going back lands on the previous story's last statement
+      shouldSeekToEndRef.current = isAtEnd
+      setElapsed(0)
       setCurrentIndex(index)
       setAnnouncement(
         isManual
@@ -118,14 +153,33 @@ export default function Stories({ stories }: Props) {
     },
     [currentIndex, stories.length, t],
   )
-  const goToNext = useCallback(
-    () => goTo(currentIndex + 1, true),
-    [goTo, currentIndex],
-  )
-  const goToPrev = useCallback(
-    () => goTo(currentIndex - 1, true),
-    [goTo, currentIndex],
-  )
+  const goToNext = useCallback(() => {
+    if (nextReveal !== undefined) {
+      setElapsed(nextReveal)
+    } else {
+      goTo(currentIndex + 1, true)
+    }
+  }, [goTo, currentIndex, nextReveal])
+  // Hides the latest statement, or goes back a story from the first one
+  const goToPrev = useCallback(() => {
+    if (shownReveals.length > 1) {
+      setElapsed(shownReveals[shownReveals.length - 2])
+    } else {
+      goTo(currentIndex - 1, true, true)
+    }
+  }, [goTo, currentIndex, shownReveals])
+  const registerReveal = useCallback((at: number) => {
+    setReveals((prev) => [...prev, at])
+
+    return () =>
+      setReveals((prev) => {
+        const index = prev.indexOf(at)
+
+        return index === -1
+          ? prev
+          : [...prev.slice(0, index), ...prev.slice(index + 1)]
+      })
+  }, [])
   const goToIndex = useCallback((index: number) => goTo(index, true), [goTo])
   const advance = useCallback(
     () => goTo(currentIndex + 1, false),
@@ -207,6 +261,45 @@ export default function Stories({ stories }: Props) {
   }, [endHold])
 
   useEffect(() => {
+    if (isPaused || isFinished) {
+      return
+    }
+
+    let last = performance.now()
+
+    const interval = setInterval(() => {
+      const now = performance.now()
+      const delta = now - last
+
+      last = now
+      setElapsed((prev) => Math.min(prev + delta, duration))
+    }, TICK)
+
+    return () => clearInterval(interval)
+  }, [isPaused, isFinished, duration])
+
+  useEffect(() => {
+    if (isFinished) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      advance()
+    }
+  }, [isFinished, advance])
+
+  useEffect(() => {
+    // The new story's statements have registered by now
+    if (shouldSeekToEndRef.current) {
+      shouldSeekToEndRef.current = false
+      setElapsed(Math.max(0, ...reveals))
+    }
+  }, [reveals])
+
+  useEffect(() => {
+    // Rendered by the layout, next to the admin's user select
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setControlsSlot(document.getElementById(REWIND_CONTROLS_ID))
+  }, [])
+
+  useEffect(() => {
     function handleKeyDown(e: KeyboardEvent) {
       if (
         e.defaultPrevented ||
@@ -253,16 +346,13 @@ export default function Stories({ stories }: Props) {
     [],
   )
 
-  const storyProps = useMemo(
-    () => ({
-      isPaused,
-      pause,
-      resume,
-    }),
-    [isPaused, pause, resume],
+  const storyProps = useMemo(() => ({ pause, resume }), [pause, resume])
+  const clock = useMemo(
+    () => ({ elapsed, isPaused, registerReveal }),
+    [elapsed, isPaused, registerReveal],
   )
-  // Only re-created when the slide, pause state or stories change, so the
-  // active slide doesn't re-render for unrelated state updates
+  // Only re-created when the slide or stories change, so the active slide
+  // doesn't re-render as the clock ticks; its statements read the clock
   const slide = useMemo(
     () =>
       currentStory ? (
@@ -283,7 +373,7 @@ export default function Stories({ stories }: Props) {
         aria-label={t('label')}
       >
         {/* Progress bar */}
-        <div className='absolute top-0 right-0 left-0 z-20 flex gap-1 sm:-top-4'>
+        <div className='absolute -top-2 right-0 left-0 z-20 flex gap-1'>
           {stories.map((_, index) => (
             <button
               key={index}
@@ -292,18 +382,13 @@ export default function Stories({ stories }: Props) {
               aria-label={t('goToStory', { index: index + 1 })}
               aria-current={index === currentIndex ? 'step' : undefined}
             >
-              <span className='block h-0.5 overflow-hidden rounded-full bg-neutral-500 group-hover:bg-neutral-400'>
+              <span className='block h-1 overflow-hidden rounded-full bg-white/15 transition-colors group-hover:bg-white/30'>
                 {index < currentIndex ? (
                   <span className='link-dark block h-full w-full bg-white' />
                 ) : index === currentIndex ? (
                   <span
-                    key='active'
-                    className='link-dark animate-story-progress block h-full w-full origin-left bg-white'
-                    style={{
-                      animationDuration: `${duration}ms`,
-                      animationPlayState: isPaused ? 'paused' : 'running',
-                    }}
-                    onAnimationEnd={advance}
+                    className='link-dark block h-full w-full origin-left bg-white transition-transform duration-100 ease-linear'
+                    style={{ transform: `scaleX(${elapsed / duration})` }}
                   />
                 ) : null}
               </span>
@@ -327,56 +412,47 @@ export default function Stories({ stories }: Props) {
           onPointerLeave={handlePointerAbort}
           onPointerCancel={handlePointerAbort}
         >
-          {slide}
+          <StoryClockContext value={clock}>{slide}</StoryClockContext>
         </div>
 
         <div className='sr-only' aria-live='polite' aria-atomic='true'>
           {announcement}
         </div>
-
-        {/* Navigation controls */}
-        <div className='absolute -right-3 -bottom-14 z-10 flex items-center sm:-right-7'>
-          <button
-            className={clsx(
-              'flex size-11 items-center justify-center transition-opacity',
-              currentIndex === 0
-                ? 'cursor-not-allowed opacity-30'
-                : 'link-light opacity-100',
-            )}
-            onClick={goToPrev}
-            disabled={currentIndex === 0}
-            aria-label={t('previousStory')}
-          >
-            <ChevronLeftIcon className='size-5' />
-          </button>
-
-          <button
-            className='link-light flex size-11 items-center justify-center'
-            onClick={togglePause}
-            aria-label={isManuallyPaused ? t('resume') : t('pause')}
-          >
-            {isManuallyPaused ? (
-              <PlayIcon className='size-5' />
-            ) : (
-              <PauseIcon className='size-5' />
-            )}
-          </button>
-
-          <button
-            className={clsx(
-              'flex size-11 items-center justify-center transition-opacity',
-              currentIndex === stories.length - 1
-                ? 'cursor-not-allowed opacity-30'
-                : 'link-light opacity-100',
-            )}
-            onClick={goToNext}
-            disabled={currentIndex === stories.length - 1}
-            aria-label={t('nextStory')}
-          >
-            <ChevronRightIcon className='size-5' />
-          </button>
-        </div>
       </section>
+
+      {controlsSlot &&
+        createPortal(
+          <div className='flex items-center gap-0.5 rounded-full bg-white/10'>
+            <button
+              className='icon-button size-7'
+              onClick={goToPrev}
+              disabled={!canGoBack}
+              aria-label={t('previous')}
+            >
+              <ChevronLeftIcon className='size-4' />
+            </button>
+            <button
+              className='icon-button size-7'
+              onClick={togglePause}
+              aria-label={isManuallyPaused ? t('resume') : t('pause')}
+            >
+              {isManuallyPaused ? (
+                <PlayIcon className='size-4' />
+              ) : (
+                <PauseIcon className='size-4' />
+              )}
+            </button>
+            <button
+              className='icon-button size-7'
+              onClick={goToNext}
+              disabled={!canGoForward}
+              aria-label={t('next')}
+            >
+              <ChevronRightIcon className='size-4' />
+            </button>
+          </div>,
+          controlsSlot,
+        )}
     </MotionConfig>
   )
 }

@@ -73,7 +73,7 @@ export default function DatePicker({
               {(segment) => (
                 <DateSegment
                   segment={segment}
-                  className='rounded-sm px-1 uppercase outline-hidden focus:bg-neutral-800 data-placeholder:text-neutral-50 data-placeholder:italic data-[type="literal"]:text-neutral-50'
+                  className='rounded-sm px-1 uppercase outline-hidden focus:bg-white/15 data-placeholder:text-neutral-50 data-[type="literal"]:text-neutral-50'
                 />
               )}
             </DateInput>
@@ -103,7 +103,7 @@ export default function DatePicker({
         </Label>
         <Popover>
           <Dialog>
-            <Calendar className='glass-sheet bg-neutral-200/20 p-4'>
+            <Calendar className='glass-sheet bg-neutral-900/80'>
               <div className='flex items-center justify-between gap-3 px-2'>
                 <Button
                   slot='previous'
@@ -136,7 +136,7 @@ export default function DatePicker({
                           'm-px flex size-8 items-center justify-center rounded-full outline-hidden',
                           state.isSelected
                             ? 'bg-white font-semibold text-black hover:bg-neutral-200'
-                            : 'hover:bg-neutral-500',
+                            : 'hover:bg-white/10',
                           state.isToday &&
                             !state.isSelected &&
                             'ring-1 ring-neutral-300 ring-inset',

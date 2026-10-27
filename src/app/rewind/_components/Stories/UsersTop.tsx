@@ -21,7 +21,7 @@ export default function StoryUsersTop({ userRewind, settings }: RewindStory) {
           })}
         </p>
 
-        <div className='text-base not-italic'>
+        <div className='text-base leading-normal font-normal tracking-normal'>
           <MediaItems
             type='users'
             items={userRewind.usersTop!}

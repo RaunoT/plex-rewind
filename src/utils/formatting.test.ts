@@ -3,6 +3,11 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import en from '../../messages/en.json'
 import {
   calculateETA,
+  formatChannels,
+  formatCodec,
+  formatDynamicRange,
+  formatResolution,
+  getInitials,
   millisecondsToTimeString,
   secondsToTime,
   timeToSeconds,
@@ -80,7 +85,11 @@ describe('millisecondsToTimeString', () => {
   it('formats as minutes and zero-padded seconds', () => {
     expect(millisecondsToTimeString(0)).toBe('0:00')
     expect(millisecondsToTimeString(65_000)).toBe('1:05')
-    expect(millisecondsToTimeString(3_725_999)).toBe('62:05')
+  })
+
+  it('adds hours once there are any', () => {
+    expect(millisecondsToTimeString(3_725_999)).toBe('1:02:05')
+    expect(millisecondsToTimeString(9_960_000)).toBe('2:46:00')
   })
 })
 
@@ -104,5 +113,67 @@ describe('calculateETA', () => {
     expect(calculateETA(undefined, '0')).toBeNull()
     expect(calculateETA('abc', '0')).toBeNull()
     expect(calculateETA('1000', '1000')).toBeNull()
+  })
+})
+
+describe('formatCodec', () => {
+  it('names the codecs Plex reports by their internal names', () => {
+    expect(formatCodec('h264', 'video')).toBe('H.264')
+    expect(formatCodec('HEVC', 'video')).toBe('HEVC')
+    expect(formatCodec('dca', 'audio')).toBe('DTS')
+    expect(formatCodec('eac3', 'audio')).toBe('Dolby Digital+')
+    expect(formatCodec('truehd', 'audio')).toBe('Dolby TrueHD')
+    expect(formatCodec('subrip', 'subtitle')).toBe('SRT')
+  })
+
+  it('upper-cases codecs it does not know, and is empty without one', () => {
+    expect(formatCodec('prores', 'video')).toBe('PRORES')
+    expect(formatCodec('', 'audio')).toBe('')
+    expect(formatCodec(undefined, 'subtitle')).toBe('')
+  })
+})
+
+describe('formatChannels', () => {
+  it('capitalises the layout and drops the speaker placement', () => {
+    expect(formatChannels('stereo')).toBe('Stereo')
+    expect(formatChannels('5.1(side)')).toBe('5.1')
+    expect(formatChannels('7.1')).toBe('7.1')
+    expect(formatChannels('')).toBe('')
+  })
+})
+
+describe('formatResolution', () => {
+  it('reads like Plex shows it, from either source', () => {
+    expect(formatResolution('4k')).toBe('4K')
+    expect(formatResolution('2160p')).toBe('4K')
+    expect(formatResolution('1080')).toBe('1080p')
+    expect(formatResolution('1080P')).toBe('1080p')
+    expect(formatResolution('sd')).toBe('SD')
+    expect(formatResolution(undefined)).toBe('')
+  })
+})
+
+describe('formatDynamicRange', () => {
+  it('only names HDR formats', () => {
+    expect(formatDynamicRange('SDR')).toBe('')
+    expect(formatDynamicRange('Dolby Vision')).toBe('Dolby Vision')
+    expect(formatDynamicRange('HDR10')).toBe('HDR10')
+    expect(formatDynamicRange(undefined)).toBe('')
+  })
+})
+
+describe('getInitials', () => {
+  it('uses the first and last name', () => {
+    expect(getInitials('kaur raag')).toBe('KR')
+    expect(getInitials('Anna Liis  Tamm')).toBe('AT')
+  })
+
+  it('uses one letter for a single name', () => {
+    expect(getInitials('williamsarevet')).toBe('W')
+    expect(getInitials('  ')).toBe('')
+  })
+
+  it('keeps letters outside the basic Latin range whole', () => {
+    expect(getInitials('Õie Ülle')).toBe('ÕÜ')
   })
 })

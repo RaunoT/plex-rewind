@@ -19,8 +19,16 @@ export default function PlexDeeplink({ ratingKey, serverId }: Props) {
       href={plexUrl}
       target='_blank'
       rel='noopener noreferrer'
-      className='button-card bg-green-700'
+      className='button-card'
     >
+      {/* The chevron from the Plex logo */}
+      <svg
+        aria-hidden='true'
+        viewBox='104.1 13.5 27.9 40.7'
+        className='fill-plex h-3.5! w-auto!'
+      >
+        <path d='m117.9 33.9-13.8-20.4h14.2L132 33.9l-13.7 20.3h-14.2z' />
+      </svg>
       {t('available')}
     </a>
   )

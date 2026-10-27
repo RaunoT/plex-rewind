@@ -1,6 +1,7 @@
 'use client'
 
 import { DashboardSearchParams } from '@/types/dashboard'
+import { DASHBOARD_PERIOD_COOKIE_NAME } from '@/utils/constants'
 import { createContext, ReactNode, useEffect, useState } from 'react'
 
 type GlobalContextProps = {
@@ -68,11 +69,13 @@ export default function GlobalContextProvider({ children }: Props) {
           ((localStorage.getItem('dashboardPeriod') ||
             undefined) as DashboardSearchParams['period']),
       )
+      // Plays became the default, so only watch time is worth restoring
       setSortBy(
         (prev) =>
           prev ??
-          ((localStorage.getItem('dashboardSort') ||
-            undefined) as DashboardSearchParams['sortBy']),
+          (localStorage.getItem('dashboardSort') === 'duration'
+            ? 'duration'
+            : undefined),
       )
     } catch {}
 
@@ -88,6 +91,7 @@ export default function GlobalContextProvider({ children }: Props) {
   useEffect(() => {
     if (isHydrated) {
       writeStorage('dashboardPeriod', period)
+      document.cookie = `${DASHBOARD_PERIOD_COOKIE_NAME}=${period ?? ''}; path=/; max-age=${period ? 31536000 : 0}; samesite=lax`
     }
   }, [isHydrated, period])
 

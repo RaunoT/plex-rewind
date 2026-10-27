@@ -125,10 +125,14 @@ export function formatPercent(percent: number, locale: string): string {
 
 export function millisecondsToTimeString(milliseconds: number): string {
   const totalSeconds = Math.floor(milliseconds / 1000)
-  const minutes = Math.floor(totalSeconds / 60)
+  const hours = Math.floor(totalSeconds / 3600)
+  const minutes = Math.floor((totalSeconds % 3600) / 60)
   const seconds = totalSeconds % 60
+  const paddedSeconds = seconds.toString().padStart(2, '0')
 
-  return `${minutes}:${seconds.toString().padStart(2, '0')}`
+  return hours
+    ? `${hours}:${minutes.toString().padStart(2, '0')}:${paddedSeconds}`
+    : `${minutes}:${paddedSeconds}`
 }
 
 export function calculateETA(
@@ -153,4 +157,100 @@ export function calculateETA(
   const minutes = eta.getMinutes().toString().padStart(2, '0')
 
   return `${hours}:${minutes}`
+}
+
+const CODEC_NAMES: Record<
+  'video' | 'audio' | 'subtitle',
+  Record<string, string>
+> = {
+  video: {
+    h264: 'H.264',
+    avc: 'H.264',
+    hevc: 'HEVC',
+    h265: 'HEVC',
+    av1: 'AV1',
+    vp9: 'VP9',
+    vp8: 'VP8',
+    mpeg4: 'MPEG-4',
+    mpeg2video: 'MPEG-2',
+    vc1: 'VC-1',
+  },
+  audio: {
+    aac: 'AAC',
+    ac3: 'Dolby Digital',
+    eac3: 'Dolby Digital+',
+    truehd: 'Dolby TrueHD',
+    dca: 'DTS',
+    dts: 'DTS',
+    'dca-ma': 'DTS-HD MA',
+    flac: 'FLAC',
+    alac: 'ALAC',
+    mp3: 'MP3',
+    opus: 'Opus',
+    vorbis: 'Vorbis',
+    pcm: 'PCM',
+  },
+  subtitle: {
+    srt: 'SRT',
+    subrip: 'SRT',
+    ass: 'ASS',
+    ssa: 'SSA',
+    pgs: 'PGS',
+    vobsub: 'VobSub',
+    dvd_subtitle: 'VobSub',
+    mov_text: 'MOV text',
+    webvtt: 'WebVTT',
+    vtt: 'WebVTT',
+  },
+}
+
+// Plex reports codecs by their internal names, such as "dca" for DTS
+export function formatCodec(
+  codec: string | undefined,
+  type: 'video' | 'audio' | 'subtitle',
+): string {
+  if (!codec) {
+    return ''
+  }
+
+  return CODEC_NAMES[type][codec.toLowerCase()] ?? codec.toUpperCase()
+}
+
+// "stereo" and "5.1(side)" read as "Stereo" and "5.1"
+export function formatChannels(layout?: string): string {
+  const name = (layout ?? '').replace(/\(.*\)$/, '').trim()
+
+  return name ? name.charAt(0).toUpperCase() + name.slice(1) : ''
+}
+
+export function formatResolution(resolution?: string): string {
+  const value = (resolution ?? '').trim().toLowerCase()
+
+  if (!value) {
+    return ''
+  }
+
+  if (value === '4k' || value === '2160p' || value === '2160') {
+    return '4K'
+  }
+
+  if (value === 'sd') {
+    return 'SD'
+  }
+
+  return /^\d+$/.test(value) ? `${value}p` : value
+}
+
+// SDR is the norm, so only HDR formats are worth naming
+export function formatDynamicRange(range?: string): string {
+  return !range || range.toUpperCase() === 'SDR' ? '' : range
+}
+
+// First letters of the first and last name, like a contact without a photo
+export function getInitials(name: string): string {
+  const words = name.trim().split(/\s+/).filter(Boolean)
+  const first = Array.from(words[0] ?? '')[0] ?? ''
+  const last = words.length > 1 ? (Array.from(words.at(-1)!)[0] ?? '') : ''
+
+  return (first + last).toLocaleUpperCase()
 }

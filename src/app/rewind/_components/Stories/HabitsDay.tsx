@@ -11,7 +11,7 @@ function weekday(index: number, formatter: Intl.DateTimeFormat) {
   return formatter.format(new Date(Date.UTC(2024, 0, 7 + index)))
 }
 
-export default function StoryHabitsDay({ userRewind, isPaused }: RewindStory) {
+export default function StoryHabitsDay({ userRewind }: RewindStory) {
   const t = useTranslations('Rewind.Habits')
   const tCommon = useTranslations('Common')
   const locale = useLocale()
@@ -37,7 +37,7 @@ export default function StoryHabitsDay({ userRewind, isPaused }: RewindStory) {
 
   return (
     <>
-      <RewindStat isPaused={isPaused} scaleDelay={3}>
+      <RewindStat scaleDelay={3}>
         <p>
           {t.rich('day', {
             dayValue: peakDay,
@@ -51,7 +51,7 @@ export default function StoryHabitsDay({ userRewind, isPaused }: RewindStory) {
         </p>
       </RewindStat>
 
-      <RewindStat isPaused={isPaused} renderDelay={3} noScale className='pt-4'>
+      <RewindStat renderDelay={3} noScale className='pt-4'>
         <RewindBarChart
           data={daily}
           labels={labels}

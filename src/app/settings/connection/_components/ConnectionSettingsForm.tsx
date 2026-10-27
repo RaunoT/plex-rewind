@@ -76,7 +76,6 @@ export default function ConnectionSettingsForm({
           </span>
           <span className='label'>
             <span className='label-wrapper'>{t('Connection.source')}</span>
-            {isTracearr && <small>{t('Connection.tracearrDescription')}</small>}
           </span>
         </label>
       </section>

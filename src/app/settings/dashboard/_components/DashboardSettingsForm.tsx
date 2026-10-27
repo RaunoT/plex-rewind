@@ -196,7 +196,7 @@ export default function DashboardSettingsForm({ settings }: Props) {
             >
               <div className='indicator'></div>
               <span className='label'>
-                <span className='label-wrapper'>{t('sortByPlaysFilter')}</span>
+                <span className='label-wrapper'>{t('sortFilter')}</span>
               </span>
             </Switch>
           </section>

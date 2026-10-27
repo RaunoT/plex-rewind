@@ -7,7 +7,12 @@
     "rewind": "Rewind",
     "dashboard": "Edetabel",
     "activity": "Tegevus",
-    "signOut": "Logi välja"
+    "signOut": "Logi välja",
+    "greeting": "Tere, {name}",
+    "rewindDescription": "Sinu vaatamise tipphetked, lugu loo haaval.",
+    "streams": "{count, plural, =0 {Midagi ei mängi} =1 {# voog} other {# voogu}}",
+    "mostWatched": "Enim vaadatud",
+    "mostListened": "Enim kuulatud"
   },
   "Activity": {
     "title": "Tegevus",
@@ -25,14 +30,15 @@
     "location": "Asukoht",
     "bandwidth": "Ribalaidus",
     "noActivity": "Ühtegi aktiivset sessiooni pole.. 😴",
+    "playing": "Mängib",
+    "paused": "Pausil",
+    "endsAt": "Lõpeb {time}",
+    "convertedTo": "teisendatakse:",
     "decision": {
       "directPlay": "otsemäng",
       "directStream": "otsevoog",
       "transcode": "transkodeerimine",
-      "burn": "põletamine",
-      "ignore": "ignoreeritud",
-      "converting": "teisendamine",
-      "throttled": "piiratud"
+      "burnedIn": "Sisse põletatud"
     }
   },
   "Dashboard": {
@@ -84,6 +90,9 @@
     "closeSettings": "Sulge seaded",
     "openSettings": "Ava seaded"
   },
+  "Sidebar": {
+    "label": "Põhinavigatsioon"
+  },
   "Offline": {
     "title": "Ühendus puudub",
     "retry": "Proovi uuesti"
@@ -122,7 +131,6 @@
       "title": "Ühenduse seaded",
       "statistics": "Statistika",
       "source": "Allikas",
-      "tracearrDescription": "Teegid on rühmitatud meediatüübi järgi.",
       "server": "Server",
       "chooseServer": "Vali server"
     },
@@ -134,7 +142,7 @@
       "statistics": "Statistika",
       "itemStatistics": "Kirje statistika",
       "totalStatistics": "Kokkuvõtlik statistika",
-      "sortByPlaysFilter": "Mängimiste arvu järgi sorteerimine",
+      "sortFilter": "Sorteerimise filter",
       "customPeriod": "Kohandatud periood",
       "inDays": "Päevades.",
       "startDateHelperText": "Kasutatud kogu ajalise perioodi jaoks."
@@ -171,7 +179,6 @@
       "title": "Rewind seaded",
       "cards": "Kaardid",
       "librariesSizeAndCountCard": "Kogumike failisuuruse kaart",
-      "librariesSizeAndCountCardDescription": "Lülita välja, kui ei soovi sõltuda Tautulli'st või Tracearr'ist failisuuruste jaoks.",
       "startDateHelperText": "Vaikimisi 365 päeva tagasi."
     }
   },
@@ -217,8 +224,8 @@
     "title": "Rewind",
     "Stories": {
       "goToStory": "Mine loole {index}",
-      "previousStory": "Eelmine lugu",
-      "nextStory": "Järgmine lugu",
+      "previous": "Eelmine",
+      "next": "Järgmine",
       "pause": "Peata",
       "resume": "Jätka",
       "label": "Rewind'i lood",

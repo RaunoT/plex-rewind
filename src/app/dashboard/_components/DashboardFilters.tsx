@@ -5,13 +5,11 @@ import {
   readStorage,
 } from '@/app/_components/GlobalContextProvider'
 import { DashboardSearchParams } from '@/types/dashboard'
-import clsx from 'clsx'
 import { useTranslations } from 'next-intl'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { ChangeEvent, useCallback, useContext, useEffect, useId } from 'react'
 
 type Props = {
-  className?: string
   isSortByPlaysActive: boolean
   personalFilter: boolean
 }
@@ -22,7 +20,6 @@ type Props = {
 let hasRestoredSavedFilters = false
 
 export default function DashboardFilters({
-  className,
   isSortByPlaysActive,
   personalFilter,
 }: Props) {
@@ -33,7 +30,7 @@ export default function DashboardFilters({
   const isPersonal: DashboardSearchParams['personal'] =
     searchParams.get('personal') === 'true' ? 'true' : undefined
   const sortBy: DashboardSearchParams['sortBy'] =
-    searchParams.get('sortBy') === 'plays' ? 'plays' : undefined
+    searchParams.get('sortBy') === 'duration' ? 'duration' : undefined
   const hasUrlFilters =
     searchParams.has('personal') || searchParams.has('sortBy')
   const {
@@ -55,8 +52,8 @@ export default function DashboardFilters({
         params.delete('personal')
       }
 
-      if (sort === 'plays') {
-        params.set('sortBy', 'plays')
+      if (sort === 'duration') {
+        params.set('sortBy', 'duration')
       } else {
         params.delete('sortBy')
       }
@@ -74,7 +71,10 @@ export default function DashboardFilters({
 
   function handleSortChange(e: ChangeEvent<HTMLSelectElement>) {
     router.push(
-      getUrl(isPersonal, e.target.value === 'plays' ? 'plays' : undefined),
+      getUrl(
+        isPersonal,
+        e.target.value === 'duration' ? 'duration' : undefined,
+      ),
     )
   }
 
@@ -87,8 +87,8 @@ export default function DashboardFilters({
           ? 'true'
           : undefined
       const savedSort =
-        isSortByPlaysActive && readStorage('dashboardSort') === 'plays'
-          ? 'plays'
+        isSortByPlaysActive && readStorage('dashboardSort') === 'duration'
+          ? 'duration'
           : undefined
 
       if (!hasUrlFilters && (savedPersonal || savedSort)) {
@@ -114,10 +114,10 @@ export default function DashboardFilters({
   ])
 
   return (
-    <div className={clsx('mt-auto flex gap-2 sm:mt-0 sm:gap-3', className)}>
+    <>
       {personalFilter && (
         <div className='input-wrapper'>
-          <div className='select-wrapper select-wrapper--small'>
+          <div className='select-wrapper'>
             <select
               id={`${id}-style`}
               className='input input--small'
@@ -134,21 +134,21 @@ export default function DashboardFilters({
       )}
       {isSortByPlaysActive && (
         <div className='input-wrapper'>
-          <div className='select-wrapper select-wrapper--small'>
+          <div className='select-wrapper'>
             <select
               id={`${id}-sort`}
               className='input input--small'
-              value={sortBy === 'plays' ? 'plays' : ''}
+              value={sortBy === 'duration' ? 'duration' : ''}
               onChange={handleSortChange}
               aria-label={t('sortByLabel')}
             >
               <option disabled>{t('sort')}</option>
-              <option value=''>{t('byDuration')}</option>
-              <option value='plays'>{t('byPlays')}</option>
+              <option value=''>{t('byPlays')}</option>
+              <option value='duration'>{t('byDuration')}</option>
             </select>
           </div>
         </div>
       )}
-    </div>
+    </>
   )
 }

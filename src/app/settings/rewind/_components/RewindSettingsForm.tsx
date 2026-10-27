@@ -64,7 +64,7 @@ export default function RewindSettingsForm({ settings }: Props) {
             <h2 className='heading-settings'>{t('cards')}</h2>
             <Switch
               key={`libraries-size-count-${rewindSettings.isLibrariesSizeAndCountActive}`}
-              className='switch items-start'
+              className='switch'
               name='isLibrariesSizeAndCountActive'
               defaultSelected={rewindSettings.isLibrariesSizeAndCountActive}
             >
@@ -73,7 +73,6 @@ export default function RewindSettingsForm({ settings }: Props) {
                 <span className='label-wrapper'>
                   {t('librariesSizeAndCountCard')}
                 </span>
-                <small>{t('librariesSizeAndCountCardDescription')}</small>
               </span>
             </Switch>
           </section>

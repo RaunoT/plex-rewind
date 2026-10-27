@@ -23,7 +23,7 @@ export default function StoryAudioTop({ userRewind, settings }: RewindStory) {
           })}
         </p>
 
-        <div className='text-base not-italic'>
+        <div className='text-base leading-normal font-normal tracking-normal'>
           <MediaItems
             type='artist'
             items={userRewind.audio.top}

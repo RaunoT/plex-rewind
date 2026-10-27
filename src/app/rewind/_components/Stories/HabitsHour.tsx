@@ -27,7 +27,7 @@ function hourEmoji(hour: number) {
   return '🌙'
 }
 
-export default function StoryHabitsHour({ userRewind, isPaused }: RewindStory) {
+export default function StoryHabitsHour({ userRewind }: RewindStory) {
   const t = useTranslations('Rewind.Habits')
   const tCommon = useTranslations('Common')
   const locale = useLocale()
@@ -56,7 +56,7 @@ export default function StoryHabitsHour({ userRewind, isPaused }: RewindStory) {
 
   return (
     <>
-      <RewindStat isPaused={isPaused} scaleDelay={3}>
+      <RewindStat scaleDelay={3}>
         <p>
           {t.rich('hour', {
             hourValue: peakHourLabel,
@@ -72,7 +72,7 @@ export default function StoryHabitsHour({ userRewind, isPaused }: RewindStory) {
         </p>
       </RewindStat>
 
-      <RewindStat isPaused={isPaused} renderDelay={3} noScale className='pt-4'>
+      <RewindStat renderDelay={3} noScale className='pt-4'>
         <RewindBarChart
           data={hourly}
           labels={labels}

@@ -118,6 +118,7 @@ export type TracearrStream = TracearrMediaFields & {
   } | null
   source_audio_details: {
     language?: string
+    atmos?: boolean
   } | null
   stream_video_codec: string | null
   stream_audio_codec: string | null
@@ -128,6 +129,7 @@ export type TracearrStream = TracearrMediaFields & {
   stream_audio_details: {
     channels?: number
     language?: string
+    atmos?: boolean
   } | null
   transcode_info: {
     containerDecision?: string

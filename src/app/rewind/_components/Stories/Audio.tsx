@@ -4,18 +4,14 @@ import { MusicalNoteIcon } from '@heroicons/react/24/outline'
 import { useTranslations } from 'next-intl'
 import RewindStat from '../RewindStat'
 
-export default function StoryAudio({
-  userRewind,
-  isPaused,
-  settings,
-}: RewindStory) {
+export default function StoryAudio({ userRewind, settings }: RewindStory) {
   const t = useTranslations('Rewind.Audio')
 
   return (
     <>
       {userRewind.audio.duration ? (
         <>
-          <RewindStat isPaused={isPaused} scaleDelay={3}>
+          <RewindStat scaleDelay={3}>
             <p>
               {t.rich('duration', {
                 durationValue: userRewind.audio.duration,
@@ -32,7 +28,7 @@ export default function StoryAudio({
             </p>
           </RewindStat>
 
-          <RewindStat isPaused={isPaused} renderDelay={3} scaleDelay={3}>
+          <RewindStat renderDelay={3} scaleDelay={3}>
             <p>
               {t.rich('count', {
                 countValue: userRewind.audio.count,
@@ -46,12 +42,7 @@ export default function StoryAudio({
             </p>
           </RewindStat>
 
-          <RewindStat
-            isPaused={isPaused}
-            renderDelay={6}
-            loaderDelay={3}
-            noScale
-          >
+          <RewindStat renderDelay={6} loaderDelay={3} noScale>
             <p className='mb-2'>
               {t('favorite')}&nbsp;
               <span className='rewind-cat'>
@@ -59,7 +50,7 @@ export default function StoryAudio({
               </span>
             </p>
 
-            <div className='text-base not-italic'>
+            <div className='text-base leading-normal font-normal tracking-normal'>
               <MediaItems
                 type='artist'
                 items={Array(userRewind.audio.top[0])}
@@ -83,7 +74,7 @@ export default function StoryAudio({
               serverName: settings.general.serverName || 'Plex',
               from: (chunks) => (
                 <span className='whitespace-nowrap'>
-                  <span className='gradient-plex'>{chunks}</span>
+                  {chunks}
                   {/* eslint-disable-next-line react/jsx-no-literals */}
                   <span className='not-italic'>🥴</span>
                 </span>

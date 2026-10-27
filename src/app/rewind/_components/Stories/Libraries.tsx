@@ -11,11 +11,7 @@ import { ComponentProps } from 'react'
 import RewindStat from '../RewindStat'
 import StatListItem from '../StatListItem'
 
-export default function StoryLibraries({
-  userRewind,
-  isPaused,
-  settings,
-}: RewindStory) {
+export default function StoryLibraries({ userRewind, settings }: RewindStory) {
   const translations = useTranslations()
   const t = useTranslations('Rewind.Libraries')
   // Only these section types have a matching line; others (e.g. photo) are skipped
@@ -48,7 +44,7 @@ export default function StoryLibraries({
 
   return (
     <>
-      <RewindStat isPaused={isPaused} scaleDelay={3}>
+      <RewindStat scaleDelay={3}>
         <p>
           {t.rich('filesize', {
             filesize: (chunks) => (
@@ -58,7 +54,7 @@ export default function StoryLibraries({
               </span>
             ),
             serverName: settings.general.serverName || 'Plex',
-            plex: (chunks) => <span className='gradient-plex'>{chunks}</span>,
+            plex: (chunks) => chunks,
             size: (chunks) => (
               <span className='whitespace-nowrap'>
                 <span className='rewind-stat'>{chunks}</span>
@@ -84,7 +80,7 @@ export default function StoryLibraries({
       </RewindStat>
 
       {libraryItems.length > 0 && (
-        <RewindStat isPaused={isPaused} renderDelay={3} noScale>
+        <RewindStat renderDelay={3} noScale>
           <p>{t('libraries')}</p>
           <ul className='list mt-2'>
             {libraryItems.map((item) => (

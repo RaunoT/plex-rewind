@@ -44,27 +44,23 @@ function getJourneyKey(
   return 'none'
 }
 
-export default function StoryGoodbye({
-  userRewind,
-  isPaused,
-  settings,
-}: RewindStory) {
+export default function StoryGoodbye({ userRewind, settings }: RewindStory) {
   const t = useTranslations('Rewind.Goodbye')
   const hasPlays = hasRewindPlays(userRewind)
 
   return (
     <>
-      <RewindStat scaleDelay={2} isPaused={isPaused}>
+      <RewindStat scaleDelay={2}>
         <p>
           {t.rich('thanks', {
             serverName: settings.general.serverName || 'Plex',
-            plex: (chunks) => <span className='gradient-plex'>{chunks}</span>,
+            plex: (chunks) => chunks,
             user: (chunks) => <span className='rewind-cat'>{chunks}</span>,
             userValue: userRewind.user.name,
           })}
         </p>
       </RewindStat>
-      <RewindStat renderDelay={2} scaleDelay={4} isPaused={isPaused}>
+      <RewindStat renderDelay={2} scaleDelay={4}>
         {hasPlays ? (
           <p>
             {t.rich(
@@ -99,12 +95,7 @@ export default function StoryGoodbye({
           <p>{t('sorry')}</p>
         )}
       </RewindStat>
-      <RewindStat
-        renderDelay={6}
-        scaleDelay={3}
-        loaderDelay={2}
-        isPaused={isPaused}
-      >
+      <RewindStat renderDelay={6} scaleDelay={3} loaderDelay={2}>
         <p>
           {hasPlays ? t('weWillBeBack') : t('weWillBeHere')}{' '}
           {t.rich('insightsAndStats', {
@@ -114,11 +105,11 @@ export default function StoryGoodbye({
           })}
         </p>
       </RewindStat>
-      <RewindStat renderDelay={9} loaderDelay={6} isPaused={isPaused} noScale>
+      <RewindStat renderDelay={9} loaderDelay={6} noScale>
         <p>
           {t.rich('untilThen', {
             serverName: settings.general.serverName || 'Plex',
-            plex: (chunks) => <span className='gradient-plex'>{chunks}</span>,
+            plex: (chunks) => chunks,
           })}
         </p>
       </RewindStat>
