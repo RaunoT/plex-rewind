@@ -1,10 +1,10 @@
 'use server'
 
-import { canViewStats } from '@/lib/access'
 import { authOptions } from '@/lib/auth'
 import { Settings } from '@/types/settings'
 import { TautulliActivity, TautulliSession } from '@/types/tautulli'
 import getSettings from '@/utils/getSettings'
+import { canViewFeature, getViewer } from '@/utils/helpers'
 import { getActivity as fetchActivity } from '@/utils/statsSource'
 import { getServerSession, Session } from 'next-auth'
 
@@ -95,7 +95,7 @@ export default async function getActivity(): Promise<TautulliActivity | null> {
   const settings = getSettings()
   const viewer = await getServerSession(authOptions)
 
-  if (!settings.activity.isActive || !canViewStats(settings, viewer)) {
+  if (!canViewFeature(settings, 'activity', getViewer(viewer))) {
     return null
   }
 

@@ -2,14 +2,17 @@
 
 import Avatar from '@/components/Avatar'
 import { MEDIA_ICONS, MediaIcon, STAT_ICONS } from '@/components/icons'
-import { PublicSettings } from '@/types/settings'
+import { ExternalLink, PublicSettings } from '@/types/settings'
 import { TautulliItemRow } from '@/types/tautulli'
+import { EXTERNAL_LINK_NAMES } from '@/utils/constants'
 import { getDeeplinkRatingKeyFromRow } from '@/utils/deeplink'
+import { getExternalLinks, isSearchLink } from '@/utils/externalLinks'
 import { formatPercent, formatRating, secondsToTime } from '@/utils/formatting'
 import { getImageProxyUrl } from '@/utils/imageProxy'
 import { slideDown } from '@/utils/motion'
 import { TrashIcon } from '@heroicons/react/24/outline'
 import clsx from 'clsx'
+import { kebabCase } from 'lodash'
 import { motion } from 'motion/react'
 import { useLocale, useTranslations } from 'next-intl'
 import Image from 'next/image'
@@ -25,6 +28,15 @@ const RANK_COLORS = [
   'bg-linear-to-b from-white to-neutral-300 bg-clip-text text-transparent',
   'bg-linear-to-b from-orange-300 to-orange-600 bg-clip-text text-transparent',
 ]
+// Short enough to fit a row of them, the labels carry the full names
+const LINK_TAGS: Record<ExternalLink, string> = {
+  imdb: 'IMDb',
+  tmdb: 'TMDB',
+  tvdb: 'TVDB',
+  rottenTomatoes: 'RT',
+  letterboxd: 'Letterboxd',
+  trakt: 'Trakt',
+}
 
 type Props = {
   data: TautulliItemRow
@@ -80,6 +92,9 @@ export default function MediaItem({
       : null
   const hasDetails =
     year || tmdbRating || imdbRating || rottenTomatoesRating !== null
+  const externalLinks = isVideo
+    ? getExternalLinks(data, type, settings.general.activeExternalLinks)
+    : []
 
   if (initialImageSrc !== prevInitialImageSrc) {
     setPrevInitialImageSrc(initialImageSrc)
@@ -251,8 +266,10 @@ export default function MediaItem({
                 )}
             </ul>
           </div>
+          {/* Wrapped rows are far enough apart that a tag's tap area never
+              covers the tag above it */}
           {(type === 'movie' || type === 'show' || type === 'artist') && (
-            <div className='relative z-10 flex shrink-0 items-center gap-1.5 empty:hidden @xl:mt-0.5'>
+            <div className='relative z-10 flex shrink-0 flex-wrap items-center gap-x-1.5 gap-y-2.5 empty:hidden @xl:mt-0.5 @xl:max-w-56 @xl:justify-end'>
               {data.is_deleted ? (
                 isOverseerrActive && (type === 'movie' || type === 'show') ? (
                   <a
@@ -282,18 +299,23 @@ export default function MediaItem({
                   />
                 )
               )}
-              {data.imdb_id && (
+              {externalLinks.map(({ site, href }) => (
                 <a
-                  href={`https://www.imdb.com/title/${data.imdb_id}`}
+                  key={site}
+                  href={href}
                   target='_blank'
                   rel='noopener noreferrer'
-                  className='button-card button-card--imdb'
-                  aria-label={t('imdbLabel', { title: data.title })}
-                  // eslint-disable-next-line react/jsx-no-literals
+                  className={`button-card button-card--site button-card--${kebabCase(site)}`}
+                  aria-label={t(
+                    isSearchLink(site)
+                      ? 'externalSearchLabel'
+                      : 'externalLinkLabel',
+                    { title: data.title, site: EXTERNAL_LINK_NAMES[site] },
+                  )}
                 >
-                  IMDb
+                  {LINK_TAGS[site]}
                 </a>
-              )}
+              ))}
             </div>
           )}
         </div>

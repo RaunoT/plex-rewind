@@ -76,7 +76,7 @@ export default function AccountMenu({ isCompact }: Props) {
         placement={isCompact ? 'bottom end' : 'top start'}
         offset={8}
         className={clsx(
-          'glass-sheet rounded-[18px] bg-neutral-900/70 p-1.5 outline-none',
+          'glass-sheet menu',
           isCompact ? 'w-56' : 'w-(--trigger-width)',
         )}
       >

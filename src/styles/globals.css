@@ -93,6 +93,11 @@
   @apply transition-opacity group-hover:opacity-60 hover:opacity-60;
 }
 
+/* Radii: rounded-full for anything one line tall that is pressed or reads as a
+   chip. Otherwise by size: md for ~24px items (tags, posters, checkboxes), xl
+   for 40px controls and rows, 2xl for small panels, 3xl for sheets. A
+   container of rows adds its padding to their radius, so corners stay
+   concentric. */
 @layer components {
   .glass-sheet {
     @apply glass relative rounded-3xl p-5;
@@ -192,9 +197,40 @@
       }
     }
 
-    /* IMDb's own tag, so it reads as the link it is */
+    /* Each site's own colors, so the tags read as the links they are. The
+       reds are a shade darker than the brands' to keep white text legible. */
+    &.button-card--site {
+      @apply bg-(--site-bg) px-1.5 font-extrabold tracking-tight text-(--site-text) hover:bg-(--site-bg) hover:brightness-110;
+    }
+
     &.button-card--imdb {
-      @apply bg-[#f5c518] px-1.5 font-extrabold tracking-tight text-black hover:bg-[#ffd84d];
+      --site-bg: #f5c518;
+      --site-text: #000;
+    }
+
+    &.button-card--tmdb {
+      --site-bg: #0d253f;
+      --site-text: #90cea1;
+    }
+
+    &.button-card--tvdb {
+      --site-bg: #6cd491;
+      --site-text: #000;
+    }
+
+    &.button-card--rotten-tomatoes {
+      --site-bg: #dd2c08;
+      --site-text: #fff;
+    }
+
+    &.button-card--letterboxd {
+      --site-bg: #202830;
+      --site-text: #fff;
+    }
+
+    &.button-card--trakt {
+      --site-bg: #e31b23;
+      --site-text: #fff;
     }
   }
 
@@ -271,6 +307,13 @@
         @apply text-white;
       }
     }
+  }
+
+  /* Used with glass-sheet, whose padding and radius it replaces */
+  .menu {
+    @apply bg-neutral-900/70 p-1.5 outline-none;
+
+    border-radius: calc(var(--radius-xl) + --spacing(1.5));
   }
 
   .menu-item {
@@ -381,6 +424,28 @@
         @apply text-white;
       }
     }
+
+    /* Beside a page's small selects, with its label first. Taps 10px above
+       and below still count, for a 40px tall tap area. */
+    &.switch--small {
+      @apply relative cursor-pointer flex-row-reverse text-sm text-neutral-300 transition-colors hover:text-white;
+
+      &::after {
+        @apply absolute inset-x-0 -inset-y-2.5 content-[''];
+      }
+
+      .indicator {
+        @apply h-5 w-9;
+
+        &::after {
+          @apply size-4;
+        }
+      }
+
+      &[data-selected='true'] .indicator {
+        @apply after:translate-x-4;
+      }
+    }
   }
 
   .checkbox-wrapper {
@@ -402,7 +467,7 @@
   }
 
   .checkbox {
-    @apply relative size-6 shrink-0 rounded-lg bg-white/15 transition-colors;
+    @apply relative size-6 shrink-0 rounded-md bg-white/15 transition-colors;
   }
 
   /* Rows of boxes with their labels, so each tick clearly belongs to one

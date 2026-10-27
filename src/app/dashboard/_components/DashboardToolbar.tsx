@@ -17,7 +17,7 @@ export default function DashboardToolbar({
   isUsers = false,
 }: Props) {
   return (
-    <div className='flex flex-wrap justify-end gap-2'>
+    <div className='flex min-h-10 flex-wrap items-center justify-end gap-2'>
       <Suspense>
         <PeriodSelect settings={settings} />
         {!isUsers && (

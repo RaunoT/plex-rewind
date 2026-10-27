@@ -52,12 +52,13 @@ export default function AppProvider({
             )}
             <main
               className={clsx(
-                'group/main flex h-full min-h-dvh flex-col items-center overflow-x-hidden px-4 pt-3 pb-6 sm:pt-4',
+                // The same 16px around the page, the sidebar and between blocks
+                'group/main flex h-full min-h-dvh flex-col items-center overflow-x-hidden p-4',
                 {
                   'justify-center':
                     (pathname === '/' && !hasSidebar) ||
                     pathname === '/~offline',
-                  'lg:pr-6 lg:pl-70': hasSidebar,
+                  'lg:pl-68': hasSidebar,
                 },
               )}
             >
@@ -76,7 +77,7 @@ export default function AppProvider({
               </div>
 
               {/* Pages with a header, or the sidebar, show these controls instead */}
-              <HeaderControls className='absolute top-3 right-4 z-10 group-has-[[data-page-header]]/main:hidden sm:top-4 lg:group-data-[sidebar]/app:hidden' />
+              <HeaderControls className='absolute top-4 right-4 z-10 group-has-[[data-page-header]]/main:hidden lg:group-data-[sidebar]/app:hidden' />
 
               {children}
             </main>

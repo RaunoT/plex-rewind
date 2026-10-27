@@ -36,6 +36,7 @@
     "subtitles": "Sous-titres",
     "location": "Emplacement",
     "bandwidth": "Bande passante",
+    "streamDetails": "Détails du flux",
     "noActivity": "Aucune lecture en cours. 😴",
     "loadError": "Impossible de charger l'activité",
     "playing": "En lecture",
@@ -59,7 +60,7 @@
     "movies": "{count, plural, one {film} other {films}}",
     "episodes": "{count, plural, one {épisode} other {épisodes}}",
     "tracks": "{count, plural, one {morceau} other {morceaux}}",
-    "requests": "{count, plural, one {demande} other {demandes}}",
+    "requests": "{count, plural, one {# demande} other {# demandes}}",
     "durationWatched": "{duration} de visionnage",
     "durationListened": "{duration} d'écoute"
   },
@@ -162,7 +163,7 @@
       "itemStatistics": "Statistiques des éléments",
       "itemStatisticsDescription": "Affichées pour chaque titre et utilisateur dans les listes du tableau de bord et du Rewind. Les notes IMDb et Rotten Tomatoes nécessitent une clé API MDBList dans les paramètres de connexion.",
       "totalStatistics": "Statistiques totales",
-      "totalStatisticsDescription": "Affichées sous chaque liste du tableau de bord. Le nombre correspond aux films, épisodes ou morceaux de la bibliothèque.",
+      "totalStatisticsDescription": "La durée de visionnage et les demandes portent sur la période choisie et sont affichées à côté des filtres. La taille et le nombre sont affichés sous chaque liste. Le nombre correspond aux films, épisodes ou morceaux de la bibliothèque.",
       "sortFilter": "Filtre de tri",
       "sortFilterDescription": "Permet de trier le tableau de bord par durée de visionnage. Sinon, les listes sont triées par lectures.",
       "customPeriod": "Période personnalisée",
@@ -187,6 +188,8 @@
       "tmdbOnlyPosters": "Affiches TMDB uniquement",
       "tmdbOnlyPostersDescription1": "Ignorer les affiches Plex pour les séries et les films.",
       "tmdbOnlyPostersDescription2": "Par défaut, TMDB est un recours.",
+      "externalLinks": "Liens externes",
+      "externalLinksDescription": "Letterboxd ne concerne que les films et TVDB que les séries. Rotten Tomatoes ouvre une recherche.",
       "privacy": "Confidentialité",
       "excludedUsers": "Utilisateurs exclus",
       "excludedUsersDescription": "Les utilisateurs sélectionnés sont exclus des classements d'utilisateurs et de la durée de visionnage totale. Avec Tautulli, les films, séries et artistes populaires incluent toujours leurs lectures.",
@@ -194,7 +197,8 @@
       "outsideAccessDescription": "Tout le monde peut voir le tableau de bord et l'activité sans se connecter, et toutes les bibliothèques sont affichées, quel que soit le partage dans Plex. Le Rewind nécessite toujours une connexion.",
       "anonymize": "Anonymiser",
       "anonymizeDescription": "Masquer les noms des autres utilisateurs, même pour les administrateurs. Les adresses IP et les emplacements sont aussi masqués sur la page d'activité.",
-      "analytics": "Analytique"
+      "analytics": "Analytique",
+      "analyticsIdDescription": "Envoie les pages vues à Google Analytics 4. Utilisez l'ID de mesure d'un flux de données Web, qui commence par G-. Laissez vide pour le désactiver."
     },
     "Rewind": {
       "title": "Paramètres Rewind",
@@ -211,6 +215,8 @@
   },
   "Common": {
     "enabled": "Activé",
+    "adminOnly": "Administrateurs uniquement",
+    "adminOnlyDescription": "Masqué pour tous sauf les administrateurs du serveur, même si l'accès externe est autorisé.",
     "status": "Statut",
     "year": "Année",
     "rating": "Note",
@@ -349,6 +355,7 @@
     "labelAudio": "Musique",
     "you": "(vous)",
     "requestLabel": "Demander {title}",
-    "imdbLabel": "{title} sur IMDb"
+    "externalLinkLabel": "{title} sur {site}",
+    "externalSearchLabel": "Rechercher {title} sur {site}"
   }
 }

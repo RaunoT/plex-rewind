@@ -98,7 +98,7 @@ export default function RewindBarChart({
             />
           ))}
 
-          <div className='relative flex h-56 items-end gap-[2px] sm:h-40 sm:gap-1'>
+          <div className='relative flex h-56 items-end gap-0.5 sm:h-40 sm:gap-1'>
             {data.map((value, index) => {
               const isPeak = index === peakIndex
               const heightPercentage =

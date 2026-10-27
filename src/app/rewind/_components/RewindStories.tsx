@@ -35,8 +35,13 @@ type Props = {
 }
 
 export default function RewindStories({ userRewind, settings }: Props) {
-  function createStory(Component: FC<StoryComponent>, duration: number) {
+  function createStory(
+    id: string,
+    Component: FC<StoryComponent>,
+    duration: number,
+  ) {
     return {
+      id,
       type: 'component' as const,
       component: (story: Story) => (
         <Component
@@ -63,44 +68,68 @@ export default function RewindStories({ userRewind, settings }: Props) {
     (library) => library.section_type === 'artist',
   )
   const stories = [
-    createStory(StoryWelcome, 7000),
-    createStory(StoryTotal, 8000),
+    createStory('welcome', StoryWelcome, 7000),
+    createStory('total', StoryTotal, 8000),
     ...(userRewind.usersTop && userRewind.usersTop.length > 1
-      ? [createStory(StoryUsersTop, 9000)]
+      ? [createStory('users_top', StoryUsersTop, 9000)]
       : []),
     ...(userRewind.libraries_total_size && isLibrariesSizeAndCountActive
-      ? [createStory(StoryLibraries, 9000)]
+      ? [createStory('libraries', StoryLibraries, 9000)]
       : []),
     ...(isOverseerrActive && userRewind.requests
-      ? [createStory(StoryRequests, userRewind.requests.total ? 9000 : 4000)]
+      ? [
+          createStory(
+            'requests',
+            StoryRequests,
+            userRewind.requests.total ? 9000 : 4000,
+          ),
+        ]
       : []),
     ...(userRewind.duration.user && hasShowLibraries && userRewind.shows.top[0]
-      ? [createStory(StoryShows, userRewind.shows.count ? 10000 : 4000)]
+      ? [
+          createStory(
+            'shows',
+            StoryShows,
+            userRewind.shows.count ? 10000 : 4000,
+          ),
+        ]
       : []),
     ...(userRewind.shows.top.length > 1 && hasShowLibraries
-      ? [createStory(StoryShowsTop, 8000)]
+      ? [createStory('shows_top', StoryShowsTop, 8000)]
       : []),
     ...(userRewind.duration.user &&
     hasMovieLibraries &&
     userRewind.movies.top[0]
-      ? [createStory(StoryMovies, userRewind.movies.count ? 10000 : 4000)]
+      ? [
+          createStory(
+            'movies',
+            StoryMovies,
+            userRewind.movies.count ? 10000 : 4000,
+          ),
+        ]
       : []),
     ...(userRewind.movies.top.length > 1 && hasMovieLibraries
-      ? [createStory(StoryMoviesTop, 8000)]
+      ? [createStory('movies_top', StoryMoviesTop, 8000)]
       : []),
     ...(userRewind.duration.user && hasAudioLibraries && userRewind.audio.top[0]
-      ? [createStory(StoryAudio, userRewind.audio.count ? 10000 : 4000)]
+      ? [
+          createStory(
+            'audio',
+            StoryAudio,
+            userRewind.audio.count ? 10000 : 4000,
+          ),
+        ]
       : []),
     ...(userRewind.audio.top.length > 1 && hasAudioLibraries
-      ? [createStory(StoryAudioTop, 8000)]
+      ? [createStory('audio_top', StoryAudioTop, 8000)]
       : []),
     ...(userRewind.habits.peakDayIndex !== null
-      ? [createStory(StoryHabitsDay, 10000)]
+      ? [createStory('habits_day', StoryHabitsDay, 10000)]
       : []),
     ...(userRewind.habits.peakHour !== null
-      ? [createStory(StoryHabitsHour, 10000)]
+      ? [createStory('habits_hour', StoryHabitsHour, 10000)]
       : []),
-    createStory(StoryGoodbye, 11000),
+    createStory('goodbye', StoryGoodbye, 11000),
   ]
 
   return <Stories stories={stories} />

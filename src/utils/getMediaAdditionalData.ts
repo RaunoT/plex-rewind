@@ -19,7 +19,8 @@ type TmdbDetails = {
   vote_average?: number
   first_air_date?: string
   poster_path?: string | null
-  external_ids?: { imdb_id?: string | null }
+  // Only TV shows have a TVDB ID on TMDB
+  external_ids?: { imdb_id?: string | null; tvdb_id?: number | null }
 }
 
 type MdblistMedia = {
@@ -152,6 +153,7 @@ export default async function getMediaAdditionalData(
         rotten_tomatoes_rating: mdblistRatings.rottenTomatoes,
         tmdb_id: tmdbId,
         imdb_id: imdbId,
+        tvdb_id: item.tvdb_id || details?.external_ids?.tvdb_id || null,
         thumb: poster,
       }
     }),
@@ -164,6 +166,7 @@ export default async function getMediaAdditionalData(
     mediaItem.rotten_tomatoes_rating = additionalData[i].rotten_tomatoes_rating
     mediaItem.tmdb_id = additionalData[i].tmdb_id
     mediaItem.imdb_id = additionalData[i].imdb_id
+    mediaItem.tvdb_id = additionalData[i].tvdb_id
     mediaItem.thumb = additionalData[i].thumb
 
     if (type === 'tv') {

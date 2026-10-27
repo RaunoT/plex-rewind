@@ -36,6 +36,7 @@
     "subtitles": "Untertitel",
     "location": "Standort",
     "bandwidth": "Bandbreite",
+    "streamDetails": "Stream-Details",
     "noActivity": "Keine aktiven Streams. 😴",
     "loadError": "Aktivität konnte nicht geladen werden",
     "playing": "Läuft",
@@ -59,7 +60,7 @@
     "movies": "{count, plural, one {Film} other {Filme}}",
     "episodes": "{count, plural, one {Episode} other {Episoden}}",
     "tracks": "{count, plural, one {Titel} other {Titel}}",
-    "requests": "{count, plural, one {Anfrage} other {Anfragen}}",
+    "requests": "{count, plural, one {# Anfrage} other {# Anfragen}}",
     "durationWatched": "{duration} geschaut",
     "durationListened": "{duration} gehört"
   },
@@ -162,7 +163,7 @@
       "itemStatistics": "Artikelstatistiken",
       "itemStatisticsDescription": "Wird bei jedem Titel und Benutzer in den Listen von Dashboard und Rewind angezeigt. Bewertungen von IMDb und Rotten Tomatoes brauchen einen MDBList-API-Schlüssel in den Verbindungseinstellungen.",
       "totalStatistics": "Gesamtstatistik",
-      "totalStatisticsDescription": "Wird unter jeder Dashboard-Liste angezeigt. Die Anzahl ist die Zahl der Filme, Episoden oder Titel in der Bibliothek.",
+      "totalStatisticsDescription": "Wiedergabezeit und Anfragen gelten für den gewählten Zeitraum und stehen neben den Filtern. Größe und Anzahl stehen unter jeder Liste. Die Anzahl ist die Zahl der Filme, Episoden oder Titel in der Bibliothek.",
       "sortFilter": "Sortierfilter",
       "sortFilterDescription": "Ermöglicht, das Dashboard nach Wiedergabezeit zu sortieren. Sonst wird nach Wiedergaben sortiert.",
       "customPeriod": "benutzerdefinierter Zeitraum",
@@ -187,6 +188,8 @@
       "tmdbOnlyPosters": "Nur TMDB Poster",
       "tmdbOnlyPostersDescription1": "Plex-Poster für Filme und Serien ignorieren.",
       "tmdbOnlyPostersDescription2": "Es wird TMDB verwendet, wenn kein Poster vorhanden ist.",
+      "externalLinks": "Externe Links",
+      "externalLinksDescription": "Letterboxd gibt es nur für Filme und TVDB nur für Serien. Rotten Tomatoes öffnet eine Suche.",
       "privacy": "Datenschutz",
       "excludedUsers": "Ausgeschlossene Benutzer",
       "excludedUsersDescription": "Ausgewählte Benutzer werden aus Benutzer-Ranglisten und der gesamten Wiedergabezeit ausgeschlossen. Mit Tautulli enthalten die beliebtesten Filme, Serien und Künstler weiterhin ihre Wiedergaben.",
@@ -194,7 +197,8 @@
       "outsideAccessDescription": "Alle können Dashboard und Aktivität ohne Anmeldung sehen, und alle Bibliotheken werden angezeigt, unabhängig von der Freigabe in Plex. Rewind erfordert weiterhin eine Anmeldung.",
       "anonymize": "Anonymisieren",
       "anonymizeDescription": "Namen anderer Benutzer verbergen, auch vor Admins. Auf der Aktivitätsseite werden auch IP-Adressen und Standorte verborgen.",
-      "analytics": "Analytik"
+      "analytics": "Analytik",
+      "analyticsIdDescription": "Sendet Seitenaufrufe an Google Analytics 4. Verwende die Mess-ID eines Web-Datenstreams, die mit G- beginnt. Leer lassen, um es auszuschalten."
     },
     "Rewind": {
       "title": "Rewind Einstellungen",
@@ -211,6 +215,8 @@
   },
   "Common": {
     "enabled": "Aktiv",
+    "adminOnly": "Nur für Admins",
+    "adminOnlyDescription": "Für alle außer Server-Admins ausgeblendet, auch wenn der Zugang von außen erlaubt ist.",
     "status": "Status",
     "year": "Jahr",
     "rating": "Bewertung",
@@ -349,6 +355,7 @@
     "labelAudio": "Musik",
     "you": "(du)",
     "requestLabel": "Anfrage für {title}",
-    "imdbLabel": "{title} auf IMDb"
+    "externalLinkLabel": "{title} auf {site}",
+    "externalSearchLabel": "{title} auf {site} suchen"
   }
 }

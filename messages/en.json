@@ -36,6 +36,7 @@
     "subtitles": "Subtitles",
     "location": "Location",
     "bandwidth": "Bandwidth",
+    "streamDetails": "Stream details",
     "noActivity": "No active streams. 😴",
     "loadError": "Couldn't load activity",
     "playing": "Playing",
@@ -59,7 +60,7 @@
     "movies": "{count, plural, one {movie} other {movies}}",
     "episodes": "{count, plural, one {episode} other {episodes}}",
     "tracks": "{count, plural, one {track} other {tracks}}",
-    "requests": "{count, plural, one {request} other {requests}}",
+    "requests": "{count, plural, one {# request} other {# requests}}",
     "durationWatched": "{duration} watched",
     "durationListened": "{duration} listened"
   },
@@ -162,7 +163,7 @@
       "itemStatistics": "Item statistics",
       "itemStatisticsDescription": "Shown for each title and user in the dashboard and Rewind lists. IMDb and Rotten Tomatoes ratings need an MDBList API key in the connection settings.",
       "totalStatistics": "Total statistics",
-      "totalStatisticsDescription": "Shown below each dashboard list. Count is the number of movies, episodes or tracks in the library.",
+      "totalStatisticsDescription": "Watch time and requests cover the selected period and are shown next to the filters. Size and count are shown below each list. Count is the number of movies, episodes or tracks in the library.",
       "sortFilter": "Sort filter",
       "sortFilterDescription": "Lets viewers sort the dashboard by watch time. Otherwise, lists are sorted by plays.",
       "customPeriod": "Custom period",
@@ -187,6 +188,8 @@
       "tmdbOnlyPosters": "TMDB only posters",
       "tmdbOnlyPostersDescription1": "Ignore Plex posters for TV shows and movies.",
       "tmdbOnlyPostersDescription2": "By default, TMDB is a fallback.",
+      "externalLinks": "External links",
+      "externalLinksDescription": "Letterboxd is only for movies and TVDB only for TV shows. Rotten Tomatoes opens a search.",
       "privacy": "Privacy",
       "excludedUsers": "Excluded users",
       "excludedUsersDescription": "Selected users are left out of user rankings and total watch time. With Tautulli, top movies, TV shows and artists still include their plays.",
@@ -194,7 +197,8 @@
       "outsideAccessDescription": "Anyone can view the dashboard and activity without signing in, and every library is shown, whatever is shared in Plex. Rewind still requires signing in.",
       "anonymize": "Anonymize",
       "anonymizeDescription": "Hide other users' names, even from admins. IP addresses and locations on the activity page are hidden too.",
-      "analytics": "Analytics"
+      "analytics": "Analytics",
+      "analyticsIdDescription": "Sends page views to Google Analytics 4. Use the measurement ID of a web data stream, which starts with G-. Leave empty to turn it off."
     },
     "Rewind": {
       "title": "Rewind settings",
@@ -211,6 +215,8 @@
   },
   "Common": {
     "enabled": "Enabled",
+    "adminOnly": "Admins only",
+    "adminOnlyDescription": "Hidden from everyone but server admins, even when outside access is allowed.",
     "status": "Status",
     "year": "Year",
     "rating": "Rating",
@@ -349,6 +355,7 @@
     "labelAudio": "Music",
     "you": "(you)",
     "requestLabel": "Request {title}",
-    "imdbLabel": "{title} on IMDb"
+    "externalLinkLabel": "{title} on {site}",
+    "externalSearchLabel": "Search {site} for {title}"
   }
 }

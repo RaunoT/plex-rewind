@@ -2,6 +2,7 @@ import { UserRewind } from '@/types/rewind'
 import { Settings, StatisticsSource } from '@/types/settings'
 import { TautulliLibrary } from '@/types/tautulli'
 import { kebabCase } from 'lodash'
+import { Session } from 'next-auth'
 import { getPeriods, SETTINGS_PAGES } from './constants'
 
 const SOURCE_REQUIRED_SETTINGS: Record<StatisticsSource, string[]> = {
@@ -35,16 +36,52 @@ export function sortByActiveLibraries(
     .filter((lib): lib is TautulliLibrary => lib !== undefined)
 }
 
+export type Feature = 'rewind' | 'dashboard' | 'activity'
+
+export type Viewer = {
+  isLoggedIn: boolean
+  isAdmin: boolean
+}
+
+export function getViewer(session: Session | null): Viewer {
+  return { isLoggedIn: !!session, isAdmin: !!session?.user?.isAdmin }
+}
+
+// Layouts don't run for every request that renders a page or action, so pages
+// and server actions check this too. A rewind is always someone's, so outside
+// access doesn't open it up.
+export function canViewFeature(
+  settings: Pick<Settings, 'general' | Feature>,
+  feature: Feature,
+  viewer: Viewer,
+): boolean {
+  const { isActive, isAdminOnly } = settings[feature]
+
+  if (!isActive) {
+    return false
+  }
+
+  if (isAdminOnly) {
+    return viewer.isAdmin
+  }
+
+  return (
+    viewer.isLoggedIn ||
+    (feature !== 'rewind' && settings.general.isOutsideAccess)
+  )
+}
+
 // The home page's tiles, so it knows when it has none to show
 export function getHomeTiles(
-  settings: Pick<Settings, 'rewind' | 'activity' | 'dashboard'>,
-  isLoggedIn: boolean,
+  settings: Pick<Settings, 'general' | Feature>,
+  viewer: Viewer,
   libraryCount: number,
 ) {
   return {
-    rewind: settings.rewind.isActive && isLoggedIn,
-    activity: settings.activity.isActive,
-    libraries: settings.dashboard.isActive && libraryCount > 0,
+    rewind: canViewFeature(settings, 'rewind', viewer),
+    activity: canViewFeature(settings, 'activity', viewer),
+    libraries:
+      canViewFeature(settings, 'dashboard', viewer) && libraryCount > 0,
   }
 }
 
