@@ -72,6 +72,21 @@ export function hasRewindPlays({
   return shows.count + movies.count + audio.count > 0
 }
 
+// The server's total leaves excluded users out, so an excluded user's own
+// rewind adds their time back to it. The percentage is null without a total.
+export function getUserShare(
+  userDuration: number,
+  serverDuration: number,
+  isUserExcluded: boolean,
+): { total: number; percentage: number | null } {
+  const total = serverDuration + (isUserExcluded ? userDuration : 0)
+
+  return {
+    total,
+    percentage: total > 0 ? Math.round((userDuration * 100) / total) : null,
+  }
+}
+
 // Whole-day count from `startDate` up to `endDate` (defaults to now). Used to
 // express the rewind window as a rolling `time_range` for the Tautulli stat and
 // graph endpoints that don't accept before/after.
