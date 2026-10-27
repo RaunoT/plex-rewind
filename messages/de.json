@@ -19,7 +19,11 @@
     "rewindDescription": "Deine Highlights, Geschichte für Geschichte.",
     "streams": "{count, plural, =0 {Nichts läuft} =1 {# Stream} other {# Streams}}",
     "mostWatched": "Am meisten gesehen",
-    "mostListened": "Am meisten gehört"
+    "mostListened": "Am meisten gehört",
+    "emptyTitle": "Hier gibt es noch nichts zu sehen",
+    "emptyDescription": "Hier ist noch nichts für dich dabei. Schau später wieder vorbei.",
+    "emptyAdminDescription": "Aktiviere Rewind, Aktivität oder das Dashboard in den Einstellungen und wähle mindestens eine Bibliothek aus.",
+    "openSettings": "Einstellungen öffnen"
   },
   "Activity": {
     "title": "Aktivität",

@@ -19,7 +19,11 @@
     "rewindDescription": "Your viewing highlights, one story at a time.",
     "streams": "{count, plural, =0 {Nothing playing} =1 {# stream} other {# streams}}",
     "mostWatched": "Most watched",
-    "mostListened": "Most listened"
+    "mostListened": "Most listened",
+    "emptyTitle": "Nothing to show yet",
+    "emptyDescription": "There's nothing here for you yet. Check back later.",
+    "emptyAdminDescription": "Turn on Rewind, Activity or the Dashboard in the settings, and choose at least one library.",
+    "openSettings": "Open settings"
   },
   "Activity": {
     "title": "Activity",

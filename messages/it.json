@@ -19,7 +19,11 @@
     "rewindDescription": "I tuoi momenti migliori, una storia alla volta.",
     "streams": "{count, plural, =0 {Niente in riproduzione} =1 {# riproduzione} other {# riproduzioni}}",
     "mostWatched": "Il più visto",
-    "mostListened": "Il più ascoltato"
+    "mostListened": "Il più ascoltato",
+    "emptyTitle": "Ancora niente da mostrare",
+    "emptyDescription": "Qui non c'è ancora niente per te. Torna più tardi.",
+    "emptyAdminDescription": "Attiva Rewind, Attività o la Dashboard nelle impostazioni e scegli almeno una libreria.",
+    "openSettings": "Apri le impostazioni"
   },
   "Activity": {
     "title": "Attività",

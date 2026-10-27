@@ -1,11 +1,13 @@
 import SkeletonLine from '@/components/SkeletonLine'
 import SourceUnreachable from '@/components/SourceUnreachable'
+import StatusMessage from '@/components/StatusMessage'
 import { DashboardSearchParams } from '@/types/dashboard'
 import { Settings } from '@/types/settings'
 import { TautulliLibrary } from '@/types/tautulli'
 import { DASHBOARD_PERIOD_COOKIE_NAME, getSiteUrl } from '@/utils/constants'
 import { getItems } from '@/utils/getDashboard'
 import getPeriod from '@/utils/getPeriod'
+import { getHomeTiles } from '@/utils/helpers'
 import { getImageProxyUrl } from '@/utils/imageProxy'
 import { toPublicSettings } from '@/utils/publicSettings'
 import {
@@ -41,6 +43,8 @@ export default async function Overview({
 }: Props) {
   const t = await getTranslations()
   const firstName = session?.user.name?.split(' ')[0]
+  const isAdmin = !!session?.user.isAdmin
+  const tiles = getHomeTiles(settings, !!session, libraries?.length ?? 0)
   const period = getDashboardPeriod(
     (await cookies()).get(DASHBOARD_PERIOD_COOKIE_NAME)?.value,
   )
@@ -80,11 +84,27 @@ export default async function Overview({
       {libraries === null ? (
         <SourceUnreachable
           source={settings.connection.statisticsSource}
-          isAdmin={!!session?.user.isAdmin}
+          isAdmin={isAdmin}
+        />
+      ) : !tiles.rewind && !tiles.activity && !tiles.libraries ? (
+        <StatusMessage
+          title={t('Home.emptyTitle')}
+          description={
+            isAdmin
+              ? t('Home.emptyAdminDescription')
+              : t('Home.emptyDescription')
+          }
+          action={
+            isAdmin && (
+              <Link href='/settings/general' className='button w-full'>
+                {t('Home.openSettings')}
+              </Link>
+            )
+          }
         />
       ) : (
         <div className='grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3'>
-          {settings.rewind.isActive && session && (
+          {tiles.rewind && (
             <div className='glass-sheet flex flex-col justify-between gap-6 sm:col-span-2'>
               <div>
                 <h2 className='flex items-center gap-2 font-semibold'>
@@ -100,10 +120,10 @@ export default async function Overview({
               </Link>
             </div>
           )}
-          {settings.activity.isActive && (
+          {tiles.activity && (
             <ActivityTile settings={toPublicSettings(settings)} />
           )}
-          {settings.dashboard.isActive &&
+          {tiles.libraries &&
             libraries.map((library) => (
               <Suspense
                 key={library.section_id}

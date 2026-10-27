@@ -19,7 +19,11 @@
     "rewindDescription": "Vos moments forts, une histoire à la fois.",
     "streams": "{count, plural, =0 {Aucune lecture} =1 {# lecture} other {# lectures}}",
     "mostWatched": "Le plus regardé",
-    "mostListened": "Le plus écouté"
+    "mostListened": "Le plus écouté",
+    "emptyTitle": "Rien à afficher pour le moment",
+    "emptyDescription": "Il n'y a encore rien pour vous ici. Revenez plus tard.",
+    "emptyAdminDescription": "Activez Rewind, l'Activité ou le Tableau de bord dans les paramètres, puis choisissez au moins une bibliothèque.",
+    "openSettings": "Ouvrir les paramètres"
   },
   "Activity": {
     "title": "Activité",
