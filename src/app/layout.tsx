@@ -11,6 +11,7 @@ import { Metadata, Viewport } from 'next'
 import { getServerSession } from 'next-auth'
 import { NextIntlClientProvider } from 'next-intl'
 import { getLocale } from 'next-intl/server'
+import { headers } from 'next/headers'
 import { ReactNode } from 'react'
 import AppProvider from './_components/AppProvider'
 import GoogleAnalytics from './_components/GoogleAnalytics'
@@ -69,6 +70,9 @@ export default async function RootLayout({ children }: Props) {
   const locale = await getLocale()
   const missingSetting = checkRequiredSettings(settings)
   const session = await getServerSession(authOptions)
+  // Set by the proxy. Reading it also keeps every page dynamically rendered,
+  // which the nonce needs: a static page would have none.
+  const nonce = (await headers()).get('x-nonce') ?? undefined
   // For the sidebar, which lists the libraries only while the dashboard is on
   const libraries =
     !missingSetting &&
@@ -86,7 +90,10 @@ export default async function RootLayout({ children }: Props) {
         >
           <NextIntlClientProvider>
             {settings.general.googleAnalyticsId && (
-              <GoogleAnalytics id={settings.general.googleAnalyticsId} />
+              <GoogleAnalytics
+                id={settings.general.googleAnalyticsId}
+                nonce={nonce}
+              />
             )}
             <SessionProviderWrapper session={session}>
               <AppProvider

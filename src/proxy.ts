@@ -1,6 +1,7 @@
 import { Settings } from '@/types/settings'
 import { withAuth } from 'next-auth/middleware'
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
+import { createNonce, getContentSecurityPolicy } from './utils/csp'
 import getSettings from './utils/getSettings'
 import {
   checkRequiredSettings,
@@ -21,6 +22,26 @@ function readSettings(): Settings | null {
   }
 }
 
+// Next.js reads the nonce from the request's CSP header and adds it to the
+// scripts it renders, so the request and the response carry the same policy.
+function nextWithCsp(req: NextRequest): NextResponse {
+  const nonce = createNonce()
+  const policy = getContentSecurityPolicy(
+    nonce,
+    process.env.NODE_ENV === 'development',
+  )
+  const headers = new Headers(req.headers)
+
+  headers.set('x-nonce', nonce)
+  headers.set('Content-Security-Policy', policy)
+
+  const response = NextResponse.next({ request: { headers } })
+
+  response.headers.set('Content-Security-Policy', policy)
+
+  return response
+}
+
 export default withAuth(
   function proxy(req) {
     const { pathname } = req.nextUrl
@@ -35,7 +56,7 @@ export default withAuth(
 
       // During initial setup, allow access to settings pages for any user (including unauthenticated)
       if (isInitialSetupMode && isSettingsPage) {
-        return NextResponse.next()
+        return nextWithCsp(req)
       }
 
       // For post-update missing settings, only allow admin access
@@ -44,7 +65,7 @@ export default withAuth(
           return NextResponse.redirect(new URL('/', req.nextUrl))
         }
 
-        return NextResponse.next()
+        return nextWithCsp(req)
       }
 
       // Handle redirects for missing settings
@@ -63,7 +84,7 @@ export default withAuth(
       }
     }
 
-    return NextResponse.next()
+    return nextWithCsp(req)
   },
   {
     callbacks: {
