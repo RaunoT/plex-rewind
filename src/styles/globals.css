@@ -305,7 +305,7 @@
     }
 
     &.input--small {
-      @apply rounded-full px-3 py-1 text-sm;
+      @apply px-3 py-1 text-sm;
 
       /* Selects can't have pseudo-elements, so a transparent border grows
          the tap area to 40px. The negative margin leaves 4px of it outside
@@ -314,6 +314,11 @@
       margin-block: -4px;
       border-block: 6px solid transparent;
       background-clip: padding-box;
+
+      /* The visible pill is inside the border, which only adds height, so
+         the radius is half the pill across and that plus the border down.
+         rounded-full would round the whole 40px and squash the ends. */
+      border-radius: calc(0.5lh + 4px) / calc(0.5lh + 10px);
 
       &:focus {
         @apply ring-inset;
