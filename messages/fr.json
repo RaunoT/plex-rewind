@@ -239,59 +239,61 @@
       "storyPosition": "Histoire {current} sur {total}"
     },
     "Common": {
-      "top": "Voici vos <top>Top {count}</top>"
+      "topShows": "Voici votre <top>{count, plural, one {série la plus regardée} other {top # des séries}}</top>",
+      "topMovies": "Voici votre <top>{count, plural, one {film le plus regardé} other {top # des films}}</top>",
+      "topArtists": "Voici votre <top>{count, plural, one {artiste le plus écouté} other {top # des artistes}}</top>"
     },
     "Welcome": {
-      "welcome": "Bienvenue dans votre <rewind>{serverName} Rewind</rewind> <user>{userValue} !</user>",
+      "welcome": "Bienvenue dans votre <rewind>{serverName} Rewind</rewind>, <user>{userValue} !</user>",
       "takeYouThrough": "Nous allons vous faire découvrir vos moments forts",
       "letsGetStarted": "Commençons !",
       "forPastYear": "pour <pastYear>l'année passée.</pastYear>",
       "singleDate": "pendant le <singleDate>{singleDateValue}</singleDate>.",
-      "dateRange": "du <startDate>{startDateValue}</startDate> au <endDate>{endDateValue}</endDate>"
+      "dateRange": "du <startDate>{startDateValue}</startDate> au <endDate>{endDateValue}</endDate>."
     },
     "Total": {
-      "duration": "Vous avez passé un <total>Total</total> de <duration>{durationValue}</duration> sur <plex>{serverName} !</plex>",
-      "percentage": "Cela représente <percentage>{percentageValue}</percentage> de toutes les lectures, qui totalisent <duration>{durationValue}</duration> pour tous les utilisateurs.",
+      "duration": "Vous avez passé un <total>total</total> de <duration>{durationValue}</duration> sur <plex>{serverName} !</plex>",
+      "percentage": "Cela représente <percentage>{percentageValue}</percentage> de la durée de visionnage totale, qui s'élève à <duration>{durationValue}</duration> pour l'ensemble des utilisateurs.",
       "noData": "Vous n'avez rien regardé sur <plex>{serverName}</plex> <emoji>😫</emoji>"
     },
     "Users": {
-      "top": "Voici comment vous vous comparez aux autres <users>Utilisateurs</users>"
+      "top": "Voici comment vous vous comparez aux autres <users>utilisateurs</users>"
     },
     "Audio": {
-      "duration": "Pour finir, vous avez écouté <duration>{durationValue}</duration> de <audio>Musique</audio>",
-      "count": "Vous avez écouté <count>{countValue, number}</count> <tracks>morceaux</tracks> au total !",
+      "duration": "Vous avez écouté <duration>{durationValue}</duration> de <audio>musique</audio>",
+      "count": "Vous avez écouté <count>{countValue, number}</count> <tracks>{countValue, plural, one {morceau} other {morceaux}}</tracks> au total !",
       "favorite": "Votre favori était",
-      "noData": "Vous n'avez écouté aucune <audio>Musique</audio> depuis <from>Plex</from>"
+      "noData": "Vous n'avez écouté aucune <audio>musique</audio> sur <from>{serverName}</from>"
     },
     "Libraries": {
-      "filesize": "Saviez-vous que la <filesize>Taille</filesize> de tout le contenu disponible sur <plex>{serverName}</plex> est de <size>{sizeValue} !</size>",
+      "filesize": "Saviez-vous que tout le contenu de <plex>{serverName}</plex> occupe <size>{sizeValue}</size> de <filesize>stockage</filesize> ?",
       "sizePartial": "Certaines bibliothèques n'ont pas de données de taille. Activez « Calculate Total File Sizes » dans Tautulli.",
       "sizePartialTracearr": "Certaines bibliothèques n'ont pas de données de taille dans Tracearr.",
-      "libraries": "La bibliothèque actuelle comprend :",
+      "libraries": "Les bibliothèques contiennent actuellement :",
       "movies": "{count, plural, one {Film} other {Films}}",
       "episodes": "{count, plural, one {Épisode} other {Épisodes}}",
       "tracks": "{count, plural, one {Morceau} other {Morceaux}}"
     },
     "Shows": {
-      "duration": "Les <library>Séries TV</library> ont occupé <duration>{durationValue}</duration> de votre temps sur <plex>{serverName}.</plex>",
-      "count": "Vous avez regardé <count>{countValue, number}</count> <episodes>épisodes</episodes> au total !",
+      "duration": "Les <library>séries</library> ont occupé <duration>{durationValue}</duration> de votre temps sur <plex>{serverName}.</plex>",
+      "count": "Vous avez regardé <count>{countValue, number}</count> <episodes>{countValue, plural, one {épisode} other {épisodes}}</episodes> au total !",
       "favorite": "Votre favori était",
-      "noData": "Vous n'avez regardé aucune <shows>Série TV</shows> sur <plex>{serverName}</plex> <emoji>😥</emoji>"
+      "noData": "Vous n'avez regardé aucune <shows>série</shows> sur <plex>{serverName}</plex> <emoji>😥</emoji>"
     },
     "Requests": {
-      "noData": "Il n'y a eu aucune <requests>Demande</requests> <emoji>😲</emoji>",
-      "noUserData": "Vous n'avez fait aucune <requests>Demande</requests>. Vous pouvez en faire via <requestLink>{requestLinkValue}</requestLink>.",
-      "count": "Vous avez fait <count>{countValue, number}</count> <requests>{countValue, plural, one {Demande} other {Demandes}}</requests> de contenu",
-      "countTotal": "Au total, il y {countValue, plural, one {a eu} other {a eu}} <count>{countValue, plural, one {# Demande} other {# Demandes}}</count> pendant la même période.",
+      "noData": "Il n'y a eu aucune <requests>demande</requests> <emoji>😲</emoji>",
+      "noUserData": "Vous n'avez fait aucune <requests>demande</requests>. Vous pouvez en faire via <requestLink>{requestLinkValue}</requestLink>.",
+      "count": "Vous avez fait <count>{countValue, number}</count> <requests>{countValue, plural, one {demande} other {demandes}}</requests>",
+      "countTotal": "Au total, il y a eu <count>{countValue, plural, one {# demande} other {# demandes}}</count> pendant la même période.",
       "breakdown": "Voici la répartition :",
       "movies": "{count, plural, one {Film} other {Films}}",
       "shows": "{count, plural, one {Série} other {Séries}}"
     },
     "Movies": {
-      "duration": "Vous avez passé <duration>{durationValue}</duration> à regarder des <movies>Films</movies>",
+      "duration": "Vous avez passé <duration>{durationValue}</duration> à regarder des <movies>films</movies>",
       "count": "Vous avez regardé <count>{countValue, number}</count> <movies>{countValue, plural, one {film} other {films}}</movies> au total !",
       "favorite": "Votre favori était",
-      "noData": "Vous n'avez regardé aucun <movies>Film</movies> sur <plex>{serverName}</plex> <emoji>😵‍💫</emoji>"
+      "noData": "Vous n'avez regardé aucun <movies>film</movies> sur <plex>{serverName}</plex> <emoji>😵‍💫</emoji>"
     },
     "Habits": {
       "day": "Votre jour préféré pour regarder était le <day>{dayValue}</day>",
@@ -307,13 +309,13 @@
       "insightsAndStats": "avec encore plus <insightsAndStats>d'informations et de statistiques.</insightsAndStats>",
       "untilThen": "D'ici là, continuez à explorer et à profiter de tout ce que <plex>{serverName}</plex> a à offrir.",
       "journey": {
-        "movies": "De vos <movies>Films</movies> préférés, ce fut un voyage inoubliable.",
-        "shows": "Des <shows>Séries</shows> les plus divertissantes, ce fut un voyage inoubliable.",
-        "audio": "Des <tracks>Morceaux</tracks> les plus mémorables, ce fut un voyage inoubliable.",
-        "moviesShows": "De vos <movies>Films</movies> préférés aux <shows>Séries</shows> les plus divertissantes, ce fut un voyage inoubliable.",
-        "moviesAudio": "De vos <movies>Films</movies> préférés aux <tracks>Morceaux</tracks> les plus mémorables, ce fut un voyage inoubliable.",
-        "showsAudio": "Des <shows>Séries</shows> les plus divertissantes aux <tracks>Morceaux</tracks> les plus mémorables, ce fut un voyage inoubliable.",
-        "moviesShowsAudio": "De vos <movies>Films</movies> préférés aux <shows>Séries</shows> les plus divertissantes et aux <tracks>Morceaux</tracks> les plus mémorables, ce fut un voyage inoubliable.",
+        "movies": "De vos <movies>films</movies> préférés, ce fut un voyage inoubliable.",
+        "shows": "Des <shows>séries</shows> les plus divertissantes, ce fut un voyage inoubliable.",
+        "audio": "Des <tracks>morceaux</tracks> les plus mémorables, ce fut un voyage inoubliable.",
+        "moviesShows": "De vos <movies>films</movies> préférés aux <shows>séries</shows> les plus divertissantes, ce fut un voyage inoubliable.",
+        "moviesAudio": "De vos <movies>films</movies> préférés aux <tracks>morceaux</tracks> les plus mémorables, ce fut un voyage inoubliable.",
+        "showsAudio": "Des <shows>séries</shows> les plus divertissantes aux <tracks>morceaux</tracks> les plus mémorables, ce fut un voyage inoubliable.",
+        "moviesShowsAudio": "De vos <movies>films</movies> préférés aux <shows>séries</shows> les plus divertissantes et aux <tracks>morceaux</tracks> les plus mémorables, ce fut un voyage inoubliable.",
         "none": "Ce fut un voyage inoubliable."
       }
     }

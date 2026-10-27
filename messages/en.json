@@ -239,59 +239,61 @@
       "storyPosition": "Story {current} of {total}"
     },
     "Common": {
-      "top": "Here's your <top>Top {count}</top>"
+      "topShows": "Here's your <top>top {count, plural, one {TV show} other {# TV shows}}</top>",
+      "topMovies": "Here's your <top>top {count, plural, one {movie} other {# movies}}</top>",
+      "topArtists": "Here's your <top>top {count, plural, one {artist} other {# artists}}</top>"
     },
     "Welcome": {
-      "welcome": "Welcome to your <rewind>{serverName} Rewind</rewind> <user>{userValue}!</user>",
+      "welcome": "Welcome to your <rewind>{serverName} Rewind</rewind>, <user>{userValue}!</user>",
       "takeYouThrough": "We'll take you through your highlights",
       "letsGetStarted": "Let's get started!",
       "forPastYear": "for the <pastYear>past year.</pastYear>",
       "singleDate": "during <singleDate>{singleDateValue}</singleDate>.",
-      "dateRange": "from <startDate>{startDateValue}</startDate> to <endDate>{endDateValue}</endDate>"
+      "dateRange": "from <startDate>{startDateValue}</startDate> to <endDate>{endDateValue}</endDate>."
     },
     "Total": {
-      "duration": "You spent a <total>Total</total> of <duration>{durationValue}</duration> on <plex>{serverName}!</plex>",
-      "percentage": "That's <percentage>{percentageValue}</percentage> of all plays, which totalled <duration>{durationValue}</duration> across all users.",
+      "duration": "You spent a <total>total</total> of <duration>{durationValue}</duration> on <plex>{serverName}!</plex>",
+      "percentage": "That's <percentage>{percentageValue}</percentage> of all watch time, which came to <duration>{durationValue}</duration> across all users.",
       "noData": "You haven't played anything on <plex>{serverName}</plex> <emoji>😫</emoji>"
     },
     "Users": {
-      "top": "Here's how you compared to other <users>Users</users>"
+      "top": "Here's how you compared to other <users>users</users>"
     },
     "Audio": {
-      "duration": "To finish it off, you listened to <duration>{durationValue}</duration> of <audio>Audio</audio>",
-      "count": "You listened to <count>{countValue, number}</count> <tracks>tracks</tracks> in total!",
+      "duration": "You spent <duration>{durationValue}</duration> listening to <audio>music</audio>",
+      "count": "You listened to <count>{countValue, number}</count> <tracks>{countValue, plural, one {track} other {tracks}}</tracks> in total!",
       "favorite": "Your favorite was",
-      "noData": "You didn't listen to any <audio>Audio</audio> from <from>Plex</from>"
+      "noData": "You didn't listen to any <audio>music</audio> on <from>{serverName}</from>"
     },
     "Libraries": {
-      "filesize": "Did you know the <filesize>Filesize</filesize> of all the available content on <plex>{serverName}</plex> is <size>{sizeValue}!</size>",
+      "filesize": "Did you know that everything on <plex>{serverName}</plex> takes up <size>{sizeValue}</size> of <filesize>storage</filesize>?",
       "sizePartial": "Some libraries have no size data. Enable “Calculate Total File Sizes” in Tautulli.",
       "sizePartialTracearr": "Some libraries have no size data in Tracearr.",
-      "libraries": "The current library consists of:",
+      "libraries": "The libraries currently contain:",
       "movies": "{count, plural, one {Movie} other {Movies}}",
       "episodes": "{count, plural, one {Episode} other {Episodes}}",
       "tracks": "{count, plural, one {Track} other {Tracks}}"
     },
     "Shows": {
-      "duration": "<library>TV Shows</library> took up <duration>{durationValue}</duration> of your time on <plex>{serverName}.</plex>",
-      "count": "You watched <count>{countValue, number}</count> <episodes>episodes</episodes> in total!",
+      "duration": "<library>TV shows</library> took up <duration>{durationValue}</duration> of your time on <plex>{serverName}.</plex>",
+      "count": "You watched <count>{countValue, number}</count> <episodes>{countValue, plural, one {episode} other {episodes}}</episodes> in total!",
       "favorite": "Your favorite was",
-      "noData": "You didn't watch any <shows>TV Shows</shows> on <plex>{serverName}</plex> <emoji>😥</emoji>"
+      "noData": "You didn't watch any <shows>TV shows</shows> on <plex>{serverName}</plex> <emoji>😥</emoji>"
     },
     "Requests": {
-      "noData": "There weren't any <requests>Requests</requests> <emoji>😲</emoji>",
-      "noUserData": "You didn't make any <requests>Requests</requests>. You can make them via <requestLink>{requestLinkValue}</requestLink>.",
-      "count": "You made <count>{countValue, number}</count> content <requests>{countValue, plural, one {Request} other {Requests}}</requests>",
-      "countTotal": "Altogether there {countValue, plural, one {was} other {were}} <count>{countValue, plural, one {# Request} other {# Requests}}</count> during the same period.",
+      "noData": "There weren't any <requests>requests</requests> <emoji>😲</emoji>",
+      "noUserData": "You didn't make any <requests>requests</requests>. You can make them via <requestLink>{requestLinkValue}</requestLink>.",
+      "count": "You made <count>{countValue, number}</count> <requests>{countValue, plural, one {request} other {requests}}</requests>",
+      "countTotal": "Altogether there {countValue, plural, one {was} other {were}} <count>{countValue, plural, one {# request} other {# requests}}</count> during the same period.",
       "breakdown": "Here's the breakdown:",
       "movies": "{count, plural, one {Movie} other {Movies}}",
-      "shows": "{count, plural, one {Show} other {Shows}}"
+      "shows": "{count, plural, one {TV show} other {TV shows}}"
     },
     "Movies": {
-      "duration": "<duration>{durationValue}</duration> of your time was spent watching <movies>Movies</movies>",
+      "duration": "<duration>{durationValue}</duration> of your time was spent watching <movies>movies</movies>",
       "count": "You watched <count>{countValue, number}</count> <movies>{countValue, plural, one {movie} other {movies}}</movies> in total!",
       "favorite": "Your favorite was",
-      "noData": "You didn't watch any <movies>Movies</movies> on <plex>{serverName}</plex> <emoji>😵‍💫</emoji>"
+      "noData": "You didn't watch any <movies>movies</movies> on <plex>{serverName}</plex> <emoji>😵‍💫</emoji>"
     },
     "Habits": {
       "day": "Your favorite day to watch was <day>{dayValue}</day>",
@@ -300,20 +302,20 @@
       "hourChart": "Bar chart of plays per hour of the day. Busiest hour: {hourValue} with {count, plural, one {# play} other {# plays}}."
     },
     "Goodbye": {
-      "thanks": "Thanks for tuning into your <plex>{serverName} Rewind</plex>, <user>{userValue}!</user>",
+      "thanks": "Thanks for tuning in to your <plex>{serverName} Rewind</plex>, <user>{userValue}!</user>",
       "sorry": "Sorry you couldn't find any content to watch or listen to this time around. Better luck next time!",
       "weWillBeBack": "We'll be back next time",
       "weWillBeHere": "Either way, we'll be here",
       "insightsAndStats": "with even more <insightsAndStats>insights and stats.</insightsAndStats>",
       "untilThen": "Until then, keep exploring and enjoying all that <plex>{serverName}</plex> has to offer.",
       "journey": {
-        "movies": "From your favorite <movies>Movies</movies>, it's been a journey to remember.",
-        "shows": "From the most entertaining <shows>Shows</shows>, it's been a journey to remember.",
-        "audio": "From your most memorable <tracks>Tracks</tracks>, it's been a journey to remember.",
-        "moviesShows": "From your favorite <movies>Movies</movies> to the most entertaining <shows>Shows</shows>, it's been a journey to remember.",
-        "moviesAudio": "From your favorite <movies>Movies</movies> to the most memorable <tracks>Tracks</tracks>, it's been a journey to remember.",
-        "showsAudio": "From the most entertaining <shows>Shows</shows> to the most memorable <tracks>Tracks</tracks>, it's been a journey to remember.",
-        "moviesShowsAudio": "From your favorite <movies>Movies</movies> to the most entertaining <shows>Shows</shows> and memorable <tracks>Tracks</tracks>, it's been a journey to remember.",
+        "movies": "From your favorite <movies>movies</movies>, it's been a journey to remember.",
+        "shows": "From the most entertaining <shows>TV shows</shows>, it's been a journey to remember.",
+        "audio": "From your most memorable <tracks>tracks</tracks>, it's been a journey to remember.",
+        "moviesShows": "From your favorite <movies>movies</movies> to the most entertaining <shows>TV shows</shows>, it's been a journey to remember.",
+        "moviesAudio": "From your favorite <movies>movies</movies> to the most memorable <tracks>tracks</tracks>, it's been a journey to remember.",
+        "showsAudio": "From the most entertaining <shows>TV shows</shows> to the most memorable <tracks>tracks</tracks>, it's been a journey to remember.",
+        "moviesShowsAudio": "From your favorite <movies>movies</movies> to the most entertaining <shows>TV shows</shows> and memorable <tracks>tracks</tracks>, it's been a journey to remember.",
         "none": "It's been a journey to remember."
       }
     }

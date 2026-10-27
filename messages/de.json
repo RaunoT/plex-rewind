@@ -239,10 +239,12 @@
       "storyPosition": "Story {current} von {total}"
     },
     "Common": {
-      "top": "Hier sind deine <top>Top {count}</top>"
+      "topShows": "{count, plural, one {Hier ist deine <top>meistgesehene Serie</top>} other {Hier sind deine <top>Top # Serien</top>}}",
+      "topMovies": "{count, plural, one {Hier ist dein <top>meistgesehener Film</top>} other {Hier sind deine <top>Top # Filme</top>}}",
+      "topArtists": "{count, plural, one {Hier ist dein <top>meistgehörter Künstler</top>} other {Hier sind deine <top>Top # Künstler</top>}}"
     },
     "Welcome": {
-      "welcome": "Willkommen zu deinem <rewind>{serverName} Rewind</rewind> <user>{userValue}!</user>",
+      "welcome": "Willkommen zu deinem <rewind>{serverName} Rewind</rewind>, <user>{userValue}!</user>",
       "takeYouThrough": "Lass uns deine Highlights",
       "letsGetStarted": "Los gehts!",
       "forPastYear": "für das <pastYear>letzte Jahr</pastYear> anschauen.",
@@ -251,36 +253,36 @@
     },
     "Total": {
       "duration": "Du hast <total>insgesamt</total> <duration>{durationValue}</duration> auf <plex>{serverName}</plex> verbracht!",
-      "percentage": "Das sind <percentage>{percentageValue}</percentage> aller Wiedergaben, welche insgesamt <duration>{durationValue}</duration> betragen.",
+      "percentage": "Das sind <percentage>{percentageValue}</percentage> der gesamten Wiedergabezeit aller Benutzer, die insgesamt <duration>{durationValue}</duration> beträgt.",
       "noData": "Du hast nichts auf <plex>{serverName}</plex> abgespielt <emoji>😫</emoji>"
     },
     "Users": {
-      "top": "Im Vergleich zu anderen <users>Nutzern</users>"
+      "top": "Im Vergleich zu anderen <users>Benutzern</users>"
     },
     "Audio": {
-      "duration": "Abschließend hast du <duration>{durationValue}</duration> <audio>Audio</audio> gehört.",
-      "count": "Du hast <count>{countValue, number}</count> <tracks>Titel</tracks> insgesamt angehört!",
+      "duration": "Du hast <duration>{durationValue}</duration> <audio>Musik</audio> gehört.",
+      "count": "Du hast insgesamt <count>{countValue, number}</count> <tracks>{countValue, plural, one {Titel} other {Titel}}</tracks> angehört!",
       "favorite": "Dein Lieblingstitel war",
-      "noData": "Du hast keine <audio>Audio</audio> von <from>Plex</from> angehört"
+      "noData": "Du hast keine <audio>Musik</audio> auf {serverName} <from>gehört</from>"
     },
     "Libraries": {
-      "filesize": "Wusstest du, dass die <filesize>Dateigröße</filesize> der verfügbaren Inhalte auf <plex>{serverName}</plex> <size>{sizeValue}</size> ist?",
+      "filesize": "Wusstest du, dass alle Inhalte auf <plex>{serverName}</plex> zusammen <size>{sizeValue}</size> <filesize>Speicherplatz</filesize> belegen?",
       "sizePartial": "Für einige Bibliotheken liegen keine Größenangaben vor. Aktiviere „Calculate Total File Sizes“ in Tautulli.",
       "sizePartialTracearr": "Für einige Bibliotheken liegen in Tracearr keine Größenangaben vor.",
-      "libraries": "Die jetzige Bibliothek beinhaltet:",
+      "libraries": "Die Bibliotheken enthalten derzeit:",
       "movies": "{count, plural, one {Film} other {Filme}}",
       "episodes": "{count, plural, one {Episode} other {Episoden}}",
       "tracks": "{count, plural, one {Titel} other {Titel}}"
     },
     "Shows": {
       "duration": "<library>Serien</library> haben <duration>{durationValue}</duration> deiner Zeit auf <plex>{serverName}</plex> eingenommen.",
-      "count": "Du hast insgesamt <count>{countValue, number}</count> <episodes>Episoden</episodes> geschaut!",
+      "count": "Du hast insgesamt <count>{countValue, number}</count> <episodes>{countValue, plural, one {Episode} other {Episoden}}</episodes> geschaut!",
       "favorite": "Deine Lieblingsserie war",
       "noData": "Du hast keine <shows>Serien</shows> auf <plex>{serverName}</plex> geschaut <emoji>😥</emoji>"
     },
     "Requests": {
       "noData": "Es gab keine <requests>Anfragen</requests> <emoji>😲</emoji>",
-      "noUserData": "Du hast keine <requests>Anfragen</requests> gestellt. Stelle sie via <requestLink>{requestLinkValue}</requestLink>.",
+      "noUserData": "Du hast keine <requests>Anfragen</requests> gestellt. Anfragen kannst du über <requestLink>{requestLinkValue}</requestLink> stellen.",
       "count": "Du hast <count>{countValue, number}</count> <requests>{countValue, plural, one {Anfrage} other {Anfragen}}</requests> gestellt.",
       "countTotal": "Insgesamt gab es <count>{countValue, plural, one {# Anfrage} other {# Anfragen}}</count> in der gleichen Zeit.",
       "breakdown": "Hier ist die Aufteilung:",

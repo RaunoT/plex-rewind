@@ -5,21 +5,20 @@ import { useTranslations } from 'next-intl'
 import RewindStat from '../RewindStat'
 
 export default function StoryShowsTop({ userRewind, settings }: RewindStory) {
-  const hasTop5 = userRewind.shows.top.length === 5
   const t = useTranslations('Rewind.Common')
 
   return (
     <>
       <RewindStat noScale>
         <p className='mb-2'>
-          {t.rich('top', {
+          {t.rich('topShows', {
             top: (chunks) => (
               <span className='rewind-cat'>
                 {chunks}
                 <PlayCircleIcon />
               </span>
             ),
-            count: hasTop5 ? '5' : '',
+            count: userRewind.shows.top.length,
           })}
         </p>
 
