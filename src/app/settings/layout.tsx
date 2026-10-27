@@ -10,6 +10,7 @@ import { redirect } from 'next/navigation'
 import { ReactNode } from 'react'
 import PageTitle from '../_components/PageTitle'
 import SettingsNav from './_components/SettingsNav'
+import SettingsVersion from './_components/SettingsVersion'
 
 type Props = {
   children: ReactNode
@@ -31,7 +32,7 @@ export default async function SettingsLayout({ children }: Props) {
       <PageTitle
         title={missingSetting ? t('getStarted') : t('title')}
         isTitleHidden={!!missingSetting}
-        noBack={!!missingSetting}
+        noBack
         titleMenu={
           <SettingsNav
             settings={toPublicSettings(settings)}
@@ -73,6 +74,7 @@ export default async function SettingsLayout({ children }: Props) {
           {t('reportAnIssue')}
         </a>
       </div>
+      <SettingsVersion />
     </div>
   )
 }

@@ -1,5 +1,6 @@
 'use client'
 
+import Toasts from '@/components/Toasts'
 import { Version } from '@/types'
 import { PublicSettings } from '@/types/settings'
 import { TautulliLibrary } from '@/types/tautulli'
@@ -7,10 +8,13 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import clsx from 'clsx'
 import Image from 'next/image'
 import { usePathname } from 'next/navigation'
-import { ReactNode } from 'react'
+import { ReactNode, useEffect } from 'react'
 import stars from '../_assets/stars.png'
 import GlobalContextProvider from './GlobalContextProvider'
-import HeaderControls, { AppInfoContext } from './HeaderControls'
+import HeaderControls, {
+  AppInfoContext,
+  SETTINGS_RETURN_KEY,
+} from './HeaderControls'
 import Sidebar from './Sidebar'
 
 type Props = {
@@ -41,6 +45,17 @@ export default function AppProvider({
     canBrowse &&
     (pathname === '/' ||
       SIDEBAR_ROUTES.some((route) => pathname.startsWith(route)))
+
+  useEffect(() => {
+    if (!pathname.startsWith('/settings')) {
+      try {
+        sessionStorage.setItem(
+          SETTINGS_RETURN_KEY,
+          pathname + window.location.search,
+        )
+      } catch {}
+    }
+  }, [pathname])
 
   return (
     <QueryClientProvider client={queryClient}>
@@ -82,6 +97,7 @@ export default function AppProvider({
               {children}
             </main>
           </div>
+          <Toasts />
         </AppInfoContext>
       </GlobalContextProvider>
     </QueryClientProvider>
