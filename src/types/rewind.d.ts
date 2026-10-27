@@ -1,4 +1,12 @@
-import { TautulliLibrary } from './tautulli'
+import { PublicSettings } from './settings'
+import { TautulliItemRow, TautulliLibrary } from './tautulli'
+
+export type RewindUser = {
+  id: string
+  name: string
+  image?: string | null
+  isAdmin: boolean
+}
 
 type LibraryRewind = {
   count: number
@@ -10,12 +18,14 @@ export type UserRewind = {
   usersTop: TautulliItemRow[] | null
   libraries: TautulliLibrary[]
   libraries_total_size: number
+  libraries_size_is_partial: boolean
+  // Null when Seerr couldn't be read
   requests?: {
     total: number
     movies: number
     shows: number
     user: number
-  }
+  } | null
   server_id: string
   shows: LibraryRewind
   movies: LibraryRewind
@@ -30,15 +40,21 @@ export type UserRewind = {
   duration: {
     user: string
     user_percentage: string
+    user_percentage_value: number | null
     total: string
   }
-  user: User
+  // Formatted on the server, null without any play
+  firstPlay: {
+    date: string
+    timeSince: string
+    title: string
+  } | null
+  user: RewindUser
 }
 
 export type RewindStory = {
   userRewind: UserRewind
-  isPaused?: boolean
   pause?: () => void
   resume?: () => void
-  settings: Settings
+  settings: PublicSettings
 }

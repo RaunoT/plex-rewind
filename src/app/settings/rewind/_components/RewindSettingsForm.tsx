@@ -2,8 +2,8 @@
 
 import DatePicker from '@/components/DatePicker'
 import {
+  PublicSettings,
   RewindSettings,
-  Settings,
   SettingsFormInitialState,
 } from '@/types/settings'
 import { useTranslations } from 'next-intl'
@@ -13,7 +13,7 @@ import SettingsForm from '../../_components/SettingsForm'
 import saveRewindSettings from '../_actions/updateRewindSettings'
 
 type Props = {
-  settings: Settings
+  settings: PublicSettings
 }
 
 type RewindFormState = SettingsFormInitialState<Partial<RewindSettings>>
@@ -47,7 +47,6 @@ export default function RewindSettingsForm({ settings }: Props) {
       <section className='group-settings group'>
         <h2 className='heading-settings'>{tCommon('status')}</h2>
         <Switch
-          key={`is-active-${isActive}`}
           className='switch'
           name='isActive'
           isSelected={isActive}
@@ -58,6 +57,19 @@ export default function RewindSettingsForm({ settings }: Props) {
             <span className='label-wrapper'>{tCommon('enabled')}</span>
           </span>
         </Switch>
+        {isActive && (
+          <Switch
+            key={`admin-only-${rewindSettings.isAdminOnly}`}
+            className='switch items-start'
+            name='isAdminOnly'
+            defaultSelected={rewindSettings.isAdminOnly}
+          >
+            <div className='indicator' />
+            <span className='label'>
+              <span className='label-wrapper'>{tCommon('adminOnly')}</span>
+            </span>
+          </Switch>
+        )}
       </section>
       {isActive && (
         <>
@@ -65,7 +77,7 @@ export default function RewindSettingsForm({ settings }: Props) {
             <h2 className='heading-settings'>{t('cards')}</h2>
             <Switch
               key={`libraries-size-count-${rewindSettings.isLibrariesSizeAndCountActive}`}
-              className='switch items-start'
+              className='switch'
               name='isLibrariesSizeAndCountActive'
               defaultSelected={rewindSettings.isLibrariesSizeAndCountActive}
             >
@@ -74,7 +86,6 @@ export default function RewindSettingsForm({ settings }: Props) {
                 <span className='label-wrapper'>
                   {t('librariesSizeAndCountCard')}
                 </span>
-                <small>{t('librariesSizeAndCountCardDescription')}</small>
               </span>
             </Switch>
           </section>

@@ -1,7 +1,7 @@
 'use server'
 
+import { denySettingsAccess } from '@/lib/access'
 import {
-  DashboardItemStatistics,
   DashboardSettings,
   DashboardTotalStatistics,
   SettingsFormInitialState,
@@ -14,26 +14,27 @@ export default async function saveDashboardSettings(
   prevState: SettingsFormInitialState<Partial<DashboardSettings>>,
   formData: FormData,
 ) {
+  const denied = await denySettingsAccess(prevState)
+
+  if (denied) {
+    return denied
+  }
+
   const t = await getTranslations('Settings.Dashboard')
   const schema = z.object({
     isActive: z.boolean(),
+    isAdminOnly: z.boolean().optional(),
     isUsersPageActive: z.boolean().optional(),
-    activeItemStatistics: z
-      .array(
-        z.enum(['year', 'rating', 'duration', 'plays', 'users', 'requests']),
-      )
-      .optional(),
     activeTotalStatistics: z
       .array(z.enum(['size', 'duration', 'count', 'requests']))
       .optional(),
-    isSortByPlaysActive: z.boolean().optional(),
     customPeriod: z
       .string()
       .refine(
         (value) => {
-          const number = parseFloat(value)
+          const number = Number(value)
 
-          return number > 0 && number <= 3000
+          return /^\d+$/.test(value) && number > 0 && number <= 3000
         },
         {
           message: t('customPeriodError'),
@@ -55,14 +56,11 @@ export default async function saveDashboardSettings(
   }
 
   if (isActive) {
+    data.isAdminOnly = formData.get('isAdminOnly') === 'on'
     data.isUsersPageActive = formData.get('isUsersPageActive') === 'on'
-    data.activeItemStatistics = formData.getAll(
-      'activeItemStatistics',
-    ) as DashboardItemStatistics
     data.activeTotalStatistics = formData.getAll(
       'activeTotalStatistics',
     ) as DashboardTotalStatistics
-    data.isSortByPlaysActive = formData.get('isSortByPlaysActive') === 'on'
     data.customPeriod = formData.get('customPeriod') as string
     data.startDate = formData.get('startDate') as string
   }

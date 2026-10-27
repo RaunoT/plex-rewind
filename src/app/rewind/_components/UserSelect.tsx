@@ -6,15 +6,23 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import { ChangeEvent, useRef } from 'react'
 
 type Props = {
-  users: TautulliUser[]
-  currentUserId: string
+  users: Pick<TautulliUser, 'user_id' | 'friendly_name'>[]
+  defaultUserId: string
 }
 
-export default function UserSelect({ users, currentUserId }: Props) {
+// Rendered by the layout, so it stays on screen while another user's rewind
+// loads. The page shows the admin's own rewind for an unknown user ID.
+export default function UserSelect({ users, defaultUserId }: Props) {
   const router = useRouter()
   const searchParams = useSearchParams()
   const selectRef = useRef<HTMLSelectElement>(null)
   const t = useTranslations('UserSelect')
+  const userIdParam = searchParams.get('userId')
+  const currentUserId = users.some(
+    (user) => String(user.user_id) === userIdParam,
+  )
+    ? userIdParam
+    : defaultUserId
 
   function handleChange(e: ChangeEvent<HTMLSelectElement>) {
     const newParams = new URLSearchParams(searchParams.toString())
@@ -25,11 +33,11 @@ export default function UserSelect({ users, currentUserId }: Props) {
   }
 
   return (
-    <div className='input-wrapper absolute bottom-4 left-4 z-10'>
-      <div className='select-wrapper select-wrapper--small'>
+    <div className='input-wrapper'>
+      <div className='select-wrapper'>
         <select
-          className='input input--small'
-          value={currentUserId}
+          className='input input--small max-w-56 truncate'
+          value={currentUserId ?? defaultUserId}
           onChange={handleChange}
           ref={selectRef}
           aria-label={t('label')}

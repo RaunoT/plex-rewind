@@ -3,50 +3,24 @@
 import plexSvg from '@/assets/plex.svg'
 import Loader from '@/components/Loader'
 import usePlexAuth from '@/hooks/usePlexAuth'
-import { Settings } from '@/types/settings'
-import { TautulliLibrary } from '@/types/tautulli'
-import { checkRequiredSettings } from '@/utils/helpers'
-import clsx from 'clsx'
-import { kebabCase } from 'lodash'
+import { PublicSettings } from '@/types/settings'
 import { signOut, useSession } from 'next-auth/react'
 import { useTranslations } from 'next-intl'
 import Image from 'next/image'
-import Link from 'next/link'
-import { useContext } from 'react'
-import { GlobalContext } from './GlobalContextProvider'
+import LoginWithPlexLabel from './LoginWithPlexLabel'
 
 type Props = {
-  settings: Settings
-  libraries: TautulliLibrary[]
+  settings: PublicSettings
+  missingSetting: string | null
+  siteUrl: string
 }
 
-export default function Home({ settings, libraries }: Props) {
-  const { isLoading, handleLogin } = usePlexAuth()
-  const missingSetting = checkRequiredSettings(settings)
-  const {
-    dashboard: { isPersonal, period, sortBy },
-  } = useContext(GlobalContext)
+// Shown until there's something to browse: before logging in, or while an
+// admin still has to finish the setup
+export default function Home({ settings, missingSetting, siteUrl }: Props) {
+  const { isLoading, error, handleLogin } = usePlexAuth(siteUrl)
   const { data: session, status } = useSession()
   const isLoggedIn = status === 'authenticated'
-  const dashboardSlug =
-    settings.general.activeLibraries.find((libSlug) =>
-      libraries.some((lib) => kebabCase(lib.section_name) === libSlug),
-    ) || (settings.dashboard.isUsersPageActive ? 'users' : '')
-  const showRewind = settings.rewind.isActive && isLoggedIn && !missingSetting
-  const showDashboard =
-    !missingSetting &&
-    settings.dashboard.isActive &&
-    (isLoggedIn || settings.general.isOutsideAccess) &&
-    dashboardSlug
-  const showActivity =
-    !missingSetting &&
-    settings.activity.isActive &&
-    (isLoggedIn || settings.general.isOutsideAccess)
-  const dashboardParams = new URLSearchParams({
-    ...(isPersonal && { personal: 'true' }),
-    ...(period && { period }),
-    ...(sortBy && settings.dashboard.isSortByPlaysActive && { sortBy }),
-  })
   const t = useTranslations('Home')
   const tCommon = useTranslations('Common')
 
@@ -55,12 +29,14 @@ export default function Home({ settings, libraries }: Props) {
   }
 
   return (
-    <div className='flex flex-col items-center text-center'>
+    <div className='glass-sheet animate-fade-in flex w-full max-w-sm flex-col items-center text-center'>
       {session?.user?.image && (
-        <div className='animate-fade-up relative mb-6 size-24'>
+        <div className='animate-fade-up relative mb-5 size-20 rounded-full shadow-xl ring-1 shadow-black/40 ring-white/20'>
           <Image
             src={session.user.image}
-            alt={`${session.user.name} ${tCommon('profilePictureAlt')}`}
+            alt={tCommon('profilePictureAlt', {
+              name: session.user.name ?? '',
+            })}
             className='rounded-full object-cover'
             sizes='10rem'
             fill
@@ -71,21 +47,20 @@ export default function Home({ settings, libraries }: Props) {
 
       {missingSetting ? (
         <>
-          <h1 className='mb-2 text-3xl font-bold'>{t('setupRequired')}</h1>
-          <p className='mb-6'>{t('setupRequiredDescription')}</p>
+          <h1 className='mb-2 text-2xl font-semibold tracking-tight'>
+            {t('setupRequired')}
+          </h1>
+          <p className='mb-8 text-neutral-300'>
+            {t('setupRequiredDescription')}
+          </p>
         </>
       ) : (
-        <h1 className='animate-fade-up animation-delay-300 mb-6 text-[2.5rem] leading-none font-bold'>
+        <h1 className='animate-fade-up animation-delay-300 mb-4 max-w-full text-[2.5rem] leading-none font-bold tracking-tight text-balance wrap-anywhere'>
           {settings.general.serverName ? (
             settings.general.serverName
           ) : (
             <>
-              <Image
-                src={plexSvg}
-                className='mr-3 mb-0.5 inline h-9 w-auto'
-                alt='Plex logo'
-                priority
-              />
+              <Image src={plexSvg} className='plex-logo' alt='Plex' priority />
               {/* eslint-disable-next-line react/jsx-no-literals */}
               <span>rewind</span>
             </>
@@ -93,57 +68,25 @@ export default function Home({ settings, libraries }: Props) {
         </h1>
       )}
 
-      <div className='animate-fade-in animation-delay-700'>
+      <div className='animate-fade-in animation-delay-700 flex w-full flex-col gap-3'>
         {!isLoggedIn && (
-          <button
-            className='button button-sm button--plex mx-auto mb-4'
-            onClick={handleLogin}
-          >
-            {t('loginWithPlex')}
+          <button className='button button--plex w-full' onClick={handleLogin}>
+            <LoginWithPlexLabel />
           </button>
         )}
-
-        {showRewind && (
-          <Link href='/rewind' className='button mb-4'>
-            {t('rewind')}
-          </Link>
+        {error && (
+          <p role='alert' className='text-danger text-sm'>
+            {t(`loginError.${error}`)}
+          </p>
         )}
-
-        {showDashboard && (
-          <Link
-            href={`/dashboard/${dashboardSlug}${dashboardParams.size ? `?${dashboardParams.toString()}` : ''}`}
-            className={clsx(
-              'mx-auto mb-4 block',
-              !settings.rewind.isActive && isLoggedIn ? 'button' : 'link',
-            )}
+        {isLoggedIn && (
+          <button
+            onClick={() => signOut()}
+            className='link mx-auto w-fit text-sm'
           >
-            {t('dashboard')}
-          </Link>
+            {t('signOut')}
+          </button>
         )}
-
-        {showActivity && (
-          <Link
-            href='/activity'
-            className={clsx(
-              'mx-auto block',
-              !settings.rewind.isActive &&
-                !settings.dashboard.isActive &&
-                isLoggedIn
-                ? 'button'
-                : 'link',
-            )}
-          >
-            {t('activity')}
-          </Link>
-        )}
-
-        <div className='mt-16'>
-          {isLoggedIn && (
-            <button onClick={() => signOut()} className='link'>
-              {t('signOut')}
-            </button>
-          )}
-        </div>
       </div>
     </div>
   )

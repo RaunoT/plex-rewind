@@ -1,29 +1,28 @@
+import { MEDIA_ICONS } from '@/components/icons'
 import MediaItems from '@/components/MediaItem/MediaItems'
 import { RewindStory } from '@/types/rewind'
-import { PlayCircleIcon } from '@heroicons/react/24/outline'
 import { useTranslations } from 'next-intl'
 import RewindStat from '../RewindStat'
 
 export default function StoryShowsTop({ userRewind, settings }: RewindStory) {
-  const hasTop5 = userRewind.shows.top.length === 5
   const t = useTranslations('Rewind.Common')
 
   return (
     <>
       <RewindStat noScale>
         <p className='mb-2'>
-          {t.rich('top', {
+          {t.rich('topShows', {
             top: (chunks) => (
               <span className='rewind-cat'>
                 {chunks}
-                <PlayCircleIcon />
+                <MEDIA_ICONS.show />
               </span>
             ),
-            count: hasTop5 ? '5' : '',
+            count: userRewind.shows.top.length,
           })}
         </p>
 
-        <div className='text-base not-italic'>
+        <div className='text-base leading-normal font-normal tracking-normal'>
           <MediaItems
             type='show'
             items={userRewind.shows.top}

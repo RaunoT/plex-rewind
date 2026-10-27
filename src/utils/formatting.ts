@@ -1,8 +1,12 @@
 // This type is compatible with next-intl's translation function
 export type TranslateFunction = (key: string, params?: any) => string
 
+const DAY_MS = 24 * 60 * 60 * 1000
+
 export function secondsToTime(seconds: number, t: TranslateFunction): string {
-  if (seconds <= 0) {
+  const totalSeconds = Math.round(seconds)
+
+  if (!Number.isFinite(totalSeconds) || totalSeconds <= 0) {
     return t('Common.time.zero')
   }
 
@@ -17,7 +21,7 @@ export function secondsToTime(seconds: number, t: TranslateFunction): string {
   const maxUnits = 2
   const result = []
 
-  let remainingSeconds = Math.round(seconds)
+  let remainingSeconds = totalSeconds
   let unitCount = 0
 
   for (const { label, duration } of units) {
@@ -25,22 +29,18 @@ export function secondsToTime(seconds: number, t: TranslateFunction): string {
       break
     }
 
-    let value = Math.floor(remainingSeconds / duration)
-
-    // Handle rounding for minutes if seconds are present
-    if (label === 'min' && remainingSeconds % duration >= 30) {
-      value++ // Round up to the next minute if 30 or more seconds remain
-      remainingSeconds = 0 // Reset remaining seconds after rounding up
-    } else {
-      remainingSeconds %= duration
+    // Rounding to whole minutes before the split keeps 59 min 30 sec from
+    // becoming "60 mins". It happens after the months, which aren't a whole
+    // number of minutes.
+    if (label === 'week' && totalSeconds >= 60) {
+      remainingSeconds = Math.round(remainingSeconds / 60) * 60
     }
 
-    if (value > 0 || (unitCount === 0 && remainingSeconds === 0)) {
-      // Special case for seconds: only include if it's the only unit
-      if (label === 'sec' && unitCount > 0) {
-        break
-      }
+    const value = Math.floor(remainingSeconds / duration)
 
+    remainingSeconds %= duration
+
+    if (value > 0) {
       result.push(t(`Common.time.${label}`, { count: value }))
       unitCount++
     }
@@ -85,33 +85,113 @@ export function timeToSeconds(time: string): number {
   return days + hours + mins + secs
 }
 
-export function formatBitrate(bitrate: number | string): string {
-  if (!bitrate || bitrate === '') {
-    return 'N/A'
+function formatOneDecimal(value: number, locale: string): string {
+  return value.toLocaleString(locale, {
+    minimumFractionDigits: 1,
+    maximumFractionDigits: 1,
+  })
+}
+
+// Empty without a bitrate, so callers can fall back to another value or a dash
+export function formatBitrate(
+  bitrate: number | string,
+  locale: string,
+): string {
+  if (!bitrate) {
+    return ''
   }
 
   const numeric = typeof bitrate === 'string' ? parseFloat(bitrate) : bitrate
 
   if (isNaN(numeric) || numeric <= 0) {
-    return 'N/A'
+    return ''
   }
 
   const megabits = numeric / 1000
 
-  return `${megabits.toFixed(1)} Mbps`
+  return `${formatOneDecimal(megabits, locale)} Mbps`
+}
+
+export function formatRating(rating: string, locale: string): string {
+  const numeric = Number(rating)
+
+  return rating.trim() === '' || !Number.isFinite(numeric)
+    ? rating
+    : formatOneDecimal(numeric, locale)
+}
+
+// In UTC, so the server and the browser show the same month
+export function formatMonthYear(
+  date: string,
+  locale: string,
+  month: 'short' | 'long' = 'short',
+): string {
+  return new Intl.DateTimeFormat(locale, {
+    month,
+    year: 'numeric',
+    timeZone: 'UTC',
+  }).format(new Date(date))
+}
+
+// Such as "4 years and 7 months", or days while it's under a month. Empty for
+// under a day.
+export function formatTimeSince(
+  date: string,
+  locale: string,
+  now = new Date(),
+): string {
+  const start = new Date(date)
+
+  if (!(start.getTime() <= now.getTime())) {
+    return ''
+  }
+
+  // A month only counts once its day of the month comes round again
+  const months =
+    (now.getUTCFullYear() - start.getUTCFullYear()) * 12 +
+    now.getUTCMonth() -
+    start.getUTCMonth() -
+    (now.getUTCDate() < start.getUTCDate() ? 1 : 0)
+  const units =
+    months > 0
+      ? { year: Math.floor(months / 12), month: months % 12 }
+      : { day: Math.floor((now.getTime() - start.getTime()) / DAY_MS) }
+  const parts = Object.entries(units)
+    .filter(([, value]) => value > 0)
+    .map(([unit, value]) =>
+      new Intl.NumberFormat(locale, {
+        style: 'unit',
+        unit,
+        unitDisplay: 'long',
+      }).format(value),
+    )
+
+  return new Intl.ListFormat(locale, { type: 'conjunction' }).format(parts)
+}
+
+export function formatPercent(percent: number, locale: string): string {
+  return new Intl.NumberFormat(locale, { style: 'percent' }).format(
+    percent / 100,
+  )
 }
 
 export function millisecondsToTimeString(milliseconds: number): string {
   const totalSeconds = Math.floor(milliseconds / 1000)
-  const minutes = Math.floor(totalSeconds / 60)
+  const hours = Math.floor(totalSeconds / 3600)
+  const minutes = Math.floor((totalSeconds % 3600) / 60)
   const seconds = totalSeconds % 60
+  const paddedSeconds = seconds.toString().padStart(2, '0')
 
-  return `${minutes}:${seconds.toString().padStart(2, '0')}`
+  return hours
+    ? `${hours}:${minutes.toString().padStart(2, '0')}:${paddedSeconds}`
+    : `${minutes}:${paddedSeconds}`
 }
 
+// In the time zone of whoever runs it, so it belongs in the browser
 export function calculateETA(
-  durationMs?: string,
-  viewOffsetMs?: string,
+  durationMs: string | undefined,
+  viewOffsetMs: string | undefined,
+  locale: string,
 ): string | null {
   if (!durationMs || !viewOffsetMs) return null
 
@@ -124,11 +204,111 @@ export function calculateETA(
 
   if (remainingMs <= 0) return null
 
-  const now = new Date()
-  const eta = new Date(now.getTime() + remainingMs)
-  // Format as HH:MM
-  const hours = eta.getHours().toString().padStart(2, '0')
-  const minutes = eta.getMinutes().toString().padStart(2, '0')
+  const eta = new Date(Date.now() + remainingMs)
 
-  return `${hours}:${minutes}`
+  return new Intl.DateTimeFormat(locale, {
+    hour: 'numeric',
+    minute: '2-digit',
+  }).format(eta)
+}
+
+// The app and the device it plays on, such as "Plex Web (Chrome)"
+export function formatDevice(product: string, player: string): string {
+  return product && player ? `${product} (${player})` : product || player
+}
+
+const CODEC_NAMES: Record<
+  'video' | 'audio' | 'subtitle',
+  Record<string, string>
+> = {
+  video: {
+    h264: 'H.264',
+    avc: 'H.264',
+    hevc: 'HEVC',
+    h265: 'HEVC',
+    av1: 'AV1',
+    vp9: 'VP9',
+    vp8: 'VP8',
+    mpeg4: 'MPEG-4',
+    mpeg2video: 'MPEG-2',
+    vc1: 'VC-1',
+  },
+  audio: {
+    aac: 'AAC',
+    ac3: 'Dolby Digital',
+    eac3: 'Dolby Digital+',
+    truehd: 'Dolby TrueHD',
+    dca: 'DTS',
+    dts: 'DTS',
+    'dca-ma': 'DTS-HD MA',
+    flac: 'FLAC',
+    alac: 'ALAC',
+    mp3: 'MP3',
+    opus: 'Opus',
+    vorbis: 'Vorbis',
+    pcm: 'PCM',
+  },
+  subtitle: {
+    srt: 'SRT',
+    subrip: 'SRT',
+    ass: 'ASS',
+    ssa: 'SSA',
+    pgs: 'PGS',
+    vobsub: 'VobSub',
+    dvd_subtitle: 'VobSub',
+    mov_text: 'MOV text',
+    webvtt: 'WebVTT',
+    vtt: 'WebVTT',
+  },
+}
+
+// Plex reports codecs by their internal names, such as "dca" for DTS
+export function formatCodec(
+  codec: string | undefined,
+  type: 'video' | 'audio' | 'subtitle',
+): string {
+  if (!codec) {
+    return ''
+  }
+
+  return CODEC_NAMES[type][codec.toLowerCase()] ?? codec.toUpperCase()
+}
+
+// "stereo" and "5.1(side)" read as "Stereo" and "5.1"
+export function formatChannels(layout?: string): string {
+  const name = (layout ?? '').replace(/\(.*\)$/, '').trim()
+
+  return name ? name.charAt(0).toUpperCase() + name.slice(1) : ''
+}
+
+export function formatResolution(resolution?: string): string {
+  const value = (resolution ?? '').trim().toLowerCase()
+
+  if (!value) {
+    return ''
+  }
+
+  if (value === '4k' || value === '2160p' || value === '2160') {
+    return '4K'
+  }
+
+  if (value === 'sd') {
+    return 'SD'
+  }
+
+  return /^\d+$/.test(value) ? `${value}p` : value
+}
+
+// SDR is the norm, so only HDR formats are worth naming
+export function formatDynamicRange(range?: string): string {
+  return !range || range.toUpperCase() === 'SDR' ? '' : range
+}
+
+// First letters of the first and last name, like a contact without a photo
+export function getInitials(name: string): string {
+  const words = name.trim().split(/\s+/).filter(Boolean)
+  const first = Array.from(words[0] ?? '')[0] ?? ''
+  const last = words.length > 1 ? (Array.from(words.at(-1)!)[0] ?? '') : ''
+
+  return (first + last).toLocaleUpperCase()
 }

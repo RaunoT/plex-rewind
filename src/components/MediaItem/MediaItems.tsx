@@ -1,4 +1,4 @@
-import { Settings } from '@/types/settings'
+import { PublicSettings } from '@/types/settings'
 import { TautulliItemRow } from '@/types/tautulli'
 import clsx from 'clsx'
 import MediaItem from './MediaItem'
@@ -8,7 +8,7 @@ type Props = {
   type: 'movie' | 'show' | 'artist' | 'users'
   serverId: string
   rows?: boolean
-  settings: Settings
+  settings: PublicSettings
   loggedInUserId?: string
 }
 
@@ -23,9 +23,8 @@ export default function MediaItems({
   return (
     <ul
       className={clsx(
-        'mt-4 flex flex-col gap-y-3 overflow-hidden sm:mt-6 sm:gap-y-5',
-        !rows &&
-          'lg:grid lg:grid-flow-col lg:grid-cols-2 lg:grid-rows-3 lg:gap-x-8',
+        'flex flex-col overflow-hidden text-white',
+        rows && 'mt-4 sm:mt-5',
       )}
     >
       {items.map((itemData, i) => (
@@ -35,11 +34,9 @@ export default function MediaItems({
           key={i}
           type={type}
           serverId={serverId}
-          activeStats={settings.dashboard.activeItemStatistics}
+          activeStats={settings.general.activeItemStatistics}
           settings={settings}
           loggedInUserId={loggedInUserId}
-          items={items}
-          rows={rows}
         />
       ))}
     </ul>

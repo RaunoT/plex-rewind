@@ -1,8 +1,12 @@
 'use client'
 
+import { GlobalContext } from '@/app/_components/GlobalContextProvider'
+import Avatar from '@/components/Avatar'
 import anonymousSvg from '@/components/MediaItem/anonymous.svg'
-import { usePoster } from '@/hooks/usePoster'
-import { Settings } from '@/types/settings'
+import placeholderSvg from '@/components/MediaItem/placeholder.svg'
+import SkeletonLine from '@/components/SkeletonLine'
+import { useMediaDetails } from '@/hooks/useMediaDetails'
+import { PublicSettings } from '@/types/settings'
 import { TautulliSession } from '@/types/tautulli'
 import {
   generateDeeplinkUrl,
@@ -11,36 +15,59 @@ import {
 import {
   calculateETA,
   formatBitrate,
+  formatChannels,
+  formatCodec,
+  formatDevice,
+  formatDynamicRange,
+  formatPercent,
+  formatRating,
+  formatResolution,
   millisecondsToTimeString,
 } from '@/utils/formatting'
-import { PauseIcon, PlayIcon } from '@heroicons/react/24/outline'
+import { ArrowTurnDownRightIcon } from '@heroicons/react/16/solid'
+import {
+  ArrowPathIcon,
+  CalendarDaysIcon,
+  PauseIcon,
+  PlayIcon,
+  StarIcon,
+} from '@heroicons/react/24/outline'
 import clsx from 'clsx'
 import { capitalize, toUpper } from 'lodash'
 import { useSession } from 'next-auth/react'
-import { useTranslations } from 'next-intl'
+import { useLocale, useTranslations } from 'next-intl'
 import Image from 'next/image'
+import { ReactNode, useContext, useState } from 'react'
+
+type DecisionKind = 'directPlay' | 'directStream' | 'transcode'
 
 type ActivityItemProps = {
   session: TautulliSession
   index: number
-  totalSessions: number
-  settings: Settings
+  settings: PublicSettings
   serverId?: string
 }
 
 export default function ActivityItem({
   session,
   index,
-  totalSessions,
   settings,
   serverId,
 }: ActivityItemProps) {
-  const { posterUrl, isLoading } = usePoster(session, settings)
+  const { posterUrl, isPosterLoading, year, rating, isDetailsLoading } =
+    useMediaDetails(session, settings)
   const t = useTranslations('Activity')
+  const tCommon = useTranslations('Common')
+  const locale = useLocale()
   const { data: user } = useSession()
-  const isCurrentUser = session.user_id == user?.user.id
+  const isCurrentUser = String(session.user_id) === user?.user.id
   const isAdmin = user?.user.isAdmin
+  const [failedPosterUrl, setFailedPosterUrl] = useState<string | null>(null)
   const {
+    activity: { isDetailsHidden },
+  } = useContext(GlobalContext)
+  const {
+    audio_atmos,
     audio_channel_layout,
     audio_codec,
     bandwidth,
@@ -57,6 +84,7 @@ export default function ActivityItem({
     product,
     quality_profile,
     state,
+    stream_audio_atmos,
     stream_audio_channel_layout,
     stream_audio_codec,
     stream_audio_decision,
@@ -74,267 +102,370 @@ export default function ActivityItem({
     subtitle_codec,
     title,
     transcode_decision,
-    transcode_throttled,
     video_codec,
     video_dynamic_range,
     video_full_resolution,
   } = session
 
+  function formatDecision(decision?: string) {
+    const kind = getDecisionKind(decision)
+
+    return kind ? t(`decision.${kind}`) : decision
+  }
+
+  const videoSource = joinParts(
+    formatResolution(video_full_resolution),
+    formatCodec(video_codec, 'video'),
+    formatDynamicRange(video_dynamic_range),
+  )
+  const videoStream = joinParts(
+    formatResolution(stream_video_full_resolution),
+    formatCodec(stream_video_codec, 'video'),
+    formatDynamicRange(stream_video_dynamic_range),
+  )
+  const audioSource = joinParts(
+    formatCodec(audio_codec, 'audio'),
+    isAtmos(audio_atmos) ? 'Atmos' : '',
+    formatChannels(audio_channel_layout),
+  )
+  const audioStream = joinParts(
+    formatCodec(stream_audio_codec, 'audio'),
+    isAtmos(stream_audio_atmos) ? 'Atmos' : '',
+    formatChannels(stream_audio_channel_layout),
+  )
+  const bitrateSource = formatBitrate(bitrate, locale)
+  const bitrateStream = formatBitrate(stream_bitrate, locale)
+  const qualityConversion = getConversion(
+    bitrateSource,
+    bitrateStream,
+    transcode_decision,
+  )
+  const subtitleSource = formatCodec(subtitle_codec, 'subtitle')
+  const subtitleStream = formatCodec(stream_subtitle_codec, 'subtitle')
+  const isAnonymous = settings.general.isAnonymized && !isCurrentUser
+  const isVideo = media_type === 'episode' || media_type === 'movie'
+  const subtitle = [grandparent_title, parent_title].filter(Boolean).join(' · ')
+  const eta = calculateETA(session.duration, session.view_offset, locale)
+  const device = formatDevice(product, player)
+  // Only Tautulli reports buffering, and anything unexpected reads as paused
+  const playbackState =
+    state === 'playing' || state === 'buffering' ? state : 'paused'
+
   return (
-    <li
-      className={clsx('w-full', {
-        'border-b border-neutral-500 pb-6 sm:pb-8': index !== totalSessions - 1,
-      })}
-    >
-      <div className='flex gap-3'>
-        {/* Poster */}
-        <div className='h-fit'>
-          <div className={clsx('poster', { skeleton: isLoading })}>
-            {!isLoading && posterUrl && (
+    <li className='w-full py-6 first:pt-0 last:pb-0 sm:py-8'>
+      {/* Who is watching, and on what */}
+      <div className='mb-4 flex items-center justify-between gap-3'>
+        <div className='flex min-w-0 items-center gap-2 text-sm'>
+          <div className='relative size-6 shrink-0 overflow-hidden rounded-full ring-1 ring-white/15'>
+            {isAnonymous ? (
               <Image
                 fill
                 className='object-cover object-top'
-                alt={grandparent_title + ' ' + t('poster')}
-                src={posterUrl}
-                sizes='6rem'
+                alt={t('anonymousAvatar')}
+                src={anonymousSvg}
+                sizes='3rem'
+                priority
+              />
+            ) : (
+              <Avatar
+                src={session.user_thumb}
+                name={friendly_name}
+                alt={tCommon('profilePictureAlt', { name: friendly_name })}
+                sizes='3rem'
                 priority
               />
             )}
           </div>
-          {/* Time */}
-          {session.duration && session.view_offset && (
-            <div className='mt-2 text-center text-neutral-400'>
-              <div className='text-xs'>
-                {`${session.progress_percent}% `}
-                {calculateETA(session.duration, session.view_offset) && (
-                  <>
-                    {'- '}
-                    {calculateETA(session.duration, session.view_offset)}
-                  </>
-                )}
-              </div>
-              <div className='text-[0.625rem]'>
-                {millisecondsToTimeString(parseInt(session.view_offset))} /{' '}
-                {millisecondsToTimeString(parseInt(session.duration))}
-              </div>
-            </div>
+          <span
+            className={clsx(
+              'shrink-0 font-medium',
+              isCurrentUser && 'text-plex',
+            )}
+          >
+            {isAnonymous
+              ? t('anonymous', { number: index + 1 })
+              : friendly_name}
+          </span>
+          {device && (
+            <span className='truncate text-neutral-400'>{device}</span>
           )}
         </div>
-
-        <div className='w-full'>
-          {/* Title */}
-          <div className='mb-4'>
-            {grandparent_title && (
-              <p className='text-xs text-neutral-400 sm:text-sm'>
-                {grandparent_title}
-              </p>
-            )}
-            <h2 className='text-sm font-bold sm:text-lg'>
-              {serverId ? (
-                <a
-                  href={generateDeeplinkUrl(
-                    getDeeplinkRatingKeyFromSession(session),
-                    serverId,
-                  )}
-                  target='_blank'
-                  rel='noopener noreferrer'
-                  className='link-light'
-                >
-                  {title}
-                </a>
-              ) : (
-                title
-              )}
-            </h2>
-            {parent_title && (
-              <p className='text-xs text-neutral-400 sm:text-sm'>
-                {parent_title}
-              </p>
-            )}
-          </div>
-          {/* Stream info */}
-          <ul className='grid gap-x-4 gap-y-2 text-xs sm:grid-cols-2'>
-            {/* Stream */}
-            <li>
-              {getTitle(t('stream'))}
-              <div>
-                {capitalize(
-                  transcode_decision === 'copy'
-                    ? 'direct stream'
-                    : transcode_decision,
-                )}
-                {`${transcode_throttled ? ' (throttled)' : ''}`}
-              </div>
-            </li>
-            {/* Quality */}
-            <li>
-              {getTitle(t('quality'), quality_profile)}
-              {checkTranscode(
-                formatBitrate(bitrate),
-                formatBitrate(stream_bitrate),
-                transcode_decision,
-              )}
-            </li>
-            {/* Bandwidth */}
-            {/* TODO: Tautulli doesn't return bandwidth for tracks sometimes */}
-            <li>
-              {getTitle(t('bandwidth'))}
-              {formatBitrate(bandwidth)}
-            </li>
-            {/* Video */}
-            {media_type !== 'track' && (
-              <li>
-                {getTitle(t('video'), stream_video_decision)}
-                {checkTranscode(
-                  `${toUpper(video_codec)} ${toUpper(video_full_resolution)} ${video_dynamic_range}`,
-                  `${toUpper(stream_video_codec)} ${toUpper(stream_video_full_resolution)} ${stream_video_dynamic_range}`,
-                  stream_video_decision,
-                )}
-              </li>
-            )}
-            {/* Audio */}
-            <li>
-              {getTitle(t('audio'), stream_audio_decision)}
-              {checkTranscode(
-                `${media_type !== 'track' ? `${stream_audio_language} - ` : ''}${toUpper(audio_codec)} ${audio_channel_layout}`,
-                `${toUpper(stream_audio_codec)} ${stream_audio_channel_layout}`,
-                stream_audio_decision,
-              )}
-            </li>
-            {/* Subtitles */}
-            {media_type !== 'track' && (
-              <li>
-                {getTitle(t('subtitles'), stream_subtitle_decision)}
-                {checkTranscode(
-                  `${stream_subtitle_language} - ${toUpper(subtitle_codec)}`,
-                  toUpper(stream_subtitle_codec),
-                  stream_subtitle_decision,
-                )}
-              </li>
-            )}
-            {/* Container */}
-            <li>
-              {getTitle(
-                t('container'),
-                stream_container_decision === 'transcode'
-                  ? 'converting'
-                  : stream_container_decision,
-              )}
-              {checkTranscode(
-                toUpper(container),
-                toUpper(stream_container),
-                stream_container_decision,
-              )}
-            </li>
-            {/* Location */}
-            {isAdmin && !settings.general.isAnonymized && (
-              <li>
-                {getTitle(t('location'), toUpper(location))}
-                {location === 'wan' ? (
-                  <a
-                    href={`https://ipinfo.io/${ip_address_public}`}
-                    target='_blank'
-                    rel='noopener noreferrer'
-                    className='link-light text-blue-300 underline'
-                  >
-                    {ip_address_public}
-                  </a>
-                ) : (
-                  <span>{ip_address}</span>
-                )}
-              </li>
-            )}
-          </ul>
-        </div>
+        <span className='icon-stat-wrapper shrink-0 text-xs sm:text-sm'>
+          {playbackState === 'playing' && <PlayIcon />}
+          {playbackState === 'buffering' && (
+            <ArrowPathIcon className='motion-safe:animate-spin' />
+          )}
+          {playbackState === 'paused' && <PauseIcon />}
+          {t(playbackState)}
+        </span>
       </div>
 
-      {/* Footer */}
-      <div className='mt-4 flex items-center justify-between gap-4'>
-        <div className='flex items-center gap-4'>
-          {/* Avatar */}
-          <div className='relative size-12 shrink-0 rounded-full'>
+      {/* What is playing, beside its poster */}
+      <div className='flex gap-4'>
+        <div className={clsx('poster', { skeleton: isPosterLoading })}>
+          {!isPosterLoading && (
             <Image
               fill
-              className='rounded-full object-cover object-top'
-              alt={
-                settings.general.isAnonymized && !isCurrentUser
-                  ? t('anonymousAvatar')
-                  : friendly_name + ' ' + t('avatar')
-              }
+              className='object-cover object-top'
+              alt={t('poster', { title: grandparent_title || title })}
               src={
-                settings.general.isAnonymized && !isCurrentUser
-                  ? anonymousSvg
-                  : session.user_thumb?.startsWith('http')
-                    ? `/api/image?url=${encodeURIComponent(session.user_thumb)}`
-                    : `/api/image?url=${encodeURIComponent(
-                        `${settings.connection.tautulliUrl}/pms_image_proxy?img=${session.user_thumb}&width=300`,
-                      )}`
+                posterUrl && posterUrl !== failedPosterUrl
+                  ? posterUrl
+                  : placeholderSvg
               }
               sizes='6rem'
+              onError={() => setFailedPosterUrl(posterUrl)}
               priority
             />
-          </div>
-          {/* User info */}
-          <div>
-            <div
-              className={clsx(
-                'text-sm font-semibold sm:text-base',
-                isCurrentUser && 'gradient-plex',
-              )}
-            >
-              {settings.general.isAnonymized && !isCurrentUser
-                ? `${t('anonymous')} #${index + 1}`
-                : friendly_name}
-            </div>
-            <div className='text-xs text-neutral-400 sm:text-sm'>
-              {product} ({player})
-            </div>
-          </div>
+          )}
         </div>
-        {/* State */}
-        <div>
-          {state === 'playing' ? (
-            <PlayIcon className='size-5' />
-          ) : (
-            <PauseIcon className='size-5' />
+
+        <div className='flex min-w-0 flex-1 flex-col'>
+          {subtitle && (
+            <p className='truncate text-xs text-neutral-400 sm:text-sm'>
+              {subtitle}
+            </p>
+          )}
+          <h2
+            className='truncate text-base leading-snug font-semibold sm:text-lg'
+            title={title}
+          >
+            {serverId ? (
+              <a
+                href={generateDeeplinkUrl(
+                  getDeeplinkRatingKeyFromSession(session),
+                  serverId,
+                )}
+                target='_blank'
+                rel='noopener noreferrer'
+                className='link-light'
+              >
+                {title}
+              </a>
+            ) : (
+              title
+            )}
+          </h2>
+          {/* The show's or movie's, like on the dashboard */}
+          {isVideo &&
+            (isDetailsLoading ? (
+              <SkeletonLine
+                className='mt-0.5 text-xs sm:text-sm'
+                width='w-24'
+              />
+            ) : (
+              (year || rating) && (
+                <ul className='icon-stats-container mt-0.5 gap-x-3 text-neutral-300'>
+                  {year && (
+                    <li className='icon-stat-wrapper icon-stat-wrapper--clean'>
+                      <CalendarDaysIcon />
+                      <span className='sr-only'>{tCommon('year')}</span> {year}
+                    </li>
+                  )}
+                  {rating && (
+                    <li className='icon-stat-wrapper icon-stat-wrapper--clean'>
+                      <StarIcon />
+                      <span className='sr-only'>{tCommon('rating')}</span>{' '}
+                      {formatRating(rating, locale)}
+                    </li>
+                  )}
+                </ul>
+              )
+            ))}
+
+          {session.duration && session.view_offset && (
+            <div className='mt-auto pt-3 text-xs text-neutral-400 tabular-nums'>
+              <div
+                className='h-1.5 overflow-hidden rounded-full bg-white/10'
+                aria-hidden='true'
+              >
+                <div
+                  className='h-full rounded-full bg-white'
+                  style={{ width: `${Number(session.progress_percent)}%` }}
+                />
+              </div>
+              <div className='mt-1.5 flex justify-between gap-3'>
+                <span>
+                  {millisecondsToTimeString(parseInt(session.view_offset))} /{' '}
+                  {millisecondsToTimeString(parseInt(session.duration))}
+                </span>
+                <span>
+                  {formatPercent(Number(session.progress_percent), locale)}
+                  {eta && ` · ${t('endsAt', { time: eta })}`}
+                </span>
+              </div>
+            </div>
           )}
         </div>
       </div>
+
+      {/* Stream info: what is playing first, then how it gets there */}
+      {!isDetailsHidden && (
+        <ul className='mt-4 grid grid-cols-2 gap-x-4 gap-y-3 rounded-2xl bg-black/25 p-4 text-sm ring-1 ring-white/10 ring-inset sm:grid-cols-3'>
+          <Detail label={t('stream')}>
+            {capitalize(formatDecision(transcode_decision))}
+          </Detail>
+          {media_type !== 'track' && (
+            <Detail
+              label={t('video')}
+              convertedTo={getConversion(
+                videoSource,
+                videoStream,
+                stream_video_decision,
+              )}
+            >
+              {formatValue(videoSource || videoStream)}
+            </Detail>
+          )}
+          <Detail
+            label={withLanguage(
+              t('audio'),
+              media_type !== 'track' && stream_audio_language,
+            )}
+            convertedTo={getConversion(
+              audioSource,
+              audioStream,
+              stream_audio_decision,
+            )}
+          >
+            {formatValue(audioSource || audioStream)}
+          </Detail>
+          {media_type !== 'track' &&
+            (subtitle_codec || stream_subtitle_codec) && (
+              <Detail
+                label={withLanguage(t('subtitles'), stream_subtitle_language)}
+                convertedTo={
+                  stream_subtitle_decision === 'burn'
+                    ? t('decision.burnedIn')
+                    : getConversion(
+                        subtitleSource,
+                        subtitleStream,
+                        stream_subtitle_decision,
+                      )
+                }
+              >
+                {formatValue(subtitleSource || subtitleStream)}
+              </Detail>
+            )}
+          {/* The profile describes what is streamed, so it goes with that bitrate */}
+          <Detail
+            label={t('quality')}
+            convertedTo={
+              qualityConversion &&
+              formatValue(quality_profile, qualityConversion)
+            }
+          >
+            {formatValue(
+              !qualityConversion && quality_profile,
+              bitrateSource || bitrateStream,
+            )}
+          </Detail>
+          {/* TODO: Tautulli doesn't return bandwidth for tracks sometimes */}
+          <Detail label={t('bandwidth')}>
+            {formatValue(formatBitrate(bandwidth, locale))}
+          </Detail>
+          <Detail
+            label={t('container')}
+            convertedTo={getConversion(
+              toUpper(container),
+              toUpper(stream_container),
+              stream_container_decision,
+            )}
+          >
+            {formatValue(toUpper(container) || toUpper(stream_container))}
+          </Detail>
+          {isAdmin && !settings.general.isAnonymized && location && (
+            <Detail label={t('location')}>
+              {`${toUpper(location)} · `}
+              {location === 'wan' ? (
+                <a
+                  href={`https://ipinfo.io/${ip_address_public}`}
+                  target='_blank'
+                  rel='noopener noreferrer'
+                  className='underline decoration-white/30 underline-offset-2 transition-colors hover:decoration-white'
+                >
+                  {ip_address_public}
+                </a>
+              ) : (
+                ip_address
+              )}
+            </Detail>
+          )}
+        </ul>
+      )}
     </li>
   )
 }
 
-function checkTranscode(original: string, stream: string, transcode: string) {
-  const showDiff =
-    transcode &&
-    transcode !== 'direct play' &&
-    transcode !== 'copy' &&
-    transcode !== 'ignore'
-
-  return (
-    <div>
-      <span>{original}</span>
-      {showDiff && (
-        <>
-          {' '}
-          → <span>{stream}</span>
-        </>
-      )}
-    </div>
-  )
+// Tautulli sends 0 or 1, Tracearr a boolean
+function isAtmos(value?: number | boolean) {
+  return Number(value) === 1
 }
 
-function getTitle(title: string, parenthesis?: string) {
-  let newTitle = parenthesis
-
-  if (parenthesis === 'copy') {
-    newTitle = 'direct stream'
+// Plex's decisions, grouped by how much work they are for the server
+function getDecisionKind(decision?: string): DecisionKind | undefined {
+  switch (decision) {
+    case 'direct play':
+      return 'directPlay'
+    case 'copy':
+      return 'directStream'
+    case 'transcode':
+    // Burning in subtitles is a transcode too
+    case 'burn':
+      return 'transcode'
   }
+}
+
+function isTranscoding(decision?: string) {
+  return getDecisionKind(decision) === 'transcode'
+}
+
+function joinParts(...parts: string[]) {
+  return parts.filter(Boolean).join(' ')
+}
+
+// What it becomes, only when Plex converts a known source to something else.
+// Without the source, the stream is shown in its place instead.
+function getConversion(source: string, stream: string, decision?: string) {
+  return isTranscoding(decision) && source && stream && stream !== source
+    ? stream
+    : undefined
+}
+
+function withLanguage(label: string, language?: string | false) {
+  return language ? `${label} (${language})` : label
+}
+
+function formatValue(...parts: (string | false | undefined)[]) {
+  return parts.filter(Boolean).join(' · ') || '–'
+}
+
+type DetailProps = {
+  label: string
+  convertedTo?: string
+  children: ReactNode
+}
+
+// The original stays on top and the conversion goes below it in gold, as
+// converting is what costs the server
+function Detail({ label, convertedTo, children }: DetailProps) {
+  const t = useTranslations('Activity')
 
   return (
-    <div className='mb-0.5 font-medium text-neutral-400'>
-      <span>{title}</span>
-      {newTitle && <span> ({newTitle})</span>}
-    </div>
+    <li>
+      <div className='mb-0.5 text-xs text-neutral-400'>{label}</div>
+      <div className='text-pretty'>{children}</div>
+      {convertedTo && (
+        <div className='text-plex flex gap-1'>
+          <span className='flex h-[1lh] shrink-0 items-center'>
+            <ArrowTurnDownRightIcon className='size-3.5' aria-hidden='true' />
+          </span>
+          <span>
+            <span className='sr-only'>{t('convertedTo')} </span>
+            {convertedTo}
+          </span>
+        </div>
+      )}
+    </li>
   )
 }

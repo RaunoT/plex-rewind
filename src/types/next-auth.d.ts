@@ -8,6 +8,7 @@ declare module 'next-auth/jwt' {
   interface JWT {
     id: UserId
     isAdmin: UserAdmin
+    checkedAt?: number
   }
 }
 
@@ -16,7 +17,7 @@ declare module 'next-auth' {
     user: User & {
       id: UserId
       isAdmin: UserAdmin
-    } & NextAuthUser
+    }
   }
 
   interface User {

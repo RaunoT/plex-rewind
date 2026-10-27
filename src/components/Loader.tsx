@@ -1,8 +1,14 @@
 import clsx from 'clsx'
 import { useTranslations } from 'next-intl'
 
+// Written out in full, so Tailwind finds the classes in the source
+const SIZES = {
+  6: 'size-6',
+  8: 'size-8',
+}
+
 type Props = {
-  size?: number
+  size?: keyof typeof SIZES
 }
 
 export default function Loader({ size = 8 }: Props) {
@@ -12,10 +18,7 @@ export default function Loader({ size = 8 }: Props) {
     <div role='status'>
       <svg
         aria-hidden='true'
-        className={clsx(
-          'animate-spin fill-blue-800 text-slate-300',
-          `size-${size}`,
-        )}
+        className={clsx('animate-spin fill-current', SIZES[size])}
         viewBox='0 0 100 101'
         fill='none'
         xmlns='http://www.w3.org/2000/svg'
@@ -26,6 +29,7 @@ export default function Loader({ size = 8 }: Props) {
             50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186
             27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z'
           fill='currentColor'
+          className='opacity-20'
         />
         <path
           d='M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167

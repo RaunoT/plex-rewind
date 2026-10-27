@@ -1,4 +1,6 @@
+import { requireSettingsAccess } from '@/lib/access'
 import getSettings from '@/utils/getSettings'
+import { toPublicSettings } from '@/utils/publicSettings'
 import { Metadata } from 'next'
 import { getTranslations } from 'next-intl/server'
 import ActivitySettingsForm from './_components/ActivitySettingsForm'
@@ -11,8 +13,10 @@ export async function generateMetadata(): Promise<Metadata> {
   }
 }
 
-export default function ActivitySettingsPage() {
+export default async function ActivitySettingsPage() {
+  await requireSettingsAccess()
+
   const settings = getSettings()
 
-  return <ActivitySettingsForm settings={settings} />
+  return <ActivitySettingsForm settings={toPublicSettings(settings)} />
 }

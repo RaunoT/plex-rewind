@@ -1,11 +1,9 @@
-import { TautulliItem, TautulliItemRow } from '@/types/tautulli'
-import { fetchOverseerrStats, fetchOverseerrUserId } from './fetchOverseerr'
-import fetchTautulli, {
-  getActiveUsers,
-  getLibraries,
-  getLibrariesByType,
-} from './fetchTautulli'
+import { TopItems } from '@/types/statsSource'
+import { TautulliItemRow } from '@/types/tautulli'
+import { DASHBOARD_PAGE_SIZE } from './constants'
+import { fetchSeerrStats, fetchSeerrUserId } from './fetchSeerr'
 import getSettings from './getSettings'
+import { getLibraries, getStatsSource } from './statsSource'
 
 type UserRequestCounts =
   | {
@@ -17,163 +15,87 @@ export default async function getUsersTop(
   loggedInUserId: string,
   after: string,
   period?: number,
-): Promise<TautulliItemRow[] | null> {
-  const numberOfUsers = 6
+  numberOfUsers = DASHBOARD_PAGE_SIZE,
+  withFirstPlay = false,
+): Promise<TopItems | null> {
   const settings = getSettings()
-  const excludedUsers = settings.general.excludedUsers
-  const activeUsers = await getActiveUsers(settings)
+  const source = getStatsSource(settings)
+  const libraries = await getLibraries()
+  const users = await source.getTopUsers({ since: after, period, libraries })
 
-  if (!activeUsers.length) {
-    console.error('Could not determine the number of users!')
-
+  if (!users) {
     return null
   }
 
-  const activeLibraries = await getLibraries()
-  // get_home_stats only reliably accepts a `time_range` in days (last N days
-  // from today), so callers pass the window length as `period`. The per-user
-  // history counts below use `after` directly, also anchored to now.
-  const time_range = period || 30
-  // get_home_stats can't exclude users itself, so it still ranks excluded
-  // users. Request enough rows that they can't push the users we want to keep
-  // out of the window before we filter them out below.
-  const statsCount = activeUsers.length + excludedUsers.length
-  const userStats = await Promise.all(
-    activeLibraries.map((library) =>
-      fetchTautulli<TautulliItem>('get_home_stats', {
-        stat_id: 'top_users',
-        stats_count: statsCount,
-        stats_type: 'duration',
-        section_id: library.section_id,
-        time_range,
-      }),
-    ),
-  )
-  const combinedUserStats: { [userId: string]: TautulliItemRow } = {}
-
-  userStats.forEach((stat) => {
-    const users = stat?.response?.data?.rows
-
-    if (users) {
-      users.forEach((user) => {
-        if (excludedUsers.includes(String(user.user_id))) {
-          return
-        }
-
-        if (combinedUserStats[user.user_id]) {
-          combinedUserStats[user.user_id].total_duration += user.total_duration
-        } else {
-          combinedUserStats[user.user_id] = { ...user }
-        }
-      })
-    }
-  })
-
-  const users = Object.values(combinedUserStats).sort(
-    (a, b) => b.total_duration - a.total_duration,
-  )
   const isAnonymousAccess = settings.general.isOutsideAccess && !loggedInUserId
-  const listedUsers = isAnonymousAccess
-    ? users.slice(0, numberOfUsers)
-    : await getStatsWithLoggedInUser(loggedInUserId, users, numberOfUsers)
-  const [moviesLib, showsLib, audioLib] = await Promise.all([
-    getLibrariesByType('movie'),
-    getLibrariesByType('show'),
-    getLibrariesByType('artist'),
-  ])
-  const isOverseerrActive =
-    settings.connection.overseerrUrl && settings.connection.overseerrApiKey
+  // Excluded users aren't ranked, so adding one would show them last with no
+  // watch time.
+  const isExcludedUser = settings.general.excludedUsers.includes(loggedInUserId)
+  const listedUsers =
+    isAnonymousAccess || isExcludedUser
+      ? users.slice(0, numberOfUsers)
+      : await getStatsWithLoggedInUser(loggedInUserId, users, numberOfUsers)
+  const listedUserIds = new Set(listedUsers.map((user) => user.user_id))
+  // The logged-in user's row can stand in for higher ranked ones
+  const hasMore = users.some((user) => !listedUserIds.has(user.user_id))
+  const isSeerrActive =
+    settings.connection.seerrUrl && settings.connection.seerrApiKey
 
   let usersRequestsCounts: UserRequestCounts[] = []
 
-  if (isOverseerrActive) {
-    const overseerrUserIds = await Promise.all(
+  if (isSeerrActive) {
+    const seerrUserIds = await Promise.all(
       listedUsers.map(
-        async (user) => await fetchOverseerrUserId(String(user.user_id)),
+        async (user) => await fetchSeerrUserId(String(user.user_id)),
       ),
     )
 
     usersRequestsCounts = await Promise.all(
-      overseerrUserIds.map(async (overseerrId) => {
-        if (overseerrId) {
-          const userTotal = await fetchOverseerrStats(
-            `user/${overseerrId}/requests`,
+      seerrUserIds.map(async (seerrId) => {
+        if (seerrId) {
+          const userTotal = await fetchSeerrStats(
+            `user/${seerrId}/requests`,
             after,
           )
 
           return {
-            requests: userTotal.length,
+            requests: userTotal?.length ?? 0,
           }
         }
       }),
     )
   }
 
-  const usersPlaysAndDurations = await Promise.all(
-    listedUsers.map(async (user) => {
-      let moviesPlaysCount = 0
-      let showsPlaysCount = 0
-      let audioPlaysCount = 0
-
-      for (const movieLib of moviesLib) {
-        const userMovies = await fetchTautulli<{ recordsFiltered: number }>(
-          'get_history',
-          {
-            user_id: user.user_id,
-            after: after,
-            section_id: movieLib.section_id,
-          },
+  // Anonymizing hides the first plays of other users, so they aren't looked up
+  const isFirstPlayShown = (user: TautulliItemRow) =>
+    !settings.general.isAnonymized || String(user.user_id) === loggedInUserId
+  const [usersPlaysCounts, firstPlays] = await Promise.all([
+    source.getPlaysCounts(listedUsers, after, libraries),
+    withFirstPlay
+      ? Promise.all(
+          listedUsers.map((user) =>
+            isFirstPlayShown(user)
+              ? source.getFirstPlay(String(user.user_id))
+              : null,
+          ),
         )
-
-        moviesPlaysCount += userMovies?.response?.data?.recordsFiltered || 0
-      }
-
-      for (const showLib of showsLib) {
-        const userShows = await fetchTautulli<{ recordsFiltered: number }>(
-          'get_history',
-          {
-            user_id: user.user_id,
-            after: after,
-            section_id: showLib.section_id,
-          },
-        )
-
-        showsPlaysCount += userShows?.response?.data?.recordsFiltered || 0
-      }
-
-      for (const audioLibItem of audioLib) {
-        const userAudio = await fetchTautulli<{ recordsFiltered: number }>(
-          'get_history',
-          {
-            user_id: user.user_id,
-            after: after,
-            section_id: audioLibItem.section_id,
-          },
-        )
-
-        audioPlaysCount += userAudio?.response?.data?.recordsFiltered || 0
-      }
-
-      return {
-        movies_plays_count: moviesPlaysCount,
-        shows_plays_count: showsPlaysCount,
-        audio_plays_count: audioPlaysCount,
-      }
-    }),
-  )
+      : [],
+  ])
 
   listedUsers.map((user, i) => {
     user.requests = usersRequestsCounts[i]?.requests || 0
-    user.movies_plays_count = usersPlaysAndDurations[i].movies_plays_count
-    user.shows_plays_count = usersPlaysAndDurations[i].shows_plays_count
-    user.audio_plays_count = usersPlaysAndDurations[i].audio_plays_count
+    user.movies_plays_count = usersPlaysCounts[i].movies_plays_count
+    user.shows_plays_count = usersPlaysCounts[i].shows_plays_count
+    user.audio_plays_count = usersPlaysCounts[i].audio_plays_count
+    user.first_played_at = firstPlays[i]?.date
   })
 
-  if (settings.general.isAnonymized) {
-    return anonymizeUsers(listedUsers, loggedInUserId)
+  return {
+    items: settings.general.isAnonymized
+      ? anonymizeUsers(listedUsers, loggedInUserId)
+      : listedUsers,
+    hasMore,
   }
-
-  return listedUsers
 }
 
 async function getStatsWithLoggedInUser(
@@ -185,10 +107,15 @@ async function getStatsWithLoggedInUser(
     (user) => String(user.user_id) == userId,
   )
   const loggedInUser =
-    users[loggedInUserRank] || (await getInactiveUserInTimePeriod(userId))
+    users[loggedInUserRank] || (await getStatsSource().getInactiveUser(userId))
 
   let slicedUsers = users.slice(0, numberOfUsers)
 
+  if (!loggedInUser) {
+    return slicedUsers
+  }
+
+  // Outside the top, the logged-in user takes the last row with their own rank
   if (loggedInUserRank === -1 || loggedInUserRank >= numberOfUsers) {
     slicedUsers = users.slice(0, numberOfUsers - 1)
     loggedInUser.rank =
@@ -199,19 +126,6 @@ async function getStatsWithLoggedInUser(
   return slicedUsers
 }
 
-async function getInactiveUserInTimePeriod(
-  id: string,
-): Promise<TautulliItemRow> {
-  const user = await fetchTautulli<TautulliItemRow>('get_user', {
-    user_id: id,
-  })
-  const nonActive = user?.response?.data ?? ({} as TautulliItemRow)
-
-  nonActive.total_duration = 0
-
-  return nonActive
-}
-
 function anonymizeUsers(
   users: TautulliItemRow[],
   loggedInUserId: string,
@@ -219,12 +133,16 @@ function anonymizeUsers(
   return users.map((user) => {
     const isLoggedIn = user.user_id === Number(loggedInUserId)
 
+    // The UI shows a translated name for anonymous users
     return {
       ...user,
-      user: isLoggedIn ? user.user : 'Anonymous',
-      friendly_name: isLoggedIn ? user.friendly_name : 'Anonymous',
+      user: isLoggedIn ? user.user : '',
+      friendly_name: isLoggedIn ? user.friendly_name : '',
       user_thumb: isLoggedIn ? user.user_thumb : '',
       user_id: isLoggedIn ? user.user_id : 0,
+      // Others on the server may know when someone joined
+      first_played_at: isLoggedIn ? user.first_played_at : undefined,
+      is_anonymous: !isLoggedIn,
     }
   })
 }

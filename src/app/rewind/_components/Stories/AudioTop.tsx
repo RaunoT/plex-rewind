@@ -5,25 +5,24 @@ import { useTranslations } from 'next-intl'
 import RewindStat from '../RewindStat'
 
 export default function StoryAudioTop({ userRewind, settings }: RewindStory) {
-  const hasTop5 = userRewind.audio.top.length === 5
   const t = useTranslations('Rewind.Common')
 
   return (
     <>
       <RewindStat noScale>
         <p className='mb-2'>
-          {t.rich('top', {
+          {t.rich('topArtists', {
             top: (chunks) => (
               <span className='rewind-cat'>
                 {chunks}
                 <MusicalNoteIcon />
               </span>
             ),
-            count: hasTop5 ? '5' : '',
+            count: userRewind.audio.top.length,
           })}
         </p>
 
-        <div className='text-base not-italic'>
+        <div className='text-base leading-normal font-normal tracking-normal'>
           <MediaItems
             type='artist'
             items={userRewind.audio.top}

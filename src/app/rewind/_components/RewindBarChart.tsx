@@ -1,12 +1,17 @@
 'use client'
 
+import usePrefersReducedMotion from '@/hooks/usePrefersReducedMotion'
+import { instantTransition } from '@/utils/motion'
 import clsx from 'clsx'
 import { motion } from 'motion/react'
+import { useFormatter } from 'next-intl'
 
 type Props = {
   data: number[]
   peakIndex: number | null
   labels?: (string | null)[]
+  ariaLabel: string
+  axisLabel: string
   className?: string
 }
 
@@ -55,21 +60,37 @@ export default function RewindBarChart({
   data,
   peakIndex,
   labels,
+  ariaLabel,
+  axisLabel,
   className,
 }: Props) {
   const { niceMax, ticks } = getScale(Math.max(...data, 1))
+  const shouldReduceMotion = usePrefersReducedMotion()
+  const format = useFormatter()
 
   return (
-    <div className={clsx('w-full not-italic', className)}>
-      <div className='flex'>
-        <div className='relative mr-2 h-56 w-8 shrink-0 sm:h-40'>
+    <div
+      className={clsx('w-full not-italic', className)}
+      role='img'
+      aria-label={ariaLabel}
+    >
+      {/* The axis column is as wide as its label or counts, whichever is
+          wider, so a long label in another language never spills out */}
+      <div className='grid grid-cols-[auto_1fr] gap-x-2'>
+        {/* Clear of the top count, which sits half above the plot */}
+        <p className='mb-4 text-right text-xs whitespace-nowrap text-neutral-500'>
+          {axisLabel}
+        </p>
+        <div aria-hidden />
+
+        <div className='relative h-56 min-w-8 sm:h-40'>
           {ticks.map((tick) => (
             <span
               key={tick}
-              className='absolute right-0 -translate-y-1/2 text-xs text-neutral-500 tabular-nums'
+              className='absolute right-0 translate-y-1/2 text-xs whitespace-nowrap text-neutral-500 tabular-nums'
               style={{ bottom: `${(tick / niceMax) * 100}%` }}
             >
-              {tick}
+              {format.number(tick)}
             </span>
           ))}
         </div>
@@ -83,7 +104,7 @@ export default function RewindBarChart({
             />
           ))}
 
-          <div className='relative flex h-56 items-end gap-[2px] sm:h-40 sm:gap-1'>
+          <div className='relative flex h-56 items-end gap-0.5 sm:h-40 sm:gap-1'>
             {data.map((value, index) => {
               const isPeak = index === peakIndex
               const heightPercentage =
@@ -97,52 +118,54 @@ export default function RewindBarChart({
                   <motion.div
                     className={clsx(
                       'w-full origin-bottom rounded-t-sm',
-                      isPeak
-                        ? 'bg-linear-to-t from-yellow-600 to-yellow-300'
-                        : 'bg-linear-to-t from-blue-600 to-teal-400',
+                      isPeak ? 'bg-plex' : 'bg-white/20',
                     )}
                     style={{ height: `${heightPercentage}%` }}
-                    initial={{ scaleY: 0 }}
+                    initial={shouldReduceMotion ? false : { scaleY: 0 }}
                     animate={{ scaleY: 1 }}
-                    transition={{
-                      delay: index * 0.025,
-                      duration: 0.5,
-                      ease: 'easeOut',
-                    }}
+                    transition={
+                      shouldReduceMotion
+                        ? instantTransition
+                        : {
+                            delay: index * 0.025,
+                            duration: 0.5,
+                            ease: 'easeOut',
+                          }
+                    }
                   />
                 </div>
               )
             })}
           </div>
         </div>
-      </div>
 
-      {labels && (
-        <div className='mt-2 flex'>
-          <div className='mr-2 w-8 shrink-0' aria-hidden />
-          <div className='relative h-4 flex-1'>
-            {labels.map((label, index) =>
-              label ? (
-                <span
-                  key={index}
-                  className={clsx(
-                    'absolute top-0 text-xs whitespace-nowrap',
-                    index === peakIndex
-                      ? 'gradient-plex font-semibold'
-                      : 'text-neutral-400',
-                  )}
-                  style={{
-                    left: `${((index + 0.5) / labels.length) * 100}%`,
-                    transform: labelTransform(index, labels.length),
-                  }}
-                >
-                  {label}
-                </span>
-              ) : null,
-            )}
-          </div>
-        </div>
-      )}
+        {labels && (
+          <>
+            <div aria-hidden />
+            <div className='relative mt-2 h-4'>
+              {labels.map((label, index) =>
+                label ? (
+                  <span
+                    key={index}
+                    className={clsx(
+                      'absolute top-0 text-xs whitespace-nowrap',
+                      index === peakIndex
+                        ? 'text-plex font-semibold'
+                        : 'text-neutral-400',
+                    )}
+                    style={{
+                      left: `${((index + 0.5) / labels.length) * 100}%`,
+                      transform: labelTransform(index, labels.length),
+                    }}
+                  >
+                    {label}
+                  </span>
+                ) : null,
+              )}
+            </div>
+          </>
+        )}
+      </div>
     </div>
   )
 }

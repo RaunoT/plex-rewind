@@ -3,7 +3,7 @@
 import DatePicker from '@/components/DatePicker'
 import {
   DashboardSettings,
-  Settings,
+  PublicSettings,
   SettingsFormInitialState,
 } from '@/types/settings'
 import { useTranslations } from 'next-intl'
@@ -13,14 +13,13 @@ import SettingsForm from '../../_components/SettingsForm'
 import saveDashboardSettings from '../_actions/updateDashboardSettings'
 
 type Props = {
-  settings: Settings
+  settings: PublicSettings
 }
 
 type DashboardFormState = SettingsFormInitialState<Partial<DashboardSettings>>
 
 export default function DashboardSettingsForm({ settings }: Props) {
-  const isOverseerrActive =
-    settings.connection.overseerrUrl && settings.connection.overseerrApiKey
+  const isSeerrActive = settings.connection.isSeerrActive
   const t = useTranslations('Settings.Dashboard')
   const tCommon = useTranslations('Common')
   const [isActive, setIsActive] = useState<boolean>(settings.dashboard.isActive)
@@ -49,7 +48,6 @@ export default function DashboardSettingsForm({ settings }: Props) {
       <section className='group-settings group'>
         <h2 className='heading-settings'>{tCommon('status')}</h2>
         <Switch
-          key={`is-active-${isActive}`}
           className='switch'
           name='isActive'
           isSelected={isActive}
@@ -61,87 +59,36 @@ export default function DashboardSettingsForm({ settings }: Props) {
           </span>
         </Switch>
         {isActive && (
-          <Switch
-            key={`users-page-${dashboardSettings.isUsersPageActive}`}
-            className='switch'
-            name='isUsersPageActive'
-            defaultSelected={dashboardSettings.isUsersPageActive}
-          >
-            <div className='indicator'></div>
-            <span className='label'>
-              <span className='label-wrapper'>{t('usersPage')}</span>
-            </span>
-          </Switch>
+          <>
+            <Switch
+              key={`users-page-${dashboardSettings.isUsersPageActive}`}
+              className='switch'
+              name='isUsersPageActive'
+              defaultSelected={dashboardSettings.isUsersPageActive}
+            >
+              <div className='indicator'></div>
+              <span className='label'>
+                <span className='label-wrapper'>{t('usersPage')}</span>
+              </span>
+            </Switch>
+            <Switch
+              key={`admin-only-${dashboardSettings.isAdminOnly}`}
+              className='switch items-start'
+              name='isAdminOnly'
+              defaultSelected={dashboardSettings.isAdminOnly}
+            >
+              <div className='indicator'></div>
+              <span className='label'>
+                <span className='label-wrapper'>{tCommon('adminOnly')}</span>
+              </span>
+            </Switch>
+          </>
         )}
       </section>
       {isActive && (
         <>
           <section className='group-settings group'>
             <h2 className='heading-settings'>{t('statistics')}</h2>
-            <CheckboxGroup
-              key={`item-stats-${dashboardSettings.activeItemStatistics.join(
-                ',',
-              )}`}
-              className='input-wrapper'
-              name='activeItemStatistics'
-              defaultValue={dashboardSettings.activeItemStatistics}
-            >
-              <div className='peer mr-auto flex flex-wrap gap-2'>
-                <Checkbox
-                  key='item-year'
-                  value='year'
-                  className='checkbox-wrapper'
-                >
-                  <div className='checkbox' aria-hidden='true'></div>
-                  {tCommon('year')}
-                </Checkbox>
-                <Checkbox
-                  key='item-rating'
-                  value='rating'
-                  className='checkbox-wrapper'
-                >
-                  <div className='checkbox' aria-hidden='true'></div>
-                  {tCommon('rating')}
-                </Checkbox>
-                <Checkbox
-                  key='item-duration'
-                  value='duration'
-                  className='checkbox-wrapper'
-                >
-                  <div className='checkbox' aria-hidden='true'></div>
-                  {tCommon('duration')}
-                </Checkbox>
-                <Checkbox
-                  key='item-plays'
-                  value='plays'
-                  className='checkbox-wrapper'
-                >
-                  <div className='checkbox' aria-hidden='true'></div>
-                  {tCommon('plays')}
-                </Checkbox>
-                <Checkbox
-                  key='item-users'
-                  value='users'
-                  className='checkbox-wrapper'
-                >
-                  <div className='checkbox' aria-hidden='true'></div>
-                  {tCommon('users')}
-                </Checkbox>
-                {isOverseerrActive && (
-                  <Checkbox
-                    key='item-requests'
-                    value='requests'
-                    className='checkbox-wrapper'
-                  >
-                    <div className='checkbox' aria-hidden='true'></div>
-                    {tCommon('requests')}
-                  </Checkbox>
-                )}
-              </div>
-              <Label className='label label--start'>
-                <span className='label-wrapper'>{t('itemStatistics')}</span>
-              </Label>
-            </CheckboxGroup>
             <CheckboxGroup
               key={`total-stats-${dashboardSettings.activeTotalStatistics.join(
                 ',',
@@ -150,7 +97,7 @@ export default function DashboardSettingsForm({ settings }: Props) {
               name='activeTotalStatistics'
               defaultValue={dashboardSettings.activeTotalStatistics}
             >
-              <div className='peer mr-auto flex flex-wrap gap-2'>
+              <div className='peer checkbox-grid'>
                 <Checkbox
                   key='total-size'
                   value='size'
@@ -175,7 +122,7 @@ export default function DashboardSettingsForm({ settings }: Props) {
                   <div className='checkbox' aria-hidden='true'></div>
                   {tCommon('count')}
                 </Checkbox>
-                {isOverseerrActive && (
+                {isSeerrActive && (
                   <Checkbox
                     key='total-requests'
                     value='requests'
@@ -190,17 +137,6 @@ export default function DashboardSettingsForm({ settings }: Props) {
                 <span className='label-wrapper'>{t('totalStatistics')}</span>
               </Label>
             </CheckboxGroup>
-            <Switch
-              key={`sort-plays-${dashboardSettings.isSortByPlaysActive}`}
-              className='switch'
-              name='isSortByPlaysActive'
-              defaultSelected={dashboardSettings.isSortByPlaysActive}
-            >
-              <div className='indicator'></div>
-              <span className='label'>
-                <span className='label-wrapper'>{t('sortByPlaysFilter')}</span>
-              </span>
-            </Switch>
           </section>
           <section className='group-settings group'>
             <h2 className='heading-settings'>{tCommon('defaults')}</h2>

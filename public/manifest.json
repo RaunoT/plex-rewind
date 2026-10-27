@@ -1,6 +1,9 @@
 {
+  "id": "/",
   "name": "Plex Rewind",
   "short_name": "Plex Rewind",
+  "description": "Plex users' statistics and habits in a beautiful and organized manner",
+  "lang": "en",
   "icons": [
     {
       "src": "/icon-192x192.png",
@@ -11,11 +14,16 @@
       "src": "/icon-512x512.png",
       "sizes": "512x512",
       "type": "image/png"
+    },
+    {
+      "src": "/icon-maskable-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
     }
   ],
-  "theme_color": "#262626",
-  "background_color": "#262626",
+  "theme_color": "#000000",
+  "background_color": "#000000",
   "start_url": "/",
-  "display": "standalone",
-  "orientation": "portrait"
+  "display": "standalone"
 }

@@ -1,11 +1,14 @@
-import withSerwistInit from '@serwist/next'
 import { NextConfig } from 'next'
 import createNextIntlPlugin from 'next-intl/plugin'
+import { BASE_CSP_DIRECTIVES, IMAGE_CSP } from './src/utils/csp'
 
-const isDev = process.env.NODE_ENV !== 'production'
 const nextConfig: NextConfig = {
   reactStrictMode: true,
   output: 'standalone',
+  // Settings are read from the config volume at runtime, never bundled
+  outputFileTracingExcludes: {
+    '/*': ['config/**'],
+  },
   images: {
     localPatterns: [
       {
@@ -23,19 +26,21 @@ const nextConfig: NextConfig = {
       },
     ],
   },
-  // logging: {
-  //   fetches: {
-  //     fullUrl: true,
-  //   },
-  // },
   async headers() {
     return [
       {
         source: '/(.*)',
         headers: [
+          // includeSubDomains/preload would commit every self-hosted domain's
+          // subdomains to HTTPS, which isn't this app's call to make.
           {
             key: 'Strict-Transport-Security',
-            value: 'max-age=63072000; includeSubDomains; preload',
+            value: 'max-age=63072000',
+          },
+          // Pages get a stricter policy with a script nonce from the proxy.
+          {
+            key: 'Content-Security-Policy',
+            value: BASE_CSP_DIRECTIVES.join('; '),
           },
           {
             key: 'X-Frame-Options',
@@ -55,17 +60,19 @@ const nextConfig: NextConfig = {
           },
         ],
       },
+      // Later entries win for the same header
+      {
+        source: '/api/image',
+        headers: [
+          {
+            key: 'Content-Security-Policy',
+            value: IMAGE_CSP,
+          },
+        ],
+      },
     ]
   },
 }
-const revision = crypto.randomUUID()
-const withSerwist = withSerwistInit({
-  cacheOnNavigation: true,
-  swSrc: 'src/lib/sw.ts',
-  swDest: 'public/sw.js',
-  disable: isDev,
-  additionalPrecacheEntries: [{ url: '/~offline', revision }],
-})
 const withNextIntl = createNextIntlPlugin()
 
-export default withSerwist(withNextIntl(nextConfig))
+export default withNextIntl(nextConfig)

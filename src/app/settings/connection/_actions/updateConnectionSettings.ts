@@ -1,112 +1,265 @@
 'use server'
 
-import { ConnectionSettings, SettingsFormInitialState } from '@/types/settings'
+import { denySettingsAccess } from '@/lib/access'
+import {
+  ConnectionSettings,
+  GeneralSettings,
+  SettingsFormInitialState,
+  StatisticsSource,
+} from '@/types/settings'
+import { TracearrServersResponse } from '@/types/tracearr'
+import {
+  ConnectionError,
+  getFetchError,
+  getStatusError,
+  getTautulliResultError,
+} from '@/utils/connectionErrors'
+import { maskApiKeys, restoreApiKeys } from '@/utils/connectionSecrets'
+import { selectPlexServer } from '@/utils/fetchTracearr'
+import getSettings from '@/utils/getSettings'
+import { normalizeUrl } from '@/utils/url'
 import { getTranslations } from 'next-intl/server'
 import { z } from 'zod'
 import updateSettings from '../../_actions/updateSettings'
 
-const schema = z.object({
-  tautulliUrl: z.string().url(),
+// Only the selected statistics source has to be filled in.
+const baseSchema = z.object({
+  tautulliUrl: z.string().url().or(z.literal('')),
   tautulliApiKey: z.string(),
-  overseerrUrl: z.string().url().optional().or(z.literal('')),
-  overseerrApiKey: z.string().optional(),
+  tracearrUrl: z.string().url().or(z.literal('')),
+  tracearrApiKey: z.string(),
+  tracearrServerId: z.string(),
+  seerrUrl: z.string().url().optional().or(z.literal('')),
+  seerrApiKey: z.string().optional(),
   plexUrl: z.string().url(),
   complete: z.boolean(),
 })
+const schema = z.discriminatedUnion('statisticsSource', [
+  baseSchema.extend({
+    statisticsSource: z.literal('tautulli'),
+    tautulliUrl: z.string().url(),
+  }),
+  baseSchema.extend({
+    statisticsSource: z.literal('tracearr'),
+    tracearrUrl: z.string().url(),
+    tracearrApiKey: z.string().min(1),
+  }),
+])
+// The saved general settings are already valid, only `complete` is flipped.
+const generalSchema = z.custom<GeneralSettings>(
+  (value) => typeof (value as GeneralSettings)?.complete === 'boolean',
+)
+
+type TestResult =
+  | { response: Response; error?: never }
+  | { response?: never; error: ConnectionError }
+
+async function testRequest(
+  service: string,
+  url: string,
+  init?: RequestInit,
+): Promise<TestResult> {
+  try {
+    return { response: await fetch(url, { ...init, cache: 'no-store' }) }
+  } catch (error) {
+    console.error(`[CONFIG] - Error testing ${service} connection!`, error)
+
+    return { error: getFetchError(error) }
+  }
+}
+
+function getResponseError(
+  service: string,
+  response: Response,
+): ConnectionError | null {
+  if (response.ok) {
+    return null
+  }
+
+  console.error(
+    `[CONFIG] - Error testing ${service} connection!`,
+    response.status,
+    response.statusText,
+  )
+
+  return getStatusError(response.status)
+}
 
 export default async function saveConnectionSettings(
   prevState: SettingsFormInitialState<ConnectionSettings>,
   formData: FormData,
 ) {
-  const data = {
-    tautulliUrl: formData.get('tautulliUrl') as string,
+  const state = await testAndSave(prevState, formData)
+
+  return {
+    ...state,
+    fields: maskApiKeys(state.fields, getSettings().connection),
+  }
+}
+
+async function testAndSave(
+  prevState: SettingsFormInitialState<ConnectionSettings>,
+  formData: FormData,
+) {
+  const denied = await denySettingsAccess(prevState)
+
+  if (denied) {
+    return denied
+  }
+
+  const submitted = {
+    statisticsSource: formData.get('statisticsSource') as StatisticsSource,
+    tautulliUrl: normalizeUrl(formData.get('tautulliUrl') as string),
     tautulliApiKey: formData.get('tautulliApiKey') as string,
-    overseerrUrl: formData.get('overseerrUrl') as string,
-    overseerrApiKey: formData.get('overseerrApiKey') as string,
-    plexUrl: formData.get('plexUrl') as string,
+    tracearrUrl: normalizeUrl(formData.get('tracearrUrl') as string),
+    tracearrApiKey: formData.get('tracearrApiKey') as string,
+    tracearrServerId: (formData.get('tracearrServerId') as string | null) ?? '',
+    seerrUrl: normalizeUrl(formData.get('seerrUrl') as string),
+    seerrApiKey: formData.get('seerrApiKey') as string,
+    plexUrl: normalizeUrl(formData.get('plexUrl') as string),
     complete: true,
   }
   const t = await getTranslations('Settings')
+  const { connection: data, needsKey } = restoreApiKeys(
+    submitted,
+    getSettings().connection,
+  )
+
+  if (needsKey) {
+    return {
+      message: `${needsKey} - ${t('reenterApiKey')}`,
+      status: 'error',
+      fields: data,
+    }
+  }
+
+  const fail = (service: string, { key, values }: ConnectionError) => ({
+    message: `${service} - ${t(key, values)}`,
+    status: 'error',
+    fields: data,
+  })
 
   try {
-    // Test Tautulli
-    try {
-      const res = await fetch(
-        `${data.tautulliUrl}/api/v2?apikey=${data.tautulliApiKey}&cmd=status`,
-        {
-          cache: 'no-store',
-        },
+    if (data.statisticsSource === 'tracearr') {
+      const { response, error } = await testRequest(
+        'Tracearr',
+        `${data.tracearrUrl}/api/v2/public/servers`,
+        { headers: { Authorization: `Bearer ${data.tracearrApiKey}` } },
       )
 
-      if (!res.ok) {
+      if (error) {
+        return fail('Tracearr', error)
+      }
+
+      const responseError = getResponseError('Tracearr', response)
+
+      if (responseError) {
+        return fail('Tracearr', responseError)
+      }
+
+      const servers: TracearrServersResponse | null = await response
+        .json()
+        .catch(() => null)
+
+      if (!Array.isArray(servers?.data)) {
+        return fail('Tracearr', getStatusError(response.status))
+      }
+
+      const plexServers = servers.data
+        .filter((server) => server.server_type === 'plex')
+        .map(({ server_id, server_name }) => ({ server_id, server_name }))
+
+      if (!plexServers.length) {
+        return {
+          message: `Tracearr - ${t('noPlexServer')}`,
+          status: 'error',
+          fields: data,
+        }
+      }
+
+      const server = selectPlexServer(servers.data, data.tracearrServerId)
+
+      if (!server) {
+        return {
+          message: `Tracearr - ${t('choosePlexServer')}`,
+          status: 'error',
+          fields: data,
+          tracearrServers: plexServers,
+        }
+      }
+
+      data.tracearrServerId = server.server_id
+    } else {
+      const { response, error } = await testRequest(
+        'Tautulli',
+        `${data.tautulliUrl}/api/v2?apikey=${data.tautulliApiKey}&cmd=status`,
+      )
+
+      if (error) {
+        return fail('Tautulli', error)
+      }
+
+      const responseError = getResponseError('Tautulli', response)
+
+      if (responseError) {
+        return fail('Tautulli', responseError)
+      }
+
+      const resultError = getTautulliResultError(
+        await response.json().catch(() => null),
+        response.status,
+      )
+
+      if (resultError) {
         console.error(
           '[CONFIG] - Error testing Tautulli connection!',
-          res.status,
-          res.statusText,
+          resultError.key,
         )
 
-        return {
-          message: `Tautulli - ${t('invalidApiKey')}`,
-          status: 'error',
-          fields: data,
-        }
-      }
-    } catch (error) {
-      console.error('[CONFIG] - Error testing Tautulli connection!', error)
-
-      return {
-        message: `Tautulli - ${t('unableToConnect')}`,
-        status: 'error',
-        fields: data,
+        return fail('Tautulli', resultError)
       }
     }
 
-    // Test Overseerr
-    if (data.overseerrUrl && data.overseerrApiKey) {
-      try {
-        const res = await fetch(`${data.overseerrUrl}/api/v1/user`, {
-          headers: {
-            'X-API-KEY': data.overseerrApiKey,
-          },
-          cache: 'no-store',
-        })
+    if (data.seerrUrl && data.seerrApiKey) {
+      const { response, error } = await testRequest(
+        'Seerr',
+        `${data.seerrUrl}/api/v1/user`,
+        { headers: { 'X-API-KEY': data.seerrApiKey } },
+      )
 
-        if (!res.ok) {
-          console.error(
-            '[CONFIG] - Error testing Overseerr connection!',
-            res.status,
-            res.statusText,
-          )
+      if (error) {
+        return fail('Seerr', error)
+      }
 
-          return {
-            message: `Overseerr - ${t('invalidApiKey')}`,
-            status: 'error',
-            fields: data,
-          }
-        }
-      } catch (error) {
-        console.error('[CONFIG] - Error testing Overseerr connection!', error)
+      const responseError = getResponseError('Seerr', response)
 
-        return {
-          message: `Overseerr - ${t('unableToConnect')}`,
-          status: 'error',
-          fields: data,
-        }
+      if (responseError) {
+        return fail('Seerr', responseError)
       }
     }
 
-    // Test Plex
+    // Any answer means the server is reachable.
     try {
       await fetch(data.plexUrl, {
         cache: 'no-store',
       })
     } catch (error) {
-      console.error('[CONFIG] - Error testing Plex connection!', error)
+      const plexError = getFetchError(error)
 
-      return {
-        message: `Plex - ${t('unableToConnect')}`,
-        status: 'error',
-        fields: data,
+      // Tautulli only gets the host and port, so an untrusted certificate is
+      // harmless there. Tracearr reads the server identity from this URL,
+      // which needs a verified connection.
+      if (
+        plexError.key === 'certificateError' &&
+        data.statisticsSource === 'tautulli'
+      ) {
+        console.warn(
+          '[CONFIG] - Plex certificate could not be verified! Continuing, as only the hostname and port are used.',
+        )
+      } else {
+        console.error('[CONFIG] - Error testing Plex connection!', error)
+
+        return fail('Plex', plexError)
       }
     }
   } catch (error) {
@@ -119,5 +272,30 @@ export default async function saveConnectionSettings(
     }
   }
 
-  return await updateSettings(schema, data, 'connection')
+  const previousSettings = getSettings()
+  const isSourceSwitch =
+    previousSettings.connection.statisticsSource !== data.statisticsSource &&
+    previousSettings.general.complete &&
+    schema.safeParse(data).success
+
+  // Libraries are matched by name, which differs between the sources. General
+  // is marked incomplete first, so a failed write never leaves the new source
+  // saved with the old source's libraries still counted as set up.
+  if (isSourceSwitch) {
+    const generalResult = await updateSettings(
+      generalSchema,
+      { ...previousSettings.general, complete: false },
+      'general',
+    )
+
+    if (generalResult.status !== 'success') {
+      return { ...generalResult, fields: data }
+    }
+  }
+
+  const result = await updateSettings(schema, data, 'connection')
+
+  return isSourceSwitch && result.status === 'success'
+    ? { ...result, message: t('savedChooseLibraries') }
+    : result
 }

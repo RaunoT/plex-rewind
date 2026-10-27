@@ -1,4 +1,8 @@
+import { requireSettingsAccess } from '@/lib/access'
+import { maskApiKeys } from '@/utils/connectionSecrets'
+import { getTracearrPlexServers } from '@/utils/fetchTracearr'
 import getSettings from '@/utils/getSettings'
+import { isTracearrSource } from '@/utils/helpers'
 import { Metadata } from 'next'
 import { getTranslations } from 'next-intl/server'
 import ConnectionSettingsForm from './_components/ConnectionSettingsForm'
@@ -11,8 +15,21 @@ export async function generateMetadata(): Promise<Metadata> {
   }
 }
 
-export default function ConnectionSettingsPage() {
-  const settings = getSettings()
+export default async function ConnectionSettingsPage() {
+  await requireSettingsAccess()
 
-  return <ConnectionSettingsForm settings={settings} />
+  const settings = getSettings()
+  const tracearrServers = isTracearrSource(settings)
+    ? await getTracearrPlexServers()
+    : []
+
+  return (
+    <ConnectionSettingsForm
+      settings={{
+        ...settings,
+        connection: maskApiKeys(settings.connection),
+      }}
+      tracearrServers={tracearrServers}
+    />
+  )
 }

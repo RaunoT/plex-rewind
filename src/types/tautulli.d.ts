@@ -48,8 +48,14 @@ export type TautulliItemRow = {
   thumb: string
   is_deleted: boolean
   rating: string | null
+  // IMDb's from Radarr or Sonarr, Rotten Tomatoes' from its own search
+  imdb_rating?: string | null
+  rotten_tomatoes_rating?: number | null
+  rotten_tomatoes_audience_rating?: number | null
+  rotten_tomatoes_url?: string | null
   tmdb_id: number | null
   imdb_id: string | null
+  tvdb_id?: number | null
   user_thumb: string
   user: string
   friendly_name: string
@@ -59,10 +65,17 @@ export type TautulliItemRow = {
   shows_plays_count: number
   user_id: number
   rank: number
+  // Set when the anonymize setting hides who this user is
+  is_anonymous?: boolean
+  // ISO 8601 date of the user's first play, set for the users page
+  first_played_at?: string
   grandparent_rating_key?: number
+  media_id?: string | null
 }
 
 export type TautulliSession = {
+  // Tautulli sends 0 or 1, Tracearr a boolean
+  audio_atmos?: number | boolean
   audio_channel_layout: string
   audio_codec: string
   bandwidth: string
@@ -85,8 +98,8 @@ export type TautulliSession = {
   quality_profile: string
   rating_key: number
   session_key: string
-  state: 'playing' | 'paused'
-  transcode_throttled: boolean
+  state: 'playing' | 'paused' | 'buffering'
+  stream_audio_atmos?: number | boolean
   stream_audio_channel_layout: string
   stream_audio_codec: string
   stream_audio_decision: string
@@ -111,6 +124,8 @@ export type TautulliSession = {
   video_dynamic_range: string
   video_full_resolution: string
   view_offset?: string
+  // Tautulli sends it as a string
+  year?: number | string | null
 }
 
 export type TautulliActivity = {

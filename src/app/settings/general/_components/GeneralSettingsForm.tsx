@@ -1,36 +1,41 @@
 'use client'
 
+import SourceUnreachable from '@/components/SourceUnreachable'
 import {
   GeneralSettings,
-  Settings,
+  PublicSettings,
   SettingsFormInitialState,
 } from '@/types/settings'
 import { TautulliLibrary, TautulliUser } from '@/types/tautulli'
-import { Bars2Icon } from '@heroicons/react/24/outline'
+import { EXTERNAL_LINK_NAMES, EXTERNAL_LINKS } from '@/utils/constants'
 import { kebabCase } from 'lodash'
+import { Reorder } from 'motion/react'
 import { useTranslations } from 'next-intl'
-import { useActionState, useState } from 'react'
+import { useActionState, useEffect, useRef, useState } from 'react'
 import { Checkbox, CheckboxGroup, Label, Switch } from 'react-aria-components'
-import { ReactSortable } from 'react-sortablejs'
 import SettingsForm from '../../_components/SettingsForm'
 import saveGeneralSettings from '../_actions/updateGeneralSettings'
-
-type SortableLibrary = TautulliLibrary & { id: TautulliLibrary['section_id'] }
+import SortableLibrary from './SortableLibrary'
 
 type Props = {
-  settings: Settings
-  libraries: TautulliLibrary[]
-  users: TautulliUser[]
+  settings: PublicSettings
+  // Null when the source can't be reached
+  libraries: TautulliLibrary[] | null
+  users: Pick<TautulliUser, 'user_id' | 'friendly_name'>[]
 }
 
 type GeneralFormState = SettingsFormInitialState<GeneralSettings>
 
 export default function GeneralSettingsForm({
   settings,
-  libraries,
+  libraries: sourceLibraries,
   users,
 }: Props) {
-  const [librariesState, setLibrariesState] = useState<SortableLibrary[]>(
+  const isSourceReachable = sourceLibraries !== null
+  const libraries = sourceLibraries ?? []
+  // Saving without the library list would clear the chosen libraries
+  const hasLibraries = libraries.length > 0
+  const [librariesState, setLibrariesState] = useState<TautulliLibrary[]>(
     () => {
       const activeLibraries = settings.general.activeLibraries
         .map((libName) =>
@@ -44,13 +49,15 @@ export default function GeneralSettingsForm({
           ),
       )
 
-      return [...activeLibraries, ...inactiveLibraries].map((lib) => ({
-        ...lib,
-        id: lib.section_id,
-      }))
+      return [...activeLibraries, ...inactiveLibraries]
     },
   )
+  const [moveAnnouncement, setMoveAnnouncement] = useState<string>('')
+  const librariesRef = useRef<HTMLDivElement>(null)
+  const focusAfterMoveRef = useRef<string | null>(null)
   const t = useTranslations('Settings.General')
+  const tCommon = useTranslations('Common')
+  const isSeerrActive = settings.connection.isSeerrActive
   const initialState: GeneralFormState = {
     message: '',
     status: '',
@@ -67,11 +74,53 @@ export default function GeneralSettingsForm({
     ...formState.fields,
   }
 
+  useEffect(() => {
+    const focusTarget = focusAfterMoveRef.current
+
+    if (focusTarget) {
+      focusAfterMoveRef.current = null
+      librariesRef.current
+        ?.querySelector<HTMLButtonElement>(`[data-move='${focusTarget}']`)
+        ?.focus()
+    }
+  }, [librariesState])
+
+  function handleSortEnd() {
+    setMoveAnnouncement('')
+    librariesRef.current?.dispatchEvent(new Event('input', { bubbles: true }))
+  }
+
+  function moveLibrary(index: number, offset: -1 | 1) {
+    const target = index + offset
+
+    if (target < 0 || target >= librariesState.length) {
+      return
+    }
+
+    const next = [...librariesState]
+    const [moved] = next.splice(index, 1)
+    const isAtEdge = target === 0 || target === next.length
+    const direction = offset === -1 ? 'up' : 'down'
+
+    next.splice(target, 0, moved)
+    focusAfterMoveRef.current = `${moved.section_id}-${
+      isAtEdge ? (direction === 'up' ? 'down' : 'up') : direction
+    }`
+    setLibrariesState(next)
+    setMoveAnnouncement(
+      t('movedTo', {
+        name: moved.section_name,
+        position: target + 1,
+        total: next.length,
+      }),
+    )
+  }
+
   return (
     <SettingsForm
       formState={formState}
       formAction={formAction}
-      hideSubmit={!libraries.length}
+      hideSubmit={!hasLibraries}
       isSetup={!generalSettings.complete}
     >
       <section className='group-settings group'>
@@ -92,40 +141,42 @@ export default function GeneralSettingsForm({
       </section>
       <section className='group-settings group'>
         <h2 className='heading-settings'>{t('libraries')}</h2>
-        {libraries.length ? (
+        {!isSourceReachable ? (
+          <SourceUnreachable
+            source={settings.connection.statisticsSource}
+            as='h3'
+            isAdmin
+            isInCard
+          />
+        ) : hasLibraries ? (
           <CheckboxGroup
             key={`active-libraries-${generalSettings.activeLibraries.join(',')}`}
+            ref={librariesRef}
             className='input-wrapper'
             name='activeLibraries'
             defaultValue={generalSettings.activeLibraries}
           >
-            <ReactSortable
-              list={librariesState}
-              setList={setLibrariesState}
-              className='peer mr-auto flex flex-wrap gap-2'
-              handle='.drag-handle'
-              animation={200}
-              // Force the pointer-based fallback on all platforms. React Aria's
-              // Checkbox calls preventDefault on pointer events, which blocks the
-              // browser's native HTML5 drag on desktop (mobile already uses this
-              // fallback, which is why it kept working there).
-              forceFallback
-              // Append the drag clone to <body> so positioned/transformed
-              // ancestors don't offset the ghost from the cursor.
-              fallbackOnBody
+            <Reorder.Group
+              as='div'
+              axis='y'
+              values={librariesState}
+              onReorder={setLibrariesState}
+              className='peer mr-auto flex flex-col gap-2'
             >
-              {librariesState.map((library) => (
-                <Checkbox
+              {librariesState.map((library, index) => (
+                <SortableLibrary
                   key={`library-${library.section_id}`}
-                  value={kebabCase(library.section_name)}
-                  className='checkbox-wrapper'
-                >
-                  <Bars2Icon className='drag-handle size-4 cursor-move' />
-                  <div className='checkbox' aria-hidden='true'></div>
-                  {library.section_name}
-                </Checkbox>
+                  library={library}
+                  isFirst={index === 0}
+                  isLast={index === librariesState.length - 1}
+                  onMove={(offset) => moveLibrary(index, offset)}
+                  onDragEnd={handleSortEnd}
+                />
               ))}
-            </ReactSortable>
+            </Reorder.Group>
+            <p aria-live='polite' role='status' className='sr-only'>
+              {moveAnnouncement}
+            </p>
             <Label className='label label--start'>
               <span className='label-wrapper'>{t('activeLibraries')}</span>
             </Label>
@@ -141,7 +192,7 @@ export default function GeneralSettingsForm({
           </p>
         )}
       </section>
-      {libraries.length > 0 && (
+      {hasLibraries && (
         <>
           <section className='group-settings group'>
             <h2 className='heading-settings'>{t('media')}</h2>
@@ -154,12 +205,120 @@ export default function GeneralSettingsForm({
               <div className='indicator'></div>
               <span className='label'>
                 <span className='label-wrapper'>{t('tmdbOnlyPosters')}</span>
-                <small>
-                  {t('tmdbOnlyPostersDescription1')}
-                  <br /> {t('tmdbOnlyPostersDescription2')}
-                </small>
+                <small>{t('tmdbOnlyPostersDescription')}</small>
               </span>
             </Switch>
+            <CheckboxGroup
+              key={`external-links-${generalSettings.activeExternalLinks.join(',')}`}
+              className='input-wrapper'
+              name='activeExternalLinks'
+              defaultValue={generalSettings.activeExternalLinks}
+            >
+              <div className='peer checkbox-grid'>
+                {EXTERNAL_LINKS.map((site) => (
+                  <Checkbox
+                    key={`external-link-${site}`}
+                    value={site}
+                    className='checkbox-wrapper'
+                  >
+                    <div className='checkbox' aria-hidden='true'></div>
+                    {EXTERNAL_LINK_NAMES[site]}
+                  </Checkbox>
+                ))}
+              </div>
+              <Label className='label label--start'>
+                <span className='label-wrapper'>{t('externalLinks')}</span>
+              </Label>
+            </CheckboxGroup>
+            <CheckboxGroup
+              key={`item-stats-${generalSettings.activeItemStatistics.join(
+                ',',
+              )}`}
+              className='input-wrapper'
+              name='activeItemStatistics'
+              defaultValue={generalSettings.activeItemStatistics}
+            >
+              <div className='peer checkbox-grid'>
+                <Checkbox
+                  key='item-year'
+                  value='year'
+                  className='checkbox-wrapper'
+                >
+                  <div className='checkbox' aria-hidden='true'></div>
+                  {tCommon('year')}
+                </Checkbox>
+                <Checkbox
+                  key='item-tmdb-rating'
+                  value='tmdbRating'
+                  className='checkbox-wrapper'
+                >
+                  <div className='checkbox' aria-hidden='true'></div>
+                  {tCommon('ratingBy', { provider: 'TMDB' })}
+                </Checkbox>
+                <Checkbox
+                  key='item-imdb-rating'
+                  value='imdbRating'
+                  className='checkbox-wrapper'
+                >
+                  <div className='checkbox' aria-hidden='true'></div>
+                  {tCommon('ratingBy', { provider: 'IMDb' })}
+                </Checkbox>
+                <Checkbox
+                  key='item-rotten-tomatoes-rating'
+                  value='rottenTomatoesRating'
+                  className='checkbox-wrapper'
+                >
+                  <div className='checkbox' aria-hidden='true'></div>
+                  {tCommon('rottenTomatoesCritics')}
+                </Checkbox>
+                <Checkbox
+                  key='item-rotten-tomatoes-audience-rating'
+                  value='rottenTomatoesAudienceRating'
+                  className='checkbox-wrapper'
+                >
+                  <div className='checkbox' aria-hidden='true'></div>
+                  {tCommon('rottenTomatoesAudience')}
+                </Checkbox>
+                <Checkbox
+                  key='item-duration'
+                  value='duration'
+                  className='checkbox-wrapper'
+                >
+                  <div className='checkbox' aria-hidden='true'></div>
+                  {tCommon('duration')}
+                </Checkbox>
+                <Checkbox
+                  key='item-plays'
+                  value='plays'
+                  className='checkbox-wrapper'
+                >
+                  <div className='checkbox' aria-hidden='true'></div>
+                  {tCommon('plays')}
+                </Checkbox>
+                <Checkbox
+                  key='item-users'
+                  value='users'
+                  className='checkbox-wrapper'
+                >
+                  <div className='checkbox' aria-hidden='true'></div>
+                  {tCommon('users')}
+                </Checkbox>
+                {isSeerrActive && (
+                  <Checkbox
+                    key='item-requests'
+                    value='requests'
+                    className='checkbox-wrapper'
+                  >
+                    <div className='checkbox' aria-hidden='true'></div>
+                    {tCommon('requests')}
+                  </Checkbox>
+                )}
+              </div>
+              <Label className='label label--start'>
+                <span className='label-wrapper'>{t('itemStatistics')}</span>
+                <small>{t('itemStatisticsDescription')}</small>
+              </Label>
+            </CheckboxGroup>
           </section>
           <section className='group-settings group'>
             <h2 className='heading-settings'>{t('privacy')}</h2>
@@ -170,7 +329,7 @@ export default function GeneralSettingsForm({
                 name='excludedUsers'
                 defaultValue={generalSettings.excludedUsers}
               >
-                <div className='peer mr-auto flex flex-wrap gap-2'>
+                <div className='peer checkbox-grid'>
                   {users.map((user) => (
                     <Checkbox
                       key={`user-${user.user_id}`}

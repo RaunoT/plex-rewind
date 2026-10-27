@@ -1,85 +1,42 @@
 import { Settings } from '@/types/settings'
-import { TautulliItem, TautulliLibrary } from '@/types/tautulli'
+import { TopItemsQuery } from '@/types/statsSource'
+import { TautulliLibrary, TautulliMediaType } from '@/types/tautulli'
+import { clamp } from 'lodash'
 import { getTranslations } from 'next-intl/server'
-import fetchTautulli from './fetchTautulli'
-import { bytesToSize, secondsToTime, timeToSeconds } from './formatting'
-import getMediaAdditionalData, {
-  mapWatchedDataByRatingKey,
-} from './getMediaAdditionalData'
+import { DASHBOARD_MAX_ITEMS, DASHBOARD_PAGE_SIZE } from './constants'
+import { fetchSeerrStats, fetchSeerrUserId } from './fetchSeerr'
+import { bytesToSize, secondsToTime } from './formatting'
+import { getStatsSource } from './statsSource'
 
-const statIdMap = {
-  movie: 'top_movies',
-  show: 'top_tv',
-  artist: 'top_music',
-}
-const popularIdMap = {
-  movie: 'popular_movies',
-  show: 'popular_tv',
-  artist: 'popular_music',
+// Seerr has no music
+const SEERR_MEDIA_TYPES: Partial<Record<TautulliMediaType, string>> = {
+  movie: 'movie',
+  show: 'tv',
 }
 
-export async function getItems(
-  library: TautulliLibrary,
-  period: number,
-  userId?: string,
-  sortByPlays?: boolean,
-) {
-  const sectionType = library.section_type
-  const itemsRes = await fetchTautulli<TautulliItem>('get_home_stats', {
-    stat_id: statIdMap[sectionType],
-    stats_count: 6,
-    stats_type: sortByPlays ? 'plays' : 'duration',
-    time_range: period,
-    section_id: library.section_id,
-    user_id: userId ? userId : '',
-  })
+export async function getItems(library: TautulliLibrary, query: TopItemsQuery) {
+  return getStatsSource().getTopItems(library, query)
+}
 
-  let items = []
+// How many rows a dashboard list shows, from its `limit` search parameter
+export function getItemsLimit(limitSearchParam?: string): number {
+  const limit = Number(limitSearchParam)
 
-  items = itemsRes?.response?.data?.rows || []
-
-  if (items.length) {
-    const usersWatched = await fetchTautulli<TautulliItem>('get_home_stats', {
-      stat_id: popularIdMap[sectionType],
-      stats_count: 100, // TODO: https://github.com/Tautulli/Tautulli/issues/2103
-      time_range: period,
-    })
-    const usersWatchedData = usersWatched?.response?.data?.rows
-
-    if (usersWatchedData) {
-      // Get artists users listened data
-      if (sectionType === 'artist') {
-        items.map((artist) => {
-          const usersListenedMapped = mapWatchedDataByRatingKey(
-            usersWatchedData,
-            artist,
-          )
-
-          artist.users_watched = usersListenedMapped
-        })
-      }
-
-      // Get tv/movies additional data
-      if (sectionType === 'show' || sectionType === 'movie') {
-        items = await getMediaAdditionalData(
-          items,
-          sectionType === 'movie' ? 'movie' : 'tv',
-          usersWatchedData,
-        )
-      }
-
-      // Don't show how many users watched the item on personal dashboard
-      if (userId) {
-        items = items.map((item) => {
-          delete item.users_watched
-
-          return item
-        })
-      }
-    }
+  if (!Number.isInteger(limit)) {
+    return DASHBOARD_PAGE_SIZE
   }
 
-  return items
+  return clamp(limit, DASHBOARD_PAGE_SIZE, DASHBOARD_MAX_ITEMS)
+}
+
+// The limit "Show more" leads to, if there's more to show
+export function getNextItemsLimit(
+  limit: number,
+  hasMore: boolean,
+): number | undefined {
+  return hasMore && limit < DASHBOARD_MAX_ITEMS
+    ? Math.min(limit + DASHBOARD_PAGE_SIZE, DASHBOARD_MAX_ITEMS)
+    : undefined
 }
 
 export async function getTotalDuration(
@@ -89,24 +46,61 @@ export async function getTotalDuration(
   userId?: string,
 ) {
   if (settings.dashboard.activeTotalStatistics.includes('duration')) {
-    const totalDuration = await fetchTautulli<{ total_duration: string }>(
-      'get_history',
-      {
-        section_id: library.section_id,
-        after: period,
-        length: 0,
-        user_id: userId ? userId : '',
-      },
-    )
     const t = await getTranslations()
+    const totalDuration = await getStatsSource(settings).getTotalDuration({
+      since: period,
+      userId: userId || undefined,
+      libraries: [library],
+    })
 
-    return secondsToTime(
-      timeToSeconds(totalDuration?.response?.data?.total_duration || '0'),
-      t,
-    )
+    return secondsToTime(totalDuration, t)
   }
 
   return undefined
+}
+
+// Seerr requests aren't tied to a library, so a library counts the
+// requests of its media type. Without a library, every request counts.
+export async function getTotalRequests(
+  period: string,
+  settings: Settings,
+  library?: TautulliLibrary,
+  userId?: string,
+) {
+  const { seerrUrl, seerrApiKey } = settings.connection
+  const mediaType = library && SEERR_MEDIA_TYPES[library.section_type]
+
+  if (
+    !settings.dashboard.activeTotalStatistics.includes('requests') ||
+    !seerrUrl ||
+    !seerrApiKey ||
+    (library && !mediaType)
+  ) {
+    return undefined
+  }
+
+  let endpoint = 'request'
+
+  if (userId) {
+    const seerrUserId = await fetchSeerrUserId(userId)
+
+    // Users who never signed in to Seerr have nothing to count
+    if (!seerrUserId) {
+      return undefined
+    }
+
+    endpoint = `user/${seerrUserId}/requests`
+  }
+
+  const requests = await fetchSeerrStats(endpoint, period)
+
+  if (!requests) {
+    return undefined
+  }
+
+  return mediaType
+    ? requests.filter((request) => request.type === mediaType).length
+    : requests.length
 }
 
 export async function getTotalSize(
@@ -114,16 +108,17 @@ export async function getTotalSize(
   settings: Settings,
 ) {
   if (settings.dashboard.activeTotalStatistics.includes('size')) {
-    const totalSize = await fetchTautulli<{ total_file_size: number }>(
-      'get_library_media_info',
-      {
-        section_id: library.section_id,
-        length: 0,
-      },
-    )
     const t = await getTranslations()
+    const { size, isPartial } = await getStatsSource(settings).getLibrariesSize(
+      [library],
+    )
+    const formattedSize = bytesToSize(size, 2, t)
 
-    return bytesToSize(totalSize?.response?.data.total_file_size || 0, 2, t)
+    // A Tracearr library spans every Plex library of its type, so only some
+    // of them can be missing a size.
+    return formattedSize && isPartial
+      ? t('Dashboard.sizePartial', { size: formattedSize })
+      : formattedSize
   }
 
   return undefined

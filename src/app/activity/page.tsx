@@ -1,7 +1,13 @@
-import { getActivity, getServerId } from '@/utils/fetchTautulli'
+import { authOptions } from '@/lib/auth'
 import getSettings from '@/utils/getSettings'
+import { canViewFeature, getViewer } from '@/utils/helpers'
+import { toPublicSettings } from '@/utils/publicSettings'
+import { getServerId } from '@/utils/statsSource'
 import { Metadata } from 'next'
+import { getServerSession } from 'next-auth'
 import { getTranslations } from 'next-intl/server'
+import { notFound } from 'next/navigation'
+import getActivity from './_actions/getActivity'
 import Activities from './_components/Activities'
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -17,7 +23,15 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function ActivityPage() {
   const settings = getSettings()
+  const session = await getServerSession(authOptions)
+
+  if (!canViewFeature(settings, 'activity', getViewer(session))) {
+    return notFound()
+  }
+
   const serverId = await getServerId()
 
-  return <Activities settings={settings} serverId={serverId} />
+  return (
+    <Activities settings={toPublicSettings(settings)} serverId={serverId} />
+  )
 }

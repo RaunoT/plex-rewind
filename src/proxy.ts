@@ -1,57 +1,54 @@
 import { Settings } from '@/types/settings'
+import { decode } from 'next-auth/jwt'
 import { withAuth } from 'next-auth/middleware'
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
+import { recheckServerUser } from './lib/auth'
+import { createNonce, getContentSecurityPolicy } from './utils/csp'
+import getSettings from './utils/getSettings'
 import {
+  checkRequiredSettings,
   getSettingsPage,
   isInitialSetup,
   isPostUpdateMissingSettings,
 } from './utils/helpers'
 
-// The middleware reads settings from the app's own API. Fetching the public
-// URL (NEXT_PUBLIC_SITE_URL) makes the container round-trip back through any
-// reverse proxy (e.g. Cloudflare tunnel), which can return an HTML challenge or
-// error page with a 200 status and break JSON parsing (see issue #359). Always
-// hit the server over the internal loopback address instead. The Docker image
-// sets PORT=8383; locally Next.js defaults to 3000 when PORT is unset.
-const INTERNAL_BASE_URL = `http://127.0.0.1:${process.env.PORT || '3000'}`
-
-// Safely parse a fetch response as JSON. A reverse proxy can return HTML with a
-// 200 status, so guard against non-JSON bodies instead of throwing.
-async function fetchJson<T>(url: string): Promise<T | null> {
+// The proxy runs on the Node.js runtime, so it reads the settings file
+// directly instead of going through an HTTP round trip.
+function readSettings(): Settings | null {
   try {
-    const res = await fetch(url)
-
-    if (!res.ok) {
-      return null
-    }
-
-    const contentType = res.headers.get('content-type') || ''
-
-    if (!contentType.includes('application/json')) {
-      console.warn(
-        `[PROXY] - Expected JSON from ${url} but received "${contentType}". Skipping settings check for this request.`,
-      )
-
-      return null
-    }
-
-    return await res.json()
+    return getSettings()
   } catch (error) {
-    console.error(`[PROXY] - Failed to fetch ${url}!`, error)
+    console.error('[PROXY] - Failed to read settings!', error)
 
     return null
   }
 }
 
+// Next.js reads the nonce from the request's CSP header and adds it to the
+// scripts it renders, so the request and the response carry the same policy.
+function nextWithCsp(req: NextRequest): NextResponse {
+  const nonce = createNonce()
+  const policy = getContentSecurityPolicy(
+    nonce,
+    process.env.NODE_ENV === 'development',
+  )
+  const headers = new Headers(req.headers)
+
+  headers.set('x-nonce', nonce)
+  headers.set('Content-Security-Policy', policy)
+
+  const response = NextResponse.next({ request: { headers } })
+
+  response.headers.set('Content-Security-Policy', policy)
+
+  return response
+}
+
 export default withAuth(
-  async function proxy(req) {
+  function proxy(req) {
     const { pathname } = req.nextUrl
-    const settings = await fetchJson<Settings>(
-      `${INTERNAL_BASE_URL}/api/settings`,
-    )
-    const missingSetting = await fetchJson<string>(
-      `${INTERNAL_BASE_URL}/api/missing-setting`,
-    )
+    const settings = readSettings()
+    const missingSetting = settings ? checkRequiredSettings(settings) : null
 
     if (missingSetting && settings) {
       const isSettingsPage = pathname.includes('settings')
@@ -61,18 +58,16 @@ export default withAuth(
 
       // During initial setup, allow access to settings pages for any user (including unauthenticated)
       if (isInitialSetupMode && isSettingsPage) {
-        return NextResponse.next()
+        return nextWithCsp(req)
       }
 
       // For post-update missing settings, only allow admin access
       if (isPostUpdateMode && !isAdmin) {
         if (pathname !== '/') {
-          return NextResponse.redirect(
-            new URL('/', process.env.NEXT_PUBLIC_SITE_URL),
-          )
+          return NextResponse.redirect(new URL('/', req.nextUrl))
         }
 
-        return NextResponse.next()
+        return nextWithCsp(req)
       }
 
       // Handle redirects for missing settings
@@ -87,17 +82,25 @@ export default withAuth(
         pathname !== redirectPage &&
         !pathname.includes('settings')
       ) {
-        return NextResponse.redirect(
-          new URL(redirectPage, process.env.NEXT_PUBLIC_SITE_URL),
-        )
+        return NextResponse.redirect(new URL(redirectPage, req.nextUrl))
       }
     }
 
-    return NextResponse.next()
+    return nextWithCsp(req)
   },
   {
     callbacks: {
       authorized: () => true,
+    },
+    // withAuth only decodes the cookie, so the token gets the same re-check as
+    // getServerSession. A removed user's re-check throws, which leaves no token.
+    // The cookie isn't refreshed here, so the re-check remembers its results.
+    jwt: {
+      decode: async (params) => {
+        const token = await decode(params)
+
+        return token && recheckServerUser(token)
+      },
     },
   },
 )
@@ -110,7 +113,8 @@ export const config = {
      * - _next/static (static files)
      * - _next/image (image optimization files)
      * - favicon.ico (favicon file)
+     * - files with an extension (sw.js, manifest.json, images, ...)
      */
-    '/((?!api|_next/static|_next/image|favicon.ico).*)',
+    '/((?!api|_next/static|_next/image|favicon.ico|.*\\.[\\w]+$).*)',
   ],
 }

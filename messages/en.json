@@ -3,19 +3,31 @@
     "title": "Home",
     "setupRequired": "Setup required",
     "setupRequiredDescription": "This application needs to be configured by an administrator.",
-    "loginWithPlex": "Log in with Plex",
+    "loginWithPlex": "Sign in with <plex>Plex</plex>",
+    "loginError": {
+      "plexUnavailable": "Couldn't reach Plex. Try again in a moment.",
+      "plexNotConfirmed": "Plex didn't confirm the sign-in. Try again.",
+      "plexAccount": "Couldn't load your Plex account. Try again.",
+      "noAccess": "This Plex account doesn't have access to this server.",
+      "unknown": "Sign-in failed. Try again."
+    },
     "rewind": "Start Rewind",
-    "dashboard": "Dashboard",
-    "activity": "Activity",
-    "signOut": "Sign out"
+    "signOut": "Sign out",
+    "greeting": "Hi, {name} 👋",
+    "rewindDescription": "Your viewing highlights, one story at a time.",
+    "streams": "{count, plural, =0 {Nothing playing} one {# stream} other {# streams}}",
+    "mostWatched": "Most watched",
+    "mostListened": "Most listened",
+    "emptyTitle": "Nothing to show yet",
+    "emptyDescription": "There's nothing here for you yet. Check back later.",
+    "emptyAdminDescription": "Turn on Rewind, Activity or the Dashboard in the settings, and choose at least one library.",
+    "openSettings": "Open settings"
   },
   "Activity": {
     "title": "Activity",
-    "loading": "Loading...",
-    "poster": "poster",
-    "avatar": "avatar",
+    "poster": "Poster for {title}",
     "anonymousAvatar": "Anonymous avatar",
-    "anonymous": "Anonymous",
+    "anonymous": "Anonymous #{number}",
     "stream": "Stream",
     "container": "Container",
     "quality": "Quality",
@@ -24,25 +36,43 @@
     "subtitles": "Subtitles",
     "location": "Location",
     "bandwidth": "Bandwidth",
-    "noActivity": "No active sessions.. 😴"
+    "streamDetails": "Stream details",
+    "noActivity": "No active streams.",
+    "loadError": "Couldn't load activity",
+    "playing": "Playing",
+    "paused": "Paused",
+    "buffering": "Buffering",
+    "endsAt": "Ends at {time}",
+    "convertedTo": "converted to",
+    "decision": {
+      "directPlay": "Direct play",
+      "directStream": "Direct stream",
+      "transcode": "Transcode",
+      "burnedIn": "Burned in"
+    }
   },
   "Dashboard": {
-    "noActivity": "No activity during this period.. 😴",
+    "sizePartial": "{size} (partial)",
+    "noActivity": "No activity during this period.",
+    "showMore": "Show more",
     "title": "Dashboard",
     "usersTitle": "Users",
-    "users": "users",
-    "movies": "movies",
-    "episodes": "episodes",
-    "tracks": "tracks",
-    "requests": "requests"
+    "users": "{count, plural, one {# user} other {# users}}",
+    "movies": "{count, plural, one {movie} other {movies}}",
+    "episodes": "{count, plural, one {episode} other {episodes}}",
+    "tracks": "{count, plural, one {track} other {tracks}}",
+    "requests": "{count, plural, one {# request} other {# requests}}",
+    "durationWatched": "{duration} watched",
+    "durationListened": "{duration} listened",
+    "durationPlayed": "{duration} played"
   },
   "DashboardFilters": {
-    "type": "Type",
-    "general": "General",
-    "personal": "Personal",
+    "type": "Stats for",
+    "general": "Everyone",
+    "personal": "Just me",
     "sortByLabel": "Sort by",
     "sort": "Sort",
-    "byDuration": "By duration",
+    "byDuration": "By watch time",
     "byPlays": "By plays"
   },
   "DashboardNavContent": {
@@ -50,18 +80,21 @@
     "users": "Users"
   },
   "Error": {
-    "title": "Uh oh.. something went wrong!",
-    "cta": "Try again"
+    "title": "Uh oh. Something went wrong!",
+    "cta": "Try again",
+    "sourceUnreachable": "Couldn't reach {source}",
+    "sourceUnreachableDescription": "Check that {source} is running and reachable from Plex Rewind, then try again.",
+    "connectionSettings": "Check connection settings"
   },
   "PlexDeeplink": {
-    "available": "Available"
+    "available": "Available",
+    "availableLabel": "Available: open {title} in Plex"
   },
   "PeriodSelectContent": {
     "7days": "7 days",
-    "today": "Today",
     "pastYear": "Past year",
     "allTime": "All time",
-    "days": "days",
+    "days": "{count, plural, one {# day} other {# days}}",
     "label": "Period select"
   },
   "NotFound": {
@@ -70,55 +103,73 @@
     "cta": "Might be better to start over."
   },
   "AppProvider": {
-    "starsAlt": "Stars background",
     "updateAvailable": "Update available",
     "closeSettings": "Close settings",
     "openSettings": "Open settings"
   },
+  "Sidebar": {
+    "label": "Main navigation"
+  },
   "Offline": {
-    "title": "You are offline"
+    "title": "You are offline",
+    "retry": "Try again"
   },
   "Settings": {
     "title": "Settings",
     "getStarted": "Let's get started",
     "updateAvailable": "Update available",
     "saved": "Settings saved!",
-    "genericError": "Something went wrong!",
+    "savedChooseLibraries": "Settings saved! Choose your libraries in General.",
+    "genericError": "Something went wrong. Try again.",
     "save": "Save",
+    "continue": "Continue",
+    "setupFinished": "You're all set!",
+    "reenterApiKey": "Enter the API key again after changing the URL.",
     "apiKey": "API key",
-    "invalidApiKey": "Invalid API key!",
-    "unableToConnect": "Unable to connect!",
+    "invalidApiKey": "Invalid API key.",
+    "unableToConnect": "Couldn't connect. Check the URL and that the server is running.",
+    "noPlexServer": "No Plex server found.",
+    "choosePlexServer": "Choose which Plex server to use.",
+    "urlNotFound": "Not found. Check the URL, including any base path.",
+    "unexpectedResponse": "Unexpected response (HTTP {status}).",
+    "certificateError": "HTTPS certificate error. Check that the URL matches a valid certificate.",
+    "invalidField": "Check the {field, select, tautulliUrl {Tautulli URL} tautulliApiKey {Tautulli API key} tracearrUrl {Tracearr URL} tracearrApiKey {Tracearr API key} plexUrl {Plex URL} seerrUrl {Seerr URL} seerrApiKey {Seerr API key} googleAnalyticsId {Google Analytics ID} other {settings}}.",
     "buyMeACoffee": "Buy me a coffee",
     "becomeASponsor": "Become a sponsor",
     "reportAnIssue": "Report an issue",
-    "initialSetup": "Save settings to continue",
     "Nav": {
       "label": "Navigation",
       "connection": "Connection",
       "general": "General",
       "rewind": "Rewind",
       "dashboard": "Dashboard",
-      "activity": "Activity"
+      "activity": "Activity",
+      "complete": "Complete",
+      "incomplete": "Incomplete",
+      "connectionRequired": "Finish the Connection settings first"
     },
     "Connection": {
-      "title": "Connection settings"
+      "title": "Connection settings",
+      "statistics": "Statistics",
+      "source": "Source",
+      "server": "Server",
+      "chooseServer": "Choose a server",
+      "seerrUrlDescription": "Request links open this address in the viewer's browser, so use one they can reach, not a local network address.",
+      "optionalService": "{service} (optional)"
     },
     "Dashboard": {
       "title": "Dashboard settings",
-      "customPeriodError": "Custom period must be > 0 and <= 3000",
-      "startDateError": "Invalid start date",
+      "customPeriodError": "The custom period must be a whole number from 1 to 3000.",
+      "startDateError": "Check the start date.",
       "usersPage": "Users page",
       "statistics": "Statistics",
-      "itemStatistics": "Item statistics",
       "totalStatistics": "Total statistics",
-      "sortByPlaysFilter": "Sort by plays filter",
       "customPeriod": "Custom period",
-      "inDays": "In days.",
-      "startDateHelperText": "Used for the all time period."
+      "inDays": "In days. The dashboard and home page open on this period.",
+      "startDateHelperText": "Start of the “All time” period."
     },
     "Activity": {
-      "title": "Activity settings",
-      "privacy": "Privacy"
+      "title": "Activity settings"
     },
     "General": {
       "title": "General settings",
@@ -126,26 +177,30 @@
       "serverName": "Server name",
       "libraries": "Libraries",
       "activeLibraries": "Active libraries",
+      "moveUp": "Move {name} up",
+      "moveDown": "Move {name} down",
+      "movedTo": "{name} moved to position {position} of {total}",
       "noLibrariesMessage1": "Please create a library in Plex to proceed.",
       "noLibrariesMessage2": "Plex Rewind requires at least one library to function.",
       "media": "Media",
       "tmdbOnlyPosters": "TMDB only posters",
-      "tmdbOnlyPostersDescription1": "Ignore Plex posters for tv/movies.",
-      "tmdbOnlyPostersDescription2": "By default, TMDB is a fallback.",
+      "tmdbOnlyPostersDescription": "Ignore Plex posters for TV shows and movies.",
+      "externalLinks": "External links",
+      "itemStatistics": "Item statistics",
+      "itemStatisticsDescription": "Shown for each title and user in the dashboard and Rewind lists.",
       "privacy": "Privacy",
       "excludedUsers": "Excluded users",
-      "excludedUsersDescription": "Selected users will be excluded from statistics.",
+      "excludedUsersDescription": "With Tautulli, top movies, TV shows and artists still include their plays.",
       "outsideAccess": "Allow outside access",
-      "outsideAccessDescription": "Access without login.",
+      "outsideAccessDescription": "Anyone can see your server's statistics without signing in.",
       "anonymize": "Anonymize",
-      "anonymizeDescription": "Hide usernames for other users.",
+      "anonymizeDescription": "Hide other users' names, even from admins. IP addresses and locations on the activity page are hidden too.",
       "analytics": "Analytics"
     },
     "Rewind": {
       "title": "Rewind settings",
-      "cards": "Cards",
-      "librariesSizeAndCountCard": "Libraries size & count card",
-      "librariesSizeAndCountCardDescription": "Disable if you don't want to rely on Tautulli for these stats.",
+      "cards": "Stories",
+      "librariesSizeAndCountCard": "Library size and count",
       "startDateHelperText": "Defaults to 365 days ago."
     }
   },
@@ -156,11 +211,16 @@
     "label": "Select user"
   },
   "Common": {
+    "dismiss": "Dismiss",
     "enabled": "Enabled",
+    "adminOnly": "Admins only",
     "status": "Status",
     "year": "Year",
     "rating": "Rating",
-    "duration": "Duration",
+    "ratingBy": "{provider} rating",
+    "rottenTomatoesCritics": "Rotten Tomatoes critics score",
+    "rottenTomatoesAudience": "Rotten Tomatoes audience score",
+    "duration": "Watch time",
     "plays": "Plays",
     "users": "Users",
     "requests": "Requests",
@@ -168,110 +228,139 @@
     "size": "Size",
     "defaults": "Defaults",
     "startDate": "Start date",
-    "profilePictureAlt": "profile picture",
+    "profilePictureAlt": "{name}'s profile picture",
     "time": {
       "zero": "0 mins",
-      "month": "{count, plural, =1 {# month} other {# months}}",
-      "week": "{count, plural, =1 {# week} other {# weeks}}",
-      "day": "{count, plural, =1 {# day} other {# days}}",
-      "hr": "{count, plural, =1 {# hr} other {# hrs}}",
-      "min": "{count, plural, =1 {# min} other {# mins}}",
-      "sec": "{count, plural, =1 {# sec} other {# secs}}"
+      "month": "{count, plural, one {# month} other {# months}}",
+      "week": "{count, plural, one {# week} other {# weeks}}",
+      "day": "{count, plural, one {# day} other {# days}}",
+      "hr": "{count, plural, one {# hr} other {# hrs}}",
+      "min": "{count, plural, one {# min} other {# mins}}",
+      "sec": "{count, plural, one {# sec} other {# secs}}"
     },
-    "fileSize": "{value} {unit}"
+    "fileSize": "{value, number} {unit}"
   },
   "DatePicker": {
-    "clear": "Clear date"
+    "clear": "Clear date",
+    "open": "Open calendar"
   },
   "Loader": {
     "loading": "Loading..."
   },
   "Rewind": {
+    "title": "Rewind",
     "Stories": {
       "goToStory": "Go to story {index}",
-      "previousStory": "Previous story",
-      "nextStory": "Next story",
+      "previous": "Previous",
+      "next": "Next",
       "pause": "Pause",
-      "resume": "Resume"
+      "resume": "Resume",
+      "label": "Rewind stories",
+      "storyPosition": "Story {current} of {total}"
     },
     "Common": {
-      "top": "Here's your <top>Top {count}</top>"
+      "topShows": "Here's your <top>top {count, plural, one {TV show} other {# TV shows}}</top>",
+      "topMovies": "Here's your <top>top {count, plural, one {movie} other {# movies}}</top>",
+      "topArtists": "Here's your <top>top {count, plural, one {artist} other {# artists}}</top>"
     },
     "Welcome": {
-      "welcome": "Welcome to your <rewind>{serverName} Rewind</rewind>",
+      "welcome": "Welcome to your <rewind>{serverName} Rewind</rewind>, <user>{userValue}!</user>",
       "takeYouThrough": "We'll take you through your highlights",
       "letsGetStarted": "Let's get started!",
       "forPastYear": "for the <pastYear>past year.</pastYear>",
       "singleDate": "during <singleDate>{singleDateValue}</singleDate>.",
-      "dateRange": "from <startDate>{startDateValue}</startDate> to <endDate>{endDateValue}</endDate>"
+      "dateRange": "from <startDate>{startDateValue}</startDate> to <endDate>{endDateValue}</endDate>."
     },
     "Total": {
-      "duration": "You spent a <total>Total</total> of <duration>{durationValue}</duration> on <plex>{serverName}!</plex>",
-      "percentage": "That's <percentage>{percentageValue}</percentage> of all plays, which totalled <duration>{durationValue}</duration> across all users.",
+      "duration": "You spent a <total>total</total> of <duration>{durationValue}</duration> on <plex>{serverName}!</plex>",
+      "percentage": "That's <percentage>{percentageValue}</percentage> of all watch time, which came to <duration>{durationValue}</duration> across all users.",
       "noData": "You haven't played anything on <plex>{serverName}</plex> <emoji>😫</emoji>"
     },
     "Users": {
-      "top": "Here's how you compared to other <users>Users</users>"
+      "top": "Here's how you compared to other <users>users</users>"
     },
     "Audio": {
-      "duration": "To finish it off, you listened to <duration>{durationValue}</duration> of <audio>Audio</audio>",
-      "count": "You listened to <count>{countValue}</count> <tracks>tracks</tracks> in total!",
+      "duration": "You spent <duration>{durationValue}</duration> listening to <audio>music</audio>",
+      "count": "You listened to <count>{countValue, number}</count> <tracks>{countValue, plural, one {track} other {tracks}}</tracks> in total!",
       "favorite": "Your favorite was",
-      "noData": "You didn't listen to any <audio>Audio</audio> from <from>Plex</from>"
+      "noData": "You didn't listen to any <audio>music</audio> on <from>{serverName}</from>"
     },
     "Libraries": {
-      "filesize": "Did you know the <filesize>Filesize</filesize> of all the available content on <plex>{serverName}</plex> is <size>{sizeValue}!</size>",
-      "libraries": "The current library consists of:",
-      "movies": "{count, plural, =1 {Movie} other {Movies}}",
-      "episodes": "{count, plural, =1 {Episode} other {Episodes}}",
-      "tracks": "{count, plural, =1 {Track} other {Tracks}}"
+      "filesize": "Did you know that everything on <plex>{serverName}</plex> takes up <size>{sizeValue}</size> of <filesize>storage</filesize>?",
+      "sizePartial": "Some libraries have no size data. Enable “Calculate Total File Sizes” in Tautulli.",
+      "sizePartialTracearr": "Some libraries have no size data in Tracearr.",
+      "libraries": "The libraries currently contain:",
+      "movies": "{count, plural, one {Movie} other {Movies}}",
+      "episodes": "{count, plural, one {Episode} other {Episodes}}",
+      "tracks": "{count, plural, one {Track} other {Tracks}}"
     },
     "Shows": {
-      "duration": "<library>TV Shows</library> took up <duration>{durationValue}</duration> of your time on <plex>{serverName}.</plex>",
-      "count": "You watched <count>{countValue}</count> <episodes>episodes</episodes> in total!",
+      "duration": "<library>TV shows</library> took up <duration>{durationValue}</duration> of your time on <plex>{serverName}.</plex>",
+      "count": "You watched <count>{countValue, number}</count> <episodes>{countValue, plural, one {episode} other {episodes}}</episodes> in total!",
       "favorite": "Your favorite was",
-      "noData": "You didn't watch any <shows>TV Shows</shows> on <plex>{serverName}</plex> <emoji>😥</emoji>"
+      "noData": "You didn't watch any <shows>TV shows</shows> on <plex>{serverName}</plex> <emoji>😥</emoji>"
     },
     "Requests": {
-      "noData": "There weren't any <requests>Requests</requests> <emoji>😲</emoji>",
-      "noUserData": "You didn't make any <requests>Requests</requests>. You can make them via <requestLink>{requestLinkValue}</requestLink>.",
-      "count": "You made <count>{countValue}</count> content <requests>{countValue, plural, =1 {Request} other {Requests}}</requests>",
-      "countTotal": "Altogether there {countValue, plural, =1 {was} other {were}} <count>{countValue, plural, =1 {# Request} other {# Requests}}</count> during the same period.",
+      "noData": "There weren't any <requests>requests</requests> <emoji>😲</emoji>",
+      "noUserData": "You didn't make any <requests>requests</requests>. You can make them via <requestLink>{requestLinkValue}</requestLink>.",
+      "count": "You made <count>{countValue, number}</count> <requests>{countValue, plural, one {request} other {requests}}</requests>",
+      "countTotal": "Altogether there {countValue, plural, one {was} other {were}} <count>{countValue, plural, one {# request} other {# requests}}</count> during the same period.",
       "breakdown": "Here's the breakdown:",
-      "movies": "{count, plural, =1 {Movie} other {Movies}}",
-      "shows": "{count, plural, =1 {Show} other {Shows}}"
+      "movies": "{count, plural, one {Movie} other {Movies}}",
+      "shows": "{count, plural, one {TV show} other {TV shows}}"
     },
     "Movies": {
-      "duration": "<duration>{durationValue}</duration> of your time was spent watching <movies>Movies</movies>",
-      "count": "You watched <count>{countValue}</count> <movies>{countValue, plural, =1 {movie} other {movies}}</movies> in total!",
+      "duration": "<duration>{durationValue}</duration> of your time was spent watching <movies>movies</movies>",
+      "count": "You watched <count>{countValue, number}</count> <movies>{countValue, plural, one {movie} other {movies}}</movies> in total!",
       "favorite": "Your favorite was",
-      "noData": "You didn't watch any <movies>Movies</movies> on <plex>{serverName}</plex> <emoji>😵‍💫</emoji>"
+      "noData": "You didn't watch any <movies>movies</movies> on <plex>{serverName}</plex> <emoji>😵‍💫</emoji>"
     },
     "Habits": {
       "day": "Your favorite day to watch was <day>{dayValue}</day>",
-      "hour": "And you pressed play most often around <hour>{hourValue}</hour> <emoji>{emojiValue}</emoji>"
+      "hour": "And you pressed play most often around <hour>{hourValue}</hour>",
+      "dayChart": "Bar chart of plays per day of the week. Busiest day: {dayValue} with {count, plural, one {# play} other {# plays}}.",
+      "hourChart": "Bar chart of plays per hour of the day. Busiest hour: {hourValue} with {count, plural, one {# play} other {# plays}}."
+    },
+    "FirstPlay": {
+      "since": "You've been watching on <plex>{serverName}</plex> since <date>{dateValue}</date>",
+      "timeSince": "That's <timeSince>{timeSinceValue}</timeSince> and counting!",
+      "title": "It all started with <title>{titleValue}</title>"
     },
     "Goodbye": {
-      "thanks": "Thanks for tuning into your <plex>{serverName} Rewind</plex>, <user>{userValue}!</user>",
+      "thanks": "Thanks for tuning in to your <plex>{serverName} Rewind</plex>, <user>{userValue}!</user>",
       "sorry": "Sorry you couldn't find any content to watch or listen to this time around. Better luck next time!",
       "weWillBeBack": "We'll be back next time",
-      "weWillBeHere": "Eitherway, we'll be here",
+      "weWillBeHere": "Either way, we'll be here",
       "insightsAndStats": "with even more <insightsAndStats>insights and stats.</insightsAndStats>",
       "untilThen": "Until then, keep exploring and enjoying all that <plex>{serverName}</plex> has to offer.",
-      "movies": "Movies",
-      "shows": "Shows",
-      "tracks": "Tracks",
-      "fromYourFavorite": "From your favorite",
-      "toTheMostEntertaining": "to the most entertaining",
-      "andMemorable": "and memorable",
-      "itsBeenAJourneyToRemember": ", it's been a journey to remember."
+      "watchAgain": "Watch again",
+      "backToHome": "Back to home",
+      "journey": {
+        "movies": "From your favorite <movies>movies</movies>, it's been a journey to remember.",
+        "shows": "From the most entertaining <shows>TV shows</shows>, it's been a journey to remember.",
+        "audio": "From your most memorable <tracks>tracks</tracks>, it's been a journey to remember.",
+        "moviesShows": "From your favorite <movies>movies</movies> to the most entertaining <shows>TV shows</shows>, it's been a journey to remember.",
+        "moviesAudio": "From your favorite <movies>movies</movies> to the most memorable <tracks>tracks</tracks>, it's been a journey to remember.",
+        "showsAudio": "From the most entertaining <shows>TV shows</shows> to the most memorable <tracks>tracks</tracks>, it's been a journey to remember.",
+        "moviesShowsAudio": "From your favorite <movies>movies</movies> to the most entertaining <shows>TV shows</shows> and memorable <tracks>tracks</tracks>, it's been a journey to remember.",
+        "none": "It's been a journey to remember."
+      }
     }
   },
   "MediaItem": {
     "request": "Request",
     "deleted": "Deleted",
-    "statPlays": "{count, plural, =1 {# play} other {# plays}}",
-    "statUsers": "{count, plural, =1 {# user} other {# users}}",
-    "statRequests": "{count, plural, =1 {# request} other {# requests}}"
+    "anonymous": "Anonymous",
+    "statPlays": "{count, plural, one {# play} other {# plays}}",
+    "statUsers": "{count, plural, one {# user} other {# users}}",
+    "statRequests": "{count, plural, one {# request} other {# requests}}",
+    "statSince": "Since {date}",
+    "labelShows": "TV shows",
+    "labelMovies": "Movies",
+    "labelAudio": "Music",
+    "you": "(you)",
+    "requestLabel": "Request {title}",
+    "externalLinkLabel": "{title} on {site}",
+    "externalSearchLabel": "Search {site} for {title}"
   }
 }

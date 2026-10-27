@@ -1,10 +1,18 @@
 import { TautulliItemRow, TautulliSession } from '@/types/tautulli'
 
+export function isIosDevice(): boolean {
+  return (
+    typeof navigator !== 'undefined' &&
+    /iPad|iPhone|iPod/.test(navigator.userAgent)
+  )
+}
+
 export function generateDeeplinkUrl(
   ratingKey: number,
   serverId: string,
+  isIos: boolean = isIosDevice(),
 ): string {
-  if (/iPad|iPhone|iPod/.test(navigator.userAgent)) {
+  if (isIos) {
     return `plex://preplay/?metadataKey=%2Flibrary%2Fmetadata%2F${ratingKey}&server=${serverId}`
   }
 

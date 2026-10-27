@@ -1,27 +1,23 @@
+import { MEDIA_ICONS } from '@/components/icons'
 import MediaItems from '@/components/MediaItem/MediaItems'
 import { RewindStory } from '@/types/rewind'
-import { PlayCircleIcon } from '@heroicons/react/24/outline'
 import { useTranslations } from 'next-intl'
 import RewindStat from '../RewindStat'
 
-export default function StoryShows({
-  userRewind,
-  isPaused,
-  settings,
-}: RewindStory) {
+export default function StoryShows({ userRewind, settings }: RewindStory) {
   const t = useTranslations('Rewind.Shows')
 
   return (
     <>
       {userRewind.shows.duration ? (
         <>
-          <RewindStat isPaused={isPaused} scaleDelay={3}>
+          <RewindStat scaleDelay={3}>
             <p>
               {t.rich('duration', {
                 library: (chunks) => (
                   <span className='rewind-cat'>
                     {chunks}
-                    <PlayCircleIcon />
+                    <MEDIA_ICONS.show />
                   </span>
                 ),
                 duration: (chunks) => (
@@ -29,14 +25,12 @@ export default function StoryShows({
                 ),
                 durationValue: userRewind.shows.duration,
                 serverName: settings.general.serverName || 'Plex',
-                plex: (chunks) => (
-                  <span className='gradient-plex'>{chunks}</span>
-                ),
+                plex: (chunks) => chunks,
               })}
             </p>
           </RewindStat>
 
-          <RewindStat isPaused={isPaused} renderDelay={3} scaleDelay={3}>
+          <RewindStat renderDelay={3} scaleDelay={3}>
             <p>
               {t.rich('count', {
                 countValue: userRewind.shows.count,
@@ -50,12 +44,7 @@ export default function StoryShows({
             </p>
           </RewindStat>
 
-          <RewindStat
-            isPaused={isPaused}
-            renderDelay={6}
-            loaderDelay={3}
-            noScale
-          >
+          <RewindStat renderDelay={6} loaderDelay={3} noScale>
             <p className='mb-2'>
               {t('favorite')}{' '}
               <span className='rewind-cat'>
@@ -63,7 +52,7 @@ export default function StoryShows({
               </span>
             </p>
 
-            <div className='text-base not-italic'>
+            <div className='text-base leading-normal font-normal tracking-normal'>
               <MediaItems
                 type='show'
                 items={Array(userRewind.shows.top[0])}
@@ -81,11 +70,11 @@ export default function StoryShows({
               shows: (chunks) => (
                 <span className='rewind-cat'>
                   {chunks}
-                  <PlayCircleIcon />
+                  <MEDIA_ICONS.show />
                 </span>
               ),
               serverName: settings.general.serverName || 'Plex',
-              plex: (chunks) => <span className='gradient-plex'>{chunks}</span>,
+              plex: (chunks) => chunks,
               emoji: (chunks) => <span className='not-italic'>{chunks}</span>,
             })}
           </p>

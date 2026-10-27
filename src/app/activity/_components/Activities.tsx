@@ -1,22 +1,25 @@
 'use client'
 
-import { Settings } from '@/types/settings'
-import { getActivity } from '@/utils/fetchTautulli'
+import RetryButton from '@/components/RetryButton'
+import SourceUnreachable from '@/components/SourceUnreachable'
+import StatusMessage from '@/components/StatusMessage'
+import { PublicSettings } from '@/types/settings'
 import { useQuery } from '@tanstack/react-query'
 import { useTranslations } from 'next-intl'
 import { useEffect } from 'react'
+import getActivity from '../_actions/getActivity'
 import ActivitiesSkeleton from './ActivitiesSkeleton'
 import ActivityItem from './ActivityItem'
 
 type Props = {
-  settings: Settings
+  settings: PublicSettings
   serverId?: string
 }
 
 export default function Activities({ settings, serverId }: Props) {
   const t = useTranslations('Activity')
   const errorT = useTranslations('Error')
-  const { data, error, isLoading } = useQuery({
+  const { data, error, isLoading, refetch } = useQuery({
     queryKey: ['activity'],
     queryFn: getActivity,
     refetchInterval: 5000,
@@ -36,40 +39,38 @@ export default function Activities({ settings, serverId }: Props) {
     return <ActivitiesSkeleton />
   }
 
-  if (error || !data) {
+  if (error) {
     return (
-      <div className='flex flex-1 flex-col justify-center text-center'>
-        <h1 className='mb-4 text-3xl leading-tight italic sm:text-4xl'>
-          {errorT('title')}
-        </h1>
-        <button
-          className='link mx-auto w-fit'
-          onClick={() => window.location.reload()}
-        >
-          {errorT('cta')}
-        </button>
-      </div>
+      <StatusMessage
+        title={errorT('title')}
+        isInCard
+        action={<RetryButton onRetry={refetch} />}
+      />
+    )
+  }
+
+  // The server answered, but got nothing from the source
+  if (!data) {
+    return (
+      <SourceUnreachable
+        source={settings.connection.statisticsSource}
+        onRetry={refetch}
+        isInCard
+      />
     )
   }
 
   if (!data.sessions.length) {
-    return (
-      <div className='flex flex-1 flex-col justify-center text-center text-neutral-300'>
-        <h2 className='text-2xl italic last:mb-0 sm:text-3xl'>
-          {t('noActivity')}
-        </h2>
-      </div>
-    )
+    return <StatusMessage title='😴' description={t('noActivity')} isInCard />
   }
 
   return (
-    <ul className='space-y-6 sm:space-y-8'>
+    <ul className='divide-y divide-white/10'>
       {data.sessions.map((session, index) => (
         <ActivityItem
           key={session.session_key}
           session={session}
           index={index}
-          totalSessions={data.sessions.length}
           settings={settings}
           serverId={serverId}
         />

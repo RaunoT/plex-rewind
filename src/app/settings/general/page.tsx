@@ -1,6 +1,8 @@
-import { TautulliUser } from '@/types/tautulli'
-import fetchTautulli, { getLibraries } from '@/utils/fetchTautulli'
+import { requireSettingsAccess } from '@/lib/access'
 import getSettings from '@/utils/getSettings'
+import { toPublicSettings } from '@/utils/publicSettings'
+import { getReachableLibraries, getUsers } from '@/utils/statsSource'
+import { kebabCase } from 'lodash'
 import { Metadata } from 'next'
 import { getTranslations } from 'next-intl/server'
 import GeneralSettingsForm from './_components/GeneralSettingsForm'
@@ -13,29 +15,32 @@ export async function generateMetadata(): Promise<Metadata> {
   }
 }
 
-// All active users (without applying the exclusion filter) so that already
-// excluded users stay visible in the form and can be re-included.
-async function getUsers(): Promise<TautulliUser[]> {
-  const res = await fetchTautulli<TautulliUser[]>('get_users')
-  const users = res?.response?.data?.filter(
-    (user) => user.is_active && user.username !== 'Local',
-  )
-
-  return users ?? []
-}
-
 export default async function GeneralSettingsPage() {
+  await requireSettingsAccess()
+
   const [libraries, users] = await Promise.all([
-    getLibraries(false),
+    getReachableLibraries(false),
     getUsers(),
   ])
   const settings = getSettings()
 
+  // A first setup starts with every library on, so it has something to show
+  if (!settings.general.complete && !settings.general.activeLibraries.length) {
+    settings.general.activeLibraries =
+      libraries?.map((library) => kebabCase(library.section_name)) ?? []
+  }
+
   return (
     <GeneralSettingsForm
-      settings={settings}
+      // A retry can bring in the libraries, which the form only reads once
+      key={libraries?.map((library) => library.section_id).join()}
+      settings={toPublicSettings(settings)}
       libraries={libraries}
-      users={users}
+      // Emails and other account details stay on the server.
+      users={users.map(({ user_id, friendly_name }) => ({
+        user_id,
+        friendly_name,
+      }))}
     />
   )
 }

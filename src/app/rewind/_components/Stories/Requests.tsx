@@ -1,18 +1,10 @@
+import { MEDIA_ICONS, STAT_ICONS } from '@/components/icons'
 import { RewindStory } from '@/types/rewind'
-import {
-  FilmIcon,
-  PlayCircleIcon,
-  QuestionMarkCircleIcon,
-} from '@heroicons/react/24/outline'
 import { useTranslations } from 'next-intl'
 import RewindStat from '../RewindStat'
 import StatListItem from '../StatListItem'
 
-export default function StoryRequests({
-  userRewind,
-  isPaused,
-  settings,
-}: RewindStory) {
+export default function StoryRequests({ userRewind, settings }: RewindStory) {
   const t = useTranslations('Rewind.Requests')
 
   return (
@@ -25,7 +17,7 @@ export default function StoryRequests({
                 requests: (chunks) => (
                   <span className='rewind-cat'>
                     {chunks}
-                    <QuestionMarkCircleIcon />
+                    <STAT_ICONS.requests />
                   </span>
                 ),
                 emoji: (chunks) => <span className='not-italic'>{chunks}</span>,
@@ -35,33 +27,32 @@ export default function StoryRequests({
         ) : (
           <>
             {userRewind.requests.user == 0 ? (
-              <RewindStat isPaused={isPaused} scaleDelay={3}>
+              <RewindStat scaleDelay={3}>
                 <p>
                   {t.rich('noUserData', {
                     requests: (chunks) => (
                       <span className='rewind-cat'>
                         {chunks}
-                        <QuestionMarkCircleIcon />.
+                        <STAT_ICONS.requests />
                       </span>
                     ),
                     requestLink: (chunks) => (
                       <a
                         className='link relative z-10'
-                        href={settings.connection.overseerrUrl}
+                        href={settings.connection.seerrUrl}
                         target='_blank'
                         rel='noopener noreferrer'
                       >
                         {chunks}
                       </a>
                     ),
-                    requestLinkValue: settings.connection.overseerrUrl
-                      ?.split('//')
-                      .pop(),
+                    requestLinkValue:
+                      settings.connection.seerrUrl.split('//').pop() ?? '',
                   })}
                 </p>
               </RewindStat>
             ) : (
-              <RewindStat isPaused={isPaused} scaleDelay={3}>
+              <RewindStat scaleDelay={3}>
                 <p>
                   {t.rich('count', {
                     countValue: userRewind.requests.user,
@@ -71,7 +62,7 @@ export default function StoryRequests({
                     requests: (chunks) => (
                       <span className='rewind-cat'>
                         {chunks}
-                        <QuestionMarkCircleIcon />
+                        <STAT_ICONS.requests />
                       </span>
                     ),
                   })}
@@ -79,43 +70,38 @@ export default function StoryRequests({
               </RewindStat>
             )}
 
-            <RewindStat isPaused={isPaused} renderDelay={3} scaleDelay={3}>
+            <RewindStat renderDelay={3} scaleDelay={3}>
               <p>
                 {t.rich('countTotal', {
                   countValue: userRewind.requests.total,
                   count: (chunks) => (
                     <span className='rewind-cat'>
                       {chunks}
-                      <QuestionMarkCircleIcon />
+                      <STAT_ICONS.requests />
                     </span>
                   ),
                   requests: (chunks) => (
                     <span className='rewind-cat'>
                       {chunks}
-                      <QuestionMarkCircleIcon />
+                      <STAT_ICONS.requests />
                     </span>
                   ),
                 })}
               </p>
             </RewindStat>
 
-            <RewindStat
-              isPaused={isPaused}
-              renderDelay={6}
-              noScale
-              loaderDelay={3}
-            >
+            <RewindStat renderDelay={6} noScale loaderDelay={3}>
               <p>{t('breakdown')}</p>
-              <ul className='list'>
+              <ul className='mt-2'>
                 <StatListItem
                   count={userRewind.requests.movies}
                   name={t('movies', { count: userRewind.requests.movies })}
-                  icon={<FilmIcon />}
+                  icon={<MEDIA_ICONS.movie />}
                 />
                 <StatListItem
                   count={userRewind.requests.shows}
                   name={t('shows', { count: userRewind.requests.shows })}
-                  icon={<PlayCircleIcon />}
+                  icon={<MEDIA_ICONS.show />}
                 />
               </ul>
             </RewindStat>

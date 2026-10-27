@@ -3,19 +3,31 @@
     "title": "Avaleht",
     "setupRequired": "Seadistamine vajalik",
     "setupRequiredDescription": "Rakendus vajab seadistamist administraatori poolt.",
-    "loginWithPlex": "Logi sisse Plex'iga",
+    "loginWithPlex": "Logi sisse <plex>Plex</plex> kontoga",
+    "loginError": {
+      "plexUnavailable": "Plexiga ei saanud ühendust. Proovi hetke pärast uuesti.",
+      "plexNotConfirmed": "Plex ei kinnitanud sisselogimist. Proovi uuesti.",
+      "plexAccount": "Sinu Plexi kontot ei õnnestunud laadida. Proovi uuesti.",
+      "noAccess": "Sellel Plexi kontol pole ligipääsu sellele serverile.",
+      "unknown": "Sisselogimine ebaõnnestus. Proovi uuesti."
+    },
     "rewind": "Rewind",
-    "dashboard": "Edetabel",
-    "activity": "Tegevus",
-    "signOut": "Logi välja"
+    "signOut": "Logi välja",
+    "greeting": "Tere, {name} 👋",
+    "rewindDescription": "Sinu vaatamise tipphetked, lugu loo haaval.",
+    "streams": "{count, plural, =0 {Midagi ei mängi} one {# voog} other {# voogu}}",
+    "mostWatched": "Enim vaadatud",
+    "mostListened": "Enim kuulatud",
+    "emptyTitle": "Siin pole veel midagi",
+    "emptyDescription": "Sinu jaoks pole siin veel midagi. Vaata hiljem uuesti.",
+    "emptyAdminDescription": "Lülita seadetes sisse Rewind, Tegevus või Edetabel ja vali vähemalt üks kogumik.",
+    "openSettings": "Ava seaded"
   },
   "Activity": {
     "title": "Tegevus",
-    "loading": "Laadimine...",
-    "poster": "plakat",
-    "avatar": "avatar",
+    "poster": "„{title}“ plakat",
     "anonymousAvatar": "Anonüümne avatar",
-    "anonymous": "Anonüümne",
+    "anonymous": "Anonüümne #{number}",
     "stream": "Voog",
     "container": "Konteiner",
     "quality": "Kvaliteet",
@@ -24,25 +36,43 @@
     "subtitles": "Subtiitrid",
     "location": "Asukoht",
     "bandwidth": "Ribalaidus",
-    "noActivity": "Ühtegi aktiivset sessiooni pole.. 😴"
+    "streamDetails": "Voo üksikasjad",
+    "noActivity": "Ühtegi aktiivset voogu pole.",
+    "loadError": "Tegevust ei õnnestunud laadida",
+    "playing": "Mängib",
+    "paused": "Pausil",
+    "buffering": "Puhverdab",
+    "endsAt": "Lõpeb {time}",
+    "convertedTo": "teisendatakse:",
+    "decision": {
+      "directPlay": "Otsemäng",
+      "directStream": "Otsevoog",
+      "transcode": "Transkodeerimine",
+      "burnedIn": "Sisse põletatud"
+    }
   },
   "Dashboard": {
-    "noActivity": "Valitud perioodil puudub tegevus.. 😴",
+    "sizePartial": "{size} (osaline)",
+    "noActivity": "Valitud perioodil puudub tegevus.",
+    "showMore": "Näita rohkem",
     "title": "Edetabel",
     "usersTitle": "Kasutajad",
-    "users": "kasutajat",
-    "movies": "filmi",
-    "episodes": "episoodi",
-    "tracks": "lugu",
-    "requests": "tellimust"
+    "users": "{count, plural, one {# kasutaja} other {# kasutajat}}",
+    "movies": "{count, plural, one {film} other {filmi}}",
+    "episodes": "{count, plural, one {episood} other {episoodi}}",
+    "tracks": "{count, plural, one {lugu} other {lugu}}",
+    "requests": "{count, plural, one {# tellimus} other {# tellimust}}",
+    "durationWatched": "{duration} vaadatud",
+    "durationListened": "{duration} kuulatud",
+    "durationPlayed": "{duration} mängitud"
   },
   "DashboardFilters": {
-    "type": "Tüüp",
-    "general": "Üldine",
-    "personal": "Isiklik",
+    "type": "Kelle statistika",
+    "general": "Kõigi",
+    "personal": "Ainult minu",
     "sortByLabel": "Sorteerimisalus",
     "sort": "Sorteerimine",
-    "byDuration": "Kestuse järgi",
+    "byDuration": "Vaatamisaja järgi",
     "byPlays": "Mängimiste järgi"
   },
   "DashboardNavContent": {
@@ -50,18 +80,21 @@
     "users": "Kasutajad"
   },
   "Error": {
-    "title": "Oih.. midagi läks valesti!",
-    "cta": "Proovi uuesti"
+    "title": "Oih. Midagi läks valesti!",
+    "cta": "Proovi uuesti",
+    "sourceUnreachable": "{source} pole kättesaadav",
+    "sourceUnreachableDescription": "Veendu, et {source} töötab ja Plex Rewind saab sellega ühendust, ning proovi uuesti.",
+    "connectionSettings": "Kontrolli ühenduse seadeid"
   },
   "PlexDeeplink": {
-    "available": "Saadaval"
+    "available": "Saadaval",
+    "availableLabel": "Saadaval: ava {title} Plexis"
   },
   "PeriodSelectContent": {
     "7days": "7 päeva",
-    "today": "Täna",
     "pastYear": "Viimane aasta",
     "allTime": "Kokku",
-    "days": "päeva",
+    "days": "{count, plural, one {# päev} other {# päeva}}",
     "label": "Perioodi valik"
   },
   "NotFound": {
@@ -70,55 +103,73 @@
     "cta": "Ehk on parem alustada uuesti."
   },
   "AppProvider": {
-    "starsAlt": "Tähtedega taust",
     "updateAvailable": "Uuendus saadaval",
     "closeSettings": "Sulge seaded",
     "openSettings": "Ava seaded"
   },
+  "Sidebar": {
+    "label": "Põhinavigatsioon"
+  },
   "Offline": {
-    "title": "Ühendus puudub"
+    "title": "Ühendus puudub",
+    "retry": "Proovi uuesti"
   },
   "Settings": {
     "title": "Seaded",
     "getStarted": "Teeme algust!",
     "updateAvailable": "Uuendus saadaval",
     "saved": "Salvestatud!",
-    "genericError": "Midagi läks valesti!",
+    "savedChooseLibraries": "Salvestatud! Vali kogumikud jaotises Üldine.",
+    "genericError": "Midagi läks valesti. Proovi uuesti.",
     "save": "Salvesta",
+    "continue": "Jätka",
+    "setupFinished": "Kõik on valmis!",
+    "reenterApiKey": "Sisesta API võti URL-i muutmisel uuesti.",
     "apiKey": "API võti",
-    "invalidApiKey": "Vale API võti!",
-    "unableToConnect": "Ühenduse loomine ebaõnnestus!",
+    "invalidApiKey": "Vale API võti.",
+    "unableToConnect": "Ühenduse loomine ebaõnnestus. Kontrolli URL-i ja seda, et server töötab.",
+    "noPlexServer": "Plexi serverit ei leitud.",
+    "choosePlexServer": "Vali, millist Plexi serverit kasutada.",
+    "urlNotFound": "Ei leitud. Kontrolli URL-i, sealhulgas võimalikku baasteed.",
+    "unexpectedResponse": "Ootamatu vastus (HTTP {status}).",
+    "certificateError": "HTTPS-sertifikaadi viga. Kontrolli, et URL vastaks kehtivale sertifikaadile.",
+    "invalidField": "Kontrolli {field, select, tautulliUrl {Tautulli URL-i} tautulliApiKey {Tautulli API võtit} tracearrUrl {Tracearr URL-i} tracearrApiKey {Tracearr API võtit} plexUrl {Plexi URL-i} seerrUrl {Seerr URL-i} seerrApiKey {Seerr API võtit} googleAnalyticsId {Google Analyticsi ID-d} other {seadeid}}.",
     "buyMeACoffee": "Osta mulle kohvi",
     "becomeASponsor": "Hakka sponsoriks",
     "reportAnIssue": "Teata probleemist",
-    "initialSetup": "Salvesta seaded jätkamiseks",
     "Nav": {
       "label": "Navigatsioon",
       "connection": "Ühendus",
       "general": "Üldine",
       "rewind": "Rewind",
       "dashboard": "Edetabel",
-      "activity": "Tegevus"
+      "activity": "Tegevus",
+      "complete": "Lõpetatud",
+      "incomplete": "Lõpetamata",
+      "connectionRequired": "Lõpeta kõigepealt ühenduse seadistamine"
     },
     "Connection": {
-      "title": "Ühenduse seaded"
+      "title": "Ühenduse seaded",
+      "statistics": "Statistika",
+      "source": "Allikas",
+      "server": "Server",
+      "chooseServer": "Vali server",
+      "seerrUrlDescription": "Tellimuste lingid avanevad vaataja brauseris, seega kasuta aadressi, millele ta ligi pääseb, mitte kohtvõrgu aadressi.",
+      "optionalService": "{service} (valikuline)"
     },
     "Dashboard": {
       "title": "Edetabeli seaded",
-      "customPeriodError": "Kohandatud periood peab olema > 0 ja <= 3000",
-      "startDateError": "Vale algusaeg",
+      "customPeriodError": "Kohandatud periood peab olema täisarv vahemikus 1–3000.",
+      "startDateError": "Kontrolli alguskuupäeva.",
       "usersPage": "Kasutajate leht",
       "statistics": "Statistika",
-      "itemStatistics": "Kirje statistika",
       "totalStatistics": "Kokkuvõtlik statistika",
-      "sortByPlaysFilter": "Mängimiste arvu järgi sorteerimine",
       "customPeriod": "Kohandatud periood",
-      "inDays": "Päevades.",
-      "startDateHelperText": "Kasutatud kogu ajalise perioodi jaoks."
+      "inDays": "Päevades. Edetabel ja avaleht avanevad selle perioodiga.",
+      "startDateHelperText": "Perioodi „Kokku“ algus."
     },
     "Activity": {
-      "title": "Tegevuse seaded",
-      "privacy": "Privaatsus"
+      "title": "Tegevuse seaded"
     },
     "General": {
       "title": "Üldseaded",
@@ -126,26 +177,30 @@
       "serverName": "Server nimi",
       "libraries": "Kogumikud",
       "activeLibraries": "Aktiivsed kogumikud",
+      "moveUp": "Liiguta {name} üles",
+      "moveDown": "Liiguta {name} alla",
+      "movedTo": "{name} liigutati kohale {position} (kokku {total})",
       "noLibrariesMessage1": "Palun loo kogumik Plex'is.",
       "noLibrariesMessage2": "Plex Rewind vajab toimimiseks vähemalt ühte kogumikku.",
       "media": "Meedia",
       "tmdbOnlyPosters": "Ainult TMDB pildid",
-      "tmdbOnlyPostersDescription1": "Ära kasuta Plex'i postreid.",
-      "tmdbOnlyPostersDescription2": "Vaikimisi kasutatakse TMDB'd ainult kui postrid puuduvad.",
+      "tmdbOnlyPostersDescription": "Ära kasuta Plex'i postreid.",
+      "externalLinks": "Välised lingid",
+      "itemStatistics": "Kirje statistika",
+      "itemStatisticsDescription": "Kuvatakse iga pealkirja ja kasutaja juures edetabelis ja Rewind'is.",
       "privacy": "Privaatsus",
       "excludedUsers": "Välistatud kasutajad",
-      "excludedUsersDescription": "Valitud kasutajad jäetakse statistikast välja.",
+      "excludedUsersDescription": "Tautulli puhul sisaldavad enim vaadatud filmid, seriaalid ja esitajad endiselt nende vaatamisi.",
       "outsideAccess": "Luba väline ligipääs",
-      "outsideAccessDescription": "Ligipääs ilma sisselogimiseta.",
+      "outsideAccessDescription": "Igaüks näeb sinu serveri statistikat ilma sisse logimata.",
       "anonymize": "Anonümiseeri",
-      "anonymizeDescription": "Peida teiste kasutajanimed.",
+      "anonymizeDescription": "Peida teiste kasutajate nimed, ka administraatorite eest. Tegevuse lehel peidetakse ka IP-aadressid ja asukohad.",
       "analytics": "Analüütika"
     },
     "Rewind": {
       "title": "Rewind seaded",
-      "cards": "Kaardid",
-      "librariesSizeAndCountCard": "Kogumike failisuuruse kaart",
-      "librariesSizeAndCountCardDescription": "Lülita välja, kui ei soovi sõltuda Tautulli'st failisuuruste jaoks.",
+      "cards": "Lood",
+      "librariesSizeAndCountCard": "Kogumike suurus ja sisu",
       "startDateHelperText": "Vaikimisi 365 päeva tagasi."
     }
   },
@@ -156,100 +211,120 @@
     "label": "Vali kasutaja"
   },
   "Common": {
+    "dismiss": "Sulge",
     "enabled": "Aktiveeritud",
+    "adminOnly": "Ainult administraatoritele",
     "status": "Olek",
     "year": "Aasta",
     "rating": "Hinnang",
-    "duration": "Kestus",
+    "ratingBy": "{provider} hinnang",
+    "rottenTomatoesCritics": "Rotten Tomatoesi kriitikute hinnang",
+    "rottenTomatoesAudience": "Rotten Tomatoesi vaatajate hinnang",
+    "duration": "Vaatamisaeg",
     "plays": "Mängimiste arv",
     "users": "Kasutajate arv",
     "requests": "Tellimuste arv",
-    "count": "Mängimiste arv",
+    "count": "Kogus",
     "size": "Suurus",
     "defaults": "Vaikeväärtused",
     "startDate": "Algus",
-    "profilePictureAlt": "profiilipilt",
+    "profilePictureAlt": "Kasutaja {name} profiilipilt",
     "time": {
       "zero": "0 min",
-      "month": "{count, plural, =1 {# kuu} other {# kuud}}",
-      "week": "{count, plural, =1 {# nädal} other {# nädalat}}",
-      "day": "{count, plural, =1 {# päev} other {# päeva}}",
-      "hr": "{count, plural, =1 {# tund} other {# tundi}}",
-      "min": "{count, plural, =1 {# min} other {# min}}",
-      "sec": "{count, plural, =1 {# sek} other {# sek}}"
+      "month": "{count, plural, one {# kuu} other {# kuud}}",
+      "week": "{count, plural, one {# nädal} other {# nädalat}}",
+      "day": "{count, plural, one {# päev} other {# päeva}}",
+      "hr": "{count, plural, one {# tund} other {# tundi}}",
+      "min": "{count, plural, one {# min} other {# min}}",
+      "sec": "{count, plural, one {# sek} other {# sek}}"
     },
-    "fileSize": "{value} {unit}"
+    "fileSize": "{value, number} {unit}"
   },
   "DatePicker": {
-    "clear": "Tühjenda kuupäev"
+    "clear": "Tühjenda kuupäev",
+    "open": "Ava kalender"
   },
   "Loader": {
     "loading": "Laadimine..."
   },
   "Rewind": {
+    "title": "Rewind",
     "Stories": {
       "goToStory": "Mine loole {index}",
-      "previousStory": "Eelmine lugu",
-      "nextStory": "Järgmine lugu",
+      "previous": "Eelmine",
+      "next": "Järgmine",
       "pause": "Peata",
-      "resume": "Jätka"
+      "resume": "Jätka",
+      "label": "Rewind'i lood",
+      "storyPosition": "{current}. lugu {total}-st"
     },
     "Common": {
-      "top": "Siin on sinu <top>Top {count}</top>"
+      "topShows": "Siin on sinu <top>{count, plural, one {enim vaadatud seriaal} other {# enim vaadatud seriaali}}</top>",
+      "topMovies": "Siin on sinu <top>{count, plural, one {enim vaadatud film} other {# enim vaadatud filmi}}</top>",
+      "topArtists": "Siin on sinu <top>{count, plural, one {enim kuulatud esitaja} other {# enim kuulatud esitajat}}</top>"
     },
     "Welcome": {
-      "welcome": "Tere tulemast oma <rewind>{serverName} Rewind'i</rewind>",
+      "welcome": "Tere tulemast oma <rewind>{serverName} Rewind'i</rewind>, <user>{userValue}!</user>",
       "takeYouThrough": "Vaatame üle su parimad hetked",
       "letsGetStarted": "Hakkame pihta!",
       "forPastYear": "<pastYear>viimase aasta</pastYear> jooksul.",
       "singleDate": "<singleDate>{singleDateValue}</singleDate> jooksul.",
-      "dateRange": "vahemikus <startDate>{startDateValue}</startDate> kuni <endDate>{endDateValue}</endDate>"
+      "dateRange": "vahemikus <startDate>{startDateValue}</startDate> kuni <endDate>{endDateValue}</endDate>."
     },
     "Total": {
       "duration": "<total>Kokku</total> kulutasid sa <duration>{durationValue}</duration> <plex>{serverName}'is!</plex>",
-      "percentage": "See on <percentage>{percentageValue}</percentage> tervest aktiivsusest, mis oli <duration>{durationValue}</duration> kõigi kasutajate peale.",
+      "percentage": "See on <percentage>{percentageValue}</percentage> kõigi kasutajate vaatamisajast, mis oli kokku <duration>{durationValue}</duration>.",
       "noData": "Sa ei mänginud midagi <plex>{serverName}'ist</plex> <emoji>😫</emoji>"
     },
     "Users": {
-      "top": "Siin oled sa võrdluses teiste <users>Kasutajatega</users>"
+      "top": "Siin oled sa võrdluses teiste <users>kasutajatega</users>"
     },
     "Audio": {
-      "duration": "Lõpetuseks kuulasid sa <duration>{durationValue}</duration> <audio>Audiot</audio>",
-      "count": "Kokku kuulasid sa <count>{countValue}</count> <tracks>lugu!</tracks>",
+      "duration": "Sa kuulasid <duration>{durationValue}</duration> <audio>muusikat</audio>",
+      "count": "Kokku kuulasid sa <count>{countValue, number}</count> <tracks>{countValue, plural, one {loo} other {lugu}}!</tracks>",
       "favorite": "Sinu lemmik oli",
-      "noData": "Sa ei kuulanud <audio>Audiot</audio> <from>Plex'ist</from>"
+      "noData": "Sa ei kuulanud <audio>muusikat</audio> <from>{serverName}'ist</from>"
     },
     "Libraries": {
-      "filesize": "Kas teadsid, et kõikide kogumike <filesize>Failisuurus</filesize> <plex>{serverName}'is</plex> on <size>{sizeValue}!</size>",
+      "filesize": "Kas teadsid, et kogu sisu <plex>{serverName}'is</plex> võtab <size>{sizeValue}</size> <filesize>kettaruumi</filesize>?",
+      "sizePartial": "Mõne kogumiku suurus on teadmata. Lülita Tautullis sisse „Calculate Total File Sizes“.",
+      "sizePartialTracearr": "Tracearr'is puuduvad mõne kogumiku suuruse andmed.",
       "libraries": "Hetkel on saadaval:",
-      "movies": "{count, plural, =1 {Film} other {Filmi}}",
-      "episodes": "{count, plural, =1 {Saade} other {Saadet}}",
-      "tracks": "{count, plural, =1 {Lugu} other {Lugu}}"
+      "movies": "{count, plural, one {Film} other {Filmi}}",
+      "episodes": "{count, plural, one {Episood} other {Episoodi}}",
+      "tracks": "{count, plural, one {Lugu} other {Lugu}}"
     },
     "Shows": {
-      "duration": "<library>Saated</library> võtsid <duration>{durationValue}</duration> sinu ajast <plex>{serverName}'is.</plex>",
-      "count": "Sa vaatasid kokku <count>{countValue}</count> <episodes>episoodi</episodes>",
+      "duration": "<library>Seriaalid</library> võtsid <duration>{durationValue}</duration> sinu ajast <plex>{serverName}'is.</plex>",
+      "count": "Sa vaatasid kokku <count>{countValue, number}</count> <episodes>{countValue, plural, one {episoodi} other {episoodi}}</episodes>",
       "favorite": "Sinu lemmik oli",
-      "noData": "Sa ei vaadanud ühtegi <shows>Saadet</shows> <plex>{serverName}'ist</plex> <emoji>😥</emoji>"
+      "noData": "Sa ei vaadanud ühtegi <shows>seriaali</shows> <plex>{serverName}'ist</plex> <emoji>😥</emoji>"
     },
     "Requests": {
-      "noData": "Ühtegi <requests>Tellimust</requests> pole tehtud <emoji>😲</emoji>",
-      "noUserData": "Sa ei teinud ühtegi <requests>Tellimust</requests>. Sa saad seda teha lingilt <requestLink>{requestLinkValue}</requestLink>.",
-      "count": "Sa tegid <count>{countValue}</count> sisu <requests>{countValue, plural, =1 {Tellimuse} other {Tellimust}}</requests>",
-      "countTotal": "Kokku tehti samal perioodil <count>{countValue, plural, =1 {# Tellimus} other {# Tellimust}}</count>",
+      "noData": "Ühtegi <requests>tellimust</requests> pole tehtud <emoji>😲</emoji>",
+      "noUserData": "Sa ei teinud ühtegi <requests>tellimust</requests>. Tellimusi saad teha aadressil <requestLink>{requestLinkValue}</requestLink>.",
+      "count": "Sa tegid <count>{countValue, number}</count> <requests>{countValue, plural, one {tellimuse} other {tellimust}}</requests>",
+      "countTotal": "Kokku tehti samal perioodil <count>{countValue, plural, one {# tellimus} other {# tellimust}}</count>.",
       "breakdown": "Siin on täpsem jaotus:",
-      "movies": "{count, plural, =1 {Film} other {Filmi}}",
-      "shows": "{count, plural, =1 {Saade} other {Saadet}}"
+      "movies": "{count, plural, one {Film} other {Filmi}}",
+      "shows": "{count, plural, one {Seriaal} other {Seriaali}}"
     },
     "Movies": {
-      "duration": "<duration>{durationValue}</duration> kulus sul <movies>Filmidele</movies>",
-      "count": "Vaatasid <count>{countValue}</count> <movies>{countValue, plural, =1 {filmi} other {filmi}}</movies>",
+      "duration": "<duration>{durationValue}</duration> kulus sul <movies>filmidele</movies>",
+      "count": "Vaatasid <count>{countValue, number}</count> <movies>{countValue, plural, one {filmi} other {filmi}}</movies>",
       "favorite": "Sinu lemmik oli",
-      "noData": "Sa ei vaadanud ühtegi <movies>Filmi</movies> <plex>{serverName}'ist</plex> <emoji>😵‍💫</emoji>"
+      "noData": "Sa ei vaadanud ühtegi <movies>filmi</movies> <plex>{serverName}'ist</plex> <emoji>😵‍💫</emoji>"
     },
     "Habits": {
       "day": "Sinu lemmik vaatamispäev oli <day>{dayValue}</day>",
-      "hour": "Ja kõige sagedamini panid mängima umbes kell <hour>{hourValue}</hour> <emoji>{emojiValue}</emoji>"
+      "hour": "Ja kõige sagedamini panid mängima umbes kell <hour>{hourValue}</hour>",
+      "dayChart": "Tulpdiagramm mängimistest nädalapäevade kaupa. Kõige aktiivsem päev: {dayValue}, {count, plural, one {# mängimine} other {# mängimist}}.",
+      "hourChart": "Tulpdiagramm mängimistest kellaaegade kaupa. Kõige aktiivsem tund: {hourValue}, {count, plural, one {# mängimine} other {# mängimist}}."
+    },
+    "FirstPlay": {
+      "since": "Sa oled <plex>{serverName}'is</plex> vaadanud alates <date>{dateValue}</date>",
+      "timeSince": "See on juba <timeSince>{timeSinceValue}</timeSince>!",
+      "title": "Kõik algas sellest: <title>{titleValue}</title>"
     },
     "Goodbye": {
       "thanks": "Tänan, et vaatasid oma <plex>{serverName} Rewind'i</plex>, <user>{userValue}!</user>",
@@ -258,20 +333,34 @@
       "weWillBeHere": "Igal juhul oleme olemas ka järgmine kord",
       "insightsAndStats": "veelgi huvitavama <insightsAndStats>statistikaga.</insightsAndStats>",
       "untilThen": "Seniks, naudi kogu sisu, mis <plex>{serverName}'il</plex> on pakkuda.",
-      "movies": "Filmidest",
-      "shows": "Saadeteni",
-      "tracks": "Lugudeni",
-      "fromYourFavorite": "Sinu lemmikutest",
-      "toTheMostEntertaining": "kõige huvitavamate",
-      "andMemorable": "ja meeldejäävate",
-      "itsBeenAJourneyToRemember": ", see on olnud meeldejääv teekond."
+      "watchAgain": "Vaata uuesti",
+      "backToHome": "Tagasi avalehele",
+      "journey": {
+        "movies": "Sinu lemmikutest <movies>filmidest</movies> alates on see olnud meeldejääv teekond.",
+        "shows": "Kõige huvitavamatest <shows>seriaalidest</shows> alates on see olnud meeldejääv teekond.",
+        "audio": "Kõige meeldejäävamatest <tracks>lugudest</tracks> alates on see olnud meeldejääv teekond.",
+        "moviesShows": "Sinu lemmikutest <movies>filmidest</movies> kõige huvitavamate <shows>seriaalideni</shows>, see on olnud meeldejääv teekond.",
+        "moviesAudio": "Sinu lemmikutest <movies>filmidest</movies> kõige meeldejäävamate <tracks>lugudeni</tracks>, see on olnud meeldejääv teekond.",
+        "showsAudio": "Kõige huvitavamatest <shows>seriaalidest</shows> kõige meeldejäävamate <tracks>lugudeni</tracks>, see on olnud meeldejääv teekond.",
+        "moviesShowsAudio": "Sinu lemmikutest <movies>filmidest</movies> kõige huvitavamate <shows>seriaalideni</shows> ja meeldejäävate <tracks>lugudeni</tracks>, see on olnud meeldejääv teekond.",
+        "none": "See on olnud meeldejääv teekond."
+      }
     }
   },
   "MediaItem": {
     "request": "Telli",
     "deleted": "Kustutatud",
-    "statPlays": "{count, plural, =1 {# mängimine} other {# mängimist}}",
-    "statUsers": "{count, plural, =1 {# kasutaja} other {# kasutajat}}",
-    "statRequests": "{count, plural, =1 {# tellimus} other {# tellimust}}"
+    "anonymous": "Anonüümne",
+    "statPlays": "{count, plural, one {# mängimine} other {# mängimist}}",
+    "statUsers": "{count, plural, one {# kasutaja} other {# kasutajat}}",
+    "statRequests": "{count, plural, one {# tellimus} other {# tellimust}}",
+    "statSince": "Alates {date}",
+    "labelShows": "Seriaalid",
+    "labelMovies": "Filmid",
+    "labelAudio": "Muusika",
+    "you": "(sina)",
+    "requestLabel": "Telli {title}",
+    "externalLinkLabel": "{title} saidil {site}",
+    "externalSearchLabel": "Otsi {title} saidilt {site}"
   }
 }

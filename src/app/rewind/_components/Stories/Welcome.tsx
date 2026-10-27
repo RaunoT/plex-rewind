@@ -1,54 +1,46 @@
+import Avatar from '@/components/Avatar'
 import { RewindStory } from '@/types/rewind'
+import { formatMonthYear } from '@/utils/formatting'
 import { getRewindStartDate } from '@/utils/helpers'
-import { useTranslations } from 'next-intl'
-import Image from 'next/image'
+import { useLocale, useTranslations } from 'next-intl'
 import RewindStat from '../RewindStat'
 
-function formatDate(dateString: string) {
-  const date = new Date(dateString)
-  const month = date.toLocaleString('default', { month: 'short' })
-  const year = date.getFullYear()
-
-  return `${month} ${year}`
-}
-
-export default function StoryWelcome({
-  userRewind,
-  isPaused,
-  settings,
-}: RewindStory) {
+export default function StoryWelcome({ userRewind, settings }: RewindStory) {
   const startDate = getRewindStartDate(settings)
   const isDefaultPeriod = !settings.rewind.startDate
   const t = useTranslations('Rewind.Welcome')
-  const formattedStartDate = formatDate(startDate)
+  const tCommon = useTranslations('Common')
+  const locale = useLocale()
+  const formattedStartDate = formatMonthYear(startDate, locale)
   // The window always runs to now, so the displayed range ends today.
-  const formattedEndDate = formatDate(new Date().toISOString().split('T')[0])
+  const formattedEndDate = formatMonthYear(
+    new Date().toISOString().split('T')[0],
+    locale,
+  )
 
   return (
     <>
-      <RewindStat isPaused={isPaused} noScale isAnimated={false}>
-        <div className='relative mb-8 size-24'>
-          <Image
-            src={userRewind.user.image || ''}
-            alt={`${userRewind.user.name} profile picture`}
-            className='rounded-full object-cover'
+      <RewindStat noScale isAnimated={false}>
+        <div className='relative mb-8 size-24 overflow-hidden rounded-full'>
+          <Avatar
+            src={userRewind.user.image}
+            name={userRewind.user.name}
+            alt={tCommon('profilePictureAlt', { name: userRewind.user.name })}
             sizes='10rem'
-            fill
             priority
           />
         </div>
         <p>
           {t.rich('welcome', {
             serverName: settings.general.serverName || 'Plex',
-            rewind: (chunks) => (
-              <span className='gradient-plex'>{chunks} </span>
-            ),
+            userValue: userRewind.user.name,
+            rewind: (chunks) => chunks,
+            user: (chunks) => <span className='rewind-cat'>{chunks}</span>,
           })}
-          <span className='rewind-cat'>{userRewind.user.name}!</span>
         </p>
       </RewindStat>
 
-      <RewindStat isPaused={isPaused} renderDelay={2} scaleDelay={2} noScale>
+      <RewindStat renderDelay={2} scaleDelay={2} noScale>
         <p>
           {t('takeYouThrough')}{' '}
           {isDefaultPeriod
@@ -77,7 +69,7 @@ export default function StoryWelcome({
         </p>
       </RewindStat>
 
-      <RewindStat isPaused={isPaused} renderDelay={4} loaderDelay={2} noScale>
+      <RewindStat renderDelay={4} loaderDelay={2} noScale>
         <p>{t('letsGetStarted')}</p>
       </RewindStat>
     </>
