@@ -36,6 +36,7 @@
     "subtitles": "Subtiitrid",
     "location": "Asukoht",
     "bandwidth": "Ribalaidus",
+    "streamDetails": "Voo üksikasjad",
     "noActivity": "Ühtegi aktiivset voogu pole. 😴",
     "loadError": "Tegevust ei õnnestunud laadida",
     "playing": "Mängib",
@@ -59,7 +60,7 @@
     "movies": "{count, plural, one {film} other {filmi}}",
     "episodes": "{count, plural, one {episood} other {episoodi}}",
     "tracks": "{count, plural, one {lugu} other {lugu}}",
-    "requests": "{count, plural, one {tellimus} other {tellimust}}",
+    "requests": "{count, plural, one {# tellimus} other {# tellimust}}",
     "durationWatched": "{duration} vaadatud",
     "durationListened": "{duration} kuulatud"
   },
@@ -161,7 +162,7 @@
       "itemStatistics": "Kirje statistika",
       "itemStatisticsDescription": "Kuvatakse iga pealkirja ja kasutaja juures edetabelis ja Rewind'is.",
       "totalStatistics": "Kokkuvõtlik statistika",
-      "totalStatisticsDescription": "Kuvatakse iga edetabeli all. Kogus on kogumikus olevate filmide, episoodide või lugude arv.",
+      "totalStatisticsDescription": "Vaatamisaeg ja tellimused käivad valitud perioodi kohta ning on filtrite kõrval. Suurus ja kogus on iga edetabeli all. Kogus on kogumikus olevate filmide, episoodide või lugude arv.",
       "sortFilter": "Sorteerimise filter",
       "sortFilterDescription": "Lubab edetabelit sorteerida vaatamisaja järgi. Muidu sorteeritakse mängimiste järgi.",
       "customPeriod": "Kohandatud periood",
@@ -193,7 +194,8 @@
       "outsideAccessDescription": "Igaüks saab edetabelit ja tegevust vaadata ilma sisse logimata ning näha on kõik kogumikud, sõltumata sellest, mida Plexis jagatakse. Rewind nõuab endiselt sisselogimist.",
       "anonymize": "Anonümiseeri",
       "anonymizeDescription": "Peida teiste kasutajate nimed, ka administraatorite eest. Tegevuse lehel peidetakse ka IP-aadressid ja asukohad.",
-      "analytics": "Analüütika"
+      "analytics": "Analüütika",
+      "analyticsIdDescription": "Saadab lehevaatamised Google Analytics 4-sse. Kasuta veebi andmevoo mõõtmise ID-d, mis algab tähtedega G-. Jäta tühjaks, et see välja lülitada."
     },
     "Rewind": {
       "title": "Rewind seaded",
@@ -210,6 +212,8 @@
   },
   "Common": {
     "enabled": "Aktiveeritud",
+    "adminOnly": "Ainult administraatoritele",
+    "adminOnlyDescription": "Peidetud kõigi eest peale serveri administraatorite, ka siis, kui väline ligipääs on lubatud.",
     "status": "Olek",
     "year": "Aasta",
     "rating": "Hinnang",

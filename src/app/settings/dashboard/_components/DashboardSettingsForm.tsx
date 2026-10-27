@@ -59,17 +59,31 @@ export default function DashboardSettingsForm({ settings }: Props) {
           </span>
         </Switch>
         {isActive && (
-          <Switch
-            key={`users-page-${dashboardSettings.isUsersPageActive}`}
-            className='switch'
-            name='isUsersPageActive'
-            defaultSelected={dashboardSettings.isUsersPageActive}
-          >
-            <div className='indicator'></div>
-            <span className='label'>
-              <span className='label-wrapper'>{t('usersPage')}</span>
-            </span>
-          </Switch>
+          <>
+            <Switch
+              key={`users-page-${dashboardSettings.isUsersPageActive}`}
+              className='switch'
+              name='isUsersPageActive'
+              defaultSelected={dashboardSettings.isUsersPageActive}
+            >
+              <div className='indicator'></div>
+              <span className='label'>
+                <span className='label-wrapper'>{t('usersPage')}</span>
+              </span>
+            </Switch>
+            <Switch
+              key={`admin-only-${dashboardSettings.isAdminOnly}`}
+              className='switch items-start'
+              name='isAdminOnly'
+              defaultSelected={dashboardSettings.isAdminOnly}
+            >
+              <div className='indicator'></div>
+              <span className='label'>
+                <span className='label-wrapper'>{tCommon('adminOnly')}</span>
+                <small>{tCommon('adminOnlyDescription')}</small>
+              </span>
+            </Switch>
+          </>
         )}
       </section>
       {isActive && (

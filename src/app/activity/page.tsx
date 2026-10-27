@@ -1,6 +1,6 @@
-import { canViewStats } from '@/lib/access'
 import { authOptions } from '@/lib/auth'
 import getSettings from '@/utils/getSettings'
+import { canViewFeature, getViewer } from '@/utils/helpers'
 import { toPublicSettings } from '@/utils/publicSettings'
 import { getServerId } from '@/utils/statsSource'
 import { Metadata } from 'next'
@@ -25,7 +25,7 @@ export default async function ActivityPage() {
   const settings = getSettings()
   const session = await getServerSession(authOptions)
 
-  if (!settings.activity.isActive || !canViewStats(settings, session)) {
+  if (!canViewFeature(settings, 'activity', getViewer(session))) {
     return notFound()
   }
 

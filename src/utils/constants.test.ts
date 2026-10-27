@@ -1,5 +1,9 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { getPeriods, getSiteUrl } from './constants'
+import {
+  getPeriods,
+  getSiteUrl,
+  GOOGLE_ANALYTICS_ID_PATTERN,
+} from './constants'
 
 describe('getPeriods', () => {
   beforeEach(() => {
@@ -66,5 +70,25 @@ describe('getSiteUrl', () => {
     vi.stubEnv('NEXT_PUBLIC_SITE_URL', '')
 
     expect(getSiteUrl()).toBe('http://localhost:8383')
+  })
+})
+
+describe('GOOGLE_ANALYTICS_ID_PATTERN', () => {
+  it('accepts GA4 measurement IDs and Google tag IDs', () => {
+    expect(GOOGLE_ANALYTICS_ID_PATTERN.test('G-ABC123XYZ')).toBe(true)
+    expect(GOOGLE_ANALYTICS_ID_PATTERN.test('g-abc123xyz')).toBe(true)
+    expect(GOOGLE_ANALYTICS_ID_PATTERN.test('GT-ABC123')).toBe(true)
+  })
+
+  it('rejects IDs that no longer collect or are not analytics', () => {
+    expect(GOOGLE_ANALYTICS_ID_PATTERN.test('UA-12345-1')).toBe(false)
+    expect(GOOGLE_ANALYTICS_ID_PATTERN.test('AW-123456789')).toBe(false)
+    expect(GOOGLE_ANALYTICS_ID_PATTERN.test('DC-1234567')).toBe(false)
+  })
+
+  it('rejects anything that could change the script URL', () => {
+    expect(GOOGLE_ANALYTICS_ID_PATTERN.test('G-ABC&l=evil')).toBe(false)
+    expect(GOOGLE_ANALYTICS_ID_PATTERN.test('G-ABC\n')).toBe(false)
+    expect(GOOGLE_ANALYTICS_ID_PATTERN.test('G-')).toBe(false)
   })
 })

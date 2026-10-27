@@ -17,7 +17,13 @@ import {
 } from '@/utils/getRewind'
 import getSettings from '@/utils/getSettings'
 import getUsersTop from '@/utils/getUsersTop'
-import { daysBetween, getRewindStartDate, getUserShare } from '@/utils/helpers'
+import {
+  canViewFeature,
+  daysBetween,
+  getRewindStartDate,
+  getUserShare,
+  getViewer,
+} from '@/utils/helpers'
 import { toPublicSettings } from '@/utils/publicSettings'
 import {
   getActiveUsers,
@@ -45,7 +51,7 @@ async function RewindContent({ userId }: { userId?: string }) {
   const session = await getServerSession(authOptions)
   const settings = getSettings()
 
-  if (!settings.rewind.isActive) {
+  if (!canViewFeature(settings, 'rewind', getViewer(session))) {
     return notFound()
   }
 

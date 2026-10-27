@@ -3,6 +3,7 @@ import { cloneDeep } from 'lodash'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { DEFAULT_SETTINGS } from './constants'
 import {
+  canViewFeature,
   checkRequiredSettings,
   daysBetween,
   getHomeTiles,
@@ -13,6 +14,7 @@ import {
   isInitialSetup,
   isPostUpdateMissingSettings,
   isSettingsPageLocked,
+  Viewer,
 } from './helpers'
 
 function completeSettings(): Settings {
@@ -183,6 +185,52 @@ describe('getUserShare', () => {
   })
 })
 
+const visitor: Viewer = { isLoggedIn: false, isAdmin: false }
+const user: Viewer = { isLoggedIn: true, isAdmin: false }
+const admin: Viewer = { isLoggedIn: true, isAdmin: true }
+
+describe('canViewFeature', () => {
+  it('opens every section to logged-in users', () => {
+    const settings = cloneDeep(DEFAULT_SETTINGS)
+
+    expect(canViewFeature(settings, 'rewind', user)).toBe(true)
+    expect(canViewFeature(settings, 'dashboard', user)).toBe(true)
+    expect(canViewFeature(settings, 'activity', user)).toBe(true)
+  })
+
+  it('closes a section that is turned off, even to admins', () => {
+    const settings = cloneDeep(DEFAULT_SETTINGS)
+
+    settings.activity.isActive = false
+
+    expect(canViewFeature(settings, 'activity', admin)).toBe(false)
+  })
+
+  it('opens the dashboard and activity to visitors with outside access', () => {
+    const settings = cloneDeep(DEFAULT_SETTINGS)
+
+    expect(canViewFeature(settings, 'dashboard', visitor)).toBe(false)
+
+    settings.general.isOutsideAccess = true
+
+    expect(canViewFeature(settings, 'dashboard', visitor)).toBe(true)
+    expect(canViewFeature(settings, 'activity', visitor)).toBe(true)
+    expect(canViewFeature(settings, 'rewind', visitor)).toBe(false)
+  })
+
+  it('opens an admin-only section to admins alone', () => {
+    const settings = cloneDeep(DEFAULT_SETTINGS)
+
+    settings.general.isOutsideAccess = true
+    settings.dashboard.isAdminOnly = true
+
+    expect(canViewFeature(settings, 'dashboard', admin)).toBe(true)
+    expect(canViewFeature(settings, 'dashboard', user)).toBe(false)
+    expect(canViewFeature(settings, 'dashboard', visitor)).toBe(false)
+    expect(canViewFeature(settings, 'activity', visitor)).toBe(true)
+  })
+})
+
 describe('getHomeTiles', () => {
   function settingsWith(
     rewind: boolean,
@@ -199,7 +247,7 @@ describe('getHomeTiles', () => {
   }
 
   it('shows every tile that is turned on', () => {
-    expect(getHomeTiles(settingsWith(true, true, true), true, 2)).toEqual({
+    expect(getHomeTiles(settingsWith(true, true, true), user, 2)).toEqual({
       rewind: true,
       activity: true,
       libraries: true,
@@ -207,7 +255,7 @@ describe('getHomeTiles', () => {
   })
 
   it('shows nothing when every section is off', () => {
-    expect(getHomeTiles(settingsWith(false, false, false), true, 2)).toEqual({
+    expect(getHomeTiles(settingsWith(false, false, false), user, 2)).toEqual({
       rewind: false,
       activity: false,
       libraries: false,
@@ -216,14 +264,23 @@ describe('getHomeTiles', () => {
 
   it('leaves out the rewind for visitors who are not logged in', () => {
     expect(
-      getHomeTiles(settingsWith(true, false, false), false, 0).rewind,
+      getHomeTiles(settingsWith(true, false, false), visitor, 0).rewind,
     ).toBe(false)
   })
 
   it('leaves out the libraries when there are none to show', () => {
     expect(
-      getHomeTiles(settingsWith(false, false, true), true, 0).libraries,
+      getHomeTiles(settingsWith(false, false, true), user, 0).libraries,
     ).toBe(false)
+  })
+
+  it('leaves out admin-only sections for everyone but admins', () => {
+    const settings = settingsWith(true, true, true)
+
+    settings.rewind.isAdminOnly = true
+
+    expect(getHomeTiles(settings, user, 2).rewind).toBe(false)
+    expect(getHomeTiles(settings, admin, 2).rewind).toBe(true)
   })
 })
 

@@ -8,7 +8,6 @@ import { getServerSession } from 'next-auth'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import getActivity from './getActivity'
 
-vi.mock('@/lib/access', () => ({ canViewStats: () => true }))
 vi.mock('@/lib/auth', () => ({ authOptions: {} }))
 vi.mock('next-auth', () => ({ getServerSession: vi.fn() }))
 vi.mock('@/utils/getSettings', () => ({ default: vi.fn() }))
@@ -28,6 +27,7 @@ function session(userId: number, player: string): TautulliSession {
 let settings: Settings
 
 beforeEach(() => {
+  vi.clearAllMocks()
   settings = cloneDeep(DEFAULT_SETTINGS)
   settings.activity.isActive = true
   vi.mocked(getSettings).mockReturnValue(settings)
@@ -42,6 +42,23 @@ beforeEach(() => {
 })
 
 describe('getActivity', () => {
+  it('returns nothing to non-admins when activity is admin-only', async () => {
+    settings.activity.isAdminOnly = true
+
+    await expect(getActivity()).resolves.toBeNull()
+    expect(fetchActivity).not.toHaveBeenCalled()
+  })
+
+  it('returns the activity to admins when it is admin-only', async () => {
+    settings.activity.isAdminOnly = true
+    vi.mocked(getServerSession).mockResolvedValue({
+      user: { id: '1', isAdmin: true },
+      expires: '',
+    })
+
+    await expect(getActivity()).resolves.toMatchObject({ stream_count: 2 })
+  })
+
   it('shows who is watching on what', async () => {
     const activity = await getActivity()
 
