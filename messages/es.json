@@ -36,6 +36,7 @@
     "subtitles": "Subtítulos",
     "location": "Ubicación",
     "bandwidth": "Ancho de banda",
+    "streamDetails": "Detalles de la transmisión",
     "noActivity": "No hay reproducciones activas. 😴",
     "loadError": "No se pudo cargar la actividad",
     "playing": "Reproduciendo",
@@ -59,7 +60,7 @@
     "movies": "{count, plural, one {película} other {películas}}",
     "episodes": "{count, plural, one {episodio} other {episodios}}",
     "tracks": "{count, plural, one {canción} other {canciones}}",
-    "requests": "{count, plural, one {solicitud} other {solicitudes}}",
+    "requests": "{count, plural, one {# solicitud} other {# solicitudes}}",
     "durationWatched": "{duration} de visualización",
     "durationListened": "{duration} de escucha"
   },
@@ -161,7 +162,7 @@
       "itemStatistics": "Estadísticas por elemento",
       "itemStatisticsDescription": "Se muestran para cada título y usuario en las listas del panel y de Rewind.",
       "totalStatistics": "Estadísticas totales",
-      "totalStatisticsDescription": "Se muestran debajo de cada lista del panel. El recuento es el número de películas, episodios o canciones de la biblioteca.",
+      "totalStatisticsDescription": "El tiempo de visualización y las solicitudes corresponden al periodo seleccionado y se muestran junto a los filtros. El tamaño y el recuento se muestran debajo de cada lista. El recuento es el número de películas, episodios o canciones de la biblioteca.",
       "sortFilter": "Filtro de orden",
       "sortFilterDescription": "Permite ordenar el panel por tiempo de visualización. Si no, las listas se ordenan por reproducciones.",
       "customPeriod": "Periodo personalizado",
@@ -186,6 +187,8 @@
       "tmdbOnlyPosters": "Solo pósteres de TMDB",
       "tmdbOnlyPostersDescription1": "Ignorar los pósteres de Plex para series y películas.",
       "tmdbOnlyPostersDescription2": "De forma predeterminada, TMDB se usa como alternativa.",
+      "externalLinks": "Enlaces externos",
+      "externalLinksDescription": "Letterboxd es solo para películas y TVDB solo para series. Rotten Tomatoes abre una búsqueda.",
       "privacy": "Privacidad",
       "excludedUsers": "Usuarios excluidos",
       "excludedUsersDescription": "Los usuarios seleccionados no aparecen en las clasificaciones de usuarios ni en el tiempo total de visualización. Con Tautulli, las películas, series y artistas más populares siguen incluyendo sus reproducciones.",
@@ -193,7 +196,8 @@
       "outsideAccessDescription": "Cualquiera puede ver el panel y la actividad sin iniciar sesión, y se muestran todas las bibliotecas, independientemente de lo que se comparta en Plex. Rewind sigue requiriendo iniciar sesión.",
       "anonymize": "Anonimizar",
       "anonymizeDescription": "Oculta los nombres de los demás usuarios, incluso a los administradores. También se ocultan las direcciones IP y las ubicaciones en la página de actividad.",
-      "analytics": "Analítica"
+      "analytics": "Analítica",
+      "analyticsIdDescription": "Envía las visitas a páginas a Google Analytics 4. Usa el ID de medición de un flujo de datos web, que empieza por G-. Déjalo vacío para desactivarlo."
     },
     "Rewind": {
       "title": "Ajustes de Rewind",
@@ -210,6 +214,8 @@
   },
   "Common": {
     "enabled": "Activado",
+    "adminOnly": "Solo administradores",
+    "adminOnlyDescription": "Oculto para todos salvo los administradores del servidor, incluso cuando se permite el acceso externo.",
     "status": "Estado",
     "year": "Año",
     "rating": "Valoración",
@@ -347,6 +353,7 @@
     "labelAudio": "Música",
     "you": "(tú)",
     "requestLabel": "Solicitar {title}",
-    "imdbLabel": "{title} en IMDb"
+    "externalLinkLabel": "{title} en {site}",
+    "externalSearchLabel": "Buscar {title} en {site}"
   }
 }
