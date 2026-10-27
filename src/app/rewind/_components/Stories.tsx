@@ -422,33 +422,33 @@ export default function Stories({ stories }: Props) {
 
       {controlsSlot &&
         createPortal(
-          <div className='flex items-center gap-0.5 rounded-full bg-white/10'>
+          <div className='icon-button-group'>
             <button
-              className='icon-button size-7'
+              className='icon-button'
               onClick={goToPrev}
               disabled={!canGoBack}
               aria-label={t('previous')}
             >
-              <ChevronLeftIcon className='size-4' />
+              <ChevronLeftIcon className='size-5' />
             </button>
             <button
-              className='icon-button size-7'
+              className='icon-button'
               onClick={togglePause}
               aria-label={isManuallyPaused ? t('resume') : t('pause')}
             >
               {isManuallyPaused ? (
-                <PlayIcon className='size-4' />
+                <PlayIcon className='size-5' />
               ) : (
-                <PauseIcon className='size-4' />
+                <PauseIcon className='size-5' />
               )}
             </button>
             <button
-              className='icon-button size-7'
+              className='icon-button'
               onClick={goToNext}
               disabled={!canGoForward}
               aria-label={t('next')}
             >
-              <ChevronRightIcon className='size-4' />
+              <ChevronRightIcon className='size-5' />
             </button>
           </div>,
           controlsSlot,

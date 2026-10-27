@@ -1,9 +1,9 @@
 'use client'
 
 import {
-  ArrowLeftCircleIcon,
-  ArrowRightCircleIcon,
   CalendarDaysIcon,
+  ChevronLeftIcon,
+  ChevronRightIcon,
   XCircleIcon,
 } from '@heroicons/react/24/outline'
 import { CalendarDate, parseDate } from '@internationalized/date'
@@ -105,18 +105,12 @@ export default function DatePicker({
           <Dialog>
             <Calendar className='glass-sheet bg-neutral-900/80'>
               <div className='flex items-center justify-between gap-3 px-2'>
-                <Button
-                  slot='previous'
-                  className='link-dark focus-visible:focus-ring rounded-full p-1'
-                >
-                  <ArrowLeftCircleIcon className='size-5' />
+                <Button slot='previous' className='icon-button'>
+                  <ChevronLeftIcon />
                 </Button>
                 <Heading className='text-white' />
-                <Button
-                  slot='next'
-                  className='link-dark focus-visible:focus-ring rounded-full p-1'
-                >
-                  <ArrowRightCircleIcon className='size-5' />
+                <Button slot='next' className='icon-button'>
+                  <ChevronRightIcon />
                 </Button>
               </div>
               <CalendarGrid className='mt-2'>

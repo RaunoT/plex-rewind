@@ -27,7 +27,7 @@ export default async function RewindLayout({ children }: Props) {
   return (
     <div className='page-width flex flex-1 flex-col sm:flex-none'>
       <PageTitle title='Rewind' />
-      <div className='mb-4 flex min-h-7 items-center justify-between gap-3'>
+      <div className='mb-4 flex min-h-10 items-center justify-between gap-3'>
         <div id={REWIND_CONTROLS_ID} />
         {session?.user.isAdmin && (
           <Suspense>

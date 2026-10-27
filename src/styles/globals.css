@@ -123,7 +123,26 @@
   }
 
   .icon-button {
-    @apply focus-visible:focus-ring flex size-8 shrink-0 items-center justify-center rounded-full text-neutral-300 transition hover:bg-white/10 hover:text-white disabled:cursor-not-allowed disabled:bg-transparent disabled:text-neutral-300 disabled:opacity-30;
+    @apply focus-visible:focus-ring relative flex size-8 shrink-0 items-center justify-center rounded-full text-neutral-300 transition hover:bg-white/10 hover:text-white disabled:cursor-not-allowed disabled:bg-transparent disabled:text-neutral-300 disabled:opacity-30;
+
+    > svg {
+      @apply size-5;
+    }
+
+    /* Taps 6px above and below still count. Grouped buttons sit 2px apart,
+       so their tap areas meet without overlapping. */
+    &::after {
+      @apply absolute -inset-x-px -inset-y-1.5 content-[''];
+    }
+
+    /* A button on its own, as tall as a group of them */
+    &.icon-button--glass {
+      @apply glass-pill size-10 hover:bg-white/10;
+    }
+  }
+
+  .icon-button-group {
+    @apply glass-pill flex w-fit items-center gap-0.5 p-1;
   }
 
   .button {

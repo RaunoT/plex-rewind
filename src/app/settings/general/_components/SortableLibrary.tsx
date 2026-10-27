@@ -56,23 +56,23 @@ export default function SortableLibrary({
       </Checkbox>
       <button
         type='button'
-        className='link-light focus-visible:focus-ring ml-1 flex size-8 shrink-0 items-center justify-center rounded-lg disabled:pointer-events-none disabled:opacity-30 sm:size-6'
+        className='icon-button ml-1 sm:size-6'
         aria-label={t('moveUp', { name: library.section_name })}
         data-move={`${library.section_id}-up`}
         disabled={isFirst}
         onClick={() => onMove(-1)}
       >
-        <ChevronUpIcon className='size-5' />
+        <ChevronUpIcon />
       </button>
       <button
         type='button'
-        className='link-light focus-visible:focus-ring flex size-8 shrink-0 items-center justify-center rounded-lg disabled:pointer-events-none disabled:opacity-30 sm:size-6'
+        className='icon-button sm:size-6'
         aria-label={t('moveDown', { name: library.section_name })}
         data-move={`${library.section_id}-down`}
         disabled={isLast}
         onClick={() => onMove(1)}
       >
-        <ChevronDownIcon className='size-5' />
+        <ChevronDownIcon />
       </button>
     </Reorder.Item>
   )
