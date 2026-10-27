@@ -66,6 +66,14 @@ export function checkRequiredSettings(settings: Settings): string | null {
   return null
 }
 
+// The other settings pages read their options from the statistics source
+export function isSettingsPageLocked(
+  key: string,
+  settings: { connection: { complete: boolean } },
+): boolean {
+  return !settings.connection.complete && key !== 'connection'
+}
+
 export function getSettingsPage(missingSettingKey: string): string | undefined {
   return SETTINGS_PAGES.find((page) => missingSettingKey.startsWith(page.key))
     ?.href

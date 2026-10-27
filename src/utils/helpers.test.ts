@@ -11,6 +11,7 @@ import {
   hasRewindPlays,
   isInitialSetup,
   isPostUpdateMissingSettings,
+  isSettingsPageLocked,
 } from './helpers'
 
 function completeSettings(): Settings {
@@ -200,5 +201,21 @@ describe('getHomeTiles', () => {
     expect(
       getHomeTiles(settingsWith(false, false, true), true, 0).libraries,
     ).toBe(false)
+  })
+})
+
+describe('isSettingsPageLocked', () => {
+  it('locks every page but the connection until it is complete', () => {
+    const settings = { connection: { complete: false } }
+
+    expect(isSettingsPageLocked('connection', settings)).toBe(false)
+    expect(isSettingsPageLocked('general', settings)).toBe(true)
+    expect(isSettingsPageLocked('activity', settings)).toBe(true)
+  })
+
+  it('unlocks every page once the connection is complete', () => {
+    const settings = { connection: { complete: true } }
+
+    expect(isSettingsPageLocked('general', settings)).toBe(false)
   })
 })

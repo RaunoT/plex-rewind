@@ -140,7 +140,8 @@
       "dashboard": "Tableau de bord",
       "activity": "Activité",
       "complete": "Terminé",
-      "incomplete": "Incomplet"
+      "incomplete": "Incomplet",
+      "connectionRequired": "Terminez d'abord les paramètres de connexion"
     },
     "Connection": {
       "title": "Paramètres de connexion",

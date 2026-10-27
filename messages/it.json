@@ -140,7 +140,8 @@
       "dashboard": "Dashboard",
       "activity": "Attività",
       "complete": "Fatto",
-      "incomplete": "Da completare"
+      "incomplete": "Da completare",
+      "connectionRequired": "Completa prima le impostazioni di connessione"
     },
     "Connection": {
       "title": "Impostazioni di connessione",

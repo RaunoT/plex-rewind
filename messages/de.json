@@ -140,7 +140,8 @@
       "dashboard": "Dashboard",
       "activity": "Aktivität",
       "complete": "Abgeschlossen",
-      "incomplete": "Unvollständig"
+      "incomplete": "Unvollständig",
+      "connectionRequired": "Schließe zuerst die Verbindungseinstellungen ab"
     },
     "Connection": {
       "title": "Verbindungseinstellungen",

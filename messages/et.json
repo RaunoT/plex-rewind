@@ -140,7 +140,8 @@
       "dashboard": "Edetabel",
       "activity": "Tegevus",
       "complete": "Lõpetatud",
-      "incomplete": "Lõpetamata"
+      "incomplete": "Lõpetamata",
+      "connectionRequired": "Lõpeta kõigepealt ühenduse seadistamine"
     },
     "Connection": {
       "title": "Ühenduse seaded",

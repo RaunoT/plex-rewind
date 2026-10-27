@@ -9,6 +9,7 @@ import {
   MenuItem,
   MenuTrigger,
   Popover,
+  Text,
 } from 'react-aria-components'
 
 export type TitleMenuItem = {
@@ -17,6 +18,8 @@ export type TitleMenuItem = {
   icon?: ReactNode
   isCurrent: boolean
   isDisabled?: boolean
+  // Says why an item is disabled
+  description?: string
 }
 
 type Props = {
@@ -56,7 +59,16 @@ export default function TitleMenu({ label, items }: Props) {
               className='menu-item data-disabled:cursor-not-allowed data-disabled:opacity-50'
             >
               {item.icon}
-              <span className='truncate'>{item.label}</span>
+              <span className='flex min-w-0 flex-col'>
+                <Text slot='label' className='truncate'>
+                  {item.label}
+                </Text>
+                {item.description && (
+                  <Text slot='description' className='text-xs text-neutral-400'>
+                    {item.description}
+                  </Text>
+                )}
+              </span>
               {item.isCurrent && <CheckIcon className='ml-auto size-4!' />}
             </MenuItem>
           ))}
