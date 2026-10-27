@@ -308,9 +308,10 @@
       @apply rounded-full px-3 py-1 text-sm;
 
       /* Selects can't have pseudo-elements, so a transparent border grows
-         the tap area to 40px and a negative margin keeps the layout. The
-         focus ring is drawn inside it. */
-      margin-block: -6px;
+         the tap area to 40px. The negative margin leaves 4px of it outside
+         the layout, so selects a gap-2 apart don't overlap. The focus ring
+         is drawn inside it. */
+      margin-block: -4px;
       border-block: 6px solid transparent;
       background-clip: padding-box;
 
