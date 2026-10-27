@@ -6,6 +6,7 @@ import SkeletonLine from '@/components/SkeletonLine'
 import { PublicSettings } from '@/types/settings'
 import { TautulliLibrary } from '@/types/tautulli'
 import { STATS_SOURCE_NAMES } from '@/utils/constants'
+import { canViewFeature, Viewer } from '@/utils/helpers'
 import {
   ArrowPathIcon,
   BackwardIcon,
@@ -39,8 +40,8 @@ export default function Sidebar({ libraries, settings }: Props) {
   } = useContext(GlobalContext)
   const t = useTranslations()
   const isLoggedIn = status === 'authenticated'
-  const isAdmin = isLoggedIn && session?.user.isAdmin
-  const canViewStats = isLoggedIn || settings.general.isOutsideAccess
+  const isAdmin = isLoggedIn && !!session?.user.isAdmin
+  const viewer: Viewer = { isLoggedIn, isAdmin }
   const isSettings = pathname.startsWith('/settings')
   const dashboardParams = new URLSearchParams({
     ...(isPersonal && { personal: 'true' }),
@@ -76,7 +77,7 @@ export default function Sidebar({ libraries, settings }: Props) {
           <SidebarLink href='/' icon={<HomeIcon />} isActive={pathname === '/'}>
             {t('Home.title')}
           </SidebarLink>
-          {settings.rewind.isActive && isLoggedIn && (
+          {canViewFeature(settings, 'rewind', viewer) && (
             <SidebarLink
               href='/rewind'
               icon={<BackwardIcon />}
@@ -85,7 +86,7 @@ export default function Sidebar({ libraries, settings }: Props) {
               {t('Rewind.title')}
             </SidebarLink>
           )}
-          {settings.activity.isActive && canViewStats && (
+          {canViewFeature(settings, 'activity', viewer) && (
             <SidebarLink
               href='/activity'
               icon={<SignalIcon />}
@@ -94,7 +95,7 @@ export default function Sidebar({ libraries, settings }: Props) {
               {t('Activity.title')}
             </SidebarLink>
           )}
-          {settings.dashboard.isActive && canViewStats && (
+          {canViewFeature(settings, 'dashboard', viewer) && (
             <Suspense
               fallback={
                 <DashboardLinksSkeleton

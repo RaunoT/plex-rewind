@@ -73,12 +73,14 @@ export const DEFAULT_SETTINGS: Settings = {
   },
   rewind: {
     isActive: true,
+    isAdminOnly: false,
     isLibrariesSizeAndCountActive: true,
     startDate: '',
     complete: false,
   },
   dashboard: {
     isActive: true,
+    isAdminOnly: false,
     isUsersPageActive: true,
     activeItemStatistics: [
       'year',
@@ -96,6 +98,7 @@ export const DEFAULT_SETTINGS: Settings = {
   },
   activity: {
     isActive: true,
+    isAdminOnly: false,
     complete: false,
   },
   setupComplete: false,

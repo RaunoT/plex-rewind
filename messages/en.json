@@ -210,6 +210,8 @@
   },
   "Common": {
     "enabled": "Enabled",
+    "adminOnly": "Admins only",
+    "adminOnlyDescription": "Hidden from everyone but server admins, even when outside access is allowed.",
     "status": "Status",
     "year": "Year",
     "rating": "Rating",

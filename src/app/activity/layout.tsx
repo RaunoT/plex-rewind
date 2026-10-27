@@ -1,5 +1,6 @@
 import { authOptions } from '@/lib/auth'
 import getSettings from '@/utils/getSettings'
+import { canViewFeature, getViewer } from '@/utils/helpers'
 import { getServerSession } from 'next-auth'
 import { getTranslations } from 'next-intl/server'
 import { notFound } from 'next/navigation'
@@ -16,10 +17,7 @@ export default async function ActivityLayout({ children }: Props) {
   const settings = getSettings()
   const session = await getServerSession(authOptions)
 
-  if (
-    !settings.activity.isActive ||
-    (!session && !settings.general.isOutsideAccess)
-  ) {
+  if (!canViewFeature(settings, 'activity', getViewer(session))) {
     return notFound()
   }
 

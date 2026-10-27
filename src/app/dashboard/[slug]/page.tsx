@@ -1,4 +1,3 @@
-import { canViewStats } from '@/lib/access'
 import { authOptions } from '@/lib/auth'
 import { DashboardSearchParams } from '@/types/dashboard'
 import {
@@ -9,6 +8,7 @@ import {
 } from '@/utils/getDashboard'
 import getPeriod from '@/utils/getPeriod'
 import getSettings from '@/utils/getSettings'
+import { canViewFeature, getViewer } from '@/utils/helpers'
 import { toPublicSettings } from '@/utils/publicSettings'
 import { getLibraries, getServerId } from '@/utils/statsSource'
 import { kebabCase } from 'lodash'
@@ -64,7 +64,7 @@ async function DashboardContent({
 
   const session = await getServerSession(authOptions)
 
-  if (!settings.dashboard.isActive || !canViewStats(settings, session)) {
+  if (!canViewFeature(settings, 'dashboard', getViewer(session))) {
     return notFound()
   }
 

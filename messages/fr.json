@@ -210,6 +210,8 @@
   },
   "Common": {
     "enabled": "Activé",
+    "adminOnly": "Administrateurs uniquement",
+    "adminOnlyDescription": "Masqué pour tous sauf les administrateurs du serveur, même si l'accès externe est autorisé.",
     "status": "Statut",
     "year": "Année",
     "rating": "Note",

@@ -1,7 +1,11 @@
 import PageTitle from '@/app/_components/PageTitle'
 import { authOptions } from '@/lib/auth'
 import getSettings from '@/utils/getSettings'
-import { sortByActiveLibraries } from '@/utils/helpers'
+import {
+  canViewFeature,
+  getViewer,
+  sortByActiveLibraries,
+} from '@/utils/helpers'
 import { getLibraries } from '@/utils/statsSource'
 import { getServerSession } from 'next-auth'
 import { getTranslations } from 'next-intl/server'
@@ -17,10 +21,7 @@ export default async function DashboardLayout({ children }: Props) {
   const settings = getSettings()
   const session = await getServerSession(authOptions)
 
-  if (
-    !settings.dashboard.isActive ||
-    (!session && !settings.general.isOutsideAccess)
-  ) {
+  if (!canViewFeature(settings, 'dashboard', getViewer(session))) {
     return notFound()
   }
 
