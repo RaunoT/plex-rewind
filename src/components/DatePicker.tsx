@@ -82,7 +82,7 @@ export default function DatePicker({
                 slot={null}
                 onPress={() => setValue(null)}
                 aria-label={t('clear')}
-                className='link-dark focus-visible:focus-ring absolute inset-y-0 right-14 my-auto size-6 rounded-full'
+                className='link-dark focus-visible:focus-ring absolute inset-y-0 right-14 my-auto size-6 rounded-full after:absolute after:-inset-2'
               >
                 <XCircleIcon className='size-6 text-neutral-300' />
               </Button>

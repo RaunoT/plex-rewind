@@ -373,11 +373,11 @@ export default function Stories({ stories }: Props) {
         aria-label={t('label')}
       >
         {/* Progress bar */}
-        <div className='absolute -top-2 right-0 left-0 z-20 flex gap-1'>
+        <div className='absolute -top-4 -right-0.5 -left-0.5 z-20 flex'>
           {stories.map((_, index) => (
             <button
               key={index}
-              className='group flex-1 cursor-pointer overflow-hidden py-2'
+              className='group flex-1 cursor-pointer overflow-hidden px-0.5 py-4'
               onClick={() => goToIndex(index)}
               aria-label={t('goToStory', { index: index + 1 })}
               aria-current={index === currentIndex ? 'step' : undefined}

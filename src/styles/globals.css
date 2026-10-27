@@ -183,7 +183,13 @@
     }
 
     &:is(a) {
-      @apply focus-visible:focus-ring transition-colors hover:bg-white/20;
+      @apply focus-visible:focus-ring relative transition-colors hover:bg-white/20;
+
+      /* A 40px tall tap area. Links sit 6px apart, so their tap areas meet
+         without overlapping. */
+      &::after {
+        @apply absolute -inset-x-0.75 -inset-y-2 content-[''];
+      }
     }
 
     /* IMDb's own tag, so it reads as the link it is */
@@ -300,6 +306,17 @@
 
     &.input--small {
       @apply rounded-full px-3 py-1 text-sm;
+
+      /* Selects can't have pseudo-elements, so a transparent border grows
+         the tap area to 40px and a negative margin keeps the layout. The
+         focus ring is drawn inside it. */
+      margin-block: -6px;
+      border-block: 6px solid transparent;
+      background-clip: padding-box;
+
+      &:focus {
+        @apply ring-inset;
+      }
     }
   }
 
