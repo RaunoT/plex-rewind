@@ -48,9 +48,11 @@ export type TautulliItemRow = {
   thumb: string
   is_deleted: boolean
   rating: string | null
-  // From MDBList, when its API key is set
+  // IMDb's from Radarr or Sonarr, Rotten Tomatoes' from its own search
   imdb_rating?: string | null
   rotten_tomatoes_rating?: number | null
+  rotten_tomatoes_audience_rating?: number | null
+  rotten_tomatoes_url?: string | null
   tmdb_id: number | null
   imdb_id: string | null
   tvdb_id?: number | null

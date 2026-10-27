@@ -1,4 +1,9 @@
-import { ExternalLink, Settings, StatisticsSource } from '@/types/settings'
+import {
+  ExternalLink,
+  ItemStatistics,
+  Settings,
+  StatisticsSource,
+} from '@/types/settings'
 
 export type Period = {
   date: string
@@ -59,7 +64,6 @@ export const DEFAULT_SETTINGS: Settings = {
     plexUrl: '',
     overseerrUrl: '',
     overseerrApiKey: '',
-    mdblistApiKey: '',
     complete: false,
   },
   general: {
@@ -68,6 +72,17 @@ export const DEFAULT_SETTINGS: Settings = {
     excludedUsers: [],
     isPostersTmdbOnly: false,
     activeExternalLinks: ['imdb'],
+    activeItemStatistics: [
+      'year',
+      'tmdbRating',
+      'imdbRating',
+      'rottenTomatoesRating',
+      'rottenTomatoesAudienceRating',
+      'duration',
+      'plays',
+      'users',
+      'requests',
+    ],
     googleAnalyticsId: '',
     isOutsideAccess: false,
     isAnonymized: false,
@@ -84,16 +99,6 @@ export const DEFAULT_SETTINGS: Settings = {
     isActive: true,
     isAdminOnly: false,
     isUsersPageActive: true,
-    activeItemStatistics: [
-      'year',
-      'tmdbRating',
-      'imdbRating',
-      'rottenTomatoesRating',
-      'duration',
-      'plays',
-      'users',
-      'requests',
-    ],
     activeTotalStatistics: ['size', 'duration', 'count', 'requests'],
     isSortByPlaysActive: true,
     customPeriod: '30',
@@ -146,10 +151,23 @@ export const EXTERNAL_LINK_NAMES: Record<ExternalLink, string> = {
 
 export const TMDB_API_KEY = '4675b5b5d8cd1463ff16adca2680157b'
 
+export const ITEM_STATISTICS = [
+  'year',
+  'tmdbRating',
+  'imdbRating',
+  'rottenTomatoesRating',
+  'rottenTomatoesAudienceRating',
+  'duration',
+  'plays',
+  'users',
+  'requests',
+] as const satisfies ItemStatistics
+
 export const RATING_STATISTICS = [
   'tmdbRating',
   'imdbRating',
   'rottenTomatoesRating',
+  'rottenTomatoesAudienceRating',
 ] as const
 
 export type Locale = (typeof LOCALES)[number]

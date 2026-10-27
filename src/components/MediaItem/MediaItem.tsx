@@ -1,12 +1,16 @@
 'use client'
 
+import audienceFreshSvg from '@/assets/rotten-tomatoes/audience-fresh.svg'
+import audienceRottenSvg from '@/assets/rotten-tomatoes/audience-rotten.svg'
+import freshSvg from '@/assets/rotten-tomatoes/fresh.svg'
+import rottenSvg from '@/assets/rotten-tomatoes/rotten.svg'
 import Avatar from '@/components/Avatar'
 import { MEDIA_ICONS, MediaIcon, STAT_ICONS } from '@/components/icons'
-import { ExternalLink, PublicSettings } from '@/types/settings'
+import { PublicSettings } from '@/types/settings'
 import { TautulliItemRow } from '@/types/tautulli'
 import { DASHBOARD_PAGE_SIZE, EXTERNAL_LINK_NAMES } from '@/utils/constants'
 import { getDeeplinkRatingKeyFromRow } from '@/utils/deeplink'
-import { getExternalLinks, isSearchLink } from '@/utils/externalLinks'
+import { getExternalLinks } from '@/utils/externalLinks'
 import {
   formatMonthYear,
   formatPercent,
@@ -17,7 +21,6 @@ import { getImageProxyUrl } from '@/utils/imageProxy'
 import { slideDown } from '@/utils/motion'
 import { TrashIcon } from '@heroicons/react/24/outline'
 import clsx from 'clsx'
-import { kebabCase } from 'lodash'
 import { motion } from 'motion/react'
 import { useLocale, useTranslations } from 'next-intl'
 import Image from 'next/image'
@@ -26,6 +29,7 @@ import anonymousSvg from './anonymous.svg'
 import MediaItemTitle from './MediaItemTitle'
 import placeholderSvg from './placeholder.svg'
 import PlexDeeplink from './PlexDeeplink'
+import SiteLogo from './SiteLogo'
 
 // Gold, silver and bronze for the top three
 const RANK_COLORS = [
@@ -33,15 +37,6 @@ const RANK_COLORS = [
   'bg-linear-to-b from-white to-neutral-300 bg-clip-text text-transparent',
   'bg-linear-to-b from-orange-300 to-orange-600 bg-clip-text text-transparent',
 ]
-// Short enough to fit a row of them, the labels carry the full names
-const LINK_TAGS: Record<ExternalLink, string> = {
-  imdb: 'IMDb',
-  tmdb: 'TMDB',
-  tvdb: 'TVDB',
-  rottenTomatoes: 'RT',
-  letterboxd: 'Letterboxd',
-  trakt: 'Trakt',
-}
 
 type Props = {
   data: TautulliItemRow
@@ -88,8 +83,23 @@ export default function MediaItem({
     isVideo && activeStats.includes('rottenTomatoesRating')
       ? (data.rotten_tomatoes_rating ?? null)
       : null
+  const rottenTomatoesAudienceRating =
+    isVideo && activeStats.includes('rottenTomatoesAudienceRating')
+      ? (data.rotten_tomatoes_audience_rating ?? null)
+      : null
+  // From the settings rather than this title's data, so every row matches
+  const hasOtherRatings =
+    activeStats.includes('imdbRating') ||
+    activeStats.includes('rottenTomatoesRating') ||
+    activeStats.includes('rottenTomatoesAudienceRating')
+  const firstPlayedAt = isUsers ? data.first_played_at : null
   const hasDetails =
-    year || tmdbRating || imdbRating || rottenTomatoesRating !== null
+    year ||
+    tmdbRating ||
+    imdbRating ||
+    rottenTomatoesRating !== null ||
+    rottenTomatoesAudienceRating !== null ||
+    firstPlayedAt
   const externalLinks = isVideo
     ? getExternalLinks(data, type, settings.general.activeExternalLinks)
     : []
@@ -169,7 +179,12 @@ export default function MediaItem({
                 )}
                 {tmdbRating && (
                   <li className='icon-stat-wrapper icon-stat-wrapper--clean'>
-                    <STAT_ICONS.rating />
+                    {/* Next to other sites' ratings, its source needs showing too */}
+                    {hasOtherRatings ? (
+                      <SiteLogo site='tmdb' />
+                    ) : (
+                      <STAT_ICONS.rating />
+                    )}
                     <span className='sr-only'>
                       {translations('Common.ratingBy', { provider: 'TMDB' })}
                     </span>{' '}
@@ -178,28 +193,50 @@ export default function MediaItem({
                 )}
                 {imdbRating && (
                   <li className='icon-stat-wrapper icon-stat-wrapper--clean'>
-                    <span
-                      className='imdb-tag'
-                      aria-hidden='true'
-                      // eslint-disable-next-line react/jsx-no-literals
-                    >
-                      IMDb
-                    </span>
+                    <SiteLogo site='imdb' />
                     <span className='sr-only'>
                       {translations('Common.ratingBy', { provider: 'IMDb' })}
                     </span>{' '}
                     {formatRating(imdbRating, locale)}
                   </li>
                 )}
+                {/* Rotten Tomatoes' own icons, fresh from 60% like on its site */}
                 {rottenTomatoesRating !== null && (
                   <li className='icon-stat-wrapper icon-stat-wrapper--clean'>
-                    <STAT_ICONS.rottenTomatoes className='text-red-400' />
+                    <Image
+                      src={rottenTomatoesRating >= 60 ? freshSvg : rottenSvg}
+                      alt=''
+                      className='size-4 shrink-0'
+                    />
                     <span className='sr-only'>
-                      {translations('Common.ratingBy', {
-                        provider: 'Rotten Tomatoes',
-                      })}
+                      {translations('Common.rottenTomatoesCritics')}
                     </span>{' '}
                     {formatPercent(rottenTomatoesRating, locale)}
+                  </li>
+                )}
+                {rottenTomatoesAudienceRating !== null && (
+                  <li className='icon-stat-wrapper icon-stat-wrapper--clean'>
+                    <Image
+                      src={
+                        rottenTomatoesAudienceRating >= 60
+                          ? audienceFreshSvg
+                          : audienceRottenSvg
+                      }
+                      alt=''
+                      className='size-4 shrink-0'
+                    />
+                    <span className='sr-only'>
+                      {translations('Common.rottenTomatoesAudience')}
+                    </span>{' '}
+                    {formatPercent(rottenTomatoesAudienceRating, locale)}
+                  </li>
+                )}
+                {firstPlayedAt && (
+                  <li className='icon-stat-wrapper icon-stat-wrapper--clean'>
+                    <STAT_ICONS.firstPlay />
+                    {t('statSince', {
+                      date: formatMonthYear(firstPlayedAt, locale),
+                    })}
                   </li>
                 )}
               </ul>
@@ -260,20 +297,13 @@ export default function MediaItem({
                     {t('statRequests', { count: data.requests })}
                   </li>
                 )}
-              {isUsers && data.first_played_at && (
-                <li className='icon-stat-wrapper'>
-                  <STAT_ICONS.firstPlay />
-                  {t('statSince', {
-                    date: formatMonthYear(data.first_played_at, locale),
-                  })}
-                </li>
-              )}
             </ul>
           </div>
           {/* Wrapped rows are far enough apart that a tag's tap area never
-              covers the tag above it */}
+              covers the tag above it. On wider cards, availability gets a row
+              of its own above the links. */}
           {(type === 'movie' || type === 'show' || type === 'artist') && (
-            <div className='relative z-10 flex shrink-0 flex-wrap items-center gap-x-1.5 gap-y-2.5 empty:hidden @xl:mt-0.5 @xl:max-w-56 @xl:justify-end'>
+            <div className='relative z-10 flex shrink-0 flex-wrap items-center gap-x-1.5 gap-y-2.5 empty:hidden @xl:mt-0.5 @xl:flex-col @xl:items-end'>
               {data.is_deleted ? (
                 isOverseerrActive && (type === 'movie' || type === 'show') ? (
                   <a
@@ -303,23 +333,26 @@ export default function MediaItem({
                   />
                 )
               )}
-              {externalLinks.map(({ site, href }) => (
-                <a
-                  key={site}
-                  href={href}
-                  target='_blank'
-                  rel='noopener noreferrer'
-                  className={`button-card button-card--site button-card--${kebabCase(site)}`}
-                  aria-label={t(
-                    isSearchLink(site)
-                      ? 'externalSearchLabel'
-                      : 'externalLinkLabel',
-                    { title: data.title, site: EXTERNAL_LINK_NAMES[site] },
-                  )}
-                >
-                  {LINK_TAGS[site]}
-                </a>
-              ))}
+              {externalLinks.length > 0 && (
+                <div className='contents @xl:flex @xl:max-w-56 @xl:flex-wrap @xl:justify-end @xl:gap-x-1.5 @xl:gap-y-2.5'>
+                  {externalLinks.map(({ site, href, isSearch }) => (
+                    <a
+                      key={site}
+                      href={href}
+                      target='_blank'
+                      rel='noopener noreferrer'
+                      className='button-card'
+                      aria-label={t(
+                        isSearch ? 'externalSearchLabel' : 'externalLinkLabel',
+                        { title: data.title, site: EXTERNAL_LINK_NAMES[site] },
+                      )}
+                    >
+                      {/* Just the logo, the label carries the name */}
+                      <SiteLogo site={site} />
+                    </a>
+                  ))}
+                </div>
+              )}
             </div>
           )}
         </div>

@@ -126,7 +126,7 @@ describe('getSettings', () => {
   it('keeps shorter saved arrays instead of padding them with the defaults', async () => {
     const saved = cloneDeep(DEFAULT_SETTINGS)
 
-    saved.dashboard.activeItemStatistics = ['year']
+    saved.general.activeItemStatistics = ['year']
     saved.dashboard.activeTotalStatistics = []
     saved.general.activeLibraries = ['1', '2']
     fs.writeFileSync(settingsPath, JSON.stringify(saved))
@@ -134,15 +134,40 @@ describe('getSettings', () => {
     const { default: getSettings } = await loadModule()
     const settings = getSettings()
 
-    expect(settings.dashboard.activeItemStatistics).toEqual(['year'])
+    expect(settings.general.activeItemStatistics).toEqual(['year'])
     expect(settings.dashboard.activeTotalStatistics).toEqual([])
     expect(settings.general.activeLibraries).toEqual(['1', '2'])
     expect(readSavedSettings().dashboard.activeTotalStatistics).toEqual([])
   })
 
-  it('turns the old rating statistic into one per rating provider', async () => {
+  it('moves item statistics saved with the dashboard to general', async () => {
+    const { activeItemStatistics: _, ...general } = DEFAULT_SETTINGS.general
     const saved = {
       ...DEFAULT_SETTINGS,
+      general,
+      dashboard: {
+        ...DEFAULT_SETTINGS.dashboard,
+        activeItemStatistics: ['year'],
+      },
+    }
+
+    fs.writeFileSync(settingsPath, JSON.stringify(saved))
+
+    const { default: getSettings } = await loadModule()
+
+    expect(getSettings().general.activeItemStatistics).toEqual(['year'])
+    expect(readSavedSettings().general.activeItemStatistics).toEqual(['year'])
+    expect(readSavedSettings().dashboard).not.toHaveProperty(
+      'activeItemStatistics',
+    )
+  })
+
+  it('turns the old rating statistic into one per rating provider', async () => {
+    const { activeItemStatistics: _, ...general } = DEFAULT_SETTINGS.general
+    // Saved before item statistics moved to general
+    const saved = {
+      ...DEFAULT_SETTINGS,
+      general,
       dashboard: {
         ...DEFAULT_SETTINGS.dashboard,
         activeItemStatistics: ['year', 'rating', 'plays'],
@@ -157,11 +182,12 @@ describe('getSettings', () => {
       'tmdbRating',
       'imdbRating',
       'rottenTomatoesRating',
+      'rottenTomatoesAudienceRating',
       'plays',
     ]
 
-    expect(getSettings().dashboard.activeItemStatistics).toEqual(expected)
-    expect(readSavedSettings().dashboard.activeItemStatistics).toEqual(expected)
+    expect(getSettings().general.activeItemStatistics).toEqual(expected)
+    expect(readSavedSettings().general.activeItemStatistics).toEqual(expected)
   })
 
   it('returns a copy that callers can change freely', async () => {
@@ -169,13 +195,13 @@ describe('getSettings', () => {
     const first = getSettings()
 
     first.connection.plexUrl = 'http://changed'
-    first.dashboard.activeItemStatistics.push('year')
+    first.general.activeItemStatistics.push('year')
 
     const second = getSettings()
 
     expect(second.connection.plexUrl).toBe('')
-    expect(second.dashboard.activeItemStatistics).toEqual(
-      DEFAULT_SETTINGS.dashboard.activeItemStatistics,
+    expect(second.general.activeItemStatistics).toEqual(
+      DEFAULT_SETTINGS.general.activeItemStatistics,
     )
   })
 
@@ -462,7 +488,7 @@ describe('writeSettings', () => {
     const { writeSettings } = await loadModule()
     const settings = completeSettings()
 
-    settings.dashboard.activeItemStatistics = []
+    settings.general.activeItemStatistics = []
     writeSettings(settings)
     writeSettings(settings)
 

@@ -2,7 +2,6 @@
 
 import { denySettingsAccess } from '@/lib/access'
 import {
-  DashboardItemStatistics,
   DashboardSettings,
   DashboardTotalStatistics,
   SettingsFormInitialState,
@@ -26,20 +25,6 @@ export default async function saveDashboardSettings(
     isActive: z.boolean(),
     isAdminOnly: z.boolean().optional(),
     isUsersPageActive: z.boolean().optional(),
-    activeItemStatistics: z
-      .array(
-        z.enum([
-          'year',
-          'tmdbRating',
-          'imdbRating',
-          'rottenTomatoesRating',
-          'duration',
-          'plays',
-          'users',
-          'requests',
-        ]),
-      )
-      .optional(),
     activeTotalStatistics: z
       .array(z.enum(['size', 'duration', 'count', 'requests']))
       .optional(),
@@ -74,9 +59,6 @@ export default async function saveDashboardSettings(
   if (isActive) {
     data.isAdminOnly = formData.get('isAdminOnly') === 'on'
     data.isUsersPageActive = formData.get('isUsersPageActive') === 'on'
-    data.activeItemStatistics = formData.getAll(
-      'activeItemStatistics',
-    ) as DashboardItemStatistics
     data.activeTotalStatistics = formData.getAll(
       'activeTotalStatistics',
     ) as DashboardTotalStatistics

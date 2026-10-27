@@ -18,27 +18,80 @@ const show = {
 describe('getExternalLinks', () => {
   it('links a movie to every site that lists films', () => {
     expect(getExternalLinks(movie, 'movie', [...EXTERNAL_LINKS])).toEqual([
-      { site: 'imdb', href: 'https://www.imdb.com/title/tt15239678' },
-      { site: 'tmdb', href: 'https://www.themoviedb.org/movie/693134' },
+      {
+        site: 'imdb',
+        href: 'https://www.imdb.com/title/tt15239678',
+        isSearch: false,
+      },
+      {
+        site: 'tmdb',
+        href: 'https://www.themoviedb.org/movie/693134',
+        isSearch: false,
+      },
       {
         site: 'rottenTomatoes',
         href: 'https://www.rottentomatoes.com/search?search=Dune%3A%20Part%20Two',
+        isSearch: true,
       },
-      { site: 'letterboxd', href: 'https://letterboxd.com/tmdb/693134' },
-      { site: 'trakt', href: 'https://trakt.tv/movies/tt15239678' },
+      {
+        site: 'letterboxd',
+        href: 'https://letterboxd.com/tmdb/693134',
+        isSearch: false,
+      },
+      {
+        site: 'trakt',
+        href: 'https://trakt.tv/movies/tt15239678',
+        isSearch: false,
+      },
     ])
   })
 
   it('links a show to every site that lists TV shows', () => {
     expect(getExternalLinks(show, 'show', [...EXTERNAL_LINKS])).toEqual([
-      { site: 'imdb', href: 'https://www.imdb.com/title/tt5753856' },
-      { site: 'tmdb', href: 'https://www.themoviedb.org/tv/70523' },
-      { site: 'tvdb', href: 'https://thetvdb.com/dereferrer/series/334824' },
+      {
+        site: 'imdb',
+        href: 'https://www.imdb.com/title/tt5753856',
+        isSearch: false,
+      },
+      {
+        site: 'tmdb',
+        href: 'https://www.themoviedb.org/tv/70523',
+        isSearch: false,
+      },
+      {
+        site: 'tvdb',
+        href: 'https://thetvdb.com/dereferrer/series/334824',
+        isSearch: false,
+      },
       {
         site: 'rottenTomatoes',
         href: 'https://www.rottentomatoes.com/search?search=Dark',
+        isSearch: true,
       },
-      { site: 'trakt', href: 'https://trakt.tv/shows/tt5753856' },
+      {
+        site: 'trakt',
+        href: 'https://trakt.tv/shows/tt5753856',
+        isSearch: false,
+      },
+    ])
+  })
+
+  it('links straight to the Rotten Tomatoes page the search found', () => {
+    expect(
+      getExternalLinks(
+        {
+          ...movie,
+          rotten_tomatoes_url: 'https://www.rottentomatoes.com/m/dune_part_two',
+        },
+        'movie',
+        ['rottenTomatoes'],
+      ),
+    ).toEqual([
+      {
+        site: 'rottenTomatoes',
+        href: 'https://www.rottentomatoes.com/m/dune_part_two',
+        isSearch: false,
+      },
     ])
   })
 
@@ -68,7 +121,11 @@ describe('getExternalLinks', () => {
     expect(
       getExternalLinks({ ...movie, tmdb_id: null }, 'movie', ['letterboxd']),
     ).toEqual([
-      { site: 'letterboxd', href: 'https://letterboxd.com/imdb/tt15239678' },
+      {
+        site: 'letterboxd',
+        href: 'https://letterboxd.com/imdb/tt15239678',
+        isSearch: false,
+      },
     ])
   })
 })

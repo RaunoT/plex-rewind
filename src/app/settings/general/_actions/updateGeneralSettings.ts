@@ -4,9 +4,14 @@ import { denySettingsAccess } from '@/lib/access'
 import {
   ExternalLink,
   GeneralSettings,
+  ItemStatistics,
   SettingsFormInitialState,
 } from '@/types/settings'
-import { EXTERNAL_LINKS, GOOGLE_ANALYTICS_ID_PATTERN } from '@/utils/constants'
+import {
+  EXTERNAL_LINKS,
+  GOOGLE_ANALYTICS_ID_PATTERN,
+  ITEM_STATISTICS,
+} from '@/utils/constants'
 import { z } from 'zod'
 import updateSettings from '../../_actions/updateSettings'
 
@@ -16,6 +21,7 @@ const schema = z.object({
   excludedUsers: z.array(z.string()),
   isPostersTmdbOnly: z.boolean(),
   activeExternalLinks: z.array(z.enum(EXTERNAL_LINKS)),
+  activeItemStatistics: z.array(z.enum(ITEM_STATISTICS)),
   googleAnalyticsId: z
     .string()
     .regex(GOOGLE_ANALYTICS_ID_PATTERN)
@@ -43,6 +49,9 @@ export default async function saveGeneralSettings(
     activeExternalLinks: formData.getAll(
       'activeExternalLinks',
     ) as ExternalLink[],
+    activeItemStatistics: formData.getAll(
+      'activeItemStatistics',
+    ) as ItemStatistics,
     googleAnalyticsId: (
       (formData.get('googleAnalyticsId') as string) ?? ''
     ).trim(),

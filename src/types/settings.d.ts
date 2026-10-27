@@ -15,7 +15,6 @@ export type ConnectionSettings = {
   tracearrServerId: string
   overseerrUrl?: string
   overseerrApiKey?: string
-  mdblistApiKey?: string
   plexUrl: string
   complete: boolean
 }
@@ -29,6 +28,8 @@ export type GeneralSettings = {
   excludedUsers: string[]
   isPostersTmdbOnly: boolean
   activeExternalLinks: ExternalLink[]
+  // Shown for each title and user in the dashboard and Rewind lists
+  activeItemStatistics: ItemStatistics
   googleAnalyticsId: string
   isOutsideAccess: boolean
   isAnonymized: boolean
@@ -43,11 +44,12 @@ export type RewindSettings = {
   complete: boolean
 }
 
-export type DashboardItemStatistics = (
+export type ItemStatistics = (
   | 'year'
   | 'tmdbRating'
   | 'imdbRating'
   | 'rottenTomatoesRating'
+  | 'rottenTomatoesAudienceRating'
   | 'duration'
   | 'plays'
   | 'users'
@@ -61,7 +63,6 @@ export type DashboardSettings = {
   isActive: boolean
   isAdminOnly: boolean
   isUsersPageActive: boolean
-  activeItemStatistics: DashboardItemStatistics
   activeTotalStatistics: DashboardTotalStatistics
   isSortByPlaysActive: boolean
   customPeriod: string

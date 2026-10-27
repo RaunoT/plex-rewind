@@ -37,7 +37,7 @@
     "location": "Posizione",
     "bandwidth": "Banda",
     "streamDetails": "Dettagli dello stream",
-    "noActivity": "Nessuna riproduzione in corso. 😴",
+    "noActivity": "Nessuna riproduzione in corso.",
     "loadError": "Impossibile caricare l'attività",
     "playing": "In riproduzione",
     "paused": "In pausa",
@@ -53,7 +53,7 @@
   },
   "Dashboard": {
     "sizePartial": "{size} (parziale)",
-    "noActivity": "Nessuna attività in questo periodo. 😴",
+    "noActivity": "Nessuna attività in questo periodo.",
     "showMore": "Mostra altro",
     "title": "Dashboard",
     "usersTitle": "Utenti",
@@ -63,7 +63,8 @@
     "tracks": "{count, plural, one {brano} other {brani}}",
     "requests": "{count, plural, one {# richiesta} other {# richieste}}",
     "durationWatched": "{duration} di visione",
-    "durationListened": "{duration} di ascolto"
+    "durationListened": "{duration} di ascolto",
+    "durationPlayed": "{duration} di riproduzione"
   },
   "DashboardFilters": {
     "type": "Statistiche",
@@ -130,7 +131,7 @@
     "urlNotFound": "Non trovato. Controlla l'URL, compreso l'eventuale percorso di base.",
     "unexpectedResponse": "Risposta inattesa (HTTP {status}).",
     "certificateError": "Errore del certificato HTTPS. Controlla che l'URL corrisponda a un certificato valido.",
-    "invalidField": "Controlla {field, select, tautulliUrl {l'URL di Tautulli} tautulliApiKey {la chiave API di Tautulli} tracearrUrl {l'URL di Tracearr} tracearrApiKey {la chiave API di Tracearr} plexUrl {l'URL di Plex} overseerrUrl {l'URL di Overseerr} overseerrApiKey {la chiave API di Overseerr} mdblistApiKey {la chiave API di MDBList} googleAnalyticsId {l'ID di Google Analytics} other {le impostazioni}}.",
+    "invalidField": "Controlla {field, select, tautulliUrl {l'URL di Tautulli} tautulliApiKey {la chiave API di Tautulli} tracearrUrl {l'URL di Tracearr} tracearrApiKey {la chiave API di Tracearr} plexUrl {l'URL di Plex} overseerrUrl {l'URL di Overseerr} overseerrApiKey {la chiave API di Overseerr} googleAnalyticsId {l'ID di Google Analytics} other {le impostazioni}}.",
     "buyMeACoffee": "Offrimi un caffè",
     "becomeASponsor": "Diventa sponsor",
     "reportAnIssue": "Segnala un problema",
@@ -152,8 +153,7 @@
       "source": "Sorgente",
       "server": "Server",
       "chooseServer": "Scegli un server",
-      "overseerrUrlDescription": "I link alle richieste si aprono nel browser degli utenti, quindi usa un indirizzo che possono raggiungere, non uno della rete locale.",
-      "mdblistApiKeyDescription": "Per i voti di IMDb e Rotten Tomatoes. Ottieni una chiave API gratuita nelle tue preferenze su mdblist.com."
+      "overseerrUrlDescription": "I link alle richieste si aprono nel browser degli utenti, quindi usa un indirizzo che possono raggiungere, non uno della rete locale."
     },
     "Dashboard": {
       "title": "Impostazioni della dashboard",
@@ -161,8 +161,6 @@
       "startDateError": "Controlla la data di inizio.",
       "usersPage": "Pagina degli utenti",
       "statistics": "Statistiche",
-      "itemStatistics": "Statistiche per titolo",
-      "itemStatisticsDescription": "Mostrate per ogni titolo e utente negli elenchi della dashboard e del Rewind. I voti di IMDb e Rotten Tomatoes richiedono una chiave API di MDBList nelle impostazioni di connessione.",
       "totalStatistics": "Statistiche totali",
       "totalStatisticsDescription": "Il tempo di visualizzazione e le richieste riguardano il periodo scelto e sono mostrati accanto ai filtri. Dimensione e numero sono mostrati sotto ogni elenco. Il numero indica quanti film, episodi o brani ci sono nella libreria.",
       "sortFilter": "Filtro di ordinamento",
@@ -187,19 +185,18 @@
       "noLibrariesMessage2": "Plex Rewind ha bisogno di almeno una libreria per funzionare.",
       "media": "Contenuti",
       "tmdbOnlyPosters": "Solo locandine TMDB",
-      "tmdbOnlyPostersDescription1": "Ignora le locandine di Plex per serie TV e film.",
-      "tmdbOnlyPostersDescription2": "Di norma, TMDB è solo una riserva.",
+      "tmdbOnlyPostersDescription": "Ignora le locandine di Plex per serie TV e film.",
       "externalLinks": "Link esterni",
-      "externalLinksDescription": "Letterboxd vale solo per i film e TVDB solo per le serie TV. Rotten Tomatoes apre una ricerca.",
+      "itemStatistics": "Statistiche per titolo",
+      "itemStatisticsDescription": "Mostrate per ogni titolo e utente negli elenchi della dashboard e del Rewind.",
       "privacy": "Privacy",
       "excludedUsers": "Utenti esclusi",
       "excludedUsersDescription": "Gli utenti selezionati sono esclusi dalle classifiche degli utenti e dal tempo di visualizzazione totale. Con Tautulli, nelle classifiche di film, serie TV e artisti le loro riproduzioni contano comunque.",
       "outsideAccess": "Consenti l'accesso esterno",
-      "outsideAccessDescription": "Chiunque può vedere la dashboard e l'attività senza accedere, e sono mostrate tutte le librerie, a prescindere dalla condivisione in Plex. Il Rewind richiede comunque l'accesso.",
+      "outsideAccessDescription": "Chiunque può vedere le statistiche del tuo server senza accedere.",
       "anonymize": "Anonimizza",
       "anonymizeDescription": "Nasconde i nomi degli altri utenti, anche agli amministratori. Nella pagina dell'attività nasconde anche indirizzi IP e posizioni.",
-      "analytics": "Analytics",
-      "analyticsIdDescription": "Invia le visualizzazioni di pagina a Google Analytics 4. Usa l'ID di misurazione di uno stream di dati web, che inizia con G-. Lascia vuoto per disattivarlo."
+      "analytics": "Analytics"
     },
     "Rewind": {
       "title": "Impostazioni del Rewind",
@@ -215,13 +212,15 @@
     "label": "Seleziona l'utente"
   },
   "Common": {
+    "dismiss": "Chiudi",
     "enabled": "Attivo",
     "adminOnly": "Solo amministratori",
-    "adminOnlyDescription": "Nascosto a tutti tranne agli amministratori del server, anche quando l'accesso esterno è consentito.",
     "status": "Stato",
     "year": "Anno",
     "rating": "Voto",
     "ratingBy": "Voto {provider}",
+    "rottenTomatoesCritics": "Voto della critica Rotten Tomatoes",
+    "rottenTomatoesAudience": "Voto del pubblico Rotten Tomatoes",
     "duration": "Tempo di visualizzazione",
     "plays": "Riproduzioni",
     "users": "Utenti",
@@ -319,7 +318,7 @@
     },
     "Habits": {
       "day": "Il giorno in cui hai guardato di più è stato <day>{dayValue}</day>",
-      "hour": "E hai premuto play più spesso verso le <hour>{hourValue}</hour> <emoji>{emojiValue}</emoji>",
+      "hour": "E hai premuto play più spesso verso le <hour>{hourValue}</hour>",
       "dayChart": "Grafico a barre delle riproduzioni per giorno della settimana. Giorno più attivo: {dayValue} con {count, plural, one {# riproduzione} other {# riproduzioni}}.",
       "hourChart": "Grafico a barre delle riproduzioni per ora del giorno. Ora più attiva: {hourValue} con {count, plural, one {# riproduzione} other {# riproduzioni}}."
     },

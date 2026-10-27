@@ -3,7 +3,12 @@ import { TautulliItemRow } from '@/types/tautulli'
 import { cloneDeep } from 'lodash'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { DEFAULT_SETTINGS } from './constants'
-import fetchMdblist from './fetchMdblist'
+import {
+  getMovieRatings,
+  getShowRatings,
+  NO_EXTERNAL_RATINGS,
+} from './fetchArrRatings'
+import fetchRottenTomatoes from './fetchRottenTomatoes'
 import fetchTmdb from './fetchTmdb'
 import getMediaAdditionalData, {
   getTmdbSearchParams,
@@ -11,7 +16,12 @@ import getMediaAdditionalData, {
 } from './getMediaAdditionalData'
 import getSettings from './getSettings'
 
-vi.mock('./fetchMdblist', () => ({ default: vi.fn() }))
+vi.mock('./fetchArrRatings', async (importOriginal) => ({
+  ...(await importOriginal<typeof import('./fetchArrRatings')>()),
+  getMovieRatings: vi.fn(),
+  getShowRatings: vi.fn(),
+}))
+vi.mock('./fetchRottenTomatoes', () => ({ default: vi.fn() }))
 vi.mock('./fetchTmdb', () => ({ default: vi.fn() }))
 vi.mock('./getSettings', () => ({ default: vi.fn() }))
 
@@ -59,10 +69,6 @@ function mockTmdb(responses: TmdbResponses) {
   )
 }
 
-function mockMdblist(ratings: { source: string; value: number | null }[]) {
-  vi.mocked(fetchMdblist).mockResolvedValue({ ratings } as never)
-}
-
 function mockSourceData(data: Partial<SourceMediaData>) {
   getSourceData.mockResolvedValue({ thumb: '', isDeleted: false, ...data })
 }
@@ -75,6 +81,9 @@ beforeEach(() => {
   vi.resetAllMocks()
   mockSettings()
   mockSourceData({ thumb: '/plex/thumb' })
+  vi.mocked(getMovieRatings).mockResolvedValue(NO_EXTERNAL_RATINGS)
+  vi.mocked(getShowRatings).mockResolvedValue(NO_EXTERNAL_RATINGS)
+  vi.mocked(fetchRottenTomatoes).mockResolvedValue(null)
 })
 
 describe('getTmdbSearchParams', () => {
@@ -328,13 +337,12 @@ describe('getMediaAdditionalData', () => {
     expect(item.is_deleted).toBe(true)
   })
 
-  it('adds the IMDb and Rotten Tomatoes ratings from MDBList', async () => {
+  it('adds the IMDb and Rotten Tomatoes ratings of a movie', async () => {
     mockTmdb({ 'movie/438631': {} })
-    mockMdblist([
-      { source: 'imdb', value: 8 },
-      { source: 'tmdb', value: 78 },
-      { source: 'tomatoes', value: 83 },
-    ])
+    vi.mocked(getMovieRatings).mockResolvedValue({
+      imdb: '8.0',
+      rottenTomatoes: 83,
+    })
 
     const [item] = await getMediaAdditionalData(
       [row({ tmdb_id: 438631 })],
@@ -342,53 +350,78 @@ describe('getMediaAdditionalData', () => {
       getSourceData,
     )
 
-    expect(fetchMdblist).toHaveBeenCalledWith('tmdb/movie/438631')
+    expect(getMovieRatings).toHaveBeenCalledWith(438631, null)
     expect(item.imdb_rating).toBe('8.0')
     expect(item.rotten_tomatoes_rating).toBe(83)
   })
 
-  it('looks shows up by IMDb id when TMDB has no match', async () => {
+  it('looks a show up by its TVDB ID', async () => {
     mockTmdb({ 'search/tv': { results: [] } })
-    mockMdblist([{ source: 'tomatoes', value: null }])
+    vi.mocked(getShowRatings).mockResolvedValue({
+      imdb: '9.5',
+      rottenTomatoes: null,
+    })
 
     const [item] = await getMediaAdditionalData(
-      [row({ imdb_id: 'tt5753856' })],
+      [row({ tvdb_id: 81189 })],
       'tv',
       getSourceData,
     )
 
-    expect(fetchMdblist).toHaveBeenCalledWith('imdb/show/tt5753856')
-    expect(item.imdb_rating).toBeNull()
+    expect(getShowRatings).toHaveBeenCalledWith(81189)
+    expect(getMovieRatings).not.toHaveBeenCalled()
+    expect(item.imdb_rating).toBe('9.5')
     expect(item.rotten_tomatoes_rating).toBeNull()
   })
 
-  it('keeps a 0% Rotten Tomatoes score apart from a missing one', async () => {
-    mockTmdb({ 'movie/1': {}, 'movie/2': {} })
-    vi.mocked(fetchMdblist).mockImplementation(
-      async (endpoint) =>
-        ({
-          ratings: [
-            {
-              source: 'tomatoes',
-              value: endpoint === 'tmdb/movie/1' ? 0 : null,
-            },
-          ],
-        }) as never,
-    )
+  it('takes both Rotten Tomatoes scores and the page from its search', async () => {
+    mockTmdb({ 'movie/438631': {} })
+    vi.mocked(getMovieRatings).mockResolvedValue({
+      imdb: '8.0',
+      rottenTomatoes: 80,
+    })
+    vi.mocked(fetchRottenTomatoes).mockResolvedValue({
+      url: 'https://www.rottentomatoes.com/m/dune_2021',
+      critics: 83,
+      audience: 90,
+    })
 
-    const [rated, missing] = await getMediaAdditionalData(
-      [row({ tmdb_id: 1 }), row({ tmdb_id: 2 })],
+    const [item] = await getMediaAdditionalData(
+      [row({ tmdb_id: 438631 })],
       'movie',
       getSourceData,
     )
 
-    expect(rated.rotten_tomatoes_rating).toBe(0)
-    expect(missing.rotten_tomatoes_rating).toBeNull()
+    expect(fetchRottenTomatoes).toHaveBeenCalledWith('Dune', 2021, 'movie')
+    expect(item.rotten_tomatoes_rating).toBe(83)
+    expect(item.rotten_tomatoes_audience_rating).toBe(90)
+    expect(item.rotten_tomatoes_url).toBe(
+      'https://www.rottentomatoes.com/m/dune_2021',
+    )
   })
 
-  it('skips MDBList when neither of its ratings is shown', async () => {
+  it("falls back to Radarr's critics score when the search finds nothing", async () => {
+    mockTmdb({ 'movie/438631': {} })
+    vi.mocked(getMovieRatings).mockResolvedValue({
+      imdb: null,
+      rottenTomatoes: 80,
+    })
+
+    const [item] = await getMediaAdditionalData(
+      [row({ tmdb_id: 438631 })],
+      'movie',
+      getSourceData,
+    )
+
+    expect(item.rotten_tomatoes_rating).toBe(80)
+    expect(item.rotten_tomatoes_audience_rating).toBeNull()
+    expect(item.rotten_tomatoes_url).toBeNull()
+  })
+
+  it('skips the rating lookups when no rating or link needs them', async () => {
     mockSettings((settings) => {
-      settings.dashboard.activeItemStatistics = ['year', 'tmdbRating']
+      settings.general.activeItemStatistics = ['year', 'tmdbRating']
+      settings.general.activeExternalLinks = ['imdb']
     })
     mockTmdb({ 'movie/438631': {} })
 
@@ -398,7 +431,8 @@ describe('getMediaAdditionalData', () => {
       getSourceData,
     )
 
-    expect(fetchMdblist).not.toHaveBeenCalled()
+    expect(getMovieRatings).not.toHaveBeenCalled()
+    expect(fetchRottenTomatoes).not.toHaveBeenCalled()
     expect(item.imdb_rating).toBeNull()
   })
 

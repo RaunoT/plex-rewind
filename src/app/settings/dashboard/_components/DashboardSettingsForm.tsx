@@ -80,7 +80,6 @@ export default function DashboardSettingsForm({ settings }: Props) {
               <div className='indicator'></div>
               <span className='label'>
                 <span className='label-wrapper'>{tCommon('adminOnly')}</span>
-                <small>{tCommon('adminOnlyDescription')}</small>
               </span>
             </Switch>
           </>
@@ -90,87 +89,6 @@ export default function DashboardSettingsForm({ settings }: Props) {
         <>
           <section className='group-settings group'>
             <h2 className='heading-settings'>{t('statistics')}</h2>
-            <CheckboxGroup
-              key={`item-stats-${dashboardSettings.activeItemStatistics.join(
-                ',',
-              )}`}
-              className='input-wrapper'
-              name='activeItemStatistics'
-              defaultValue={dashboardSettings.activeItemStatistics}
-            >
-              <div className='peer checkbox-grid'>
-                <Checkbox
-                  key='item-year'
-                  value='year'
-                  className='checkbox-wrapper'
-                >
-                  <div className='checkbox' aria-hidden='true'></div>
-                  {tCommon('year')}
-                </Checkbox>
-                <Checkbox
-                  key='item-tmdb-rating'
-                  value='tmdbRating'
-                  className='checkbox-wrapper'
-                >
-                  <div className='checkbox' aria-hidden='true'></div>
-                  {tCommon('ratingBy', { provider: 'TMDB' })}
-                </Checkbox>
-                <Checkbox
-                  key='item-imdb-rating'
-                  value='imdbRating'
-                  className='checkbox-wrapper'
-                >
-                  <div className='checkbox' aria-hidden='true'></div>
-                  {tCommon('ratingBy', { provider: 'IMDb' })}
-                </Checkbox>
-                <Checkbox
-                  key='item-rotten-tomatoes-rating'
-                  value='rottenTomatoesRating'
-                  className='checkbox-wrapper'
-                >
-                  <div className='checkbox' aria-hidden='true'></div>
-                  {tCommon('ratingBy', { provider: 'Rotten Tomatoes' })}
-                </Checkbox>
-                <Checkbox
-                  key='item-duration'
-                  value='duration'
-                  className='checkbox-wrapper'
-                >
-                  <div className='checkbox' aria-hidden='true'></div>
-                  {tCommon('duration')}
-                </Checkbox>
-                <Checkbox
-                  key='item-plays'
-                  value='plays'
-                  className='checkbox-wrapper'
-                >
-                  <div className='checkbox' aria-hidden='true'></div>
-                  {tCommon('plays')}
-                </Checkbox>
-                <Checkbox
-                  key='item-users'
-                  value='users'
-                  className='checkbox-wrapper'
-                >
-                  <div className='checkbox' aria-hidden='true'></div>
-                  {tCommon('users')}
-                </Checkbox>
-                {isOverseerrActive && (
-                  <Checkbox
-                    key='item-requests'
-                    value='requests'
-                    className='checkbox-wrapper'
-                  >
-                    <div className='checkbox' aria-hidden='true'></div>
-                    {tCommon('requests')}
-                  </Checkbox>
-                )}
-              </div>
-              <Label className='label label--start'>
-                <span className='label-wrapper'>{t('itemStatistics')}</span>
-                <small>{t('itemStatisticsDescription')}</small>
-              </Label>
-            </CheckboxGroup>
             <CheckboxGroup
               key={`total-stats-${dashboardSettings.activeTotalStatistics.join(
                 ',',

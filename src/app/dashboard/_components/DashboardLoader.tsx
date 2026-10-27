@@ -1,6 +1,6 @@
 import CardWrapper from '@/app/_components/CardWrapper'
 import SkeletonLine from '@/components/SkeletonLine'
-import { DashboardItemStatistics, PublicSettings } from '@/types/settings'
+import { ItemStatistics, PublicSettings } from '@/types/settings'
 import { TautulliMediaType } from '@/types/tautulli'
 import { DASHBOARD_PAGE_SIZE, RATING_STATISTICS } from '@/utils/constants'
 import clsx from 'clsx'
@@ -23,7 +23,8 @@ export default function DashboardLoader({
   rows = DASHBOARD_PAGE_SIZE,
 }: Props) {
   const isUsers = type === 'users'
-  const { activeItemStatistics, activeTotalStatistics } = settings.dashboard
+  const { activeTotalStatistics } = settings.dashboard
+  const { activeItemStatistics } = settings.general
   const periodStats = [
     activeTotalStatistics.includes('duration') && 'w-32',
     activeTotalStatistics.includes('requests') &&
@@ -76,13 +77,15 @@ function ListItem({
   activeStats,
 }: {
   type: Props['type']
-  activeStats: DashboardItemStatistics
+  activeStats: ItemStatistics
 }) {
   const isUsers = type === 'users'
+  // Users have the date of their first play there
   const hasDetails =
-    (type === 'movie' || type === 'show') &&
-    (activeStats.includes('year') ||
-      RATING_STATISTICS.some((rating) => activeStats.includes(rating)))
+    isUsers ||
+    ((type === 'movie' || type === 'show') &&
+      (activeStats.includes('year') ||
+        RATING_STATISTICS.some((rating) => activeStats.includes(rating))))
   const pills = [
     activeStats.includes('duration') && 'w-24',
     activeStats.includes('plays') && 'w-16',
@@ -115,10 +118,10 @@ function ListItem({
             </ul>
           </div>
           {!isUsers && (
-            <div className='flex shrink-0 gap-1.5 @xl:mt-0.5'>
+            <div className='flex shrink-0 flex-wrap gap-x-1.5 gap-y-2.5 @xl:mt-0.5 @xl:flex-col @xl:items-end'>
               <div className='skeleton h-6 w-24 rounded-md' />
               {type !== 'artist' && (
-                <div className='skeleton h-6 w-12 rounded-md' />
+                <div className='skeleton h-6 w-11 rounded-md' />
               )}
             </div>
           )}
