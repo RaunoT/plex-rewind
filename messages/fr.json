@@ -193,7 +193,8 @@
       "outsideAccessDescription": "Tout le monde peut voir le tableau de bord et l'activité sans se connecter, et toutes les bibliothèques sont affichées, quel que soit le partage dans Plex. Le Rewind nécessite toujours une connexion.",
       "anonymize": "Anonymiser",
       "anonymizeDescription": "Masquer les noms des autres utilisateurs, même pour les administrateurs. Les adresses IP et les emplacements sont aussi masqués sur la page d'activité.",
-      "analytics": "Analytique"
+      "analytics": "Analytique",
+      "analyticsIdDescription": "Envoie les pages vues à Google Analytics 4. Utilisez l'ID de mesure d'un flux de données Web, qui commence par G-. Laissez vide pour le désactiver."
     },
     "Rewind": {
       "title": "Paramètres Rewind",

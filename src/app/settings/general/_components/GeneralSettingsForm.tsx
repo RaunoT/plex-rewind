@@ -286,6 +286,7 @@ export default function GeneralSettingsForm({
               <span className='label'>
                 {/* eslint-disable-next-line react/jsx-no-literals */}
                 <span className='label-wrapper'>Google Analytics ID</span>
+                <small>{t('analyticsIdDescription')}</small>
               </span>
             </label>
           </section>
