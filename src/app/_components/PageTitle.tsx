@@ -36,7 +36,7 @@ export default function PageTitle({
     <header
       data-page-header
       className={clsx(
-        '@container mb-3 w-full 2xl:mb-4',
+        '@container mb-4 w-full',
         !hasVisibleNavWithSidebar && 'lg:group-data-[sidebar]/app:mb-0',
       )}
     >

@@ -187,6 +187,8 @@
       "tmdbOnlyPosters": "TMDB only posters",
       "tmdbOnlyPostersDescription1": "Ignore Plex posters for TV shows and movies.",
       "tmdbOnlyPostersDescription2": "By default, TMDB is a fallback.",
+      "externalLinks": "External links",
+      "externalLinksDescription": "Letterboxd is only for movies and TVDB only for TV shows. Rotten Tomatoes opens a search.",
       "privacy": "Privacy",
       "excludedUsers": "Excluded users",
       "excludedUsersDescription": "Selected users are left out of user rankings and total watch time. With Tautulli, top movies, TV shows and artists still include their plays.",
@@ -357,6 +359,7 @@
     "labelAudio": "Music",
     "you": "(you)",
     "requestLabel": "Request {title}",
-    "imdbLabel": "{title} on IMDb"
+    "externalLinkLabel": "{title} on {site}",
+    "externalSearchLabel": "Search {site} for {title}"
   }
 }

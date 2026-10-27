@@ -18,7 +18,8 @@ type TmdbDetails = {
   vote_average?: number
   first_air_date?: string
   poster_path?: string | null
-  external_ids?: { imdb_id?: string | null }
+  // Only TV shows have a TVDB ID on TMDB
+  external_ids?: { imdb_id?: string | null; tvdb_id?: number | null }
 }
 
 export function getTmdbSearchParams(
@@ -102,6 +103,7 @@ export default async function getMediaAdditionalData(
         rating: details?.vote_average ? details.vote_average.toFixed(1) : null,
         tmdb_id: tmdbId,
         imdb_id: item.imdb_id || details?.external_ids?.imdb_id || null,
+        tvdb_id: item.tvdb_id || details?.external_ids?.tvdb_id || null,
         thumb: poster,
       }
     }),
@@ -112,6 +114,7 @@ export default async function getMediaAdditionalData(
     mediaItem.rating = additionalData[i].rating
     mediaItem.tmdb_id = additionalData[i].tmdb_id
     mediaItem.imdb_id = additionalData[i].imdb_id
+    mediaItem.tvdb_id = additionalData[i].tvdb_id
     mediaItem.thumb = additionalData[i].thumb
 
     if (type === 'tv') {
