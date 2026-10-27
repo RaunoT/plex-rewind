@@ -12,8 +12,6 @@
       "unknown": "Accesso non riuscito. Riprova."
     },
     "rewind": "Inizia il Rewind",
-    "dashboard": "Dashboard",
-    "activity": "Attività",
     "signOut": "Esci",
     "greeting": "Ciao, {name}",
     "rewindDescription": "I tuoi momenti migliori, una storia alla volta.",
@@ -23,7 +21,6 @@
   },
   "Activity": {
     "title": "Attività",
-    "loading": "Caricamento…",
     "poster": "Locandina di {title}",
     "anonymousAvatar": "Avatar anonimo",
     "anonymous": "Anonimo #{number}",
@@ -158,8 +155,7 @@
       "startDateHelperText": "Inizio del periodo «Da sempre»."
     },
     "Activity": {
-      "title": "Impostazioni dell'attività",
-      "privacy": "Privacy"
+      "title": "Impostazioni dell'attività"
     },
     "General": {
       "title": "Impostazioni generali",

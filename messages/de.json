@@ -12,8 +12,6 @@
       "unknown": "Anmeldung fehlgeschlagen. Versuche es noch einmal."
     },
     "rewind": "Rewind starten",
-    "dashboard": "Dashboard",
-    "activity": "Aktivität",
     "signOut": "Abmelden",
     "greeting": "Hallo, {name}",
     "rewindDescription": "Deine Highlights, Geschichte für Geschichte.",
@@ -23,7 +21,6 @@
   },
   "Activity": {
     "title": "Aktivität",
-    "loading": "Lädt...",
     "poster": "Poster von {title}",
     "anonymousAvatar": "Anonymer Avatar",
     "anonymous": "Anonym #{number}",
@@ -158,8 +155,7 @@
       "startDateHelperText": "Beginn des Zeitraums „Gesamte Zeit“."
     },
     "Activity": {
-      "title": "Aktivität Einstellungen",
-      "privacy": "Datenschutz"
+      "title": "Aktivität Einstellungen"
     },
     "General": {
       "title": "Allgemeine Einstellungen",

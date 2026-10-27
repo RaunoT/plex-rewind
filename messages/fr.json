@@ -12,8 +12,6 @@
       "unknown": "La connexion a échoué. Réessayez."
     },
     "rewind": "Démarrer Rewind",
-    "dashboard": "Tableau de bord",
-    "activity": "Activité",
     "signOut": "Se déconnecter",
     "greeting": "Bonjour, {name}",
     "rewindDescription": "Vos moments forts, une histoire à la fois.",
@@ -23,7 +21,6 @@
   },
   "Activity": {
     "title": "Activité",
-    "loading": "Chargement...",
     "poster": "Affiche de {title}",
     "anonymousAvatar": "Avatar anonyme",
     "anonymous": "Anonyme #{number}",
@@ -158,8 +155,7 @@
       "startDateHelperText": "Début de la période « Tout le temps »."
     },
     "Activity": {
-      "title": "Paramètres d'activité",
-      "privacy": "Confidentialité"
+      "title": "Paramètres d'activité"
     },
     "General": {
       "title": "Paramètres généraux",

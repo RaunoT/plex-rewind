@@ -12,8 +12,6 @@
       "unknown": "Sign-in failed. Try again."
     },
     "rewind": "Start Rewind",
-    "dashboard": "Dashboard",
-    "activity": "Activity",
     "signOut": "Sign out",
     "greeting": "Hi, {name}",
     "rewindDescription": "Your viewing highlights, one story at a time.",
@@ -23,7 +21,6 @@
   },
   "Activity": {
     "title": "Activity",
-    "loading": "Loading...",
     "poster": "Poster for {title}",
     "anonymousAvatar": "Anonymous avatar",
     "anonymous": "Anonymous #{number}",
@@ -158,8 +155,7 @@
       "startDateHelperText": "Start of the “All time” period."
     },
     "Activity": {
-      "title": "Activity settings",
-      "privacy": "Privacy"
+      "title": "Activity settings"
     },
     "General": {
       "title": "General settings",

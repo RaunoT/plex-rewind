@@ -12,8 +12,6 @@
       "unknown": "Sisselogimine ebaõnnestus. Proovi uuesti."
     },
     "rewind": "Rewind",
-    "dashboard": "Edetabel",
-    "activity": "Tegevus",
     "signOut": "Logi välja",
     "greeting": "Tere, {name}",
     "rewindDescription": "Sinu vaatamise tipphetked, lugu loo haaval.",
@@ -23,7 +21,6 @@
   },
   "Activity": {
     "title": "Tegevus",
-    "loading": "Laadimine...",
     "poster": "„{title}“ plakat",
     "anonymousAvatar": "Anonüümne avatar",
     "anonymous": "Anonüümne #{number}",
@@ -158,8 +155,7 @@
       "startDateHelperText": "Perioodi „Kokku“ algus."
     },
     "Activity": {
-      "title": "Tegevuse seaded",
-      "privacy": "Privaatsus"
+      "title": "Tegevuse seaded"
     },
     "General": {
       "title": "Üldseaded",
