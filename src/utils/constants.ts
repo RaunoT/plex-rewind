@@ -59,6 +59,7 @@ export const DEFAULT_SETTINGS: Settings = {
     plexUrl: '',
     overseerrUrl: '',
     overseerrApiKey: '',
+    mdblistApiKey: '',
     complete: false,
   },
   general: {
@@ -82,7 +83,9 @@ export const DEFAULT_SETTINGS: Settings = {
     isUsersPageActive: true,
     activeItemStatistics: [
       'year',
-      'rating',
+      'tmdbRating',
+      'imdbRating',
+      'rottenTomatoesRating',
       'duration',
       'plays',
       'users',
@@ -119,6 +122,12 @@ export const STATS_SOURCE_NAMES: Record<StatisticsSource, string> = {
 }
 
 export const TMDB_API_KEY = '4675b5b5d8cd1463ff16adca2680157b'
+
+export const RATING_STATISTICS = [
+  'tmdbRating',
+  'imdbRating',
+  'rottenTomatoesRating',
+] as const
 
 export type Locale = (typeof LOCALES)[number]
 

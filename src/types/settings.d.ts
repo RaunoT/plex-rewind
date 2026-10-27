@@ -15,6 +15,7 @@ export type ConnectionSettings = {
   tracearrServerId: string
   overseerrUrl?: string
   overseerrApiKey?: string
+  mdblistApiKey?: string
   plexUrl: string
   complete: boolean
 }
@@ -38,7 +39,14 @@ export type RewindSettings = {
 }
 
 export type DashboardItemStatistics = (
-  'year' | 'rating' | 'duration' | 'plays' | 'users' | 'requests'
+  | 'year'
+  | 'tmdbRating'
+  | 'imdbRating'
+  | 'rottenTomatoesRating'
+  | 'duration'
+  | 'plays'
+  | 'users'
+  | 'requests'
 )[]
 export type DashboardTotalStatistics = (
   'size' | 'duration' | 'count' | 'requests'

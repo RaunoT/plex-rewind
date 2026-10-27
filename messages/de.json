@@ -128,7 +128,7 @@
     "urlNotFound": "Nicht gefunden. Prüfe die URL, einschließlich eines möglichen Basispfads.",
     "unexpectedResponse": "Unerwartete Antwort (HTTP {status}).",
     "certificateError": "HTTPS-Zertifikatsfehler. Prüfe, ob die URL zu einem gültigen Zertifikat passt.",
-    "invalidField": "Prüfe {field, select, tautulliUrl {die Tautulli-URL} tautulliApiKey {den Tautulli-API-Schlüssel} tracearrUrl {die Tracearr-URL} tracearrApiKey {den Tracearr-API-Schlüssel} plexUrl {die Plex-URL} overseerrUrl {die Overseerr-URL} overseerrApiKey {den Overseerr-API-Schlüssel} googleAnalyticsId {die Google-Analytics-ID} other {die Einstellungen}}.",
+    "invalidField": "Prüfe {field, select, tautulliUrl {die Tautulli-URL} tautulliApiKey {den Tautulli-API-Schlüssel} tracearrUrl {die Tracearr-URL} tracearrApiKey {den Tracearr-API-Schlüssel} plexUrl {die Plex-URL} overseerrUrl {die Overseerr-URL} overseerrApiKey {den Overseerr-API-Schlüssel} mdblistApiKey {den MDBList-API-Schlüssel} googleAnalyticsId {die Google-Analytics-ID} other {die Einstellungen}}.",
     "buyMeACoffee": "Kaffee spenden",
     "becomeASponsor": "Sponsor werden",
     "reportAnIssue": "Problem melden",
@@ -150,7 +150,8 @@
       "source": "Quelle",
       "server": "Server",
       "chooseServer": "Server auswählen",
-      "overseerrUrlDescription": "Anfrage-Links öffnen sich im Browser der Benutzer. Nutze daher eine Adresse, die sie erreichen können, keine reine Adresse im lokalen Netzwerk."
+      "overseerrUrlDescription": "Anfrage-Links öffnen sich im Browser der Benutzer. Nutze daher eine Adresse, die sie erreichen können, keine reine Adresse im lokalen Netzwerk.",
+      "mdblistApiKeyDescription": "Für Bewertungen von IMDb und Rotten Tomatoes. Einen kostenlosen API-Schlüssel gibt es in deinen Einstellungen auf mdblist.com."
     },
     "Dashboard": {
       "title": "Dashboard Einstellungen",
@@ -159,7 +160,7 @@
       "usersPage": "Benutzerseite",
       "statistics": "Statistiken",
       "itemStatistics": "Artikelstatistiken",
-      "itemStatisticsDescription": "Wird bei jedem Titel und Benutzer in den Listen von Dashboard und Rewind angezeigt.",
+      "itemStatisticsDescription": "Wird bei jedem Titel und Benutzer in den Listen von Dashboard und Rewind angezeigt. Bewertungen von IMDb und Rotten Tomatoes brauchen einen MDBList-API-Schlüssel in den Verbindungseinstellungen.",
       "totalStatistics": "Gesamtstatistik",
       "totalStatisticsDescription": "Wird unter jeder Dashboard-Liste angezeigt. Die Anzahl ist die Zahl der Filme, Episoden oder Titel in der Bibliothek.",
       "sortFilter": "Sortierfilter",
@@ -213,6 +214,7 @@
     "status": "Status",
     "year": "Jahr",
     "rating": "Bewertung",
+    "ratingBy": "{provider}-Bewertung",
     "duration": "Wiedergabezeit",
     "plays": "Wiedergaben",
     "users": "Benutzer",

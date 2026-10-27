@@ -140,6 +140,30 @@ describe('getSettings', () => {
     expect(readSavedSettings().dashboard.activeTotalStatistics).toEqual([])
   })
 
+  it('turns the old rating statistic into one per rating provider', async () => {
+    const saved = {
+      ...DEFAULT_SETTINGS,
+      dashboard: {
+        ...DEFAULT_SETTINGS.dashboard,
+        activeItemStatistics: ['year', 'rating', 'plays'],
+      },
+    }
+
+    fs.writeFileSync(settingsPath, JSON.stringify(saved))
+
+    const { default: getSettings } = await loadModule()
+    const expected = [
+      'year',
+      'tmdbRating',
+      'imdbRating',
+      'rottenTomatoesRating',
+      'plays',
+    ]
+
+    expect(getSettings().dashboard.activeItemStatistics).toEqual(expected)
+    expect(readSavedSettings().dashboard.activeItemStatistics).toEqual(expected)
+  })
+
   it('returns a copy that callers can change freely', async () => {
     const { default: getSettings } = await loadModule()
     const first = getSettings()

@@ -5,7 +5,7 @@ import { MEDIA_ICONS, MediaIcon, STAT_ICONS } from '@/components/icons'
 import { PublicSettings } from '@/types/settings'
 import { TautulliItemRow } from '@/types/tautulli'
 import { getDeeplinkRatingKeyFromRow } from '@/utils/deeplink'
-import { formatRating, secondsToTime } from '@/utils/formatting'
+import { formatPercent, formatRating, secondsToTime } from '@/utils/formatting'
 import { getImageProxyUrl } from '@/utils/imageProxy'
 import { slideDown } from '@/utils/motion'
 import { TrashIcon } from '@heroicons/react/24/outline'
@@ -70,7 +70,15 @@ export default function MediaItem({
   const rank = data.rank || i
   const isVideo = type === 'movie' || type === 'show'
   const year = isVideo && activeStats.includes('year') ? data.year : null
-  const rating = isVideo && activeStats.includes('rating') ? data.rating : null
+  const tmdbRating =
+    isVideo && activeStats.includes('tmdbRating') ? data.rating : null
+  const imdbRating =
+    isVideo && activeStats.includes('imdbRating') ? data.imdb_rating : null
+  const rottenTomatoesRating =
+    isVideo && activeStats.includes('rottenTomatoesRating')
+      ? data.rotten_tomatoes_rating
+      : null
+  const hasDetails = year || tmdbRating || imdbRating || rottenTomatoesRating
 
   if (initialImageSrc !== prevInitialImageSrc) {
     setPrevInitialImageSrc(initialImageSrc)
@@ -136,7 +144,7 @@ export default function MediaItem({
               loggedInUserId={loggedInUserId}
             />
             {/* Details about the title, kept apart from the viewing stats */}
-            {(year || rating) && (
+            {hasDetails && (
               <ul className='icon-stats-container mb-2 gap-x-3 text-neutral-300'>
                 {year && (
                   <li className='icon-stat-wrapper icon-stat-wrapper--clean'>
@@ -147,13 +155,39 @@ export default function MediaItem({
                     {year}
                   </li>
                 )}
-                {rating && (
+                {tmdbRating && (
                   <li className='icon-stat-wrapper icon-stat-wrapper--clean'>
                     <STAT_ICONS.rating />
                     <span className='sr-only'>
-                      {translations('Common.rating')}
+                      {translations('Common.ratingBy', { provider: 'TMDB' })}
                     </span>{' '}
-                    {formatRating(rating, locale)}
+                    {formatRating(tmdbRating, locale)}
+                  </li>
+                )}
+                {imdbRating && (
+                  <li className='icon-stat-wrapper icon-stat-wrapper--clean'>
+                    <span
+                      className='imdb-tag'
+                      aria-hidden='true'
+                      // eslint-disable-next-line react/jsx-no-literals
+                    >
+                      IMDb
+                    </span>
+                    <span className='sr-only'>
+                      {translations('Common.ratingBy', { provider: 'IMDb' })}
+                    </span>{' '}
+                    {formatRating(imdbRating, locale)}
+                  </li>
+                )}
+                {rottenTomatoesRating && (
+                  <li className='icon-stat-wrapper icon-stat-wrapper--clean'>
+                    <STAT_ICONS.rottenTomatoes className='text-red-400' />
+                    <span className='sr-only'>
+                      {translations('Common.ratingBy', {
+                        provider: 'Rotten Tomatoes',
+                      })}
+                    </span>{' '}
+                    {formatPercent(rottenTomatoesRating, locale)}
                   </li>
                 )}
               </ul>

@@ -3,6 +3,7 @@ import { TautulliItemRow } from '@/types/tautulli'
 import { cloneDeep } from 'lodash'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { DEFAULT_SETTINGS } from './constants'
+import fetchMdblist from './fetchMdblist'
 import fetchTmdb from './fetchTmdb'
 import getMediaAdditionalData, {
   getTmdbSearchParams,
@@ -10,6 +11,7 @@ import getMediaAdditionalData, {
 } from './getMediaAdditionalData'
 import getSettings from './getSettings'
 
+vi.mock('./fetchMdblist', () => ({ default: vi.fn() }))
 vi.mock('./fetchTmdb', () => ({ default: vi.fn() }))
 vi.mock('./getSettings', () => ({ default: vi.fn() }))
 
@@ -55,6 +57,10 @@ function mockTmdb(responses: TmdbResponses) {
   vi.mocked(fetchTmdb).mockImplementation(
     async (endpoint) => (responses[endpoint] ?? null) as never,
   )
+}
+
+function mockMdblist(ratings: { source: string; value: number | null }[]) {
+  vi.mocked(fetchMdblist).mockResolvedValue({ ratings } as never)
 }
 
 function mockSourceData(data: Partial<SourceMediaData>) {
@@ -301,6 +307,56 @@ describe('getMediaAdditionalData', () => {
     const [item] = await getMediaAdditionalData([row()], 'movie', getSourceData)
 
     expect(item.is_deleted).toBe(true)
+  })
+
+  it('adds the IMDb and Rotten Tomatoes ratings from MDBList', async () => {
+    mockTmdb({ 'movie/438631': {} })
+    mockMdblist([
+      { source: 'imdb', value: 8 },
+      { source: 'tmdb', value: 78 },
+      { source: 'tomatoes', value: 83 },
+    ])
+
+    const [item] = await getMediaAdditionalData(
+      [row({ tmdb_id: 438631 })],
+      'movie',
+      getSourceData,
+    )
+
+    expect(fetchMdblist).toHaveBeenCalledWith('tmdb/movie/438631')
+    expect(item.imdb_rating).toBe('8.0')
+    expect(item.rotten_tomatoes_rating).toBe(83)
+  })
+
+  it('looks shows up by IMDb id when TMDB has no match', async () => {
+    mockTmdb({ 'search/tv': { results: [] } })
+    mockMdblist([{ source: 'tomatoes', value: 0 }])
+
+    const [item] = await getMediaAdditionalData(
+      [row({ imdb_id: 'tt5753856' })],
+      'tv',
+      getSourceData,
+    )
+
+    expect(fetchMdblist).toHaveBeenCalledWith('imdb/show/tt5753856')
+    expect(item.imdb_rating).toBeNull()
+    expect(item.rotten_tomatoes_rating).toBeNull()
+  })
+
+  it('skips MDBList when neither of its ratings is shown', async () => {
+    mockSettings((settings) => {
+      settings.dashboard.activeItemStatistics = ['year', 'tmdbRating']
+    })
+    mockTmdb({ 'movie/438631': {} })
+
+    const [item] = await getMediaAdditionalData(
+      [row({ tmdb_id: 438631 })],
+      'movie',
+      getSourceData,
+    )
+
+    expect(fetchMdblist).not.toHaveBeenCalled()
+    expect(item.imdb_rating).toBeNull()
   })
 
   it('adds how many users watched each item', async () => {

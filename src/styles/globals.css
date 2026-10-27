@@ -198,6 +198,11 @@
     }
   }
 
+  /* IMDb's tag again, sized to the icons next to a rating */
+  .imdb-tag {
+    @apply rounded-sm bg-[#f5c518] px-1 text-[0.625rem] leading-4 font-extrabold tracking-tight text-black;
+  }
+
   /* Sized and set to the surrounding text so the logo's lowercase letters and
      baseline line up with the font's */
   .plex-logo {

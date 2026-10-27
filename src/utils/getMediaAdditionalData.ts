@@ -1,4 +1,5 @@
 import { TautulliItemRow } from '@/types/tautulli'
+import fetchMdblist from './fetchMdblist'
 import fetchTmdb from './fetchTmdb'
 import getSettings from './getSettings'
 
@@ -20,6 +21,17 @@ type TmdbDetails = {
   poster_path?: string | null
   external_ids?: { imdb_id?: string | null }
 }
+
+type MdblistMedia = {
+  ratings?: { source: string; value: number | null }[]
+}
+
+type MdblistRatings = {
+  imdb: string | null
+  rottenTomatoes: number | null
+}
+
+const NO_MDBLIST_RATINGS: MdblistRatings = { imdb: null, rottenTomatoes: null }
 
 export function getTmdbSearchParams(
   title: string,
@@ -75,19 +87,55 @@ async function getTmdbData(item: TautulliItemRow, type: TmdbMediaType) {
   return { tmdbId, details }
 }
 
+async function getMdblistRatings(
+  type: TmdbMediaType,
+  tmdbId: number | null,
+  imdbId: string | null,
+): Promise<MdblistRatings> {
+  const mediaType = type === 'tv' ? 'show' : 'movie'
+  const endpoint = tmdbId
+    ? `tmdb/${mediaType}/${tmdbId}`
+    : imdbId && `imdb/${mediaType}/${imdbId}`
+
+  if (!endpoint) {
+    return NO_MDBLIST_RATINGS
+  }
+
+  const media = await fetchMdblist<MdblistMedia>(endpoint)
+  // A missing rating can come back as 0
+  const getRating = (source: string) =>
+    media?.ratings?.find((rating) => rating.source === source)?.value || null
+  const imdb = getRating('imdb')
+  const rottenTomatoes = getRating('tomatoes')
+
+  return {
+    imdb: imdb ? imdb.toFixed(1) : null,
+    rottenTomatoes: rottenTomatoes ? Math.round(rottenTomatoes) : null,
+  }
+}
+
 export default async function getMediaAdditionalData(
   media: TautulliItemRow[],
   type: TmdbMediaType,
   getSourceData: (item: TautulliItemRow) => Promise<SourceMediaData>,
   usersWatchedData?: TautulliItemRow[],
 ): Promise<TautulliItemRow[]> {
-  const isPostersTmdbOnly = getSettings().general.isPostersTmdbOnly
+  const settings = getSettings()
+  const isPostersTmdbOnly = settings.general.isPostersTmdbOnly
+  const statistics = settings.dashboard.activeItemStatistics
+  const isMdblistNeeded =
+    statistics.includes('imdbRating') ||
+    statistics.includes('rottenTomatoesRating')
   const additionalData = await Promise.all(
     media.map(async (item) => {
       const [source, { tmdbId, details }] = await Promise.all([
         getSourceData(item),
         getTmdbData(item, type),
       ])
+      const imdbId = item.imdb_id || details?.external_ids?.imdb_id || null
+      const mdblistRatings = isMdblistNeeded
+        ? await getMdblistRatings(type, tmdbId, imdbId)
+        : NO_MDBLIST_RATINGS
 
       let poster = source.thumb || ''
 
@@ -100,8 +148,10 @@ export default async function getMediaAdditionalData(
         year: Number(details?.first_air_date?.slice(0, 4)) || null,
         is_deleted: source.isDeleted,
         rating: details?.vote_average ? details.vote_average.toFixed(1) : null,
+        imdb_rating: mdblistRatings.imdb,
+        rotten_tomatoes_rating: mdblistRatings.rottenTomatoes,
         tmdb_id: tmdbId,
-        imdb_id: item.imdb_id || details?.external_ids?.imdb_id || null,
+        imdb_id: imdbId,
         thumb: poster,
       }
     }),
@@ -110,6 +160,8 @@ export default async function getMediaAdditionalData(
   media.map((mediaItem, i) => {
     mediaItem.is_deleted = additionalData[i].is_deleted
     mediaItem.rating = additionalData[i].rating
+    mediaItem.imdb_rating = additionalData[i].imdb_rating
+    mediaItem.rotten_tomatoes_rating = additionalData[i].rotten_tomatoes_rating
     mediaItem.tmdb_id = additionalData[i].tmdb_id
     mediaItem.imdb_id = additionalData[i].imdb_id
     mediaItem.thumb = additionalData[i].thumb

@@ -128,7 +128,7 @@
     "urlNotFound": "Non trovato. Controlla l'URL, compreso l'eventuale percorso di base.",
     "unexpectedResponse": "Risposta inattesa (HTTP {status}).",
     "certificateError": "Errore del certificato HTTPS. Controlla che l'URL corrisponda a un certificato valido.",
-    "invalidField": "Controlla {field, select, tautulliUrl {l'URL di Tautulli} tautulliApiKey {la chiave API di Tautulli} tracearrUrl {l'URL di Tracearr} tracearrApiKey {la chiave API di Tracearr} plexUrl {l'URL di Plex} overseerrUrl {l'URL di Overseerr} overseerrApiKey {la chiave API di Overseerr} googleAnalyticsId {l'ID di Google Analytics} other {le impostazioni}}.",
+    "invalidField": "Controlla {field, select, tautulliUrl {l'URL di Tautulli} tautulliApiKey {la chiave API di Tautulli} tracearrUrl {l'URL di Tracearr} tracearrApiKey {la chiave API di Tracearr} plexUrl {l'URL di Plex} overseerrUrl {l'URL di Overseerr} overseerrApiKey {la chiave API di Overseerr} mdblistApiKey {la chiave API di MDBList} googleAnalyticsId {l'ID di Google Analytics} other {le impostazioni}}.",
     "buyMeACoffee": "Offrimi un caffè",
     "becomeASponsor": "Diventa sponsor",
     "reportAnIssue": "Segnala un problema",
@@ -150,7 +150,8 @@
       "source": "Sorgente",
       "server": "Server",
       "chooseServer": "Scegli un server",
-      "overseerrUrlDescription": "I link alle richieste si aprono nel browser degli utenti, quindi usa un indirizzo che possono raggiungere, non uno della rete locale."
+      "overseerrUrlDescription": "I link alle richieste si aprono nel browser degli utenti, quindi usa un indirizzo che possono raggiungere, non uno della rete locale.",
+      "mdblistApiKeyDescription": "Per i voti di IMDb e Rotten Tomatoes. Ottieni una chiave API gratuita nelle tue preferenze su mdblist.com."
     },
     "Dashboard": {
       "title": "Impostazioni della dashboard",
@@ -159,7 +160,7 @@
       "usersPage": "Pagina degli utenti",
       "statistics": "Statistiche",
       "itemStatistics": "Statistiche per titolo",
-      "itemStatisticsDescription": "Mostrate per ogni titolo e utente negli elenchi della dashboard e del Rewind.",
+      "itemStatisticsDescription": "Mostrate per ogni titolo e utente negli elenchi della dashboard e del Rewind. I voti di IMDb e Rotten Tomatoes richiedono una chiave API di MDBList nelle impostazioni di connessione.",
       "totalStatistics": "Statistiche totali",
       "totalStatisticsDescription": "Mostrate sotto ogni elenco della dashboard. Il numero indica quanti film, episodi o brani ci sono nella libreria.",
       "sortFilter": "Filtro di ordinamento",
@@ -213,6 +214,7 @@
     "status": "Stato",
     "year": "Anno",
     "rating": "Voto",
+    "ratingBy": "Voto {provider}",
     "duration": "Tempo di visualizzazione",
     "plays": "Riproduzioni",
     "users": "Utenti",

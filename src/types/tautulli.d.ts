@@ -48,6 +48,9 @@ export type TautulliItemRow = {
   thumb: string
   is_deleted: boolean
   rating: string | null
+  // From MDBList, when its API key is set
+  imdb_rating?: string | null
+  rotten_tomatoes_rating?: number | null
   tmdb_id: number | null
   imdb_id: string | null
   user_thumb: string

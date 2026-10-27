@@ -128,7 +128,7 @@
     "urlNotFound": "Ei leitud. Kontrolli URL-i, sealhulgas võimalikku baasteed.",
     "unexpectedResponse": "Ootamatu vastus (HTTP {status}).",
     "certificateError": "HTTPS-sertifikaadi viga. Kontrolli, et URL vastaks kehtivale sertifikaadile.",
-    "invalidField": "Kontrolli {field, select, tautulliUrl {Tautulli URL-i} tautulliApiKey {Tautulli API võtit} tracearrUrl {Tracearr URL-i} tracearrApiKey {Tracearr API võtit} plexUrl {Plexi URL-i} overseerrUrl {Overseerr URL-i} overseerrApiKey {Overseerr API võtit} googleAnalyticsId {Google Analyticsi ID-d} other {seadeid}}.",
+    "invalidField": "Kontrolli {field, select, tautulliUrl {Tautulli URL-i} tautulliApiKey {Tautulli API võtit} tracearrUrl {Tracearr URL-i} tracearrApiKey {Tracearr API võtit} plexUrl {Plexi URL-i} overseerrUrl {Overseerr URL-i} overseerrApiKey {Overseerr API võtit} mdblistApiKey {MDBListi API võtit} googleAnalyticsId {Google Analyticsi ID-d} other {seadeid}}.",
     "buyMeACoffee": "Osta mulle kohvi",
     "becomeASponsor": "Hakka sponsoriks",
     "reportAnIssue": "Teata probleemist",
@@ -150,7 +150,8 @@
       "source": "Allikas",
       "server": "Server",
       "chooseServer": "Vali server",
-      "overseerrUrlDescription": "Tellimuste lingid avanevad vaataja brauseris, seega kasuta aadressi, millele ta ligi pääseb, mitte kohtvõrgu aadressi."
+      "overseerrUrlDescription": "Tellimuste lingid avanevad vaataja brauseris, seega kasuta aadressi, millele ta ligi pääseb, mitte kohtvõrgu aadressi.",
+      "mdblistApiKeyDescription": "IMDb ja Rotten Tomatoesi hinnangute jaoks. Tasuta API võtme saad mdblist.com-i seadetest."
     },
     "Dashboard": {
       "title": "Edetabeli seaded",
@@ -159,7 +160,7 @@
       "usersPage": "Kasutajate leht",
       "statistics": "Statistika",
       "itemStatistics": "Kirje statistika",
-      "itemStatisticsDescription": "Kuvatakse iga pealkirja ja kasutaja juures edetabelis ja Rewind'is.",
+      "itemStatisticsDescription": "Kuvatakse iga pealkirja ja kasutaja juures edetabelis ja Rewind'is. IMDb ja Rotten Tomatoesi hinnangud vajavad ühenduse seadetes MDBListi API võtit.",
       "totalStatistics": "Kokkuvõtlik statistika",
       "totalStatisticsDescription": "Kuvatakse iga edetabeli all. Kogus on kogumikus olevate filmide, episoodide või lugude arv.",
       "sortFilter": "Sorteerimise filter",
@@ -213,6 +214,7 @@
     "status": "Olek",
     "year": "Aasta",
     "rating": "Hinnang",
+    "ratingBy": "{provider} hinnang",
     "duration": "Vaatamisaeg",
     "plays": "Mängimiste arv",
     "users": "Kasutajate arv",

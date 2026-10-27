@@ -94,12 +94,28 @@ export default function DashboardSettingsForm({ settings }: Props) {
                   {tCommon('year')}
                 </Checkbox>
                 <Checkbox
-                  key='item-rating'
-                  value='rating'
+                  key='item-tmdb-rating'
+                  value='tmdbRating'
                   className='checkbox-wrapper'
                 >
                   <div className='checkbox' aria-hidden='true'></div>
-                  {tCommon('rating')}
+                  {tCommon('ratingBy', { provider: 'TMDB' })}
+                </Checkbox>
+                <Checkbox
+                  key='item-imdb-rating'
+                  value='imdbRating'
+                  className='checkbox-wrapper'
+                >
+                  <div className='checkbox' aria-hidden='true'></div>
+                  {tCommon('ratingBy', { provider: 'IMDb' })}
+                </Checkbox>
+                <Checkbox
+                  key='item-rotten-tomatoes-rating'
+                  value='rottenTomatoesRating'
+                  className='checkbox-wrapper'
+                >
+                  <div className='checkbox' aria-hidden='true'></div>
+                  {tCommon('ratingBy', { provider: 'Rotten Tomatoes' })}
                 </Checkbox>
                 <Checkbox
                   key='item-duration'

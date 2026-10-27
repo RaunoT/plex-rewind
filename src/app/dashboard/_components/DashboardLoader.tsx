@@ -2,6 +2,7 @@ import CardWrapper from '@/app/_components/CardWrapper'
 import SkeletonLine from '@/components/SkeletonLine'
 import { DashboardItemStatistics } from '@/types/settings'
 import { TautulliMediaType } from '@/types/tautulli'
+import { RATING_STATISTICS } from '@/utils/constants'
 import clsx from 'clsx'
 import { ReactNode } from 'react'
 
@@ -42,7 +43,8 @@ function ListItem({ type, activeStats }: Omit<Props, 'toolbar'>) {
   const isUsers = type === 'users'
   const hasDetails =
     (type === 'movie' || type === 'show') &&
-    (activeStats.includes('year') || activeStats.includes('rating'))
+    (activeStats.includes('year') ||
+      RATING_STATISTICS.some((rating) => activeStats.includes(rating)))
   const pills = [
     activeStats.includes('duration') && 'w-24',
     activeStats.includes('plays') && 'w-16',
