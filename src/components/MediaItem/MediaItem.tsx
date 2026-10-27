@@ -76,9 +76,10 @@ export default function MediaItem({
     isVideo && activeStats.includes('imdbRating') ? data.imdb_rating : null
   const rottenTomatoesRating =
     isVideo && activeStats.includes('rottenTomatoesRating')
-      ? data.rotten_tomatoes_rating
+      ? (data.rotten_tomatoes_rating ?? null)
       : null
-  const hasDetails = year || tmdbRating || imdbRating || rottenTomatoesRating
+  const hasDetails =
+    year || tmdbRating || imdbRating || rottenTomatoesRating !== null
 
   if (initialImageSrc !== prevInitialImageSrc) {
     setPrevInitialImageSrc(initialImageSrc)
@@ -179,7 +180,7 @@ export default function MediaItem({
                     {formatRating(imdbRating, locale)}
                   </li>
                 )}
-                {rottenTomatoesRating && (
+                {rottenTomatoesRating !== null && (
                   <li className='icon-stat-wrapper icon-stat-wrapper--clean'>
                     <STAT_ICONS.rottenTomatoes className='text-red-400' />
                     <span className='sr-only'>

@@ -102,15 +102,15 @@ async function getMdblistRatings(
   }
 
   const media = await fetchMdblist<MdblistMedia>(endpoint)
-  // A missing rating can come back as 0
+  // A missing rating is null, while 0 is a real score
   const getRating = (source: string) =>
-    media?.ratings?.find((rating) => rating.source === source)?.value || null
+    media?.ratings?.find((rating) => rating.source === source)?.value ?? null
   const imdb = getRating('imdb')
   const rottenTomatoes = getRating('tomatoes')
 
   return {
-    imdb: imdb ? imdb.toFixed(1) : null,
-    rottenTomatoes: rottenTomatoes ? Math.round(rottenTomatoes) : null,
+    imdb: imdb === null ? null : imdb.toFixed(1),
+    rottenTomatoes: rottenTomatoes === null ? null : Math.round(rottenTomatoes),
   }
 }
 

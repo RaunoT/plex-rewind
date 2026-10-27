@@ -330,7 +330,7 @@ describe('getMediaAdditionalData', () => {
 
   it('looks shows up by IMDb id when TMDB has no match', async () => {
     mockTmdb({ 'search/tv': { results: [] } })
-    mockMdblist([{ source: 'tomatoes', value: 0 }])
+    mockMdblist([{ source: 'tomatoes', value: null }])
 
     const [item] = await getMediaAdditionalData(
       [row({ imdb_id: 'tt5753856' })],
@@ -341,6 +341,30 @@ describe('getMediaAdditionalData', () => {
     expect(fetchMdblist).toHaveBeenCalledWith('imdb/show/tt5753856')
     expect(item.imdb_rating).toBeNull()
     expect(item.rotten_tomatoes_rating).toBeNull()
+  })
+
+  it('keeps a 0% Rotten Tomatoes score apart from a missing one', async () => {
+    mockTmdb({ 'movie/1': {}, 'movie/2': {} })
+    vi.mocked(fetchMdblist).mockImplementation(
+      async (endpoint) =>
+        ({
+          ratings: [
+            {
+              source: 'tomatoes',
+              value: endpoint === 'tmdb/movie/1' ? 0 : null,
+            },
+          ],
+        }) as never,
+    )
+
+    const [rated, missing] = await getMediaAdditionalData(
+      [row({ tmdb_id: 1 }), row({ tmdb_id: 2 })],
+      'movie',
+      getSourceData,
+    )
+
+    expect(rated.rotten_tomatoes_rating).toBe(0)
+    expect(missing.rotten_tomatoes_rating).toBeNull()
   })
 
   it('skips MDBList when neither of its ratings is shown', async () => {
