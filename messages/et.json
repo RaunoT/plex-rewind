@@ -57,7 +57,9 @@
     "movies": "{count, plural, =1 {film} other {filmi}}",
     "episodes": "{count, plural, =1 {episood} other {episoodi}}",
     "tracks": "{count, plural, =1 {lugu} other {lugu}}",
-    "requests": "{count, plural, =1 {tellimus} other {tellimust}}"
+    "requests": "{count, plural, =1 {tellimus} other {tellimust}}",
+    "durationWatched": "{duration} vaadatud",
+    "durationListened": "{duration} kuulatud"
   },
   "DashboardFilters": {
     "type": "Tüüp",

@@ -57,7 +57,9 @@
     "movies": "{count, plural, =1 {film} other {films}}",
     "episodes": "{count, plural, =1 {épisode} other {épisodes}}",
     "tracks": "{count, plural, =1 {morceau} other {morceaux}}",
-    "requests": "{count, plural, =1 {demande} other {demandes}}"
+    "requests": "{count, plural, =1 {demande} other {demandes}}",
+    "durationWatched": "{duration} de visionnage",
+    "durationListened": "{duration} d'écoute"
   },
   "DashboardFilters": {
     "type": "Type",

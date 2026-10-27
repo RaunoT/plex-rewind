@@ -95,8 +95,10 @@ export default async function Dashboard({
         {totalDuration && (
           <li className='icon-stat-wrapper icon-stat-wrapper--clean'>
             <STAT_ICONS.duration />
-            <span className='sr-only'>{tCommon('duration')}</span>{' '}
-            {totalDuration}
+            {/* Named, as it covers the period while the rest are all-time */}
+            {t(type === 'artist' ? 'durationListened' : 'durationWatched', {
+              duration: totalDuration,
+            })}
           </li>
         )}
       </ul>
