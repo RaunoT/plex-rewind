@@ -37,7 +37,6 @@ export default function MediaItems({
           activeStats={settings.dashboard.activeItemStatistics}
           settings={settings}
           loggedInUserId={loggedInUserId}
-          items={items}
         />
       ))}
     </ul>

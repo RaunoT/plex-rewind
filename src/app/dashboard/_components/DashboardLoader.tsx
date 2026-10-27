@@ -2,6 +2,7 @@ import CardWrapper from '@/app/_components/CardWrapper'
 import SkeletonLine from '@/components/SkeletonLine'
 import { DashboardItemStatistics, PublicSettings } from '@/types/settings'
 import { TautulliMediaType } from '@/types/tautulli'
+import { DASHBOARD_PAGE_SIZE } from '@/utils/constants'
 import clsx from 'clsx'
 import { ReactNode } from 'react'
 import DashboardHeader from './DashboardHeader'
@@ -10,11 +11,17 @@ type Props = {
   toolbar: ReactNode
   type: TautulliMediaType | 'users'
   settings: PublicSettings
+  rows?: number
 }
 
 // Built like the real rows for this library and the chosen statistics, so
 // nothing moves once the data arrives
-export default function DashboardLoader({ toolbar, type, settings }: Props) {
+export default function DashboardLoader({
+  toolbar,
+  type,
+  settings,
+  rows = DASHBOARD_PAGE_SIZE,
+}: Props) {
   const isUsers = type === 'users'
   const { activeItemStatistics, activeTotalStatistics } = settings.dashboard
   const periodStats = [
@@ -40,7 +47,7 @@ export default function DashboardLoader({ toolbar, type, settings }: Props) {
 
       <CardWrapper>
         <ul className='flex flex-col overflow-hidden'>
-          {[...Array(5)].map((_, i) => (
+          {[...Array(rows)].map((_, i) => (
             <ListItem key={i} type={type} activeStats={activeItemStatistics} />
           ))}
         </ul>

@@ -119,6 +119,47 @@ describe('getTotalDuration', () => {
   })
 })
 
+describe('getTopItems', () => {
+  function mockRows(count: number) {
+    fetchMock.mockImplementation(async (_query, params) =>
+      tautulliData({
+        rows:
+          params?.stat_id === 'top_music'
+            ? Array.from({ length: count }, (_, i) => ({ rating_key: i }))
+            : [],
+      }),
+    )
+  }
+
+  it('asks for one more row to tell if the ranking goes on', async () => {
+    mockRows(3)
+
+    const { items, hasMore } = await tautulliSource.getTopItems(
+      library('1', 'artist'),
+      { period: 30, count: 2 },
+    )
+
+    expect(fetchMock).toHaveBeenCalledWith(
+      'get_home_stats',
+      expect.objectContaining({ stat_id: 'top_music', stats_count: 3 }),
+    )
+    expect(items).toHaveLength(2)
+    expect(hasMore).toBe(true)
+  })
+
+  it('has no more once the ranking ends', async () => {
+    mockRows(2)
+
+    const { items, hasMore } = await tautulliSource.getTopItems(
+      library('1', 'artist'),
+      { period: 30, count: 2 },
+    )
+
+    expect(items).toHaveLength(2)
+    expect(hasMore).toBe(false)
+  })
+})
+
 describe('getTopMediaItems', () => {
   it('skips libraries of other types', async () => {
     fetchMock.mockResolvedValue(

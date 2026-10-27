@@ -110,6 +110,32 @@ describe('getMediaStats', () => {
   })
 })
 
+describe('getTopItems', () => {
+  const artists = ['Smilers', 'Ewert', 'Terminaator'].map((artistName) =>
+    play({ mediaType: 'track', title: 'Song', artistName }),
+  )
+
+  it('tells whether the ranking goes on past the count', async () => {
+    vi.mocked(getTracearrPlays).mockResolvedValue(artists)
+
+    const library = LIBRARIES[2]
+    // Back to before the plays, whenever the test runs
+    const period = Math.ceil(
+      (Date.now() - new Date('2026-01-01').getTime()) / (24 * 60 * 60 * 1000),
+    )
+    const twoOfThree = await tracearrSource.getTopItems(library, {
+      period,
+      count: 2,
+    })
+    const all = await tracearrSource.getTopItems(library, { period, count: 3 })
+
+    expect(twoOfThree.items).toHaveLength(2)
+    expect(twoOfThree.hasMore).toBe(true)
+    expect(all.items).toHaveLength(3)
+    expect(all.hasMore).toBe(false)
+  })
+})
+
 describe('getTopMediaItems', () => {
   async function getTop(plays: TracearrPlay[]) {
     vi.mocked(getTracearrPlays).mockResolvedValue(plays)

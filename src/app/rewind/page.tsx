@@ -121,7 +121,7 @@ async function RewindContent({ userId }: { userId?: string }) {
       user_percentage_value: share.percentage,
       total: secondsToTime(share.total, t),
     },
-    usersTop: usersTop,
+    usersTop: usersTop?.items ?? null,
     shows: {
       top: topMediaItems.shows,
       count: topMediaStats.shows.count,

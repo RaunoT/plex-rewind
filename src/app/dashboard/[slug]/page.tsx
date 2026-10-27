@@ -2,6 +2,8 @@ import { authOptions } from '@/lib/auth'
 import { DashboardSearchParams } from '@/types/dashboard'
 import {
   getItems,
+  getItemsLimit,
+  getNextItemsLimit,
   getTotalDuration,
   getTotalRequests,
   getTotalSize,
@@ -44,12 +46,14 @@ async function DashboardContent({
   periodSp,
   personalSp,
   sortBySp,
+  limit,
   toolbar,
 }: {
   slug: string
   periodSp: DashboardSearchParams['period']
   personalSp: DashboardSearchParams['personal']
   sortBySp: DashboardSearchParams['sortBy']
+  limit: number
   toolbar: ReactNode
 }) {
   const libraries = await getLibraries()
@@ -75,14 +79,24 @@ async function DashboardContent({
   const sortByPlays = !(
     sortBySp === 'duration' && settings.dashboard.isSortByPlaysActive
   )
-  const [items, totalDuration, totalRequests, totalSize, serverId] =
-    await Promise.all([
-      getItems(library, period.daysAgo, personalUserId, sortByPlays),
-      getTotalDuration(library, period.string, settings, personalUserId),
-      getTotalRequests(period.string, settings, library, personalUserId),
-      getTotalSize(library, settings),
-      getServerId(),
-    ])
+  const [
+    { items, hasMore },
+    totalDuration,
+    totalRequests,
+    totalSize,
+    serverId,
+  ] = await Promise.all([
+    getItems(library, {
+      period: period.daysAgo,
+      userId: personalUserId,
+      sortByPlays,
+      count: limit,
+    }),
+    getTotalDuration(library, period.string, settings, personalUserId),
+    getTotalRequests(period.string, settings, library, personalUserId),
+    getTotalSize(library, settings),
+    getServerId(),
+  ])
   const isCountActive =
     settings.dashboard.activeTotalStatistics.includes('count')
   const countValue =
@@ -104,6 +118,7 @@ async function DashboardContent({
       settings={toPublicSettings(settings)}
       loggedInUserId={loggedInUserId}
       toolbar={toolbar}
+      nextLimit={getNextItemsLimit(limit, hasMore)}
     />
   )
 }
@@ -116,7 +131,7 @@ type Props = {
 }
 
 export default async function DashboardPage({ searchParams, params }: Props) {
-  const { period, personal, sortBy } = await searchParams
+  const { period, personal, sortBy, limit } = await searchParams
   const { slug } = await params
   const settings = getSettings()
   const session = await getServerSession(authOptions)
@@ -124,6 +139,7 @@ export default async function DashboardPage({ searchParams, params }: Props) {
   const library = (await getLibraries()).find(
     (library) => kebabCase(library.section_name) === slug,
   )
+  const itemsLimit = getItemsLimit(limit)
   const publicSettings = toPublicSettings(settings)
   const toolbar = (
     <DashboardToolbar
@@ -139,8 +155,10 @@ export default async function DashboardPage({ searchParams, params }: Props) {
           toolbar={toolbar}
           type={library?.section_type ?? 'movie'}
           settings={publicSettings}
+          rows={itemsLimit}
         />
       }
+      // Without the limit, so "Show more" keeps the list up while it loads
       key={`period-${period}-personal-${personal}-sortBy-${sortBy}`}
     >
       <DashboardContent
@@ -148,6 +166,7 @@ export default async function DashboardPage({ searchParams, params }: Props) {
         periodSp={period}
         personalSp={personal}
         sortBySp={sortBy}
+        limit={itemsLimit}
         toolbar={toolbar}
       />
     </Suspense>

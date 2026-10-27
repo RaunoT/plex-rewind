@@ -4,6 +4,8 @@ import {
   PlaysByTime,
   ServerMembership,
   StatsSource,
+  TopItems,
+  TopItemsQuery,
   TopMediaItems,
   TopUsersQuery,
 } from '@/types/statsSource'
@@ -272,23 +274,26 @@ async function addAdditionalData(
 
 async function getTracearrItems(
   library: TautulliLibrary,
-  period: number,
-  userId?: string,
-  sortByPlays?: boolean,
-): Promise<TautulliItemRow[]> {
+  { period, userId, sortByPlays, count }: TopItemsQuery,
+): Promise<TopItems> {
   const mediaType = TRACEARR_MEDIA_TYPES[library.section_type]
   const plays = await getPlays({
     since: new Date(Date.now() - period * 24 * 60 * 60 * 1000),
     userId,
     libraries: [library],
   })
-  const items = getTopItems(plays, 5, sortByPlays).map((item) => ({
+  // The extra item only tells whether the ranking goes on.
+  const topItems = getTopItems(plays, count + 1, sortByPlays)
+  const items = topItems.slice(0, count).map((item) => ({
     ...item,
     // Don't show how many users watched the item on personal dashboard
     users_watched: userId ? undefined : item.users_watched,
   }))
 
-  return addAdditionalData(items, mediaType)
+  return {
+    items: await addAdditionalData(items, mediaType),
+    hasMore: topItems.length > count,
+  }
 }
 
 async function getTracearrTotalDuration(query: DurationQuery): Promise<number> {
