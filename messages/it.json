@@ -119,6 +119,7 @@
     "urlNotFound": "Non trovato. Controlla l'URL, compreso l'eventuale percorso di base.",
     "unexpectedResponse": "Risposta inattesa (HTTP {status}).",
     "certificateError": "Errore del certificato HTTPS. Controlla che l'URL corrisponda a un certificato valido.",
+    "invalidField": "Controlla {field, select, tautulliUrl {l'URL di Tautulli} tautulliApiKey {la chiave API di Tautulli} tracearrUrl {l'URL di Tracearr} tracearrApiKey {la chiave API di Tracearr} plexUrl {l'URL di Plex} overseerrUrl {l'URL di Overseerr} overseerrApiKey {la chiave API di Overseerr} googleAnalyticsId {l'ID di Google Analytics} other {le impostazioni}}.",
     "buyMeACoffee": "Offrimi un caffè",
     "becomeASponsor": "Diventa sponsor",
     "reportAnIssue": "Segnala un problema",
@@ -138,20 +139,24 @@
       "statistics": "Statistiche",
       "source": "Sorgente",
       "server": "Server",
-      "chooseServer": "Scegli un server"
+      "chooseServer": "Scegli un server",
+      "overseerrUrlDescription": "I link alle richieste si aprono nel browser degli utenti, quindi usa un indirizzo che possono raggiungere, non uno della rete locale."
     },
     "Dashboard": {
       "title": "Impostazioni della dashboard",
-      "customPeriodError": "Il periodo personalizzato deve essere un numero intero > 0 e <= 3000",
-      "startDateError": "Data di inizio non valida",
+      "customPeriodError": "Il periodo personalizzato deve essere un numero intero da 1 a 3000.",
+      "startDateError": "Controlla la data di inizio.",
       "usersPage": "Pagina degli utenti",
       "statistics": "Statistiche",
       "itemStatistics": "Statistiche per titolo",
+      "itemStatisticsDescription": "Mostrate per ogni titolo e utente negli elenchi della dashboard e del Rewind.",
       "totalStatistics": "Statistiche totali",
+      "totalStatisticsDescription": "Mostrate sotto ogni elenco della dashboard. Il numero indica quanti film, episodi o brani ci sono nella libreria.",
       "sortFilter": "Filtro di ordinamento",
+      "sortFilterDescription": "Permette di ordinare la dashboard per tempo di visualizzazione. Altrimenti gli elenchi sono ordinati per riproduzioni.",
       "customPeriod": "Periodo personalizzato",
-      "inDays": "In giorni.",
-      "startDateHelperText": "Usata per il periodo «Da sempre»."
+      "inDays": "In giorni. La dashboard e la home si aprono con questo periodo.",
+      "startDateHelperText": "Inizio del periodo «Da sempre»."
     },
     "Activity": {
       "title": "Impostazioni dell'attività",
@@ -176,9 +181,9 @@
       "excludedUsers": "Utenti esclusi",
       "excludedUsersDescription": "Gli utenti selezionati sono esclusi dalle classifiche degli utenti e dal tempo di visualizzazione totale. Con Tautulli, nelle classifiche di film, serie TV e artisti le loro riproduzioni contano comunque.",
       "outsideAccess": "Consenti l'accesso esterno",
-      "outsideAccessDescription": "Accesso senza login.",
+      "outsideAccessDescription": "Chiunque può vedere la dashboard e l'attività senza accedere, e sono mostrate tutte le librerie, a prescindere dalla condivisione in Plex. Il Rewind richiede comunque l'accesso.",
       "anonymize": "Anonimizza",
-      "anonymizeDescription": "Nasconde i nomi degli altri utenti.",
+      "anonymizeDescription": "Nasconde i nomi degli altri utenti, anche agli amministratori. Nella pagina dell'attività nasconde anche indirizzi IP e posizioni.",
       "analytics": "Analytics"
     },
     "Rewind": {

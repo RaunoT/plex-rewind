@@ -119,6 +119,7 @@
     "urlNotFound": "Introuvable. Vérifiez l'URL, y compris le chemin de base éventuel.",
     "unexpectedResponse": "Réponse inattendue (HTTP {status}).",
     "certificateError": "Erreur de certificat HTTPS. Vérifiez que l'URL correspond à un certificat valide.",
+    "invalidField": "Vérifiez {field, select, tautulliUrl {l'URL de Tautulli} tautulliApiKey {la clé API de Tautulli} tracearrUrl {l'URL de Tracearr} tracearrApiKey {la clé API de Tracearr} plexUrl {l'URL de Plex} overseerrUrl {l'URL d'Overseerr} overseerrApiKey {la clé API d'Overseerr} googleAnalyticsId {l'ID Google Analytics} other {les paramètres}}.",
     "buyMeACoffee": "Offrez-moi un café",
     "becomeASponsor": "Devenir sponsor",
     "reportAnIssue": "Signaler un problème",
@@ -138,20 +139,24 @@
       "statistics": "Statistiques",
       "source": "Source",
       "server": "Serveur",
-      "chooseServer": "Choisissez un serveur"
+      "chooseServer": "Choisissez un serveur",
+      "overseerrUrlDescription": "Les liens de demande s'ouvrent dans le navigateur de l'utilisateur : utilisez une adresse qu'il peut joindre, pas une adresse du réseau local."
     },
     "Dashboard": {
       "title": "Paramètres du tableau de bord",
-      "customPeriodError": "La période personnalisée doit être un nombre entier > 0 et <= 3000",
-      "startDateError": "Date de début invalide",
+      "customPeriodError": "La période personnalisée doit être un nombre entier entre 1 et 3000.",
+      "startDateError": "Vérifiez la date de début.",
       "usersPage": "Page des utilisateurs",
       "statistics": "Statistiques",
       "itemStatistics": "Statistiques des éléments",
+      "itemStatisticsDescription": "Affichées pour chaque titre et utilisateur dans les listes du tableau de bord et du Rewind.",
       "totalStatistics": "Statistiques totales",
+      "totalStatisticsDescription": "Affichées sous chaque liste du tableau de bord. Le nombre correspond aux films, épisodes ou morceaux de la bibliothèque.",
       "sortFilter": "Filtre de tri",
+      "sortFilterDescription": "Permet de trier le tableau de bord par durée de visionnage. Sinon, les listes sont triées par lectures.",
       "customPeriod": "Période personnalisée",
-      "inDays": "En jours.",
-      "startDateHelperText": "Utilisé pour la période tout le temps."
+      "inDays": "En jours. Le tableau de bord et l'accueil s'ouvrent sur cette période.",
+      "startDateHelperText": "Début de la période « Tout le temps »."
     },
     "Activity": {
       "title": "Paramètres d'activité",
@@ -176,9 +181,9 @@
       "excludedUsers": "Utilisateurs exclus",
       "excludedUsersDescription": "Les utilisateurs sélectionnés sont exclus des classements d'utilisateurs et de la durée de visionnage totale. Avec Tautulli, les films, séries et artistes populaires incluent toujours leurs lectures.",
       "outsideAccess": "Autoriser l'accès externe",
-      "outsideAccessDescription": "Accès sans connexion.",
+      "outsideAccessDescription": "Tout le monde peut voir le tableau de bord et l'activité sans se connecter, et toutes les bibliothèques sont affichées, quel que soit le partage dans Plex. Le Rewind nécessite toujours une connexion.",
       "anonymize": "Anonymiser",
-      "anonymizeDescription": "Masquer les noms d'utilisateurs pour les autres utilisateurs.",
+      "anonymizeDescription": "Masquer les noms des autres utilisateurs, même pour les administrateurs. Les adresses IP et les emplacements sont aussi masqués sur la page d'activité.",
       "analytics": "Analytique"
     },
     "Rewind": {

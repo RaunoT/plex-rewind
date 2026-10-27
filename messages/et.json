@@ -119,6 +119,7 @@
     "urlNotFound": "Ei leitud. Kontrolli URL-i, sealhulgas võimalikku baasteed.",
     "unexpectedResponse": "Ootamatu vastus (HTTP {status}).",
     "certificateError": "HTTPS-sertifikaadi viga. Kontrolli, et URL vastaks kehtivale sertifikaadile.",
+    "invalidField": "Kontrolli {field, select, tautulliUrl {Tautulli URL-i} tautulliApiKey {Tautulli API võtit} tracearrUrl {Tracearr URL-i} tracearrApiKey {Tracearr API võtit} plexUrl {Plexi URL-i} overseerrUrl {Overseerr URL-i} overseerrApiKey {Overseerr API võtit} googleAnalyticsId {Google Analyticsi ID-d} other {seadeid}}.",
     "buyMeACoffee": "Osta mulle kohvi",
     "becomeASponsor": "Hakka sponsoriks",
     "reportAnIssue": "Teata probleemist",
@@ -138,20 +139,24 @@
       "statistics": "Statistika",
       "source": "Allikas",
       "server": "Server",
-      "chooseServer": "Vali server"
+      "chooseServer": "Vali server",
+      "overseerrUrlDescription": "Tellimuste lingid avanevad vaataja brauseris, seega kasuta aadressi, millele ta ligi pääseb, mitte kohtvõrgu aadressi."
     },
     "Dashboard": {
       "title": "Edetabeli seaded",
-      "customPeriodError": "Kohandatud periood peab olema täisarv > 0 ja <= 3000",
-      "startDateError": "Vale algusaeg",
+      "customPeriodError": "Kohandatud periood peab olema täisarv vahemikus 1–3000.",
+      "startDateError": "Kontrolli alguskuupäeva.",
       "usersPage": "Kasutajate leht",
       "statistics": "Statistika",
       "itemStatistics": "Kirje statistika",
+      "itemStatisticsDescription": "Kuvatakse iga pealkirja ja kasutaja juures edetabelis ja Rewind'is.",
       "totalStatistics": "Kokkuvõtlik statistika",
+      "totalStatisticsDescription": "Kuvatakse iga edetabeli all. Kogus on kogumikus olevate filmide, episoodide või lugude arv.",
       "sortFilter": "Sorteerimise filter",
+      "sortFilterDescription": "Lubab edetabelit sorteerida vaatamisaja järgi. Muidu sorteeritakse mängimiste järgi.",
       "customPeriod": "Kohandatud periood",
-      "inDays": "Päevades.",
-      "startDateHelperText": "Kasutatud kogu ajalise perioodi jaoks."
+      "inDays": "Päevades. Edetabel ja avaleht avanevad selle perioodiga.",
+      "startDateHelperText": "Perioodi „Kokku“ algus."
     },
     "Activity": {
       "title": "Tegevuse seaded",
@@ -176,9 +181,9 @@
       "excludedUsers": "Välistatud kasutajad",
       "excludedUsersDescription": "Valitud kasutajad jäetakse välja kasutajate pingeridadest ja kogu vaatamisajast. Tautulli puhul sisaldavad enim vaadatud filmid, seriaalid ja esitajad endiselt nende vaatamisi.",
       "outsideAccess": "Luba väline ligipääs",
-      "outsideAccessDescription": "Ligipääs ilma sisselogimiseta.",
+      "outsideAccessDescription": "Igaüks saab edetabelit ja tegevust vaadata ilma sisse logimata ning näha on kõik kogumikud, sõltumata sellest, mida Plexis jagatakse. Rewind nõuab endiselt sisselogimist.",
       "anonymize": "Anonümiseeri",
-      "anonymizeDescription": "Peida teiste kasutajanimed.",
+      "anonymizeDescription": "Peida teiste kasutajate nimed, ka administraatorite eest. Tegevuse lehel peidetakse ka IP-aadressid ja asukohad.",
       "analytics": "Analüütika"
     },
     "Rewind": {
@@ -203,7 +208,7 @@
     "plays": "Mängimiste arv",
     "users": "Kasutajate arv",
     "requests": "Tellimuste arv",
-    "count": "Mängimiste arv",
+    "count": "Kogus",
     "size": "Suurus",
     "defaults": "Vaikeväärtused",
     "startDate": "Algus",

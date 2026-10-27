@@ -119,6 +119,7 @@
     "urlNotFound": "Nicht gefunden. Prüfe die URL, einschließlich eines möglichen Basispfads.",
     "unexpectedResponse": "Unerwartete Antwort (HTTP {status}).",
     "certificateError": "HTTPS-Zertifikatsfehler. Prüfe, ob die URL zu einem gültigen Zertifikat passt.",
+    "invalidField": "Prüfe {field, select, tautulliUrl {die Tautulli-URL} tautulliApiKey {den Tautulli-API-Schlüssel} tracearrUrl {die Tracearr-URL} tracearrApiKey {den Tracearr-API-Schlüssel} plexUrl {die Plex-URL} overseerrUrl {die Overseerr-URL} overseerrApiKey {den Overseerr-API-Schlüssel} googleAnalyticsId {die Google-Analytics-ID} other {die Einstellungen}}.",
     "buyMeACoffee": "Kaffee spenden",
     "becomeASponsor": "Sponsor werden",
     "reportAnIssue": "Problem melden",
@@ -138,20 +139,24 @@
       "statistics": "Statistiken",
       "source": "Quelle",
       "server": "Server",
-      "chooseServer": "Server auswählen"
+      "chooseServer": "Server auswählen",
+      "overseerrUrlDescription": "Anfrage-Links öffnen sich im Browser der Benutzer. Nutze daher eine Adresse, die sie erreichen können, keine reine Adresse im lokalen Netzwerk."
     },
     "Dashboard": {
       "title": "Dashboard Einstellungen",
-      "customPeriodError": "Der benutzerdefinierte Zeitraum muss eine ganze Zahl > 0 und <= 3000 sein",
-      "startDateError": "Ungültiges Anfangsdatum",
+      "customPeriodError": "Der benutzerdefinierte Zeitraum muss eine ganze Zahl von 1 bis 3000 sein.",
+      "startDateError": "Prüfe das Startdatum.",
       "usersPage": "Benutzerseite",
       "statistics": "Statistiken",
       "itemStatistics": "Artikelstatistiken",
+      "itemStatisticsDescription": "Wird bei jedem Titel und Benutzer in den Listen von Dashboard und Rewind angezeigt.",
       "totalStatistics": "Gesamtstatistik",
+      "totalStatisticsDescription": "Wird unter jeder Dashboard-Liste angezeigt. Die Anzahl ist die Zahl der Filme, Episoden oder Titel in der Bibliothek.",
       "sortFilter": "Sortierfilter",
+      "sortFilterDescription": "Ermöglicht, das Dashboard nach Wiedergabezeit zu sortieren. Sonst wird nach Wiedergaben sortiert.",
       "customPeriod": "benutzerdefinierter Zeitraum",
-      "inDays": "In Tagen.",
-      "startDateHelperText": "Für den gesamten Zeitraum genutzt."
+      "inDays": "In Tagen. Dashboard und Startseite öffnen mit diesem Zeitraum.",
+      "startDateHelperText": "Beginn des Zeitraums „Gesamte Zeit“."
     },
     "Activity": {
       "title": "Aktivität Einstellungen",
@@ -176,9 +181,9 @@
       "excludedUsers": "Ausgeschlossene Benutzer",
       "excludedUsersDescription": "Ausgewählte Benutzer werden aus Benutzer-Ranglisten und der gesamten Wiedergabezeit ausgeschlossen. Mit Tautulli enthalten die beliebtesten Filme, Serien und Künstler weiterhin ihre Wiedergaben.",
       "outsideAccess": "Zugang von Außen zulassen",
-      "outsideAccessDescription": "Zugang ohne Anmeldung.",
+      "outsideAccessDescription": "Alle können Dashboard und Aktivität ohne Anmeldung sehen, und alle Bibliotheken werden angezeigt, unabhängig von der Freigabe in Plex. Rewind erfordert weiterhin eine Anmeldung.",
       "anonymize": "Anonymisieren",
-      "anonymizeDescription": "Nutzernamen vor anderen Nutzern verstecken.",
+      "anonymizeDescription": "Namen anderer Benutzer verbergen, auch vor Admins. Auf der Aktivitätsseite werden auch IP-Adressen und Standorte verborgen.",
       "analytics": "Analytik"
     },
     "Rewind": {

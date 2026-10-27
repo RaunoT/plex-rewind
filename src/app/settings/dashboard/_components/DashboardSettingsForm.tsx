@@ -138,6 +138,7 @@ export default function DashboardSettingsForm({ settings }: Props) {
               </div>
               <Label className='label label--start'>
                 <span className='label-wrapper'>{t('itemStatistics')}</span>
+                <small>{t('itemStatisticsDescription')}</small>
               </Label>
             </CheckboxGroup>
             <CheckboxGroup
@@ -186,17 +187,19 @@ export default function DashboardSettingsForm({ settings }: Props) {
               </div>
               <Label className='label label--start'>
                 <span className='label-wrapper'>{t('totalStatistics')}</span>
+                <small>{t('totalStatisticsDescription')}</small>
               </Label>
             </CheckboxGroup>
             <Switch
               key={`sort-plays-${dashboardSettings.isSortByPlaysActive}`}
-              className='switch'
+              className='switch items-start'
               name='isSortByPlaysActive'
               defaultSelected={dashboardSettings.isSortByPlaysActive}
             >
               <div className='indicator'></div>
               <span className='label'>
                 <span className='label-wrapper'>{t('sortFilter')}</span>
+                <small>{t('sortFilterDescription')}</small>
               </span>
             </Switch>
           </section>
