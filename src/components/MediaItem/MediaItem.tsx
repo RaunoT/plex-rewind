@@ -233,7 +233,7 @@ export default function MediaItem({
                   </a>
                 ) : (
                   <div className='button-card text-neutral-300'>
-                    <TrashIcon className='text-red-300' />
+                    <TrashIcon className='text-danger' />
                     {t('deleted')}
                   </div>
                 )

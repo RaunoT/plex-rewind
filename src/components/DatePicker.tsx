@@ -73,7 +73,7 @@ export default function DatePicker({
               {(segment) => (
                 <DateSegment
                   segment={segment}
-                  className='rounded-sm px-1 uppercase outline-hidden focus:bg-white/15 data-placeholder:text-neutral-50 data-[type="literal"]:text-neutral-50'
+                  className='rounded-sm px-1 uppercase outline-hidden focus:bg-white/15 data-placeholder:text-neutral-400 data-[type="literal"]:text-neutral-400'
                 />
               )}
             </DateInput>

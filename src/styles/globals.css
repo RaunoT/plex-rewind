@@ -2,6 +2,8 @@
 
 @theme {
   --color-plex: #e5a00d;
+  --color-danger: var(--color-red-300);
+  --color-success: var(--color-green-400);
 }
 
 @layer base {
@@ -70,7 +72,7 @@
 
 @utility required {
   ::after {
-    @apply ml-1 align-text-bottom text-red-300 content-['*'];
+    @apply text-danger ml-1 align-text-bottom content-['*'];
   }
 }
 

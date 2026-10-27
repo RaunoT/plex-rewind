@@ -20,7 +20,7 @@ export default function LoginButton({ siteUrl }: { siteUrl: string }) {
       {error && (
         <p
           role='alert'
-          className='glass absolute top-full right-0 z-10 mt-2 w-64 rounded-2xl p-3 text-sm text-red-300'
+          className='glass text-danger absolute top-full right-0 z-10 mt-2 w-64 rounded-2xl p-3 text-sm'
         >
           {t(`loginError.${error}`)}
         </p>

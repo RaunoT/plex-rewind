@@ -72,7 +72,7 @@ export default function Home({ settings, missingSetting, siteUrl }: Props) {
           </button>
         )}
         {error && (
-          <p role='alert' className='text-sm text-red-300'>
+          <p role='alert' className='text-danger text-sm'>
             {t(`loginError.${error}`)}
           </p>
         )}
