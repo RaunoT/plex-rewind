@@ -4,6 +4,13 @@
     "setupRequired": "Configurazione richiesta",
     "setupRequiredDescription": "Questa applicazione deve essere configurata da un amministratore.",
     "loginWithPlex": "Accedi con Plex",
+    "loginError": {
+      "plexUnavailable": "Impossibile raggiungere Plex. Riprova tra poco.",
+      "plexNotConfirmed": "Plex non ha confermato l'accesso. Riprova.",
+      "plexAccount": "Impossibile caricare il tuo account Plex. Riprova.",
+      "noAccess": "Questo account Plex non ha accesso a questo server.",
+      "unknown": "Accesso non riuscito. Riprova."
+    },
     "rewind": "Inizia il Rewind",
     "dashboard": "Dashboard",
     "activity": "Attività",

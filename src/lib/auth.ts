@@ -1,12 +1,75 @@
-import { AuthOptions } from 'next-auth'
+import { AuthOptions, User } from 'next-auth'
 import CredentialsProvider from 'next-auth/providers/credentials'
-import { parseStringPromise } from 'xml2js'
 import { PLEX_API_ENDPOINT } from '../utils/constants'
 import { getServerUser } from '../utils/statsSource'
+import { LoginError } from './loginError'
 
 // Admin rights and server membership are re-checked this often, so changes
 // in Tautulli/Tracearr reach existing sessions.
 const USER_RECHECK_INTERVAL = 60 * 60 * 1000
+
+type PlexUser = {
+  id: number
+  title: string
+  email: string
+  thumb: string
+}
+
+async function getPlexUser(authToken: string): Promise<PlexUser | null> {
+  try {
+    const res = await fetch(`${PLEX_API_ENDPOINT}/user`, {
+      headers: {
+        Accept: 'application/json',
+        'X-Plex-Token': authToken,
+      },
+      cache: 'no-store',
+    })
+
+    if (!res.ok) {
+      console.error(
+        '[AUTH] - Failed to fetch user!',
+        res.status,
+        res.statusText,
+      )
+
+      return null
+    }
+
+    return await res.json()
+  } catch (error) {
+    console.error('[AUTH] - Error getting Plex user!', error)
+
+    return null
+  }
+}
+
+export async function authorizePlexUser(authToken: string): Promise<User> {
+  const plexUser = await getPlexUser(authToken)
+
+  if (!plexUser?.id) {
+    throw new LoginError('plexAccount')
+  }
+
+  // Tautulli and Tracearr compare IDs as strings.
+  const id = String(plexUser.id)
+  const serverUser = await getServerUser(id, plexUser.email)
+
+  if (!serverUser) {
+    console.error(`[AUTH] - User ${id} does not belong to this server!`)
+
+    throw new LoginError('noAccess')
+  }
+
+  console.log(`[AUTH] - User ${id} logged in.`)
+
+  return {
+    id,
+    name: plexUser.title,
+    email: plexUser.email,
+    image: plexUser.thumb,
+    isAdmin: serverUser.isAdmin,
+  }
+}
 
 export const authOptions: AuthOptions = {
   providers: [
@@ -20,59 +83,21 @@ export const authOptions: AuthOptions = {
         },
       },
       async authorize(credentials) {
-        if (!credentials) {
+        if (!credentials?.authToken) {
           return null
         }
 
-        const { authToken } = credentials
-
         try {
-          const res = await fetch(`${PLEX_API_ENDPOINT}/user`, {
-            headers: {
-              'X-Plex-Token': authToken,
-            },
-            cache: 'no-store',
-          })
-
-          if (!res.ok) {
-            console.error(
-              '[AUTH] - Failed to fetch user!',
-              res.status,
-              res.statusText,
-            )
-
-            return null
-          }
-
-          const xmlData = await res.text()
-          const jsonData = await parseStringPromise(xmlData)
-          const data = jsonData.user.$
-          const { title, id, thumb, email } = data
-          const userData = {
-            id: id,
-            name: title,
-            email: email,
-            image: thumb,
-            isAdmin: false,
-          }
-          const serverUser = await getServerUser(userData.id, userData.email)
-
-          if (serverUser) {
-            userData.isAdmin = serverUser.isAdmin
-            console.log(`[AUTH] - User ${userData.id} logged in.`)
-
-            return userData
-          }
-
-          console.error(
-            `[AUTH] - User ${userData.id} does not belong to this server!`,
-          )
-
-          return null
+          return await authorizePlexUser(credentials.authToken)
         } catch (error) {
-          console.error('[AUTH] - Error getting Plex user!', error)
+          if (error instanceof LoginError) {
+            throw error
+          }
 
-          return null
+          // Other messages would reach the browser, so they stay in the log.
+          console.error('[AUTH] - Error signing in!', error)
+
+          throw new LoginError('unknown')
         }
       },
     }),
