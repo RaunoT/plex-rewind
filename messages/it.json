@@ -38,7 +38,7 @@
       "directPlay": "riproduzione diretta",
       "directStream": "streaming diretto",
       "transcode": "transcodifica",
-      "burnedIn": "Incorporati"
+      "burnedIn": "Impressi"
     }
   },
   "Dashboard": {
@@ -124,8 +124,8 @@
       "rewind": "Rewind",
       "dashboard": "Dashboard",
       "activity": "Attività",
-      "complete": "Completo",
-      "incomplete": "Incompleto"
+      "complete": "Fatto",
+      "incomplete": "Da completare"
     },
     "Connection": {
       "title": "Impostazioni di connessione",
@@ -159,7 +159,7 @@
       "activeLibraries": "Librerie attive",
       "moveUp": "Sposta {name} in alto",
       "moveDown": "Sposta {name} in basso",
-      "movedTo": "{name} spostato in posizione {position} di {total}",
+      "movedTo": "{name} ora è in posizione {position} di {total}",
       "noLibrariesMessage1": "Crea una libreria in Plex per continuare.",
       "noLibrariesMessage2": "Plex Rewind ha bisogno di almeno una libreria per funzionare.",
       "media": "Contenuti",
@@ -168,7 +168,7 @@
       "tmdbOnlyPostersDescription2": "Di norma, TMDB è solo una riserva.",
       "privacy": "Privacy",
       "excludedUsers": "Utenti esclusi",
-      "excludedUsersDescription": "Gli utenti selezionati sono esclusi dalle classifiche degli utenti e dalle durate totali. Con Tautulli, i film, le serie e gli artisti più visti includono comunque le loro riproduzioni.",
+      "excludedUsersDescription": "Gli utenti selezionati sono esclusi dalle classifiche degli utenti e dalle durate totali. Con Tautulli, nelle classifiche di film, serie e artisti le loro riproduzioni contano comunque.",
       "outsideAccess": "Consenti l'accesso esterno",
       "outsideAccessDescription": "Accesso senza login.",
       "anonymize": "Anonimizza",
@@ -179,7 +179,7 @@
       "title": "Impostazioni del Rewind",
       "cards": "Schede",
       "librariesSizeAndCountCard": "Scheda dimensione e numero delle librerie",
-      "startDateHelperText": "Di norma, 365 giorni fa."
+      "startDateHelperText": "Predefinita: 365 giorni fa."
     }
   },
   "LocaleSelect": {
@@ -199,7 +199,7 @@
     "requests": "Richieste",
     "count": "Numero",
     "size": "Dimensione",
-    "defaults": "Predefinite",
+    "defaults": "Valori predefiniti",
     "startDate": "Data di inizio",
     "profilePictureAlt": "immagine del profilo",
     "time": {
@@ -244,7 +244,7 @@
     },
     "Total": {
       "duration": "Hai passato in <total>Totale</total> <duration>{durationValue}</duration> su <plex>{serverName}!</plex>",
-      "percentage": "È il <percentage>{percentageValue}</percentage> di tutte le riproduzioni, che in tutto hanno fatto <duration>{durationValue}</duration> fra tutti gli utenti.",
+      "percentage": "È il <percentage>{percentageValue}</percentage> di tutte le riproduzioni, che fra tutti gli utenti sommano <duration>{durationValue}</duration>.",
       "noData": "Non hai riprodotto niente su <plex>{serverName}</plex> <emoji>😫</emoji>"
     },
     "Users": {
@@ -258,7 +258,7 @@
     },
     "Libraries": {
       "filesize": "Lo sapevi che la <filesize>Dimensione</filesize> di tutti i contenuti disponibili su <plex>{serverName}</plex> è di <size>{sizeValue}!</size>",
-      "sizePartial": "Alcune librerie non hanno dati sulle dimensioni. Attiva “Calculate Total File Sizes” in Tautulli.",
+      "sizePartial": "Alcune librerie non hanno dati sulle dimensioni. Attiva «Calculate Total File Sizes» in Tautulli.",
       "sizePartialTracearr": "Alcune librerie non hanno dati sulle dimensioni in Tracearr.",
       "libraries": "La libreria oggi contiene:",
       "movies": "{count, plural, =1 {Film} other {Film}}",
@@ -266,14 +266,14 @@
       "tracks": "{count, plural, =1 {Brano} other {Brani}}"
     },
     "Shows": {
-      "duration": "Le <library>Serie TV</library> ti hanno preso <duration>{durationValue}</duration> su <plex>{serverName}.</plex>",
+      "duration": "Hai dedicato <duration>{durationValue}</duration> alle <library>Serie TV</library> su <plex>{serverName}.</plex>",
       "count": "Hai guardato <count>{countValue, number}</count> <episodes>episodi</episodes> in tutto!",
       "favorite": "La tua preferita è stata",
       "noData": "Non hai guardato nessuna <shows>Serie TV</shows> su <plex>{serverName}</plex> <emoji>😥</emoji>"
     },
     "Requests": {
       "noData": "Non ci sono state <requests>Richieste</requests> <emoji>😲</emoji>",
-      "noUserData": "Non hai fatto nessuna <requests>Richiesta</requests>. Puoi farle da <requestLink>{requestLinkValue}</requestLink>.",
+      "noUserData": "Non hai fatto nessuna <requests>Richiesta</requests>. Puoi farne tramite <requestLink>{requestLinkValue}</requestLink>",
       "count": "Hai fatto <count>{countValue, number}</count> <requests>{countValue, plural, =1 {Richiesta} other {Richieste}}</requests> di contenuti",
       "countTotal": "In tutto {countValue, plural, =1 {c'è stata} other {ci sono state}} <count>{countValue, plural, =1 {# Richiesta} other {# Richieste}}</count> nello stesso periodo.",
       "breakdown": "Ecco il dettaglio:",
@@ -281,7 +281,7 @@
       "shows": "{count, plural, =1 {Serie} other {Serie}}"
     },
     "Movies": {
-      "duration": "Hai passato <duration>{durationValue}</duration> del tuo tempo a guardare <movies>Film</movies>",
+      "duration": "Hai passato <duration>{durationValue}</duration> a guardare <movies>Film</movies>",
       "count": "Hai guardato <count>{countValue, number}</count> <movies>{countValue, plural, =1 {film} other {film}}</movies> in tutto!",
       "favorite": "Il tuo preferito è stato",
       "noData": "Non hai guardato nessun <movies>Film</movies> su <plex>{serverName}</plex> <emoji>😵‍💫</emoji>"
@@ -302,7 +302,7 @@
       "journey": {
         "movies": "Dai tuoi <movies>Film</movies> preferiti, è stato un viaggio da ricordare.",
         "shows": "Dalle <shows>Serie</shows> più divertenti, è stato un viaggio da ricordare.",
-        "audio": "Dai <tracks>Brani</tracks> più memorabili, è stato un viaggio da ricordare.",
+        "audio": "Dai tuoi <tracks>Brani</tracks> più memorabili, è stato un viaggio da ricordare.",
         "moviesShows": "Dai tuoi <movies>Film</movies> preferiti alle <shows>Serie</shows> più divertenti, è stato un viaggio da ricordare.",
         "moviesAudio": "Dai tuoi <movies>Film</movies> preferiti ai <tracks>Brani</tracks> più memorabili, è stato un viaggio da ricordare.",
         "showsAudio": "Dalle <shows>Serie</shows> più divertenti ai <tracks>Brani</tracks> più memorabili, è stato un viaggio da ricordare.",

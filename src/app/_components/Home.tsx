@@ -11,12 +11,13 @@ import Image from 'next/image'
 type Props = {
   settings: PublicSettings
   missingSetting: string | null
+  siteUrl: string
 }
 
 // Shown until there's something to browse: before logging in, or while an
 // admin still has to finish the setup
-export default function Home({ settings, missingSetting }: Props) {
-  const { isLoading, handleLogin } = usePlexAuth()
+export default function Home({ settings, missingSetting, siteUrl }: Props) {
+  const { isLoading, handleLogin } = usePlexAuth(siteUrl)
   const { data: session, status } = useSession()
   const isLoggedIn = status === 'authenticated'
   const t = useTranslations('Home')

@@ -1,5 +1,4 @@
 import { Settings } from '@/types/settings'
-import { env } from 'next-runtime-env'
 
 export type Period = {
   date: string
@@ -38,8 +37,16 @@ export const META_DESCRIPTION: string =
 export const PLEX_API_ENDPOINT = 'https://plex.tv/api/v2'
 export const PLEX_PRODUCT_NAME = 'Plex Rewind'
 
-// TODO: this is causing warnings during build regarding edge runtime
-export const APP_URL = env('NEXT_PUBLIC_SITE_URL') || 'http://localhost:8383'
+// Next.js inlines `process.env.NEXT_PUBLIC_*` into the build, but the Docker
+// image is configured when the container starts, so look variables up by name.
+// Server-side only: the browser has no access to them.
+export function getRuntimeEnv(name: string): string | undefined {
+  return process.env[name]
+}
+
+export function getSiteUrl(): string {
+  return getRuntimeEnv('NEXT_PUBLIC_SITE_URL') || 'http://localhost:8383'
+}
 
 export const DEFAULT_SETTINGS: Settings = {
   connection: {

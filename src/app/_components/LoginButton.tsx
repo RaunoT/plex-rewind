@@ -3,8 +3,8 @@
 import usePlexAuth from '@/hooks/usePlexAuth'
 import { useTranslations } from 'next-intl'
 
-export default function LoginButton() {
-  const { isLoading, handleLogin } = usePlexAuth()
+export default function LoginButton({ siteUrl }: { siteUrl: string }) {
+  const { isLoading, handleLogin } = usePlexAuth(siteUrl)
   const t = useTranslations('Home')
 
   return (

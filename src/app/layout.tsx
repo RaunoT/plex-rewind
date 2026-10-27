@@ -1,6 +1,6 @@
 import { authOptions } from '@/lib/auth'
 import '@/styles/globals.css'
-import { APP_URL, META_DESCRIPTION } from '@/utils/constants'
+import { getSiteUrl, META_DESCRIPTION } from '@/utils/constants'
 import { getLibraries } from '@/utils/fetchTautulli'
 import getSettings from '@/utils/getSettings'
 import getVersion from '@/utils/getVersion'
@@ -11,7 +11,6 @@ import { Metadata, Viewport } from 'next'
 import { getServerSession } from 'next-auth'
 import { NextIntlClientProvider } from 'next-intl'
 import { getLocale } from 'next-intl/server'
-import { PublicEnvScript } from 'next-runtime-env'
 import { ReactNode } from 'react'
 import AppProvider from './_components/AppProvider'
 import GoogleAnalytics from './_components/GoogleAnalytics'
@@ -24,7 +23,7 @@ export async function generateMetadata(): Promise<Metadata> {
   const titleTemplate = serverName ? `%s | ${serverName}` : '%s | Plex Rewind'
 
   return {
-    metadataBase: new URL(APP_URL),
+    metadataBase: new URL(getSiteUrl()),
     applicationName: baseTitle,
     title: {
       default: baseTitle,
@@ -78,9 +77,6 @@ export default async function RootLayout({ children }: Props) {
 
   return (
     <html lang={locale}>
-      <head>
-        <PublicEnvScript />
-      </head>
       <body className='h-full min-h-dvh bg-black text-white'>
         <SerwistProvider
           swUrl='/sw.js'

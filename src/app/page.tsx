@@ -1,4 +1,5 @@
 import { authOptions } from '@/lib/auth'
+import { getSiteUrl } from '@/utils/constants'
 import { getLibraries } from '@/utils/fetchTautulli'
 import getSettings from '@/utils/getSettings'
 import { checkRequiredSettings, sortByActiveLibraries } from '@/utils/helpers'
@@ -19,6 +20,7 @@ export default async function HomePage() {
         <Home
           settings={toPublicSettings(settings)}
           missingSetting={missingSetting}
+          siteUrl={getSiteUrl()}
         />
       </Suspense>
     )

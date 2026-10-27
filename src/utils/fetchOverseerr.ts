@@ -109,12 +109,10 @@ let userIdsCache: UserIdsCache | null = null
 // batch's last page and stops the paging once nothing further is needed.
 async function fetchOverseerrPages<T>(
   endpoint: string,
-  params: Record<string, string> = {},
   isPastEnd: (page: T[]) => boolean = () => false,
 ): Promise<T[] | null> {
   function fetchPage(page: number) {
     return fetchOverseerr<OverseerrResponse<T>>(endpoint, undefined, {
-      ...params,
       take: String(LIST_PAGE_SIZE),
       skip: String(LIST_PAGE_SIZE * (page - 1)),
     })
@@ -156,11 +154,12 @@ export async function fetchOverseerrStats(
 ): Promise<OverseerrRequestItem[]> {
   const start = new Date(startDate).getTime()
   const end = endDate ? new Date(endDate).getTime() : Date.now()
-  // Requests come newest first, so a page that is entirely older than the
-  // window means the rest is too.
+  // Both `request` and `user/{id}/requests` list the newest first by default,
+  // so a page that is entirely older than the window means the rest is too.
+  // No `sort` is sent: `user/{id}/requests` only takes `take` and `skip`, and
+  // Overseerr answers any other query parameter with a 400.
   const requests = await fetchOverseerrPages<OverseerrRequestItem>(
     req,
-    { sort: 'added' },
     (page) =>
       page.length > 0 &&
       page.every((request) => new Date(request.createdAt).getTime() < start),
@@ -231,13 +230,7 @@ export async function fetchOverseerrUserId(
     return null
   }
 
-  const userId = userIds.get(plexId)
-
-  if (userId === undefined) {
-    console.error(`[OVERSEERR] - No matching user found for plexId ${plexId}!`)
-
-    return null
-  }
-
-  return userId
+  // Plex users who never signed in to Overseerr have no account there, which
+  // is normal and not worth logging.
+  return userIds.get(plexId) ?? null
 }

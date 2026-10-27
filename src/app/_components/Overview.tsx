@@ -2,7 +2,7 @@ import SkeletonLine from '@/components/SkeletonLine'
 import { DashboardSearchParams } from '@/types/dashboard'
 import { Settings } from '@/types/settings'
 import { TautulliLibrary } from '@/types/tautulli'
-import { DASHBOARD_PERIOD_COOKIE_NAME } from '@/utils/constants'
+import { DASHBOARD_PERIOD_COOKIE_NAME, getSiteUrl } from '@/utils/constants'
 import { getItems } from '@/utils/getDashboard'
 import getPeriod from '@/utils/getPeriod'
 import { getImageProxyUrl } from '@/utils/imageProxy'
@@ -68,7 +68,7 @@ export default async function Overview({
         <div className='flex items-center gap-3'>
           {!session && (
             <Suspense>
-              <LoginButton />
+              <LoginButton siteUrl={getSiteUrl()} />
             </Suspense>
           )}
           <HeaderControls className='lg:group-data-[sidebar]/app:hidden' />

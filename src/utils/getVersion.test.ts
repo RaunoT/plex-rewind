@@ -1,8 +1,5 @@
-import { env } from 'next-runtime-env'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import getVersion, { compareVersions } from './getVersion'
-
-vi.mock('next-runtime-env', () => ({ env: vi.fn() }))
 
 const fetchMock = vi.fn()
 
@@ -36,13 +33,14 @@ describe('getVersion', () => {
     vi.setSystemTime(clock)
     vi.stubGlobal('fetch', fetchMock)
     vi.spyOn(console, 'error').mockImplementation(() => {})
-    vi.mocked(env).mockReturnValue('5.0.0')
+    vi.stubEnv('NEXT_PUBLIC_VERSION_TAG', '5.0.0')
   })
 
   afterEach(() => {
     vi.useRealTimers()
     vi.restoreAllMocks()
     vi.unstubAllGlobals()
+    vi.unstubAllEnvs()
     fetchMock.mockReset()
   })
 
@@ -59,7 +57,7 @@ describe('getVersion', () => {
   })
 
   it('does not call GitHub for a local build', async () => {
-    vi.mocked(env).mockReturnValue('')
+    vi.stubEnv('NEXT_PUBLIC_VERSION_TAG', '')
 
     const version = await getVersion()
 
