@@ -7,10 +7,9 @@ import {
   ArrowRightStartOnRectangleIcon,
   CheckIcon,
   ChevronUpDownIcon,
-  GlobeAltIcon,
 } from '@heroicons/react/24/outline'
 import clsx from 'clsx'
-import { DE, EE, ES, FR, GB, IT } from 'country-flag-icons/react/3x2'
+import { DE, EE, ES, FR, GB, IT } from 'country-flag-icons/react/1x1'
 import { signOut, useSession } from 'next-auth/react'
 import { useLocale, useTranslations } from 'next-intl'
 import { startTransition } from 'react'
@@ -38,6 +37,12 @@ const LOCALE_FLAGS: Record<Locale, typeof GB> = {
   de: DE,
   it: IT,
   es: ES,
+}
+
+function LocaleFlag({ code }: { code: string }) {
+  const Flag = LOCALE_FLAGS[code]
+
+  return Flag ? <Flag aria-hidden className='rounded-full' /> : null
 }
 
 function getLocaleName(code: string) {
@@ -72,7 +77,7 @@ export default function AccountMenu({ isCompact }: Props) {
             <Avatar src={user.image} name={user.name ?? ''} sizes='4rem' />
           </span>
         ) : (
-          <GlobeAltIcon />
+          <LocaleFlag code={locale} />
         )}
         {!isCompact && (
           <>
@@ -107,31 +112,22 @@ export default function AccountMenu({ isCompact }: Props) {
             <Header className='px-3 pt-1.5 pb-1 text-xs font-semibold text-neutral-400'>
               {t('LocaleSelect.label')}
             </Header>
-            {LOCALES.map((code) => {
-              const Flag = LOCALE_FLAGS[code]
-
-              return (
-                <MenuItem
-                  key={code}
-                  id={code}
-                  textValue={getLocaleName(code)}
-                  className='menu-item'
-                >
-                  {({ isSelected }) => (
-                    <>
-                      {Flag && (
-                        <Flag
-                          aria-hidden
-                          className='aspect-3/2 h-auto! w-5! rounded-xs'
-                        />
-                      )}
-                      <span lang={code}>{getLocaleName(code)}</span>
-                      {isSelected && <CheckIcon className='ml-auto size-4!' />}
-                    </>
-                  )}
-                </MenuItem>
-              )
-            })}
+            {LOCALES.map((code) => (
+              <MenuItem
+                key={code}
+                id={code}
+                textValue={getLocaleName(code)}
+                className='menu-item'
+              >
+                {({ isSelected }) => (
+                  <>
+                    <LocaleFlag code={code} />
+                    <span lang={code}>{getLocaleName(code)}</span>
+                    {isSelected && <CheckIcon className='ml-auto size-4!' />}
+                  </>
+                )}
+              </MenuItem>
+            ))}
           </MenuSection>
           {user && (
             <>
