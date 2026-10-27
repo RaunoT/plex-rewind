@@ -14,22 +14,32 @@ vi.mock('./utils/statsSource', () => ({ getServerUser: vi.fn() }))
 
 const SECRET = 'test-secret'
 
-// An admin who signed in two hours ago, so they are due a re-check
-async function requestAsAdmin(pathname: string) {
-  const cookie = await encode({
+// Results are remembered per user, so each test gets a user of its own
+let lastUserId = 0
+
+// The cookie of an admin who signed in two hours ago, so they are due a re-check
+function staleAdminCookie() {
+  return encode({
     token: {
-      id: '12345',
+      id: String(++lastUserId),
       email: 'jane@example.com',
       isAdmin: true,
       checkedAt: Date.now() - 2 * 60 * 60 * 1000,
     },
     secret: SECRET,
   })
+}
+
+function request(cookie: string, pathname: string) {
   const req = new NextRequest(`http://localhost:3000${pathname}`, {
     headers: { cookie: `next-auth.session-token=${cookie}` },
   })
 
   return proxy(req as NextRequestWithAuth, {} as NextFetchEvent)
+}
+
+async function requestAsAdmin(pathname: string) {
+  return request(await staleAdminCookie(), pathname)
 }
 
 beforeEach(() => {
@@ -78,5 +88,38 @@ describe('proxy', () => {
     expect(res?.headers.get('location')).toBe(
       'http://localhost:3000/settings/connection',
     )
+  })
+
+  // The proxy can't save a refreshed token, so the browser keeps sending the
+  // same stale cookie with every navigation.
+  it('looks the user up once for consecutive requests during an outage', async () => {
+    vi.mocked(getServerUser).mockResolvedValue({ status: 'unavailable' })
+
+    const cookie = await staleAdminCookie()
+
+    for (const pathname of ['/dashboard', '/activity', '/rewind']) {
+      const res = await request(cookie, pathname)
+
+      expect(res?.headers.get('location')).toBe(
+        'http://localhost:3000/settings/connection',
+      )
+    }
+
+    expect(getServerUser).toHaveBeenCalledTimes(1)
+  })
+
+  it('looks a member up once for consecutive requests', async () => {
+    vi.mocked(getServerUser).mockResolvedValue({
+      status: 'member',
+      isAdmin: true,
+    })
+
+    const cookie = await staleAdminCookie()
+
+    for (const pathname of ['/dashboard', '/activity', '/rewind']) {
+      await request(cookie, pathname)
+    }
+
+    expect(getServerUser).toHaveBeenCalledTimes(1)
   })
 })

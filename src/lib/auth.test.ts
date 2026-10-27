@@ -3,7 +3,7 @@ import { encode, JWT } from 'next-auth/jwt'
 import { CredentialsConfig } from 'next-auth/providers/credentials'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { getServerUser } from '../utils/statsSource'
-import { authOptions, authorizePlexUser } from './auth'
+import { authOptions, authorizePlexUser, MAX_CACHED_CHECKS } from './auth'
 import { LoginError, toLoginErrorCode } from './loginError'
 
 vi.mock('../utils/statsSource', () => ({ getServerUser: vi.fn() }))
@@ -30,10 +30,13 @@ function authorize(credentials?: Record<string, string>) {
   return provider.options.authorize(credentials, {})
 }
 
+// Results are remembered per user, so each token is for a user of its own
+let lastUserId = 0
+
 // A token from a sign-in two hours ago, so the user is due a re-check
 function staleToken(): JWT {
   return {
-    id: '12345',
+    id: String(++lastUserId),
     email: 'jane@example.com',
     isAdmin: true,
     checkedAt: Date.now() - 2 * HOUR,
@@ -210,23 +213,27 @@ describe('jwt', () => {
   })
 
   it('updates the admin rights of a user still on the server', async () => {
+    const token = staleToken()
+
     vi.mocked(getServerUser).mockResolvedValue({
       status: 'member',
       isAdmin: false,
     })
 
-    await expect(jwt(staleToken())).resolves.toMatchObject({
+    await expect(jwt(token)).resolves.toMatchObject({
       isAdmin: false,
       checkedAt: Date.now(),
     })
-    expect(getServerUser).toHaveBeenCalledWith('12345', 'jane@example.com')
+    expect(getServerUser).toHaveBeenCalledWith(token.id, 'jane@example.com')
   })
 
   it('ends the session of a user removed from the server', async () => {
+    const token = staleToken()
+
     vi.mocked(getServerUser).mockResolvedValue({ status: 'notMember' })
 
-    await expect(jwt(staleToken())).rejects.toThrow(
-      'User 12345 no longer belongs to this server',
+    await expect(jwt(token)).rejects.toThrow(
+      `User ${token.id} no longer belongs to this server`,
     )
   })
 
@@ -253,16 +260,163 @@ describe('jwt', () => {
   })
 })
 
-describe('getServerSession', () => {
-  it('keeps a user still on the server signed in', async () => {
+// Pages and the proxy can't save a refreshed token, so the same stale cookie
+// comes back on every request until the browser asks for a new session.
+describe('jwt with a cookie that stays stale', () => {
+  beforeEach(() => {
+    vi.useFakeTimers()
+  })
+
+  afterEach(() => {
+    vi.useRealTimers()
+  })
+
+  it('looks a user up once during an outage, then again after the retry interval', async () => {
+    vi.mocked(getServerUser).mockResolvedValue({ status: 'unavailable' })
+
+    const stale = staleToken()
+
+    for (let request = 0; request < 3; request++) {
+      await expect(jwt({ ...stale })).resolves.toMatchObject({ isAdmin: true })
+    }
+
+    expect(getServerUser).toHaveBeenCalledTimes(1)
+
+    vi.advanceTimersByTime(4 * MINUTE)
+    await jwt({ ...stale })
+    expect(getServerUser).toHaveBeenCalledTimes(1)
+
+    vi.advanceTimersByTime(1 * MINUTE)
+    await jwt({ ...stale })
+    expect(getServerUser).toHaveBeenCalledTimes(2)
+  })
+
+  it('looks a member up once, then again after the hour', async () => {
     vi.mocked(getServerUser).mockResolvedValue({
       status: 'member',
       isAdmin: false,
     })
 
-    const { session } = await readSession(staleToken())
+    const stale = staleToken()
 
-    expect(session?.user).toMatchObject({ id: '12345', isAdmin: false })
+    for (let request = 0; request < 3; request++) {
+      await expect(jwt({ ...stale })).resolves.toMatchObject({
+        isAdmin: false,
+        checkedAt: Date.now(),
+      })
+    }
+
+    expect(getServerUser).toHaveBeenCalledTimes(1)
+
+    vi.advanceTimersByTime(59 * MINUTE)
+    await jwt({ ...stale })
+    expect(getServerUser).toHaveBeenCalledTimes(1)
+
+    vi.mocked(getServerUser).mockResolvedValue({
+      status: 'member',
+      isAdmin: true,
+    })
+    vi.advanceTimersByTime(1 * MINUTE)
+
+    await expect(jwt({ ...stale })).resolves.toMatchObject({ isAdmin: true })
+    expect(getServerUser).toHaveBeenCalledTimes(2)
+  })
+
+  it('keeps ending the session of a removed user without asking each time', async () => {
+    vi.mocked(getServerUser).mockResolvedValue({ status: 'notMember' })
+
+    const stale = staleToken()
+
+    for (let request = 0; request < 3; request++) {
+      await expect(jwt({ ...stale })).rejects.toThrow('no longer belongs')
+    }
+
+    expect(getServerUser).toHaveBeenCalledTimes(1)
+
+    vi.advanceTimersByTime(5 * MINUTE)
+    await expect(jwt({ ...stale })).rejects.toThrow('no longer belongs')
+    expect(getServerUser).toHaveBeenCalledTimes(2)
+  })
+
+  it('keeps the results of different users apart', async () => {
+    const removed = staleToken()
+
+    vi.mocked(getServerUser).mockImplementation(async (id) =>
+      id === removed.id ? { status: 'notMember' } : { status: 'unavailable' },
+    )
+
+    await expect(jwt(staleToken())).resolves.toMatchObject({ isAdmin: true })
+    await expect(jwt({ ...removed })).rejects.toThrow('no longer belongs')
+    await expect(
+      jwt({ ...removed, email: 'other@example.com' }),
+    ).rejects.toThrow('no longer belongs')
+    expect(getServerUser).toHaveBeenCalledTimes(3)
+  })
+
+  it('remembers at most a fixed number of users, dropping the oldest', async () => {
+    vi.mocked(getServerUser).mockResolvedValue({
+      status: 'member',
+      isAdmin: false,
+    })
+
+    const tokens = Array.from({ length: MAX_CACHED_CHECKS + 1 }, staleToken)
+
+    for (const token of tokens) {
+      await jwt({ ...token })
+    }
+
+    expect(getServerUser).toHaveBeenCalledTimes(MAX_CACHED_CHECKS + 1)
+
+    await jwt({ ...tokens.at(-1)! })
+    expect(getServerUser).toHaveBeenCalledTimes(MAX_CACHED_CHECKS + 1)
+
+    await jwt({ ...tokens[0] })
+    expect(getServerUser).toHaveBeenCalledTimes(MAX_CACHED_CHECKS + 2)
+  })
+
+  it('drops expired results before older ones that are still valid', async () => {
+    const member = staleToken()
+    const unavailable = staleToken()
+
+    vi.mocked(getServerUser).mockImplementation(async (id) =>
+      id === unavailable.id
+        ? { status: 'unavailable' }
+        : { status: 'member', isAdmin: false },
+    )
+
+    await jwt({ ...member })
+    await jwt({ ...unavailable })
+
+    for (let user = 0; user < MAX_CACHED_CHECKS - 2; user++) {
+      await jwt(staleToken())
+    }
+
+    vi.advanceTimersByTime(6 * MINUTE)
+    // One too many, so either the oldest or the expired one has to go
+    await jwt(staleToken())
+
+    const lookups = vi.mocked(getServerUser).mock.calls.length
+
+    await jwt({ ...member })
+    expect(getServerUser).toHaveBeenCalledTimes(lookups)
+
+    await jwt({ ...unavailable })
+    expect(getServerUser).toHaveBeenCalledTimes(lookups + 1)
+  })
+})
+
+describe('getServerSession', () => {
+  it('keeps a user still on the server signed in', async () => {
+    const token = staleToken()
+
+    vi.mocked(getServerUser).mockResolvedValue({
+      status: 'member',
+      isAdmin: false,
+    })
+
+    const { session } = await readSession(token)
+
+    expect(session?.user).toMatchObject({ id: token.id, isAdmin: false })
   })
 
   it('signs out a user removed from the server and clears the cookie', async () => {
@@ -277,11 +431,27 @@ describe('getServerSession', () => {
   })
 
   it('keeps the session and admin rights through an outage', async () => {
+    const token = staleToken()
+
     vi.mocked(getServerUser).mockResolvedValue({ status: 'unavailable' })
 
-    const { session } = await readSession(staleToken())
+    const { session } = await readSession(token)
 
-    expect(session?.user).toMatchObject({ id: '12345', isAdmin: true })
+    expect(session?.user).toMatchObject({ id: token.id, isAdmin: true })
+  })
+
+  it('looks the user up once for reads with the same stale cookie', async () => {
+    vi.mocked(getServerUser).mockResolvedValue({ status: 'unavailable' })
+
+    const stale = staleToken()
+
+    for (let read = 0; read < 3; read++) {
+      const { session } = await readSession({ ...stale })
+
+      expect(session?.user.isAdmin).toBe(true)
+    }
+
+    expect(getServerUser).toHaveBeenCalledTimes(1)
   })
 })
 

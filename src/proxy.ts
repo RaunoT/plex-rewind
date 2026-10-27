@@ -94,6 +94,7 @@ export default withAuth(
     },
     // withAuth only decodes the cookie, so the token gets the same re-check as
     // getServerSession. A removed user's re-check throws, which leaves no token.
+    // The cookie isn't refreshed here, so the re-check remembers its results.
     jwt: {
       decode: async (params) => {
         const token = await decode(params)
