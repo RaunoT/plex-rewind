@@ -39,6 +39,7 @@
     "noActivity": "Aucune session active.. 😴",
     "playing": "En lecture",
     "paused": "En pause",
+    "buffering": "Mise en mémoire tampon",
     "endsAt": "Se termine à {time}",
     "convertedTo": "converti en",
     "decision": {

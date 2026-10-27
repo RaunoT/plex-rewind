@@ -3,8 +3,10 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import en from '../../messages/en.json'
 import {
   calculateETA,
+  formatBitrate,
   formatChannels,
   formatCodec,
+  formatDevice,
   formatDynamicRange,
   formatResolution,
   getInitials,
@@ -104,15 +106,54 @@ describe('calculateETA', () => {
   })
 
   it('adds the remaining time to now', () => {
-    expect(calculateETA(String(90 * 60 * 1000), String(30 * 60 * 1000))).toBe(
-      '11:00',
-    )
+    expect(
+      calculateETA(String(90 * 60 * 1000), String(30 * 60 * 1000), 'de'),
+    ).toBe('11:00')
+  })
+
+  it('uses the clock of the locale', () => {
+    vi.setSystemTime(new Date(2026, 0, 1, 21, 15, 0))
+
+    const remaining = String(30 * 60 * 1000)
+
+    // Newer ICU versions put a narrow no-break space before PM
+    expect(calculateETA(remaining, '0', 'en-US')).toMatch(/^9:45\sPM$/)
+    expect(calculateETA(remaining, '0', 'et')).toBe('21:45')
   })
 
   it('returns null for missing, invalid or finished playback', () => {
-    expect(calculateETA(undefined, '0')).toBeNull()
-    expect(calculateETA('abc', '0')).toBeNull()
-    expect(calculateETA('1000', '1000')).toBeNull()
+    expect(calculateETA(undefined, '0', 'en')).toBeNull()
+    expect(calculateETA('abc', '0', 'en')).toBeNull()
+    expect(calculateETA('1000', '1000', 'en')).toBeNull()
+  })
+})
+
+describe('formatBitrate', () => {
+  it('shows kilobits as megabits in the locale', () => {
+    expect(formatBitrate('8000', 'en')).toBe('8.0 Mbps')
+    expect(formatBitrate(12345, 'de')).toBe('12,3 Mbps')
+  })
+
+  it('is empty without a bitrate, so a fallback can take its place', () => {
+    expect(formatBitrate('', 'en')).toBe('')
+    expect(formatBitrate('0', 'en')).toBe('')
+    expect(formatBitrate(0, 'en')).toBe('')
+    expect(formatBitrate('abc', 'en')).toBe('')
+    expect(formatBitrate('', 'en') || formatBitrate('8000', 'en')).toBe(
+      '8.0 Mbps',
+    )
+  })
+})
+
+describe('formatDevice', () => {
+  it('names the app and the device', () => {
+    expect(formatDevice('Plex Web', 'Chrome')).toBe('Plex Web (Chrome)')
+  })
+
+  it('leaves out what is missing without empty brackets', () => {
+    expect(formatDevice('Plex for iOS', '')).toBe('Plex for iOS')
+    expect(formatDevice('', 'Living Room')).toBe('Living Room')
+    expect(formatDevice('', '')).toBe('')
   })
 })
 

@@ -88,7 +88,7 @@ export type TautulliSession = {
   quality_profile: string
   rating_key: number
   session_key: string
-  state: 'playing' | 'paused'
+  state: 'playing' | 'paused' | 'buffering'
   stream_audio_atmos?: number | boolean
   stream_audio_channel_layout: string
   stream_audio_codec: string

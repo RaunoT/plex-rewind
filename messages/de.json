@@ -39,6 +39,7 @@
     "noActivity": "Keine aktiven Sitzungen.. 😴",
     "playing": "Läuft",
     "paused": "Pausiert",
+    "buffering": "Puffert",
     "endsAt": "Endet um {time}",
     "convertedTo": "umgewandelt in",
     "decision": {
