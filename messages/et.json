@@ -59,7 +59,7 @@
     "movies": "{count, plural, one {film} other {filmi}}",
     "episodes": "{count, plural, one {episood} other {episoodi}}",
     "tracks": "{count, plural, one {lugu} other {lugu}}",
-    "requests": "{count, plural, one {tellimus} other {tellimust}}",
+    "requests": "{count, plural, one {# tellimus} other {# tellimust}}",
     "durationWatched": "{duration} vaadatud",
     "durationListened": "{duration} kuulatud"
   },
@@ -161,7 +161,7 @@
       "itemStatistics": "Kirje statistika",
       "itemStatisticsDescription": "Kuvatakse iga pealkirja ja kasutaja juures edetabelis ja Rewind'is.",
       "totalStatistics": "Kokkuvõtlik statistika",
-      "totalStatisticsDescription": "Kuvatakse iga edetabeli all. Kogus on kogumikus olevate filmide, episoodide või lugude arv.",
+      "totalStatisticsDescription": "Vaatamisaeg ja tellimused käivad valitud perioodi kohta ning on filtrite kõrval. Suurus ja kogus on iga edetabeli all. Kogus on kogumikus olevate filmide, episoodide või lugude arv.",
       "sortFilter": "Sorteerimise filter",
       "sortFilterDescription": "Lubab edetabelit sorteerida vaatamisaja järgi. Muidu sorteeritakse mängimiste järgi.",
       "customPeriod": "Kohandatud periood",
