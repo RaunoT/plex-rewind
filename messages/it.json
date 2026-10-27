@@ -17,7 +17,7 @@
     "signOut": "Esci",
     "greeting": "Ciao, {name}",
     "rewindDescription": "I tuoi momenti migliori, una storia alla volta.",
-    "streams": "{count, plural, =0 {Niente in riproduzione} =1 {# riproduzione} other {# riproduzioni}}",
+    "streams": "{count, plural, =0 {Niente in riproduzione} one {# riproduzione} other {# riproduzioni}}",
     "mostWatched": "Il più visto",
     "mostListened": "Il più ascoltato"
   },
@@ -53,11 +53,11 @@
     "noActivity": "Nessuna attività in questo periodo… 😴",
     "title": "Dashboard",
     "usersTitle": "Utenti",
-    "users": "{count, plural, =1 {# utente} other {# utenti}}",
-    "movies": "{count, plural, =1 {film} other {film}}",
-    "episodes": "{count, plural, =1 {episodio} other {episodi}}",
-    "tracks": "{count, plural, =1 {brano} other {brani}}",
-    "requests": "{count, plural, =1 {richiesta} other {richieste}}"
+    "users": "{count, plural, one {# utente} other {# utenti}}",
+    "movies": "{count, plural, one {film} other {film}}",
+    "episodes": "{count, plural, one {episodio} other {episodi}}",
+    "tracks": "{count, plural, one {brano} other {brani}}",
+    "requests": "{count, plural, one {richiesta} other {richieste}}"
   },
   "DashboardFilters": {
     "type": "Tipo",
@@ -84,7 +84,7 @@
     "today": "Oggi",
     "pastYear": "Ultimo anno",
     "allTime": "Da sempre",
-    "days": "{count, plural, =1 {# giorno} other {# giorni}}",
+    "days": "{count, plural, one {# giorno} other {# giorni}}",
     "label": "Selezione del periodo"
   },
   "NotFound": {
@@ -211,12 +211,12 @@
     "profilePictureAlt": "immagine del profilo",
     "time": {
       "zero": "0 min",
-      "month": "{count, plural, =1 {# mese} other {# mesi}}",
-      "week": "{count, plural, =1 {# settimana} other {# settimane}}",
-      "day": "{count, plural, =1 {# giorno} other {# giorni}}",
-      "hr": "{count, plural, =1 {# ora} other {# ore}}",
-      "min": "{count, plural, =1 {# min} other {# min}}",
-      "sec": "{count, plural, =1 {# sec} other {# sec}}"
+      "month": "{count, plural, one {# mese} other {# mesi}}",
+      "week": "{count, plural, one {# settimana} other {# settimane}}",
+      "day": "{count, plural, one {# giorno} other {# giorni}}",
+      "hr": "{count, plural, one {# ora} other {# ore}}",
+      "min": "{count, plural, one {# min} other {# min}}",
+      "sec": "{count, plural, one {# sec} other {# sec}}"
     },
     "fileSize": "{value, number} {unit}"
   },
@@ -268,9 +268,9 @@
       "sizePartial": "Alcune librerie non hanno dati sulle dimensioni. Attiva «Calculate Total File Sizes» in Tautulli.",
       "sizePartialTracearr": "Alcune librerie non hanno dati sulle dimensioni in Tracearr.",
       "libraries": "La libreria oggi contiene:",
-      "movies": "{count, plural, =1 {Film} other {Film}}",
-      "episodes": "{count, plural, =1 {Episodio} other {Episodi}}",
-      "tracks": "{count, plural, =1 {Brano} other {Brani}}"
+      "movies": "{count, plural, one {Film} other {Film}}",
+      "episodes": "{count, plural, one {Episodio} other {Episodi}}",
+      "tracks": "{count, plural, one {Brano} other {Brani}}"
     },
     "Shows": {
       "duration": "Hai dedicato <duration>{durationValue}</duration> alle <library>Serie TV</library> su <plex>{serverName}.</plex>",
@@ -281,23 +281,23 @@
     "Requests": {
       "noData": "Non ci sono state <requests>Richieste</requests> <emoji>😲</emoji>",
       "noUserData": "Non hai fatto nessuna <requests>Richiesta</requests>. Puoi farne tramite <requestLink>{requestLinkValue}</requestLink>",
-      "count": "Hai fatto <count>{countValue, number}</count> <requests>{countValue, plural, =1 {Richiesta} other {Richieste}}</requests> di contenuti",
-      "countTotal": "In tutto {countValue, plural, =1 {c'è stata} other {ci sono state}} <count>{countValue, plural, =1 {# Richiesta} other {# Richieste}}</count> nello stesso periodo.",
+      "count": "Hai fatto <count>{countValue, number}</count> <requests>{countValue, plural, one {Richiesta} other {Richieste}}</requests> di contenuti",
+      "countTotal": "In tutto {countValue, plural, one {c'è stata} other {ci sono state}} <count>{countValue, plural, one {# Richiesta} other {# Richieste}}</count> nello stesso periodo.",
       "breakdown": "Ecco il dettaglio:",
-      "movies": "{count, plural, =1 {Film} other {Film}}",
-      "shows": "{count, plural, =1 {Serie} other {Serie}}"
+      "movies": "{count, plural, one {Film} other {Film}}",
+      "shows": "{count, plural, one {Serie} other {Serie}}"
     },
     "Movies": {
       "duration": "Hai passato <duration>{durationValue}</duration> a guardare <movies>Film</movies>",
-      "count": "Hai guardato <count>{countValue, number}</count> <movies>{countValue, plural, =1 {film} other {film}}</movies> in tutto!",
+      "count": "Hai guardato <count>{countValue, number}</count> <movies>{countValue, plural, one {film} other {film}}</movies> in tutto!",
       "favorite": "Il tuo preferito è stato",
       "noData": "Non hai guardato nessun <movies>Film</movies> su <plex>{serverName}</plex> <emoji>😵‍💫</emoji>"
     },
     "Habits": {
       "day": "Il giorno in cui hai guardato di più è stato <day>{dayValue}</day>",
       "hour": "E hai premuto play più spesso verso le <hour>{hourValue}</hour> <emoji>{emojiValue}</emoji>",
-      "dayChart": "Grafico a barre delle riproduzioni per giorno della settimana. Giorno più attivo: {dayValue} con {count, plural, =1 {# riproduzione} other {# riproduzioni}}.",
-      "hourChart": "Grafico a barre delle riproduzioni per ora del giorno. Ora più attiva: {hourValue} con {count, plural, =1 {# riproduzione} other {# riproduzioni}}."
+      "dayChart": "Grafico a barre delle riproduzioni per giorno della settimana. Giorno più attivo: {dayValue} con {count, plural, one {# riproduzione} other {# riproduzioni}}.",
+      "hourChart": "Grafico a barre delle riproduzioni per ora del giorno. Ora più attiva: {hourValue} con {count, plural, one {# riproduzione} other {# riproduzioni}}."
     },
     "Goodbye": {
       "thanks": "Grazie per aver seguito il tuo <plex>{serverName} Rewind</plex>, <user>{userValue}!</user>",
@@ -321,9 +321,9 @@
   "MediaItem": {
     "request": "Richiedi",
     "deleted": "Eliminato",
-    "statPlays": "{count, plural, =1 {# riproduzione} other {# riproduzioni}}",
-    "statUsers": "{count, plural, =1 {# utente} other {# utenti}}",
-    "statRequests": "{count, plural, =1 {# richiesta} other {# richieste}}",
+    "statPlays": "{count, plural, one {# riproduzione} other {# riproduzioni}}",
+    "statUsers": "{count, plural, one {# utente} other {# utenti}}",
+    "statRequests": "{count, plural, one {# richiesta} other {# richieste}}",
     "labelShows": "Serie TV",
     "labelMovies": "Film",
     "labelAudio": "Musica"

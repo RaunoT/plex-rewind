@@ -17,7 +17,7 @@
     "signOut": "Logi välja",
     "greeting": "Tere, {name}",
     "rewindDescription": "Sinu vaatamise tipphetked, lugu loo haaval.",
-    "streams": "{count, plural, =0 {Midagi ei mängi} =1 {# voog} other {# voogu}}",
+    "streams": "{count, plural, =0 {Midagi ei mängi} one {# voog} other {# voogu}}",
     "mostWatched": "Enim vaadatud",
     "mostListened": "Enim kuulatud"
   },
@@ -53,11 +53,11 @@
     "noActivity": "Valitud perioodil puudub tegevus.. 😴",
     "title": "Edetabel",
     "usersTitle": "Kasutajad",
-    "users": "{count, plural, =1 {# kasutaja} other {# kasutajat}}",
-    "movies": "{count, plural, =1 {film} other {filmi}}",
-    "episodes": "{count, plural, =1 {episood} other {episoodi}}",
-    "tracks": "{count, plural, =1 {lugu} other {lugu}}",
-    "requests": "{count, plural, =1 {tellimus} other {tellimust}}"
+    "users": "{count, plural, one {# kasutaja} other {# kasutajat}}",
+    "movies": "{count, plural, one {film} other {filmi}}",
+    "episodes": "{count, plural, one {episood} other {episoodi}}",
+    "tracks": "{count, plural, one {lugu} other {lugu}}",
+    "requests": "{count, plural, one {tellimus} other {tellimust}}"
   },
   "DashboardFilters": {
     "type": "Tüüp",
@@ -84,7 +84,7 @@
     "today": "Täna",
     "pastYear": "Viimane aasta",
     "allTime": "Kokku",
-    "days": "{count, plural, =1 {# päev} other {# päeva}}",
+    "days": "{count, plural, one {# päev} other {# päeva}}",
     "label": "Perioodi valik"
   },
   "NotFound": {
@@ -211,12 +211,12 @@
     "profilePictureAlt": "profiilipilt",
     "time": {
       "zero": "0 min",
-      "month": "{count, plural, =1 {# kuu} other {# kuud}}",
-      "week": "{count, plural, =1 {# nädal} other {# nädalat}}",
-      "day": "{count, plural, =1 {# päev} other {# päeva}}",
-      "hr": "{count, plural, =1 {# tund} other {# tundi}}",
-      "min": "{count, plural, =1 {# min} other {# min}}",
-      "sec": "{count, plural, =1 {# sek} other {# sek}}"
+      "month": "{count, plural, one {# kuu} other {# kuud}}",
+      "week": "{count, plural, one {# nädal} other {# nädalat}}",
+      "day": "{count, plural, one {# päev} other {# päeva}}",
+      "hr": "{count, plural, one {# tund} other {# tundi}}",
+      "min": "{count, plural, one {# min} other {# min}}",
+      "sec": "{count, plural, one {# sek} other {# sek}}"
     },
     "fileSize": "{value, number} {unit}"
   },
@@ -268,9 +268,9 @@
       "sizePartial": "Mõne kogumiku suurus on teadmata. Lülita Tautullis sisse „Calculate Total File Sizes“.",
       "sizePartialTracearr": "Tracearr'is puuduvad mõne kogumiku suuruse andmed.",
       "libraries": "Hetkel on saadaval:",
-      "movies": "{count, plural, =1 {Film} other {Filmi}}",
-      "episodes": "{count, plural, =1 {Osa} other {Osa}}",
-      "tracks": "{count, plural, =1 {Lugu} other {Lugu}}"
+      "movies": "{count, plural, one {Film} other {Filmi}}",
+      "episodes": "{count, plural, one {Osa} other {Osa}}",
+      "tracks": "{count, plural, one {Lugu} other {Lugu}}"
     },
     "Shows": {
       "duration": "<library>Saated</library> võtsid <duration>{durationValue}</duration> sinu ajast <plex>{serverName}'is.</plex>",
@@ -281,23 +281,23 @@
     "Requests": {
       "noData": "Ühtegi <requests>Tellimust</requests> pole tehtud <emoji>😲</emoji>",
       "noUserData": "Sa ei teinud ühtegi <requests>Tellimust</requests>. Sa saad seda teha lingilt <requestLink>{requestLinkValue}</requestLink>.",
-      "count": "Sa tegid <count>{countValue, number}</count> sisu <requests>{countValue, plural, =1 {Tellimuse} other {Tellimust}}</requests>",
-      "countTotal": "Kokku tehti samal perioodil <count>{countValue, plural, =1 {# Tellimus} other {# Tellimust}}</count>",
+      "count": "Sa tegid <count>{countValue, number}</count> sisu <requests>{countValue, plural, one {Tellimuse} other {Tellimust}}</requests>",
+      "countTotal": "Kokku tehti samal perioodil <count>{countValue, plural, one {# Tellimus} other {# Tellimust}}</count>",
       "breakdown": "Siin on täpsem jaotus:",
-      "movies": "{count, plural, =1 {Film} other {Filmi}}",
-      "shows": "{count, plural, =1 {Saade} other {Saadet}}"
+      "movies": "{count, plural, one {Film} other {Filmi}}",
+      "shows": "{count, plural, one {Saade} other {Saadet}}"
     },
     "Movies": {
       "duration": "<duration>{durationValue}</duration> kulus sul <movies>Filmidele</movies>",
-      "count": "Vaatasid <count>{countValue, number}</count> <movies>{countValue, plural, =1 {filmi} other {filmi}}</movies>",
+      "count": "Vaatasid <count>{countValue, number}</count> <movies>{countValue, plural, one {filmi} other {filmi}}</movies>",
       "favorite": "Sinu lemmik oli",
       "noData": "Sa ei vaadanud ühtegi <movies>Filmi</movies> <plex>{serverName}'ist</plex> <emoji>😵‍💫</emoji>"
     },
     "Habits": {
       "day": "Sinu lemmik vaatamispäev oli <day>{dayValue}</day>",
       "hour": "Ja kõige sagedamini panid mängima umbes kell <hour>{hourValue}</hour> <emoji>{emojiValue}</emoji>",
-      "dayChart": "Tulpdiagramm mängimistest nädalapäevade kaupa. Kõige aktiivsem päev: {dayValue}, {count, plural, =1 {# mängimine} other {# mängimist}}.",
-      "hourChart": "Tulpdiagramm mängimistest kellaaegade kaupa. Kõige aktiivsem tund: {hourValue}, {count, plural, =1 {# mängimine} other {# mängimist}}."
+      "dayChart": "Tulpdiagramm mängimistest nädalapäevade kaupa. Kõige aktiivsem päev: {dayValue}, {count, plural, one {# mängimine} other {# mängimist}}.",
+      "hourChart": "Tulpdiagramm mängimistest kellaaegade kaupa. Kõige aktiivsem tund: {hourValue}, {count, plural, one {# mängimine} other {# mängimist}}."
     },
     "Goodbye": {
       "thanks": "Tänan, et vaatasid oma <plex>{serverName} Rewind'i</plex>, <user>{userValue}!</user>",
@@ -321,9 +321,9 @@
   "MediaItem": {
     "request": "Telli",
     "deleted": "Kustutatud",
-    "statPlays": "{count, plural, =1 {# mängimine} other {# mängimist}}",
-    "statUsers": "{count, plural, =1 {# kasutaja} other {# kasutajat}}",
-    "statRequests": "{count, plural, =1 {# tellimus} other {# tellimust}}",
+    "statPlays": "{count, plural, one {# mängimine} other {# mängimist}}",
+    "statUsers": "{count, plural, one {# kasutaja} other {# kasutajat}}",
+    "statRequests": "{count, plural, one {# tellimus} other {# tellimust}}",
     "labelShows": "Seriaalid",
     "labelMovies": "Filmid",
     "labelAudio": "Muusika"
