@@ -36,6 +36,7 @@
     "subtitles": "Sottotitoli",
     "location": "Posizione",
     "bandwidth": "Banda",
+    "streamDetails": "Dettagli dello stream",
     "noActivity": "Nessuna riproduzione in corso. 😴",
     "loadError": "Impossibile caricare l'attività",
     "playing": "In riproduzione",

@@ -376,6 +376,28 @@
         @apply text-white;
       }
     }
+
+    /* Beside a page's small selects, with its label first. Taps 10px above
+       and below still count, for a 40px tall tap area. */
+    &.switch--small {
+      @apply relative cursor-pointer flex-row-reverse text-sm text-neutral-300 transition-colors hover:text-white;
+
+      &::after {
+        @apply absolute inset-x-0 -inset-y-2.5 content-[''];
+      }
+
+      .indicator {
+        @apply h-5 w-9;
+
+        &::after {
+          @apply size-4;
+        }
+      }
+
+      &[data-selected='true'] .indicator {
+        @apply after:translate-x-4;
+      }
+    }
   }
 
   .checkbox-wrapper {

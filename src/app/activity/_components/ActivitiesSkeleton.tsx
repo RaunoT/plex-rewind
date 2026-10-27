@@ -1,7 +1,15 @@
+'use client'
+
+import { GlobalContext } from '@/app/_components/GlobalContextProvider'
 import SkeletonLine from '@/components/SkeletonLine'
+import { useContext } from 'react'
 
 // Built like an activity card for an episode, so nothing moves once it loads
 export default function ActivitiesSkeleton() {
+  const {
+    activity: { isDetailsHidden },
+  } = useContext(GlobalContext)
+
   return (
     <div className='w-full'>
       <div className='mb-4 flex items-center justify-between gap-3'>
@@ -29,16 +37,18 @@ export default function ActivitiesSkeleton() {
           </div>
         </div>
       </div>
-      <div className='mt-4 grid grid-cols-2 gap-x-4 gap-y-3 rounded-2xl bg-black/25 p-4 text-sm ring-1 ring-white/10 ring-inset sm:grid-cols-3'>
-        {[...Array(7)].map((_, i) => (
-          <div key={i}>
-            <SkeletonLine className='mb-0.5 text-xs' width='w-16' />
-            <SkeletonLine width='w-24' />
-            {/* The audio line is the one that wraps on phones */}
-            {i === 4 && <SkeletonLine className='sm:hidden' width='w-16' />}
-          </div>
-        ))}
-      </div>
+      {!isDetailsHidden && (
+        <div className='mt-4 grid grid-cols-2 gap-x-4 gap-y-3 rounded-2xl bg-black/25 p-4 text-sm ring-1 ring-white/10 ring-inset sm:grid-cols-3'>
+          {[...Array(7)].map((_, i) => (
+            <div key={i}>
+              <SkeletonLine className='mb-0.5 text-xs' width='w-16' />
+              <SkeletonLine width='w-24' />
+              {/* The audio line is the one that wraps on phones */}
+              {i === 4 && <SkeletonLine className='sm:hidden' width='w-16' />}
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   )
 }

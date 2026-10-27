@@ -36,6 +36,7 @@
     "subtitles": "Sous-titres",
     "location": "Emplacement",
     "bandwidth": "Bande passante",
+    "streamDetails": "Détails du flux",
     "noActivity": "Aucune lecture en cours. 😴",
     "loadError": "Impossible de charger l'activité",
     "playing": "En lecture",
