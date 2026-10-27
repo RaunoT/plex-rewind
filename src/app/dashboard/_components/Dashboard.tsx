@@ -4,7 +4,8 @@ import MediaItems from '@/components/MediaItem/MediaItems'
 import { PublicSettings } from '@/types/settings'
 import { TautulliItemRow } from '@/types/tautulli'
 import { getTranslations } from 'next-intl/server'
-import { ReactNode } from 'react'
+import { ReactNode, Suspense } from 'react'
+import ShowMore from './ShowMore'
 
 type Props = {
   items?: TautulliItemRow[] | null
@@ -16,6 +17,8 @@ type Props = {
   settings: PublicSettings
   loggedInUserId?: string
   toolbar: ReactNode
+  // The limit "Show more" leads to, left out when there's nothing more
+  nextLimit?: number
 }
 
 export default async function Dashboard({
@@ -28,6 +31,7 @@ export default async function Dashboard({
   settings,
   loggedInUserId,
   toolbar,
+  nextLimit,
 }: Props) {
   const t = await getTranslations('Dashboard')
   const tCommon = await getTranslations('Common')
@@ -39,13 +43,22 @@ export default async function Dashboard({
 
       <CardWrapper>
         {items?.length ? (
-          <MediaItems
-            items={items}
-            type={type}
-            serverId={serverId}
-            settings={settings}
-            loggedInUserId={loggedInUserId}
-          />
+          <>
+            <MediaItems
+              items={items}
+              type={type}
+              serverId={serverId}
+              settings={settings}
+              loggedInUserId={loggedInUserId}
+            />
+            {nextLimit && (
+              <div className='mt-2.5 flex justify-center border-t border-white/10 pt-2.5'>
+                <Suspense>
+                  <ShowMore limit={nextLimit} />
+                </Suspense>
+              </div>
+            )}
+          </>
         ) : (
           <div className='flex flex-1 flex-col justify-center text-center text-neutral-300'>
             <p className='py-24 text-2xl leading-tight sm:text-3xl'>

@@ -4,6 +4,7 @@ import { DashboardSearchParams } from '@/types/dashboard'
 import { Settings } from '@/types/settings'
 import { fetchOverseerrStats } from '@/utils/fetchOverseerr'
 import { secondsToTime, TranslateFunction } from '@/utils/formatting'
+import { getItemsLimit, getNextItemsLimit } from '@/utils/getDashboard'
 import getPeriod from '@/utils/getPeriod'
 import getSettings from '@/utils/getSettings'
 import getUsersTop from '@/utils/getUsersTop'
@@ -66,9 +67,11 @@ async function getTotalRequests(period: string, settings: Settings) {
 
 async function DashboardUsersContent({
   periodSp,
+  limit,
   toolbar,
 }: {
   periodSp: DashboardSearchParams['period']
+  limit: number
   toolbar: ReactNode
 }) {
   const settings = getSettings()
@@ -87,7 +90,7 @@ async function DashboardUsersContent({
   const period = getPeriod(periodSp, settings)
   const [usersData, totalDuration, usersCount, totalRequests] =
     await Promise.all([
-      getUsersTop(loggedInUserId ?? '', period.string, period.daysAgo),
+      getUsersTop(loggedInUserId ?? '', period.string, period.daysAgo, limit),
       getTotalDuration(period.string, settings, t),
       getUsersCount(settings),
       // The same start as each user's request count
@@ -96,7 +99,7 @@ async function DashboardUsersContent({
 
   return (
     <Dashboard
-      items={usersData}
+      items={usersData?.items}
       totalDuration={totalDuration}
       totalSize={usersCount}
       type='users'
@@ -104,6 +107,7 @@ async function DashboardUsersContent({
       count={totalRequests}
       loggedInUserId={loggedInUserId}
       toolbar={toolbar}
+      nextLimit={getNextItemsLimit(limit, !!usersData?.hasMore)}
     />
   )
 }
@@ -113,7 +117,8 @@ type Props = {
 }
 
 export default async function DashboardUsersPage({ searchParams }: Props) {
-  const { period } = await searchParams
+  const { period, limit } = await searchParams
+  const itemsLimit = getItemsLimit(limit)
   const toolbar = (
     <DashboardToolbar settings={toPublicSettings(getSettings())} isUsers />
   )
@@ -125,11 +130,17 @@ export default async function DashboardUsersPage({ searchParams }: Props) {
           toolbar={toolbar}
           type='users'
           activeStats={getSettings().dashboard.activeItemStatistics}
+          rows={itemsLimit}
         />
       }
+      // Without the limit, so "Show more" keeps the list up while it loads
       key={period}
     >
-      <DashboardUsersContent periodSp={period} toolbar={toolbar} />
+      <DashboardUsersContent
+        periodSp={period}
+        limit={itemsLimit}
+        toolbar={toolbar}
+      />
     </Suspense>
   )
 }

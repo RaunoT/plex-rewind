@@ -157,7 +157,9 @@ async function LibraryTile({
 }: LibraryTileProps) {
   const t = await getTranslations()
   const { daysAgo } = getPeriod(period, settings)
-  const [top] = await getItems(library, daysAgo, undefined, true)
+  const {
+    items: [top],
+  } = await getItems(library, { period: daysAgo, sortByPlays: true, count: 1 })
   const topLabel =
     library.section_type === 'artist'
       ? t('Home.mostListened')

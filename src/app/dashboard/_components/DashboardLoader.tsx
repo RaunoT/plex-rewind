@@ -2,6 +2,7 @@ import CardWrapper from '@/app/_components/CardWrapper'
 import SkeletonLine from '@/components/SkeletonLine'
 import { DashboardItemStatistics } from '@/types/settings'
 import { TautulliMediaType } from '@/types/tautulli'
+import { DASHBOARD_PAGE_SIZE } from '@/utils/constants'
 import clsx from 'clsx'
 import { ReactNode } from 'react'
 
@@ -9,18 +10,24 @@ type Props = {
   toolbar: ReactNode
   type: TautulliMediaType | 'users'
   activeStats: DashboardItemStatistics
+  rows?: number
 }
 
 // Built like the real rows for this library and the chosen statistics, so
 // nothing moves once the data arrives
-export default function DashboardLoader({ toolbar, type, activeStats }: Props) {
+export default function DashboardLoader({
+  toolbar,
+  type,
+  activeStats,
+  rows = DASHBOARD_PAGE_SIZE,
+}: Props) {
   return (
     <div className='flex flex-1 flex-col'>
       <div className='mb-4'>{toolbar}</div>
 
       <CardWrapper>
         <ul className='flex flex-col overflow-hidden'>
-          {[...Array(5)].map((_, i) => (
+          {[...Array(rows)].map((_, i) => (
             <ListItem key={i} type={type} activeStats={activeStats} />
           ))}
         </ul>
@@ -38,7 +45,7 @@ export default function DashboardLoader({ toolbar, type, activeStats }: Props) {
   )
 }
 
-function ListItem({ type, activeStats }: Omit<Props, 'toolbar'>) {
+function ListItem({ type, activeStats }: Omit<Props, 'toolbar' | 'rows'>) {
   const isUsers = type === 'users'
   const hasDetails =
     (type === 'movie' || type === 'show') &&

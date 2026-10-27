@@ -1,16 +1,35 @@
 import { Settings } from '@/types/settings'
+import { TopItemsQuery } from '@/types/statsSource'
 import { TautulliLibrary } from '@/types/tautulli'
+import { clamp } from 'lodash'
 import { getTranslations } from 'next-intl/server'
+import { DASHBOARD_MAX_ITEMS, DASHBOARD_PAGE_SIZE } from './constants'
 import { bytesToSize, secondsToTime } from './formatting'
 import { getStatsSource } from './statsSource'
 
-export async function getItems(
-  library: TautulliLibrary,
-  period: number,
-  userId?: string,
-  sortByPlays?: boolean,
-) {
-  return getStatsSource().getTopItems(library, period, userId, sortByPlays)
+export async function getItems(library: TautulliLibrary, query: TopItemsQuery) {
+  return getStatsSource().getTopItems(library, query)
+}
+
+// How many rows a dashboard list shows, from its `limit` search parameter
+export function getItemsLimit(limitSearchParam?: string): number {
+  const limit = Number(limitSearchParam)
+
+  if (!Number.isInteger(limit)) {
+    return DASHBOARD_PAGE_SIZE
+  }
+
+  return clamp(limit, DASHBOARD_PAGE_SIZE, DASHBOARD_MAX_ITEMS)
+}
+
+// The limit "Show more" leads to, if there's more to show
+export function getNextItemsLimit(
+  limit: number,
+  hasMore: boolean,
+): number | undefined {
+  return hasMore && limit < DASHBOARD_MAX_ITEMS
+    ? Math.min(limit + DASHBOARD_PAGE_SIZE, DASHBOARD_MAX_ITEMS)
+    : undefined
 }
 
 export async function getTotalDuration(

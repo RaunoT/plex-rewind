@@ -53,6 +53,7 @@
   "Dashboard": {
     "sizePartial": "{size} (osaline)",
     "noActivity": "Valitud perioodil puudub tegevus. 😴",
+    "showMore": "Näita rohkem",
     "title": "Edetabel",
     "usersTitle": "Kasutajad",
     "users": "{count, plural, one {# kasutaja} other {# kasutajat}}",

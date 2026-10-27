@@ -198,6 +198,20 @@
     }
   }
 
+  /* Under a dashboard list, quieter than the rows above it */
+  .show-more {
+    @apply focus-visible:focus-ring relative inline-flex h-8 items-center gap-1.5 rounded-full px-3.5 text-sm font-medium text-neutral-300 transition-colors hover:bg-white/10 hover:text-white;
+
+    > svg {
+      @apply size-4 shrink-0;
+    }
+
+    /* A 40px tall tap area */
+    &::after {
+      @apply absolute inset-x-0 -inset-y-1 content-[''];
+    }
+  }
+
   /* Sized and set to the surrounding text so the logo's lowercase letters and
      baseline line up with the font's */
   .plex-logo {

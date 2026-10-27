@@ -34,6 +34,20 @@ export type MediaStats = Record<
 
 export type TopMediaItems = Record<TautulliMediaReturnType, TautulliItemRow[]>
 
+export type TopItemsQuery = {
+  // In days
+  period: number
+  userId?: string
+  sortByPlays?: boolean
+  count: number
+}
+
+// `hasMore` says whether the ranking goes on past the listed items.
+export type TopItems = {
+  items: TautulliItemRow[]
+  hasMore: boolean
+}
+
 // Plays per hour (0 to 23) and per day of the week (0 is Sunday)
 export type PlaysByTime = {
   hourly: number[]
@@ -61,10 +75,8 @@ export type StatsSource = {
   getTotalDuration: (query: DurationQuery) => Promise<number>
   getTopItems: (
     library: TautulliLibrary,
-    period: number,
-    userId?: string,
-    sortByPlays?: boolean,
-  ) => Promise<TautulliItemRow[]>
+    query: TopItemsQuery,
+  ) => Promise<TopItems>
   // Ranked by watch time, without excluded users
   getTopUsers: (query: TopUsersQuery) => Promise<TautulliItemRow[] | null>
   getPlaysCounts: (
