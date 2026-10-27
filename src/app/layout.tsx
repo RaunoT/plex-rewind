@@ -69,9 +69,11 @@ export default async function RootLayout({ children }: Props) {
   const locale = await getLocale()
   const missingSetting = checkRequiredSettings(settings)
   const session = await getServerSession(authOptions)
-  // For the sidebar, which lists the libraries a visitor can open
+  // For the sidebar, which lists the libraries only while the dashboard is on
   const libraries =
-    !missingSetting && (session || settings.general.isOutsideAccess)
+    !missingSetting &&
+    settings.dashboard.isActive &&
+    (session || settings.general.isOutsideAccess)
       ? sortByActiveLibraries(await getLibraries(), settings)
       : []
 

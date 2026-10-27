@@ -64,6 +64,25 @@ services:
 
 For those that need it, a simple status page is also available at `/api/status`.
 
+### Tracearr
+
+[Tracearr](https://github.com/connorgallopo/Tracearr) (2.0 or newer) can be used as the statistics source instead of Tautulli. Choose it under _Settings → Connection_ and enter its URL and a public API key, which you can create in Tracearr under _Settings → Data & API → API_.
+
+A few things work differently with Tracearr:
+
+- Tracearr doesn't expose library names, so the dashboard and Rewind show one library per media type: _Movies_, _TV Shows_ and _Music_.
+- Only one Plex server is used. If Tracearr tracks more than one, choose it under _Settings → Connection_. Jellyfin and Emby servers are ignored.
+- Statistics are calculated from the watch history, which is cached for 5 minutes. The first load of a long period, such as a full year of Rewind on a busy server, can take a while.
+- Viewing habits use the timezone of the Plex Rewind container, so set `TZ` if it differs from your own.
+
+### Updating
+
+To update, run `docker compose pull` and then `docker compose up -d`.
+
+### Upgrading from older versions
+
+Older versions ran the app as root, so your `./config` folder may be owned by root. The container now starts as root only to fix the ownership of `./config`, then switches to the user set by `PUID` and `PGID` (`1000` by default). You don't need to change anything. To have the files in `./config` owned by a specific user instead, set `PUID` and `PGID` to that user's IDs. To keep running as root like before, set `PUID=0`.
+
 ## Translations
 
 The application follows the browser's language when it's one of the supported ones, and falls back to English otherwise. A language picked from the language menu takes precedence over the browser's.

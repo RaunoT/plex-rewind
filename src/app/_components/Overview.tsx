@@ -19,12 +19,12 @@ import { kebabCase } from 'lodash'
 import { Session } from 'next-auth'
 import { getTranslations } from 'next-intl/server'
 import { cookies } from 'next/headers'
-import Image from 'next/image'
 import Link from 'next/link'
 import { Suspense } from 'react'
 import ActivityTile from './ActivityTile'
 import HeaderControls from './HeaderControls'
 import LoginButton from './LoginButton'
+import TilePoster from './TilePoster'
 
 type Props = {
   settings: Settings
@@ -141,9 +141,11 @@ async function LibraryTile({
     library.section_type === 'artist'
       ? t('Home.mostListened')
       : t('Home.mostWatched')
-  const poster = top?.thumb?.startsWith('https://image.tmdb.org')
-    ? top.thumb
-    : getImageProxyUrl(top?.thumb)
+  const poster = !top?.thumb
+    ? undefined
+    : top.thumb.startsWith('https://image.tmdb.org')
+      ? top.thumb
+      : getImageProxyUrl(top.thumb)
 
   return (
     <Link
@@ -154,13 +156,7 @@ async function LibraryTile({
       {top ? (
         <div className='flex items-center gap-3'>
           <div className='poster w-12'>
-            <Image
-              fill
-              className='object-cover object-top'
-              alt=''
-              src={poster}
-              sizes='6rem'
-            />
+            <TilePoster key={poster} src={poster} />
           </div>
           <div className='min-w-0'>
             <p className='text-xs text-neutral-400'>
