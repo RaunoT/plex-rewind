@@ -57,7 +57,7 @@ const plays: Record<string, number> = {
 let inFlight = 0
 let maxInFlight = 0
 
-function mockTautulli(getUser: unknown) {
+function mockTautulli(getUser: unknown, ranked = rankedUsers) {
   fetchMock.mockImplementation(async (query, params) => {
     inFlight++
     maxInFlight = Math.max(maxInFlight, inFlight)
@@ -70,7 +70,7 @@ function mockTautulli(getUser: unknown) {
       case 'get_users':
         return { response: { data: serverUsers } } as never
       case 'get_home_stats':
-        return { response: { data: { rows: rankedUsers } } } as never
+        return { response: { data: { rows: ranked } } } as never
       case 'get_user':
         return { response: { data: getUser } } as never
       case 'get_history': {
@@ -98,9 +98,10 @@ function historyCalls() {
 }
 
 describe('getUsersTop with Tautulli', () => {
-  beforeEach(() => {
-    const settings: Settings = cloneDeep(DEFAULT_SETTINGS)
+  let settings: Settings
 
+  beforeEach(() => {
+    settings = cloneDeep(DEFAULT_SETTINGS)
     inFlight = 0
     maxInFlight = 0
     fetchMock.mockReset()
@@ -155,5 +156,26 @@ describe('getUsersTop with Tautulli', () => {
       rank: 2,
       movies_plays_count: 0,
     })
+  })
+
+  it('shows the top users to an excluded user, without adding them', async () => {
+    const ranked = Array.from({ length: 7 }, (_, i) => ({
+      user_id: i + 1,
+      total_duration: 700 - i * 100,
+    }))
+
+    settings.general.excludedUsers = ['99']
+    mockTautulli(
+      { user_id: 99, friendly_name: 'Hidden', user: 'hidden' },
+      ranked,
+    )
+
+    const users = await getUsersTop('99', '2026-03-01', 30)
+
+    // The list is cut like for anyone outside the top, so 5 rows show.
+    expect(users?.map((user) => user.user_id)).toEqual([1, 2, 3, 4, 5, 6])
+    expect(fetchMock.mock.calls.some(([query]) => query === 'get_user')).toBe(
+      false,
+    )
   })
 })
