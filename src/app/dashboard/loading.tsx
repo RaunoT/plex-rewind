@@ -7,7 +7,7 @@ export default function Loading() {
   return (
     <DashboardLoader
       toolbar={
-        <div className='flex justify-end'>
+        <div className='flex min-h-10 items-center justify-end'>
           <div className='skeleton h-7 w-32' />
         </div>
       }
