@@ -2,6 +2,7 @@
 
 import usePlexAuth from '@/hooks/usePlexAuth'
 import { useTranslations } from 'next-intl'
+import LoginWithPlexLabel from './LoginWithPlexLabel'
 
 export default function LoginButton({ siteUrl }: { siteUrl: string }) {
   const { isLoading, error, handleLogin } = usePlexAuth(siteUrl)
@@ -14,7 +15,7 @@ export default function LoginButton({ siteUrl }: { siteUrl: string }) {
         onClick={handleLogin}
         disabled={isLoading}
       >
-        {t('loginWithPlex')}
+        <LoginWithPlexLabel />
       </button>
       {/* Below the button, so the header keeps its layout */}
       {error && (

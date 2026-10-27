@@ -7,6 +7,7 @@ import { PublicSettings } from '@/types/settings'
 import { signOut, useSession } from 'next-auth/react'
 import { useTranslations } from 'next-intl'
 import Image from 'next/image'
+import LoginWithPlexLabel from './LoginWithPlexLabel'
 
 type Props = {
   settings: PublicSettings
@@ -70,7 +71,7 @@ export default function Home({ settings, missingSetting, siteUrl }: Props) {
       <div className='animate-fade-in animation-delay-700 flex w-full flex-col gap-3'>
         {!isLoggedIn && (
           <button className='button button--plex w-full' onClick={handleLogin}>
-            {t('loginWithPlex')}
+            <LoginWithPlexLabel />
           </button>
         )}
         {error && (

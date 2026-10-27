@@ -3,7 +3,7 @@
     "title": "Home",
     "setupRequired": "Setup required",
     "setupRequiredDescription": "This application needs to be configured by an administrator.",
-    "loginWithPlex": "Sign in with Plex",
+    "loginWithPlex": "Sign in with <plex>Plex</plex>",
     "loginError": {
       "plexUnavailable": "Couldn't reach Plex. Try again in a moment.",
       "plexNotConfirmed": "Plex didn't confirm the sign-in. Try again.",

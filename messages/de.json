@@ -3,7 +3,7 @@
     "title": "Startseite",
     "setupRequired": "Setup notwendig",
     "setupRequiredDescription": "Die Anwendung muss von einem Administrator eingerichtet werden.",
-    "loginWithPlex": "Mit Plex anmelden",
+    "loginWithPlex": "Mit <plex>Plex</plex> anmelden",
     "loginError": {
       "plexUnavailable": "Plex ist nicht erreichbar. Versuche es gleich noch einmal.",
       "plexNotConfirmed": "Plex hat die Anmeldung nicht bestätigt. Versuche es noch einmal.",

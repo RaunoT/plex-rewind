@@ -3,7 +3,7 @@
     "title": "Avaleht",
     "setupRequired": "Seadistamine vajalik",
     "setupRequiredDescription": "Rakendus vajab seadistamist administraatori poolt.",
-    "loginWithPlex": "Logi sisse Plex'iga",
+    "loginWithPlex": "Logi sisse <plex>Plex</plex> kontoga",
     "loginError": {
       "plexUnavailable": "Plexiga ei saanud ühendust. Proovi hetke pärast uuesti.",
       "plexNotConfirmed": "Plex ei kinnitanud sisselogimist. Proovi uuesti.",

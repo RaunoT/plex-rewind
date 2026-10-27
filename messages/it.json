@@ -3,7 +3,7 @@
     "title": "Home",
     "setupRequired": "Configurazione richiesta",
     "setupRequiredDescription": "Questa applicazione deve essere configurata da un amministratore.",
-    "loginWithPlex": "Accedi con Plex",
+    "loginWithPlex": "Accedi con <plex>Plex</plex>",
     "loginError": {
       "plexUnavailable": "Impossibile raggiungere Plex. Riprova tra poco.",
       "plexNotConfirmed": "Plex non ha confermato l'accesso. Riprova.",

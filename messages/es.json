@@ -3,7 +3,7 @@
     "title": "Inicio",
     "setupRequired": "Configuración necesaria",
     "setupRequiredDescription": "Un administrador debe configurar esta aplicación.",
-    "loginWithPlex": "Iniciar sesión con Plex",
+    "loginWithPlex": "Iniciar sesión con <plex>Plex</plex>",
     "loginError": {
       "plexUnavailable": "No se pudo conectar con Plex. Inténtalo de nuevo en un momento.",
       "plexNotConfirmed": "Plex no confirmó el inicio de sesión. Inténtalo de nuevo.",
