@@ -10,6 +10,9 @@ vi.mock('./getSettings', () => ({
 }))
 
 const HOUR = 60 * 60 * 1000
+// Overseerr validates requests against its API spec, which gives a user's
+// requests only these query parameters.
+const USER_REQUESTS_PARAMS = ['take', 'skip']
 
 type Fetch = typeof fetch
 
@@ -24,6 +27,19 @@ function overseerrFetch(
     const skip = Number(url.searchParams.get('skip'))
 
     requests.push(url)
+
+    if (
+      /^\/api\/v1\/user\/\d+\/requests$/.test(url.pathname) &&
+      [...url.searchParams.keys()].some(
+        (key) => !USER_REQUESTS_PARAMS.includes(key),
+      )
+    ) {
+      return new Response('Unknown query parameter', {
+        status: 400,
+        statusText: 'Bad Request',
+      })
+    }
+
     stats.inFlight++
     stats.maxInFlight = Math.max(stats.maxInFlight, stats.inFlight)
     await new Promise((resolve) => setTimeout(resolve, 2))
@@ -65,6 +81,7 @@ beforeEach(() => {
 })
 
 afterEach(() => {
+  vi.restoreAllMocks()
   vi.unstubAllGlobals()
   vi.useRealTimers()
 })
@@ -82,7 +99,21 @@ describe('fetchOverseerrStats', () => {
     expect(requests).toHaveLength(1)
     expect(requests[0].pathname).toBe('/api/v1/request')
     expect(requests[0].searchParams.get('take')).toBe('100')
-    expect(requests[0].searchParams.get('sort')).toBe('added')
+  })
+
+  it("reads a user's requests with only the parameters Overseerr accepts", async () => {
+    const error = vi.spyOn(console, 'error').mockImplementation(() => {})
+    const { requests } = overseerrFetch(hourlyRequests(250))
+    const { fetchOverseerrStats } = await load()
+    const stats = await fetchOverseerrStats(
+      'user/4/requests',
+      new Date(Date.now() - 1000 * HOUR).toISOString(),
+    )
+
+    expect(stats).toHaveLength(250)
+    expect(requests).toHaveLength(3)
+    expect(requests[0].pathname).toBe('/api/v1/user/4/requests')
+    expect(error).not.toHaveBeenCalled()
   })
 
   it('stops paging once a page is older than the window', async () => {
@@ -184,6 +215,17 @@ describe('fetchOverseerrUserId', () => {
     expect(ids).toEqual([1, 121, 250, null])
     expect(requests).toHaveLength(3)
     expect(requests.every((url) => url.pathname === '/api/v1/user')).toBe(true)
+  })
+
+  it('skips users without an Overseerr account quietly', async () => {
+    const error = vi.spyOn(console, 'error').mockImplementation(() => {})
+
+    overseerrFetch(users)
+
+    const { fetchOverseerrUserId } = await load()
+
+    expect(await fetchOverseerrUserId('9999')).toBeNull()
+    expect(error).not.toHaveBeenCalled()
   })
 
   it('reuses the user list for a minute', async () => {
