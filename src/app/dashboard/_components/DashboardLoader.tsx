@@ -2,7 +2,7 @@ import CardWrapper from '@/app/_components/CardWrapper'
 import SkeletonLine from '@/components/SkeletonLine'
 import { DashboardItemStatistics, PublicSettings } from '@/types/settings'
 import { TautulliMediaType } from '@/types/tautulli'
-import { DASHBOARD_PAGE_SIZE } from '@/utils/constants'
+import { DASHBOARD_PAGE_SIZE, RATING_STATISTICS } from '@/utils/constants'
 import clsx from 'clsx'
 import { ReactNode } from 'react'
 import DashboardHeader from './DashboardHeader'
@@ -81,7 +81,8 @@ function ListItem({
   const isUsers = type === 'users'
   const hasDetails =
     (type === 'movie' || type === 'show') &&
-    (activeStats.includes('year') || activeStats.includes('rating'))
+    (activeStats.includes('year') ||
+      RATING_STATISTICS.some((rating) => activeStats.includes(rating)))
   const pills = [
     activeStats.includes('duration') && 'w-24',
     activeStats.includes('plays') && 'w-16',

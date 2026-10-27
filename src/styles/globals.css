@@ -234,6 +234,11 @@
     }
   }
 
+  /* IMDb's tag again, sized to the icons next to a rating */
+  .imdb-tag {
+    @apply rounded-sm bg-[#f5c518] px-1 text-[0.625rem] leading-4 font-extrabold tracking-tight text-black;
+  }
+
   /* Under a dashboard list, quieter than the rows above it */
   .show-more {
     @apply focus-visible:focus-ring relative inline-flex h-8 items-center gap-1.5 rounded-full px-3.5 text-sm font-medium text-neutral-300 transition-colors hover:bg-white/10 hover:text-white;

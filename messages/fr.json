@@ -130,7 +130,7 @@
     "urlNotFound": "Introuvable. Vérifiez l'URL, y compris le chemin de base éventuel.",
     "unexpectedResponse": "Réponse inattendue (HTTP {status}).",
     "certificateError": "Erreur de certificat HTTPS. Vérifiez que l'URL correspond à un certificat valide.",
-    "invalidField": "Vérifiez {field, select, tautulliUrl {l'URL de Tautulli} tautulliApiKey {la clé API de Tautulli} tracearrUrl {l'URL de Tracearr} tracearrApiKey {la clé API de Tracearr} plexUrl {l'URL de Plex} overseerrUrl {l'URL d'Overseerr} overseerrApiKey {la clé API d'Overseerr} googleAnalyticsId {l'ID Google Analytics} other {les paramètres}}.",
+    "invalidField": "Vérifiez {field, select, tautulliUrl {l'URL de Tautulli} tautulliApiKey {la clé API de Tautulli} tracearrUrl {l'URL de Tracearr} tracearrApiKey {la clé API de Tracearr} plexUrl {l'URL de Plex} overseerrUrl {l'URL d'Overseerr} overseerrApiKey {la clé API d'Overseerr} mdblistApiKey {la clé API de MDBList} googleAnalyticsId {l'ID Google Analytics} other {les paramètres}}.",
     "buyMeACoffee": "Offrez-moi un café",
     "becomeASponsor": "Devenir sponsor",
     "reportAnIssue": "Signaler un problème",
@@ -152,7 +152,8 @@
       "source": "Source",
       "server": "Serveur",
       "chooseServer": "Choisissez un serveur",
-      "overseerrUrlDescription": "Les liens de demande s'ouvrent dans le navigateur de l'utilisateur : utilisez une adresse qu'il peut joindre, pas une adresse du réseau local."
+      "overseerrUrlDescription": "Les liens de demande s'ouvrent dans le navigateur de l'utilisateur : utilisez une adresse qu'il peut joindre, pas une adresse du réseau local.",
+      "mdblistApiKeyDescription": "Pour les notes IMDb et Rotten Tomatoes. Obtenez une clé API gratuite dans vos préférences sur mdblist.com."
     },
     "Dashboard": {
       "title": "Paramètres du tableau de bord",
@@ -161,7 +162,7 @@
       "usersPage": "Page des utilisateurs",
       "statistics": "Statistiques",
       "itemStatistics": "Statistiques des éléments",
-      "itemStatisticsDescription": "Affichées pour chaque titre et utilisateur dans les listes du tableau de bord et du Rewind.",
+      "itemStatisticsDescription": "Affichées pour chaque titre et utilisateur dans les listes du tableau de bord et du Rewind. Les notes IMDb et Rotten Tomatoes nécessitent une clé API MDBList dans les paramètres de connexion.",
       "totalStatistics": "Statistiques totales",
       "totalStatisticsDescription": "La durée de visionnage et les demandes portent sur la période choisie et sont affichées à côté des filtres. La taille et le nombre sont affichés sous chaque liste. Le nombre correspond aux films, épisodes ou morceaux de la bibliothèque.",
       "sortFilter": "Filtre de tri",
@@ -220,6 +221,7 @@
     "status": "Statut",
     "year": "Année",
     "rating": "Note",
+    "ratingBy": "Note {provider}",
     "duration": "Durée de visionnage",
     "plays": "Lectures",
     "users": "Utilisateurs",

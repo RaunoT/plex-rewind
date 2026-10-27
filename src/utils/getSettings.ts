@@ -1,9 +1,9 @@
-import { Settings } from '@/types/settings'
+import { DashboardItemStatistics, Settings } from '@/types/settings'
 import { randomBytes } from 'crypto'
 import fs from 'fs'
-import { isEqual, isPlainObject, mergeWith } from 'lodash'
+import { isEqual, isPlainObject, mergeWith, uniq } from 'lodash'
 import path from 'path'
-import { DEFAULT_SETTINGS } from './constants'
+import { DEFAULT_SETTINGS, RATING_STATISTICS } from './constants'
 import { checkRequiredSettings } from './helpers'
 
 type CachedSettings = {
@@ -132,7 +132,7 @@ function loadSettings(key: string): Settings {
   }
 
   const savedSettings = saved as Partial<Settings>
-  const settings = mergeWithDefaults(savedSettings)
+  const settings = migrateRatingStatistic(mergeWithDefaults(savedSettings))
 
   settings.setupComplete =
     isSetupComplete(settings) || wasSetUpBeforeTracking(savedSettings)
@@ -217,6 +217,23 @@ function mergeWithDefaults(saved: Partial<Settings>): Settings {
     (_: unknown, source: unknown) =>
       Array.isArray(source) ? [...source] : undefined,
   )
+}
+
+// Before ratings could be chosen per provider, `rating` turned on TMDB's. It
+// now turns them all on, so IMDb and Rotten Tomatoes show up once an MDBList
+// API key is added.
+function migrateRatingStatistic(settings: Settings): Settings {
+  const statistics: string[] = settings.dashboard.activeItemStatistics
+
+  if (statistics.includes('rating')) {
+    settings.dashboard.activeItemStatistics = uniq(
+      statistics.flatMap((statistic) =>
+        statistic === 'rating' ? RATING_STATISTICS : statistic,
+      ),
+    ) as DashboardItemStatistics
+  }
+
+  return settings
 }
 
 function isSetupComplete(settings: Settings): boolean {
