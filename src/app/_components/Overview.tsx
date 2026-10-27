@@ -4,7 +4,7 @@ import { Settings } from '@/types/settings'
 import { TautulliLibrary } from '@/types/tautulli'
 import { DASHBOARD_PERIOD_COOKIE_NAME, getSiteUrl } from '@/utils/constants'
 import { getItems } from '@/utils/getDashboard'
-import getPeriod from '@/utils/getPeriod'
+import getPeriod, { parseCustomPeriod } from '@/utils/getPeriod'
 import { getImageProxyUrl } from '@/utils/imageProxy'
 import { toPublicSettings } from '@/utils/publicSettings'
 import {
@@ -42,7 +42,7 @@ export default async function Overview({
   const period = getDashboardPeriod(
     (await cookies()).get(DASHBOARD_PERIOD_COOKIE_NAME)?.value,
   )
-  const customPeriod = parseInt(settings.dashboard.customPeriod)
+  const customPeriod = parseCustomPeriod(settings.dashboard.customPeriod)
   const periodLabel =
     period === '7days'
       ? t('PeriodSelectContent.7days')

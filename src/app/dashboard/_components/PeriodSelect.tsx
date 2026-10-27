@@ -3,6 +3,7 @@
 import { GlobalContext } from '@/app/_components/GlobalContextProvider'
 import { DashboardSearchParams } from '@/types/dashboard'
 import { PublicSettings } from '@/types/settings'
+import { parseCustomPeriod } from '@/utils/getPeriod'
 import { useTranslations } from 'next-intl'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { ChangeEvent, useContext, useEffect } from 'react'
@@ -35,7 +36,7 @@ export default function PeriodSelect({ settings }: Props) {
     dashboard: { setPeriod },
   } = useContext(GlobalContext)
   const periodParam = searchParams.get('period')
-  const customPeriod = parseInt(settings.dashboard.customPeriod)
+  const customPeriod = parseCustomPeriod(settings.dashboard.customPeriod)
   const periodOptions = [
     { label: t('7days'), value: '7days' },
     {
