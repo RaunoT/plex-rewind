@@ -229,6 +229,78 @@ describe('getTracearrUser', () => {
 
     await expect(getTracearrUser('42')).resolves.toBeNull()
   })
+
+  // Each page has its own user, and the cursor decides how paging ends
+  function pagedUsersRoute(nextCursor: (page: number) => string | null) {
+    let page = 0
+
+    route({
+      servers: () => ({ data: [plexServer('s1')] }),
+      users: () => {
+        const current = page++
+
+        return {
+          data: [
+            user('s1', {
+              id: `u${current}`,
+              plex_account_id: String(current),
+              accounts: [
+                {
+                  server_id: 's1',
+                  username: `user${current}`,
+                  external_user_id: String(current),
+                  removed_at: null,
+                },
+              ],
+            }),
+          ],
+          meta: { nextCursor: nextCursor(current), pageSize: 100 },
+        }
+      },
+    })
+  }
+
+  it('is null for an unlisted user when a cursor repeats', async () => {
+    pagedUsersRoute(() => 'same')
+
+    const { getTracearrUser, getTracearrPlexUsers } = await load()
+
+    // The page after the repeat was never read
+    await expect(getTracearrUser('2')).resolves.toBeNull()
+    await expect(getTracearrUser('1')).resolves.toMatchObject({ plexId: '1' })
+    await expect(getTracearrPlexUsers()).resolves.toHaveLength(2)
+  })
+
+  it('is null for an unlisted user at the page limit', async () => {
+    pagedUsersRoute((page) => `cursor-${page}`)
+
+    const { getTracearrUser } = await load()
+
+    await expect(getTracearrUser('999999')).resolves.toBeNull()
+    await expect(getTracearrUser('4999')).resolves.toMatchObject({
+      plexId: '4999',
+    })
+  })
+
+  it('is null for an unlisted user when paging takes too long', async () => {
+    let now = Date.now()
+
+    vi.spyOn(Date, 'now').mockImplementation(() => (now += 60 * 1000))
+    pagedUsersRoute((page) => `cursor-${page}`)
+
+    const { getTracearrUser } = await load()
+
+    await expect(getTracearrUser('999999')).resolves.toBeNull()
+  })
+
+  it('is undefined for an unlisted user once every page was read', async () => {
+    pagedUsersRoute((page) => (page < 2 ? `cursor-${page}` : null))
+
+    const { getTracearrUser } = await load()
+
+    await expect(getTracearrUser('7')).resolves.toBeUndefined()
+    await expect(getTracearrUser('2')).resolves.toMatchObject({ plexId: '2' })
+  })
 })
 
 describe('server selection', () => {
