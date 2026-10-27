@@ -1,8 +1,8 @@
 import SkeletonLine from '@/components/SkeletonLine'
-import HeaderControls from './_components/HeaderControls'
+import HeaderControls from '../_components/HeaderControls'
 
-// Laid out like the home page's tiles. Also shown for a moment while another
-// section's layout loads.
+// Laid out like the home page's tiles. In a route group, so it doesn't stand in
+// for other sections while their layouts load.
 export default function Loading() {
   return (
     <div className='page-width'>
