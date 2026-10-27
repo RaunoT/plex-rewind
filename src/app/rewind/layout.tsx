@@ -3,6 +3,7 @@ import PageTitle from '@/app/_components/PageTitle'
 import { authOptions } from '@/lib/auth'
 import { REWIND_CONTROLS_ID } from '@/utils/constants'
 import getSettings from '@/utils/getSettings'
+import { canViewFeature, getViewer } from '@/utils/helpers'
 import { getActiveUsers } from '@/utils/statsSource'
 import { getServerSession } from 'next-auth'
 import { getTranslations } from 'next-intl/server'
@@ -18,8 +19,7 @@ export default async function RewindLayout({ children }: Props) {
   const settings = getSettings()
   const session = await getServerSession(authOptions)
 
-  // A rewind is always someone's, so outside access doesn't open it up.
-  if (!settings.rewind.isActive || !session) {
+  if (!canViewFeature(settings, 'rewind', getViewer(session))) {
     return notFound()
   }
 

@@ -8,7 +8,7 @@ import { TautulliLibrary } from '@/types/tautulli'
 import { DASHBOARD_PERIOD_COOKIE_NAME, getSiteUrl } from '@/utils/constants'
 import { getItems } from '@/utils/getDashboard'
 import getPeriod, { parseCustomPeriod } from '@/utils/getPeriod'
-import { getHomeTiles } from '@/utils/helpers'
+import { getHomeTiles, getViewer } from '@/utils/helpers'
 import { getImageProxyUrl } from '@/utils/imageProxy'
 import { toPublicSettings } from '@/utils/publicSettings'
 import { BackwardIcon, ChevronRightIcon } from '@heroicons/react/24/outline'
@@ -38,7 +38,11 @@ export default async function Overview({
   const t = await getTranslations()
   const firstName = session?.user.name?.split(' ')[0]
   const isAdmin = !!session?.user.isAdmin
-  const tiles = getHomeTiles(settings, !!session, libraries?.length ?? 0)
+  const tiles = getHomeTiles(
+    settings,
+    getViewer(session),
+    libraries?.length ?? 0,
+  )
   const period = getDashboardPeriod(
     (await cookies()).get(DASHBOARD_PERIOD_COOKIE_NAME)?.value,
   )
@@ -56,7 +60,7 @@ export default async function Overview({
     <div className='page-width'>
       <header
         data-page-header
-        className='mb-6 flex min-h-10 items-center justify-between gap-3'
+        className='mb-4 flex min-h-10 items-center justify-between gap-3'
       >
         <h1 className='truncate text-2xl font-bold tracking-tight sm:text-3xl'>
           {firstName
@@ -97,13 +101,13 @@ export default async function Overview({
       ) : (
         <div className='grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3'>
           {tiles.rewind && (
-            <div className='glass-sheet flex flex-col justify-between gap-6 sm:col-span-2'>
+            <div className='glass-sheet flex flex-col justify-between gap-4 sm:col-span-2'>
               <div>
                 <h2 className='flex items-center gap-2 font-semibold'>
                   <BackwardIcon className='size-5 text-neutral-400' />
                   {t('Rewind.title')}
                 </h2>
-                <p className='mt-3 max-w-md text-xl font-semibold tracking-tight sm:text-2xl'>
+                <p className='mt-4 max-w-md text-xl font-semibold tracking-tight sm:text-2xl'>
                   {t('Home.rewindDescription')}
                 </p>
               </div>

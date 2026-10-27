@@ -34,14 +34,14 @@ export default function TitleMenu({ label, items }: Props) {
 
   return (
     <MenuTrigger>
-      <Button className='focus-visible:focus-ring -mx-1.5 flex min-w-0 items-center gap-1 rounded-lg px-1.5 text-lg font-semibold tracking-tight sm:text-xl'>
+      <Button className='focus-visible:focus-ring -mx-1.5 flex min-w-0 items-center gap-1 rounded-md px-1.5 text-lg font-semibold tracking-tight sm:text-xl'>
         <span className='truncate'>{current?.label}</span>
         <ChevronDownIcon className='size-4 shrink-0 text-neutral-400' />
       </Button>
       <Popover
         placement='bottom start'
         offset={8}
-        className='glass-sheet w-56 rounded-[18px] bg-neutral-900/70 p-1.5 outline-none'
+        className='glass-sheet menu w-56'
       >
         <Menu
           aria-label={label}

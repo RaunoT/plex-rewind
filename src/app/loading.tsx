@@ -8,7 +8,7 @@ export default function Loading() {
     <div className='page-width'>
       <header
         data-page-header
-        className='mb-6 flex min-h-10 items-center justify-between gap-3'
+        className='mb-4 flex min-h-10 items-center justify-between gap-3'
       >
         <SkeletonLine className='text-2xl sm:text-3xl' width='w-48' />
         <HeaderControls className='lg:group-data-[sidebar]/app:hidden' />

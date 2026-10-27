@@ -3,7 +3,12 @@ import '@/styles/globals.css'
 import { getSiteUrl, META_DESCRIPTION } from '@/utils/constants'
 import getSettings from '@/utils/getSettings'
 import getVersion from '@/utils/getVersion'
-import { checkRequiredSettings, sortByActiveLibraries } from '@/utils/helpers'
+import {
+  canViewFeature,
+  checkRequiredSettings,
+  getViewer,
+  sortByActiveLibraries,
+} from '@/utils/helpers'
 import { toPublicSettings } from '@/utils/publicSettings'
 import { getReachableLibraries } from '@/utils/statsSource'
 import { SerwistProvider } from '@serwist/next/react'
@@ -76,9 +81,7 @@ export default async function RootLayout({ children }: Props) {
   // For the sidebar, which lists the libraries only while the dashboard is on.
   // Not awaited, so a slow source doesn't hold up every page.
   const libraries =
-    !missingSetting &&
-    settings.dashboard.isActive &&
-    (session || settings.general.isOutsideAccess)
+    !missingSetting && canViewFeature(settings, 'dashboard', getViewer(session))
       ? getReachableLibraries().then(
           (libraries) =>
             libraries && sortByActiveLibraries(libraries, settings),
@@ -96,6 +99,7 @@ export default async function RootLayout({ children }: Props) {
             {settings.general.googleAnalyticsId && (
               <GoogleAnalytics
                 id={settings.general.googleAnalyticsId}
+                isSignedIn={!!session}
                 nonce={nonce}
               />
             )}

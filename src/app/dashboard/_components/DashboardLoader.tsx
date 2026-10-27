@@ -1,44 +1,76 @@
 import CardWrapper from '@/app/_components/CardWrapper'
 import SkeletonLine from '@/components/SkeletonLine'
-import { DashboardItemStatistics } from '@/types/settings'
+import { DashboardItemStatistics, PublicSettings } from '@/types/settings'
 import { TautulliMediaType } from '@/types/tautulli'
 import clsx from 'clsx'
 import { ReactNode } from 'react'
+import DashboardHeader from './DashboardHeader'
 
 type Props = {
   toolbar: ReactNode
   type: TautulliMediaType | 'users'
-  activeStats: DashboardItemStatistics
+  settings: PublicSettings
 }
 
 // Built like the real rows for this library and the chosen statistics, so
 // nothing moves once the data arrives
-export default function DashboardLoader({ toolbar, type, activeStats }: Props) {
+export default function DashboardLoader({ toolbar, type, settings }: Props) {
+  const isUsers = type === 'users'
+  const { activeItemStatistics, activeTotalStatistics } = settings.dashboard
+  const periodStats = [
+    activeTotalStatistics.includes('duration') && 'w-32',
+    activeTotalStatistics.includes('requests') &&
+      settings.connection.isOverseerrActive &&
+      type !== 'artist' &&
+      'w-20',
+  ]
+  const generalStats = isUsers
+    ? [activeTotalStatistics.includes('count') && 'w-16']
+    : [
+        activeTotalStatistics.includes('size') && 'w-16',
+        activeTotalStatistics.includes('count') && 'w-24',
+      ]
+
   return (
     <div className='flex flex-1 flex-col'>
-      <div className='mb-4'>{toolbar}</div>
+      <DashboardHeader
+        periodStats={<StatSkeletons widths={periodStats} />}
+        toolbar={toolbar}
+      />
 
       <CardWrapper>
         <ul className='flex flex-col overflow-hidden'>
           {[...Array(5)].map((_, i) => (
-            <ListItem key={i} type={type} activeStats={activeStats} />
+            <ListItem key={i} type={type} activeStats={activeItemStatistics} />
           ))}
         </ul>
       </CardWrapper>
 
-      <ul className='icon-stats-container mt-4 justify-center gap-x-3'>
-        {[...Array(3)].map((_, i) => (
-          <li key={i} className='icon-stat-wrapper icon-stat-wrapper--clean'>
-            <div className='skeleton size-4' />
-            <SkeletonLine width='w-20' />
-          </li>
-        ))}
+      <ul className='icon-stats-container mt-4 justify-center gap-x-3 empty:hidden'>
+        <StatSkeletons widths={generalStats} />
       </ul>
     </div>
   )
 }
 
-function ListItem({ type, activeStats }: Omit<Props, 'toolbar'>) {
+function StatSkeletons({ widths }: { widths: (string | false)[] }) {
+  return widths
+    .filter((width): width is string => !!width)
+    .map((width, i) => (
+      <li key={i} className='icon-stat-wrapper icon-stat-wrapper--clean'>
+        <div className='skeleton size-4' />
+        <SkeletonLine width={width} />
+      </li>
+    ))
+}
+
+function ListItem({
+  type,
+  activeStats,
+}: {
+  type: Props['type']
+  activeStats: DashboardItemStatistics
+}) {
   const isUsers = type === 'users'
   const hasDetails =
     (type === 'movie' || type === 'show') &&

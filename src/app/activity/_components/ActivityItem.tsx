@@ -1,5 +1,6 @@
 'use client'
 
+import { GlobalContext } from '@/app/_components/GlobalContextProvider'
 import Avatar from '@/components/Avatar'
 import anonymousSvg from '@/components/MediaItem/anonymous.svg'
 import placeholderSvg from '@/components/MediaItem/placeholder.svg'
@@ -36,7 +37,7 @@ import { capitalize, toUpper } from 'lodash'
 import { useSession } from 'next-auth/react'
 import { useLocale, useTranslations } from 'next-intl'
 import Image from 'next/image'
-import { ReactNode, useState } from 'react'
+import { ReactNode, useContext, useState } from 'react'
 
 type DecisionKind = 'directPlay' | 'directStream' | 'transcode'
 
@@ -62,6 +63,9 @@ export default function ActivityItem({
   const isCurrentUser = String(session.user_id) === user?.user.id
   const isAdmin = user?.user.isAdmin
   const [failedPosterUrl, setFailedPosterUrl] = useState<string | null>(null)
+  const {
+    activity: { isDetailsHidden },
+  } = useContext(GlobalContext)
   const {
     audio_atmos,
     audio_channel_layout,
@@ -296,96 +300,99 @@ export default function ActivityItem({
       </div>
 
       {/* Stream info: what is playing first, then how it gets there */}
-      <ul className='mt-4 grid grid-cols-2 gap-x-4 gap-y-3 rounded-2xl bg-black/25 p-4 text-sm ring-1 ring-white/10 ring-inset sm:grid-cols-3'>
-        <Detail label={t('stream')}>
-          {capitalize(formatDecision(transcode_decision))}
-        </Detail>
-        {media_type !== 'track' && (
-          <Detail
-            label={t('video')}
-            convertedTo={getConversion(
-              videoSource,
-              videoStream,
-              stream_video_decision,
-            )}
-          >
-            {formatValue(videoSource || videoStream)}
+      {!isDetailsHidden && (
+        <ul className='mt-4 grid grid-cols-2 gap-x-4 gap-y-3 rounded-2xl bg-black/25 p-4 text-sm ring-1 ring-white/10 ring-inset sm:grid-cols-3'>
+          <Detail label={t('stream')}>
+            {capitalize(formatDecision(transcode_decision))}
           </Detail>
-        )}
-        <Detail
-          label={withLanguage(
-            t('audio'),
-            media_type !== 'track' && stream_audio_language,
-          )}
-          convertedTo={getConversion(
-            audioSource,
-            audioStream,
-            stream_audio_decision,
-          )}
-        >
-          {formatValue(audioSource || audioStream)}
-        </Detail>
-        {media_type !== 'track' &&
-          (subtitle_codec || stream_subtitle_codec) && (
+          {media_type !== 'track' && (
             <Detail
-              label={withLanguage(t('subtitles'), stream_subtitle_language)}
-              convertedTo={
-                stream_subtitle_decision === 'burn'
-                  ? t('decision.burnedIn')
-                  : getConversion(
-                      subtitleSource,
-                      subtitleStream,
-                      stream_subtitle_decision,
-                    )
-              }
+              label={t('video')}
+              convertedTo={getConversion(
+                videoSource,
+                videoStream,
+                stream_video_decision,
+              )}
             >
-              {formatValue(subtitleSource || subtitleStream)}
+              {formatValue(videoSource || videoStream)}
             </Detail>
           )}
-        {/* The profile describes what is streamed, so it goes with that bitrate */}
-        <Detail
-          label={t('quality')}
-          convertedTo={
-            qualityConversion && formatValue(quality_profile, qualityConversion)
-          }
-        >
-          {formatValue(
-            !qualityConversion && quality_profile,
-            bitrateSource || bitrateStream,
-          )}
-        </Detail>
-        {/* TODO: Tautulli doesn't return bandwidth for tracks sometimes */}
-        <Detail label={t('bandwidth')}>
-          {formatValue(formatBitrate(bandwidth, locale))}
-        </Detail>
-        <Detail
-          label={t('container')}
-          convertedTo={getConversion(
-            toUpper(container),
-            toUpper(stream_container),
-            stream_container_decision,
-          )}
-        >
-          {formatValue(toUpper(container) || toUpper(stream_container))}
-        </Detail>
-        {isAdmin && !settings.general.isAnonymized && location && (
-          <Detail label={t('location')}>
-            {`${toUpper(location)} · `}
-            {location === 'wan' ? (
-              <a
-                href={`https://ipinfo.io/${ip_address_public}`}
-                target='_blank'
-                rel='noopener noreferrer'
-                className='underline decoration-white/30 underline-offset-2 transition-colors hover:decoration-white'
+          <Detail
+            label={withLanguage(
+              t('audio'),
+              media_type !== 'track' && stream_audio_language,
+            )}
+            convertedTo={getConversion(
+              audioSource,
+              audioStream,
+              stream_audio_decision,
+            )}
+          >
+            {formatValue(audioSource || audioStream)}
+          </Detail>
+          {media_type !== 'track' &&
+            (subtitle_codec || stream_subtitle_codec) && (
+              <Detail
+                label={withLanguage(t('subtitles'), stream_subtitle_language)}
+                convertedTo={
+                  stream_subtitle_decision === 'burn'
+                    ? t('decision.burnedIn')
+                    : getConversion(
+                        subtitleSource,
+                        subtitleStream,
+                        stream_subtitle_decision,
+                      )
+                }
               >
-                {ip_address_public}
-              </a>
-            ) : (
-              ip_address
+                {formatValue(subtitleSource || subtitleStream)}
+              </Detail>
+            )}
+          {/* The profile describes what is streamed, so it goes with that bitrate */}
+          <Detail
+            label={t('quality')}
+            convertedTo={
+              qualityConversion &&
+              formatValue(quality_profile, qualityConversion)
+            }
+          >
+            {formatValue(
+              !qualityConversion && quality_profile,
+              bitrateSource || bitrateStream,
             )}
           </Detail>
-        )}
-      </ul>
+          {/* TODO: Tautulli doesn't return bandwidth for tracks sometimes */}
+          <Detail label={t('bandwidth')}>
+            {formatValue(formatBitrate(bandwidth, locale))}
+          </Detail>
+          <Detail
+            label={t('container')}
+            convertedTo={getConversion(
+              toUpper(container),
+              toUpper(stream_container),
+              stream_container_decision,
+            )}
+          >
+            {formatValue(toUpper(container) || toUpper(stream_container))}
+          </Detail>
+          {isAdmin && !settings.general.isAnonymized && location && (
+            <Detail label={t('location')}>
+              {`${toUpper(location)} · `}
+              {location === 'wan' ? (
+                <a
+                  href={`https://ipinfo.io/${ip_address_public}`}
+                  target='_blank'
+                  rel='noopener noreferrer'
+                  className='underline decoration-white/30 underline-offset-2 transition-colors hover:decoration-white'
+                >
+                  {ip_address_public}
+                </a>
+              ) : (
+                ip_address
+              )}
+            </Detail>
+          )}
+        </ul>
+      )}
     </li>
   )
 }
