@@ -193,7 +193,8 @@
       "outsideAccessDescription": "Alle können Dashboard und Aktivität ohne Anmeldung sehen, und alle Bibliotheken werden angezeigt, unabhängig von der Freigabe in Plex. Rewind erfordert weiterhin eine Anmeldung.",
       "anonymize": "Anonymisieren",
       "anonymizeDescription": "Namen anderer Benutzer verbergen, auch vor Admins. Auf der Aktivitätsseite werden auch IP-Adressen und Standorte verborgen.",
-      "analytics": "Analytik"
+      "analytics": "Analytik",
+      "analyticsIdDescription": "Sendet Seitenaufrufe an Google Analytics 4. Verwende die Mess-ID eines Web-Datenstreams, die mit G- beginnt. Leer lassen, um es auszuschalten."
     },
     "Rewind": {
       "title": "Rewind Einstellungen",

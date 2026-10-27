@@ -193,7 +193,8 @@
       "outsideAccessDescription": "Anyone can view the dashboard and activity without signing in, and every library is shown, whatever is shared in Plex. Rewind still requires signing in.",
       "anonymize": "Anonymize",
       "anonymizeDescription": "Hide other users' names, even from admins. IP addresses and locations on the activity page are hidden too.",
-      "analytics": "Analytics"
+      "analytics": "Analytics",
+      "analyticsIdDescription": "Sends page views to Google Analytics 4. Use the measurement ID of a web data stream, which starts with G-. Leave empty to turn it off."
     },
     "Rewind": {
       "title": "Rewind settings",

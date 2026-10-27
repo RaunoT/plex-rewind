@@ -104,9 +104,9 @@ export const DEFAULT_SETTINGS: Settings = {
   setupComplete: false,
 }
 
-// Google tag IDs: G-XXXXXXX (GA4), UA-XXXXX-Y (Universal Analytics), GT-/AW-/DC-.
-export const GOOGLE_ANALYTICS_ID_PATTERN =
-  /^(G|GT|AW|DC)-[A-Z0-9]+$|^UA-\d+-\d+$/i
+// GA4 measurement IDs (G-) and Google tag IDs (GT-). Universal Analytics
+// (UA-) no longer collects data, and AW-/DC- tags are for ads, not analytics.
+export const GOOGLE_ANALYTICS_ID_PATTERN = /^GT?-[A-Z0-9]+$/i
 
 export const SETTINGS_PAGES = [
   { href: '/settings/connection', key: 'connection' },

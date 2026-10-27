@@ -193,7 +193,8 @@
       "outsideAccessDescription": "Chiunque può vedere la dashboard e l'attività senza accedere, e sono mostrate tutte le librerie, a prescindere dalla condivisione in Plex. Il Rewind richiede comunque l'accesso.",
       "anonymize": "Anonimizza",
       "anonymizeDescription": "Nasconde i nomi degli altri utenti, anche agli amministratori. Nella pagina dell'attività nasconde anche indirizzi IP e posizioni.",
-      "analytics": "Analytics"
+      "analytics": "Analytics",
+      "analyticsIdDescription": "Invia le visualizzazioni di pagina a Google Analytics 4. Usa l'ID di misurazione di uno stream di dati web, che inizia con G-. Lascia vuoto per disattivarlo."
     },
     "Rewind": {
       "title": "Impostazioni del Rewind",

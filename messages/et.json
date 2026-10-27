@@ -193,7 +193,8 @@
       "outsideAccessDescription": "Igaüks saab edetabelit ja tegevust vaadata ilma sisse logimata ning näha on kõik kogumikud, sõltumata sellest, mida Plexis jagatakse. Rewind nõuab endiselt sisselogimist.",
       "anonymize": "Anonümiseeri",
       "anonymizeDescription": "Peida teiste kasutajate nimed, ka administraatorite eest. Tegevuse lehel peidetakse ka IP-aadressid ja asukohad.",
-      "analytics": "Analüütika"
+      "analytics": "Analüütika",
+      "analyticsIdDescription": "Saadab lehevaatamised Google Analytics 4-sse. Kasuta veebi andmevoo mõõtmise ID-d, mis algab tähtedega G-. Jäta tühjaks, et see välja lülitada."
     },
     "Rewind": {
       "title": "Rewind seaded",
