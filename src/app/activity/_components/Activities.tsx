@@ -1,6 +1,7 @@
 'use client'
 
 import RetryButton from '@/components/RetryButton'
+import SourceUnreachable from '@/components/SourceUnreachable'
 import StatusMessage from '@/components/StatusMessage'
 import { PublicSettings } from '@/types/settings'
 import { useQuery } from '@tanstack/react-query'
@@ -38,12 +39,23 @@ export default function Activities({ settings, serverId }: Props) {
     return <ActivitiesSkeleton />
   }
 
-  if (error || !data) {
+  if (error) {
     return (
       <StatusMessage
         title={errorT('title')}
         isInCard
         action={<RetryButton onRetry={refetch} />}
+      />
+    )
+  }
+
+  // The server answered, but got nothing from the source
+  if (!data) {
+    return (
+      <SourceUnreachable
+        source={settings.connection.statisticsSource}
+        onRetry={refetch}
+        isInCard
       />
     )
   }

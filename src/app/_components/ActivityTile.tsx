@@ -3,8 +3,10 @@
 import getActivity from '@/app/activity/_actions/getActivity'
 import SkeletonLine from '@/components/SkeletonLine'
 import { PublicSettings } from '@/types/settings'
+import { STATS_SOURCE_NAMES } from '@/utils/constants'
 import {
   ChevronRightIcon,
+  ExclamationTriangleIcon,
   FilmIcon,
   MusicalNoteIcon,
   SignalIcon,
@@ -23,12 +25,14 @@ type Props = {
 export default function ActivityTile({ settings }: Props) {
   const t = useTranslations()
   const { data: session } = useSession()
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, isError } = useQuery({
     queryKey: ['activity'],
     queryFn: getActivity,
     refetchInterval: 5000,
     refetchIntervalInBackground: false,
   })
+  // Null when the server got nothing from the source
+  const isUnavailable = isError || data === null
 
   return (
     <Link
@@ -44,12 +48,22 @@ export default function ActivityTile({ settings }: Props) {
       </div>
       {isLoading ? (
         <SkeletonLine className='text-2xl' width='w-32' />
+      ) : isUnavailable ? (
+        <p className='flex items-center gap-2 text-sm text-red-300'>
+          <ExclamationTriangleIcon className='size-5 shrink-0' />
+          {isError
+            ? t('Activity.loadError')
+            : t('Error.sourceUnreachable', {
+                source:
+                  STATS_SOURCE_NAMES[settings.connection.statisticsSource],
+              })}
+        </p>
       ) : (
         <p className='text-2xl font-semibold tracking-tight'>
           {t('Home.streams', { count: data?.stream_count ?? 0 })}
         </p>
       )}
-      {!!data?.sessions.length && (
+      {!isUnavailable && !!data?.sessions.length && (
         <ul className='space-y-1 text-sm'>
           {data.sessions.slice(0, 3).map((item, index) => {
             const isAnonymous =

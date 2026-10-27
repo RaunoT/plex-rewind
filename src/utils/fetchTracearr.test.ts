@@ -245,6 +245,53 @@ describe('server selection', () => {
   })
 })
 
+describe('isTracearrReachable', () => {
+  it('is reachable when Tracearr lists its servers', async () => {
+    route({ servers: () => ({ data: [plexServer('s1')] }) })
+
+    const { isTracearrReachable } = await load()
+
+    await expect(isTracearrReachable()).resolves.toBe(true)
+  })
+
+  it('is reachable without any Plex server, which is a setup problem', async () => {
+    route({ servers: () => ({ data: [] }) })
+
+    const { isTracearrReachable } = await load()
+
+    await expect(isTracearrReachable()).resolves.toBe(true)
+  })
+
+  it('is unreachable when Tracearr fails', async () => {
+    fetchMock.mockRejectedValue(new TypeError('fetch failed'))
+
+    const { isTracearrReachable } = await load()
+
+    await expect(isTracearrReachable()).resolves.toBe(false)
+  })
+
+  it('is unreachable when the answer is not a server list', async () => {
+    route({ servers: () => ({ error: 'nope' }) })
+
+    const { isTracearrReachable } = await load()
+
+    await expect(isTracearrReachable()).resolves.toBe(false)
+  })
+
+  it('shares the server list with the other lookups', async () => {
+    route({
+      servers: () => ({ data: [plexServer('s1')] }),
+      libraries: () => ({ data: [] }),
+    })
+
+    const { getTracearrLibraries, isTracearrReachable } = await load()
+
+    await Promise.all([getTracearrLibraries(), isTracearrReachable()])
+
+    expect(requestsTo('servers')).toHaveLength(1)
+  })
+})
+
 describe('malformed responses', () => {
   it('falls back to empty libraries when the libraries are not a list', async () => {
     route({

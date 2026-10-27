@@ -9,6 +9,7 @@ import {
   getServerId,
   getStatsSource,
   getUsers,
+  isStatsSourceReachable,
 } from './statsSource'
 import tautulliSource from './tautulliSource'
 import tracearrSource from './tracearrSource'
@@ -147,6 +148,39 @@ describe('getUsers', () => {
     fetchMock.mockResolvedValue(tautulliResponse({}))
 
     await expect(getUsers()).resolves.toEqual([])
+  })
+})
+
+describe('isStatsSourceReachable', () => {
+  it('is reachable when Tautulli answers, even without libraries', async () => {
+    fetchMock.mockResolvedValue(tautulliResponse([]))
+
+    await expect(isStatsSourceReachable()).resolves.toBe(true)
+  })
+
+  it('is unreachable when Tautulli fails or reports an error', async () => {
+    fetchMock.mockResolvedValueOnce(new Response('nope', { status: 500 }))
+
+    await expect(isStatsSourceReachable()).resolves.toBe(false)
+
+    fetchMock.mockResolvedValueOnce(tautulliResponse(null, 'error'))
+
+    await expect(isStatsSourceReachable()).resolves.toBe(false)
+  })
+
+  it('asks Tracearr when it is the source', async () => {
+    const settings = testSettings()
+
+    settings.connection.statisticsSource = 'tracearr'
+    settings.connection.tracearrUrl = 'http://tracearr:3000'
+    settings.connection.tracearrApiKey = 'key'
+    vi.mocked(getSettings).mockReturnValue(settings)
+    fetchMock.mockRejectedValue(new TypeError('fetch failed'))
+
+    await expect(isStatsSourceReachable(settings)).resolves.toBe(false)
+    expect(String(fetchMock.mock.calls[0][0])).toBe(
+      'http://tracearr:3000/api/v2/public/servers',
+    )
   })
 })
 

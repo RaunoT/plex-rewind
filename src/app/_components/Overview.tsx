@@ -1,4 +1,5 @@
 import SkeletonLine from '@/components/SkeletonLine'
+import SourceUnreachable from '@/components/SourceUnreachable'
 import { DashboardSearchParams } from '@/types/dashboard'
 import { Settings } from '@/types/settings'
 import { TautulliLibrary } from '@/types/tautulli'
@@ -30,12 +31,14 @@ type Props = {
   settings: Settings
   session: Session | null
   libraries: TautulliLibrary[]
+  isSourceReachable: boolean
 }
 
 export default async function Overview({
   settings,
   session,
   libraries,
+  isSourceReachable,
 }: Props) {
   const t = await getTranslations()
   const firstName = session?.user.name?.split(' ')[0]
@@ -75,41 +78,48 @@ export default async function Overview({
         </div>
       </header>
 
-      <div className='grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3'>
-        {settings.rewind.isActive && session && (
-          <div className='glass-sheet flex flex-col justify-between gap-6 sm:col-span-2'>
-            <div>
-              <h2 className='flex items-center gap-2 font-semibold'>
-                <BackwardIcon className='size-5 text-neutral-400' />
-                {t('Rewind.title')}
-              </h2>
-              <p className='mt-3 max-w-md text-xl font-semibold tracking-tight sm:text-2xl'>
-                {t('Home.rewindDescription')}
-              </p>
+      {!isSourceReachable ? (
+        <SourceUnreachable
+          source={settings.connection.statisticsSource}
+          isAdmin={!!session?.user.isAdmin}
+        />
+      ) : (
+        <div className='grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3'>
+          {settings.rewind.isActive && session && (
+            <div className='glass-sheet flex flex-col justify-between gap-6 sm:col-span-2'>
+              <div>
+                <h2 className='flex items-center gap-2 font-semibold'>
+                  <BackwardIcon className='size-5 text-neutral-400' />
+                  {t('Rewind.title')}
+                </h2>
+                <p className='mt-3 max-w-md text-xl font-semibold tracking-tight sm:text-2xl'>
+                  {t('Home.rewindDescription')}
+                </p>
+              </div>
+              <Link href='/rewind' className='button'>
+                {t('Home.rewind')}
+              </Link>
             </div>
-            <Link href='/rewind' className='button'>
-              {t('Home.rewind')}
-            </Link>
-          </div>
-        )}
-        {settings.activity.isActive && (
-          <ActivityTile settings={toPublicSettings(settings)} />
-        )}
-        {settings.dashboard.isActive &&
-          libraries.map((library) => (
-            <Suspense
-              key={library.section_id}
-              fallback={<LibraryTileSkeleton library={library} />}
-            >
-              <LibraryTile
-                library={library}
-                settings={settings}
-                period={period}
-                periodLabel={periodLabel}
-              />
-            </Suspense>
-          ))}
-      </div>
+          )}
+          {settings.activity.isActive && (
+            <ActivityTile settings={toPublicSettings(settings)} />
+          )}
+          {settings.dashboard.isActive &&
+            libraries.map((library) => (
+              <Suspense
+                key={library.section_id}
+                fallback={<LibraryTileSkeleton library={library} />}
+              >
+                <LibraryTile
+                  library={library}
+                  settings={settings}
+                  period={period}
+                  periodLabel={periodLabel}
+                />
+              </Suspense>
+            ))}
+        </div>
+      )}
     </div>
   )
 }

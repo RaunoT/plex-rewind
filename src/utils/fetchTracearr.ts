@@ -321,6 +321,12 @@ export async function getTracearrPlexServers(): Promise<TracearrPlexServer[]> {
     .map(({ server_id, server_name }) => ({ server_id, server_name }))
 }
 
+// Every other lookup starts from the cached server list, so asking costs no
+// extra call
+export async function isTracearrReachable(): Promise<boolean> {
+  return (await getServers()) !== null
+}
+
 async function getPlexServerId(): Promise<string | null> {
   const servers = await getServers()
 

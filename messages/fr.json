@@ -37,6 +37,7 @@
     "location": "Emplacement",
     "bandwidth": "Bande passante",
     "noActivity": "Aucune session active.. 😴",
+    "loadError": "Impossible de charger l'activité",
     "playing": "En lecture",
     "paused": "En pause",
     "endsAt": "Se termine à {time}",
@@ -74,7 +75,10 @@
   },
   "Error": {
     "title": "Oups... quelque chose s'est mal passé !",
-    "cta": "Réessayer"
+    "cta": "Réessayer",
+    "sourceUnreachable": "Impossible de joindre {source}",
+    "sourceUnreachableDescription": "Vérifiez que {source} est démarré et accessible depuis Plex Rewind, puis réessayez.",
+    "connectionSettings": "Vérifier les paramètres de connexion"
   },
   "PlexDeeplink": {
     "available": "Disponible"

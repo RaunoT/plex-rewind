@@ -37,6 +37,7 @@
     "location": "Location",
     "bandwidth": "Bandwidth",
     "noActivity": "No active sessions.. 😴",
+    "loadError": "Couldn't load activity",
     "playing": "Playing",
     "paused": "Paused",
     "endsAt": "Ends at {time}",
@@ -74,7 +75,10 @@
   },
   "Error": {
     "title": "Uh oh.. something went wrong!",
-    "cta": "Try again"
+    "cta": "Try again",
+    "sourceUnreachable": "Couldn't reach {source}",
+    "sourceUnreachableDescription": "Check that {source} is running and reachable from Plex Rewind, then try again.",
+    "connectionSettings": "Check connection settings"
   },
   "PlexDeeplink": {
     "available": "Available"

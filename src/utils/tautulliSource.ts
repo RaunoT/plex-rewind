@@ -123,6 +123,11 @@ async function getLibraries(): Promise<TautulliLibrary[]> {
   return filterBySharedLibraries(getSettings(), libraries)
 }
 
+// Shares the libraries request, so asking costs no extra call
+export async function isTautulliReachable(): Promise<boolean> {
+  return (await fetchLibraries()) !== null
+}
+
 async function filterBySharedLibraries(
   settings: Settings,
   libraries: TautulliLibrary[],

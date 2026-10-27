@@ -6,15 +6,26 @@ import {
   TautulliUser,
 } from '@/types/tautulli'
 import { kebabCase } from 'lodash'
+import { isTracearrReachable } from './fetchTracearr'
 import getSettings from './getSettings'
 import { isTracearrSource } from './helpers'
-import tautulliSource from './tautulliSource'
+import tautulliSource, { isTautulliReachable } from './tautulliSource'
 import tracearrSource from './tracearrSource'
 
 export function getStatsSource(
   settings: Settings = getSettings(),
 ): StatsSource {
   return isTracearrSource(settings) ? tracearrSource : tautulliSource
+}
+
+// A source that can't be reached returns the same empty lists as one with
+// nothing in it, so pages that need to tell the two apart ask this too.
+export async function isStatsSourceReachable(
+  settings: Settings = getSettings(),
+): Promise<boolean> {
+  return isTracearrSource(settings)
+    ? isTracearrReachable()
+    : isTautulliReachable()
 }
 
 export async function getServerId(): Promise<string> {
