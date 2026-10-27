@@ -24,13 +24,21 @@ permissions:
 jobs:
   docker-build:
     if: ${{ !(github.base_ref == 'main' && github.head_ref == 'develop') }}
-    name: Build image and smoke test
-    runs-on: ubuntu-latest
+    name: Build ${{ matrix.platform }} and smoke test
+    runs-on: ${{ matrix.platform == 'linux/arm64' && 'ubuntu-24.04-arm' || 'ubuntu-24.04' }}
+    strategy:
+      matrix:
+        platform: [linux/amd64, linux/arm64]
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
+
+      - name: Prepare
+        env:
+          PLATFORM: ${{ matrix.platform }}
+        run: echo "PLATFORM_PAIR=${PLATFORM//\//-}" >> "$GITHUB_ENV"
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4.4.1
@@ -41,11 +49,11 @@ jobs:
           context: .
           load: true
           push: false
-          platforms: linux/amd64
+          platforms: ${{ matrix.platform }}
           tags: plex-rewind:smoke
           build-args: |
             NEXT_PUBLIC_VERSION_TAG=${{ github.sha }}
-          cache-from: type=gha
+          cache-from: type=gha,scope=${{ env.PLATFORM_PAIR }}
           provenance: false
           sbom: false
 
