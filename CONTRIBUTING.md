@@ -72,6 +72,62 @@ Please follow the guidelines below.
 
 To try your changes in the production image, run `docker compose up --build`. The `docker-compose.yml` in the repository builds the image from the `Dockerfile`, reads its environment from `.env.local` and mounts `./config` for the settings. It maps port `3000` on your machine to the container's `8383`, so the app is available at `http://localhost:3000`, which matches the URLs in `.env.example`.
 
+### README screenshots
+
+The screenshots in `.github/screenshots` use made-up data, so they don't show anyone's real history. `.github/scripts/mock-server.mjs` stands in for Tautulli and Overseerr with a 15-person server, and the app still fetches real posters, ratings and links for its titles.
+
+1. Start the mock with your own Plex account as one of its users, so you can sign in. Your ID, name, email and avatar URL are under `user` at `/api/auth/session` while you're signed in to your dev server:
+
+   ```bash
+   MOCK_USER_ID=… MOCK_USER_NAME='…' MOCK_USER_EMAIL=… MOCK_USER_THUMB=… node .github/scripts/mock-server.mjs
+   ```
+
+2. Run a second copy of the app, so your own settings stay untouched. Settings are read from the folder the app runs in, so a worktree gets its own:
+
+   ```bash
+   git worktree add ../plex-rewind-screenshots
+   cp .env.local ../plex-rewind-screenshots/
+   cd ../plex-rewind-screenshots && pnpm install
+   ```
+
+   Save this as `config/settings.json` there, then start it with `NEXTAUTH_URL=http://localhost:3001 pnpm dev -p 3001` and sign in:
+
+   ```json
+   {
+     "connection": {
+       "statisticsSource": "tautulli",
+       "tautulliUrl": "http://localhost:8787",
+       "tautulliApiKey": "mock",
+       "plexUrl": "http://localhost:32400",
+       "overseerrUrl": "http://localhost:8787",
+       "overseerrApiKey": "mock",
+       "complete": true
+     },
+     "general": {
+       "activeLibraries": ["movies", "tv-shows", "music"],
+       "activeExternalLinks": [
+         "imdb",
+         "tmdb",
+         "tvdb",
+         "rottenTomatoes",
+         "letterboxd",
+         "trakt"
+       ],
+       "complete": true
+     },
+     "rewind": { "complete": true },
+     "dashboard": { "complete": true },
+     "activity": { "complete": true },
+     "setupComplete": true
+   }
+   ```
+
+3. Take the screenshots in a 1152×720 window at 2× scale, with the Next.js dev badge hidden, and save them as WebP:
+
+   ```bash
+   cwebp -q 82 -m 6 home.png -o .github/screenshots/home.webp
+   ```
+
 ### Before opening a pull request
 
 Run these and fix anything they report:
