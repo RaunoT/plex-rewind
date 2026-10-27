@@ -14,6 +14,7 @@ import {
   getStatusError,
   getTautulliResultError,
 } from '@/utils/connectionErrors'
+import { maskApiKeys, restoreApiKeys } from '@/utils/connectionSecrets'
 import { selectPlexServer } from '@/utils/fetchTracearr'
 import getSettings from '@/utils/getSettings'
 import { normalizeUrl } from '@/utils/url'
@@ -88,13 +89,25 @@ export default async function saveConnectionSettings(
   prevState: SettingsFormInitialState<ConnectionSettings>,
   formData: FormData,
 ) {
+  const state = await testAndSave(prevState, formData)
+
+  return {
+    ...state,
+    fields: maskApiKeys(state.fields, getSettings().connection),
+  }
+}
+
+async function testAndSave(
+  prevState: SettingsFormInitialState<ConnectionSettings>,
+  formData: FormData,
+) {
   const denied = await denySettingsAccess(prevState)
 
   if (denied) {
     return denied
   }
 
-  const data = {
+  const submitted = {
     statisticsSource: formData.get('statisticsSource') as StatisticsSource,
     tautulliUrl: normalizeUrl(formData.get('tautulliUrl') as string),
     tautulliApiKey: formData.get('tautulliApiKey') as string,
@@ -107,6 +120,19 @@ export default async function saveConnectionSettings(
     complete: true,
   }
   const t = await getTranslations('Settings')
+  const { connection: data, needsKey } = restoreApiKeys(
+    submitted,
+    getSettings().connection,
+  )
+
+  if (needsKey) {
+    return {
+      message: `${needsKey} - ${t('reenterApiKey')}`,
+      status: 'error',
+      fields: data,
+    }
+  }
+
   const fail = (service: string, { key, values }: ConnectionError) => ({
     message: `${service} - ${t(key, values)}`,
     status: 'error',

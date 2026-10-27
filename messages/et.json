@@ -112,6 +112,7 @@
     "savedChooseLibraries": "Salvestatud! Vali kogumikud jaotises Üldine.",
     "genericError": "Midagi läks valesti!",
     "save": "Salvesta",
+    "reenterApiKey": "Sisesta API võti URL-i muutmisel uuesti.",
     "apiKey": "API võti",
     "invalidApiKey": "Vale API võti!",
     "unableToConnect": "Ühenduse loomine ebaõnnestus!",

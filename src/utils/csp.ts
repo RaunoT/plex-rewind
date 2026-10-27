@@ -7,6 +7,11 @@ export const BASE_CSP_DIRECTIVES = [
   "object-src 'none'",
 ]
 
+// Proxied images could be SVGs, which would run scripts on this origin if
+// opened directly.
+export const IMAGE_CSP =
+  "default-src 'none'; style-src 'unsafe-inline'; sandbox"
+
 export function createNonce(): string {
   return Buffer.from(crypto.getRandomValues(new Uint8Array(16))).toString(
     'base64',

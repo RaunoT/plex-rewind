@@ -18,7 +18,7 @@ import SortableLibrary from './SortableLibrary'
 type Props = {
   settings: PublicSettings
   libraries: TautulliLibrary[]
-  users: TautulliUser[]
+  users: Pick<TautulliUser, 'user_id' | 'friendly_name'>[]
 }
 
 type GeneralFormState = SettingsFormInitialState<GeneralSettings>

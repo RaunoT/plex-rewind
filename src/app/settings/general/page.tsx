@@ -27,7 +27,11 @@ export default async function GeneralSettingsPage() {
     <GeneralSettingsForm
       settings={toPublicSettings(settings)}
       libraries={libraries}
-      users={users}
+      // Emails and other account details stay on the server.
+      users={users.map(({ user_id, friendly_name }) => ({
+        user_id,
+        friendly_name,
+      }))}
     />
   )
 }

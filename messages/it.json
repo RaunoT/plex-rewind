@@ -112,6 +112,7 @@
     "savedChooseLibraries": "Impostazioni salvate! Scegli le tue librerie in Generale.",
     "genericError": "Qualcosa è andato storto!",
     "save": "Salva",
+    "reenterApiKey": "Inserisci di nuovo la chiave API dopo aver cambiato l'URL.",
     "apiKey": "Chiave API",
     "invalidApiKey": "Chiave API non valida!",
     "unableToConnect": "Impossibile connettersi!",

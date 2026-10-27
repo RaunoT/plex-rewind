@@ -1,6 +1,5 @@
 import { authOptions } from '@/lib/auth'
 import { RewindUser, UserRewind } from '@/types/rewind'
-import { TautulliUser } from '@/types/tautulli'
 import { formatPercent, secondsToTime } from '@/utils/formatting'
 import {
   getLibrariesTotalDuration,
@@ -46,21 +45,18 @@ async function RewindContent({ userId }: { userId?: string }) {
     image: session.user.image,
     isAdmin: session.user.isAdmin,
   }
-  let users: TautulliUser[] | undefined
 
-  if (session?.user.isAdmin || settings.general.isOutsideAccess) {
-    users = await getActiveUsers(settings)
+  // Only admins can open another user's rewind.
+  if (session?.user.isAdmin && userId) {
+    const users = await getActiveUsers(settings)
+    const queriedUser = users.find((u) => u.user_id == userId)
 
-    if (userId && users) {
-      const queriedUser = users.find((u) => u.user_id == userId)
-
-      if (queriedUser) {
-        user = {
-          image: queriedUser.thumb,
-          name: queriedUser.friendly_name,
-          id: userId,
-          isAdmin: false,
-        }
+    if (queriedUser) {
+      user = {
+        image: queriedUser.thumb,
+        name: queriedUser.friendly_name,
+        id: userId,
+        isAdmin: false,
       }
     }
   }

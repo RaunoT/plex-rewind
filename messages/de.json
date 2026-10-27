@@ -112,6 +112,7 @@
     "savedChooseLibraries": "Einstellungen gespeichert! Wähle deine Bibliotheken unter Allgemein.",
     "genericError": "Etwas ging schief!",
     "save": "Speichern",
+    "reenterApiKey": "Gib den API-Schlüssel nach dem Ändern der URL erneut ein.",
     "apiKey": "API-Schlüssel",
     "invalidApiKey": "Ungültiger API-Schlüssel!",
     "unableToConnect": "Verbindung fehlgeschlagen!",

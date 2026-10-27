@@ -112,6 +112,7 @@
     "savedChooseLibraries": "Settings saved! Choose your libraries in General.",
     "genericError": "Something went wrong!",
     "save": "Save",
+    "reenterApiKey": "Enter the API key again after changing the URL.",
     "apiKey": "API key",
     "invalidApiKey": "Invalid API key!",
     "unableToConnect": "Unable to connect!",

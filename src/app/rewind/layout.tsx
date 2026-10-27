@@ -17,10 +17,8 @@ export default async function RewindLayout({ children }: Props) {
   const settings = getSettings()
   const session = await getServerSession(authOptions)
 
-  if (
-    !settings.rewind.isActive ||
-    (!session && !settings.general.isOutsideAccess)
-  ) {
+  // A rewind is always someone's, so outside access doesn't open it up.
+  if (!settings.rewind.isActive || !session) {
     return notFound()
   }
 
@@ -43,5 +41,13 @@ export default async function RewindLayout({ children }: Props) {
 async function AdminUserSelect({ defaultUserId }: { defaultUserId: string }) {
   const users = await getActiveUsers()
 
-  return <UserSelect users={users} defaultUserId={defaultUserId} />
+  return (
+    <UserSelect
+      users={users.map(({ user_id, friendly_name }) => ({
+        user_id,
+        friendly_name,
+      }))}
+      defaultUserId={defaultUserId}
+    />
+  )
 }
