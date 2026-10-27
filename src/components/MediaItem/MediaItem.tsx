@@ -5,7 +5,11 @@ import { MEDIA_ICONS, MediaIcon, STAT_ICONS } from '@/components/icons'
 import { PublicSettings } from '@/types/settings'
 import { TautulliItemRow } from '@/types/tautulli'
 import { getDeeplinkRatingKeyFromRow } from '@/utils/deeplink'
-import { formatRating, secondsToTime } from '@/utils/formatting'
+import {
+  formatMonthYear,
+  formatRating,
+  secondsToTime,
+} from '@/utils/formatting'
 import { getImageProxyUrl } from '@/utils/imageProxy'
 import { slideDown } from '@/utils/motion'
 import { TrashIcon } from '@heroicons/react/24/outline'
@@ -214,6 +218,14 @@ export default function MediaItem({
                     {t('statRequests', { count: data.requests })}
                   </li>
                 )}
+              {isUsers && data.first_played_at && (
+                <li className='icon-stat-wrapper'>
+                  <STAT_ICONS.firstPlay />
+                  {t('statSince', {
+                    date: formatMonthYear(data.first_played_at, locale),
+                  })}
+                </li>
+              )}
             </ul>
           </div>
           {(type === 'movie' || type === 'show' || type === 'artist') && (

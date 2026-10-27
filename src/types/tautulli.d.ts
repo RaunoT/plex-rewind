@@ -61,6 +61,8 @@ export type TautulliItemRow = {
   rank: number
   // Set when the anonymize setting hides who this user is
   is_anonymous?: boolean
+  // ISO 8601 date of the user's first play, set for the users page
+  first_played_at?: string
   grandparent_rating_key?: number
   media_id?: string | null
 }

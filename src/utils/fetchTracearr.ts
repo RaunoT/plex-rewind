@@ -1,4 +1,5 @@
 import { Settings } from '@/types/settings'
+import { FirstPlay } from '@/types/statsSource'
 import {
   TautulliActivity,
   TautulliLibrary,
@@ -80,6 +81,9 @@ const DAY = 24 * 60 * 60 * 1000
 const HISTORY_REFRESH_OVERLAP = 2 * DAY
 const HISTORY_FULL_REFRESH = DAY
 const HISTORY_CACHE_IDLE = 60 * 60 * 1000
+const FIRST_PLAY_CACHE_TTL = DAY
+// Plex came out in 2008, so no play is older
+const EARLIEST_PLAY = Date.UTC(2008, 0, 1)
 // Plex numbers the server owner's local account 1.
 const PLEX_OWNER_ACCOUNT_ID = '1'
 const PLAY_MEDIA_TYPES: TracearrPlayMediaType[] = ['movie', 'episode', 'track']
@@ -99,6 +103,10 @@ const LIBRARY_NAMES: Record<TautulliMediaType, string> = {
   artist: 'Music',
 }
 const historyCaches = new Map<string, HistoryCache>()
+const firstPlayCaches = new Map<
+  string,
+  { firstPlay: FirstPlay | null; expiresAt: number }
+>()
 
 let historyQueue: Promise<unknown> = Promise.resolve()
 let warnedMissingServerId = ''
@@ -640,6 +648,105 @@ export async function getTracearrPlays(
   }
 
   return (await run) ?? []
+}
+
+// Undefined when Tracearr couldn't be asked
+async function fetchLatestPlay(
+  identityId: string,
+  serverId: string,
+  until?: number,
+): Promise<TracearrHistoryRecord | null | undefined> {
+  const page = await fetchTracearr<TracearrCursorPage<TracearrHistoryRecord>>(
+    'history',
+    {
+      user_id: identityId,
+      server_id: serverId,
+      until: until === undefined ? undefined : new Date(until).toISOString(),
+      pageSize: 1,
+    },
+  )
+
+  return Array.isArray(page?.data) ? (page.data[0] ?? null) : undefined
+}
+
+function getStartedAt(record: TracearrHistoryRecord): number {
+  return new Date(record.started_at).getTime()
+}
+
+// History only pages back from the newest play, so the time between the oldest
+// play found so far and the last time known to have none is halved until it's
+// under a day.
+async function findFirstPlay(
+  identityId: string,
+  serverId: string,
+): Promise<TracearrHistoryRecord | null | undefined> {
+  let firstPlay = await fetchLatestPlay(identityId, serverId)
+  let noPlaysUntil = EARLIEST_PLAY
+
+  while (firstPlay && getStartedAt(firstPlay) - noPlaysUntil > DAY) {
+    const middle = Math.floor((noPlaysUntil + getStartedAt(firstPlay)) / 2)
+    const play = await fetchLatestPlay(identityId, serverId, middle)
+
+    if (play === null) {
+      noPlaysUntil = middle
+    } else if (play && getStartedAt(play) <= middle) {
+      firstPlay = play
+    } else {
+      // A play after `until` would keep the search from ever ending
+      return undefined
+    }
+  }
+
+  return firstPlay
+}
+
+export async function getTracearrFirstPlay(
+  plexId: string,
+): Promise<FirstPlay | null> {
+  const [user, serverId] = await Promise.all([
+    getTracearrUser(plexId),
+    getPlexServerId(),
+  ])
+
+  if (!user || !serverId) {
+    return null
+  }
+
+  const key = `${getCacheKey()}|${user.identityId}`
+  const now = Date.now()
+  const cache = firstPlayCaches.get(key)
+
+  if (cache && now < cache.expiresAt) {
+    return cache.firstPlay
+  }
+
+  for (const [cacheKey, { expiresAt }] of firstPlayCaches) {
+    if (now >= expiresAt) {
+      firstPlayCaches.delete(cacheKey)
+    }
+  }
+
+  const record = await findFirstPlay(user.identityId, serverId)
+
+  if (record === undefined) {
+    return cache?.firstPlay ?? null
+  }
+
+  const firstPlay =
+    record && Number.isFinite(getStartedAt(record))
+      ? {
+          date: new Date(record.started_at).toISOString(),
+          title: record.show_title || record.artist_name || record.media_title,
+        }
+      : null
+
+  // The first play only changes once a user without plays starts watching
+  firstPlayCaches.set(key, {
+    firstPlay,
+    expiresAt: now + (firstPlay ? FIRST_PLAY_CACHE_TTL : CACHE_TTL),
+  })
+
+  return firstPlay
 }
 
 const getAllLibraries = cached<TracearrLibrary[]>(async () => {

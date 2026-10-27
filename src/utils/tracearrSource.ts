@@ -11,6 +11,7 @@ import { TautulliItemRow, TautulliLibrary } from '@/types/tautulli'
 import { countBy, groupBy, orderBy, sumBy, uniqBy } from 'lodash'
 import {
   getTracearrActivity,
+  getTracearrFirstPlay,
   getTracearrLibraries,
   getTracearrLibrariesSize,
   getTracearrPlays,
@@ -434,6 +435,7 @@ const tracearrSource: StatsSource = {
   getMediaStats: getTracearrTopMediaStats,
   getTopMediaItems: getTracearrTopMediaItems,
   getPlaysByTime: getTracearrPlaysByTime,
+  getFirstPlay: getTracearrFirstPlay,
 }
 
 export default tracearrSource

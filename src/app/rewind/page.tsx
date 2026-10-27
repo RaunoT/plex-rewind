@@ -1,6 +1,11 @@
 import { authOptions } from '@/lib/auth'
 import { RewindUser, UserRewind } from '@/types/rewind'
-import { formatPercent, secondsToTime } from '@/utils/formatting'
+import {
+  formatMonthYear,
+  formatPercent,
+  formatTimeSince,
+  secondsToTime,
+} from '@/utils/formatting'
 import {
   getLibrariesTotalDuration,
   getPlaybackHabits,
@@ -14,7 +19,12 @@ import getSettings from '@/utils/getSettings'
 import getUsersTop from '@/utils/getUsersTop'
 import { daysBetween, getRewindStartDate, getUserShare } from '@/utils/helpers'
 import { toPublicSettings } from '@/utils/publicSettings'
-import { getActiveUsers, getLibraries, getServerId } from '@/utils/statsSource'
+import {
+  getActiveUsers,
+  getLibraries,
+  getServerId,
+  getStatsSource,
+} from '@/utils/statsSource'
 import { Metadata } from 'next'
 import { getServerSession } from 'next-auth'
 import { getLocale, getTranslations } from 'next-intl/server'
@@ -78,6 +88,7 @@ async function RewindContent({ userId }: { userId?: string }) {
     serverId,
     usersTop,
     habits,
+    firstPlay,
   ] = await Promise.all([
     getTopMediaItems(user.id, libraries),
     getTopMediaStats(user.id, libraries),
@@ -87,6 +98,7 @@ async function RewindContent({ userId }: { userId?: string }) {
     getServerId(),
     getUsersTop(user.id, startDate, daysBetween(startDate)),
     getPlaybackHabits(user.id),
+    getStatsSource(settings).getFirstPlay(user.id),
   ])
   const share = getUserShare(
     userTotalDuration,
@@ -120,6 +132,11 @@ async function RewindContent({ userId }: { userId?: string }) {
       duration: topMediaStats.audio.duration,
     },
     habits: habits,
+    firstPlay: firstPlay && {
+      date: formatMonthYear(firstPlay.date, locale, 'long'),
+      timeSince: formatTimeSince(firstPlay.date, locale),
+      title: firstPlay.title,
+    },
     libraries: libraries,
     libraries_total_size: librariesTotalSize.size,
     libraries_size_is_partial: librariesTotalSize.isPartial,

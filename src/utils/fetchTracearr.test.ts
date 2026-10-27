@@ -518,3 +518,147 @@ describe('malformed responses', () => {
     await expect(isTracearrMediaDeleted('m1')).resolves.toBe(true)
   })
 })
+
+describe('getTracearrFirstPlay', () => {
+  const DAY = 24 * 60 * 60 * 1000
+  const firstPlayAt = Date.parse('2021-03-15T20:00:00.000Z')
+  const monthlyPlays = Array.from(
+    { length: 60 },
+    (_, i) => firstPlayAt + i * 30 * DAY,
+  )
+
+  function record(startedAt: number) {
+    return {
+      id: String(startedAt),
+      server_id: 's1',
+      started_at: new Date(startedAt).toISOString(),
+      media_type: 'episode',
+      media_title: 'Pilot',
+      show_title: 'The Office',
+      artist_name: null,
+    }
+  }
+
+  // Like Tracearr, the newest play up to `until`
+  function historyRoute(
+    playTimes: number[],
+    history?: (url: URL) => unknown,
+  ): Handlers {
+    return {
+      servers: () => ({ data: [plexServer('s1')] }),
+      users: () => ({
+        data: [user('s1')],
+        meta: { nextCursor: null, pageSize: 100 },
+      }),
+      history:
+        history ??
+        ((url) => {
+          const until = url.searchParams.get('until')
+          const latest = Math.max(
+            ...playTimes.filter((time) => !until || time <= Date.parse(until)),
+          )
+
+          return {
+            data: Number.isFinite(latest) ? [record(latest)] : [],
+            meta: { nextCursor: null, pageSize: 1 },
+          }
+        }),
+    }
+  }
+
+  it('narrows the window down to the oldest play', async () => {
+    route(historyRoute(monthlyPlays))
+
+    const { getTracearrFirstPlay } = await load()
+
+    await expect(getTracearrFirstPlay('42')).resolves.toEqual({
+      date: '2021-03-15T20:00:00.000Z',
+      title: 'The Office',
+    })
+
+    const requests = requestsTo('history').map(([input]) => new URL(input))
+
+    expect(requests.length).toBeLessThanOrEqual(15)
+    expect(
+      requests.every(
+        (url) =>
+          url.searchParams.get('user_id') === 'u1' &&
+          url.searchParams.get('server_id') === 's1' &&
+          url.searchParams.get('pageSize') === '1',
+      ),
+    ).toBe(true)
+  })
+
+  it('finds a play older than a long gap', async () => {
+    const oldPlay = Date.parse('2012-06-01T00:00:00.000Z')
+
+    route(historyRoute([oldPlay, ...monthlyPlays]))
+
+    const { getTracearrFirstPlay } = await load()
+
+    await expect(getTracearrFirstPlay('42')).resolves.toMatchObject({
+      date: new Date(oldPlay).toISOString(),
+    })
+  })
+
+  it('is null for a user without plays or not on the server', async () => {
+    route(historyRoute([]))
+
+    const { getTracearrFirstPlay } = await load()
+
+    await expect(getTracearrFirstPlay('42')).resolves.toBeNull()
+    expect(requestsTo('history')).toHaveLength(1)
+
+    await expect(getTracearrFirstPlay('7')).resolves.toBeNull()
+    expect(requestsTo('history')).toHaveLength(1)
+  })
+
+  it('keeps the first play for a day', async () => {
+    vi.useFakeTimers({ toFake: ['Date'] })
+    route(historyRoute(monthlyPlays))
+
+    const { getTracearrFirstPlay } = await load()
+
+    await getTracearrFirstPlay('42')
+
+    const requestCount = requestsTo('history').length
+
+    vi.advanceTimersByTime(12 * 60 * 60 * 1000)
+    await getTracearrFirstPlay('42')
+
+    expect(requestsTo('history')).toHaveLength(requestCount)
+
+    vi.advanceTimersByTime(DAY)
+    await getTracearrFirstPlay('42')
+
+    expect(requestsTo('history').length).toBeGreaterThan(requestCount)
+  })
+
+  it('does not keep a failure', async () => {
+    route(historyRoute(monthlyPlays, () => 'not a page'))
+
+    const { getTracearrFirstPlay } = await load()
+
+    await expect(getTracearrFirstPlay('42')).resolves.toBeNull()
+
+    route(historyRoute(monthlyPlays))
+
+    await expect(getTracearrFirstPlay('42')).resolves.toMatchObject({
+      title: 'The Office',
+    })
+  })
+
+  it('stops when Tracearr returns plays after `until`', async () => {
+    route(
+      historyRoute([], () => ({
+        data: [record(firstPlayAt)],
+        meta: { nextCursor: null, pageSize: 1 },
+      })),
+    )
+
+    const { getTracearrFirstPlay } = await load()
+
+    await expect(getTracearrFirstPlay('42')).resolves.toBeNull()
+    expect(requestsTo('history')).toHaveLength(2)
+  })
+})

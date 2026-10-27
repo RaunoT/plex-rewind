@@ -224,3 +224,47 @@ describe('getServerUser', () => {
     ).resolves.toEqual({ status: 'unavailable' })
   })
 })
+
+describe('getFirstPlay', () => {
+  it('asks for the oldest play and names the show of an episode', async () => {
+    fetchMock.mockResolvedValue(
+      tautulliData({
+        data: [
+          { date: 1615766400, title: 'Pilot', grandparent_title: 'The Office' },
+        ],
+      }),
+    )
+
+    await expect(tautulliSource.getFirstPlay('5')).resolves.toEqual({
+      date: '2021-03-15T00:00:00.000Z',
+      title: 'The Office',
+    })
+    expect(fetchMock).toHaveBeenCalledWith(
+      'get_history',
+      { user_id: '5', order_column: 'date', order_dir: 'asc', length: 1 },
+      true,
+    )
+  })
+
+  it('uses the title of a movie', async () => {
+    fetchMock.mockResolvedValue(
+      tautulliData({
+        data: [{ date: 1615766400, title: 'Heat', grandparent_title: '' }],
+      }),
+    )
+
+    await expect(tautulliSource.getFirstPlay('5')).resolves.toMatchObject({
+      title: 'Heat',
+    })
+  })
+
+  it('is null without plays or an answer', async () => {
+    fetchMock.mockResolvedValue(tautulliData({ data: [] }))
+
+    await expect(tautulliSource.getFirstPlay('5')).resolves.toBeNull()
+
+    fetchMock.mockResolvedValue(null)
+
+    await expect(tautulliSource.getFirstPlay('5')).resolves.toBeNull()
+  })
+})

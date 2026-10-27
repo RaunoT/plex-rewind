@@ -6,6 +6,7 @@ import { FC } from 'react'
 import Stories from './Stories'
 import StoryAudio from './Stories/Audio'
 import StoryAudioTop from './Stories/AudioTop'
+import StoryFirstPlay from './Stories/FirstPlay'
 import StoryGoodbye from './Stories/Goodbye'
 import StoryHabitsDay from './Stories/HabitsDay'
 import StoryHabitsHour from './Stories/HabitsHour'
@@ -100,6 +101,7 @@ export default function RewindStories({ userRewind, settings }: Props) {
     ...(userRewind.habits.peakHour !== null
       ? [createStory(StoryHabitsHour, 10000)]
       : []),
+    ...(userRewind.firstPlay ? [createStory(StoryFirstPlay, 10000)] : []),
     createStory(StoryGoodbye, 11000),
   ]
 

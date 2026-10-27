@@ -8,7 +8,9 @@ import {
   formatCodec,
   formatDevice,
   formatDynamicRange,
+  formatMonthYear,
   formatResolution,
+  formatTimeSince,
   getInitials,
   millisecondsToTimeString,
   secondsToTime,
@@ -216,5 +218,57 @@ describe('getInitials', () => {
 
   it('keeps letters outside the basic Latin range whole', () => {
     expect(getInitials('Õie Ülle')).toBe('ÕÜ')
+  })
+})
+
+describe('formatMonthYear', () => {
+  it('reads the month in UTC, wherever it runs', () => {
+    expect(formatMonthYear('2021-03-31T23:30:00.000Z', 'en')).toBe('Mar 2021')
+    expect(formatMonthYear('2021-03-01T00:30:00.000Z', 'en', 'long')).toBe(
+      'March 2021',
+    )
+  })
+})
+
+describe('formatTimeSince', () => {
+  const now = new Date('2026-10-27T12:00:00.000Z')
+
+  it('counts whole years and months', () => {
+    expect(formatTimeSince('2022-03-15T00:00:00.000Z', 'en', now)).toBe(
+      '4 years and 7 months',
+    )
+    expect(formatTimeSince('2025-10-27T00:00:00.000Z', 'en', now)).toBe(
+      '1 year',
+    )
+    expect(formatTimeSince('2026-08-01T00:00:00.000Z', 'en', now)).toBe(
+      '2 months',
+    )
+  })
+
+  it('only counts a month once its day comes round', () => {
+    expect(formatTimeSince('2025-10-28T00:00:00.000Z', 'en', now)).toBe(
+      '11 months',
+    )
+  })
+
+  it('counts days under a month', () => {
+    expect(formatTimeSince('2026-10-10T00:00:00.000Z', 'en', now)).toBe(
+      '17 days',
+    )
+    expect(formatTimeSince('2026-09-28T00:00:00.000Z', 'en', now)).toBe(
+      '29 days',
+    )
+  })
+
+  it('is empty under a day, in the future or for a bad date', () => {
+    expect(formatTimeSince('2026-10-27T01:00:00.000Z', 'en', now)).toBe('')
+    expect(formatTimeSince('2026-11-01T00:00:00.000Z', 'en', now)).toBe('')
+    expect(formatTimeSince('not a date', 'en', now)).toBe('')
+  })
+
+  it('uses the words of the locale', () => {
+    expect(formatTimeSince('2022-03-15T00:00:00.000Z', 'et', now)).toBe(
+      '4 aastat ja 7 kuud',
+    )
   })
 })

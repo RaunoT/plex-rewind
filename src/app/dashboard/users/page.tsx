@@ -87,7 +87,7 @@ async function DashboardUsersContent({
   const period = getPeriod(periodSp, settings)
   const [usersData, totalDuration, usersCount, totalRequests] =
     await Promise.all([
-      getUsersTop(loggedInUserId ?? '', period.string, period.daysAgo),
+      getUsersTop(loggedInUserId ?? '', period.string, period.daysAgo, true),
       getTotalDuration(period.string, settings, t),
       getUsersCount(settings),
       // The same start as each user's request count
