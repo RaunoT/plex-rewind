@@ -37,7 +37,7 @@ export default function usePlexAuth(siteUrl: string) {
           redirect: false,
         })
 
-        if (!res?.ok) {
+        if (!res?.ok || res.error) {
           console.error('[AUTH] - Failed to sign in!', res?.error)
           setError(toLoginErrorCode(res?.error))
           setIsLoading(false)
