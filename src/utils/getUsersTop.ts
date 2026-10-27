@@ -25,9 +25,13 @@ export default async function getUsersTop(
   }
 
   const isAnonymousAccess = settings.general.isOutsideAccess && !loggedInUserId
-  const listedUsers = isAnonymousAccess
-    ? users.slice(0, numberOfUsers)
-    : await getStatsWithLoggedInUser(loggedInUserId, users, numberOfUsers)
+  // Excluded users aren't ranked, so adding one would show them last with no
+  // watch time.
+  const isExcludedUser = settings.general.excludedUsers.includes(loggedInUserId)
+  const listedUsers =
+    isAnonymousAccess || isExcludedUser
+      ? users.slice(0, numberOfUsers)
+      : await getStatsWithLoggedInUser(loggedInUserId, users, numberOfUsers)
   const isOverseerrActive =
     settings.connection.overseerrUrl && settings.connection.overseerrApiKey
 

@@ -1,6 +1,7 @@
 'use client'
 
 import plexSvg from '@/assets/plex.svg'
+import { MediaIcon } from '@/components/icons'
 import SkeletonLine from '@/components/SkeletonLine'
 import { PublicSettings } from '@/types/settings'
 import { TautulliLibrary } from '@/types/tautulli'
@@ -9,11 +10,8 @@ import {
   ArrowPathIcon,
   BackwardIcon,
   Cog6ToothIcon,
-  FilmIcon,
   HomeIcon,
-  MusicalNoteIcon,
   SignalIcon,
-  TvIcon,
   UsersIcon,
 } from '@heroicons/react/24/outline'
 import { kebabCase } from 'lodash'
@@ -188,7 +186,7 @@ function DashboardLinks({
               <SidebarLink
                 key={library.section_id}
                 href={`${href}${query}`}
-                icon={getLibraryIcon(library.section_type)}
+                icon={<MediaIcon type={library.section_type} />}
                 isActive={pathname === href}
               >
                 {library.section_name}
@@ -260,15 +258,4 @@ function SidebarLink({ href, icon, isActive, children }: SidebarLinkProps) {
       </Link>
     </li>
   )
-}
-
-function getLibraryIcon(type: string) {
-  switch (type) {
-    case 'movie':
-      return <FilmIcon />
-    case 'show':
-      return <TvIcon />
-    case 'artist':
-      return <MusicalNoteIcon />
-  }
 }

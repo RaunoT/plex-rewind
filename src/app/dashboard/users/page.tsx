@@ -8,7 +8,11 @@ import getPeriod from '@/utils/getPeriod'
 import getSettings from '@/utils/getSettings'
 import getUsersTop from '@/utils/getUsersTop'
 import { toPublicSettings } from '@/utils/publicSettings'
-import { getStatsSource, getUsersCount } from '@/utils/statsSource'
+import {
+  getLibraries,
+  getStatsSource,
+  getUsersCount,
+} from '@/utils/statsSource'
 import { Metadata } from 'next'
 import { getServerSession } from 'next-auth'
 import { getTranslations } from 'next-intl/server'
@@ -32,8 +36,10 @@ async function getTotalDuration(
   t: TranslateFunction,
 ) {
   if (settings.dashboard.activeTotalStatistics.includes('duration')) {
+    // The same libraries as each user's watch time
     const totalDuration = await getStatsSource(settings).getTotalDuration({
       since: period,
+      libraries: await getLibraries(),
     })
 
     return secondsToTime(totalDuration, t)
@@ -84,7 +90,8 @@ async function DashboardUsersContent({
       getUsersTop(loggedInUserId ?? '', period.string, period.daysAgo),
       getTotalDuration(period.string, settings, t),
       getUsersCount(settings),
-      getTotalRequests(period.date, settings),
+      // The same start as each user's request count
+      getTotalRequests(period.string, settings),
     ])
 
   return (

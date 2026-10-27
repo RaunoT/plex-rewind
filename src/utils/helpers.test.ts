@@ -8,6 +8,7 @@ import {
   getHomeTiles,
   getRewindStartDate,
   getSettingsPage,
+  getUserShare,
   hasRewindPlays,
   isInitialSetup,
   isPostUpdateMissingSettings,
@@ -157,6 +158,28 @@ describe('hasRewindPlays', () => {
         audio: { ...none, count: 3 },
       }),
     ).toBe(true)
+  })
+})
+
+describe('getUserShare', () => {
+  it('compares the user with the server total', () => {
+    expect(getUserShare(300, 1000, false)).toEqual({
+      total: 1000,
+      percentage: 30,
+    })
+  })
+
+  it('adds an excluded user back into the server total', () => {
+    // The server total of 700 leaves out the user's own 300.
+    expect(getUserShare(300, 700, true)).toEqual({
+      total: 1000,
+      percentage: 30,
+    })
+  })
+
+  it('has no percentage without a server total', () => {
+    expect(getUserShare(0, 0, false).percentage).toBeNull()
+    expect(getUserShare(0, 0, true).percentage).toBeNull()
   })
 })
 

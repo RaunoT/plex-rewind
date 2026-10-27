@@ -1,6 +1,6 @@
 import { NextConfig } from 'next'
 import createNextIntlPlugin from 'next-intl/plugin'
-import { BASE_CSP_DIRECTIVES } from './src/utils/csp'
+import { BASE_CSP_DIRECTIVES, IMAGE_CSP } from './src/utils/csp'
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
@@ -57,6 +57,16 @@ const nextConfig: NextConfig = {
           {
             key: 'Permissions-Policy',
             value: '',
+          },
+        ],
+      },
+      // Later entries win for the same header
+      {
+        source: '/api/image',
+        headers: [
+          {
+            key: 'Content-Security-Policy',
+            value: IMAGE_CSP,
           },
         ],
       },

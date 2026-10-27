@@ -44,6 +44,7 @@
     "loadError": "Aktivität konnte nicht geladen werden",
     "playing": "Läuft",
     "paused": "Pausiert",
+    "buffering": "Puffert",
     "endsAt": "Endet um {time}",
     "convertedTo": "umgewandelt in",
     "decision": {
@@ -62,7 +63,9 @@
     "movies": "{count, plural, =1 {Film} other {Filme}}",
     "episodes": "{count, plural, =1 {Episode} other {Episoden}}",
     "tracks": "{count, plural, =1 {Titel} other {Titel}}",
-    "requests": "{count, plural, =1 {Anfrage} other {Anfragen}}"
+    "requests": "{count, plural, =1 {Anfrage} other {Anfragen}}",
+    "durationWatched": "{duration} geschaut",
+    "durationListened": "{duration} gehört"
   },
   "DashboardFilters": {
     "type": "Typ",
@@ -85,7 +88,8 @@
     "connectionSettings": "Verbindungseinstellungen prüfen"
   },
   "PlexDeeplink": {
-    "available": "Verfügbar"
+    "available": "Verfügbar",
+    "availableLabel": "Verfügbar: {title} in Plex öffnen"
   },
   "PeriodSelectContent": {
     "7days": "7 Tage",
@@ -120,6 +124,7 @@
     "savedChooseLibraries": "Einstellungen gespeichert! Wähle deine Bibliotheken unter Allgemein.",
     "genericError": "Etwas ging schief!",
     "save": "Speichern",
+    "reenterApiKey": "Gib den API-Schlüssel nach dem Ändern der URL erneut ein.",
     "apiKey": "API-Schlüssel",
     "invalidApiKey": "Ungültiger API-Schlüssel!",
     "unableToConnect": "Verbindung fehlgeschlagen!",
@@ -337,6 +342,9 @@
     "statRequests": "{count, plural, =1 {# Anfrage} other {# Anfragen}}",
     "labelShows": "Serien",
     "labelMovies": "Filme",
-    "labelAudio": "Musik"
+    "labelAudio": "Musik",
+    "you": "(du)",
+    "requestLabel": "Anfrage für {title}",
+    "imdbLabel": "{title} auf IMDb"
   }
 }

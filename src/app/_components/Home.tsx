@@ -52,7 +52,7 @@ export default function Home({ settings, missingSetting, siteUrl }: Props) {
           </p>
         </>
       ) : (
-        <h1 className='animate-fade-up animation-delay-300 mb-8 text-[2.5rem] leading-none font-bold tracking-tight'>
+        <h1 className='animate-fade-up animation-delay-300 mb-8 max-w-full text-[2.5rem] leading-none font-bold tracking-tight text-balance wrap-anywhere'>
           {settings.general.serverName ? (
             settings.general.serverName
           ) : (
@@ -72,7 +72,7 @@ export default function Home({ settings, missingSetting, siteUrl }: Props) {
           </button>
         )}
         {error && (
-          <p role='alert' className='text-sm text-red-300'>
+          <p role='alert' className='text-danger text-sm'>
             {t(`loginError.${error}`)}
           </p>
         )}

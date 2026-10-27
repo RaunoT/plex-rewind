@@ -40,6 +40,7 @@ export type UserRewind = {
   duration: {
     user: string
     user_percentage: string
+    user_percentage_value: number | null
     total: string
   }
   user: RewindUser

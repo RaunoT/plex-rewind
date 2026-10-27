@@ -1,4 +1,5 @@
 import { requireSettingsAccess } from '@/lib/access'
+import { maskApiKeys } from '@/utils/connectionSecrets'
 import { getTracearrPlexServers } from '@/utils/fetchTracearr'
 import getSettings from '@/utils/getSettings'
 import { isTracearrSource } from '@/utils/helpers'
@@ -24,7 +25,10 @@ export default async function ConnectionSettingsPage() {
 
   return (
     <ConnectionSettingsForm
-      settings={settings}
+      settings={{
+        ...settings,
+        connection: maskApiKeys(settings.connection),
+      }}
       tracearrServers={tracearrServers}
     />
   )

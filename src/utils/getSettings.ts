@@ -131,9 +131,11 @@ function loadSettings(key: string): Settings {
     return handleInvalidFile(key, 'expected a JSON object')
   }
 
-  const settings = mergeWithDefaults(saved as Partial<Settings>)
+  const savedSettings = saved as Partial<Settings>
+  const settings = mergeWithDefaults(savedSettings)
 
-  settings.setupComplete = isSetupComplete(settings)
+  settings.setupComplete =
+    isSetupComplete(settings) || wasSetUpBeforeTracking(savedSettings)
   cached = { key, settings }
   invalid = undefined
   needsBackupBeforeWrite = false
@@ -219,6 +221,13 @@ function mergeWithDefaults(saved: Partial<Settings>): Settings {
 
 function isSetupComplete(settings: Settings): boolean {
   return settings.setupComplete || checkRequiredSettings(settings) === null
+}
+
+// Files from v4.8.3 and older have no `setupComplete`, and miss settings that
+// are required now. Treating them as a first setup would open the settings,
+// stored API keys included, to anyone until an admin finishes it.
+function wasSetUpBeforeTracking(saved: Partial<Settings>): boolean {
+  return !('setupComplete' in saved) && saved.connection?.complete === true
 }
 
 function writeAtomically(content: string): void {

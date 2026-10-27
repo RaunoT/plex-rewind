@@ -6,7 +6,7 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import { ChangeEvent, useRef } from 'react'
 
 type Props = {
-  users: TautulliUser[]
+  users: Pick<TautulliUser, 'user_id' | 'friendly_name'>[]
   defaultUserId: string
 }
 
