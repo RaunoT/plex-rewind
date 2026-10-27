@@ -522,9 +522,10 @@ describe('malformed responses', () => {
 describe('getTracearrFirstPlay', () => {
   const DAY = 24 * 60 * 60 * 1000
   const firstPlayAt = Date.parse('2021-03-15T20:00:00.000Z')
-  const monthlyPlays = Array.from(
-    { length: 60 },
-    (_, i) => firstPlayAt + i * 30 * DAY,
+  // More than a page, so the search has to narrow the window
+  const dailyPlays = Array.from(
+    { length: 600 },
+    (_, i) => firstPlayAt + i * DAY,
   )
 
   // An episode of The Office, or a movie when it has a title of its own
@@ -540,7 +541,8 @@ describe('getTracearrFirstPlay', () => {
     }
   }
 
-  // Like Tracearr, the newest plays between `since` and `until`
+  // Like Tracearr, the newest plays between `since` and `until`. The server
+  // and the user have the same plays.
   function historyRoute(
     playTimes: number[],
     {
@@ -570,18 +572,28 @@ describe('getTracearrFirstPlay', () => {
                 (!until || time <= Date.parse(until)),
             )
             .sort((a, b) => b - a)
-            .slice(0, pageSize)
 
           return {
-            data: plays.map((time) => record(time, movieTitles[time])),
-            meta: { nextCursor: null, pageSize },
+            data: plays
+              .slice(0, pageSize)
+              .map((time) => record(time, movieTitles[time])),
+            meta: {
+              nextCursor: plays.length > pageSize ? 'next' : null,
+              pageSize,
+            },
           }
         }),
     }
   }
 
+  function historyRequests(byUser: boolean) {
+    return requestsTo('history')
+      .map(([input]) => new URL(input))
+      .filter((url) => url.searchParams.has('user_id') === byUser)
+  }
+
   it('narrows the window down to the oldest play', async () => {
-    route(historyRoute(monthlyPlays))
+    route(historyRoute(dailyPlays))
 
     const { getTracearrFirstPlay } = await load()
 
@@ -589,30 +601,48 @@ describe('getTracearrFirstPlay', () => {
       date: '2021-03-15T20:00:00.000Z',
       title: 'The Office',
     })
-
-    const requests = requestsTo('history').map(([input]) => new URL(input))
-
-    expect(requests.length).toBeLessThanOrEqual(16)
     expect(
-      requests.every(
-        (url) =>
-          url.searchParams.get('user_id') === 'u1' &&
-          url.searchParams.get('server_id') === 's1',
+      requestsTo('history').every(([input]) => {
+        const url = new URL(input)
+
+        return (
+          url.searchParams.get('server_id') === 's1' &&
+          url.searchParams.get('pageSize') === '100'
+        )
+      }),
+    ).toBe(true)
+    expect(
+      historyRequests(true).every(
+        (url) => url.searchParams.get('user_id') === 'u1',
       ),
     ).toBe(true)
+  })
+
+  it('takes one request for a user with less than a page of plays', async () => {
+    route(historyRoute(dailyPlays.slice(0, 30)))
+
+    const { getTracearrFirstPlay } = await load()
+
+    await expect(getTracearrFirstPlay('42')).resolves.toMatchObject({
+      date: '2021-03-15T20:00:00.000Z',
+    })
+    expect(historyRequests(true)).toHaveLength(1)
+  })
+
+  it('never searches before the server has plays', async () => {
+    route(historyRoute(dailyPlays))
+
+    const { getTracearrFirstPlay } = await load()
+
+    await getTracearrFirstPlay('42')
+
     expect(
-      requests
-        .slice(0, -1)
-        .every((url) => url.searchParams.get('pageSize') === '1'),
+      historyRequests(true).every((url) => {
+        const until = url.searchParams.get('until')
+
+        return !until || Date.parse(until) >= firstPlayAt - 1
+      }),
     ).toBe(true)
-
-    // The last day before the play found is read in full
-    const lastDay = requests.at(-1)!
-
-    expect(lastDay.searchParams.get('until')).toBe('2021-03-15T20:00:00.000Z')
-    expect(
-      firstPlayAt - Date.parse(lastDay.searchParams.get('since')!),
-    ).toBeLessThanOrEqual(DAY)
   })
 
   it('finds the oldest of plays less than a day apart', async () => {
@@ -620,7 +650,7 @@ describe('getTracearrFirstPlay', () => {
     const secondFilm = Date.parse('2021-04-01T00:30:00.000Z')
 
     route(
-      historyRoute([firstFilm, secondFilm, ...monthlyPlays.slice(1)], {
+      historyRoute([firstFilm, secondFilm, ...dailyPlays.slice(17)], {
         movieTitles: { [firstFilm]: 'First film', [secondFilm]: 'Second film' },
       }),
     )
@@ -633,62 +663,21 @@ describe('getTracearrFirstPlay', () => {
     })
   })
 
-  it('does not keep a result when the last day cannot be read', async () => {
-    let requestCount = 0
-
-    route(
-      historyRoute(monthlyPlays, {
-        history: (url) => {
-          requestCount++
-
-          // Only the full read of the last day asks for more than one play
-          if (url.searchParams.get('pageSize') !== '1') {
-            return 'not a page'
-          }
-
-          return historyRoute(monthlyPlays).history(url)
-        },
-      }),
-    )
-
-    const { getTracearrFirstPlay } = await load()
-
-    await expect(getTracearrFirstPlay('42')).resolves.toBeNull()
-
-    const failedCount = requestCount
-
-    await getTracearrFirstPlay('42')
-
-    expect(requestCount).toBeGreaterThan(failedCount)
-  })
-
-  it('finds a play older than a long gap', async () => {
-    const oldPlay = Date.parse('2012-06-01T00:00:00.000Z')
-
-    route(historyRoute([oldPlay, ...monthlyPlays]))
-
-    const { getTracearrFirstPlay } = await load()
-
-    await expect(getTracearrFirstPlay('42')).resolves.toMatchObject({
-      date: new Date(oldPlay).toISOString(),
-    })
-  })
-
   it('is null for a user without plays or not on the server', async () => {
     route(historyRoute([]))
 
     const { getTracearrFirstPlay } = await load()
 
     await expect(getTracearrFirstPlay('42')).resolves.toBeNull()
-    expect(requestsTo('history')).toHaveLength(1)
+    expect(historyRequests(true)).toHaveLength(1)
 
     await expect(getTracearrFirstPlay('7')).resolves.toBeNull()
-    expect(requestsTo('history')).toHaveLength(1)
+    expect(historyRequests(true)).toHaveLength(1)
   })
 
   it('keeps the first play for a day', async () => {
     vi.useFakeTimers({ toFake: ['Date'] })
-    route(historyRoute(monthlyPlays))
+    route(historyRoute(dailyPlays))
 
     const { getTracearrFirstPlay } = await load()
 
@@ -708,16 +697,39 @@ describe('getTracearrFirstPlay', () => {
   })
 
   it('does not keep a failure', async () => {
-    route(historyRoute(monthlyPlays, { history: () => 'not a page' }))
+    route(historyRoute(dailyPlays, { history: () => 'not a page' }))
 
     const { getTracearrFirstPlay } = await load()
 
     await expect(getTracearrFirstPlay('42')).resolves.toBeNull()
 
-    route(historyRoute(monthlyPlays))
+    route(historyRoute(dailyPlays))
 
     await expect(getTracearrFirstPlay('42')).resolves.toMatchObject({
       title: 'The Office',
+    })
+  })
+
+  it('does not keep a result when a later page fails', async () => {
+    const working = historyRoute(dailyPlays).history
+
+    route(
+      historyRoute(dailyPlays, {
+        history: (url) =>
+          url.searchParams.has('user_id') && url.searchParams.has('until')
+            ? 'not a page'
+            : working(url),
+      }),
+    )
+
+    const { getTracearrFirstPlay } = await load()
+
+    await expect(getTracearrFirstPlay('42')).resolves.toBeNull()
+
+    route(historyRoute(dailyPlays))
+
+    await expect(getTracearrFirstPlay('42')).resolves.toMatchObject({
+      date: '2021-03-15T20:00:00.000Z',
     })
   })
 
@@ -726,7 +738,7 @@ describe('getTracearrFirstPlay', () => {
       historyRoute([], {
         history: () => ({
           data: [record(firstPlayAt)],
-          meta: { nextCursor: null, pageSize: 1 },
+          meta: { nextCursor: 'next', pageSize: 100 },
         }),
       }),
     )
@@ -734,6 +746,6 @@ describe('getTracearrFirstPlay', () => {
     const { getTracearrFirstPlay } = await load()
 
     await expect(getTracearrFirstPlay('42')).resolves.toBeNull()
-    expect(requestsTo('history')).toHaveLength(2)
+    expect(historyRequests(true)).toHaveLength(2)
   })
 })

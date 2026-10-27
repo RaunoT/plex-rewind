@@ -650,69 +650,100 @@ export async function getTracearrPlays(
   return (await run) ?? []
 }
 
-// Undefined when Tracearr couldn't be asked
-async function fetchLatestPlay(
-  identityId: string,
-  serverId: string,
-  until?: number,
-): Promise<TracearrHistoryRecord | null | undefined> {
-  const page = await fetchTracearr<TracearrCursorPage<TracearrHistoryRecord>>(
-    'history',
-    {
-      user_id: identityId,
-      server_id: serverId,
-      until: until === undefined ? undefined : new Date(until).toISOString(),
-      pageSize: 1,
-    },
-  )
-
-  return Array.isArray(page?.data) ? (page.data[0] ?? null) : undefined
-}
-
 function getStartedAt(record: TracearrHistoryRecord): number {
   return new Date(record.started_at).getTime()
 }
 
-// History only pages back from the newest play, so the time between the oldest
-// play found so far and the last time known to have none is halved until it's
-// under a day. That day is then read in full, since each lookup only returned
-// the newest play before its cutoff.
-async function findFirstPlay(
-  identityId: string,
-  serverId: string,
-): Promise<TracearrHistoryRecord | null | undefined> {
-  let firstPlay = await fetchLatestPlay(identityId, serverId)
-  let noPlaysUntil = EARLIEST_PLAY
+type PlaysUntil = {
+  oldest?: TracearrHistoryRecord
+  // True when the page holds every play up to its cutoff
+  isComplete: boolean
+}
 
-  if (!firstPlay || !Number.isFinite(getStartedAt(firstPlay))) {
-    return firstPlay
+// The newest page of plays up to `until`. Undefined when Tracearr couldn't be
+// asked, or returned a play after `until`, which would keep a search from ever
+// ending.
+async function fetchPlaysUntil(
+  params: QueryParams,
+  until?: number,
+): Promise<PlaysUntil | undefined> {
+  const page = await fetchTracearr<TracearrCursorPage<TracearrHistoryRecord>>(
+    'history',
+    {
+      ...params,
+      until: until === undefined ? undefined : new Date(until).toISOString(),
+      pageSize: PAGE_SIZE,
+    },
+  )
+
+  if (
+    !Array.isArray(page?.data) ||
+    (until !== undefined &&
+      !page.data.every((record) => getStartedAt(record) <= until))
+  ) {
+    return undefined
   }
 
-  while (getStartedAt(firstPlay) - noPlaysUntil > DAY) {
-    const middle = Math.floor((noPlaysUntil + getStartedAt(firstPlay)) / 2)
-    const play = await fetchLatestPlay(identityId, serverId, middle)
+  return {
+    oldest: minBy(page.data, getStartedAt),
+    isComplete: page.data.length < PAGE_SIZE && !page.meta?.nextCursor,
+  }
+}
 
-    if (play === null) {
-      noPlaysUntil = middle
-    } else if (play && getStartedAt(play) <= middle) {
-      firstPlay = play
-    } else {
-      // A play after `until` would keep the search from ever ending
+// History only pages back from the newest play. Each page's oldest play is the
+// earliest known so far, and the next cutoff is halfway between it and the last
+// time known to have none. A page that holds every play up to its cutoff ends
+// the search, so users with few plays take one request.
+async function findFirstPlay(
+  params: QueryParams,
+  noPlaysBefore: number,
+): Promise<TracearrHistoryRecord | null | undefined> {
+  const newest = await fetchPlaysUntil(params)
+
+  if (!newest) {
+    return undefined
+  }
+
+  if (!newest.oldest) {
+    return null
+  }
+
+  let firstPlay = newest.oldest
+  let isComplete = newest.isComplete
+  let noPlaysUntil = noPlaysBefore - 1
+
+  while (!isComplete && getStartedAt(firstPlay) - noPlaysUntil > 1) {
+    const middle = Math.floor((noPlaysUntil + getStartedAt(firstPlay)) / 2)
+    const page = await fetchPlaysUntil(params, middle)
+
+    if (!page) {
       return undefined
+    }
+
+    if (page.oldest) {
+      firstPlay = page.oldest
+      isComplete = page.isComplete
+    } else {
+      noPlaysUntil = middle
     }
   }
 
-  const lastDay = await fetchAllPages<TracearrHistoryRecord>('history', {
-    user_id: identityId,
-    server_id: serverId,
-    since: new Date(
-      Math.min(noPlaysUntil, getStartedAt(firstPlay)),
-    ).toISOString(),
-    until: firstPlay.started_at,
-  })
-
-  return lastDay ? minBy([firstPlay, ...lastDay], getStartedAt) : undefined
+  return firstPlay
 }
+
+// No user's first play is older than the server's, so it bounds every search
+const getServerFirstPlayAt = cached<number>(async () => {
+  const serverId = await getPlexServerId()
+
+  if (!serverId) {
+    return null
+  }
+
+  const firstPlay = await findFirstPlay({ server_id: serverId }, EARLIEST_PLAY)
+  const firstPlayAt = firstPlay ? getStartedAt(firstPlay) : NaN
+
+  return Number.isFinite(firstPlayAt) ? firstPlayAt : null
+}, FIRST_PLAY_CACHE_TTL)
 
 export async function getTracearrFirstPlay(
   plexId: string,
@@ -740,7 +771,10 @@ export async function getTracearrFirstPlay(
     }
   }
 
-  const record = await findFirstPlay(user.identityId, serverId)
+  const record = await findFirstPlay(
+    { user_id: user.identityId, server_id: serverId },
+    (await getServerFirstPlayAt()) ?? EARLIEST_PLAY,
+  )
 
   if (record === undefined) {
     return cache?.firstPlay ?? null
