@@ -373,11 +373,11 @@ export default function Stories({ stories }: Props) {
         aria-label={t('label')}
       >
         {/* Progress bar */}
-        <div className='absolute -top-2 right-0 left-0 z-20 flex gap-1'>
+        <div className='absolute -top-4 -right-0.5 -left-0.5 z-20 flex'>
           {stories.map((_, index) => (
             <button
               key={index}
-              className='group flex-1 cursor-pointer overflow-hidden py-2'
+              className='group flex-1 cursor-pointer overflow-hidden px-0.5 py-4'
               onClick={() => goToIndex(index)}
               aria-label={t('goToStory', { index: index + 1 })}
               aria-current={index === currentIndex ? 'step' : undefined}
@@ -422,33 +422,33 @@ export default function Stories({ stories }: Props) {
 
       {controlsSlot &&
         createPortal(
-          <div className='flex items-center gap-0.5 rounded-full bg-white/10'>
+          <div className='icon-button-group'>
             <button
-              className='icon-button size-7'
+              className='icon-button'
               onClick={goToPrev}
               disabled={!canGoBack}
               aria-label={t('previous')}
             >
-              <ChevronLeftIcon className='size-4' />
+              <ChevronLeftIcon className='size-5' />
             </button>
             <button
-              className='icon-button size-7'
+              className='icon-button'
               onClick={togglePause}
               aria-label={isManuallyPaused ? t('resume') : t('pause')}
             >
               {isManuallyPaused ? (
-                <PlayIcon className='size-4' />
+                <PlayIcon className='size-5' />
               ) : (
-                <PauseIcon className='size-4' />
+                <PauseIcon className='size-5' />
               )}
             </button>
             <button
-              className='icon-button size-7'
+              className='icon-button'
               onClick={goToNext}
               disabled={!canGoForward}
               aria-label={t('next')}
             >
-              <ChevronRightIcon className='size-4' />
+              <ChevronRightIcon className='size-5' />
             </button>
           </div>,
           controlsSlot,

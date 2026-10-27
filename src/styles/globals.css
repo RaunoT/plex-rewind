@@ -2,6 +2,8 @@
 
 @theme {
   --color-plex: #e5a00d;
+  --color-danger: var(--color-red-300);
+  --color-success: var(--color-green-400);
 }
 
 @layer base {
@@ -38,10 +40,6 @@
   }
 }
 
-@utility container {
-  @apply mx-auto px-4;
-}
-
 /* Every page with a header shares one width */
 @utility page-width {
   @apply w-full max-w-4xl;
@@ -70,7 +68,7 @@
 
 @utility required {
   ::after {
-    @apply ml-1 align-text-bottom text-red-300 content-['*'];
+    @apply text-danger ml-1 align-text-bottom content-['*'];
   }
 }
 
@@ -123,7 +121,26 @@
   }
 
   .icon-button {
-    @apply focus-visible:focus-ring flex size-8 shrink-0 items-center justify-center rounded-full text-neutral-300 transition hover:bg-white/10 hover:text-white disabled:cursor-not-allowed disabled:bg-transparent disabled:text-neutral-300 disabled:opacity-30;
+    @apply focus-visible:focus-ring relative flex size-8 shrink-0 items-center justify-center rounded-full text-neutral-300 transition hover:bg-white/10 hover:text-white disabled:cursor-not-allowed disabled:bg-transparent disabled:text-neutral-300 disabled:opacity-30;
+
+    > svg {
+      @apply size-5;
+    }
+
+    /* Taps 6px above and below still count. Grouped buttons sit 2px apart,
+       so their tap areas meet without overlapping. */
+    &::after {
+      @apply absolute -inset-x-px -inset-y-1.5 content-[''];
+    }
+
+    /* A button on its own, as tall as a group of them */
+    &.icon-button--glass {
+      @apply glass-pill size-10 hover:bg-white/10;
+    }
+  }
+
+  .icon-button-group {
+    @apply glass-pill flex w-fit items-center gap-0.5 p-1;
   }
 
   .button {
@@ -156,14 +173,6 @@
         @apply bg-plex brightness-110;
       }
     }
-
-    &.button--glass {
-      @apply bg-white/10 text-white;
-
-      &:hover:not([disabled]) {
-        @apply bg-white/15;
-      }
-    }
   }
 
   .button-card {
@@ -174,7 +183,13 @@
     }
 
     &:is(a) {
-      @apply focus-visible:focus-ring transition-colors hover:bg-white/20;
+      @apply focus-visible:focus-ring relative transition-colors hover:bg-white/20;
+
+      /* A 40px tall tap area. Links sit 6px apart, so their tap areas meet
+         without overlapping. */
+      &::after {
+        @apply absolute -inset-x-0.75 -inset-y-2 content-[''];
+      }
     }
 
     /* IMDb's own tag, so it reads as the link it is */
@@ -291,6 +306,18 @@
 
     &.input--small {
       @apply rounded-full px-3 py-1 text-sm;
+
+      /* Selects can't have pseudo-elements, so a transparent border grows
+         the tap area to 40px. The negative margin leaves 4px of it outside
+         the layout, so selects a gap-2 apart don't overlap. The focus ring
+         is drawn inside it. */
+      margin-block: -4px;
+      border-block: 6px solid transparent;
+      background-clip: padding-box;
+
+      &:focus {
+        @apply ring-inset;
+      }
     }
   }
 
@@ -368,6 +395,18 @@
     @apply relative size-6 shrink-0 rounded-lg bg-white/15 transition-colors;
   }
 
+  /* Rows of boxes with their labels, so each tick clearly belongs to one
+     name. One column on phones, more as the space allows. */
+  .checkbox-grid {
+    @apply grid min-w-0 gap-x-4 gap-y-2 sm:flex-1;
+
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 11rem), 1fr));
+
+    > .checkbox-wrapper {
+      @apply min-w-0 items-start wrap-anywhere;
+    }
+  }
+
   .heading-settings {
     @apply border-b border-white/10 pb-2 text-left text-xs font-semibold tracking-widest text-neutral-400 uppercase sm:w-48 sm:text-right;
   }
@@ -384,7 +423,6 @@
     background-position: right 12px center;
     background-size: 24px;
 
-    &.select-input--small,
     &.input--small {
       @apply pr-8;
 

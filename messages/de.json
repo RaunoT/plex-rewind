@@ -57,7 +57,9 @@
     "movies": "{count, plural, =1 {Film} other {Filme}}",
     "episodes": "{count, plural, =1 {Episode} other {Episoden}}",
     "tracks": "{count, plural, =1 {Titel} other {Titel}}",
-    "requests": "{count, plural, =1 {Anfrage} other {Anfragen}}"
+    "requests": "{count, plural, =1 {Anfrage} other {Anfragen}}",
+    "durationWatched": "{duration} geschaut",
+    "durationListened": "{duration} gehört"
   },
   "DashboardFilters": {
     "type": "Typ",
@@ -77,7 +79,8 @@
     "cta": "Erneut versuchen"
   },
   "PlexDeeplink": {
-    "available": "Verfügbar"
+    "available": "Verfügbar",
+    "availableLabel": "Verfügbar: {title} in Plex öffnen"
   },
   "PeriodSelectContent": {
     "7days": "7 Tage",
@@ -327,6 +330,9 @@
     "statRequests": "{count, plural, =1 {# Anfrage} other {# Anfragen}}",
     "labelShows": "Serien",
     "labelMovies": "Filme",
-    "labelAudio": "Musik"
+    "labelAudio": "Musik",
+    "you": "(du)",
+    "requestLabel": "Anfrage für {title}",
+    "imdbLabel": "{title} auf IMDb"
   }
 }
