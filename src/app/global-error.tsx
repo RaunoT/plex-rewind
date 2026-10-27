@@ -1,5 +1,6 @@
 'use client'
 
+import StatusMessage from '@/components/StatusMessage'
 import '@/styles/globals.css'
 import { DEFAULT_LOCALE, LOCALE_COOKIE_NAME, LOCALES } from '@/utils/constants'
 import {
@@ -45,11 +46,20 @@ function ErrorContent({ error, reset }: Props) {
   }, [error])
 
   return (
-    <main className='flex min-h-dvh flex-col justify-center px-4 text-center'>
-      <h1 className='mb-4 text-3xl leading-tight sm:text-4xl'>{t('title')}</h1>
-      <button className='link mx-auto w-fit' onClick={() => reset()}>
-        {t('cta')}
-      </button>
+    <main className='flex min-h-dvh flex-col px-4 py-6'>
+      <StatusMessage
+        title={t('title')}
+        as='h1'
+        action={
+          <button
+            type='button'
+            className='button w-full'
+            onClick={() => reset()}
+          >
+            {t('cta')}
+          </button>
+        }
+      />
     </main>
   )
 }
