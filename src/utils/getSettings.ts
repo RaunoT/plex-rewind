@@ -1,4 +1,4 @@
-import { DashboardItemStatistics, Settings } from '@/types/settings'
+import { ItemStatistics, Settings } from '@/types/settings'
 import { randomBytes } from 'crypto'
 import fs from 'fs'
 import { isEqual, isPlainObject, mergeWith, uniq } from 'lodash'
@@ -132,7 +132,11 @@ function loadSettings(key: string): Settings {
   }
 
   const savedSettings = saved as Partial<Settings>
-  const settings = migrateRatingStatistic(mergeWithDefaults(savedSettings))
+  const settings = dropMdblistApiKey(
+    migrateRatingStatistic(
+      mergeWithDefaults(moveItemStatistics(savedSettings)),
+    ),
+  )
 
   settings.setupComplete =
     isSetupComplete(settings) || wasSetUpBeforeTracking(savedSettings)
@@ -219,19 +223,56 @@ function mergeWithDefaults(saved: Partial<Settings>): Settings {
   )
 }
 
+// Item statistics were dashboard settings, but Rewind's lists show them too.
+// Moved before merging, so the defaults don't replace the saved choice.
+function moveItemStatistics(saved: Partial<Settings>): Partial<Settings> {
+  const dashboard = saved.dashboard as
+    | (Partial<Settings['dashboard']> & {
+        activeItemStatistics?: ItemStatistics
+      })
+    | undefined
+
+  if (!dashboard?.activeItemStatistics) {
+    return saved
+  }
+
+  const { activeItemStatistics, ...rest } = dashboard
+
+  return {
+    ...saved,
+    dashboard: rest as Settings['dashboard'],
+    general: {
+      ...saved.general,
+      activeItemStatistics:
+        saved.general?.activeItemStatistics ?? activeItemStatistics,
+    } as Settings['general'],
+  }
+}
+
 // Before ratings could be chosen per provider, `rating` turned on TMDB's. It
-// now turns them all on, so IMDb and Rotten Tomatoes show up once an MDBList
-// API key is added.
+// now turns them all on.
 function migrateRatingStatistic(settings: Settings): Settings {
-  const statistics: string[] = settings.dashboard.activeItemStatistics
+  const statistics: string[] = settings.general.activeItemStatistics
 
   if (statistics.includes('rating')) {
-    settings.dashboard.activeItemStatistics = uniq(
+    settings.general.activeItemStatistics = uniq(
       statistics.flatMap((statistic) =>
         statistic === 'rating' ? RATING_STATISTICS : statistic,
       ),
-    ) as DashboardItemStatistics
+    ) as ItemStatistics
   }
+
+  return settings
+}
+
+// Ratings came from MDBList, which needed an API key. They no longer do, so a
+// saved key is removed rather than kept around unused.
+function dropMdblistApiKey(settings: Settings): Settings {
+  const connection = settings.connection as Settings['connection'] & {
+    mdblistApiKey?: string
+  }
+
+  delete connection.mdblistApiKey
 
   return settings
 }

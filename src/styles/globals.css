@@ -196,47 +196,6 @@
         @apply absolute -inset-x-0.75 -inset-y-2 content-[''];
       }
     }
-
-    /* Each site's own colors, so the tags read as the links they are. The
-       reds are a shade darker than the brands' to keep white text legible. */
-    &.button-card--site {
-      @apply bg-(--site-bg) px-1.5 font-extrabold tracking-tight text-(--site-text) hover:bg-(--site-bg) hover:brightness-110;
-    }
-
-    &.button-card--imdb {
-      --site-bg: #f5c518;
-      --site-text: #000;
-    }
-
-    &.button-card--tmdb {
-      --site-bg: #0d253f;
-      --site-text: #90cea1;
-    }
-
-    &.button-card--tvdb {
-      --site-bg: #6cd491;
-      --site-text: #000;
-    }
-
-    &.button-card--rotten-tomatoes {
-      --site-bg: #dd2c08;
-      --site-text: #fff;
-    }
-
-    &.button-card--letterboxd {
-      --site-bg: #202830;
-      --site-text: #fff;
-    }
-
-    &.button-card--trakt {
-      --site-bg: #e31b23;
-      --site-text: #fff;
-    }
-  }
-
-  /* IMDb's tag again, sized to the icons next to a rating */
-  .imdb-tag {
-    @apply rounded-sm bg-[#f5c518] px-1 text-[0.625rem] leading-4 font-extrabold tracking-tight text-black;
   }
 
   /* Under a dashboard list, quieter than the rows above it */

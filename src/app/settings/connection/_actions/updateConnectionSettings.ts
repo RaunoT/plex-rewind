@@ -15,7 +15,6 @@ import {
   getTautulliResultError,
 } from '@/utils/connectionErrors'
 import { maskApiKeys, restoreApiKeys } from '@/utils/connectionSecrets'
-import { MDBLIST_API_URL } from '@/utils/fetchMdblist'
 import { selectPlexServer } from '@/utils/fetchTracearr'
 import getSettings from '@/utils/getSettings'
 import { normalizeUrl } from '@/utils/url'
@@ -32,7 +31,6 @@ const baseSchema = z.object({
   tracearrServerId: z.string(),
   overseerrUrl: z.string().url().optional().or(z.literal('')),
   overseerrApiKey: z.string().optional(),
-  mdblistApiKey: z.string().optional(),
   plexUrl: z.string().url(),
   complete: z.boolean(),
 })
@@ -118,7 +116,6 @@ async function testAndSave(
     tracearrServerId: (formData.get('tracearrServerId') as string | null) ?? '',
     overseerrUrl: normalizeUrl(formData.get('overseerrUrl') as string),
     overseerrApiKey: formData.get('overseerrApiKey') as string,
-    mdblistApiKey: formData.get('mdblistApiKey') as string,
     plexUrl: normalizeUrl(formData.get('plexUrl') as string),
     complete: true,
   }
@@ -238,23 +235,6 @@ async function testAndSave(
 
       if (responseError) {
         return fail('Overseerr', responseError)
-      }
-    }
-
-    if (data.mdblistApiKey) {
-      const { response, error } = await testRequest(
-        'MDBList',
-        `${MDBLIST_API_URL}/user?apikey=${encodeURIComponent(data.mdblistApiKey)}`,
-      )
-
-      if (error) {
-        return fail('MDBList', error)
-      }
-
-      const responseError = getResponseError('MDBList', response)
-
-      if (responseError) {
-        return fail('MDBList', responseError)
       }
     }
 

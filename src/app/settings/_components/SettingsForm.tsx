@@ -1,10 +1,9 @@
 'use client'
 
-import { AppInfoContext } from '@/app/_components/HeaderControls'
+import { toastQueue } from '@/components/Toasts'
 import { SettingsFormInitialState } from '@/types/settings'
-import clsx from 'clsx'
 import { useTranslations } from 'next-intl'
-import { ReactNode, useContext } from 'react'
+import { ReactNode, useEffect, useRef } from 'react'
 import SettingsSaveButton from './SettingsSaveButton'
 
 type Props = {
@@ -23,44 +22,38 @@ export default function SettingsForm({
   isSetup,
 }: Props) {
   const t = useTranslations('Settings')
-  const { version } = useContext(AppInfoContext)
+  const toastKey = useRef<string>(null)
+
+  // Each save returns a new state, so this runs once per save. A new result
+  // replaces the last one rather than stacking up.
+  useEffect(() => {
+    if (!formState.message) {
+      return
+    }
+
+    if (toastKey.current) {
+      toastQueue.close(toastKey.current)
+    }
+
+    const isSuccess = formState.status === 'success'
+
+    toastKey.current = toastQueue.add(
+      { message: formState.message, status: isSuccess ? 'success' : 'error' },
+      // Errors stay until dismissed, so they can be read
+      isSuccess ? { timeout: 5000 } : undefined,
+    )
+  }, [formState])
 
   return (
     <form className='glass-sheet' action={formAction}>
       <div className='grid gap-4'>
         {children}
-        <div className='flex flex-col items-center gap-2 sm:flex-row sm:gap-4'>
-          <a
-            href='https://github.com/RaunoT/plex-rewind/releases'
-            target='_blank'
-            className='link order-last font-mono text-xs sm:order-first sm:mr-auto sm:self-end'
-          >
-            {version.hasUpdate
-              ? `${t('updateAvailable')}: ${version.currentVersion} → ${version.latestVersion}`
-              : version.currentVersion}
-          </a>
-          {!hideSubmit && (
-            <>
-              {!formState.message && isSetup && (
-                <p className='text-neutral-300'>{t('initialSetup')}</p>
-              )}
-              <p
-                aria-live='polite'
-                role='status'
-                className={clsx(
-                  formState.status === 'success'
-                    ? 'text-success'
-                    : 'text-danger',
-                  !formState.message && 'sr-only',
-                )}
-              >
-                {formState.message}
-              </p>
-
-              <SettingsSaveButton />
-            </>
-          )}
-        </div>
+        {!hideSubmit && (
+          <div className='flex flex-col items-center gap-2 sm:flex-row sm:justify-end sm:gap-4'>
+            {isSetup && <p className='text-neutral-300'>{t('initialSetup')}</p>}
+            <SettingsSaveButton />
+          </div>
+        )}
       </div>
     </form>
   )

@@ -7,9 +7,9 @@ import {
   ArrowRightStartOnRectangleIcon,
   CheckIcon,
   ChevronUpDownIcon,
-  GlobeAltIcon,
 } from '@heroicons/react/24/outline'
 import clsx from 'clsx'
+import { DE, EE, ES, FR, GB, IT } from 'country-flag-icons/react/1x1'
 import { signOut, useSession } from 'next-auth/react'
 import { useLocale, useTranslations } from 'next-intl'
 import { startTransition } from 'react'
@@ -27,6 +27,22 @@ import {
 type Props = {
   // An avatar-only button, for the header on small screens
   isCompact?: boolean
+}
+
+// SVG flags, since Windows has no flag emoji
+const LOCALE_FLAGS: Record<Locale, typeof GB> = {
+  en: GB,
+  et: EE,
+  fr: FR,
+  de: DE,
+  it: IT,
+  es: ES,
+}
+
+function LocaleFlag({ code }: { code: string }) {
+  const Flag = LOCALE_FLAGS[code]
+
+  return Flag ? <Flag aria-hidden className='rounded-full' /> : null
 }
 
 function getLocaleName(code: string) {
@@ -61,7 +77,7 @@ export default function AccountMenu({ isCompact }: Props) {
             <Avatar src={user.image} name={user.name ?? ''} sizes='4rem' />
           </span>
         ) : (
-          <GlobeAltIcon />
+          <LocaleFlag code={locale} />
         )}
         {!isCompact && (
           <>
@@ -105,6 +121,7 @@ export default function AccountMenu({ isCompact }: Props) {
               >
                 {({ isSelected }) => (
                   <>
+                    <LocaleFlag code={code} />
                     <span lang={code}>{getLocaleName(code)}</span>
                     {isSelected && <CheckIcon className='ml-auto size-4!' />}
                   </>

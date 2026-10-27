@@ -15,18 +15,6 @@ function formatHour(hour: number, formatter: Intl.DateTimeFormat) {
   return formatter.format(new Date(Date.UTC(2024, 0, 1, hour)))
 }
 
-function hourEmoji(hour: number) {
-  if (hour >= 5 && hour < 12) {
-    return '☀️'
-  }
-
-  if (hour >= 12 && hour < 18) {
-    return '🌤️'
-  }
-
-  return '🌙'
-}
-
 export default function StoryHabitsHour({ userRewind }: RewindStory) {
   const t = useTranslations('Rewind.Habits')
   const tCommon = useTranslations('Common')
@@ -60,14 +48,12 @@ export default function StoryHabitsHour({ userRewind }: RewindStory) {
         <p>
           {t.rich('hour', {
             hourValue: peakHourLabel,
-            emojiValue: hourEmoji(peakHour),
             hour: (chunks) => (
               <span className='rewind-cat'>
                 {chunks}
                 <ClockIcon />
               </span>
             ),
-            emoji: (chunks) => <span className='not-italic'>{chunks}</span>,
           })}
         </p>
       </RewindStat>

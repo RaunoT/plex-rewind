@@ -25,9 +25,7 @@ export default async function ActivityLayout({ children }: Props) {
   return (
     <div className='page-width mb-auto'>
       <PageTitle title={t('title')} />
-      <div className='mb-4 flex justify-end'>
-        <StreamDetailsSwitch />
-      </div>
+      <StreamDetailsSwitch />
       <ActivitiesCard>{children}</ActivitiesCard>
     </div>
   )

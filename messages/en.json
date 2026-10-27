@@ -3,7 +3,7 @@
     "title": "Home",
     "setupRequired": "Setup required",
     "setupRequiredDescription": "This application needs to be configured by an administrator.",
-    "loginWithPlex": "Sign in with Plex",
+    "loginWithPlex": "Sign in with <plex>Plex</plex>",
     "loginError": {
       "plexUnavailable": "Couldn't reach Plex. Try again in a moment.",
       "plexNotConfirmed": "Plex didn't confirm the sign-in. Try again.",
@@ -13,7 +13,7 @@
     },
     "rewind": "Start Rewind",
     "signOut": "Sign out",
-    "greeting": "Hi, {name}",
+    "greeting": "Hi, {name} 👋",
     "rewindDescription": "Your viewing highlights, one story at a time.",
     "streams": "{count, plural, =0 {Nothing playing} one {# stream} other {# streams}}",
     "mostWatched": "Most watched",
@@ -37,7 +37,7 @@
     "location": "Location",
     "bandwidth": "Bandwidth",
     "streamDetails": "Stream details",
-    "noActivity": "No active streams. 😴",
+    "noActivity": "No active streams.",
     "loadError": "Couldn't load activity",
     "playing": "Playing",
     "paused": "Paused",
@@ -53,7 +53,7 @@
   },
   "Dashboard": {
     "sizePartial": "{size} (partial)",
-    "noActivity": "No activity during this period. 😴",
+    "noActivity": "No activity during this period.",
     "showMore": "Show more",
     "title": "Dashboard",
     "usersTitle": "Users",
@@ -63,7 +63,8 @@
     "tracks": "{count, plural, one {track} other {tracks}}",
     "requests": "{count, plural, one {# request} other {# requests}}",
     "durationWatched": "{duration} watched",
-    "durationListened": "{duration} listened"
+    "durationListened": "{duration} listened",
+    "durationPlayed": "{duration} played"
   },
   "DashboardFilters": {
     "type": "Stats for",
@@ -130,7 +131,7 @@
     "urlNotFound": "Not found. Check the URL, including any base path.",
     "unexpectedResponse": "Unexpected response (HTTP {status}).",
     "certificateError": "HTTPS certificate error. Check that the URL matches a valid certificate.",
-    "invalidField": "Check the {field, select, tautulliUrl {Tautulli URL} tautulliApiKey {Tautulli API key} tracearrUrl {Tracearr URL} tracearrApiKey {Tracearr API key} plexUrl {Plex URL} overseerrUrl {Overseerr URL} overseerrApiKey {Overseerr API key} mdblistApiKey {MDBList API key} googleAnalyticsId {Google Analytics ID} other {settings}}.",
+    "invalidField": "Check the {field, select, tautulliUrl {Tautulli URL} tautulliApiKey {Tautulli API key} tracearrUrl {Tracearr URL} tracearrApiKey {Tracearr API key} plexUrl {Plex URL} overseerrUrl {Overseerr URL} overseerrApiKey {Overseerr API key} googleAnalyticsId {Google Analytics ID} other {settings}}.",
     "buyMeACoffee": "Buy me a coffee",
     "becomeASponsor": "Become a sponsor",
     "reportAnIssue": "Report an issue",
@@ -152,8 +153,7 @@
       "source": "Source",
       "server": "Server",
       "chooseServer": "Choose a server",
-      "overseerrUrlDescription": "Request links open this address in the viewer's browser, so use one they can reach, not a local network address.",
-      "mdblistApiKeyDescription": "For IMDb and Rotten Tomatoes ratings. Get a free API key from your preferences on mdblist.com."
+      "overseerrUrlDescription": "Request links open this address in the viewer's browser, so use one they can reach, not a local network address."
     },
     "Dashboard": {
       "title": "Dashboard settings",
@@ -161,8 +161,6 @@
       "startDateError": "Check the start date.",
       "usersPage": "Users page",
       "statistics": "Statistics",
-      "itemStatistics": "Item statistics",
-      "itemStatisticsDescription": "Shown for each title and user in the dashboard and Rewind lists. IMDb and Rotten Tomatoes ratings need an MDBList API key in the connection settings.",
       "totalStatistics": "Total statistics",
       "totalStatisticsDescription": "Watch time and requests cover the selected period and are shown next to the filters. Size and count are shown below each list. Count is the number of movies, episodes or tracks in the library.",
       "sortFilter": "Sort filter",
@@ -187,19 +185,18 @@
       "noLibrariesMessage2": "Plex Rewind requires at least one library to function.",
       "media": "Media",
       "tmdbOnlyPosters": "TMDB only posters",
-      "tmdbOnlyPostersDescription1": "Ignore Plex posters for TV shows and movies.",
-      "tmdbOnlyPostersDescription2": "By default, TMDB is a fallback.",
+      "tmdbOnlyPostersDescription": "Ignore Plex posters for TV shows and movies.",
       "externalLinks": "External links",
-      "externalLinksDescription": "Letterboxd is only for movies and TVDB only for TV shows. Rotten Tomatoes opens a search.",
+      "itemStatistics": "Item statistics",
+      "itemStatisticsDescription": "Shown for each title and user in the dashboard and Rewind lists.",
       "privacy": "Privacy",
       "excludedUsers": "Excluded users",
       "excludedUsersDescription": "Selected users are left out of user rankings and total watch time. With Tautulli, top movies, TV shows and artists still include their plays.",
       "outsideAccess": "Allow outside access",
-      "outsideAccessDescription": "Anyone can view the dashboard and activity without signing in, and every library is shown, whatever is shared in Plex. Rewind still requires signing in.",
+      "outsideAccessDescription": "Anyone can see your server's statistics without signing in.",
       "anonymize": "Anonymize",
       "anonymizeDescription": "Hide other users' names, even from admins. IP addresses and locations on the activity page are hidden too.",
-      "analytics": "Analytics",
-      "analyticsIdDescription": "Sends page views to Google Analytics 4. Use the measurement ID of a web data stream, which starts with G-. Leave empty to turn it off."
+      "analytics": "Analytics"
     },
     "Rewind": {
       "title": "Rewind settings",
@@ -215,13 +212,15 @@
     "label": "Select user"
   },
   "Common": {
+    "dismiss": "Dismiss",
     "enabled": "Enabled",
     "adminOnly": "Admins only",
-    "adminOnlyDescription": "Hidden from everyone but server admins, even when outside access is allowed.",
     "status": "Status",
     "year": "Year",
     "rating": "Rating",
     "ratingBy": "{provider} rating",
+    "rottenTomatoesCritics": "Rotten Tomatoes critics score",
+    "rottenTomatoesAudience": "Rotten Tomatoes audience score",
     "duration": "Watch time",
     "plays": "Plays",
     "users": "Users",
@@ -319,7 +318,7 @@
     },
     "Habits": {
       "day": "Your favorite day to watch was <day>{dayValue}</day>",
-      "hour": "And you pressed play most often around <hour>{hourValue}</hour> <emoji>{emojiValue}</emoji>",
+      "hour": "And you pressed play most often around <hour>{hourValue}</hour>",
       "dayChart": "Bar chart of plays per day of the week. Busiest day: {dayValue} with {count, plural, one {# play} other {# plays}}.",
       "hourChart": "Bar chart of plays per hour of the day. Busiest hour: {hourValue} with {count, plural, one {# play} other {# plays}}."
     },

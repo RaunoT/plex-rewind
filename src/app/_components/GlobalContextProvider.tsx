@@ -29,7 +29,7 @@ export const GlobalContext = createContext<GlobalContextProps>({
     setSortBy: () => {},
   },
   activity: {
-    isDetailsHidden: false,
+    isDetailsHidden: true,
     setIsDetailsHidden: () => {},
   },
 })
@@ -59,7 +59,7 @@ export default function GlobalContextProvider({ children }: Props) {
     useState<DashboardSearchParams['period']>(undefined)
   const [sortBy, setSortBy] =
     useState<DashboardSearchParams['sortBy']>(undefined)
-  const [isDetailsHidden, setIsDetailsHidden] = useState<boolean>(false)
+  const [isDetailsHidden, setIsDetailsHidden] = useState<boolean>(true)
   const [isHydrated, setIsHydrated] = useState<boolean>(false)
 
   useEffect(() => {
@@ -86,9 +86,10 @@ export default function GlobalContextProvider({ children }: Props) {
             ? 'duration'
             : undefined),
       )
+      // Hidden by default, so only showing them is worth restoring
       setIsDetailsHidden(
         (prev) =>
-          prev || localStorage.getItem('activityDetailsHidden') === 'true',
+          prev && localStorage.getItem('activityDetailsHidden') !== 'false',
       )
     } catch {}
 
@@ -116,7 +117,7 @@ export default function GlobalContextProvider({ children }: Props) {
 
   useEffect(() => {
     if (isHydrated) {
-      writeStorage('activityDetailsHidden', isDetailsHidden ? 'true' : '')
+      writeStorage('activityDetailsHidden', isDetailsHidden ? 'true' : 'false')
     }
   }, [isHydrated, isDetailsHidden])
 

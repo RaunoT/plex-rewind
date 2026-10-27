@@ -65,7 +65,6 @@ export default function ActivitySettingsForm({ settings }: Props) {
             <div className='indicator'></div>
             <span className='label'>
               <span className='label-wrapper'>{tCommon('adminOnly')}</span>
-              <small>{tCommon('adminOnlyDescription')}</small>
             </span>
           </Switch>
         )}

@@ -221,23 +221,6 @@ export default function ConnectionSettingsForm({
           </span>
         </label>
       </section>
-      <section className='group-settings group'>
-        {/* eslint-disable-next-line react/jsx-no-literals */}
-        <h2 className='heading-settings'>MDBList</h2>
-        <label className='input-wrapper'>
-          <input
-            key={`mdblist-api-key-${connectionSettings.mdblistApiKey}`}
-            type='password'
-            className='input'
-            name='mdblistApiKey'
-            defaultValue={connectionSettings.mdblistApiKey}
-          />
-          <span className='label'>
-            <span className='label-wrapper'>{t('apiKey')}</span>
-            <small>{t('Connection.mdblistApiKeyDescription')}</small>
-          </span>
-        </label>
-      </section>
     </SettingsForm>
   )
 }

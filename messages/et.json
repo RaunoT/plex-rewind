@@ -3,7 +3,7 @@
     "title": "Avaleht",
     "setupRequired": "Seadistamine vajalik",
     "setupRequiredDescription": "Rakendus vajab seadistamist administraatori poolt.",
-    "loginWithPlex": "Logi sisse Plex'iga",
+    "loginWithPlex": "Logi sisse <plex>Plex</plex> kontoga",
     "loginError": {
       "plexUnavailable": "Plexiga ei saanud ühendust. Proovi hetke pärast uuesti.",
       "plexNotConfirmed": "Plex ei kinnitanud sisselogimist. Proovi uuesti.",
@@ -13,7 +13,7 @@
     },
     "rewind": "Rewind",
     "signOut": "Logi välja",
-    "greeting": "Tere, {name}",
+    "greeting": "Tere, {name} 👋",
     "rewindDescription": "Sinu vaatamise tipphetked, lugu loo haaval.",
     "streams": "{count, plural, =0 {Midagi ei mängi} one {# voog} other {# voogu}}",
     "mostWatched": "Enim vaadatud",
@@ -37,7 +37,7 @@
     "location": "Asukoht",
     "bandwidth": "Ribalaidus",
     "streamDetails": "Voo üksikasjad",
-    "noActivity": "Ühtegi aktiivset voogu pole. 😴",
+    "noActivity": "Ühtegi aktiivset voogu pole.",
     "loadError": "Tegevust ei õnnestunud laadida",
     "playing": "Mängib",
     "paused": "Pausil",
@@ -53,7 +53,7 @@
   },
   "Dashboard": {
     "sizePartial": "{size} (osaline)",
-    "noActivity": "Valitud perioodil puudub tegevus. 😴",
+    "noActivity": "Valitud perioodil puudub tegevus.",
     "showMore": "Näita rohkem",
     "title": "Edetabel",
     "usersTitle": "Kasutajad",
@@ -63,7 +63,8 @@
     "tracks": "{count, plural, one {lugu} other {lugu}}",
     "requests": "{count, plural, one {# tellimus} other {# tellimust}}",
     "durationWatched": "{duration} vaadatud",
-    "durationListened": "{duration} kuulatud"
+    "durationListened": "{duration} kuulatud",
+    "durationPlayed": "{duration} mängitud"
   },
   "DashboardFilters": {
     "type": "Kelle statistika",
@@ -130,7 +131,7 @@
     "urlNotFound": "Ei leitud. Kontrolli URL-i, sealhulgas võimalikku baasteed.",
     "unexpectedResponse": "Ootamatu vastus (HTTP {status}).",
     "certificateError": "HTTPS-sertifikaadi viga. Kontrolli, et URL vastaks kehtivale sertifikaadile.",
-    "invalidField": "Kontrolli {field, select, tautulliUrl {Tautulli URL-i} tautulliApiKey {Tautulli API võtit} tracearrUrl {Tracearr URL-i} tracearrApiKey {Tracearr API võtit} plexUrl {Plexi URL-i} overseerrUrl {Overseerr URL-i} overseerrApiKey {Overseerr API võtit} mdblistApiKey {MDBListi API võtit} googleAnalyticsId {Google Analyticsi ID-d} other {seadeid}}.",
+    "invalidField": "Kontrolli {field, select, tautulliUrl {Tautulli URL-i} tautulliApiKey {Tautulli API võtit} tracearrUrl {Tracearr URL-i} tracearrApiKey {Tracearr API võtit} plexUrl {Plexi URL-i} overseerrUrl {Overseerr URL-i} overseerrApiKey {Overseerr API võtit} googleAnalyticsId {Google Analyticsi ID-d} other {seadeid}}.",
     "buyMeACoffee": "Osta mulle kohvi",
     "becomeASponsor": "Hakka sponsoriks",
     "reportAnIssue": "Teata probleemist",
@@ -152,8 +153,7 @@
       "source": "Allikas",
       "server": "Server",
       "chooseServer": "Vali server",
-      "overseerrUrlDescription": "Tellimuste lingid avanevad vaataja brauseris, seega kasuta aadressi, millele ta ligi pääseb, mitte kohtvõrgu aadressi.",
-      "mdblistApiKeyDescription": "IMDb ja Rotten Tomatoesi hinnangute jaoks. Tasuta API võtme saad mdblist.com-i seadetest."
+      "overseerrUrlDescription": "Tellimuste lingid avanevad vaataja brauseris, seega kasuta aadressi, millele ta ligi pääseb, mitte kohtvõrgu aadressi."
     },
     "Dashboard": {
       "title": "Edetabeli seaded",
@@ -161,8 +161,6 @@
       "startDateError": "Kontrolli alguskuupäeva.",
       "usersPage": "Kasutajate leht",
       "statistics": "Statistika",
-      "itemStatistics": "Kirje statistika",
-      "itemStatisticsDescription": "Kuvatakse iga pealkirja ja kasutaja juures edetabelis ja Rewind'is. IMDb ja Rotten Tomatoesi hinnangud vajavad ühenduse seadetes MDBListi API võtit.",
       "totalStatistics": "Kokkuvõtlik statistika",
       "totalStatisticsDescription": "Vaatamisaeg ja tellimused käivad valitud perioodi kohta ning on filtrite kõrval. Suurus ja kogus on iga edetabeli all. Kogus on kogumikus olevate filmide, episoodide või lugude arv.",
       "sortFilter": "Sorteerimise filter",
@@ -187,19 +185,18 @@
       "noLibrariesMessage2": "Plex Rewind vajab toimimiseks vähemalt ühte kogumikku.",
       "media": "Meedia",
       "tmdbOnlyPosters": "Ainult TMDB pildid",
-      "tmdbOnlyPostersDescription1": "Ära kasuta Plex'i postreid.",
-      "tmdbOnlyPostersDescription2": "Vaikimisi kasutatakse TMDB'd ainult kui postrid puuduvad.",
+      "tmdbOnlyPostersDescription": "Ära kasuta Plex'i postreid.",
       "externalLinks": "Välised lingid",
-      "externalLinksDescription": "Letterboxd on ainult filmidele ja TVDB ainult seriaalidele. Rotten Tomatoes avab otsingu.",
+      "itemStatistics": "Kirje statistika",
+      "itemStatisticsDescription": "Kuvatakse iga pealkirja ja kasutaja juures edetabelis ja Rewind'is.",
       "privacy": "Privaatsus",
       "excludedUsers": "Välistatud kasutajad",
       "excludedUsersDescription": "Valitud kasutajad jäetakse välja kasutajate pingeridadest ja kogu vaatamisajast. Tautulli puhul sisaldavad enim vaadatud filmid, seriaalid ja esitajad endiselt nende vaatamisi.",
       "outsideAccess": "Luba väline ligipääs",
-      "outsideAccessDescription": "Igaüks saab edetabelit ja tegevust vaadata ilma sisse logimata ning näha on kõik kogumikud, sõltumata sellest, mida Plexis jagatakse. Rewind nõuab endiselt sisselogimist.",
+      "outsideAccessDescription": "Igaüks näeb sinu serveri statistikat ilma sisse logimata.",
       "anonymize": "Anonümiseeri",
       "anonymizeDescription": "Peida teiste kasutajate nimed, ka administraatorite eest. Tegevuse lehel peidetakse ka IP-aadressid ja asukohad.",
-      "analytics": "Analüütika",
-      "analyticsIdDescription": "Saadab lehevaatamised Google Analytics 4-sse. Kasuta veebi andmevoo mõõtmise ID-d, mis algab tähtedega G-. Jäta tühjaks, et see välja lülitada."
+      "analytics": "Analüütika"
     },
     "Rewind": {
       "title": "Rewind seaded",
@@ -215,13 +212,15 @@
     "label": "Vali kasutaja"
   },
   "Common": {
+    "dismiss": "Sulge",
     "enabled": "Aktiveeritud",
     "adminOnly": "Ainult administraatoritele",
-    "adminOnlyDescription": "Peidetud kõigi eest peale serveri administraatorite, ka siis, kui väline ligipääs on lubatud.",
     "status": "Olek",
     "year": "Aasta",
     "rating": "Hinnang",
     "ratingBy": "{provider} hinnang",
+    "rottenTomatoesCritics": "Rotten Tomatoesi kriitikute hinnang",
+    "rottenTomatoesAudience": "Rotten Tomatoesi vaatajate hinnang",
     "duration": "Vaatamisaeg",
     "plays": "Mängimiste arv",
     "users": "Kasutajate arv",
@@ -319,7 +318,7 @@
     },
     "Habits": {
       "day": "Sinu lemmik vaatamispäev oli <day>{dayValue}</day>",
-      "hour": "Ja kõige sagedamini panid mängima umbes kell <hour>{hourValue}</hour> <emoji>{emojiValue}</emoji>",
+      "hour": "Ja kõige sagedamini panid mängima umbes kell <hour>{hourValue}</hour>",
       "dayChart": "Tulpdiagramm mängimistest nädalapäevade kaupa. Kõige aktiivsem päev: {dayValue}, {count, plural, one {# mängimine} other {# mängimist}}.",
       "hourChart": "Tulpdiagramm mängimistest kellaaegade kaupa. Kõige aktiivsem tund: {hourValue}, {count, plural, one {# mängimine} other {# mängimist}}."
     },

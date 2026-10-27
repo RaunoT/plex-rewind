@@ -3,7 +3,7 @@
     "title": "Inicio",
     "setupRequired": "Configuración necesaria",
     "setupRequiredDescription": "Un administrador debe configurar esta aplicación.",
-    "loginWithPlex": "Iniciar sesión con Plex",
+    "loginWithPlex": "Iniciar sesión con <plex>Plex</plex>",
     "loginError": {
       "plexUnavailable": "No se pudo conectar con Plex. Inténtalo de nuevo en un momento.",
       "plexNotConfirmed": "Plex no confirmó el inicio de sesión. Inténtalo de nuevo.",
@@ -13,7 +13,7 @@
     },
     "rewind": "Empezar Rewind",
     "signOut": "Cerrar sesión",
-    "greeting": "Hola, {name}",
+    "greeting": "Hola, {name} 👋",
     "rewindDescription": "Tus momentos destacados, una historia a la vez.",
     "streams": "{count, plural, =0 {Nada en reproducción} one {# en reproducción} other {# en reproducción}}",
     "mostWatched": "Lo más visto",
@@ -37,7 +37,7 @@
     "location": "Ubicación",
     "bandwidth": "Ancho de banda",
     "streamDetails": "Detalles de la transmisión",
-    "noActivity": "No hay reproducciones activas. 😴",
+    "noActivity": "No hay reproducciones activas.",
     "loadError": "No se pudo cargar la actividad",
     "playing": "Reproduciendo",
     "paused": "En pausa",
@@ -53,7 +53,7 @@
   },
   "Dashboard": {
     "sizePartial": "{size} (parcial)",
-    "noActivity": "No hay actividad en este periodo. 😴",
+    "noActivity": "No hay actividad en este periodo.",
     "showMore": "Mostrar más",
     "title": "Panel",
     "usersTitle": "Usuarios",
@@ -63,7 +63,8 @@
     "tracks": "{count, plural, one {canción} other {canciones}}",
     "requests": "{count, plural, one {# solicitud} other {# solicitudes}}",
     "durationWatched": "{duration} de visualización",
-    "durationListened": "{duration} de escucha"
+    "durationListened": "{duration} de escucha",
+    "durationPlayed": "{duration} de reproducción"
   },
   "DashboardFilters": {
     "type": "Estadísticas de",
@@ -130,7 +131,7 @@
     "urlNotFound": "No encontrado. Comprueba la URL, incluida cualquier ruta base.",
     "unexpectedResponse": "Respuesta inesperada (HTTP {status}).",
     "certificateError": "Error de certificado HTTPS. Comprueba que la URL coincida con un certificado válido.",
-    "invalidField": "Revisa {field, select, tautulliUrl {la URL de Tautulli} tautulliApiKey {la clave de API de Tautulli} tracearrUrl {la URL de Tracearr} tracearrApiKey {la clave de API de Tracearr} plexUrl {la URL de Plex} overseerrUrl {la URL de Overseerr} overseerrApiKey {la clave de API de Overseerr} mdblistApiKey {la clave de API de MDBList} googleAnalyticsId {el ID de Google Analytics} other {los ajustes}}.",
+    "invalidField": "Revisa {field, select, tautulliUrl {la URL de Tautulli} tautulliApiKey {la clave de API de Tautulli} tracearrUrl {la URL de Tracearr} tracearrApiKey {la clave de API de Tracearr} plexUrl {la URL de Plex} overseerrUrl {la URL de Overseerr} overseerrApiKey {la clave de API de Overseerr} googleAnalyticsId {el ID de Google Analytics} other {los ajustes}}.",
     "buyMeACoffee": "Invítame a un café",
     "becomeASponsor": "Hazte patrocinador",
     "reportAnIssue": "Informar de un problema",
@@ -152,8 +153,7 @@
       "source": "Fuente",
       "server": "Servidor",
       "chooseServer": "Elige un servidor",
-      "overseerrUrlDescription": "Los enlaces de solicitud abren esta dirección en el navegador de quien los usa, así que elige una a la que pueda acceder, no una dirección de red local.",
-      "mdblistApiKeyDescription": "Para las valoraciones de IMDb y Rotten Tomatoes. Consigue una clave de API gratuita en tus preferencias de mdblist.com."
+      "overseerrUrlDescription": "Los enlaces de solicitud abren esta dirección en el navegador de quien los usa, así que elige una a la que pueda acceder, no una dirección de red local."
     },
     "Dashboard": {
       "title": "Ajustes del panel",
@@ -161,8 +161,6 @@
       "startDateError": "Revisa la fecha de inicio.",
       "usersPage": "Página de usuarios",
       "statistics": "Estadísticas",
-      "itemStatistics": "Estadísticas por elemento",
-      "itemStatisticsDescription": "Se muestran para cada título y usuario en las listas del panel y de Rewind. Las valoraciones de IMDb y Rotten Tomatoes necesitan una clave de API de MDBList en los ajustes de conexión.",
       "totalStatistics": "Estadísticas totales",
       "totalStatisticsDescription": "El tiempo de visualización y las solicitudes corresponden al periodo seleccionado y se muestran junto a los filtros. El tamaño y el recuento se muestran debajo de cada lista. El recuento es el número de películas, episodios o canciones de la biblioteca.",
       "sortFilter": "Filtro de orden",
@@ -187,19 +185,18 @@
       "noLibrariesMessage2": "Plex Rewind necesita al menos una biblioteca para funcionar.",
       "media": "Multimedia",
       "tmdbOnlyPosters": "Solo pósteres de TMDB",
-      "tmdbOnlyPostersDescription1": "Ignorar los pósteres de Plex para series y películas.",
-      "tmdbOnlyPostersDescription2": "De forma predeterminada, TMDB se usa como alternativa.",
+      "tmdbOnlyPostersDescription": "Ignorar los pósteres de Plex para series y películas.",
       "externalLinks": "Enlaces externos",
-      "externalLinksDescription": "Letterboxd es solo para películas y TVDB solo para series. Rotten Tomatoes abre una búsqueda.",
+      "itemStatistics": "Estadísticas por elemento",
+      "itemStatisticsDescription": "Se muestran para cada título y usuario en las listas del panel y de Rewind.",
       "privacy": "Privacidad",
       "excludedUsers": "Usuarios excluidos",
       "excludedUsersDescription": "Los usuarios seleccionados no aparecen en las clasificaciones de usuarios ni en el tiempo total de visualización. Con Tautulli, las películas, series y artistas más populares siguen incluyendo sus reproducciones.",
       "outsideAccess": "Permitir acceso externo",
-      "outsideAccessDescription": "Cualquiera puede ver el panel y la actividad sin iniciar sesión, y se muestran todas las bibliotecas, independientemente de lo que se comparta en Plex. Rewind sigue requiriendo iniciar sesión.",
+      "outsideAccessDescription": "Cualquiera puede ver las estadísticas de tu servidor sin iniciar sesión.",
       "anonymize": "Anonimizar",
       "anonymizeDescription": "Oculta los nombres de los demás usuarios, incluso a los administradores. También se ocultan las direcciones IP y las ubicaciones en la página de actividad.",
-      "analytics": "Analítica",
-      "analyticsIdDescription": "Envía las visitas a páginas a Google Analytics 4. Usa el ID de medición de un flujo de datos web, que empieza por G-. Déjalo vacío para desactivarlo."
+      "analytics": "Analítica"
     },
     "Rewind": {
       "title": "Ajustes de Rewind",
@@ -215,13 +212,15 @@
     "label": "Seleccionar usuario"
   },
   "Common": {
+    "dismiss": "Cerrar",
     "enabled": "Activado",
     "adminOnly": "Solo administradores",
-    "adminOnlyDescription": "Oculto para todos salvo los administradores del servidor, incluso cuando se permite el acceso externo.",
     "status": "Estado",
     "year": "Año",
     "rating": "Valoración",
     "ratingBy": "Valoración de {provider}",
+    "rottenTomatoesCritics": "Valoración de la crítica en Rotten Tomatoes",
+    "rottenTomatoesAudience": "Valoración del público en Rotten Tomatoes",
     "duration": "Tiempo de visualización",
     "plays": "Reproducciones",
     "users": "Usuarios",
@@ -319,7 +318,7 @@
     },
     "Habits": {
       "day": "Tu día favorito para ver contenido fue el <day>{dayValue}</day>",
-      "hour": "Y tu hora favorita para darle al play: <hour>{hourValue} h</hour> <emoji>{emojiValue}</emoji>",
+      "hour": "Y tu hora favorita para darle al play: <hour>{hourValue} h</hour>",
       "dayChart": "Gráfico de barras de reproducciones por día de la semana. Día con más actividad: {dayValue}, con {count, plural, one {# reproducción} other {# reproducciones}}.",
       "hourChart": "Gráfico de barras de reproducciones por hora del día. Hora con más actividad: {hourValue} h, con {count, plural, one {# reproducción} other {# reproducciones}}."
     },

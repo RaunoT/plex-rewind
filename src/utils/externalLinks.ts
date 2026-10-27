@@ -4,12 +4,14 @@ import { EXTERNAL_LINKS } from './constants'
 
 type LinkedItem = Pick<
   TautulliItemRow,
-  'title' | 'tmdb_id' | 'imdb_id' | 'tvdb_id'
+  'title' | 'tmdb_id' | 'imdb_id' | 'tvdb_id' | 'rotten_tomatoes_url'
 >
 
 export type ExternalLinkHref = {
   site: ExternalLink
   href: string
+  // A search for the title, when its own page isn't known
+  isSearch: boolean
 }
 
 const HREFS: Record<
@@ -26,8 +28,9 @@ const HREFS: Record<
     !isMovie && tvdb_id
       ? `https://thetvdb.com/dereferrer/series/${tvdb_id}`
       : null,
-  // Neither Plex nor TMDB know a Rotten Tomatoes ID
-  rottenTomatoes: ({ title }) =>
+  // Found by searching Rotten Tomatoes, so a search when that found nothing
+  rottenTomatoes: ({ title, rotten_tomatoes_url }) =>
+    rotten_tomatoes_url ||
     `https://www.rottentomatoes.com/search?search=${encodeURIComponent(title)}`,
   // Letterboxd only lists films
   letterboxd: ({ tmdb_id, imdb_id }, isMovie) => {
@@ -48,10 +51,6 @@ const HREFS: Record<
       : null,
 }
 
-export function isSearchLink(site: ExternalLink): boolean {
-  return site === 'rottenTomatoes'
-}
-
 export function getExternalLinks(
   item: LinkedItem,
   type: 'movie' | 'show',
@@ -61,7 +60,15 @@ export function getExternalLinks(
     (site) => {
       const href = HREFS[site](item, type === 'movie')
 
-      return href ? [{ site, href }] : []
+      return href
+        ? [
+            {
+              site,
+              href,
+              isSearch: site === 'rottenTomatoes' && !item.rotten_tomatoes_url,
+            },
+          ]
+        : []
     },
   )
 }

@@ -11,7 +11,7 @@ import { useSession } from 'next-auth/react'
 import { useTranslations } from 'next-intl'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { createContext, useContext } from 'react'
+import { createContext, useContext, useEffect, useState } from 'react'
 import AccountMenu from './AccountMenu'
 
 type AppInfo = {
@@ -33,6 +33,20 @@ type Props = {
   className?: string
 }
 
+// The last page outside settings, where closing the settings goes back to
+export const SETTINGS_RETURN_KEY = 'settingsReturnTo'
+
+function getSettingsReturn() {
+  try {
+    const path = sessionStorage.getItem(SETTINGS_RETURN_KEY)
+
+    // Only a path on this site
+    return path?.startsWith('/') && !path.startsWith('//') ? path : '/'
+  } catch {
+    return '/'
+  }
+}
+
 // Opens the settings for the section being viewed
 export function getSettingsLink(pathname: string) {
   return pathname.startsWith('/dashboard')
@@ -51,6 +65,15 @@ export default function HeaderControls({ className }: Props) {
   const t = useTranslations('AppProvider')
   const isAdmin = status === 'authenticated' && session?.user.isAdmin
   const isSettings = pathname.startsWith('/settings')
+  const [settingsReturn, setSettingsReturn] = useState('/')
+
+  useEffect(() => {
+    if (isSettings) {
+      // Read after mount so the first client render matches the server HTML
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setSettingsReturn(getSettingsReturn())
+    }
+  }, [isSettings])
 
   return (
     <div className={clsx('icon-button-group', className)}>
@@ -66,7 +89,7 @@ export default function HeaderControls({ className }: Props) {
       )}
       {!missingSetting && isAdmin && (
         <Link
-          href={isSettings ? '/' : getSettingsLink(pathname)}
+          href={isSettings ? settingsReturn : getSettingsLink(pathname)}
           aria-label={isSettings ? t('closeSettings') : t('openSettings')}
           className='icon-button'
         >

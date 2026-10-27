@@ -1,6 +1,7 @@
 import CardWrapper from '@/app/_components/CardWrapper'
 import { MediaIcon, STAT_ICONS } from '@/components/icons'
 import MediaItems from '@/components/MediaItem/MediaItems'
+import StatusMessage from '@/components/StatusMessage'
 import { PublicSettings } from '@/types/settings'
 import { TautulliItemRow } from '@/types/tautulli'
 import { getTranslations } from 'next-intl/server'
@@ -48,9 +49,15 @@ export default async function Dashboard({
             {!!totalDuration && (
               <li className='icon-stat-wrapper icon-stat-wrapper--clean'>
                 <STAT_ICONS.duration />
-                {t(type === 'artist' ? 'durationListened' : 'durationWatched', {
-                  duration: totalDuration,
-                })}
+                {/* Users count music too, so neither watched nor listened */}
+                {t(
+                  type === 'users'
+                    ? 'durationPlayed'
+                    : type === 'artist'
+                      ? 'durationListened'
+                      : 'durationWatched',
+                  { duration: totalDuration },
+                )}
               </li>
             )}
             {totalRequests !== undefined && (
@@ -74,8 +81,9 @@ export default async function Dashboard({
               settings={settings}
               loggedInUserId={loggedInUserId}
             />
+            {/* Into the card's padding, so the button has as much room below as above */}
             {nextLimit && (
-              <div className='mt-2.5 flex justify-center border-t border-white/10 pt-2.5'>
+              <div className='mt-2.5 -mb-2.5 flex justify-center border-t border-white/10 pt-2.5'>
                 <Suspense>
                   <ShowMore limit={nextLimit} />
                 </Suspense>
@@ -83,10 +91,8 @@ export default async function Dashboard({
             )}
           </>
         ) : (
-          <div className='flex flex-1 flex-col justify-center text-center text-neutral-300'>
-            <p className='py-24 text-2xl leading-tight sm:text-3xl'>
-              {t('noActivity')}
-            </p>
+          <div className='flex flex-1 flex-col py-24'>
+            <StatusMessage title='😴' description={t('noActivity')} isInCard />
           </div>
         )}
       </CardWrapper>

@@ -6,8 +6,8 @@ import { toPublicSettings } from '@/utils/publicSettings'
 import { getReachableLibraries } from '@/utils/statsSource'
 import { getServerSession } from 'next-auth'
 import { Suspense } from 'react'
-import Home from './_components/Home'
-import Overview from './_components/Overview'
+import Home from '../_components/Home'
+import Overview from '../_components/Overview'
 
 export default async function HomePage() {
   const settings = getSettings()

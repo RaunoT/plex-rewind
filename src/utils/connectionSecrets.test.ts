@@ -9,7 +9,6 @@ const saved: ConnectionSettings = {
   tautulliApiKey: 'tautulli-key',
   overseerrUrl: 'http://overseerr:5055',
   overseerrApiKey: 'overseerr-key',
-  mdblistApiKey: 'mdblist-key',
   plexUrl: 'http://plex:32400',
   complete: true,
 }
@@ -20,12 +19,10 @@ describe('maskApiKeys', () => {
 
     expect(masked.tautulliApiKey).toBe(SAVED_API_KEY)
     expect(masked.overseerrApiKey).toBe(SAVED_API_KEY)
-    expect(masked.mdblistApiKey).toBe(SAVED_API_KEY)
     expect(masked.tracearrApiKey).toBe('')
     expect(masked.tautulliUrl).toBe(saved.tautulliUrl)
     expect(JSON.stringify(masked)).not.toContain('tautulli-key')
     expect(JSON.stringify(masked)).not.toContain('overseerr-key')
-    expect(JSON.stringify(masked)).not.toContain('mdblist-key')
   })
 })
 
@@ -90,15 +87,6 @@ describe('restoreApiKeys', () => {
 
     expect(needsKey).toBeUndefined()
     expect(connection.overseerrApiKey).toBe('')
-  })
-
-  it('asks for a key without a URL that was never saved', () => {
-    const { needsKey } = restoreApiKeys(maskApiKeys(saved), {
-      ...saved,
-      mdblistApiKey: '',
-    })
-
-    expect(needsKey).toBe('MDBList')
   })
 
   it('asks for a key that was never saved', () => {

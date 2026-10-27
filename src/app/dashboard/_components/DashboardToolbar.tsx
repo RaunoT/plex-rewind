@@ -17,7 +17,8 @@ export default function DashboardToolbar({
   isUsers = false,
 }: Props) {
   return (
-    <div className='flex min-h-10 flex-wrap items-center justify-end gap-2'>
+    // On small screens the selects share the full width
+    <div className='flex min-h-10 flex-wrap items-center justify-end gap-2 *:flex-1 sm:*:flex-none'>
       <Suspense>
         <PeriodSelect settings={settings} />
         {!isUsers && (

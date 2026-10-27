@@ -56,6 +56,8 @@ export default function GeneralSettingsForm({
   const librariesRef = useRef<HTMLDivElement>(null)
   const focusAfterMoveRef = useRef<string | null>(null)
   const t = useTranslations('Settings.General')
+  const tCommon = useTranslations('Common')
+  const isOverseerrActive = settings.connection.isOverseerrActive
   const initialState: GeneralFormState = {
     message: '',
     status: '',
@@ -203,10 +205,7 @@ export default function GeneralSettingsForm({
               <div className='indicator'></div>
               <span className='label'>
                 <span className='label-wrapper'>{t('tmdbOnlyPosters')}</span>
-                <small>
-                  {t('tmdbOnlyPostersDescription1')}
-                  <br /> {t('tmdbOnlyPostersDescription2')}
-                </small>
+                <small>{t('tmdbOnlyPostersDescription')}</small>
               </span>
             </Switch>
             <CheckboxGroup
@@ -229,7 +228,95 @@ export default function GeneralSettingsForm({
               </div>
               <Label className='label label--start'>
                 <span className='label-wrapper'>{t('externalLinks')}</span>
-                <small>{t('externalLinksDescription')}</small>
+              </Label>
+            </CheckboxGroup>
+            <CheckboxGroup
+              key={`item-stats-${generalSettings.activeItemStatistics.join(
+                ',',
+              )}`}
+              className='input-wrapper'
+              name='activeItemStatistics'
+              defaultValue={generalSettings.activeItemStatistics}
+            >
+              <div className='peer checkbox-grid'>
+                <Checkbox
+                  key='item-year'
+                  value='year'
+                  className='checkbox-wrapper'
+                >
+                  <div className='checkbox' aria-hidden='true'></div>
+                  {tCommon('year')}
+                </Checkbox>
+                <Checkbox
+                  key='item-tmdb-rating'
+                  value='tmdbRating'
+                  className='checkbox-wrapper'
+                >
+                  <div className='checkbox' aria-hidden='true'></div>
+                  {tCommon('ratingBy', { provider: 'TMDB' })}
+                </Checkbox>
+                <Checkbox
+                  key='item-imdb-rating'
+                  value='imdbRating'
+                  className='checkbox-wrapper'
+                >
+                  <div className='checkbox' aria-hidden='true'></div>
+                  {tCommon('ratingBy', { provider: 'IMDb' })}
+                </Checkbox>
+                <Checkbox
+                  key='item-rotten-tomatoes-rating'
+                  value='rottenTomatoesRating'
+                  className='checkbox-wrapper'
+                >
+                  <div className='checkbox' aria-hidden='true'></div>
+                  {tCommon('rottenTomatoesCritics')}
+                </Checkbox>
+                <Checkbox
+                  key='item-rotten-tomatoes-audience-rating'
+                  value='rottenTomatoesAudienceRating'
+                  className='checkbox-wrapper'
+                >
+                  <div className='checkbox' aria-hidden='true'></div>
+                  {tCommon('rottenTomatoesAudience')}
+                </Checkbox>
+                <Checkbox
+                  key='item-duration'
+                  value='duration'
+                  className='checkbox-wrapper'
+                >
+                  <div className='checkbox' aria-hidden='true'></div>
+                  {tCommon('duration')}
+                </Checkbox>
+                <Checkbox
+                  key='item-plays'
+                  value='plays'
+                  className='checkbox-wrapper'
+                >
+                  <div className='checkbox' aria-hidden='true'></div>
+                  {tCommon('plays')}
+                </Checkbox>
+                <Checkbox
+                  key='item-users'
+                  value='users'
+                  className='checkbox-wrapper'
+                >
+                  <div className='checkbox' aria-hidden='true'></div>
+                  {tCommon('users')}
+                </Checkbox>
+                {isOverseerrActive && (
+                  <Checkbox
+                    key='item-requests'
+                    value='requests'
+                    className='checkbox-wrapper'
+                  >
+                    <div className='checkbox' aria-hidden='true'></div>
+                    {tCommon('requests')}
+                  </Checkbox>
+                )}
+              </div>
+              <Label className='label label--start'>
+                <span className='label-wrapper'>{t('itemStatistics')}</span>
+                <small>{t('itemStatisticsDescription')}</small>
               </Label>
             </CheckboxGroup>
           </section>
@@ -310,7 +397,6 @@ export default function GeneralSettingsForm({
               <span className='label'>
                 {/* eslint-disable-next-line react/jsx-no-literals */}
                 <span className='label-wrapper'>Google Analytics ID</span>
-                <small>{t('analyticsIdDescription')}</small>
               </span>
             </label>
           </section>

@@ -34,7 +34,7 @@ export default function MediaItems({
           key={i}
           type={type}
           serverId={serverId}
-          activeStats={settings.dashboard.activeItemStatistics}
+          activeStats={settings.general.activeItemStatistics}
           settings={settings}
           loggedInUserId={loggedInUserId}
         />
