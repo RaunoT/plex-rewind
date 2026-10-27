@@ -3,7 +3,7 @@
     "title": "Startseite",
     "setupRequired": "Setup notwendig",
     "setupRequiredDescription": "Die Anwendung muss von einem Administrator eingerichtet werden.",
-    "loginWithPlex": "Mit Plex einloggen",
+    "loginWithPlex": "Mit Plex anmelden",
     "loginError": {
       "plexUnavailable": "Plex ist nicht erreichbar. Versuche es gleich noch einmal.",
       "plexNotConfirmed": "Plex hat die Anmeldung nicht bestätigt. Versuche es noch einmal.",
@@ -36,7 +36,7 @@
     "subtitles": "Untertitel",
     "location": "Standort",
     "bandwidth": "Bandbreite",
-    "noActivity": "Keine aktiven Sitzungen.. 😴",
+    "noActivity": "Keine aktiven Streams. 😴",
     "playing": "Läuft",
     "paused": "Pausiert",
     "endsAt": "Endet um {time}",
@@ -50,7 +50,7 @@
   },
   "Dashboard": {
     "sizePartial": "{size} (teilweise)",
-    "noActivity": "Keine Aktivität in dieser Zeitspanne.. 😴",
+    "noActivity": "Keine Aktivität in dieser Zeitspanne. 😴",
     "title": "Dashboard",
     "usersTitle": "Benutzer",
     "users": "{count, plural, one {# Benutzer} other {# Benutzer}}",
@@ -60,12 +60,12 @@
     "requests": "{count, plural, one {Anfrage} other {Anfragen}}"
   },
   "DashboardFilters": {
-    "type": "Typ",
-    "general": "Allgemein",
-    "personal": "Persönlich",
+    "type": "Statistik für",
+    "general": "Alle",
+    "personal": "Nur mich",
     "sortByLabel": "Sortieren nach",
     "sort": "Sortieren",
-    "byDuration": "Nach Länge",
+    "byDuration": "Nach Wiedergabezeit",
     "byPlays": "Nach Anzahl der Wiedergaben"
   },
   "DashboardNavContent": {
@@ -73,7 +73,7 @@
     "users": "Benutzer"
   },
   "Error": {
-    "title": "Oh oh... da ist etwas schief gelaufen!",
+    "title": "Oh oh... da ist etwas schiefgelaufen!",
     "cta": "Erneut versuchen"
   },
   "PlexDeeplink": {
@@ -81,7 +81,6 @@
   },
   "PeriodSelectContent": {
     "7days": "7 Tage",
-    "today": "Heute",
     "pastYear": "Letztes Jahr",
     "allTime": "Gesamte Zeit",
     "days": "{count, plural, one {# Tag} other {# Tage}}",
@@ -110,16 +109,16 @@
     "updateAvailable": "Aktualisierung verfügbar",
     "saved": "Einstellungen gespeichert!",
     "savedChooseLibraries": "Einstellungen gespeichert! Wähle deine Bibliotheken unter Allgemein.",
-    "genericError": "Etwas ging schief!",
+    "genericError": "Etwas ist schiefgelaufen. Versuche es noch einmal.",
     "save": "Speichern",
     "apiKey": "API-Schlüssel",
-    "invalidApiKey": "Ungültiger API-Schlüssel!",
-    "unableToConnect": "Verbindung fehlgeschlagen!",
-    "noPlexServer": "Kein Plex-Server gefunden!",
-    "choosePlexServer": "Wähle den Plex-Server, der verwendet werden soll!",
-    "urlNotFound": "Nicht gefunden! Prüfe die URL, einschließlich eines möglichen Basispfads.",
-    "unexpectedResponse": "Unerwartete Antwort (HTTP {status})!",
-    "certificateError": "HTTPS-Zertifikatsfehler! Prüfe, ob die URL zu einem gültigen Zertifikat passt.",
+    "invalidApiKey": "Ungültiger API-Schlüssel.",
+    "unableToConnect": "Verbindung fehlgeschlagen. Prüfe die URL und ob der Server läuft.",
+    "noPlexServer": "Kein Plex-Server gefunden.",
+    "choosePlexServer": "Wähle den Plex-Server, der verwendet werden soll.",
+    "urlNotFound": "Nicht gefunden. Prüfe die URL, einschließlich eines möglichen Basispfads.",
+    "unexpectedResponse": "Unerwartete Antwort (HTTP {status}).",
+    "certificateError": "HTTPS-Zertifikatsfehler. Prüfe, ob die URL zu einem gültigen Zertifikat passt.",
     "buyMeACoffee": "Kaffee spenden",
     "becomeASponsor": "Sponsor werden",
     "reportAnIssue": "Problem melden",
@@ -145,7 +144,7 @@
       "title": "Dashboard Einstellungen",
       "customPeriodError": "Der benutzerdefinierte Zeitraum muss eine ganze Zahl > 0 und <= 3000 sein",
       "startDateError": "Ungültiges Anfangsdatum",
-      "usersPage": "Users page",
+      "usersPage": "Benutzerseite",
       "statistics": "Statistiken",
       "itemStatistics": "Artikelstatistiken",
       "totalStatistics": "Gesamtstatistik",
@@ -171,11 +170,11 @@
       "noLibrariesMessage2": "Plex Rewind benötigt mindestens eine Bibliothek um zu funktionieren.",
       "media": "Medien",
       "tmdbOnlyPosters": "Nur TMDB Poster",
-      "tmdbOnlyPostersDescription1": "Plex Poster für Filme/Serien ignorieren.",
+      "tmdbOnlyPostersDescription1": "Plex-Poster für Filme und Serien ignorieren.",
       "tmdbOnlyPostersDescription2": "Es wird TMDB verwendet, wenn kein Poster vorhanden ist.",
       "privacy": "Datenschutz",
       "excludedUsers": "Ausgeschlossene Benutzer",
-      "excludedUsersDescription": "Ausgewählte Benutzer werden aus Benutzer-Ranglisten und Gesamtdauern ausgeschlossen. Mit Tautulli enthalten die beliebtesten Filme, Serien und Künstler weiterhin ihre Wiedergaben.",
+      "excludedUsersDescription": "Ausgewählte Benutzer werden aus Benutzer-Ranglisten und der gesamten Wiedergabezeit ausgeschlossen. Mit Tautulli enthalten die beliebtesten Filme, Serien und Künstler weiterhin ihre Wiedergaben.",
       "outsideAccess": "Zugang von Außen zulassen",
       "outsideAccessDescription": "Zugang ohne Anmeldung.",
       "anonymize": "Anonymisieren",
@@ -184,8 +183,8 @@
     },
     "Rewind": {
       "title": "Rewind Einstellungen",
-      "cards": "Karten",
-      "librariesSizeAndCountCard": "Bibliothekengröße & Anzahl Karte",
+      "cards": "Stories",
+      "librariesSizeAndCountCard": "Bibliotheksgröße und -inhalt",
       "startDateHelperText": "Standardmäßig die letzten 365 Tage."
     }
   },
@@ -200,7 +199,7 @@
     "status": "Status",
     "year": "Jahr",
     "rating": "Bewertung",
-    "duration": "Länge",
+    "duration": "Wiedergabezeit",
     "plays": "Wiedergaben",
     "users": "Benutzer",
     "requests": "Anfragen",

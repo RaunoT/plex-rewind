@@ -160,6 +160,6 @@ describe('messages', () => {
   it('includes the HTTP status in an unexpected response', () => {
     const { key, values } = getStatusError(502)
 
-    expect(t(key, values)).toBe('Unexpected response (HTTP 502)!')
+    expect(t(key, values)).toBe('Unexpected response (HTTP 502).')
   })
 })

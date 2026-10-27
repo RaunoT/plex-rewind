@@ -38,10 +38,7 @@ export default function PeriodSelect({ settings }: Props) {
   const customPeriod = parseInt(settings.dashboard.customPeriod)
   const periodOptions = [
     { label: t('7days'), value: '7days' },
-    {
-      label: customPeriod > 1 ? t('days', { count: customPeriod }) : t('today'),
-      value: 'custom',
-    },
+    { label: t('days', { count: customPeriod }), value: 'custom' },
     { label: t('pastYear'), value: 'pastYear' },
     { label: t('allTime'), value: 'allTime' },
   ]

@@ -36,21 +36,21 @@
     "subtitles": "Subtiitrid",
     "location": "Asukoht",
     "bandwidth": "Ribalaidus",
-    "noActivity": "Ühtegi aktiivset sessiooni pole.. 😴",
+    "noActivity": "Ühtegi aktiivset voogu pole. 😴",
     "playing": "Mängib",
     "paused": "Pausil",
     "endsAt": "Lõpeb {time}",
     "convertedTo": "teisendatakse:",
     "decision": {
-      "directPlay": "otsemäng",
-      "directStream": "otsevoog",
-      "transcode": "transkodeerimine",
+      "directPlay": "Otsemäng",
+      "directStream": "Otsevoog",
+      "transcode": "Transkodeerimine",
       "burnedIn": "Sisse põletatud"
     }
   },
   "Dashboard": {
     "sizePartial": "{size} (osaline)",
-    "noActivity": "Valitud perioodil puudub tegevus.. 😴",
+    "noActivity": "Valitud perioodil puudub tegevus. 😴",
     "title": "Edetabel",
     "usersTitle": "Kasutajad",
     "users": "{count, plural, one {# kasutaja} other {# kasutajat}}",
@@ -60,12 +60,12 @@
     "requests": "{count, plural, one {tellimus} other {tellimust}}"
   },
   "DashboardFilters": {
-    "type": "Tüüp",
-    "general": "Üldine",
-    "personal": "Isiklik",
+    "type": "Kelle statistika",
+    "general": "Kõigi",
+    "personal": "Ainult minu",
     "sortByLabel": "Sorteerimisalus",
     "sort": "Sorteerimine",
-    "byDuration": "Kestuse järgi",
+    "byDuration": "Vaatamisaja järgi",
     "byPlays": "Mängimiste järgi"
   },
   "DashboardNavContent": {
@@ -73,7 +73,7 @@
     "users": "Kasutajad"
   },
   "Error": {
-    "title": "Oih.. midagi läks valesti!",
+    "title": "Oih. Midagi läks valesti!",
     "cta": "Proovi uuesti"
   },
   "PlexDeeplink": {
@@ -81,7 +81,6 @@
   },
   "PeriodSelectContent": {
     "7days": "7 päeva",
-    "today": "Täna",
     "pastYear": "Viimane aasta",
     "allTime": "Kokku",
     "days": "{count, plural, one {# päev} other {# päeva}}",
@@ -110,16 +109,16 @@
     "updateAvailable": "Uuendus saadaval",
     "saved": "Salvestatud!",
     "savedChooseLibraries": "Salvestatud! Vali kogumikud jaotises Üldine.",
-    "genericError": "Midagi läks valesti!",
+    "genericError": "Midagi läks valesti. Proovi uuesti.",
     "save": "Salvesta",
     "apiKey": "API võti",
-    "invalidApiKey": "Vale API võti!",
-    "unableToConnect": "Ühenduse loomine ebaõnnestus!",
-    "noPlexServer": "Plex serverit ei leitud!",
-    "choosePlexServer": "Vali, millist Plex serverit kasutada!",
-    "urlNotFound": "Ei leitud! Kontrolli URL-i, sealhulgas võimalikku baasteed.",
-    "unexpectedResponse": "Ootamatu vastus (HTTP {status})!",
-    "certificateError": "HTTPS-sertifikaadi viga! Kontrolli, et URL vastaks kehtivale sertifikaadile.",
+    "invalidApiKey": "Vale API võti.",
+    "unableToConnect": "Ühenduse loomine ebaõnnestus. Kontrolli URL-i ja seda, et server töötab.",
+    "noPlexServer": "Plexi serverit ei leitud.",
+    "choosePlexServer": "Vali, millist Plexi serverit kasutada.",
+    "urlNotFound": "Ei leitud. Kontrolli URL-i, sealhulgas võimalikku baasteed.",
+    "unexpectedResponse": "Ootamatu vastus (HTTP {status}).",
+    "certificateError": "HTTPS-sertifikaadi viga. Kontrolli, et URL vastaks kehtivale sertifikaadile.",
     "buyMeACoffee": "Osta mulle kohvi",
     "becomeASponsor": "Hakka sponsoriks",
     "reportAnIssue": "Teata probleemist",
@@ -175,7 +174,7 @@
       "tmdbOnlyPostersDescription2": "Vaikimisi kasutatakse TMDB'd ainult kui postrid puuduvad.",
       "privacy": "Privaatsus",
       "excludedUsers": "Välistatud kasutajad",
-      "excludedUsersDescription": "Valitud kasutajad jäetakse välja kasutajate pingeridadest ja koguajast. Tautulli puhul sisaldavad enim vaadatud filmid, saated ja esitajad endiselt nende vaatamisi.",
+      "excludedUsersDescription": "Valitud kasutajad jäetakse välja kasutajate pingeridadest ja kogu vaatamisajast. Tautulli puhul sisaldavad enim vaadatud filmid, seriaalid ja esitajad endiselt nende vaatamisi.",
       "outsideAccess": "Luba väline ligipääs",
       "outsideAccessDescription": "Ligipääs ilma sisselogimiseta.",
       "anonymize": "Anonümiseeri",
@@ -184,8 +183,8 @@
     },
     "Rewind": {
       "title": "Rewind seaded",
-      "cards": "Kaardid",
-      "librariesSizeAndCountCard": "Kogumike failisuuruse kaart",
+      "cards": "Lood",
+      "librariesSizeAndCountCard": "Kogumike suurus ja sisu",
       "startDateHelperText": "Vaikimisi 365 päeva tagasi."
     }
   },
@@ -200,7 +199,7 @@
     "status": "Olek",
     "year": "Aasta",
     "rating": "Hinnang",
-    "duration": "Kestus",
+    "duration": "Vaatamisaeg",
     "plays": "Mängimiste arv",
     "users": "Kasutajate arv",
     "requests": "Tellimuste arv",
