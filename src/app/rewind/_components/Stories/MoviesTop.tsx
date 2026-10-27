@@ -23,7 +23,7 @@ export default function StoryMoviesTop({ userRewind, settings }: RewindStory) {
           })}
         </p>
 
-        <div className='text-base not-italic'>
+        <div className='text-base leading-normal font-normal tracking-normal'>
           <MediaItems
             type='movie'
             items={userRewind.movies.top}

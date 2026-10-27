@@ -20,7 +20,6 @@ import StoryUsersTop from './Stories/UsersTop'
 import StoryWelcome from './Stories/Welcome'
 
 type Story = {
-  isPaused: boolean
   pause: () => void
   resume: () => void
 }
@@ -42,7 +41,6 @@ export default function RewindStories({ userRewind, settings }: Props) {
       component: (story: Story) => (
         <Component
           userRewind={userRewind}
-          isPaused={story.isPaused}
           pause={story.pause}
           resume={story.resume}
           settings={settings}

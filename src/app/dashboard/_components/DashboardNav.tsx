@@ -5,18 +5,13 @@ import DashboardNavContent from './DashboardNavContent'
 export type DashboardNavProps = {
   libraries: TautulliLibrary[]
   isUsersPageActive: boolean
+  isMenu?: boolean
 }
 
-export default function DashboardNav({
-  libraries,
-  isUsersPageActive,
-}: DashboardNavProps) {
+export default function DashboardNav(props: DashboardNavProps) {
   return (
     <Suspense>
-      <DashboardNavContent
-        libraries={libraries}
-        isUsersPageActive={isUsersPageActive}
-      />
+      <DashboardNavContent {...props} />
     </Suspense>
   )
 }

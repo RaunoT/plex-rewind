@@ -16,9 +16,10 @@ import { Metadata } from 'next'
 import { getServerSession } from 'next-auth'
 import { getTranslations } from 'next-intl/server'
 import { notFound } from 'next/navigation'
-import { Suspense } from 'react'
+import { ReactNode, Suspense } from 'react'
 import Dashboard from '../_components/Dashboard'
 import DashboardLoader from '../_components/DashboardLoader'
+import DashboardToolbar from '../_components/DashboardToolbar'
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations('Dashboard')
@@ -68,12 +69,13 @@ async function getTotalRequests(period: string, settings: Settings) {
 
 async function DashboardUsersContent({
   periodSp,
+  toolbar,
 }: {
   periodSp: DashboardSearchParams['period']
+  toolbar: ReactNode
 }) {
   const settings = getSettings()
   const t = await getTranslations()
-  const dashboardT = await getTranslations('Dashboard')
   const session = await getServerSession(authOptions)
 
   if (
@@ -96,7 +98,6 @@ async function DashboardUsersContent({
 
   return (
     <Dashboard
-      title={dashboardT('usersTitle')}
       items={usersData}
       totalDuration={totalDuration}
       totalSize={usersCount}
@@ -104,6 +105,7 @@ async function DashboardUsersContent({
       settings={toPublicSettings(settings)}
       count={totalRequests}
       loggedInUserId={loggedInUserId}
+      toolbar={toolbar}
     />
   )
 }
@@ -114,10 +116,22 @@ type Props = {
 
 export default async function DashboardUsersPage({ searchParams }: Props) {
   const { period } = await searchParams
+  const toolbar = (
+    <DashboardToolbar settings={toPublicSettings(getSettings())} isUsers />
+  )
 
   return (
-    <Suspense fallback={<DashboardLoader />} key={period}>
-      <DashboardUsersContent periodSp={period} />
+    <Suspense
+      fallback={
+        <DashboardLoader
+          toolbar={toolbar}
+          type='users'
+          activeStats={getSettings().dashboard.activeItemStatistics}
+        />
+      }
+      key={period}
+    >
+      <DashboardUsersContent periodSp={period} toolbar={toolbar} />
     </Suspense>
   )
 }

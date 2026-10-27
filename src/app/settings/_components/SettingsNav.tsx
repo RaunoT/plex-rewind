@@ -1,5 +1,6 @@
 'use client'
 
+import TitleMenu from '@/components/TitleMenu'
 import { PublicSettings } from '@/types/settings'
 import { SETTINGS_PAGES } from '@/utils/constants'
 import {
@@ -14,14 +15,46 @@ import { usePathname } from 'next/navigation'
 type Props = {
   settings: PublicSettings
   missingSetting: string | null
+  isMenu?: boolean
 }
 
-export default function SettingsNav({ settings, missingSetting }: Props) {
+export default function SettingsNav({
+  settings,
+  missingSetting,
+  isMenu,
+}: Props) {
   const pathname = usePathname()
   const t = useTranslations('Settings.Nav')
 
+  if (isMenu) {
+    return (
+      <TitleMenu
+        label={t('label')}
+        items={SETTINGS_PAGES.map(({ href, key }) => {
+          const isComplete =
+            settings[key as keyof Omit<PublicSettings, 'setupComplete'>]
+              .complete
+
+          return {
+            href,
+            label: t(key),
+            isCurrent: pathname === href,
+            isDisabled: !settings.connection.complete && key !== 'connection',
+            icon:
+              missingSetting &&
+              (isComplete ? (
+                <CheckCircleIcon className='size-4! text-green-400!' />
+              ) : (
+                <ExclamationCircleIcon className='size-4! text-red-400!' />
+              )),
+          }
+        })}
+      />
+    )
+  }
+
   return (
-    <nav className='mb-3' aria-label={t('label')}>
+    <nav aria-label={t('label')}>
       <ul className='nav'>
         {SETTINGS_PAGES.map(({ href, key }) => {
           const isComplete =
@@ -37,7 +70,7 @@ export default function SettingsNav({ settings, missingSetting }: Props) {
                 className={clsx(
                   'nav-link',
                   missingSetting &&
-                    (isComplete ? 'text-green-600!' : 'text-red-500!'),
+                    (isComplete ? 'text-green-400!' : 'text-red-400!'),
                   missingSetting && 'hover:opacity-80!',
                   missingSetting && pathname === href && 'opacity-80',
                 )}

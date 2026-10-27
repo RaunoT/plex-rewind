@@ -1,5 +1,6 @@
 'use client'
 
+import Avatar from '@/components/Avatar'
 import { PublicSettings } from '@/types/settings'
 import { TautulliItemRow } from '@/types/tautulli'
 import { getDeeplinkRatingKeyFromRow } from '@/utils/deeplink'
@@ -12,8 +13,10 @@ import {
   FilmIcon,
   MusicalNoteIcon,
   PlayCircleIcon,
+  PlusIcon,
   QuestionMarkCircleIcon,
   StarIcon,
+  TrashIcon,
   UserIcon,
 } from '@heroicons/react/24/outline'
 import clsx from 'clsx'
@@ -26,6 +29,13 @@ import MediaItemTitle from './MediaItemTitle'
 import placeholderSvg from './placeholder.svg'
 import PlexDeeplink from './PlexDeeplink'
 
+// Gold, silver and bronze for the top three
+const RANK_COLORS = [
+  'bg-linear-to-b from-yellow-200 to-yellow-500 bg-clip-text text-transparent',
+  'bg-linear-to-b from-white to-neutral-300 bg-clip-text text-transparent',
+  'bg-linear-to-b from-orange-300 to-orange-600 bg-clip-text text-transparent',
+]
+
 type Props = {
   data: TautulliItemRow
   i: number
@@ -35,7 +45,6 @@ type Props = {
   settings: PublicSettings
   loggedInUserId?: string
   items: TautulliItemRow[]
-  rows?: boolean
 }
 
 export default function MediaItem({
@@ -47,7 +56,6 @@ export default function MediaItem({
   settings,
   loggedInUserId,
   items,
-  rows,
 }: Props) {
   const translations = useTranslations()
   const t = useTranslations('MediaItem')
@@ -66,10 +74,13 @@ export default function MediaItem({
   // Hidden conditional
   const isLoggedInUser = String(data.user_id) === loggedInUserId
   const isHiddenUser = isUsers && i > 4 && !isLoggedInUser
-  const isHiddenItem = !isUsers && i > 4
   const isSpecialCase =
     i === 4 && items[5] && String(items[5].user_id) === loggedInUserId
   const dataKey = `${data.rating_key || data.user_id || i}-${type}`
+  const rank = data.rank || i
+  const isVideo = type === 'movie' || type === 'show'
+  const year = isVideo && activeStats.includes('year') ? data.year : null
+  const rating = isVideo && activeStats.includes('rating') ? data.rating : null
 
   if (initialImageSrc !== prevInitialImageSrc) {
     setPrevInitialImageSrc(initialImageSrc)
@@ -82,153 +93,188 @@ export default function MediaItem({
       // Motion animates with inline styles, which important utilities override
       // for visitors who prefer reduced motion, including during hydration.
       className={clsx(
-        'flex gap-3 motion-reduce:transform-none! motion-reduce:opacity-100! 2xl:items-center',
-        {
-          'hidden lg:flex':
-            !rows && (isHiddenUser || isHiddenItem || isSpecialCase),
-          hidden: rows && (isHiddenUser || isSpecialCase),
-        },
+        'flex items-start gap-3 py-2.5 not-first:border-t not-first:border-white/10 first:pt-0 last:pb-0 motion-reduce:transform-none! motion-reduce:opacity-100! sm:gap-4',
+        { hidden: isHiddenUser || isSpecialCase },
       )}
       variants={slideDown}
       initial='hidden'
       animate='show'
       transition={{ delay: i * 0.075 }}
     >
-      <div className='poster'>
-        <Image
-          fill
-          className='object-cover object-top'
-          alt=''
-          src={imageSrc}
-          sizes='10rem'
-          onError={() => setImageSrc(placeholderSvg)}
-          priority
-        />
+      {/* The rank stays level with the poster, however tall the details get */}
+      <div className='flex shrink-0 items-center gap-3 sm:gap-4'>
+        <span
+          className={clsx(
+            'w-6 text-center text-xl leading-none font-bold tracking-tight tabular-nums sm:w-8 sm:text-2xl',
+            RANK_COLORS[rank] || 'text-neutral-500',
+          )}
+        >
+          {rank + 1}
+        </span>
+        <div className='poster'>
+          {isUsers && !isAnonymized ? (
+            <Avatar
+              src={thumb}
+              name={data.friendly_name}
+              sizes='10rem'
+              priority
+            />
+          ) : (
+            <Image
+              fill
+              className='object-cover object-top'
+              alt=''
+              src={imageSrc}
+              sizes='10rem'
+              onError={() => setImageSrc(placeholderSvg)}
+              priority
+            />
+          )}
+        </div>
       </div>
-      <div className='overflow-hidden' ref={titleContainerRef}>
-        <MediaItemTitle
-          i={data.rank || i}
-          data={data}
-          type={type}
-          parentRef={titleContainerRef}
-          loggedInUserId={loggedInUserId}
-        />
-        {(type === 'movie' || type === 'show' || type === 'artist') && (
-          <div className='relative z-10 mb-3 flex items-center gap-2'>
-            {data.is_deleted ? (
-              isOverseerrActive && (type === 'movie' || type === 'show') ? (
+      {/* Wide rows put the links level with the title, narrow ones under the stats */}
+      <div className='@container min-w-0 flex-1'>
+        <div className='flex flex-col gap-2 @xl:flex-row @xl:items-start @xl:gap-4'>
+          <div
+            className='min-w-0 flex-1 overflow-hidden'
+            ref={titleContainerRef}
+          >
+            <MediaItemTitle
+              data={data}
+              type={type}
+              parentRef={titleContainerRef}
+              loggedInUserId={loggedInUserId}
+            />
+            {/* Details about the title, kept apart from the viewing stats */}
+            {(year || rating) && (
+              <ul className='icon-stats-container mb-2 gap-x-3 text-neutral-300'>
+                {year && (
+                  <li className='icon-stat-wrapper icon-stat-wrapper--clean'>
+                    <CalendarDaysIcon />
+                    <span className='sr-only'>
+                      {translations('Common.year')}
+                    </span>{' '}
+                    {year}
+                  </li>
+                )}
+                {rating && (
+                  <li className='icon-stat-wrapper icon-stat-wrapper--clean'>
+                    <StarIcon />
+                    <span className='sr-only'>
+                      {translations('Common.rating')}
+                    </span>{' '}
+                    {formatRating(rating, locale)}
+                  </li>
+                )}
+              </ul>
+            )}
+            <ul className='icon-stats-container'>
+              {/* Duration */}
+              {activeStats.includes('duration') && (
+                <li className='icon-stat-wrapper'>
+                  <ClockIcon />
+                  {secondsToTime(data.total_duration, translations)}
+                </li>
+              )}
+              {/* Plays */}
+              {activeStats.includes('plays') &&
+                (isUsers ? (
+                  <>
+                    {data.shows_plays_count > 0 && (
+                      <li className='icon-stat-wrapper'>
+                        <PlayCircleIcon />
+                        <span className='sr-only'>{t('labelShows')}</span>{' '}
+                        {t('statPlays', { count: data.shows_plays_count })}
+                      </li>
+                    )}
+                    {data.movies_plays_count > 0 && (
+                      <li className='icon-stat-wrapper'>
+                        <FilmIcon />
+                        <span className='sr-only'>{t('labelMovies')}</span>{' '}
+                        {t('statPlays', { count: data.movies_plays_count })}
+                      </li>
+                    )}
+                    {data.audio_plays_count > 0 && (
+                      <li className='icon-stat-wrapper'>
+                        <MusicalNoteIcon />
+                        <span className='sr-only'>{t('labelAudio')}</span>{' '}
+                        {t('statPlays', { count: data.audio_plays_count })}
+                      </li>
+                    )}
+                  </>
+                ) : (
+                  <li className='icon-stat-wrapper'>
+                    {type === 'artist' ? (
+                      <MusicalNoteIcon />
+                    ) : type === 'movie' ? (
+                      <FilmIcon />
+                    ) : (
+                      <PlayCircleIcon />
+                    )}
+                    <span>{t('statPlays', { count: data.total_plays })}</span>
+                  </li>
+                ))}
+              {/* Users watched */}
+              {activeStats.includes('users') && !!data.users_watched && (
+                <li className='icon-stat-wrapper'>
+                  <UserIcon />
+                  {t('statUsers', { count: data.users_watched })}
+                </li>
+              )}
+              {/* Requests */}
+              {activeStats.includes('requests') &&
+                isUsers &&
+                data.requests > 0 && (
+                  <li className='icon-stat-wrapper'>
+                    <QuestionMarkCircleIcon />
+                    {t('statRequests', { count: data.requests })}
+                  </li>
+                )}
+            </ul>
+          </div>
+          {(type === 'movie' || type === 'show' || type === 'artist') && (
+            <div className='relative z-10 flex shrink-0 items-center gap-1.5 empty:hidden @xl:mt-0.5'>
+              {data.is_deleted ? (
+                isOverseerrActive && (type === 'movie' || type === 'show') ? (
+                  <a
+                    href={`${settings.connection.overseerrUrl}/${
+                      type === 'movie' ? 'movie' : 'tv'
+                    }/${data.tmdb_id}`}
+                    target='_blank'
+                    rel='noopener noreferrer'
+                    className='button-card'
+                  >
+                    <PlusIcon />
+                    {t('request')}
+                  </a>
+                ) : (
+                  <div className='button-card text-neutral-300'>
+                    <TrashIcon className='text-red-300' />
+                    {t('deleted')}
+                  </div>
+                )
+              ) : (
+                serverId && (
+                  <PlexDeeplink
+                    serverId={serverId}
+                    ratingKey={getDeeplinkRatingKeyFromRow(data, type)}
+                  />
+                )
+              )}
+              {data.imdb_id && (
                 <a
-                  href={`${settings.connection.overseerrUrl}/${
-                    type === 'movie' ? 'movie' : 'tv'
-                  }/${data.tmdb_id}`}
+                  href={`https://www.imdb.com/title/${data.imdb_id}`}
                   target='_blank'
                   rel='noopener noreferrer'
-                  className='button-card bg-purple-600'
+                  className='button-card button-card--imdb'
+                  // eslint-disable-next-line react/jsx-no-literals
                 >
-                  {t('request')}
+                  IMDb
                 </a>
-              ) : (
-                <div className='button-card bg-red-600'>{t('deleted')}</div>
-              )
-            ) : (
-              serverId && (
-                <PlexDeeplink
-                  serverId={serverId}
-                  ratingKey={getDeeplinkRatingKeyFromRow(data, type)}
-                />
-              )
-            )}
-            {data.imdb_id && (
-              <a
-                href={`https://www.imdb.com/title/${data.imdb_id}`}
-                target='_blank'
-                rel='noopener noreferrer'
-                className='button-card bg-yellow-500 text-black'
-                // eslint-disable-next-line react/jsx-no-literals
-              >
-                IMDB
-              </a>
-            )}
-          </div>
-        )}
-        <ul className='icon-stats-container'>
-          {(type === 'movie' || type === 'show') &&
-            data.year &&
-            activeStats.includes('year') && (
-              <li className='icon-stat-wrapper'>
-                <CalendarDaysIcon />
-                {data.year}
-              </li>
-            )}
-          {/* Ratings */}
-          {(type === 'movie' || type === 'show') &&
-            data.rating &&
-            activeStats.includes('rating') && (
-              <li className='icon-stat-wrapper'>
-                <StarIcon />
-                {formatRating(data.rating, locale)}
-              </li>
-            )}
-          {/* Duration */}
-          {activeStats.includes('duration') && (
-            <li className='icon-stat-wrapper'>
-              <ClockIcon />
-              {secondsToTime(data.total_duration, translations)}
-            </li>
+              )}
+            </div>
           )}
-          {/* Plays */}
-          {activeStats.includes('plays') &&
-            (isUsers ? (
-              <>
-                {data.shows_plays_count > 0 && (
-                  <li className='icon-stat-wrapper'>
-                    <PlayCircleIcon />
-                    <span className='sr-only'>{t('labelShows')}</span>{' '}
-                    {t('statPlays', { count: data.shows_plays_count })}
-                  </li>
-                )}
-                {data.movies_plays_count > 0 && (
-                  <li className='icon-stat-wrapper'>
-                    <FilmIcon />
-                    <span className='sr-only'>{t('labelMovies')}</span>{' '}
-                    {t('statPlays', { count: data.movies_plays_count })}
-                  </li>
-                )}
-                {data.audio_plays_count > 0 && (
-                  <li className='icon-stat-wrapper'>
-                    <MusicalNoteIcon />
-                    <span className='sr-only'>{t('labelAudio')}</span>{' '}
-                    {t('statPlays', { count: data.audio_plays_count })}
-                  </li>
-                )}
-              </>
-            ) : (
-              <li className='icon-stat-wrapper'>
-                {type === 'artist' ? (
-                  <MusicalNoteIcon />
-                ) : type === 'movie' ? (
-                  <FilmIcon />
-                ) : (
-                  <PlayCircleIcon />
-                )}
-                <span>{t('statPlays', { count: data.total_plays })}</span>
-              </li>
-            ))}
-          {/* Users watched */}
-          {activeStats.includes('users') && !!data.users_watched && (
-            <li className='icon-stat-wrapper'>
-              <UserIcon />
-              {t('statUsers', { count: data.users_watched })}
-            </li>
-          )}
-          {/* Requests */}
-          {activeStats.includes('requests') && isUsers && data.requests > 0 && (
-            <li className='icon-stat-wrapper'>
-              <QuestionMarkCircleIcon />
-              {t('statRequests', { count: data.requests })}
-            </li>
-          )}
-        </ul>
+        </div>
       </div>
     </motion.li>
   )

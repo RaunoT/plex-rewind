@@ -46,9 +46,7 @@ function ErrorContent({ error, reset }: Props) {
 
   return (
     <main className='flex min-h-dvh flex-col justify-center px-4 text-center'>
-      <h1 className='mb-4 text-3xl leading-tight italic sm:text-4xl'>
-        {t('title')}
-      </h1>
+      <h1 className='mb-4 text-3xl leading-tight sm:text-4xl'>{t('title')}</h1>
       <button className='link mx-auto w-fit' onClick={() => reset()}>
         {t('cta')}
       </button>

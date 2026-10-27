@@ -160,7 +160,7 @@ export async function getTracearrItems(
     userId,
     libraries: [library],
   })
-  const items = getTopItems(plays, 6, sortByPlays).map((item) => ({
+  const items = getTopItems(plays, 5, sortByPlays).map((item) => ({
     ...item,
     // Don't show how many users watched the item on personal dashboard
     users_watched: userId ? undefined : item.users_watched,

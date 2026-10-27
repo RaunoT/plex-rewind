@@ -1,5 +1,7 @@
 import { UserRewind } from '@/types/rewind'
 import { Settings, StatisticsSource } from '@/types/settings'
+import { TautulliLibrary } from '@/types/tautulli'
+import { kebabCase } from 'lodash'
 import { getPeriods, SETTINGS_PAGES } from './constants'
 
 const SOURCE_REQUIRED_SETTINGS: Record<StatisticsSource, string[]> = {
@@ -19,6 +21,18 @@ const REQUIRED_SETTINGS = [
 
 export function isTracearrSource(settings: Settings): boolean {
   return settings.connection.statisticsSource === 'tracearr'
+}
+
+// In the order the admin sorted them in the settings
+export function sortByActiveLibraries(
+  libraries: TautulliLibrary[],
+  settings: Settings,
+): TautulliLibrary[] {
+  return settings.general.activeLibraries
+    .map((libSlug) =>
+      libraries.find((lib) => kebabCase(lib.section_name) === libSlug),
+    )
+    .filter((lib): lib is TautulliLibrary => lib !== undefined)
 }
 
 export function checkRequiredSettings(settings: Settings): string | null {

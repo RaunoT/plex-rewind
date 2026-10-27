@@ -39,7 +39,7 @@ export default function Activities({ settings, serverId }: Props) {
   if (error || !data) {
     return (
       <div className='flex flex-1 flex-col justify-center text-center'>
-        <h2 className='mb-4 text-3xl leading-tight italic sm:text-4xl'>
+        <h2 className='mb-4 text-3xl leading-tight sm:text-4xl'>
           {errorT('title')}
         </h2>
         <button
@@ -55,21 +55,18 @@ export default function Activities({ settings, serverId }: Props) {
   if (!data.sessions.length) {
     return (
       <div className='flex flex-1 flex-col justify-center text-center text-neutral-300'>
-        <p className='text-2xl italic last:mb-0 sm:text-3xl'>
-          {t('noActivity')}
-        </p>
+        <p className='text-2xl last:mb-0 sm:text-3xl'>{t('noActivity')}</p>
       </div>
     )
   }
 
   return (
-    <ul className='space-y-6 sm:space-y-8'>
+    <ul className='divide-y divide-white/10'>
       {data.sessions.map((session, index) => (
         <ActivityItem
           key={session.session_key}
           session={session}
           index={index}
-          totalSessions={data.sessions.length}
           settings={settings}
           serverId={serverId}
         />

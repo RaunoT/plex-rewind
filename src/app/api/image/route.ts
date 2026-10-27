@@ -18,6 +18,8 @@ const TAUTULLI_IMAGE_PARAMS = [
 ]
 const PUBLIC_IMAGE_HOST = /(^|\.)plex\.tv$|^image\.tmdb\.org$/
 const UPSTREAM_TIMEOUT = 15 * 1000
+// Where plex.tv sends accounts without a picture: a generated coloured letter
+const PLEX_DEFAULT_AVATAR = /plex\.tv\/avatars\/[0-9a-f]{6}\//i
 
 function getOrigin(url: string): string | null {
   try {
@@ -114,6 +116,11 @@ export async function GET(request: Request) {
       signal: AbortSignal.timeout(UPSTREAM_TIMEOUT),
     })
     const contentType = res.headers.get('content-type') || ''
+
+    // The app draws its own initials for these, so it's treated as no picture
+    if (PLEX_DEFAULT_AVATAR.test(res.url)) {
+      return new Response('[IMAGE PROXY] - No picture set', { status: 404 })
+    }
 
     if (!res.ok || !contentType.startsWith('image/')) {
       return new Response('[IMAGE PROXY] - Failed to fetch the image', {

@@ -64,6 +64,8 @@ export type TautulliItemRow = {
 }
 
 export type TautulliSession = {
+  // Tautulli sends 0 or 1, Tracearr a boolean
+  audio_atmos?: number | boolean
   audio_channel_layout: string
   audio_codec: string
   bandwidth: string
@@ -87,7 +89,7 @@ export type TautulliSession = {
   rating_key: number
   session_key: string
   state: 'playing' | 'paused'
-  transcode_throttled: boolean
+  stream_audio_atmos?: number | boolean
   stream_audio_channel_layout: string
   stream_audio_codec: string
   stream_audio_decision: string
@@ -112,6 +114,8 @@ export type TautulliSession = {
   video_dynamic_range: string
   video_full_resolution: string
   view_offset?: string
+  // Tautulli sends it as a string
+  year?: number | string | null
 }
 
 export type TautulliActivity = {

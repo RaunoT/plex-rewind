@@ -755,15 +755,23 @@ function toSession(
   const isEpisode = stream.media_type === 'episode'
   const streamHeight = stream.stream_video_details?.height
   const streamChannels = stream.stream_audio_details?.channels
+  const { sourceContainer, streamContainer, containerDecision } =
+    stream.transcode_info ?? {}
+  // Plex sends subtitles alone through the transcoder too, and that session
+  // then reports the subtitle format as the container
+  const isSubtitleOnly =
+    !!streamContainer &&
+    streamContainer.toLowerCase() === stream.subtitle_info?.codec?.toLowerCase()
 
   return {
+    audio_atmos: stream.source_audio_details?.atmos ?? false,
     audio_channel_layout: stream.audio_channels_display ?? '',
     audio_codec: stream.source_audio_codec ?? '',
     bandwidth: String(stream.bitrate ?? ''),
     bitrate: String(
       stream.source_video_details?.bitrate ?? stream.bitrate ?? '',
     ),
-    container: stream.transcode_info?.sourceContainer ?? '',
+    container: sourceContainer ?? '',
     duration: durationMs ? String(durationMs) : undefined,
     friendly_name: stream.username,
     grandparent_rating_key: Number(stream.grandparent_rating_key) || undefined,
@@ -787,7 +795,10 @@ function toSession(
     rating_key: Number(stream.rating_key) || 0,
     session_key: stream.id,
     state: stream.state,
-    transcode_throttled: stream.transcode_info?.throttled ?? false,
+    // Only stream details for a transcode, which drops Atmos unless it says
+    stream_audio_atmos:
+      stream.stream_audio_details?.atmos ??
+      (audioDecision !== 'transcode' && !!stream.source_audio_details?.atmos),
     stream_audio_channel_layout: streamChannels
       ? (CHANNEL_LAYOUTS[streamChannels] ?? `${streamChannels}ch`)
       : '',
@@ -798,8 +809,11 @@ function toSession(
       stream.source_audio_details?.language ??
       '',
     stream_bitrate: String(stream.bitrate ?? ''),
-    stream_container: stream.transcode_info?.streamContainer ?? '',
-    stream_container_decision: stream.transcode_info?.containerDecision ?? '',
+    stream_container:
+      (isSubtitleOnly ? sourceContainer : streamContainer) ?? '',
+    stream_container_decision: isSubtitleOnly
+      ? 'direct play'
+      : (containerDecision ?? ''),
     stream_subtitle_codec: stream.subtitle_info?.codec ?? '',
     stream_subtitle_decision: stream.subtitle_info?.decision ?? '',
     stream_subtitle_language: stream.subtitle_info?.language ?? '',
@@ -824,6 +838,7 @@ function toSession(
     video_dynamic_range: stream.source_video_details?.dynamicRange ?? '',
     video_full_resolution: stream.resolution ?? '',
     view_offset: String(stream.progress_ms),
+    year: stream.year,
   }
 }
 

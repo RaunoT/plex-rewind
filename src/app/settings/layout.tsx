@@ -1,7 +1,6 @@
 import githubSvg from '@/assets/github.svg'
 import { canManageSettings } from '@/lib/access'
 import getSettings from '@/utils/getSettings'
-import getVersion from '@/utils/getVersion'
 import { checkRequiredSettings } from '@/utils/helpers'
 import { toPublicSettings } from '@/utils/publicSettings'
 import { CurrencyEuroIcon, HeartIcon } from '@heroicons/react/24/outline'
@@ -24,23 +23,31 @@ export default async function SettingsLayout({ children }: Props) {
     return redirect('/')
   }
 
-  const version = await getVersion()
   const missingSetting = checkRequiredSettings(settings)
   const t = await getTranslations('Settings')
 
   return (
-    <div className='mb-auto w-full max-w-(--breakpoint-sm)'>
+    <div className='page-width mb-auto'>
       <PageTitle
         title={missingSetting ? t('getStarted') : t('title')}
+        isTitleHidden={!!missingSetting}
         noBack={!!missingSetting}
-      />
-      <SettingsNav
-        settings={toPublicSettings(settings)}
-        missingSetting={missingSetting}
-      />
+        titleMenu={
+          <SettingsNav
+            settings={toPublicSettings(settings)}
+            missingSetting={missingSetting}
+            isMenu
+          />
+        }
+      >
+        <SettingsNav
+          settings={toPublicSettings(settings)}
+          missingSetting={missingSetting}
+        />
+      </PageTitle>
       {children}
 
-      <div className='glass-sheet mt-4 flex flex-col flex-wrap justify-between gap-3 py-4 sm:flex-row'>
+      <div className='glass-sheet mt-4 flex flex-col flex-wrap justify-between gap-3 sm:flex-row'>
         <a
           href='https://www.paypal.com/paypalme/raunot'
           target='_blank'
@@ -66,20 +73,6 @@ export default async function SettingsLayout({ children }: Props) {
           {t('reportAnIssue')}
         </a>
       </div>
-
-      <a
-        className='link mx-auto mt-4 block w-fit text-center text-sm'
-        href='https://github.com/RaunoT/plex-rewind/releases'
-        target='_blank'
-      >
-        {version.hasUpdate && (
-          <span className='block'>{t('updateAvailable')}</span>
-        )}
-        <span className='font-mono text-xs'>
-          {version.currentVersion}
-          {version.hasUpdate && ` → ${version.latestVersion}`}
-        </span>
-      </a>
     </div>
   )
 }

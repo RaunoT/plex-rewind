@@ -26,7 +26,6 @@ import { getLocale, getTranslations } from 'next-intl/server'
 import { notFound } from 'next/navigation'
 import { Suspense } from 'react'
 import RewindStories from './_components/RewindStories'
-import UserSelect from './_components/UserSelect'
 import Loading from './loading'
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -139,15 +138,10 @@ async function RewindContent({ userId }: { userId?: string }) {
   }
 
   return (
-    <>
-      <RewindStories
-        userRewind={userRewind}
-        settings={toPublicSettings(settings)}
-      />
-      {session?.user.isAdmin && users && (
-        <UserSelect users={users} currentUserId={user.id} />
-      )}
-    </>
+    <RewindStories
+      userRewind={userRewind}
+      settings={toPublicSettings(settings)}
+    />
   )
 }
 

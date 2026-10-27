@@ -1,10 +1,14 @@
+import { authOptions } from '@/lib/auth'
 import '@/styles/globals.css'
 import { APP_URL, META_DESCRIPTION } from '@/utils/constants'
+import { getLibraries } from '@/utils/fetchTautulli'
 import getSettings from '@/utils/getSettings'
 import getVersion from '@/utils/getVersion'
-import { checkRequiredSettings } from '@/utils/helpers'
+import { checkRequiredSettings, sortByActiveLibraries } from '@/utils/helpers'
+import { toPublicSettings } from '@/utils/publicSettings'
 import { SerwistProvider } from '@serwist/next/react'
 import { Metadata, Viewport } from 'next'
+import { getServerSession } from 'next-auth'
 import { NextIntlClientProvider } from 'next-intl'
 import { getLocale } from 'next-intl/server'
 import { PublicEnvScript } from 'next-runtime-env'
@@ -64,6 +68,13 @@ export default async function RootLayout({ children }: Props) {
   const settings = getSettings()
   const version = await getVersion()
   const locale = await getLocale()
+  const missingSetting = checkRequiredSettings(settings)
+  const session = await getServerSession(authOptions)
+  // For the sidebar, which lists the libraries a visitor can open
+  const libraries =
+    !missingSetting && (session || settings.general.isOutsideAccess)
+      ? sortByActiveLibraries(await getLibraries(), settings)
+      : []
 
   return (
     <html lang={locale}>
@@ -79,10 +90,13 @@ export default async function RootLayout({ children }: Props) {
             {settings.general.googleAnalyticsId && (
               <GoogleAnalytics id={settings.general.googleAnalyticsId} />
             )}
-            <SessionProviderWrapper>
+            <SessionProviderWrapper session={session}>
               <AppProvider
-                missingSetting={checkRequiredSettings(settings)}
+                missingSetting={missingSetting}
                 version={version}
+                libraries={libraries}
+                settings={toPublicSettings(settings)}
+                canBrowse={!!session || settings.general.isOutsideAccess}
               >
                 {children}
               </AppProvider>

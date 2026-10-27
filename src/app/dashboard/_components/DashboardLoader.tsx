@@ -1,51 +1,88 @@
-export default function DashboardLoader() {
-  return (
-    <div className='flex flex-1 animate-pulse flex-col'>
-      <div className='mb-2.5 h-8 sm:mb-1 sm:h-10 lg:mb-1.5'>
-        <div className='mt-1 flex items-center sm:mt-0'>
-          <div className='skeleton mr-2 ml-0.5 size-6 p-0 sm:-mt-0.5 sm:ml-0 sm:size-8'></div>
-          <div className='skeleton w-32 sm:w-48'></div>
-        </div>
-      </div>
-      <ul className='icon-stats-container mb-1.5 sm:gap-x-3 lg:mb-2'>
-        <li className='icon-stat-wrapper icon-stat-wrapper--clean'>
-          <div className='skeleton size-4 p-0'></div>
-          <div className='skeleton w-20'></div>
-        </li>
-        <li className='icon-stat-wrapper icon-stat-wrapper--clean'>
-          <div className='skeleton size-4 p-0'></div>
-          <div className='skeleton w-20'></div>
-        </li>
-      </ul>
+import CardWrapper from '@/app/_components/CardWrapper'
+import SkeletonLine from '@/components/SkeletonLine'
+import { DashboardItemStatistics } from '@/types/settings'
+import { TautulliMediaType } from '@/types/tautulli'
+import clsx from 'clsx'
+import { ReactNode } from 'react'
 
-      <ul className='mt-4 flex flex-col gap-y-3 overflow-hidden sm:mt-6 sm:gap-y-5 lg:grid lg:grid-flow-col lg:grid-cols-2 lg:grid-rows-3 lg:gap-x-8'>
-        <ListItem />
-        <ListItem />
-        <ListItem />
-        <ListItem />
-        <ListItem />
-        <ListItem />
+type Props = {
+  toolbar: ReactNode
+  type: TautulliMediaType | 'users'
+  activeStats: DashboardItemStatistics
+}
+
+// Built like the real rows for this library and the chosen statistics, so
+// nothing moves once the data arrives
+export default function DashboardLoader({ toolbar, type, activeStats }: Props) {
+  return (
+    <div className='flex flex-1 flex-col'>
+      <div className='mb-4'>{toolbar}</div>
+
+      <CardWrapper>
+        <ul className='flex flex-col overflow-hidden'>
+          {[...Array(5)].map((_, i) => (
+            <ListItem key={i} type={type} activeStats={activeStats} />
+          ))}
+        </ul>
+      </CardWrapper>
+
+      <ul className='icon-stats-container mt-4 justify-center gap-x-3'>
+        {[...Array(3)].map((_, i) => (
+          <li key={i} className='icon-stat-wrapper icon-stat-wrapper--clean'>
+            <div className='skeleton size-4' />
+            <SkeletonLine width='w-20' />
+          </li>
+        ))}
       </ul>
     </div>
   )
 }
 
-function ListItem() {
+function ListItem({ type, activeStats }: Omit<Props, 'toolbar'>) {
+  const isUsers = type === 'users'
+  const hasDetails =
+    (type === 'movie' || type === 'show') &&
+    (activeStats.includes('year') || activeStats.includes('rating'))
+  const pills = [
+    activeStats.includes('duration') && 'w-24',
+    activeStats.includes('plays') && 'w-16',
+    activeStats.includes('plays') && isUsers && 'w-16',
+    activeStats.includes('users') && !isUsers && 'w-16',
+  ].filter((width): width is string => !!width)
+
   return (
-    <li className='flex gap-3 last:hidden lg:last:flex'>
-      <div className='skeleton poster'></div>
-      <div className='mt-1 w-full sm:mt-2 2xl:mt-[2.125rem]'>
-        <div className='skeleton mb-3 w-2/3 sm:w-1/3'></div>
-        <ul className='icon-stats-container'>
-          <li className='icon-stat-wrapper icon-stat-wrapper--clean'>
-            <div className='skeleton size-4 p-0'></div>
-            <div className='skeleton w-10'></div>
-          </li>
-          <li className='icon-stat-wrapper icon-stat-wrapper--clean'>
-            <div className='skeleton size-4 p-0'></div>
-            <div className='skeleton w-10'></div>
-          </li>
-        </ul>
+    <li className='flex items-start gap-3 py-2.5 not-first:border-t not-first:border-white/10 first:pt-0 last:pb-0 sm:gap-4'>
+      <div className='flex shrink-0 items-center gap-3 sm:gap-4'>
+        <div className='flex w-6 justify-center sm:w-8'>
+          <div className='skeleton h-5 w-4 sm:h-6' />
+        </div>
+        <div className='skeleton poster' />
+      </div>
+      <div className='@container min-w-0 flex-1'>
+        <div className='flex flex-col gap-2 @xl:flex-row @xl:items-start @xl:gap-4'>
+          <div className='min-w-0 flex-1'>
+            <SkeletonLine
+              className='mb-0.5 sm:text-lg'
+              width='w-2/3 sm:w-1/2'
+            />
+            {hasDetails && (
+              <SkeletonLine className='mb-2 text-xs sm:text-sm' width='w-24' />
+            )}
+            <ul className='icon-stats-container'>
+              {pills.map((width, i) => (
+                <li key={i} className={clsx('skeleton h-5 sm:h-6', width)} />
+              ))}
+            </ul>
+          </div>
+          {!isUsers && (
+            <div className='flex shrink-0 gap-1.5 @xl:mt-0.5'>
+              <div className='skeleton h-6 w-24 rounded-md' />
+              {type !== 'artist' && (
+                <div className='skeleton h-6 w-12 rounded-md' />
+              )}
+            </div>
+          )}
+        </div>
       </div>
     </li>
   )
