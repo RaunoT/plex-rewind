@@ -16,6 +16,7 @@ export default async function getUsersTop(
   after: string,
   period?: number,
   numberOfUsers = DASHBOARD_PAGE_SIZE,
+  withFirstPlay = false,
 ): Promise<TopItems | null> {
   const settings = getSettings()
   const source = getStatsSource(settings)
@@ -65,17 +66,28 @@ export default async function getUsersTop(
     )
   }
 
-  const usersPlaysCounts = await source.getPlaysCounts(
-    listedUsers,
-    after,
-    libraries,
-  )
+  // Anonymizing hides the first plays of other users, so they aren't looked up
+  const isFirstPlayShown = (user: TautulliItemRow) =>
+    !settings.general.isAnonymized || String(user.user_id) === loggedInUserId
+  const [usersPlaysCounts, firstPlays] = await Promise.all([
+    source.getPlaysCounts(listedUsers, after, libraries),
+    withFirstPlay
+      ? Promise.all(
+          listedUsers.map((user) =>
+            isFirstPlayShown(user)
+              ? source.getFirstPlay(String(user.user_id))
+              : null,
+          ),
+        )
+      : [],
+  ])
 
   listedUsers.map((user, i) => {
     user.requests = usersRequestsCounts[i]?.requests || 0
     user.movies_plays_count = usersPlaysCounts[i].movies_plays_count
     user.shows_plays_count = usersPlaysCounts[i].shows_plays_count
     user.audio_plays_count = usersPlaysCounts[i].audio_plays_count
+    user.first_played_at = firstPlays[i]?.date
   })
 
   return {
@@ -128,6 +140,8 @@ function anonymizeUsers(
       friendly_name: isLoggedIn ? user.friendly_name : '',
       user_thumb: isLoggedIn ? user.user_thumb : '',
       user_id: isLoggedIn ? user.user_id : 0,
+      // Others on the server may know when someone joined
+      first_played_at: isLoggedIn ? user.first_played_at : undefined,
       is_anonymous: !isLoggedIn,
     }
   })

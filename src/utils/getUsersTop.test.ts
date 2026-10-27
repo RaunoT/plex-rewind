@@ -53,6 +53,11 @@ const plays: Record<string, number> = {
   '1-3': 4,
   '2-1': 1,
 }
+// Unix seconds of each user's first play
+const firstPlays: Record<string, number> = {
+  '1': 1615766400,
+  '2': 1262304000,
+}
 
 let inFlight = 0
 let maxInFlight = 0
@@ -74,6 +79,14 @@ function mockTautulli(getUser: unknown, ranked = rankedUsers) {
       case 'get_user':
         return { response: { data: getUser } } as never
       case 'get_history': {
+        if (params?.order_column === 'date') {
+          const date = firstPlays[String(params.user_id)]
+
+          return {
+            response: { data: { data: date ? [{ date, title: 'Heat' }] : [] } },
+          } as never
+        }
+
         const key = `${params?.user_id}-${params?.section_id}`
 
         // Without a user the server's plays would be counted
@@ -93,8 +106,18 @@ function mockTautulli(getUser: unknown, ranked = rankedUsers) {
 
 function historyCalls() {
   return fetchMock.mock.calls
-    .filter(([query]) => query === 'get_history')
+    .filter(
+      ([query, params]) =>
+        query === 'get_history' && params?.order_column !== 'date',
+    )
     .map(([, params]) => params)
+}
+
+function firstPlayCalls() {
+  return fetchMock.mock.calls.filter(
+    ([query, params]) =>
+      query === 'get_history' && params?.order_column === 'date',
+  )
 }
 
 describe('getUsersTop with Tautulli', () => {
@@ -241,5 +264,41 @@ describe('getUsersTop with Tautulli', () => {
       user_thumb: '',
       is_anonymous: true,
     })
+  })
+
+  it('adds each listed users first play when asked', async () => {
+    mockTautulli({})
+
+    const users = (await getUsersTop('1', '2026-03-01', 30, undefined, true))
+      ?.items
+
+    expect(users?.map((user) => user.first_played_at)).toEqual([
+      '2021-03-15T00:00:00.000Z',
+      '2010-01-01T00:00:00.000Z',
+    ])
+  })
+
+  it('does not look up first plays unless asked', async () => {
+    mockTautulli({})
+
+    const users = (await getUsersTop('1', '2026-03-01', 30))?.items
+
+    expect(firstPlayCalls()).toHaveLength(0)
+    expect(users?.every((user) => !user.first_played_at)).toBe(true)
+  })
+
+  it('hides when other users started watching when anonymized', async () => {
+    vi.mocked(getSettings).mockReturnValue({
+      ...cloneDeep(DEFAULT_SETTINGS),
+      general: { ...DEFAULT_SETTINGS.general, isAnonymized: true },
+    })
+    mockTautulli({})
+
+    const users = (await getUsersTop('1', '2026-03-01', 30, undefined, true))
+      ?.items
+
+    expect(users?.[0].first_played_at).toBe('2021-03-15T00:00:00.000Z')
+    expect(users?.[1].first_played_at).toBeUndefined()
+    expect(firstPlayCalls()).toHaveLength(1)
   })
 })

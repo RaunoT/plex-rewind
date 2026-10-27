@@ -1,16 +1,9 @@
 import Avatar from '@/components/Avatar'
 import { RewindStory } from '@/types/rewind'
+import { formatMonthYear } from '@/utils/formatting'
 import { getRewindStartDate } from '@/utils/helpers'
 import { useLocale, useTranslations } from 'next-intl'
 import RewindStat from '../RewindStat'
-
-function formatDate(dateString: string, locale: string) {
-  return new Intl.DateTimeFormat(locale, {
-    month: 'short',
-    year: 'numeric',
-    timeZone: 'UTC',
-  }).format(new Date(dateString))
-}
 
 export default function StoryWelcome({ userRewind, settings }: RewindStory) {
   const startDate = getRewindStartDate(settings)
@@ -18,9 +11,9 @@ export default function StoryWelcome({ userRewind, settings }: RewindStory) {
   const t = useTranslations('Rewind.Welcome')
   const tCommon = useTranslations('Common')
   const locale = useLocale()
-  const formattedStartDate = formatDate(startDate, locale)
+  const formattedStartDate = formatMonthYear(startDate, locale)
   // The window always runs to now, so the displayed range ends today.
-  const formattedEndDate = formatDate(
+  const formattedEndDate = formatMonthYear(
     new Date().toISOString().split('T')[0],
     locale,
   )

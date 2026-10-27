@@ -323,6 +323,11 @@
       "dayChart": "Bar chart of plays per day of the week. Busiest day: {dayValue} with {count, plural, one {# play} other {# plays}}.",
       "hourChart": "Bar chart of plays per hour of the day. Busiest hour: {hourValue} with {count, plural, one {# play} other {# plays}}."
     },
+    "FirstPlay": {
+      "since": "You've been watching on <plex>{serverName}</plex> since <date>{dateValue}</date>",
+      "timeSince": "That's <timeSince>{timeSinceValue}</timeSince> and counting!",
+      "title": "It all started with <title>{titleValue}</title>"
+    },
     "Goodbye": {
       "thanks": "Thanks for tuning in to your <plex>{serverName} Rewind</plex>, <user>{userValue}!</user>",
       "sorry": "Sorry you couldn't find any content to watch or listen to this time around. Better luck next time!",
@@ -351,6 +356,7 @@
     "statPlays": "{count, plural, one {# play} other {# plays}}",
     "statUsers": "{count, plural, one {# user} other {# users}}",
     "statRequests": "{count, plural, one {# request} other {# requests}}",
+    "statSince": "Since {date}",
     "labelShows": "TV shows",
     "labelMovies": "Movies",
     "labelAudio": "Music",

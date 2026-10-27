@@ -43,6 +43,12 @@ export type UserRewind = {
     user_percentage_value: number | null
     total: string
   }
+  // Formatted on the server, null without any play
+  firstPlay: {
+    date: string
+    timeSince: string
+    title: string
+  } | null
   user: RewindUser
 }
 

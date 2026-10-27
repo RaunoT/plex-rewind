@@ -2,6 +2,7 @@ import { authOptions } from '@/lib/auth'
 import { Settings } from '@/types/settings'
 import {
   DurationQuery,
+  FirstPlay,
   MediaStats,
   PlaysByTime,
   ServerMembership,
@@ -642,6 +643,26 @@ async function getPlaysByTime(
   return { hourly, daily }
 }
 
+async function getFirstPlay(userId: string): Promise<FirstPlay | null> {
+  const res = await fetchTautulli<{
+    data: { date: number; title: string; grandparent_title: string }[]
+  }>(
+    'get_history',
+    { user_id: userId, order_column: 'date', order_dir: 'asc', length: 1 },
+    true,
+  )
+  const play = res?.response?.data?.data?.[0]
+
+  if (!play?.date) {
+    return null
+  }
+
+  return {
+    date: new Date(play.date * 1000).toISOString(),
+    title: play.grandparent_title || play.title,
+  }
+}
+
 const tautulliSource: StatsSource = {
   getServerId,
   getLibraries,
@@ -657,6 +678,7 @@ const tautulliSource: StatsSource = {
   getMediaStats,
   getTopMediaItems,
   getPlaysByTime,
+  getFirstPlay,
 }
 
 export default tautulliSource

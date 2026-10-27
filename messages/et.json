@@ -323,6 +323,11 @@
       "dayChart": "Tulpdiagramm mängimistest nädalapäevade kaupa. Kõige aktiivsem päev: {dayValue}, {count, plural, one {# mängimine} other {# mängimist}}.",
       "hourChart": "Tulpdiagramm mängimistest kellaaegade kaupa. Kõige aktiivsem tund: {hourValue}, {count, plural, one {# mängimine} other {# mängimist}}."
     },
+    "FirstPlay": {
+      "since": "Sa oled <plex>{serverName}'is</plex> vaadanud alates <date>{dateValue}</date>",
+      "timeSince": "See on juba <timeSince>{timeSinceValue}</timeSince>!",
+      "title": "Kõik algas sellest: <title>{titleValue}</title>"
+    },
     "Goodbye": {
       "thanks": "Tänan, et vaatasid oma <plex>{serverName} Rewind'i</plex>, <user>{userValue}!</user>",
       "sorry": "Kahju, et sa ei leidnud seekord sisu mida vaadata või kuulata. Loodame, et järgmisel korral läheb paremini!",
@@ -351,6 +356,7 @@
     "statPlays": "{count, plural, one {# mängimine} other {# mängimist}}",
     "statUsers": "{count, plural, one {# kasutaja} other {# kasutajat}}",
     "statRequests": "{count, plural, one {# tellimus} other {# tellimust}}",
+    "statSince": "Alates {date}",
     "labelShows": "Seriaalid",
     "labelMovies": "Filmid",
     "labelAudio": "Muusika",

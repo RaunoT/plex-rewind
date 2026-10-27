@@ -1,6 +1,8 @@
 // This type is compatible with next-intl's translation function
 export type TranslateFunction = (key: string, params?: any) => string
 
+const DAY_MS = 24 * 60 * 60 * 1000
+
 export function secondsToTime(seconds: number, t: TranslateFunction): string {
   const totalSeconds = Math.round(seconds)
 
@@ -116,6 +118,55 @@ export function formatRating(rating: string, locale: string): string {
   return rating.trim() === '' || !Number.isFinite(numeric)
     ? rating
     : formatOneDecimal(numeric, locale)
+}
+
+// In UTC, so the server and the browser show the same month
+export function formatMonthYear(
+  date: string,
+  locale: string,
+  month: 'short' | 'long' = 'short',
+): string {
+  return new Intl.DateTimeFormat(locale, {
+    month,
+    year: 'numeric',
+    timeZone: 'UTC',
+  }).format(new Date(date))
+}
+
+// Such as "4 years and 7 months", or days while it's under a month. Empty for
+// under a day.
+export function formatTimeSince(
+  date: string,
+  locale: string,
+  now = new Date(),
+): string {
+  const start = new Date(date)
+
+  if (!(start.getTime() <= now.getTime())) {
+    return ''
+  }
+
+  // A month only counts once its day of the month comes round again
+  const months =
+    (now.getUTCFullYear() - start.getUTCFullYear()) * 12 +
+    now.getUTCMonth() -
+    start.getUTCMonth() -
+    (now.getUTCDate() < start.getUTCDate() ? 1 : 0)
+  const units =
+    months > 0
+      ? { year: Math.floor(months / 12), month: months % 12 }
+      : { day: Math.floor((now.getTime() - start.getTime()) / DAY_MS) }
+  const parts = Object.entries(units)
+    .filter(([, value]) => value > 0)
+    .map(([unit, value]) =>
+      new Intl.NumberFormat(locale, {
+        style: 'unit',
+        unit,
+        unitDisplay: 'long',
+      }).format(value),
+    )
+
+  return new Intl.ListFormat(locale, { type: 'conjunction' }).format(parts)
 }
 
 export function formatPercent(percent: number, locale: string): string {

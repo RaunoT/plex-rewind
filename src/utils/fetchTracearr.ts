@@ -1,4 +1,5 @@
 import { Settings } from '@/types/settings'
+import { FirstPlay } from '@/types/statsSource'
 import {
   TautulliActivity,
   TautulliLibrary,
@@ -18,7 +19,7 @@ import {
   TracearrStreamsResponse,
   TracearrUser,
 } from '@/types/tracearr'
-import { sumBy } from 'lodash'
+import { minBy, sumBy } from 'lodash'
 import { unstable_rethrow } from 'next/navigation'
 import qs from 'qs'
 import getSettings from './getSettings'
@@ -80,6 +81,9 @@ const DAY = 24 * 60 * 60 * 1000
 const HISTORY_REFRESH_OVERLAP = 2 * DAY
 const HISTORY_FULL_REFRESH = DAY
 const HISTORY_CACHE_IDLE = 60 * 60 * 1000
+const FIRST_PLAY_CACHE_TTL = DAY
+// Plex came out in 2008, so no play is older
+const EARLIEST_PLAY = Date.UTC(2008, 0, 1)
 // Plex numbers the server owner's local account 1.
 const PLEX_OWNER_ACCOUNT_ID = '1'
 const PLAY_MEDIA_TYPES: TracearrPlayMediaType[] = ['movie', 'episode', 'track']
@@ -99,6 +103,10 @@ const LIBRARY_NAMES: Record<TautulliMediaType, string> = {
   artist: 'Music',
 }
 const historyCaches = new Map<string, HistoryCache>()
+const firstPlayCaches = new Map<
+  string,
+  { firstPlay: FirstPlay | null; expiresAt: number }
+>()
 
 let historyQueue: Promise<unknown> = Promise.resolve()
 let warnedMissingServerId = ''
@@ -640,6 +648,153 @@ export async function getTracearrPlays(
   }
 
   return (await run) ?? []
+}
+
+function getStartedAt(record: TracearrHistoryRecord): number {
+  return new Date(record.started_at).getTime()
+}
+
+type PlaysUntil = {
+  oldest?: TracearrHistoryRecord
+  // True when the page holds every play up to its cutoff
+  isComplete: boolean
+}
+
+// The newest page of plays up to `until`. Undefined when Tracearr couldn't be
+// asked, or returned a play after `until`, which would keep a search from ever
+// ending.
+async function fetchPlaysUntil(
+  params: QueryParams,
+  until?: number,
+): Promise<PlaysUntil | undefined> {
+  const page = await fetchTracearr<TracearrCursorPage<TracearrHistoryRecord>>(
+    'history',
+    {
+      ...params,
+      until: until === undefined ? undefined : new Date(until).toISOString(),
+      pageSize: PAGE_SIZE,
+    },
+  )
+
+  if (
+    !Array.isArray(page?.data) ||
+    (until !== undefined &&
+      !page.data.every((record) => getStartedAt(record) <= until))
+  ) {
+    return undefined
+  }
+
+  return {
+    oldest: minBy(page.data, getStartedAt),
+    isComplete: page.data.length < PAGE_SIZE && !page.meta?.nextCursor,
+  }
+}
+
+// History only pages back from the newest play. Each page's oldest play is the
+// earliest known so far, and the next cutoff is halfway between it and the last
+// time known to have none. A page that holds every play up to its cutoff ends
+// the search, so users with few plays take one request.
+async function findFirstPlay(
+  params: QueryParams,
+  noPlaysBefore: number,
+): Promise<TracearrHistoryRecord | null | undefined> {
+  const newest = await fetchPlaysUntil(params)
+
+  if (!newest) {
+    return undefined
+  }
+
+  if (!newest.oldest) {
+    return null
+  }
+
+  let firstPlay = newest.oldest
+  let isComplete = newest.isComplete
+  let noPlaysUntil = noPlaysBefore - 1
+
+  while (!isComplete && getStartedAt(firstPlay) - noPlaysUntil > 1) {
+    const middle = Math.floor((noPlaysUntil + getStartedAt(firstPlay)) / 2)
+    const page = await fetchPlaysUntil(params, middle)
+
+    if (!page) {
+      return undefined
+    }
+
+    if (page.oldest) {
+      firstPlay = page.oldest
+      isComplete = page.isComplete
+    } else {
+      noPlaysUntil = middle
+    }
+  }
+
+  return firstPlay
+}
+
+// No user's first play is older than the server's, so it bounds every search
+const getServerFirstPlayAt = cached<number>(async () => {
+  const serverId = await getPlexServerId()
+
+  if (!serverId) {
+    return null
+  }
+
+  const firstPlay = await findFirstPlay({ server_id: serverId }, EARLIEST_PLAY)
+  const firstPlayAt = firstPlay ? getStartedAt(firstPlay) : NaN
+
+  return Number.isFinite(firstPlayAt) ? firstPlayAt : null
+}, FIRST_PLAY_CACHE_TTL)
+
+export async function getTracearrFirstPlay(
+  plexId: string,
+): Promise<FirstPlay | null> {
+  const [user, serverId] = await Promise.all([
+    getTracearrUser(plexId),
+    getPlexServerId(),
+  ])
+
+  if (!user || !serverId) {
+    return null
+  }
+
+  const key = `${getCacheKey()}|${user.identityId}`
+  const now = Date.now()
+  const cache = firstPlayCaches.get(key)
+
+  if (cache && now < cache.expiresAt) {
+    return cache.firstPlay
+  }
+
+  for (const [cacheKey, { expiresAt }] of firstPlayCaches) {
+    if (now >= expiresAt) {
+      firstPlayCaches.delete(cacheKey)
+    }
+  }
+
+  const record = await findFirstPlay(
+    { user_id: user.identityId, server_id: serverId },
+    (await getServerFirstPlayAt()) ?? EARLIEST_PLAY,
+  )
+
+  if (record === undefined) {
+    return cache?.firstPlay ?? null
+  }
+
+  const firstPlay =
+    record && Number.isFinite(getStartedAt(record))
+      ? {
+          date: new Date(record.started_at).toISOString(),
+          title: record.show_title || record.artist_name || record.media_title,
+        }
+      : null
+
+  // The first play only changes once a user without plays starts watching
+  firstPlayCaches.set(key, {
+    firstPlay,
+    expiresAt: now + (firstPlay ? FIRST_PLAY_CACHE_TTL : CACHE_TTL),
+  })
+
+  return firstPlay
 }
 
 const getAllLibraries = cached<TracearrLibrary[]>(async () => {

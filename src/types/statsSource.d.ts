@@ -54,6 +54,15 @@ export type PlaysByTime = {
   daily: number[]
 }
 
+// Neither source knows when a user joined the server, so the first play stands
+// in for it. It can't be older than the source's own history.
+export type FirstPlay = {
+  // ISO 8601
+  date: string
+  // The show or artist for an episode or track
+  title: string
+}
+
 // `unavailable` when the source couldn't be asked, which says nothing about
 // whether the user still belongs to the server
 export type ServerMembership =
@@ -97,4 +106,6 @@ export type StatsSource = {
     since: string,
   ) => Promise<TopMediaItems>
   getPlaysByTime: (userId: string, since: string) => Promise<PlaysByTime>
+  // Null when the user has no plays or the source couldn't be asked
+  getFirstPlay: (userId: string) => Promise<FirstPlay | null>
 }

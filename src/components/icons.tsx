@@ -1,5 +1,6 @@
 import {
   CalendarDaysIcon,
+  CalendarIcon,
   ClockIcon,
   FilmIcon,
   FolderIcon,
@@ -55,6 +56,7 @@ export const STAT_ICONS = {
   year: CalendarDaysIcon,
   rating: StarIcon,
   rottenTomatoes: TomatoIcon,
+  firstPlay: CalendarIcon,
 }
 
 type MediaType = keyof typeof MEDIA_ICONS
