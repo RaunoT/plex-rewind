@@ -76,9 +76,7 @@ async function DashboardContent({
   const period = getPeriod(periodSp, settings)
   const personalUserId = personalSp === 'true' ? loggedInUserId : undefined
   // Plays rank by default; the sort filter can switch to watch time
-  const sortByPlays = !(
-    sortBySp === 'duration' && settings.dashboard.isSortByPlaysActive
-  )
+  const sortByPlays = sortBySp !== 'duration'
   const [
     { items, hasMore },
     totalDuration,

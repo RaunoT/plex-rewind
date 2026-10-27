@@ -62,8 +62,8 @@ export const DEFAULT_SETTINGS: Settings = {
     tracearrApiKey: '',
     tracearrServerId: '',
     plexUrl: '',
-    overseerrUrl: '',
-    overseerrApiKey: '',
+    seerrUrl: '',
+    seerrApiKey: '',
     complete: false,
   },
   general: {
@@ -71,7 +71,7 @@ export const DEFAULT_SETTINGS: Settings = {
     activeLibraries: [],
     excludedUsers: [],
     isPostersTmdbOnly: false,
-    activeExternalLinks: ['imdb'],
+    activeExternalLinks: ['imdb', 'tmdb', 'rottenTomatoes', 'letterboxd'],
     activeItemStatistics: [
       'year',
       'tmdbRating',
@@ -100,7 +100,6 @@ export const DEFAULT_SETTINGS: Settings = {
     isAdminOnly: false,
     isUsersPageActive: true,
     activeTotalStatistics: ['size', 'duration', 'count', 'requests'],
-    isSortByPlaysActive: true,
     customPeriod: '30',
     startDate: '2010-01-01',
     complete: false,

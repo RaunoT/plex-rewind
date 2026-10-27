@@ -4,8 +4,10 @@ import {
   DashboardSettings,
   GeneralSettings,
   RewindSettings,
+  Settings,
 } from '@/types/settings'
 import getSettings, { writeSettings } from '@/utils/getSettings'
+import { checkRequiredSettings, getSettingsPage } from '@/utils/helpers'
 import { getTranslations } from 'next-intl/server'
 import { revalidatePath } from 'next/cache'
 import { ZodError, ZodSchema } from 'zod'
@@ -28,6 +30,7 @@ export default async function updateSettings<K extends keyof SettingsTypeMap>(
   try {
     const parsed = schema.parse(data)
     const settings = getSettings()
+    const isSetup = checkRequiredSettings(settings) !== null
 
     settings[key] = {
       ...settings[key],
@@ -37,6 +40,10 @@ export default async function updateSettings<K extends keyof SettingsTypeMap>(
     writeSettings(settings)
 
     revalidatePath('/')
+
+    if (isSetup) {
+      return { ...getNextSetupStep(settings, t), fields: data }
+    }
 
     return {
       message: t('saved'),
@@ -59,6 +66,25 @@ export default async function updateSettings<K extends keyof SettingsTypeMap>(
       status: 'error',
       fields: data,
     }
+  }
+}
+
+// While the setup is unfinished, each save moves on to the page that still
+// needs something, and the last one goes home.
+function getNextSetupStep(
+  settings: Settings,
+  t: Awaited<ReturnType<typeof getTranslations<'Settings'>>>,
+) {
+  const missingSetting = checkRequiredSettings(settings)
+
+  if (!missingSetting) {
+    return { message: t('setupFinished'), status: 'success', nextPage: '/' }
+  }
+
+  return {
+    message: '',
+    status: 'success',
+    nextPage: getSettingsPage(missingSetting) ?? '/',
   }
 }
 

@@ -162,6 +162,37 @@ describe('getSettings', () => {
     )
   })
 
+  it('moves the saved Overseerr connection to Seerr', async () => {
+    const {
+      seerrUrl: _,
+      seerrApiKey: __,
+      ...connection
+    } = DEFAULT_SETTINGS.connection
+    const saved = {
+      ...DEFAULT_SETTINGS,
+      connection: {
+        ...connection,
+        overseerrUrl: 'https://seerr.example.com',
+        overseerrApiKey: 'key',
+      },
+    }
+
+    fs.writeFileSync(settingsPath, JSON.stringify(saved))
+
+    const { default: getSettings } = await loadModule()
+
+    expect(getSettings().connection).toMatchObject({
+      seerrUrl: 'https://seerr.example.com',
+      seerrApiKey: 'key',
+    })
+    expect(readSavedSettings().connection).toMatchObject({
+      seerrUrl: 'https://seerr.example.com',
+      seerrApiKey: 'key',
+    })
+    expect(readSavedSettings().connection).not.toHaveProperty('overseerrUrl')
+    expect(readSavedSettings().connection).not.toHaveProperty('overseerrApiKey')
+  })
+
   it('turns the old rating statistic into one per rating provider', async () => {
     const { activeItemStatistics: _, ...general } = DEFAULT_SETTINGS.general
     // Saved before item statistics moved to general

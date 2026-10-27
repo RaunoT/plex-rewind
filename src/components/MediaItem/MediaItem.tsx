@@ -70,7 +70,7 @@ export default function MediaItem({
   const [prevInitialImageSrc, setPrevInitialImageSrc] =
     useState<string>(initialImageSrc)
   const titleContainerRef = useRef<HTMLDivElement>(null)
-  const isOverseerrActive = settings.connection.isOverseerrActive
+  const isSeerrActive = settings.connection.isSeerrActive
   const dataKey = `${data.rating_key || data.user_id || i}-${type}`
   const rank = data.rank || i
   const isVideo = type === 'movie' || type === 'show'
@@ -305,9 +305,9 @@ export default function MediaItem({
           {(type === 'movie' || type === 'show' || type === 'artist') && (
             <div className='relative z-10 flex shrink-0 flex-wrap items-center gap-x-1.5 gap-y-2.5 empty:hidden @xl:mt-0.5 @xl:flex-col @xl:items-end'>
               {data.is_deleted ? (
-                isOverseerrActive && (type === 'movie' || type === 'show') ? (
+                isSeerrActive && (type === 'movie' || type === 'show') ? (
                   <a
-                    href={`${settings.connection.overseerrUrl}/${
+                    href={`${settings.connection.seerrUrl}/${
                       type === 'movie' ? 'movie' : 'tv'
                     }/${data.tmdb_id}`}
                     target='_blank'

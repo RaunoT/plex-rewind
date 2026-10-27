@@ -149,10 +149,10 @@ async function RewindContent({ userId }: { userId?: string }) {
     server_id: serverId,
     user: user,
   }
-  const isOverseerrActive =
-    settings.connection.overseerrUrl && settings.connection.overseerrApiKey
+  const isSeerrActive =
+    settings.connection.seerrUrl && settings.connection.seerrApiKey
 
-  if (isOverseerrActive) {
+  if (isSeerrActive) {
     const requestTotals = await getRequestsTotals(user.id)
 
     userRewind.requests = requestTotals

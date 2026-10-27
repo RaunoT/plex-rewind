@@ -29,8 +29,8 @@ const baseSchema = z.object({
   tracearrUrl: z.string().url().or(z.literal('')),
   tracearrApiKey: z.string(),
   tracearrServerId: z.string(),
-  overseerrUrl: z.string().url().optional().or(z.literal('')),
-  overseerrApiKey: z.string().optional(),
+  seerrUrl: z.string().url().optional().or(z.literal('')),
+  seerrApiKey: z.string().optional(),
   plexUrl: z.string().url(),
   complete: z.boolean(),
 })
@@ -114,8 +114,8 @@ async function testAndSave(
     tracearrUrl: normalizeUrl(formData.get('tracearrUrl') as string),
     tracearrApiKey: formData.get('tracearrApiKey') as string,
     tracearrServerId: (formData.get('tracearrServerId') as string | null) ?? '',
-    overseerrUrl: normalizeUrl(formData.get('overseerrUrl') as string),
-    overseerrApiKey: formData.get('overseerrApiKey') as string,
+    seerrUrl: normalizeUrl(formData.get('seerrUrl') as string),
+    seerrApiKey: formData.get('seerrApiKey') as string,
     plexUrl: normalizeUrl(formData.get('plexUrl') as string),
     complete: true,
   }
@@ -220,21 +220,21 @@ async function testAndSave(
       }
     }
 
-    if (data.overseerrUrl && data.overseerrApiKey) {
+    if (data.seerrUrl && data.seerrApiKey) {
       const { response, error } = await testRequest(
-        'Overseerr',
-        `${data.overseerrUrl}/api/v1/user`,
-        { headers: { 'X-API-KEY': data.overseerrApiKey } },
+        'Seerr',
+        `${data.seerrUrl}/api/v1/user`,
+        { headers: { 'X-API-KEY': data.seerrApiKey } },
       )
 
       if (error) {
-        return fail('Overseerr', error)
+        return fail('Seerr', error)
       }
 
-      const responseError = getResponseError('Overseerr', response)
+      const responseError = getResponseError('Seerr', response)
 
       if (responseError) {
-        return fail('Overseerr', responseError)
+        return fail('Seerr', responseError)
       }
     }
 

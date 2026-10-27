@@ -1,6 +1,6 @@
 import getSettings from './getSettings'
 
-type OverseerrResponse<T> = {
+type SeerrResponse<T> = {
   pageInfo: {
     pages: number
     pageSize: number
@@ -10,13 +10,13 @@ type OverseerrResponse<T> = {
   results: T[]
 }
 
-type OverseerrUser = {
+type SeerrUser = {
   id: number
   plexId: number
   plexUsername: string
 }
 
-type OverseerrRequestItem = {
+type SeerrRequestItem = {
   createdAt: string
   type: string
   requestedBy: {
@@ -27,23 +27,23 @@ type OverseerrRequestItem = {
 const PAGE_SIZE = 20
 const REQUEST_TIMEOUT_MS = 15_000
 
-export default async function fetchOverseerr<T>(
+export default async function fetchSeerr<T>(
   endpoint: string,
   cache: boolean = false,
   additionalParams?: Record<string, string>,
 ): Promise<T | null> {
   const settings = getSettings()
-  const overseerrUrl = settings.connection.overseerrUrl
-  const apiKey = settings.connection.overseerrApiKey
+  const seerrUrl = settings.connection.seerrUrl
+  const apiKey = settings.connection.seerrApiKey
 
-  if (!overseerrUrl) {
-    console.error('[OVERSEERR] - URL is not configured! Skipping request.')
+  if (!seerrUrl) {
+    console.error('[SEERR] - URL is not configured! Skipping request.')
 
     return null
   }
 
   if (!apiKey) {
-    console.error('[OVERSEERR] - API key is not configured! Skipping request.')
+    console.error('[SEERR] - API key is not configured! Skipping request.')
 
     return null
   }
@@ -52,7 +52,7 @@ export default async function fetchOverseerr<T>(
     take: String(PAGE_SIZE),
     ...additionalParams,
   })
-  const apiUrl = `${overseerrUrl}/api/v1/${endpoint}?${queryParams.toString()}`
+  const apiUrl = `${seerrUrl}/api/v1/${endpoint}?${queryParams.toString()}`
 
   try {
     const res = await fetch(apiUrl, {
@@ -67,7 +67,7 @@ export default async function fetchOverseerr<T>(
 
     if (!res.ok) {
       console.error(
-        `[OVERSEERR] - API request failed! The endpoint was '${endpoint}'.\n`,
+        `[SEERR] - API request failed! The endpoint was '${endpoint}'.\n`,
         res.status,
         res.statusText,
       )
@@ -79,11 +79,11 @@ export default async function fetchOverseerr<T>(
   } catch (error) {
     if (error instanceof Error && error.name === 'TimeoutError') {
       console.error(
-        `[OVERSEERR] - API request timed out after ${REQUEST_TIMEOUT_MS / 1000}s! The endpoint was '${endpoint}'.`,
+        `[SEERR] - API request timed out after ${REQUEST_TIMEOUT_MS / 1000}s! The endpoint was '${endpoint}'.`,
       )
     } else {
       console.error(
-        `[OVERSEERR] - Error fetching from API! The endpoint was '${endpoint}'.\n`,
+        `[SEERR] - Error fetching from API! The endpoint was '${endpoint}'.\n`,
         error,
       )
     }
@@ -92,7 +92,7 @@ export default async function fetchOverseerr<T>(
   }
 }
 
-// Overseerr doesn't cap `take`, so lists are read in fewer, larger pages.
+// Seerr doesn't cap `take`, so lists are read in fewer, larger pages.
 const LIST_PAGE_SIZE = 100
 const MAX_CONCURRENT_PAGES = 4
 const USER_IDS_TTL = 60 * 1000
@@ -109,12 +109,12 @@ let userIdsCache: UserIdsCache | null = null
 // batch's last page and stops the paging once nothing further is needed. A
 // page that fails fails the whole list, since a list with a gap would pass
 // for a complete one.
-async function fetchOverseerrPages<T>(
+async function fetchSeerrPages<T>(
   endpoint: string,
   isPastEnd: (page: T[]) => boolean = () => false,
 ): Promise<T[] | null> {
   function fetchPage(page: number) {
-    return fetchOverseerr<OverseerrResponse<T>>(endpoint, undefined, {
+    return fetchSeerr<SeerrResponse<T>>(endpoint, undefined, {
       take: String(LIST_PAGE_SIZE),
       skip: String(LIST_PAGE_SIZE * (page - 1)),
     })
@@ -153,20 +153,20 @@ async function fetchOverseerrPages<T>(
   return items
 }
 
-// Null when Overseerr fails, so callers can leave the requests out instead of
+// Null when Seerr fails, so callers can leave the requests out instead of
 // showing none
-export async function fetchOverseerrStats(
+export async function fetchSeerrStats(
   req: string,
   startDate: string,
   endDate?: string,
-): Promise<OverseerrRequestItem[] | null> {
+): Promise<SeerrRequestItem[] | null> {
   const start = new Date(startDate).getTime()
   const end = endDate ? new Date(endDate).getTime() : Date.now()
   // Both `request` and `user/{id}/requests` list the newest first by default,
   // so a page that is entirely older than the window means the rest is too.
   // No `sort` is sent: `user/{id}/requests` only takes `take` and `skip`, and
-  // Overseerr answers any other query parameter with a 400.
-  const requests = await fetchOverseerrPages<OverseerrRequestItem>(
+  // Seerr answers any other query parameter with a 400.
+  const requests = await fetchSeerrPages<SeerrRequestItem>(
     req,
     (page) =>
       page.length > 0 &&
@@ -174,7 +174,7 @@ export async function fetchOverseerrStats(
   )
 
   if (!requests) {
-    console.error('[OVERSEERR] - No requests data found!')
+    console.error('[SEERR] - No requests data found!')
 
     return null
   }
@@ -186,11 +186,11 @@ export async function fetchOverseerrStats(
   })
 }
 
-async function loadOverseerrUserIds(): Promise<Map<string, number> | null> {
-  const users = await fetchOverseerrPages<OverseerrUser>('user')
+async function loadSeerrUserIds(): Promise<Map<string, number> | null> {
+  const users = await fetchSeerrPages<SeerrUser>('user')
 
   if (!users) {
-    console.error(`[OVERSEERR] - No user data found!`)
+    console.error(`[SEERR] - No user data found!`)
 
     return null
   }
@@ -208,15 +208,15 @@ async function loadOverseerrUserIds(): Promise<Map<string, number> | null> {
 
 // The top users list looks up several users at once, so they share one scan
 // of the user list.
-function getOverseerrUserIds(): Promise<Map<string, number> | null> {
-  const { overseerrUrl, overseerrApiKey } = getSettings().connection
-  const key = `${overseerrUrl}|${overseerrApiKey}`
+function getSeerrUserIds(): Promise<Map<string, number> | null> {
+  const { seerrUrl, seerrApiKey } = getSettings().connection
+  const key = `${seerrUrl}|${seerrApiKey}`
 
   if (userIdsCache?.key === key && userIdsCache.expiresAt > Date.now()) {
     return userIdsCache.load
   }
 
-  const load = loadOverseerrUserIds()
+  const load = loadSeerrUserIds()
   const forgetFailure = () => {
     if (userIdsCache?.load === load) {
       userIdsCache = null
@@ -229,16 +229,14 @@ function getOverseerrUserIds(): Promise<Map<string, number> | null> {
   return load
 }
 
-export async function fetchOverseerrUserId(
-  plexId: string,
-): Promise<number | null> {
-  const userIds = await getOverseerrUserIds()
+export async function fetchSeerrUserId(plexId: string): Promise<number | null> {
+  const userIds = await getSeerrUserIds()
 
   if (!userIds) {
     return null
   }
 
-  // Plex users who never signed in to Overseerr have no account there, which
+  // Plex users who never signed in to Seerr have no account there, which
   // is normal and not worth logging.
   return userIds.get(plexId) ?? null
 }

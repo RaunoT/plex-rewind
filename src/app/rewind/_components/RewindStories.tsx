@@ -56,7 +56,7 @@ export default function RewindStories({ userRewind, settings }: Props) {
     }
   }
 
-  const isOverseerrActive = settings.connection.isOverseerrActive
+  const isSeerrActive = settings.connection.isSeerrActive
   const isLibrariesSizeAndCountActive =
     settings.rewind.isLibrariesSizeAndCountActive
   const hasMovieLibraries = userRewind.libraries.some(
@@ -77,7 +77,7 @@ export default function RewindStories({ userRewind, settings }: Props) {
     ...(userRewind.libraries_total_size && isLibrariesSizeAndCountActive
       ? [createStory('libraries', StoryLibraries, 9000)]
       : []),
-    ...(isOverseerrActive && userRewind.requests
+    ...(isSeerrActive && userRewind.requests
       ? [
           createStory(
             'requests',

@@ -1,12 +1,12 @@
 import { cloneDeep } from 'lodash'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { DEFAULT_SETTINGS } from './constants'
-import { fetchOverseerrStats } from './fetchOverseerr'
+import { fetchSeerrStats } from './fetchSeerr'
 import { getRequestsTotals } from './getRewind'
 import getSettings from './getSettings'
 
 vi.mock('next-intl/server', () => ({ getTranslations: vi.fn() }))
-vi.mock('./fetchOverseerr', () => ({ fetchOverseerrStats: vi.fn() }))
+vi.mock('./fetchSeerr', () => ({ fetchSeerrStats: vi.fn() }))
 vi.mock('./getSettings', () => ({ default: vi.fn() }))
 vi.mock('./statsSource', () => ({ getStatsSource: vi.fn() }))
 
@@ -23,7 +23,7 @@ beforeEach(() => {
 
 describe('getRequestsTotals', () => {
   it('counts the requests by type and by the user', async () => {
-    vi.mocked(fetchOverseerrStats).mockResolvedValue([
+    vi.mocked(fetchSeerrStats).mockResolvedValue([
       request('movie', 1),
       request('tv', 1),
       request('movie', 2),
@@ -35,11 +35,11 @@ describe('getRequestsTotals', () => {
       shows: 1,
       user: 2,
     })
-    expect(fetchOverseerrStats).toHaveBeenCalledWith('request', '2026-01-01')
+    expect(fetchSeerrStats).toHaveBeenCalledWith('request', '2026-01-01')
   })
 
   it('counts zero requests when there were none', async () => {
-    vi.mocked(fetchOverseerrStats).mockResolvedValue([])
+    vi.mocked(fetchSeerrStats).mockResolvedValue([])
 
     await expect(getRequestsTotals('1')).resolves.toEqual({
       total: 0,
@@ -49,8 +49,8 @@ describe('getRequestsTotals', () => {
     })
   })
 
-  it('returns null when Overseerr fails, so the story is left out', async () => {
-    vi.mocked(fetchOverseerrStats).mockResolvedValue(null)
+  it('returns null when Seerr fails, so the story is left out', async () => {
+    vi.mocked(fetchSeerrStats).mockResolvedValue(null)
 
     await expect(getRequestsTotals('1')).resolves.toBeNull()
   })

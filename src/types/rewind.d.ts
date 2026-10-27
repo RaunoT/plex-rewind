@@ -19,7 +19,7 @@ export type UserRewind = {
   libraries: TautulliLibrary[]
   libraries_total_size: number
   libraries_size_is_partial: boolean
-  // Null when Overseerr couldn't be read
+  // Null when Seerr couldn't be read
   requests?: {
     total: number
     movies: number

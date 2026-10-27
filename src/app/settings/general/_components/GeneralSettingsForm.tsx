@@ -57,7 +57,7 @@ export default function GeneralSettingsForm({
   const focusAfterMoveRef = useRef<string | null>(null)
   const t = useTranslations('Settings.General')
   const tCommon = useTranslations('Common')
-  const isOverseerrActive = settings.connection.isOverseerrActive
+  const isSeerrActive = settings.connection.isSeerrActive
   const initialState: GeneralFormState = {
     message: '',
     status: '',
@@ -303,7 +303,7 @@ export default function GeneralSettingsForm({
                   <div className='checkbox' aria-hidden='true'></div>
                   {tCommon('users')}
                 </Checkbox>
-                {isOverseerrActive && (
+                {isSeerrActive && (
                   <Checkbox
                     key='item-requests'
                     value='requests'

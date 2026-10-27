@@ -3,7 +3,7 @@ import { TautulliLibrary } from '@/types/tautulli'
 import { cloneDeep } from 'lodash'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { DEFAULT_SETTINGS } from './constants'
-import { fetchOverseerrStats, fetchOverseerrUserId } from './fetchOverseerr'
+import { fetchSeerrStats, fetchSeerrUserId } from './fetchSeerr'
 import {
   getItemsLimit,
   getNextItemsLimit,
@@ -12,13 +12,13 @@ import {
 
 vi.mock('next-intl/server', () => ({ getTranslations: vi.fn() }))
 vi.mock('./statsSource', () => ({ getStatsSource: vi.fn() }))
-vi.mock('./fetchOverseerr', () => ({
-  fetchOverseerrStats: vi.fn(),
-  fetchOverseerrUserId: vi.fn(),
+vi.mock('./fetchSeerr', () => ({
+  fetchSeerrStats: vi.fn(),
+  fetchSeerrUserId: vi.fn(),
 }))
 
-const statsMock = vi.mocked(fetchOverseerrStats)
-const userIdMock = vi.mocked(fetchOverseerrUserId)
+const statsMock = vi.mocked(fetchSeerrStats)
+const userIdMock = vi.mocked(fetchSeerrUserId)
 
 function library(type: TautulliLibrary['section_type']): TautulliLibrary {
   return {
@@ -41,8 +41,8 @@ function settings(overrides: Partial<Settings['connection']> = {}) {
 
   result.connection = {
     ...result.connection,
-    overseerrUrl: 'http://overseerr',
-    overseerrApiKey: 'key',
+    seerrUrl: 'http://seerr',
+    seerrApiKey: 'key',
     ...overrides,
   }
 
@@ -90,7 +90,7 @@ describe('getTotalRequests', () => {
     expect(statsMock).toHaveBeenCalledWith('user/7/requests', '2026-09-01')
   })
 
-  it('leaves the requests out for a user without an Overseerr account', async () => {
+  it('leaves the requests out for a user without a Seerr account', async () => {
     userIdMock.mockResolvedValue(null)
 
     expect(
@@ -99,19 +99,19 @@ describe('getTotalRequests', () => {
     expect(statsMock).not.toHaveBeenCalled()
   })
 
-  it('leaves the requests out when Overseerr fails', async () => {
+  it('leaves the requests out when Seerr fails', async () => {
     statsMock.mockResolvedValue(null)
 
     expect(await getTotalRequests('2026-09-01', settings())).toBeUndefined()
   })
 
-  it('needs Overseerr and the statistic to be on', async () => {
+  it('needs Seerr and the statistic to be on', async () => {
     const withoutStatistic = settings()
 
     withoutStatistic.dashboard.activeTotalStatistics = ['size', 'duration']
 
     expect(
-      await getTotalRequests('2026-09-01', settings({ overseerrApiKey: '' })),
+      await getTotalRequests('2026-09-01', settings({ seerrApiKey: '' })),
     ).toBeUndefined()
     expect(
       await getTotalRequests('2026-09-01', withoutStatistic),

@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// A stand-in for Tautulli and Overseerr with made-up data for a 15-person
+// A stand-in for Tautulli and Seerr with made-up data for a 15-person
 // server, for taking README screenshots without anyone's real history. Titles
 // are real, so posters, ratings and links still come from TMDB and the rating
 // services. See CONTRIBUTING.md for how to use it.
@@ -718,7 +718,7 @@ function makeRequests() {
 }
 
 const REQUESTS = makeRequests()
-const OVERSEERR_USERS = USERS.map((user, i) => ({
+const SEERR_USERS = USERS.map((user, i) => ({
   id: i + 1,
   plexId: Number(user.id),
   plexUsername: user.email.split('@')[0],
@@ -739,13 +739,13 @@ function page(results, query) {
   }
 }
 
-function overseerr(pathname, query) {
+function seerr(pathname, query) {
   if (pathname === '/api/v1/request') {
     return page(REQUESTS, query)
   }
 
   if (pathname === '/api/v1/user') {
-    return page(OVERSEERR_USERS, query)
+    return page(SEERR_USERS, query)
   }
 
   const userRequests = pathname.match(/^\/api\/v1\/user\/(\d+)\/requests$/)
@@ -800,7 +800,7 @@ http
       return
     }
 
-    const data = overseerr(url.pathname, url.searchParams)
+    const data = seerr(url.pathname, url.searchParams)
 
     if (data) {
       json(res, 200, data)
@@ -811,5 +811,5 @@ http
     json(res, 404, { message: 'Not found' })
   })
   .listen(PORT, () => {
-    console.log(`Mock Tautulli and Overseerr at http://localhost:${PORT}`)
+    console.log(`Mock Tautulli and Seerr at http://localhost:${PORT}`)
   })

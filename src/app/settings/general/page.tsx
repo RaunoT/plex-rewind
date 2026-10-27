@@ -2,6 +2,7 @@ import { requireSettingsAccess } from '@/lib/access'
 import getSettings from '@/utils/getSettings'
 import { toPublicSettings } from '@/utils/publicSettings'
 import { getReachableLibraries, getUsers } from '@/utils/statsSource'
+import { kebabCase } from 'lodash'
 import { Metadata } from 'next'
 import { getTranslations } from 'next-intl/server'
 import GeneralSettingsForm from './_components/GeneralSettingsForm'
@@ -22,6 +23,12 @@ export default async function GeneralSettingsPage() {
     getUsers(),
   ])
   const settings = getSettings()
+
+  // A first setup starts with every library on, so it has something to show
+  if (!settings.general.complete && !settings.general.activeLibraries.length) {
+    settings.general.activeLibraries =
+      libraries?.map((library) => kebabCase(library.section_name)) ?? []
+  }
 
   return (
     <GeneralSettingsForm

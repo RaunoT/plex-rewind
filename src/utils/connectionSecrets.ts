@@ -1,7 +1,7 @@
 import { ConnectionSettings } from '@/types/settings'
 import { normalizeUrl } from './url'
 
-type Service = 'Tautulli' | 'Tracearr' | 'Overseerr'
+type Service = 'Tautulli' | 'Tracearr' | 'Seerr'
 
 type ApiKey = {
   service: Service
@@ -18,7 +18,7 @@ export const SAVED_API_KEY = 'saved-api-key'
 const API_KEYS: ApiKey[] = [
   { service: 'Tautulli', key: 'tautulliApiKey', url: 'tautulliUrl' },
   { service: 'Tracearr', key: 'tracearrApiKey', url: 'tracearrUrl' },
-  { service: 'Overseerr', key: 'overseerrApiKey', url: 'overseerrUrl' },
+  { service: 'Seerr', key: 'seerrApiKey', url: 'seerrUrl' },
 ]
 
 export function maskApiKeys<T extends Partial<ConnectionSettings>>(

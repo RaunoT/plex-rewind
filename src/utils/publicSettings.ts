@@ -1,16 +1,16 @@
 import { PublicSettings, Settings } from '@/types/settings'
 
 export function toPublicSettings(settings: Settings): PublicSettings {
-  const { statisticsSource, overseerrUrl, overseerrApiKey, complete } =
+  const { statisticsSource, seerrUrl, seerrApiKey, complete } =
     settings.connection
 
   return {
     ...settings,
     connection: {
       statisticsSource,
-      overseerrUrl: overseerrUrl ?? '',
+      seerrUrl: seerrUrl ?? '',
       complete,
-      isOverseerrActive: !!(overseerrUrl && overseerrApiKey),
+      isSeerrActive: !!(seerrUrl && seerrApiKey),
     },
   }
 }

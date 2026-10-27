@@ -4,11 +4,7 @@ import TitleMenu from '@/components/TitleMenu'
 import { PublicSettings } from '@/types/settings'
 import { SETTINGS_PAGES } from '@/utils/constants'
 import { isSettingsPageLocked } from '@/utils/helpers'
-import {
-  CheckCircleIcon,
-  ExclamationCircleIcon,
-} from '@heroicons/react/16/solid'
-import clsx from 'clsx'
+import { CheckCircleIcon } from '@heroicons/react/16/solid'
 import { useTranslations } from 'next-intl'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
@@ -36,7 +32,7 @@ export default function SettingsNav({
     return (
       <TitleMenu
         label={t('label')}
-        items={SETTINGS_PAGES.map(({ href, key }) => {
+        items={SETTINGS_PAGES.map(({ href, key }, index) => {
           const isComplete =
             settings[key as keyof Omit<PublicSettings, 'setupComplete'>]
               .complete
@@ -47,14 +43,9 @@ export default function SettingsNav({
             label: t(key),
             isCurrent: pathname === href,
             isDisabled: isLocked,
-            description: isLocked ? t('connectionRequired') : undefined,
-            icon:
-              missingSetting &&
-              (isComplete ? (
-                <CheckCircleIcon className='size-4! text-green-400!' />
-              ) : (
-                <ExclamationCircleIcon className='size-4! text-red-400!' />
-              )),
+            icon: missingSetting && (
+              <StepIcon step={index + 1} isComplete={isComplete} />
+            ),
           }
         })}
       />
@@ -64,7 +55,7 @@ export default function SettingsNav({
   return (
     <nav aria-label={t('label')}>
       <ul className='nav'>
-        {SETTINGS_PAGES.map(({ href, key }) => {
+        {SETTINGS_PAGES.map(({ href, key }, index) => {
           const isComplete =
             settings[key as keyof Omit<PublicSettings, 'setupComplete'>]
               .complete
@@ -74,13 +65,7 @@ export default function SettingsNav({
             <li key={key}>
               <Link
                 href={href}
-                className={clsx(
-                  'nav-link',
-                  missingSetting &&
-                    (isComplete ? 'text-green-400!' : 'text-red-400!'),
-                  missingSetting && 'hover:opacity-80!',
-                  missingSetting && pathname === href && 'opacity-80',
-                )}
+                className='nav-link inline-flex items-center gap-1.5'
                 aria-current={pathname === href && 'page'}
                 // Still focusable, so screen readers can reach the reason
                 aria-disabled={isLocked || undefined}
@@ -88,12 +73,9 @@ export default function SettingsNav({
                 prefetch={isLocked ? false : undefined}
                 onClick={isLocked ? (e) => e.preventDefault() : undefined}
               >
-                {missingSetting &&
-                  (isComplete ? (
-                    <CheckCircleIcon className='mr-1 inline size-4 align-text-bottom' />
-                  ) : (
-                    <ExclamationCircleIcon className='mr-1 inline size-4 align-text-bottom' />
-                  ))}
+                {missingSetting && (
+                  <StepIcon step={index + 1} isComplete={isComplete} />
+                )}
                 {t(key)}
                 {missingSetting && (
                   <span className='sr-only'>
@@ -107,10 +89,26 @@ export default function SettingsNav({
         })}
       </ul>
       {hasLockedPages && (
-        <p id={hintId} className='mt-2 text-center text-xs text-neutral-400'>
+        <p id={hintId} className='sr-only'>
           {t('connectionRequired')}
         </p>
       )}
     </nav>
+  )
+}
+
+// While the setup is unfinished, the pages read as numbered steps
+function StepIcon({ step, isComplete }: { step: number; isComplete: boolean }) {
+  if (isComplete) {
+    return <CheckCircleIcon className='size-4! shrink-0 text-green-400!' />
+  }
+
+  return (
+    <span
+      className='inline-flex size-4 shrink-0 items-center justify-center rounded-full text-[0.625rem] leading-none ring-1 ring-current'
+      aria-hidden
+    >
+      {step}
+    </span>
   )
 }

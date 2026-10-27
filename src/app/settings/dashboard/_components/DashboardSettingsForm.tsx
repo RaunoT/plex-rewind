@@ -19,7 +19,7 @@ type Props = {
 type DashboardFormState = SettingsFormInitialState<Partial<DashboardSettings>>
 
 export default function DashboardSettingsForm({ settings }: Props) {
-  const isOverseerrActive = settings.connection.isOverseerrActive
+  const isSeerrActive = settings.connection.isSeerrActive
   const t = useTranslations('Settings.Dashboard')
   const tCommon = useTranslations('Common')
   const [isActive, setIsActive] = useState<boolean>(settings.dashboard.isActive)
@@ -122,7 +122,7 @@ export default function DashboardSettingsForm({ settings }: Props) {
                   <div className='checkbox' aria-hidden='true'></div>
                   {tCommon('count')}
                 </Checkbox>
-                {isOverseerrActive && (
+                {isSeerrActive && (
                   <Checkbox
                     key='total-requests'
                     value='requests'
@@ -135,21 +135,8 @@ export default function DashboardSettingsForm({ settings }: Props) {
               </div>
               <Label className='label label--start'>
                 <span className='label-wrapper'>{t('totalStatistics')}</span>
-                <small>{t('totalStatisticsDescription')}</small>
               </Label>
             </CheckboxGroup>
-            <Switch
-              key={`sort-plays-${dashboardSettings.isSortByPlaysActive}`}
-              className='switch items-start'
-              name='isSortByPlaysActive'
-              defaultSelected={dashboardSettings.isSortByPlaysActive}
-            >
-              <div className='indicator'></div>
-              <span className='label'>
-                <span className='label-wrapper'>{t('sortFilter')}</span>
-                <small>{t('sortFilterDescription')}</small>
-              </span>
-            </Switch>
           </section>
           <section className='group-settings group'>
             <h2 className='heading-settings'>{tCommon('defaults')}</h2>
