@@ -404,12 +404,13 @@ export async function getTracearrPlexUsers(): Promise<TracearrPlexUser[]> {
   return (await getPlexUsers()) ?? []
 }
 
+// Null when Tracearr couldn't be asked, undefined when it doesn't list the user
 export async function getTracearrUser(
   plexId: string,
-): Promise<TracearrPlexUser | undefined> {
-  const users = await getTracearrPlexUsers()
+): Promise<TracearrPlexUser | null | undefined> {
+  const users = await getPlexUsers()
 
-  return users.find((user) => user.plexId === plexId)
+  return users ? users.find((user) => user.plexId === plexId) : null
 }
 
 // `/users` has no avatars, so they come from the plays already in memory.

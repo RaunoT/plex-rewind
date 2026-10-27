@@ -1,5 +1,5 @@
 import { Settings } from '@/types/settings'
-import { StatsSource } from '@/types/statsSource'
+import { ServerMembership, StatsSource } from '@/types/statsSource'
 import {
   TautulliActivity,
   TautulliLibrary,
@@ -54,7 +54,7 @@ export async function getActiveUsers(
 export async function getServerUser(
   userId: string,
   email: string,
-): Promise<{ isAdmin: boolean } | null> {
+): Promise<ServerMembership> {
   return getStatsSource().getServerUser(userId, email)
 }
 

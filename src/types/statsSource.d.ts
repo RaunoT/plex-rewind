@@ -40,6 +40,13 @@ export type PlaysByTime = {
   daily: number[]
 }
 
+// `unavailable` when the source couldn't be asked, which says nothing about
+// whether the user still belongs to the server
+export type ServerMembership =
+  | { status: 'member'; isAdmin: boolean }
+  | { status: 'notMember' }
+  | { status: 'unavailable' }
+
 // Each statistics source maps its data onto the Tautulli types.
 export type StatsSource = {
   getServerId: () => Promise<string>
@@ -48,10 +55,7 @@ export type StatsSource = {
   getLibrariesSize: (libraries: TautulliLibrary[]) => Promise<LibrariesSize>
   // Includes excluded users
   getUsers: () => Promise<TautulliUser[]>
-  getServerUser: (
-    userId: string,
-    email: string,
-  ) => Promise<{ isAdmin: boolean } | null>
+  getServerUser: (userId: string, email: string) => Promise<ServerMembership>
   getActivity: () => Promise<TautulliActivity | null>
   // In seconds. Excluded users are left out unless the query is for one user.
   getTotalDuration: (query: DurationQuery) => Promise<number>

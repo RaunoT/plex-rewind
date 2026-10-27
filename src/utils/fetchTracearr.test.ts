@@ -184,6 +184,53 @@ describe('users', () => {
   })
 })
 
+describe('getTracearrUser', () => {
+  function usersRoute(users: unknown[]): Handlers {
+    return {
+      servers: () => ({ data: [plexServer('s1')] }),
+      users: () => ({
+        data: users,
+        meta: { nextCursor: null, pageSize: 100 },
+      }),
+    }
+  }
+
+  it('finds a user by their Plex ID', async () => {
+    route(usersRoute([user('s1')]))
+
+    const { getTracearrUser } = await load()
+
+    await expect(getTracearrUser('42')).resolves.toMatchObject({
+      plexId: '42',
+    })
+    await expect(getTracearrUser('7')).resolves.toBeUndefined()
+  })
+
+  it('does not find a user removed from the server', async () => {
+    const [account] = user('s1').accounts
+
+    route(
+      usersRoute([
+        user('s1', {
+          accounts: [{ ...account, removed_at: '2026-10-01T00:00:00.000Z' }],
+        }),
+      ]),
+    )
+
+    const { getTracearrUser } = await load()
+
+    await expect(getTracearrUser('42')).resolves.toBeUndefined()
+  })
+
+  it('is null when Tracearr does not answer', async () => {
+    route({ servers: () => ({ data: [plexServer('s1')] }) })
+
+    const { getTracearrUser } = await load()
+
+    await expect(getTracearrUser('42')).resolves.toBeNull()
+  })
+})
+
 describe('server selection', () => {
   function usersFor(serverId: string, servers: unknown[]): Handlers {
     return {
