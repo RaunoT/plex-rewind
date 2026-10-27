@@ -11,9 +11,9 @@ import { getLibraries } from './statsSource'
 vi.mock('@/lib/auth', () => ({ authOptions: {} }))
 vi.mock('next-auth', () => ({ getServerSession: vi.fn() }))
 vi.mock('./fetchTautulli', () => ({ default: vi.fn() }))
-vi.mock('./fetchOverseerr', () => ({
-  fetchOverseerrStats: vi.fn(),
-  fetchOverseerrUserId: vi.fn(),
+vi.mock('./fetchSeerr', () => ({
+  fetchSeerrStats: vi.fn(),
+  fetchSeerrUserId: vi.fn(),
 }))
 vi.mock('./getSettings', () => ({ default: vi.fn() }))
 vi.mock('./statsSource', async (importOriginal) => ({

@@ -191,30 +191,31 @@ export default function ConnectionSettingsForm({
         </label>
       </section>
       <section className='group-settings group'>
-        {/* eslint-disable-next-line react/jsx-no-literals */}
-        <h2 className='heading-settings'>Overseerr</h2>
+        <h2 className='heading-settings'>
+          {t('Connection.optionalService', { service: 'Seerr' })}
+        </h2>
         <label className='input-wrapper'>
           <input
-            key={`overseerr-url-${connectionSettings.overseerrUrl}`}
+            key={`seerr-url-${connectionSettings.seerrUrl}`}
             type='url'
             className='input'
-            placeholder='http://192.168.1.2:5055'
-            name='overseerrUrl'
-            defaultValue={connectionSettings.overseerrUrl}
+            placeholder='https://seerr.example.com'
+            name='seerrUrl'
+            defaultValue={connectionSettings.seerrUrl}
           />
           <span className='label'>
             {/* eslint-disable-next-line react/jsx-no-literals */}
             <span className='label-wrapper'>URL</span>
-            <small>{t('Connection.overseerrUrlDescription')}</small>
+            <small>{t('Connection.seerrUrlDescription')}</small>
           </span>
         </label>
         <label className='input-wrapper'>
           <input
-            key={`overseerr-api-key-${connectionSettings.overseerrApiKey}`}
+            key={`seerr-api-key-${connectionSettings.seerrApiKey}`}
             type='password'
             className='input'
-            name='overseerrApiKey'
-            defaultValue={connectionSettings.overseerrApiKey}
+            name='seerrApiKey'
+            defaultValue={connectionSettings.seerrApiKey}
           />
           <span className='label'>
             <span className='label-wrapper'>{t('apiKey')}</span>

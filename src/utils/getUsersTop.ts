@@ -1,7 +1,7 @@
 import { TopItems } from '@/types/statsSource'
 import { TautulliItemRow } from '@/types/tautulli'
 import { DASHBOARD_PAGE_SIZE } from './constants'
-import { fetchOverseerrStats, fetchOverseerrUserId } from './fetchOverseerr'
+import { fetchSeerrStats, fetchSeerrUserId } from './fetchSeerr'
 import getSettings from './getSettings'
 import { getLibraries, getStatsSource } from './statsSource'
 
@@ -38,23 +38,23 @@ export default async function getUsersTop(
   const listedUserIds = new Set(listedUsers.map((user) => user.user_id))
   // The logged-in user's row can stand in for higher ranked ones
   const hasMore = users.some((user) => !listedUserIds.has(user.user_id))
-  const isOverseerrActive =
-    settings.connection.overseerrUrl && settings.connection.overseerrApiKey
+  const isSeerrActive =
+    settings.connection.seerrUrl && settings.connection.seerrApiKey
 
   let usersRequestsCounts: UserRequestCounts[] = []
 
-  if (isOverseerrActive) {
-    const overseerrUserIds = await Promise.all(
+  if (isSeerrActive) {
+    const seerrUserIds = await Promise.all(
       listedUsers.map(
-        async (user) => await fetchOverseerrUserId(String(user.user_id)),
+        async (user) => await fetchSeerrUserId(String(user.user_id)),
       ),
     )
 
     usersRequestsCounts = await Promise.all(
-      overseerrUserIds.map(async (overseerrId) => {
-        if (overseerrId) {
-          const userTotal = await fetchOverseerrStats(
-            `user/${overseerrId}/requests`,
+      seerrUserIds.map(async (seerrId) => {
+        if (seerrId) {
+          const userTotal = await fetchSeerrStats(
+            `user/${seerrId}/requests`,
             after,
           )
 

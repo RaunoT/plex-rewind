@@ -25,4 +25,4 @@ Plex Rewind is a free-time, open-source project, with no support commitments or 
 
 ## Scope
 
-This covers the Plex Rewind code and its published Docker images. Problems in Plex, Tautulli, Tracearr or Overseerr should be reported to those projects.
+This covers the Plex Rewind code and its published Docker images. Problems in Plex, Tautulli, Tracearr or Seerr should be reported to those projects.

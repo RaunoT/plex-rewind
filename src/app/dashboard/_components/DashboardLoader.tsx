@@ -28,7 +28,7 @@ export default function DashboardLoader({
   const periodStats = [
     activeTotalStatistics.includes('duration') && 'w-32',
     activeTotalStatistics.includes('requests') &&
-      settings.connection.isOverseerrActive &&
+      settings.connection.isSeerrActive &&
       type !== 'artist' &&
       'w-20',
   ]

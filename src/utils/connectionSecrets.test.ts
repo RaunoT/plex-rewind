@@ -7,8 +7,8 @@ const saved: ConnectionSettings = {
   ...DEFAULT_SETTINGS.connection,
   tautulliUrl: 'http://tautulli:8181',
   tautulliApiKey: 'tautulli-key',
-  overseerrUrl: 'http://overseerr:5055',
-  overseerrApiKey: 'overseerr-key',
+  seerrUrl: 'http://seerr:5055',
+  seerrApiKey: 'seerr-key',
   plexUrl: 'http://plex:32400',
   complete: true,
 }
@@ -18,11 +18,11 @@ describe('maskApiKeys', () => {
     const masked = maskApiKeys(saved)
 
     expect(masked.tautulliApiKey).toBe(SAVED_API_KEY)
-    expect(masked.overseerrApiKey).toBe(SAVED_API_KEY)
+    expect(masked.seerrApiKey).toBe(SAVED_API_KEY)
     expect(masked.tracearrApiKey).toBe('')
     expect(masked.tautulliUrl).toBe(saved.tautulliUrl)
     expect(JSON.stringify(masked)).not.toContain('tautulli-key')
-    expect(JSON.stringify(masked)).not.toContain('overseerr-key')
+    expect(JSON.stringify(masked)).not.toContain('seerr-key')
   })
 })
 
@@ -32,11 +32,11 @@ describe('maskApiKeys after a save', () => {
     const masked = maskApiKeys(typed, saved)
 
     expect(masked.tautulliApiKey).toBe('typed-key')
-    expect(masked.overseerrApiKey).toBe(SAVED_API_KEY)
+    expect(masked.seerrApiKey).toBe(SAVED_API_KEY)
   })
 
   it('keeps a typed key on a first setup with nothing stored', () => {
-    const empty = { ...saved, tautulliApiKey: '', overseerrApiKey: '' }
+    const empty = { ...saved, tautulliApiKey: '', seerrApiKey: '' }
     const masked = maskApiKeys({ ...saved, tautulliApiKey: 'new' }, empty)
 
     expect(masked.tautulliApiKey).toBe('new')
@@ -81,12 +81,12 @@ describe('restoreApiKeys', () => {
 
   it('drops the key of a service whose URL was cleared', () => {
     const { connection, needsKey } = restoreApiKeys(
-      { ...maskApiKeys(saved), overseerrUrl: '' },
+      { ...maskApiKeys(saved), seerrUrl: '' },
       saved,
     )
 
     expect(needsKey).toBeUndefined()
-    expect(connection.overseerrApiKey).toBe('')
+    expect(connection.seerrApiKey).toBe('')
   })
 
   it('asks for a key that was never saved', () => {

@@ -1,5 +1,5 @@
 // Rotten Tomatoes has no public API, so this asks the search its own site uses,
-// with the search-only key from that site, the way Overseerr does. It's
+// with the search-only key from that site, the way Seerr does. It's
 // unofficial and can stop working, and titles are matched by name and year,
 // so a failed or unmatched search just leaves the scores out.
 const SEARCH_URL = 'https://79frdp12pn-dsn.algolia.net/1/indexes/*/queries'

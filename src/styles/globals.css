@@ -443,12 +443,9 @@
     @apply relative size-6 shrink-0 rounded-md bg-white/15 transition-colors;
   }
 
-  /* Rows of boxes with their labels, so each tick clearly belongs to one
-     name. One column on phones, more as the space allows. */
+  /* Boxes with their labels side by side, wrapping onto new rows as needed */
   .checkbox-grid {
-    @apply grid min-w-0 gap-x-4 gap-y-2 sm:flex-1;
-
-    grid-template-columns: repeat(auto-fill, minmax(min(100%, 11rem), 1fr));
+    @apply flex min-w-0 flex-wrap gap-x-6 gap-y-2 sm:flex-1;
 
     > .checkbox-wrapper {
       @apply min-w-0 items-start wrap-anywhere;

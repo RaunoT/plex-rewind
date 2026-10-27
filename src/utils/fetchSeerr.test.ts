@@ -3,21 +3,21 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 vi.mock('./getSettings', () => ({
   default: () => ({
     connection: {
-      overseerrUrl: 'http://overseerr',
-      overseerrApiKey: 'key',
+      seerrUrl: 'http://seerr',
+      seerrApiKey: 'key',
     },
   }),
 }))
 
 const HOUR = 60 * 60 * 1000
-// Overseerr validates requests against its API spec, which gives a user's
+// Seerr validates requests against its API spec, which gives a user's
 // requests only these query parameters.
 const USER_REQUESTS_PARAMS = ['take', 'skip']
 
 type Fetch = typeof fetch
 
 // `override` answers a page itself, given its `skip`, instead of the list.
-function overseerrFetch(
+function seerrFetch(
   items: unknown[],
   stats = { inFlight: 0, maxInFlight: 0 },
   override?: (skip: number) => Response | undefined,
@@ -71,7 +71,7 @@ function overseerrFetch(
   return { requests, stats }
 }
 
-// One request per hour, newest first, like Overseerr returns them.
+// One request per hour, newest first, like Seerr returns them.
 function hourlyRequests(count: number, now = Date.now()) {
   return Array.from({ length: count }, (_, i) => ({
     createdAt: new Date(now - i * HOUR).toISOString(),
@@ -81,7 +81,7 @@ function hourlyRequests(count: number, now = Date.now()) {
 }
 
 async function load() {
-  return import('./fetchOverseerr')
+  return import('./fetchSeerr')
 }
 
 beforeEach(() => {
@@ -94,11 +94,11 @@ afterEach(() => {
   vi.useRealTimers()
 })
 
-describe('fetchOverseerrStats', () => {
+describe('fetchSeerrStats', () => {
   it('reads large pages, newest first', async () => {
-    const { requests } = overseerrFetch(hourlyRequests(30))
-    const { fetchOverseerrStats } = await load()
-    const stats = await fetchOverseerrStats(
+    const { requests } = seerrFetch(hourlyRequests(30))
+    const { fetchSeerrStats } = await load()
+    const stats = await fetchSeerrStats(
       'request',
       new Date(Date.now() - 100 * HOUR).toISOString(),
     )
@@ -109,11 +109,11 @@ describe('fetchOverseerrStats', () => {
     expect(requests[0].searchParams.get('take')).toBe('100')
   })
 
-  it("reads a user's requests with only the parameters Overseerr accepts", async () => {
+  it("reads a user's requests with only the parameters Seerr accepts", async () => {
     const error = vi.spyOn(console, 'error').mockImplementation(() => {})
-    const { requests } = overseerrFetch(hourlyRequests(250))
-    const { fetchOverseerrStats } = await load()
-    const stats = await fetchOverseerrStats(
+    const { requests } = seerrFetch(hourlyRequests(250))
+    const { fetchSeerrStats } = await load()
+    const stats = await fetchSeerrStats(
       'user/4/requests',
       new Date(Date.now() - 1000 * HOUR).toISOString(),
     )
@@ -125,9 +125,9 @@ describe('fetchOverseerrStats', () => {
   })
 
   it('stops paging once a page is older than the window', async () => {
-    const { requests } = overseerrFetch(hourlyRequests(1000))
-    const { fetchOverseerrStats } = await load()
-    const stats = await fetchOverseerrStats(
+    const { requests } = seerrFetch(hourlyRequests(1000))
+    const { fetchSeerrStats } = await load()
+    const stats = await fetchSeerrStats(
       'request',
       new Date(Date.now() - 150 * HOUR - 1000).toISOString(),
     )
@@ -139,9 +139,9 @@ describe('fetchOverseerrStats', () => {
 
   it('stops after the first page when it is all older than the window', async () => {
     const now = Date.now()
-    const { requests } = overseerrFetch(hourlyRequests(500, now - 1000 * HOUR))
-    const { fetchOverseerrStats } = await load()
-    const stats = await fetchOverseerrStats(
+    const { requests } = seerrFetch(hourlyRequests(500, now - 1000 * HOUR))
+    const { fetchSeerrStats } = await load()
+    const stats = await fetchSeerrStats(
       'request',
       new Date(now - 10 * HOUR).toISOString(),
     )
@@ -151,9 +151,9 @@ describe('fetchOverseerrStats', () => {
   })
 
   it('reads every page when the window covers them all', async () => {
-    const { requests } = overseerrFetch(hourlyRequests(450))
-    const { fetchOverseerrStats } = await load()
-    const stats = await fetchOverseerrStats(
+    const { requests } = seerrFetch(hourlyRequests(450))
+    const { fetchSeerrStats } = await load()
+    const stats = await fetchSeerrStats(
       'request',
       new Date(Date.now() - 1000 * HOUR).toISOString(),
     )
@@ -166,10 +166,10 @@ describe('fetchOverseerrStats', () => {
   })
 
   it('reads at most four pages at a time', async () => {
-    const { stats: concurrency } = overseerrFetch(hourlyRequests(1500))
-    const { fetchOverseerrStats } = await load()
+    const { stats: concurrency } = seerrFetch(hourlyRequests(1500))
+    const { fetchSeerrStats } = await load()
 
-    await fetchOverseerrStats(
+    await fetchSeerrStats(
       'request',
       new Date(Date.now() - 5000 * HOUR).toISOString(),
     )
@@ -178,10 +178,10 @@ describe('fetchOverseerrStats', () => {
   })
 
   it('leaves out requests after the end date', async () => {
-    overseerrFetch(hourlyRequests(30))
+    seerrFetch(hourlyRequests(30))
 
-    const { fetchOverseerrStats } = await load()
-    const stats = await fetchOverseerrStats(
+    const { fetchSeerrStats } = await load()
+    const stats = await fetchSeerrStats(
       'request',
       new Date(Date.now() - 100 * HOUR).toISOString(),
       new Date(Date.now() - 10 * HOUR).toISOString(),
@@ -192,17 +192,17 @@ describe('fetchOverseerrStats', () => {
 
   it('returns null when a page after the first one fails', async () => {
     vi.spyOn(console, 'error').mockImplementation(() => {})
-    overseerrFetch(hourlyRequests(250), undefined, (skip) =>
+    seerrFetch(hourlyRequests(250), undefined, (skip) =>
       skip === 100
         ? new Response('nope', { status: 500, statusText: 'Server Error' })
         : undefined,
     )
 
-    const { fetchOverseerrStats } = await load()
+    const { fetchSeerrStats } = await load()
 
     // The first page alone would have passed for 100 requests in total
     expect(
-      await fetchOverseerrStats(
+      await fetchSeerrStats(
         'request',
         new Date(Date.now() - 1000 * HOUR).toISOString(),
       ),
@@ -211,34 +211,34 @@ describe('fetchOverseerrStats', () => {
 
   it('returns null when a later page has no list of results', async () => {
     vi.spyOn(console, 'error').mockImplementation(() => {})
-    overseerrFetch(hourlyRequests(250), undefined, (skip) =>
+    seerrFetch(hourlyRequests(250), undefined, (skip) =>
       skip === 200 ? Response.json({ pageInfo: { pages: 3 } }) : undefined,
     )
 
-    const { fetchOverseerrStats } = await load()
+    const { fetchSeerrStats } = await load()
 
     expect(
-      await fetchOverseerrStats(
+      await fetchSeerrStats(
         'request',
         new Date(Date.now() - 1000 * HOUR).toISOString(),
       ),
     ).toBeNull()
   })
 
-  it('returns null, not an empty list, when Overseerr fails', async () => {
+  it('returns null, not an empty list, when Seerr fails', async () => {
     vi.spyOn(console, 'error').mockImplementation(() => {})
     vi.stubGlobal(
       'fetch',
       vi.fn(async () => new Response('nope', { status: 500 })),
     )
 
-    const { fetchOverseerrStats } = await load()
+    const { fetchSeerrStats } = await load()
 
-    expect(await fetchOverseerrStats('request', '2020-01-01')).toBeNull()
+    expect(await fetchSeerrStats('request', '2020-01-01')).toBeNull()
   })
 })
 
-describe('fetchOverseerrUserId', () => {
+describe('fetchSeerrUserId', () => {
   const users = Array.from({ length: 250 }, (_, i) => ({
     id: i + 1,
     plexId: 1000 + i,
@@ -246,13 +246,13 @@ describe('fetchOverseerrUserId', () => {
   }))
 
   it('finds users across pages with one scan of the list', async () => {
-    const { requests } = overseerrFetch(users)
-    const { fetchOverseerrUserId } = await load()
+    const { requests } = seerrFetch(users)
+    const { fetchSeerrUserId } = await load()
     const ids = await Promise.all([
-      fetchOverseerrUserId('1000'),
-      fetchOverseerrUserId('1120'),
-      fetchOverseerrUserId('1249'),
-      fetchOverseerrUserId('9999'),
+      fetchSeerrUserId('1000'),
+      fetchSeerrUserId('1120'),
+      fetchSeerrUserId('1249'),
+      fetchSeerrUserId('9999'),
     ])
 
     expect(ids).toEqual([1, 121, 250, null])
@@ -260,31 +260,31 @@ describe('fetchOverseerrUserId', () => {
     expect(requests.every((url) => url.pathname === '/api/v1/user')).toBe(true)
   })
 
-  it('skips users without an Overseerr account quietly', async () => {
+  it('skips users without a Seerr account quietly', async () => {
     const error = vi.spyOn(console, 'error').mockImplementation(() => {})
 
-    overseerrFetch(users)
+    seerrFetch(users)
 
-    const { fetchOverseerrUserId } = await load()
+    const { fetchSeerrUserId } = await load()
 
-    expect(await fetchOverseerrUserId('9999')).toBeNull()
+    expect(await fetchSeerrUserId('9999')).toBeNull()
     expect(error).not.toHaveBeenCalled()
   })
 
   it('reuses the user list for a minute', async () => {
     vi.useFakeTimers({ toFake: ['Date'] })
 
-    const { requests } = overseerrFetch(users)
-    const { fetchOverseerrUserId } = await load()
+    const { requests } = seerrFetch(users)
+    const { fetchSeerrUserId } = await load()
 
-    await fetchOverseerrUserId('1000')
+    await fetchSeerrUserId('1000')
     vi.advanceTimersByTime(30 * 1000)
-    await fetchOverseerrUserId('1001')
+    await fetchSeerrUserId('1001')
 
     expect(requests).toHaveLength(3)
 
     vi.advanceTimersByTime(31 * 1000)
-    await fetchOverseerrUserId('1002')
+    await fetchSeerrUserId('1002')
 
     expect(requests).toHaveLength(6)
   })
@@ -294,23 +294,23 @@ describe('fetchOverseerrUserId', () => {
 
     let isFailing = true
 
-    const { requests } = overseerrFetch(users, undefined, (skip) =>
+    const { requests } = seerrFetch(users, undefined, (skip) =>
       isFailing && skip === 100
         ? new Response('nope', { status: 500, statusText: 'Server Error' })
         : undefined,
     )
-    const { fetchOverseerrUserId } = await load()
+    const { fetchSeerrUserId } = await load()
 
     // User 1000 is on the page that loaded, but with a gap in the list, the
     // users after it would wrongly look like they have no account
-    expect(await fetchOverseerrUserId('1000')).toBeNull()
-    expect(await fetchOverseerrUserId('1249')).toBeNull()
+    expect(await fetchSeerrUserId('1000')).toBeNull()
+    expect(await fetchSeerrUserId('1249')).toBeNull()
     expect(requests).toHaveLength(6)
 
     isFailing = false
 
-    expect(await fetchOverseerrUserId('1000')).toBe(1)
-    expect(await fetchOverseerrUserId('1249')).toBe(250)
+    expect(await fetchSeerrUserId('1000')).toBe(1)
+    expect(await fetchSeerrUserId('1249')).toBe(250)
     expect(requests).toHaveLength(9)
   })
 
@@ -321,13 +321,13 @@ describe('fetchOverseerrUserId', () => {
       vi.fn(async () => new Response('nope', { status: 500 })),
     )
 
-    const { fetchOverseerrUserId } = await load()
+    const { fetchSeerrUserId } = await load()
 
-    expect(await fetchOverseerrUserId('1000')).toBeNull()
+    expect(await fetchSeerrUserId('1000')).toBeNull()
 
-    const { requests } = overseerrFetch(users)
+    const { requests } = seerrFetch(users)
 
-    expect(await fetchOverseerrUserId('1000')).toBe(1)
+    expect(await fetchSeerrUserId('1000')).toBe(1)
     expect(requests).toHaveLength(3)
   })
 })

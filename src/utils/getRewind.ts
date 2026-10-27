@@ -1,6 +1,6 @@
 import { TautulliLibrary, TautulliMediaReturnType } from '@/types/tautulli'
 import { getTranslations } from 'next-intl/server'
-import { fetchOverseerrStats } from './fetchOverseerr'
+import { fetchSeerrStats } from './fetchSeerr'
 import { secondsToTime } from './formatting'
 import getSettings from './getSettings'
 import { getRewindStartDate } from './helpers'
@@ -110,7 +110,7 @@ export async function getPlaybackHabits(userId: string) {
 
 export async function getRequestsTotals(userId: string) {
   const startDate = getRewindStartDate(getSettings())
-  const requests = await fetchOverseerrStats('request', startDate)
+  const requests = await fetchSeerrStats('request', startDate)
 
   if (!requests) {
     return null

@@ -4,12 +4,12 @@ import { TautulliLibrary, TautulliMediaType } from '@/types/tautulli'
 import { clamp } from 'lodash'
 import { getTranslations } from 'next-intl/server'
 import { DASHBOARD_MAX_ITEMS, DASHBOARD_PAGE_SIZE } from './constants'
-import { fetchOverseerrStats, fetchOverseerrUserId } from './fetchOverseerr'
+import { fetchSeerrStats, fetchSeerrUserId } from './fetchSeerr'
 import { bytesToSize, secondsToTime } from './formatting'
 import { getStatsSource } from './statsSource'
 
-// Overseerr has no music
-const OVERSEERR_MEDIA_TYPES: Partial<Record<TautulliMediaType, string>> = {
+// Seerr has no music
+const SEERR_MEDIA_TYPES: Partial<Record<TautulliMediaType, string>> = {
   movie: 'movie',
   show: 'tv',
 }
@@ -59,7 +59,7 @@ export async function getTotalDuration(
   return undefined
 }
 
-// Overseerr requests aren't tied to a library, so a library counts the
+// Seerr requests aren't tied to a library, so a library counts the
 // requests of its media type. Without a library, every request counts.
 export async function getTotalRequests(
   period: string,
@@ -67,13 +67,13 @@ export async function getTotalRequests(
   library?: TautulliLibrary,
   userId?: string,
 ) {
-  const { overseerrUrl, overseerrApiKey } = settings.connection
-  const mediaType = library && OVERSEERR_MEDIA_TYPES[library.section_type]
+  const { seerrUrl, seerrApiKey } = settings.connection
+  const mediaType = library && SEERR_MEDIA_TYPES[library.section_type]
 
   if (
     !settings.dashboard.activeTotalStatistics.includes('requests') ||
-    !overseerrUrl ||
-    !overseerrApiKey ||
+    !seerrUrl ||
+    !seerrApiKey ||
     (library && !mediaType)
   ) {
     return undefined
@@ -82,17 +82,17 @@ export async function getTotalRequests(
   let endpoint = 'request'
 
   if (userId) {
-    const overseerrUserId = await fetchOverseerrUserId(userId)
+    const seerrUserId = await fetchSeerrUserId(userId)
 
-    // Users who never signed in to Overseerr have nothing to count
-    if (!overseerrUserId) {
+    // Users who never signed in to Seerr have nothing to count
+    if (!seerrUserId) {
       return undefined
     }
 
-    endpoint = `user/${overseerrUserId}/requests`
+    endpoint = `user/${seerrUserId}/requests`
   }
 
-  const requests = await fetchOverseerrStats(endpoint, period)
+  const requests = await fetchSeerrStats(endpoint, period)
 
   if (!requests) {
     return undefined

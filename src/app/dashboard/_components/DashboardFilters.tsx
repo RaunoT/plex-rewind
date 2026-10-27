@@ -10,7 +10,6 @@ import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { ChangeEvent, useCallback, useContext, useEffect, useId } from 'react'
 
 type Props = {
-  isSortByPlaysActive: boolean
   personalFilter: boolean
 }
 
@@ -19,10 +18,7 @@ type Props = {
 // Back and Forward keep working.
 let hasRestoredSavedFilters = false
 
-export default function DashboardFilters({
-  isSortByPlaysActive,
-  personalFilter,
-}: Props) {
+export default function DashboardFilters({ personalFilter }: Props) {
   const id = useId()
   const router = useRouter()
   const pathname = usePathname()
@@ -87,9 +83,7 @@ export default function DashboardFilters({
           ? 'true'
           : undefined
       const savedSort =
-        isSortByPlaysActive && readStorage('dashboardSort') === 'duration'
-          ? 'duration'
-          : undefined
+        readStorage('dashboardSort') === 'duration' ? 'duration' : undefined
 
       if (!hasUrlFilters && (savedPersonal || savedSort)) {
         router.replace(getUrl(savedPersonal, savedSort))
@@ -105,7 +99,6 @@ export default function DashboardFilters({
     getUrl,
     hasUrlFilters,
     isPersonal,
-    isSortByPlaysActive,
     personalFilter,
     router,
     setIsPersonal,
@@ -132,23 +125,21 @@ export default function DashboardFilters({
           </div>
         </div>
       )}
-      {isSortByPlaysActive && (
-        <div className='input-wrapper'>
-          <div className='select-wrapper'>
-            <select
-              id={`${id}-sort`}
-              className='input input--small'
-              value={sortBy === 'duration' ? 'duration' : ''}
-              onChange={handleSortChange}
-              aria-label={t('sortByLabel')}
-            >
-              <option disabled>{t('sort')}</option>
-              <option value=''>{t('byPlays')}</option>
-              <option value='duration'>{t('byDuration')}</option>
-            </select>
-          </div>
+      <div className='input-wrapper'>
+        <div className='select-wrapper'>
+          <select
+            id={`${id}-sort`}
+            className='input input--small'
+            value={sortBy === 'duration' ? 'duration' : ''}
+            onChange={handleSortChange}
+            aria-label={t('sortByLabel')}
+          >
+            <option disabled>{t('sort')}</option>
+            <option value=''>{t('byPlays')}</option>
+            <option value='duration'>{t('byDuration')}</option>
+          </select>
         </div>
-      )}
+      </div>
     </>
   )
 }

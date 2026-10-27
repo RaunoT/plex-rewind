@@ -46,7 +46,7 @@ export default function Sidebar({ libraries, settings }: Props) {
   const dashboardParams = new URLSearchParams({
     ...(isPersonal && { personal: 'true' }),
     ...(period && { period }),
-    ...(sortBy && settings.dashboard.isSortByPlaysActive && { sortBy }),
+    ...(sortBy && { sortBy }),
   })
   const dashboardQuery = dashboardParams.size
     ? `?${dashboardParams.toString()}`

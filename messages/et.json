@@ -122,6 +122,8 @@
     "savedChooseLibraries": "Salvestatud! Vali kogumikud jaotises Üldine.",
     "genericError": "Midagi läks valesti. Proovi uuesti.",
     "save": "Salvesta",
+    "continue": "Jätka",
+    "setupFinished": "Kõik on valmis!",
     "reenterApiKey": "Sisesta API võti URL-i muutmisel uuesti.",
     "apiKey": "API võti",
     "invalidApiKey": "Vale API võti.",
@@ -131,11 +133,10 @@
     "urlNotFound": "Ei leitud. Kontrolli URL-i, sealhulgas võimalikku baasteed.",
     "unexpectedResponse": "Ootamatu vastus (HTTP {status}).",
     "certificateError": "HTTPS-sertifikaadi viga. Kontrolli, et URL vastaks kehtivale sertifikaadile.",
-    "invalidField": "Kontrolli {field, select, tautulliUrl {Tautulli URL-i} tautulliApiKey {Tautulli API võtit} tracearrUrl {Tracearr URL-i} tracearrApiKey {Tracearr API võtit} plexUrl {Plexi URL-i} overseerrUrl {Overseerr URL-i} overseerrApiKey {Overseerr API võtit} googleAnalyticsId {Google Analyticsi ID-d} other {seadeid}}.",
+    "invalidField": "Kontrolli {field, select, tautulliUrl {Tautulli URL-i} tautulliApiKey {Tautulli API võtit} tracearrUrl {Tracearr URL-i} tracearrApiKey {Tracearr API võtit} plexUrl {Plexi URL-i} seerrUrl {Seerr URL-i} seerrApiKey {Seerr API võtit} googleAnalyticsId {Google Analyticsi ID-d} other {seadeid}}.",
     "buyMeACoffee": "Osta mulle kohvi",
     "becomeASponsor": "Hakka sponsoriks",
     "reportAnIssue": "Teata probleemist",
-    "initialSetup": "Salvesta seaded jätkamiseks",
     "Nav": {
       "label": "Navigatsioon",
       "connection": "Ühendus",
@@ -153,7 +154,8 @@
       "source": "Allikas",
       "server": "Server",
       "chooseServer": "Vali server",
-      "overseerrUrlDescription": "Tellimuste lingid avanevad vaataja brauseris, seega kasuta aadressi, millele ta ligi pääseb, mitte kohtvõrgu aadressi."
+      "seerrUrlDescription": "Tellimuste lingid avanevad vaataja brauseris, seega kasuta aadressi, millele ta ligi pääseb, mitte kohtvõrgu aadressi.",
+      "optionalService": "{service} (valikuline)"
     },
     "Dashboard": {
       "title": "Edetabeli seaded",
@@ -162,9 +164,6 @@
       "usersPage": "Kasutajate leht",
       "statistics": "Statistika",
       "totalStatistics": "Kokkuvõtlik statistika",
-      "totalStatisticsDescription": "Vaatamisaeg ja tellimused käivad valitud perioodi kohta ning on filtrite kõrval. Suurus ja kogus on iga edetabeli all. Kogus on kogumikus olevate filmide, episoodide või lugude arv.",
-      "sortFilter": "Sorteerimise filter",
-      "sortFilterDescription": "Lubab edetabelit sorteerida vaatamisaja järgi. Muidu sorteeritakse mängimiste järgi.",
       "customPeriod": "Kohandatud periood",
       "inDays": "Päevades. Edetabel ja avaleht avanevad selle perioodiga.",
       "startDateHelperText": "Perioodi „Kokku“ algus."
@@ -191,7 +190,7 @@
       "itemStatisticsDescription": "Kuvatakse iga pealkirja ja kasutaja juures edetabelis ja Rewind'is.",
       "privacy": "Privaatsus",
       "excludedUsers": "Välistatud kasutajad",
-      "excludedUsersDescription": "Valitud kasutajad jäetakse välja kasutajate pingeridadest ja kogu vaatamisajast. Tautulli puhul sisaldavad enim vaadatud filmid, seriaalid ja esitajad endiselt nende vaatamisi.",
+      "excludedUsersDescription": "Tautulli puhul sisaldavad enim vaadatud filmid, seriaalid ja esitajad endiselt nende vaatamisi.",
       "outsideAccess": "Luba väline ligipääs",
       "outsideAccessDescription": "Igaüks näeb sinu serveri statistikat ilma sisse logimata.",
       "anonymize": "Anonümiseeri",

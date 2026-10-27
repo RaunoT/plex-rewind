@@ -21,12 +21,7 @@ export default function DashboardToolbar({
     <div className='flex min-h-10 flex-wrap items-center justify-end gap-2 *:flex-1 sm:*:flex-none'>
       <Suspense>
         <PeriodSelect settings={settings} />
-        {!isUsers && (
-          <DashboardFilters
-            isSortByPlaysActive={settings.dashboard.isSortByPlaysActive}
-            personalFilter={personalFilter}
-          />
-        )}
+        {!isUsers && <DashboardFilters personalFilter={personalFilter} />}
       </Suspense>
     </div>
   )

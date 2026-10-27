@@ -4,7 +4,11 @@ import Loader from '@/components/Loader'
 import { useTranslations } from 'next-intl'
 import { useFormStatus } from 'react-dom'
 
-export default function SettingsSaveButton() {
+type Props = {
+  isSetup?: boolean
+}
+
+export default function SettingsSaveButton({ isSetup }: Props) {
   const { pending } = useFormStatus()
   const t = useTranslations('Settings')
 
@@ -14,7 +18,7 @@ export default function SettingsSaveButton() {
       type='submit'
       disabled={pending}
     >
-      {pending ? <Loader size={6} /> : t('save')}
+      {pending ? <Loader size={6} /> : t(isSetup ? 'continue' : 'save')}
     </button>
   )
 }

@@ -122,6 +122,8 @@
     "savedChooseLibraries": "Paramètres enregistrés ! Choisissez vos bibliothèques dans Général.",
     "genericError": "Quelque chose s'est mal passé. Réessayez.",
     "save": "Enregistrer",
+    "continue": "Continuer",
+    "setupFinished": "Tout est prêt !",
     "reenterApiKey": "Saisissez à nouveau la clé API après avoir modifié l'URL.",
     "apiKey": "Clé API",
     "invalidApiKey": "Clé API invalide.",
@@ -131,11 +133,10 @@
     "urlNotFound": "Introuvable. Vérifiez l'URL, y compris le chemin de base éventuel.",
     "unexpectedResponse": "Réponse inattendue (HTTP {status}).",
     "certificateError": "Erreur de certificat HTTPS. Vérifiez que l'URL correspond à un certificat valide.",
-    "invalidField": "Vérifiez {field, select, tautulliUrl {l'URL de Tautulli} tautulliApiKey {la clé API de Tautulli} tracearrUrl {l'URL de Tracearr} tracearrApiKey {la clé API de Tracearr} plexUrl {l'URL de Plex} overseerrUrl {l'URL d'Overseerr} overseerrApiKey {la clé API d'Overseerr} googleAnalyticsId {l'ID Google Analytics} other {les paramètres}}.",
+    "invalidField": "Vérifiez {field, select, tautulliUrl {l'URL de Tautulli} tautulliApiKey {la clé API de Tautulli} tracearrUrl {l'URL de Tracearr} tracearrApiKey {la clé API de Tracearr} plexUrl {l'URL de Plex} seerrUrl {l'URL de Seerr} seerrApiKey {la clé API de Seerr} googleAnalyticsId {l'ID Google Analytics} other {les paramètres}}.",
     "buyMeACoffee": "Offrez-moi un café",
     "becomeASponsor": "Devenir sponsor",
     "reportAnIssue": "Signaler un problème",
-    "initialSetup": "Enregistrer les paramètres pour continuer",
     "Nav": {
       "label": "Navigation",
       "connection": "Connexion",
@@ -153,7 +154,8 @@
       "source": "Source",
       "server": "Serveur",
       "chooseServer": "Choisissez un serveur",
-      "overseerrUrlDescription": "Les liens de demande s'ouvrent dans le navigateur de l'utilisateur : utilisez une adresse qu'il peut joindre, pas une adresse du réseau local."
+      "seerrUrlDescription": "Les liens de demande s'ouvrent dans le navigateur de l'utilisateur : utilisez une adresse qu'il peut joindre, pas une adresse du réseau local.",
+      "optionalService": "{service} (facultatif)"
     },
     "Dashboard": {
       "title": "Paramètres du tableau de bord",
@@ -162,9 +164,6 @@
       "usersPage": "Page des utilisateurs",
       "statistics": "Statistiques",
       "totalStatistics": "Statistiques totales",
-      "totalStatisticsDescription": "La durée de visionnage et les demandes portent sur la période choisie et sont affichées à côté des filtres. La taille et le nombre sont affichés sous chaque liste. Le nombre correspond aux films, épisodes ou morceaux de la bibliothèque.",
-      "sortFilter": "Filtre de tri",
-      "sortFilterDescription": "Permet de trier le tableau de bord par durée de visionnage. Sinon, les listes sont triées par lectures.",
       "customPeriod": "Période personnalisée",
       "inDays": "En jours. Le tableau de bord et l'accueil s'ouvrent sur cette période.",
       "startDateHelperText": "Début de la période « Tout le temps »."
@@ -191,7 +190,7 @@
       "itemStatisticsDescription": "Affichées pour chaque titre et utilisateur dans les listes du tableau de bord et du Rewind.",
       "privacy": "Confidentialité",
       "excludedUsers": "Utilisateurs exclus",
-      "excludedUsersDescription": "Les utilisateurs sélectionnés sont exclus des classements d'utilisateurs et de la durée de visionnage totale. Avec Tautulli, les films, séries et artistes populaires incluent toujours leurs lectures.",
+      "excludedUsersDescription": "Avec Tautulli, les films, séries et artistes populaires incluent toujours leurs lectures.",
       "outsideAccess": "Autoriser l'accès externe",
       "outsideAccessDescription": "Tout le monde peut voir les statistiques de votre serveur sans se connecter.",
       "anonymize": "Anonymiser",

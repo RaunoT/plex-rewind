@@ -132,9 +132,13 @@ function loadSettings(key: string): Settings {
   }
 
   const savedSettings = saved as Partial<Settings>
-  const settings = dropMdblistApiKey(
-    migrateRatingStatistic(
-      mergeWithDefaults(moveItemStatistics(savedSettings)),
+  const settings = dropSortFilterSetting(
+    dropMdblistApiKey(
+      migrateRatingStatistic(
+        mergeWithDefaults(
+          moveItemStatistics(renameOverseerrSettings(savedSettings)),
+        ),
+      ),
     ),
   )
 
@@ -223,6 +227,35 @@ function mergeWithDefaults(saved: Partial<Settings>): Settings {
   )
 }
 
+// Overseerr became Seerr. Renamed before merging, so the empty defaults don't
+// replace the saved connection.
+function renameOverseerrSettings(saved: Partial<Settings>): Partial<Settings> {
+  const connection = saved.connection as
+    | (Partial<Settings['connection']> & {
+        overseerrUrl?: string
+        overseerrApiKey?: string
+      })
+    | undefined
+
+  if (
+    !connection ||
+    !('overseerrUrl' in connection || 'overseerrApiKey' in connection)
+  ) {
+    return saved
+  }
+
+  const { overseerrUrl, overseerrApiKey, ...rest } = connection
+
+  return {
+    ...saved,
+    connection: {
+      ...rest,
+      seerrUrl: rest.seerrUrl ?? overseerrUrl,
+      seerrApiKey: rest.seerrApiKey ?? overseerrApiKey,
+    } as Settings['connection'],
+  }
+}
+
 // Item statistics were dashboard settings, but Rewind's lists show them too.
 // Moved before merging, so the defaults don't replace the saved choice.
 function moveItemStatistics(saved: Partial<Settings>): Partial<Settings> {
@@ -273,6 +306,17 @@ function dropMdblistApiKey(settings: Settings): Settings {
   }
 
   delete connection.mdblistApiKey
+
+  return settings
+}
+
+// The dashboard's sort filter is always shown now, so its switch is gone
+function dropSortFilterSetting(settings: Settings): Settings {
+  const dashboard = settings.dashboard as Settings['dashboard'] & {
+    isSortByPlaysActive?: boolean
+  }
+
+  delete dashboard.isSortByPlaysActive
 
   return settings
 }

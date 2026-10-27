@@ -39,7 +39,7 @@ export default function StoryRequests({ userRewind, settings }: RewindStory) {
                     requestLink: (chunks) => (
                       <a
                         className='link relative z-10'
-                        href={settings.connection.overseerrUrl}
+                        href={settings.connection.seerrUrl}
                         target='_blank'
                         rel='noopener noreferrer'
                       >
@@ -47,7 +47,7 @@ export default function StoryRequests({ userRewind, settings }: RewindStory) {
                       </a>
                     ),
                     requestLinkValue:
-                      settings.connection.overseerrUrl.split('//').pop() ?? '',
+                      settings.connection.seerrUrl.split('//').pop() ?? '',
                   })}
                 </p>
               </RewindStat>

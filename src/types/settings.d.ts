@@ -2,6 +2,8 @@ export type SettingsFormInitialState<T> = {
   message: string
   status: string
   fields: T
+  // Where a save during the setup continues to
+  nextPage?: string
 }
 
 export type StatisticsSource = 'tautulli' | 'tracearr'
@@ -13,8 +15,8 @@ export type ConnectionSettings = {
   tracearrUrl: string
   tracearrApiKey: string
   tracearrServerId: string
-  overseerrUrl?: string
-  overseerrApiKey?: string
+  seerrUrl?: string
+  seerrApiKey?: string
   plexUrl: string
   complete: boolean
 }
@@ -64,7 +66,6 @@ export type DashboardSettings = {
   isAdminOnly: boolean
   isUsersPageActive: boolean
   activeTotalStatistics: DashboardTotalStatistics
-  isSortByPlaysActive: boolean
   customPeriod: string
   startDate: string
   complete: boolean
@@ -90,8 +91,8 @@ export type PublicConnectionSettings = Pick<
   ConnectionSettings,
   'statisticsSource' | 'complete'
 > & {
-  overseerrUrl: string
-  isOverseerrActive: boolean
+  seerrUrl: string
+  isSeerrActive: boolean
 }
 
 export type PublicSettings = Omit<Settings, 'connection'> & {
