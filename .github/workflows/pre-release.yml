@@ -121,6 +121,7 @@ jobs:
         env:
           VERSION_RESULT: ${{ needs.version.result }}
           VERSION: ${{ needs.version.outputs.tag }}
+          IMAGE_RESULT: ${{ needs.image.result }}
           PUBLISHED: ${{ needs.image.outputs.published }}
         run: |
           if [ "$VERSION_RESULT" != 'success' ]; then
@@ -133,8 +134,10 @@ jobs:
             exit 0
           fi
 
-          if [ "$PUBLISHED" != 'true' ]; then
-            echo "The $VERSION image was not published."
+          # published is set before the image job's last step, so the job's
+          # result is checked too.
+          if [ "$IMAGE_RESULT" != 'success' ] || [ "$PUBLISHED" != 'true' ]; then
+            echo "The $VERSION image was not published (image job: $IMAGE_RESULT)."
             exit 1
           fi
 
