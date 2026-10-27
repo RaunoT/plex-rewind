@@ -18,21 +18,22 @@ import SortableLibrary from './SortableLibrary'
 
 type Props = {
   settings: PublicSettings
-  libraries: TautulliLibrary[]
+  // Null when the source can't be reached
+  libraries: TautulliLibrary[] | null
   users: TautulliUser[]
-  isSourceReachable: boolean
 }
 
 type GeneralFormState = SettingsFormInitialState<GeneralSettings>
 
 export default function GeneralSettingsForm({
   settings,
-  libraries,
+  libraries: sourceLibraries,
   users,
-  isSourceReachable,
 }: Props) {
+  const isSourceReachable = sourceLibraries !== null
+  const libraries = sourceLibraries ?? []
   // Saving without the library list would clear the chosen libraries
-  const hasLibraries = isSourceReachable && libraries.length > 0
+  const hasLibraries = libraries.length > 0
   const [librariesState, setLibrariesState] = useState<TautulliLibrary[]>(
     () => {
       const activeLibraries = settings.general.activeLibraries

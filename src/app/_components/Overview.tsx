@@ -30,15 +30,14 @@ import TilePoster from './TilePoster'
 type Props = {
   settings: Settings
   session: Session | null
-  libraries: TautulliLibrary[]
-  isSourceReachable: boolean
+  // Null when the source can't be reached
+  libraries: TautulliLibrary[] | null
 }
 
 export default async function Overview({
   settings,
   session,
   libraries,
-  isSourceReachable,
 }: Props) {
   const t = await getTranslations()
   const firstName = session?.user.name?.split(' ')[0]
@@ -78,7 +77,7 @@ export default async function Overview({
         </div>
       </header>
 
-      {!isSourceReachable ? (
+      {libraries === null ? (
         <SourceUnreachable
           source={settings.connection.statisticsSource}
           isAdmin={!!session?.user.isAdmin}

@@ -46,6 +46,18 @@ export async function getLibraries(
     : libraries
 }
 
+// Null when the source can't be reached, which an empty list can't show
+export async function getReachableLibraries(
+  excludeInactive = true,
+): Promise<TautulliLibrary[] | null> {
+  const [libraries, isReachable] = await Promise.all([
+    getLibraries(excludeInactive),
+    isStatsSourceReachable(),
+  ])
+
+  return isReachable ? libraries : null
+}
+
 // Includes excluded users, so that the settings can list them.
 export async function getUsers(
   settings: Settings = getSettings(),

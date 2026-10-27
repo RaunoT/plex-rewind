@@ -6,6 +6,7 @@ import { DEFAULT_SETTINGS } from './constants'
 import getSettings from './getSettings'
 import {
   getLibraries,
+  getReachableLibraries,
   getServerId,
   getStatsSource,
   getUsers,
@@ -181,6 +182,32 @@ describe('isStatsSourceReachable', () => {
     expect(String(fetchMock.mock.calls[0][0])).toBe(
       'http://tracearr:3000/api/v2/public/servers',
     )
+  })
+})
+
+describe('getReachableLibraries', () => {
+  const libraries = [
+    { section_id: '1', section_name: 'Movies', section_type: 'movie' },
+    { section_id: '2', section_name: 'Music', section_type: 'artist' },
+  ]
+
+  it('returns the active libraries, or all of them when asked', async () => {
+    fetchMock.mockImplementation(async () => tautulliResponse(libraries))
+
+    await expect(getReachableLibraries()).resolves.toEqual([libraries[0]])
+    await expect(getReachableLibraries(false)).resolves.toEqual(libraries)
+  })
+
+  it('returns an empty list when the source has no libraries', async () => {
+    fetchMock.mockImplementation(async () => tautulliResponse([]))
+
+    await expect(getReachableLibraries()).resolves.toEqual([])
+  })
+
+  it('returns null when the source fails', async () => {
+    fetchMock.mockResolvedValue(new Response('nope', { status: 500 }))
+
+    await expect(getReachableLibraries()).resolves.toBeNull()
   })
 })
 

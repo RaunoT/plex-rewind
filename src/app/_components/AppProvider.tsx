@@ -17,7 +17,8 @@ type Props = {
   children: ReactNode
   missingSetting: string | null
   version: Version
-  libraries: TautulliLibrary[]
+  // Streamed in, and null when the source can't be reached
+  libraries: Promise<TautulliLibrary[] | null>
   settings: PublicSettings
   canBrowse: boolean
 }
