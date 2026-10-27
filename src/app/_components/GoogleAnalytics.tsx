@@ -13,12 +13,13 @@ declare global {
 
 type Props = {
   id: string
+  isSignedIn: boolean
   nonce?: string
 }
 
 const configuredIds = new Set<string>()
 
-export default function GoogleAnalytics({ id, nonce }: Props) {
+export default function GoogleAnalytics({ id, isSignedIn, nonce }: Props) {
   // The ID ends up in the script URL, so anything that isn't a plain Google
   // tag ID is never rendered.
   const isValidId = GOOGLE_ANALYTICS_ID_PATTERN.test(id)
@@ -38,8 +39,16 @@ export default function GoogleAnalytics({ id, nonce }: Props) {
       window.dataLayer?.push(arguments)
     }
     window.gtag('js', new Date())
+    // Set before config so the first page view carries them too. Signing in
+    // or out reloads the page, so they don't change while it is open.
+    window.gtag('set', 'user_properties', {
+      viewer_type: isSignedIn ? 'signed_in' : 'guest',
+      display_mode: window.matchMedia('(display-mode: standalone)').matches
+        ? 'standalone'
+        : 'browser',
+    })
     window.gtag('config', id)
-  }, [id, isValidId])
+  }, [id, isSignedIn, isValidId])
 
   if (!isValidId) {
     return null

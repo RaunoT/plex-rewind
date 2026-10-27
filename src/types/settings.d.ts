@@ -19,11 +19,15 @@ export type ConnectionSettings = {
   complete: boolean
 }
 
+export type ExternalLink =
+  'imdb' | 'tmdb' | 'tvdb' | 'rottenTomatoes' | 'letterboxd' | 'trakt'
+
 export type GeneralSettings = {
   serverName: string
   activeLibraries: string[]
   excludedUsers: string[]
   isPostersTmdbOnly: boolean
+  activeExternalLinks: ExternalLink[]
   googleAnalyticsId: string
   isOutsideAccess: boolean
   isAnonymized: boolean
@@ -32,6 +36,7 @@ export type GeneralSettings = {
 
 export type RewindSettings = {
   isActive: boolean
+  isAdminOnly: boolean
   isLibrariesSizeAndCountActive: boolean
   startDate?: string
   complete: boolean
@@ -46,6 +51,7 @@ export type DashboardTotalStatistics = (
 
 export type DashboardSettings = {
   isActive: boolean
+  isAdminOnly: boolean
   isUsersPageActive: boolean
   activeItemStatistics: DashboardItemStatistics
   activeTotalStatistics: DashboardTotalStatistics
@@ -57,6 +63,7 @@ export type DashboardSettings = {
 
 export type ActivitySettings = {
   isActive: boolean
+  isAdminOnly: boolean
   complete: boolean
 }
 

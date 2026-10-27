@@ -24,6 +24,7 @@ export default async function saveDashboardSettings(
   const t = await getTranslations('Settings.Dashboard')
   const schema = z.object({
     isActive: z.boolean(),
+    isAdminOnly: z.boolean().optional(),
     isUsersPageActive: z.boolean().optional(),
     activeItemStatistics: z
       .array(
@@ -62,6 +63,7 @@ export default async function saveDashboardSettings(
   }
 
   if (isActive) {
+    data.isAdminOnly = formData.get('isAdminOnly') === 'on'
     data.isUsersPageActive = formData.get('isUsersPageActive') === 'on'
     data.activeItemStatistics = formData.getAll(
       'activeItemStatistics',

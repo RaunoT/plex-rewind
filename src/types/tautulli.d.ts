@@ -50,6 +50,7 @@ export type TautulliItemRow = {
   rating: string | null
   tmdb_id: number | null
   imdb_id: string | null
+  tvdb_id?: number | null
   user_thumb: string
   user: string
   friendly_name: string

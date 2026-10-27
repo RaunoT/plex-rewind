@@ -57,6 +57,20 @@ export default function RewindSettingsForm({ settings }: Props) {
             <span className='label-wrapper'>{tCommon('enabled')}</span>
           </span>
         </Switch>
+        {isActive && (
+          <Switch
+            key={`admin-only-${rewindSettings.isAdminOnly}`}
+            className='switch items-start'
+            name='isAdminOnly'
+            defaultSelected={rewindSettings.isAdminOnly}
+          >
+            <div className='indicator' />
+            <span className='label'>
+              <span className='label-wrapper'>{tCommon('adminOnly')}</span>
+              <small>{tCommon('adminOnlyDescription')}</small>
+            </span>
+          </Switch>
+        )}
       </section>
       {isActive && (
         <>

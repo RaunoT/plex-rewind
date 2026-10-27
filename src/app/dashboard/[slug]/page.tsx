@@ -1,4 +1,3 @@
-import { canViewStats } from '@/lib/access'
 import { authOptions } from '@/lib/auth'
 import { DashboardSearchParams } from '@/types/dashboard'
 import {
@@ -6,10 +5,12 @@ import {
   getItemsLimit,
   getNextItemsLimit,
   getTotalDuration,
+  getTotalRequests,
   getTotalSize,
 } from '@/utils/getDashboard'
 import getPeriod from '@/utils/getPeriod'
 import getSettings from '@/utils/getSettings'
+import { canViewFeature, getViewer } from '@/utils/helpers'
 import { toPublicSettings } from '@/utils/publicSettings'
 import { getLibraries, getServerId } from '@/utils/statsSource'
 import { kebabCase } from 'lodash'
@@ -67,7 +68,7 @@ async function DashboardContent({
 
   const session = await getServerSession(authOptions)
 
-  if (!settings.dashboard.isActive || !canViewStats(settings, session)) {
+  if (!canViewFeature(settings, 'dashboard', getViewer(session))) {
     return notFound()
   }
 
@@ -78,18 +79,24 @@ async function DashboardContent({
   const sortByPlays = !(
     sortBySp === 'duration' && settings.dashboard.isSortByPlaysActive
   )
-  const [{ items, hasMore }, totalDuration, totalSize, serverId] =
-    await Promise.all([
-      getItems(library, {
-        period: period.daysAgo,
-        userId: personalUserId,
-        sortByPlays,
-        count: limit,
-      }),
-      getTotalDuration(library, period.string, settings, personalUserId),
-      getTotalSize(library, settings),
-      getServerId(),
-    ])
+  const [
+    { items, hasMore },
+    totalDuration,
+    totalRequests,
+    totalSize,
+    serverId,
+  ] = await Promise.all([
+    getItems(library, {
+      period: period.daysAgo,
+      userId: personalUserId,
+      sortByPlays,
+      count: limit,
+    }),
+    getTotalDuration(library, period.string, settings, personalUserId),
+    getTotalRequests(period.string, settings, library, personalUserId),
+    getTotalSize(library, settings),
+    getServerId(),
+  ])
   const isCountActive =
     settings.dashboard.activeTotalStatistics.includes('count')
   const countValue =
@@ -103,6 +110,7 @@ async function DashboardContent({
     <Dashboard
       items={items}
       totalDuration={totalDuration}
+      totalRequests={totalRequests}
       totalSize={totalSize}
       type={library.section_type}
       serverId={serverId}
@@ -132,9 +140,10 @@ export default async function DashboardPage({ searchParams, params }: Props) {
     (library) => kebabCase(library.section_name) === slug,
   )
   const itemsLimit = getItemsLimit(limit)
+  const publicSettings = toPublicSettings(settings)
   const toolbar = (
     <DashboardToolbar
-      settings={toPublicSettings(settings)}
+      settings={publicSettings}
       personalFilter={!!session?.user.id}
     />
   )
@@ -145,7 +154,7 @@ export default async function DashboardPage({ searchParams, params }: Props) {
         <DashboardLoader
           toolbar={toolbar}
           type={library?.section_type ?? 'movie'}
-          activeStats={settings.dashboard.activeItemStatistics}
+          settings={publicSettings}
           rows={itemsLimit}
         />
       }

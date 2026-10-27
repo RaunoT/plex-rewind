@@ -192,9 +192,40 @@
       }
     }
 
-    /* IMDb's own tag, so it reads as the link it is */
+    /* Each site's own colors, so the tags read as the links they are. The
+       reds are a shade darker than the brands' to keep white text legible. */
+    &.button-card--site {
+      @apply bg-(--site-bg) px-1.5 font-extrabold tracking-tight text-(--site-text) hover:bg-(--site-bg) hover:brightness-110;
+    }
+
     &.button-card--imdb {
-      @apply bg-[#f5c518] px-1.5 font-extrabold tracking-tight text-black hover:bg-[#ffd84d];
+      --site-bg: #f5c518;
+      --site-text: #000;
+    }
+
+    &.button-card--tmdb {
+      --site-bg: #0d253f;
+      --site-text: #90cea1;
+    }
+
+    &.button-card--tvdb {
+      --site-bg: #6cd491;
+      --site-text: #000;
+    }
+
+    &.button-card--rotten-tomatoes {
+      --site-bg: #dd2c08;
+      --site-text: #fff;
+    }
+
+    &.button-card--letterboxd {
+      --site-bg: #202830;
+      --site-text: #fff;
+    }
+
+    &.button-card--trakt {
+      --site-bg: #e31b23;
+      --site-text: #fff;
     }
   }
 
@@ -319,7 +350,7 @@
     }
 
     &.input--small {
-      @apply rounded-full px-3 py-1 text-sm;
+      @apply px-3 py-1 text-sm;
 
       /* Selects can't have pseudo-elements, so a transparent border grows
          the tap area to 40px. The negative margin leaves 4px of it outside
@@ -328,6 +359,11 @@
       margin-block: -4px;
       border-block: 6px solid transparent;
       background-clip: padding-box;
+
+      /* The visible pill is inside the border, which only adds height, so
+         the radius is half the pill across and that plus the border down.
+         rounded-full would round the whole 40px and squash the ends. */
+      border-radius: calc(0.5lh + 4px) / calc(0.5lh + 10px);
 
       &:focus {
         @apply ring-inset;
@@ -383,6 +419,28 @@
 
       .label {
         @apply text-white;
+      }
+    }
+
+    /* Beside a page's small selects, with its label first. Taps 10px above
+       and below still count, for a 40px tall tap area. */
+    &.switch--small {
+      @apply relative cursor-pointer flex-row-reverse text-sm text-neutral-300 transition-colors hover:text-white;
+
+      &::after {
+        @apply absolute inset-x-0 -inset-y-2.5 content-[''];
+      }
+
+      .indicator {
+        @apply h-5 w-9;
+
+        &::after {
+          @apply size-4;
+        }
+      }
+
+      &[data-selected='true'] .indicator {
+        @apply after:translate-x-4;
       }
     }
   }

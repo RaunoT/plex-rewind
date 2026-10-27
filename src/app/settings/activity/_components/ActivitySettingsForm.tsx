@@ -15,7 +15,7 @@ type Props = {
   settings: PublicSettings
 }
 
-type ActivityFormState = SettingsFormInitialState<ActivitySettings>
+type ActivityFormState = SettingsFormInitialState<Partial<ActivitySettings>>
 
 export default function ActivitySettingsForm({ settings }: Props) {
   const [isActive, setIsActive] = useState<boolean>(settings.activity.isActive)
@@ -55,6 +55,20 @@ export default function ActivitySettingsForm({ settings }: Props) {
             <span className='label-wrapper'>{tCommon('enabled')}</span>
           </span>
         </Switch>
+        {isActive && (
+          <Switch
+            key={`admin-only-${activitySettings.isAdminOnly}`}
+            className='switch items-start'
+            name='isAdminOnly'
+            defaultSelected={activitySettings.isAdminOnly}
+          >
+            <div className='indicator'></div>
+            <span className='label'>
+              <span className='label-wrapper'>{tCommon('adminOnly')}</span>
+              <small>{tCommon('adminOnlyDescription')}</small>
+            </span>
+          </Switch>
+        )}
       </section>
     </SettingsForm>
   )

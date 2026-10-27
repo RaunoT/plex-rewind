@@ -15,7 +15,7 @@ type SettingsTypeMap = {
   dashboard: Partial<DashboardSettings>
   rewind: Partial<RewindSettings>
   general: GeneralSettings
-  activity: ActivitySettings
+  activity: Partial<ActivitySettings>
 }
 
 export default async function updateSettings<K extends keyof SettingsTypeMap>(

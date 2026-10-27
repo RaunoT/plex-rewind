@@ -8,7 +8,7 @@ import { TautulliLibrary } from '@/types/tautulli'
 import { DASHBOARD_PERIOD_COOKIE_NAME, getSiteUrl } from '@/utils/constants'
 import { getItems } from '@/utils/getDashboard'
 import getPeriod, { parseCustomPeriod } from '@/utils/getPeriod'
-import { getHomeTiles } from '@/utils/helpers'
+import { getHomeTiles, getViewer } from '@/utils/helpers'
 import { getImageProxyUrl } from '@/utils/imageProxy'
 import { toPublicSettings } from '@/utils/publicSettings'
 import { BackwardIcon, ChevronRightIcon } from '@heroicons/react/24/outline'
@@ -38,7 +38,11 @@ export default async function Overview({
   const t = await getTranslations()
   const firstName = session?.user.name?.split(' ')[0]
   const isAdmin = !!session?.user.isAdmin
-  const tiles = getHomeTiles(settings, !!session, libraries?.length ?? 0)
+  const tiles = getHomeTiles(
+    settings,
+    getViewer(session),
+    libraries?.length ?? 0,
+  )
   const period = getDashboardPeriod(
     (await cookies()).get(DASHBOARD_PERIOD_COOKIE_NAME)?.value,
   )

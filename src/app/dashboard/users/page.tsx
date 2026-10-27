@@ -1,13 +1,16 @@
-import { canViewStats } from '@/lib/access'
 import { authOptions } from '@/lib/auth'
 import { DashboardSearchParams } from '@/types/dashboard'
 import { Settings } from '@/types/settings'
-import { fetchOverseerrStats } from '@/utils/fetchOverseerr'
 import { secondsToTime, TranslateFunction } from '@/utils/formatting'
-import { getItemsLimit, getNextItemsLimit } from '@/utils/getDashboard'
+import {
+  getItemsLimit,
+  getNextItemsLimit,
+  getTotalRequests,
+} from '@/utils/getDashboard'
 import getPeriod from '@/utils/getPeriod'
 import getSettings from '@/utils/getSettings'
 import getUsersTop from '@/utils/getUsersTop'
+import { canViewFeature, getViewer } from '@/utils/helpers'
 import { toPublicSettings } from '@/utils/publicSettings'
 import {
   getLibraries,
@@ -16,7 +19,7 @@ import {
 } from '@/utils/statsSource'
 import { Metadata } from 'next'
 import { getServerSession } from 'next-auth'
-import { getLocale, getTranslations } from 'next-intl/server'
+import { getTranslations } from 'next-intl/server'
 import { notFound } from 'next/navigation'
 import { ReactNode, Suspense } from 'react'
 import Dashboard from '../_components/Dashboard'
@@ -49,22 +52,6 @@ async function getTotalDuration(
   return undefined
 }
 
-async function getTotalRequests(period: string, settings: Settings) {
-  const isOverseerrActive =
-    settings.connection.overseerrUrl && settings.connection.overseerrApiKey
-
-  if (
-    settings.dashboard.activeTotalStatistics.includes('requests') &&
-    isOverseerrActive
-  ) {
-    const requests = await fetchOverseerrStats('request', period)
-
-    return requests?.length.toLocaleString(await getLocale())
-  }
-
-  return undefined
-}
-
 async function DashboardUsersContent({
   periodSp,
   limit,
@@ -79,9 +66,8 @@ async function DashboardUsersContent({
   const session = await getServerSession(authOptions)
 
   if (
-    !settings.dashboard.isActive ||
     !settings.dashboard.isUsersPageActive ||
-    !canViewStats(settings, session)
+    !canViewFeature(settings, 'dashboard', getViewer(session))
   ) {
     return notFound()
   }
@@ -101,10 +87,10 @@ async function DashboardUsersContent({
     <Dashboard
       items={usersData?.items}
       totalDuration={totalDuration}
+      totalRequests={totalRequests}
       totalSize={usersCount}
       type='users'
       settings={toPublicSettings(settings)}
-      count={totalRequests}
       loggedInUserId={loggedInUserId}
       toolbar={toolbar}
       nextLimit={getNextItemsLimit(limit, !!usersData?.hasMore)}
@@ -119,9 +105,8 @@ type Props = {
 export default async function DashboardUsersPage({ searchParams }: Props) {
   const { period, limit } = await searchParams
   const itemsLimit = getItemsLimit(limit)
-  const toolbar = (
-    <DashboardToolbar settings={toPublicSettings(getSettings())} isUsers />
-  )
+  const settings = toPublicSettings(getSettings())
+  const toolbar = <DashboardToolbar settings={settings} isUsers />
 
   return (
     <Suspense
@@ -129,7 +114,7 @@ export default async function DashboardUsersPage({ searchParams }: Props) {
         <DashboardLoader
           toolbar={toolbar}
           type='users'
-          activeStats={getSettings().dashboard.activeItemStatistics}
+          settings={settings}
           rows={itemsLimit}
         />
       }

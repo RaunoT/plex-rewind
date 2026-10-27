@@ -1,4 +1,5 @@
 import getSettings from '@/utils/getSettings'
+import { toPublicSettings } from '@/utils/publicSettings'
 import DashboardLoader from './_components/DashboardLoader'
 
 // Which library is loading isn't known yet, so the rows are shaped like movies
@@ -11,7 +12,7 @@ export default function Loading() {
         </div>
       }
       type='movie'
-      activeStats={getSettings().dashboard.activeItemStatistics}
+      settings={toPublicSettings(getSettings())}
     />
   )
 }
