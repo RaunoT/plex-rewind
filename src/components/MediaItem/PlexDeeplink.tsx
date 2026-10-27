@@ -5,11 +5,12 @@ import { generateDeeplinkUrl } from '@/utils/deeplink'
 import { useTranslations } from 'next-intl'
 
 type Props = {
+  title: string
   ratingKey: number
   serverId: string
 }
 
-export default function PlexDeeplink({ ratingKey, serverId }: Props) {
+export default function PlexDeeplink({ title, ratingKey, serverId }: Props) {
   const t = useTranslations('PlexDeeplink')
   const isIos = useIsIos()
   const plexUrl = generateDeeplinkUrl(ratingKey, serverId, isIos)
@@ -20,6 +21,7 @@ export default function PlexDeeplink({ ratingKey, serverId }: Props) {
       target='_blank'
       rel='noopener noreferrer'
       className='button-card'
+      aria-label={t('availableLabel', { title })}
     >
       {/* The chevron from the Plex logo */}
       <svg

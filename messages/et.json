@@ -79,7 +79,8 @@
     "cta": "Proovi uuesti"
   },
   "PlexDeeplink": {
-    "available": "Saadaval"
+    "available": "Saadaval",
+    "availableLabel": "Saadaval: ava {title} Plexis"
   },
   "PeriodSelectContent": {
     "7days": "7 päeva",
@@ -328,6 +329,9 @@
     "statRequests": "{count, plural, =1 {# tellimus} other {# tellimust}}",
     "labelShows": "Seriaalid",
     "labelMovies": "Filmid",
-    "labelAudio": "Muusika"
+    "labelAudio": "Muusika",
+    "you": "(sina)",
+    "requestLabel": "Telli {title}",
+    "imdbLabel": "{title} IMDb-s"
   }
 }

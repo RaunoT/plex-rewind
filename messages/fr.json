@@ -79,7 +79,8 @@
     "cta": "Réessayer"
   },
   "PlexDeeplink": {
-    "available": "Disponible"
+    "available": "Disponible",
+    "availableLabel": "Disponible : ouvrir {title} dans Plex"
   },
   "PeriodSelectContent": {
     "7days": "7 jours",
@@ -328,6 +329,9 @@
     "statRequests": "{count, plural, =1 {# demande} other {# demandes}}",
     "labelShows": "Séries",
     "labelMovies": "Films",
-    "labelAudio": "Musique"
+    "labelAudio": "Musique",
+    "you": "(vous)",
+    "requestLabel": "Demander {title}",
+    "imdbLabel": "{title} sur IMDb"
   }
 }

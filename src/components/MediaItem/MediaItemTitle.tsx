@@ -5,6 +5,7 @@ import { TautulliItemRow } from '@/types/tautulli'
 import clsx from 'clsx'
 import { debounce } from 'lodash'
 import { motion, useAnimation } from 'motion/react'
+import { useTranslations } from 'next-intl'
 import { RefObject, useEffect, useRef } from 'react'
 
 type Props = {
@@ -26,6 +27,7 @@ export default function MediaItemTitle({
   const isUsersDashboard = type === 'users'
   const title = isUsersDashboard ? data.friendly_name : data.title
   const shouldReduceMotion = usePrefersReducedMotion()
+  const t = useTranslations('MediaItem')
 
   useEffect(() => {
     if (shouldReduceMotion) {
@@ -87,7 +89,7 @@ export default function MediaItemTitle({
   }, [controls, parentRef, shouldReduceMotion])
 
   return (
-    <h3
+    <h2
       className={clsx(
         'mb-0.5 flex font-medium sm:text-lg',
         isCurrentUser && 'text-plex',
@@ -106,6 +108,7 @@ export default function MediaItemTitle({
           {title}
         </motion.span>
       </span>
-    </h3>
+      {isCurrentUser && <span className='sr-only'>{` ${t('you')}`}</span>}
+    </h2>
   )
 }

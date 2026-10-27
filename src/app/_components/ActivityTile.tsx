@@ -63,7 +63,7 @@ export default function ActivityTile({ settings }: Props) {
                 <span className='truncate'>
                   {item.grandparent_title || item.title}
                 </span>
-                <span className='shrink-0 text-neutral-400'>
+                <span className='max-w-1/2 shrink-0 truncate text-neutral-400'>
                   {isAnonymous
                     ? `${t('Activity.anonymous')} #${index + 1}`
                     : item.friendly_name}

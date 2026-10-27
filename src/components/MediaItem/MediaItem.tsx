@@ -227,6 +227,7 @@ export default function MediaItem({
                     target='_blank'
                     rel='noopener noreferrer'
                     className='button-card'
+                    aria-label={t('requestLabel', { title: data.title })}
                   >
                     <STAT_ICONS.requests />
                     {t('request')}
@@ -240,6 +241,7 @@ export default function MediaItem({
               ) : (
                 serverId && (
                   <PlexDeeplink
+                    title={data.title}
                     serverId={serverId}
                     ratingKey={getDeeplinkRatingKeyFromRow(data, type)}
                   />
@@ -251,6 +253,7 @@ export default function MediaItem({
                   target='_blank'
                   rel='noopener noreferrer'
                   className='button-card button-card--imdb'
+                  aria-label={t('imdbLabel', { title: data.title })}
                   // eslint-disable-next-line react/jsx-no-literals
                 >
                   IMDb
