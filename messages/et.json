@@ -187,6 +187,8 @@
       "tmdbOnlyPosters": "Ainult TMDB pildid",
       "tmdbOnlyPostersDescription1": "Ära kasuta Plex'i postreid.",
       "tmdbOnlyPostersDescription2": "Vaikimisi kasutatakse TMDB'd ainult kui postrid puuduvad.",
+      "externalLinks": "Välised lingid",
+      "externalLinksDescription": "Letterboxd on ainult filmidele ja TVDB ainult seriaalidele. Rotten Tomatoes avab otsingu.",
       "privacy": "Privaatsus",
       "excludedUsers": "Välistatud kasutajad",
       "excludedUsersDescription": "Valitud kasutajad jäetakse välja kasutajate pingeridadest ja kogu vaatamisajast. Tautulli puhul sisaldavad enim vaadatud filmid, seriaalid ja esitajad endiselt nende vaatamisi.",
@@ -351,6 +353,7 @@
     "labelAudio": "Muusika",
     "you": "(sina)",
     "requestLabel": "Telli {title}",
-    "imdbLabel": "{title} IMDb-s"
+    "externalLinkLabel": "{title} saidil {site}",
+    "externalSearchLabel": "Otsi {title} saidilt {site}"
   }
 }

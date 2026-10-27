@@ -1,4 +1,4 @@
-import { Settings, StatisticsSource } from '@/types/settings'
+import { ExternalLink, Settings, StatisticsSource } from '@/types/settings'
 
 export type Period = {
   date: string
@@ -66,6 +66,7 @@ export const DEFAULT_SETTINGS: Settings = {
     activeLibraries: [],
     excludedUsers: [],
     isPostersTmdbOnly: false,
+    activeExternalLinks: ['imdb'],
     googleAnalyticsId: '',
     isOutsideAccess: false,
     isAnonymized: false,
@@ -119,6 +120,25 @@ export const SETTINGS_PAGES = [
 export const STATS_SOURCE_NAMES: Record<StatisticsSource, string> = {
   tautulli: 'Tautulli',
   tracearr: 'Tracearr',
+}
+
+// In the order the links are shown
+export const EXTERNAL_LINKS = [
+  'imdb',
+  'tmdb',
+  'tvdb',
+  'rottenTomatoes',
+  'letterboxd',
+  'trakt',
+] as const satisfies readonly ExternalLink[]
+
+export const EXTERNAL_LINK_NAMES: Record<ExternalLink, string> = {
+  imdb: 'IMDb',
+  tmdb: 'TMDB',
+  tvdb: 'TVDB',
+  rottenTomatoes: 'Rotten Tomatoes',
+  letterboxd: 'Letterboxd',
+  trakt: 'Trakt',
 }
 
 export const TMDB_API_KEY = '4675b5b5d8cd1463ff16adca2680157b'

@@ -187,6 +187,8 @@
       "tmdbOnlyPosters": "Nur TMDB Poster",
       "tmdbOnlyPostersDescription1": "Plex-Poster für Filme und Serien ignorieren.",
       "tmdbOnlyPostersDescription2": "Es wird TMDB verwendet, wenn kein Poster vorhanden ist.",
+      "externalLinks": "Externe Links",
+      "externalLinksDescription": "Letterboxd gibt es nur für Filme und TVDB nur für Serien. Rotten Tomatoes öffnet eine Suche.",
       "privacy": "Datenschutz",
       "excludedUsers": "Ausgeschlossene Benutzer",
       "excludedUsersDescription": "Ausgewählte Benutzer werden aus Benutzer-Ranglisten und der gesamten Wiedergabezeit ausgeschlossen. Mit Tautulli enthalten die beliebtesten Filme, Serien und Künstler weiterhin ihre Wiedergaben.",
@@ -351,6 +353,7 @@
     "labelAudio": "Musik",
     "you": "(du)",
     "requestLabel": "Anfrage für {title}",
-    "imdbLabel": "{title} auf IMDb"
+    "externalLinkLabel": "{title} auf {site}",
+    "externalSearchLabel": "{title} auf {site} suchen"
   }
 }

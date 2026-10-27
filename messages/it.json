@@ -187,6 +187,8 @@
       "tmdbOnlyPosters": "Solo locandine TMDB",
       "tmdbOnlyPostersDescription1": "Ignora le locandine di Plex per serie TV e film.",
       "tmdbOnlyPostersDescription2": "Di norma, TMDB è solo una riserva.",
+      "externalLinks": "Link esterni",
+      "externalLinksDescription": "Letterboxd vale solo per i film e TVDB solo per le serie TV. Rotten Tomatoes apre una ricerca.",
       "privacy": "Privacy",
       "excludedUsers": "Utenti esclusi",
       "excludedUsersDescription": "Gli utenti selezionati sono esclusi dalle classifiche degli utenti e dal tempo di visualizzazione totale. Con Tautulli, nelle classifiche di film, serie TV e artisti le loro riproduzioni contano comunque.",
@@ -351,6 +353,7 @@
     "labelAudio": "Musica",
     "you": "(tu)",
     "requestLabel": "Richiedi {title}",
-    "imdbLabel": "{title} su IMDb"
+    "externalLinkLabel": "{title} su {site}",
+    "externalSearchLabel": "Cerca {title} su {site}"
   }
 }

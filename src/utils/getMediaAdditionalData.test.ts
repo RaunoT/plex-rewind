@@ -205,6 +205,25 @@ describe('getMediaAdditionalData', () => {
     })
   })
 
+  it('reads the TVDB id of a show from the details', async () => {
+    mockTmdb({
+      'search/tv': { results: [{ id: 70523 }] },
+      'tv/70523': { external_ids: { imdb_id: 'tt5753856', tvdb_id: 334824 } },
+    })
+
+    const [item] = await getMediaAdditionalData(
+      [row({ title: 'Dark', year: 2017 })],
+      'tv',
+      getSourceData,
+    )
+
+    expect(item).toMatchObject({
+      tmdb_id: 70523,
+      imdb_id: 'tt5753856',
+      tvdb_id: 334824,
+    })
+  })
+
   it('takes a show year from TMDB only when it has none', async () => {
     mockTmdb({
       'search/tv': { results: [{ id: 70523 }] },
