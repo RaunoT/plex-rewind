@@ -6,10 +6,10 @@ import RewindStat from '../RewindStat'
 
 export default function StoryTotal({ userRewind, settings }: RewindStory) {
   const t = useTranslations('Rewind.Total')
-  const percentage = parseFloat(userRewind.duration.user_percentage)
-  // Not shown when it can't be worked out, or when the user is excluded from
-  // the server's total and so can outweigh it.
-  const hasPercentage = Number.isFinite(percentage) && percentage <= 100
+  const percentage = userRewind.duration.user_percentage_value
+  // Not shown without a server total, or if the user's and the server's
+  // totals, which are read separately, don't add up.
+  const hasPercentage = percentage !== null && percentage <= 100
 
   return (
     <>

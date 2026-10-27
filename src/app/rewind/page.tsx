@@ -12,7 +12,7 @@ import {
 } from '@/utils/getRewind'
 import getSettings from '@/utils/getSettings'
 import getUsersTop from '@/utils/getUsersTop'
-import { daysBetween, getRewindStartDate } from '@/utils/helpers'
+import { daysBetween, getRewindStartDate, getUserShare } from '@/utils/helpers'
 import { toPublicSettings } from '@/utils/publicSettings'
 import { getActiveUsers, getLibraries, getServerId } from '@/utils/statsSource'
 import { Metadata } from 'next'
@@ -88,14 +88,20 @@ async function RewindContent({ userId }: { userId?: string }) {
     getUsersTop(user.id, startDate, daysBetween(startDate)),
     getPlaybackHabits(user.id),
   ])
+  const share = getUserShare(
+    userTotalDuration,
+    librariesTotalDuration,
+    settings.general.excludedUsers.includes(user.id),
+  )
   const userRewind: UserRewind = {
     duration: {
       user: secondsToTime(userTotalDuration, t),
-      user_percentage: formatPercent(
-        Math.round((userTotalDuration * 100) / librariesTotalDuration),
-        locale,
-      ),
-      total: secondsToTime(librariesTotalDuration, t),
+      user_percentage:
+        share.percentage === null
+          ? ''
+          : formatPercent(share.percentage, locale),
+      user_percentage_value: share.percentage,
+      total: secondsToTime(share.total, t),
     },
     usersTop: usersTop,
     shows: {
