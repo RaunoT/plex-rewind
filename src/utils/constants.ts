@@ -156,7 +156,7 @@ export type Locale = (typeof LOCALES)[number]
 
 // Where the rewind layout lets the story player put its controls
 export const REWIND_CONTROLS_ID = 'rewind-controls'
-export const LOCALES = ['en', 'et', 'fr', 'de', 'it']
+export const LOCALES = ['en', 'et', 'fr', 'de', 'it', 'es']
 export const DEFAULT_LOCALE: Locale = 'en'
 export const LOCALE_COOKIE_NAME = 'locale'
 // Mirrors the dashboard's period, so the home page can use it on the server
