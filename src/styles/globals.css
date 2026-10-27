@@ -192,9 +192,40 @@
       }
     }
 
-    /* IMDb's own tag, so it reads as the link it is */
+    /* Each site's own colors, so the tags read as the links they are. The
+       reds are a shade darker than the brands' to keep white text legible. */
+    &.button-card--site {
+      @apply bg-(--site-bg) px-1.5 font-extrabold tracking-tight text-(--site-text) hover:bg-(--site-bg) hover:brightness-110;
+    }
+
     &.button-card--imdb {
-      @apply bg-[#f5c518] px-1.5 font-extrabold tracking-tight text-black hover:bg-[#ffd84d];
+      --site-bg: #f5c518;
+      --site-text: #000;
+    }
+
+    &.button-card--tmdb {
+      --site-bg: #0d253f;
+      --site-text: #90cea1;
+    }
+
+    &.button-card--tvdb {
+      --site-bg: #6cd491;
+      --site-text: #000;
+    }
+
+    &.button-card--rotten-tomatoes {
+      --site-bg: #dd2c08;
+      --site-text: #fff;
+    }
+
+    &.button-card--letterboxd {
+      --site-bg: #202830;
+      --site-text: #fff;
+    }
+
+    &.button-card--trakt {
+      --site-bg: #e31b23;
+      --site-text: #fff;
     }
   }
 

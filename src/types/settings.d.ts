@@ -19,11 +19,15 @@ export type ConnectionSettings = {
   complete: boolean
 }
 
+export type ExternalLink =
+  'imdb' | 'tmdb' | 'tvdb' | 'rottenTomatoes' | 'letterboxd' | 'trakt'
+
 export type GeneralSettings = {
   serverName: string
   activeLibraries: string[]
   excludedUsers: string[]
   isPostersTmdbOnly: boolean
+  activeExternalLinks: ExternalLink[]
   googleAnalyticsId: string
   isOutsideAccess: boolean
   isAnonymized: boolean

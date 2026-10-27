@@ -7,6 +7,7 @@ import {
   SettingsFormInitialState,
 } from '@/types/settings'
 import { TautulliLibrary, TautulliUser } from '@/types/tautulli'
+import { EXTERNAL_LINK_NAMES, EXTERNAL_LINKS } from '@/utils/constants'
 import { kebabCase } from 'lodash'
 import { Reorder } from 'motion/react'
 import { useTranslations } from 'next-intl'
@@ -208,6 +209,29 @@ export default function GeneralSettingsForm({
                 </small>
               </span>
             </Switch>
+            <CheckboxGroup
+              key={`external-links-${generalSettings.activeExternalLinks.join(',')}`}
+              className='input-wrapper'
+              name='activeExternalLinks'
+              defaultValue={generalSettings.activeExternalLinks}
+            >
+              <div className='peer checkbox-grid'>
+                {EXTERNAL_LINKS.map((site) => (
+                  <Checkbox
+                    key={`external-link-${site}`}
+                    value={site}
+                    className='checkbox-wrapper'
+                  >
+                    <div className='checkbox' aria-hidden='true'></div>
+                    {EXTERNAL_LINK_NAMES[site]}
+                  </Checkbox>
+                ))}
+              </div>
+              <Label className='label label--start'>
+                <span className='label-wrapper'>{t('externalLinks')}</span>
+                <small>{t('externalLinksDescription')}</small>
+              </Label>
+            </CheckboxGroup>
           </section>
           <section className='group-settings group'>
             <h2 className='heading-settings'>{t('privacy')}</h2>
