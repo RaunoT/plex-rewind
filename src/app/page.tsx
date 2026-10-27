@@ -3,7 +3,7 @@ import { getSiteUrl } from '@/utils/constants'
 import getSettings from '@/utils/getSettings'
 import { checkRequiredSettings, sortByActiveLibraries } from '@/utils/helpers'
 import { toPublicSettings } from '@/utils/publicSettings'
-import { getLibraries } from '@/utils/statsSource'
+import { getReachableLibraries } from '@/utils/statsSource'
 import { getServerSession } from 'next-auth'
 import { Suspense } from 'react'
 import Home from './_components/Home'
@@ -26,9 +26,13 @@ export default async function HomePage() {
     )
   }
 
-  const libraries = sortByActiveLibraries(await getLibraries(), settings)
+  const libraries = await getReachableLibraries()
 
   return (
-    <Overview settings={settings} session={session} libraries={libraries} />
+    <Overview
+      settings={settings}
+      session={session}
+      libraries={libraries && sortByActiveLibraries(libraries, settings)}
+    />
   )
 }

@@ -5,12 +5,14 @@ import { DEFAULT_SETTINGS } from './constants'
 import {
   checkRequiredSettings,
   daysBetween,
+  getHomeTiles,
   getRewindStartDate,
   getSettingsPage,
   getUserShare,
   hasRewindPlays,
   isInitialSetup,
   isPostUpdateMissingSettings,
+  isSettingsPageLocked,
 } from './helpers'
 
 function completeSettings(): Settings {
@@ -178,5 +180,65 @@ describe('getUserShare', () => {
   it('has no percentage without a server total', () => {
     expect(getUserShare(0, 0, false).percentage).toBeNull()
     expect(getUserShare(0, 0, true).percentage).toBeNull()
+  })
+})
+
+describe('getHomeTiles', () => {
+  function settingsWith(
+    rewind: boolean,
+    activity: boolean,
+    dashboard: boolean,
+  ) {
+    const settings = cloneDeep(DEFAULT_SETTINGS)
+
+    settings.rewind.isActive = rewind
+    settings.activity.isActive = activity
+    settings.dashboard.isActive = dashboard
+
+    return settings
+  }
+
+  it('shows every tile that is turned on', () => {
+    expect(getHomeTiles(settingsWith(true, true, true), true, 2)).toEqual({
+      rewind: true,
+      activity: true,
+      libraries: true,
+    })
+  })
+
+  it('shows nothing when every section is off', () => {
+    expect(getHomeTiles(settingsWith(false, false, false), true, 2)).toEqual({
+      rewind: false,
+      activity: false,
+      libraries: false,
+    })
+  })
+
+  it('leaves out the rewind for visitors who are not logged in', () => {
+    expect(
+      getHomeTiles(settingsWith(true, false, false), false, 0).rewind,
+    ).toBe(false)
+  })
+
+  it('leaves out the libraries when there are none to show', () => {
+    expect(
+      getHomeTiles(settingsWith(false, false, true), true, 0).libraries,
+    ).toBe(false)
+  })
+})
+
+describe('isSettingsPageLocked', () => {
+  it('locks every page but the connection until it is complete', () => {
+    const settings = { connection: { complete: false } }
+
+    expect(isSettingsPageLocked('connection', settings)).toBe(false)
+    expect(isSettingsPageLocked('general', settings)).toBe(true)
+    expect(isSettingsPageLocked('activity', settings)).toBe(true)
+  })
+
+  it('unlocks every page once the connection is complete', () => {
+    const settings = { connection: { complete: true } }
+
+    expect(isSettingsPageLocked('general', settings)).toBe(false)
   })
 })

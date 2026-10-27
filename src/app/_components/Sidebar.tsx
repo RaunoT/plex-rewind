@@ -2,8 +2,10 @@
 
 import plexSvg from '@/assets/plex.svg'
 import { MediaIcon } from '@/components/icons'
+import SkeletonLine from '@/components/SkeletonLine'
 import { PublicSettings } from '@/types/settings'
 import { TautulliLibrary } from '@/types/tautulli'
+import { STATS_SOURCE_NAMES } from '@/utils/constants'
 import {
   ArrowPathIcon,
   BackwardIcon,
@@ -18,13 +20,13 @@ import { useTranslations } from 'next-intl'
 import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { ReactNode, useContext } from 'react'
+import { ReactNode, Suspense, use, useContext } from 'react'
 import AccountMenu from './AccountMenu'
 import { GlobalContext } from './GlobalContextProvider'
 import { AppInfoContext, getSettingsLink } from './HeaderControls'
 
 type Props = {
-  libraries: TautulliLibrary[]
+  libraries: Promise<TautulliLibrary[] | null>
   settings: PublicSettings
 }
 
@@ -48,10 +50,6 @@ export default function Sidebar({ libraries, settings }: Props) {
   const dashboardQuery = dashboardParams.size
     ? `?${dashboardParams.toString()}`
     : ''
-  const showDashboard =
-    settings.dashboard.isActive &&
-    canViewStats &&
-    (libraries.length > 0 || settings.dashboard.isUsersPageActive)
 
   return (
     <aside
@@ -96,35 +94,21 @@ export default function Sidebar({ libraries, settings }: Props) {
               {t('Activity.title')}
             </SidebarLink>
           )}
-          {showDashboard && (
-            <>
-              <li className='px-3 pt-5 pb-1.5 text-xs font-semibold text-neutral-400'>
-                {t('Dashboard.title')}
-              </li>
-              {libraries.map((library) => {
-                const href = `/dashboard/${kebabCase(library.section_name)}`
-
-                return (
-                  <SidebarLink
-                    key={library.section_id}
-                    href={`${href}${dashboardQuery}`}
-                    icon={<MediaIcon type={library.section_type} />}
-                    isActive={pathname === href}
-                  >
-                    {library.section_name}
-                  </SidebarLink>
-                )
-              })}
-              {settings.dashboard.isUsersPageActive && (
-                <SidebarLink
-                  href={`/dashboard/users${dashboardQuery}`}
-                  icon={<UsersIcon />}
-                  isActive={pathname === '/dashboard/users'}
-                >
-                  {t('DashboardNavContent.users')}
-                </SidebarLink>
-              )}
-            </>
+          {settings.dashboard.isActive && canViewStats && (
+            <Suspense
+              fallback={
+                <DashboardLinksSkeleton
+                  count={settings.general.activeLibraries.length}
+                />
+              }
+            >
+              <DashboardLinks
+                libraries={libraries}
+                settings={settings}
+                pathname={pathname}
+                query={dashboardQuery}
+              />
+            </Suspense>
           )}
         </ul>
       </nav>
@@ -161,6 +145,96 @@ export default function Sidebar({ libraries, settings }: Props) {
         </div>
       </div>
     </aside>
+  )
+}
+
+type DashboardLinksProps = {
+  libraries: Promise<TautulliLibrary[] | null>
+  settings: PublicSettings
+  pathname: string
+  query: string
+}
+
+function DashboardLinks({
+  libraries: librariesPromise,
+  settings,
+  pathname,
+  query,
+}: DashboardLinksProps) {
+  const libraries = use(librariesPromise)
+  const t = useTranslations()
+
+  if (libraries?.length === 0 && !settings.dashboard.isUsersPageActive) {
+    return null
+  }
+
+  return (
+    <>
+      <DashboardHeading />
+      {libraries === null ? (
+        <li className='px-3 py-2 text-sm text-neutral-400'>
+          {t('Error.sourceUnreachable', {
+            source: STATS_SOURCE_NAMES[settings.connection.statisticsSource],
+          })}
+        </li>
+      ) : (
+        <>
+          {libraries.map((library) => {
+            const href = `/dashboard/${kebabCase(library.section_name)}`
+
+            return (
+              <SidebarLink
+                key={library.section_id}
+                href={`${href}${query}`}
+                icon={<MediaIcon type={library.section_type} />}
+                isActive={pathname === href}
+              >
+                {library.section_name}
+              </SidebarLink>
+            )
+          })}
+          {settings.dashboard.isUsersPageActive && (
+            <SidebarLink
+              href={`/dashboard/users${query}`}
+              icon={<UsersIcon />}
+              isActive={pathname === '/dashboard/users'}
+            >
+              {t('DashboardNavContent.users')}
+            </SidebarLink>
+          )}
+        </>
+      )}
+    </>
+  )
+}
+
+// One row for each library the settings list, so the links don't shift much
+// once they load
+function DashboardLinksSkeleton({ count }: { count: number }) {
+  return (
+    <>
+      <DashboardHeading />
+      {[...Array(Math.max(count, 1))].map((_, i) => (
+        <li
+          key={i}
+          className='flex items-center gap-3 px-3 py-2 text-sm'
+          aria-hidden='true'
+        >
+          <div className='skeleton size-5 shrink-0' />
+          <SkeletonLine width='w-24' />
+        </li>
+      ))}
+    </>
+  )
+}
+
+function DashboardHeading() {
+  const t = useTranslations('Dashboard')
+
+  return (
+    <li className='px-3 pt-5 pb-1.5 text-xs font-semibold text-neutral-400'>
+      {t('title')}
+    </li>
   )
 }
 

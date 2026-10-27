@@ -82,6 +82,7 @@ beforeEach(() => {
 afterEach(() => {
   vi.restoreAllMocks()
   vi.unstubAllGlobals()
+  vi.useRealTimers()
   fetchMock.mockReset()
 })
 
@@ -242,6 +243,110 @@ describe('server selection', () => {
     const { getTracearrPlexUsers } = await load()
 
     await expect(getTracearrPlexUsers()).resolves.toEqual([])
+  })
+})
+
+describe('isTracearrReachable', () => {
+  const servers = () => ({ data: [plexServer('s1')] })
+  const libraries = () => ({ data: [] })
+
+  it('is reachable when Tracearr lists its servers and libraries', async () => {
+    route({ servers, libraries })
+
+    const { isTracearrReachable } = await load()
+
+    await expect(isTracearrReachable()).resolves.toBe(true)
+  })
+
+  it('is reachable without any Plex server, which is a setup problem', async () => {
+    route({ servers: () => ({ data: [] }), libraries })
+
+    const { isTracearrReachable } = await load()
+
+    await expect(isTracearrReachable()).resolves.toBe(true)
+  })
+
+  it('is unreachable when Tracearr fails', async () => {
+    fetchMock.mockRejectedValue(new TypeError('fetch failed'))
+
+    const { isTracearrReachable } = await load()
+
+    await expect(isTracearrReachable()).resolves.toBe(false)
+  })
+
+  it('is unreachable when the answer is not a server list', async () => {
+    route({ servers: () => ({ error: 'nope' }), libraries })
+
+    const { isTracearrReachable } = await load()
+
+    await expect(isTracearrReachable()).resolves.toBe(false)
+  })
+
+  it('is unreachable when the libraries request fails, even with the server list cached', async () => {
+    route({ servers, users: () => ({ data: [], meta: { nextCursor: null } }) })
+
+    const { getTracearrPlexUsers, getTracearrLibraries, isTracearrReachable } =
+      await load()
+
+    // Something else already loaded and cached the server list
+    await getTracearrPlexUsers()
+
+    await expect(isTracearrReachable()).resolves.toBe(false)
+    // The libraries on show are the fallback ones, not Tracearr's
+    expect(
+      (await getTracearrLibraries()).map((library) => library.count),
+    ).toEqual(['0', '0', '0'])
+  })
+
+  it('is unreachable when the libraries are not a list', async () => {
+    route({ servers, libraries: () => ({ error: 'nope' }) })
+
+    const { isTracearrReachable } = await load()
+
+    await expect(isTracearrReachable()).resolves.toBe(false)
+  })
+
+  it('does not keep a failure, so it recovers once Tracearr is back', async () => {
+    fetchMock.mockRejectedValue(new TypeError('fetch failed'))
+
+    const { isTracearrReachable } = await load()
+
+    await expect(isTracearrReachable()).resolves.toBe(false)
+
+    route({ servers, libraries })
+
+    await expect(isTracearrReachable()).resolves.toBe(true)
+  })
+
+  it('goes unreachable once the cached lists expire and Tracearr is down', async () => {
+    vi.useFakeTimers({ toFake: ['Date'] })
+    route({ servers, libraries })
+
+    const { isTracearrReachable } = await load()
+
+    await expect(isTracearrReachable()).resolves.toBe(true)
+
+    fetchMock.mockRejectedValue(new TypeError('fetch failed'))
+
+    // The libraries on show still come from the same cached response
+    vi.advanceTimersByTime(60 * 1000)
+
+    await expect(isTracearrReachable()).resolves.toBe(true)
+
+    vi.advanceTimersByTime(5 * 60 * 1000)
+
+    await expect(isTracearrReachable()).resolves.toBe(false)
+  })
+
+  it('shares its requests with the libraries', async () => {
+    route({ servers, libraries })
+
+    const { getTracearrLibraries, isTracearrReachable } = await load()
+
+    await Promise.all([getTracearrLibraries(), isTracearrReachable()])
+
+    expect(requestsTo('servers')).toHaveLength(1)
+    expect(requestsTo('libraries')).toHaveLength(1)
   })
 })
 

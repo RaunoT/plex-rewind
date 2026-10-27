@@ -35,6 +35,19 @@ export function sortByActiveLibraries(
     .filter((lib): lib is TautulliLibrary => lib !== undefined)
 }
 
+// The home page's tiles, so it knows when it has none to show
+export function getHomeTiles(
+  settings: Pick<Settings, 'rewind' | 'activity' | 'dashboard'>,
+  isLoggedIn: boolean,
+  libraryCount: number,
+) {
+  return {
+    rewind: settings.rewind.isActive && isLoggedIn,
+    activity: settings.activity.isActive,
+    libraries: settings.dashboard.isActive && libraryCount > 0,
+  }
+}
+
 export function checkRequiredSettings(settings: Settings): string | null {
   const sourceRequiredSettings = isTracearrSource(settings)
     ? SOURCE_REQUIRED_SETTINGS.tracearr
@@ -51,6 +64,14 @@ export function checkRequiredSettings(settings: Settings): string | null {
   }
 
   return null
+}
+
+// The other settings pages read their options from the statistics source
+export function isSettingsPageLocked(
+  key: string,
+  settings: { connection: { complete: boolean } },
+): boolean {
+  return !settings.connection.complete && key !== 'connection'
 }
 
 export function getSettingsPage(missingSettingKey: string): string | undefined {

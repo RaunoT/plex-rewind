@@ -43,6 +43,9 @@ export const StoryClockContext = createContext<StoryClock>({
   registerReveal: () => () => {},
 })
 
+// Lets the last story offer to start over
+export const StoryRestartContext = createContext<() => void>(() => {})
+
 type Story = {
   type: 'component'
   component: (props: StoryProps) => ReactNode
@@ -194,6 +197,11 @@ export default function Stories({ stories }: Props) {
   const togglePause = useCallback(() => {
     setIsManuallyPaused((prev) => !prev)
   }, [])
+  // Plays from the first story again, even if the last one was paused
+  const restart = useCallback(() => {
+    setIsManuallyPaused(false)
+    goTo(0, true)
+  }, [goTo])
   // Returns whether a hold was in progress
   const endHold = useCallback(() => {
     if (holdTimerRef.current) {
@@ -412,7 +420,9 @@ export default function Stories({ stories }: Props) {
           onPointerLeave={handlePointerAbort}
           onPointerCancel={handlePointerAbort}
         >
-          <StoryClockContext value={clock}>{slide}</StoryClockContext>
+          <StoryRestartContext value={restart}>
+            <StoryClockContext value={clock}>{slide}</StoryClockContext>
+          </StoryRestartContext>
         </div>
 
         <div className='sr-only' aria-live='polite' aria-atomic='true'>

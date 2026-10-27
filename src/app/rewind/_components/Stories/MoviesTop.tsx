@@ -5,21 +5,20 @@ import { useTranslations } from 'next-intl'
 import RewindStat from '../RewindStat'
 
 export default function StoryMoviesTop({ userRewind, settings }: RewindStory) {
-  const hasTop5 = userRewind.movies.top.length === 5
   const t = useTranslations('Rewind.Common')
 
   return (
     <>
       <RewindStat noScale>
         <p className='mb-2'>
-          {t.rich('top', {
+          {t.rich('topMovies', {
             top: (chunks) => (
               <span className='rewind-cat'>
                 {chunks}
                 <FilmIcon />
               </span>
             ),
-            count: hasTop5 ? '5' : '',
+            count: userRewind.movies.top.length,
           })}
         </p>
 

@@ -48,7 +48,7 @@ export default async function updateSettings<K extends keyof SettingsTypeMap>(
 
     if (error instanceof ZodError) {
       return {
-        message: formatZodError(error),
+        message: formatZodError(error, t),
         status: 'error',
         fields: data,
       }
@@ -62,14 +62,18 @@ export default async function updateSettings<K extends keyof SettingsTypeMap>(
   }
 }
 
-function formatZodError(error: ZodError): string {
+function formatZodError(
+  error: ZodError,
+  t: Awaited<ReturnType<typeof getTranslations<'Settings'>>>,
+): string {
   const issue = error.issues[0]
-  const field = issue.path.map(String).join('.')
+  const field = String(issue.path[0] ?? '')
 
-  // Custom messages are already written for the form
-  if (!field || issue.code === 'custom') {
+  // Refinements on a field carry a message that is already translated
+  if (issue.code === 'custom' && field) {
     return issue.message
   }
 
-  return `${field}: ${issue.message}`
+  // Fields the message doesn't name fall back to its generic wording
+  return t('invalidField', { field })
 }

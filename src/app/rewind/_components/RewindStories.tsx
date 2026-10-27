@@ -71,8 +71,8 @@ export default function RewindStories({ userRewind, settings }: Props) {
     ...(userRewind.libraries_total_size && isLibrariesSizeAndCountActive
       ? [createStory(StoryLibraries, 9000)]
       : []),
-    ...(isOverseerrActive
-      ? [createStory(StoryRequests, userRewind.requests?.total ? 9000 : 4000)]
+    ...(isOverseerrActive && userRewind.requests
+      ? [createStory(StoryRequests, userRewind.requests.total ? 9000 : 4000)]
       : []),
     ...(userRewind.duration.user && hasShowLibraries && userRewind.shows.top[0]
       ? [createStory(StoryShows, userRewind.shows.count ? 10000 : 4000)]

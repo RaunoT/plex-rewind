@@ -1,5 +1,6 @@
 'use client'
 
+import SourceUnreachable from '@/components/SourceUnreachable'
 import {
   GeneralSettings,
   PublicSettings,
@@ -17,7 +18,8 @@ import SortableLibrary from './SortableLibrary'
 
 type Props = {
   settings: PublicSettings
-  libraries: TautulliLibrary[]
+  // Null when the source can't be reached
+  libraries: TautulliLibrary[] | null
   users: Pick<TautulliUser, 'user_id' | 'friendly_name'>[]
 }
 
@@ -25,9 +27,13 @@ type GeneralFormState = SettingsFormInitialState<GeneralSettings>
 
 export default function GeneralSettingsForm({
   settings,
-  libraries,
+  libraries: sourceLibraries,
   users,
 }: Props) {
+  const isSourceReachable = sourceLibraries !== null
+  const libraries = sourceLibraries ?? []
+  // Saving without the library list would clear the chosen libraries
+  const hasLibraries = libraries.length > 0
   const [librariesState, setLibrariesState] = useState<TautulliLibrary[]>(
     () => {
       const activeLibraries = settings.general.activeLibraries
@@ -111,7 +117,7 @@ export default function GeneralSettingsForm({
     <SettingsForm
       formState={formState}
       formAction={formAction}
-      hideSubmit={!libraries.length}
+      hideSubmit={!hasLibraries}
       isSetup={!generalSettings.complete}
     >
       <section className='group-settings group'>
@@ -132,7 +138,14 @@ export default function GeneralSettingsForm({
       </section>
       <section className='group-settings group'>
         <h2 className='heading-settings'>{t('libraries')}</h2>
-        {libraries.length ? (
+        {!isSourceReachable ? (
+          <SourceUnreachable
+            source={settings.connection.statisticsSource}
+            as='h3'
+            isAdmin
+            isInCard
+          />
+        ) : hasLibraries ? (
           <CheckboxGroup
             key={`active-libraries-${generalSettings.activeLibraries.join(',')}`}
             ref={librariesRef}
@@ -176,7 +189,7 @@ export default function GeneralSettingsForm({
           </p>
         )}
       </section>
-      {libraries.length > 0 && (
+      {hasLibraries && (
         <>
           <section className='group-settings group'>
             <h2 className='heading-settings'>{t('media')}</h2>

@@ -1,11 +1,14 @@
 import { MediaIcon } from '@/components/icons'
 import SkeletonLine from '@/components/SkeletonLine'
+import SourceUnreachable from '@/components/SourceUnreachable'
+import StatusMessage from '@/components/StatusMessage'
 import { DashboardSearchParams } from '@/types/dashboard'
 import { Settings } from '@/types/settings'
 import { TautulliLibrary } from '@/types/tautulli'
 import { DASHBOARD_PERIOD_COOKIE_NAME, getSiteUrl } from '@/utils/constants'
 import { getItems } from '@/utils/getDashboard'
 import getPeriod, { parseCustomPeriod } from '@/utils/getPeriod'
+import { getHomeTiles } from '@/utils/helpers'
 import { getImageProxyUrl } from '@/utils/imageProxy'
 import { toPublicSettings } from '@/utils/publicSettings'
 import { BackwardIcon, ChevronRightIcon } from '@heroicons/react/24/outline'
@@ -23,7 +26,8 @@ import TilePoster from './TilePoster'
 type Props = {
   settings: Settings
   session: Session | null
-  libraries: TautulliLibrary[]
+  // Null when the source can't be reached
+  libraries: TautulliLibrary[] | null
 }
 
 export default async function Overview({
@@ -33,6 +37,8 @@ export default async function Overview({
 }: Props) {
   const t = await getTranslations()
   const firstName = session?.user.name?.split(' ')[0]
+  const isAdmin = !!session?.user.isAdmin
+  const tiles = getHomeTiles(settings, !!session, libraries?.length ?? 0)
   const period = getDashboardPeriod(
     (await cookies()).get(DASHBOARD_PERIOD_COOKIE_NAME)?.value,
   )
@@ -44,9 +50,7 @@ export default async function Overview({
         ? t('PeriodSelectContent.pastYear')
         : period === 'allTime'
           ? t('PeriodSelectContent.allTime')
-          : customPeriod > 1
-            ? t('PeriodSelectContent.days', { count: customPeriod })
-            : t('PeriodSelectContent.today')
+          : t('PeriodSelectContent.days', { count: customPeriod })
 
   return (
     <div className='page-width'>
@@ -69,41 +73,64 @@ export default async function Overview({
         </div>
       </header>
 
-      <div className='grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3'>
-        {settings.rewind.isActive && session && (
-          <div className='glass-sheet flex flex-col justify-between gap-6 sm:col-span-2'>
-            <div>
-              <h2 className='flex items-center gap-2 font-semibold'>
-                <BackwardIcon className='size-5 text-neutral-400' />
-                {t('Rewind.title')}
-              </h2>
-              <p className='mt-3 max-w-md text-xl font-semibold tracking-tight sm:text-2xl'>
-                {t('Home.rewindDescription')}
-              </p>
+      {libraries === null ? (
+        <SourceUnreachable
+          source={settings.connection.statisticsSource}
+          isAdmin={isAdmin}
+        />
+      ) : !tiles.rewind && !tiles.activity && !tiles.libraries ? (
+        <StatusMessage
+          title={t('Home.emptyTitle')}
+          description={
+            isAdmin
+              ? t('Home.emptyAdminDescription')
+              : t('Home.emptyDescription')
+          }
+          action={
+            isAdmin && (
+              <Link href='/settings/general' className='button w-full'>
+                {t('Home.openSettings')}
+              </Link>
+            )
+          }
+        />
+      ) : (
+        <div className='grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3'>
+          {tiles.rewind && (
+            <div className='glass-sheet flex flex-col justify-between gap-6 sm:col-span-2'>
+              <div>
+                <h2 className='flex items-center gap-2 font-semibold'>
+                  <BackwardIcon className='size-5 text-neutral-400' />
+                  {t('Rewind.title')}
+                </h2>
+                <p className='mt-3 max-w-md text-xl font-semibold tracking-tight sm:text-2xl'>
+                  {t('Home.rewindDescription')}
+                </p>
+              </div>
+              <Link href='/rewind' className='button'>
+                {t('Home.rewind')}
+              </Link>
             </div>
-            <Link href='/rewind' className='button'>
-              {t('Home.rewind')}
-            </Link>
-          </div>
-        )}
-        {settings.activity.isActive && (
-          <ActivityTile settings={toPublicSettings(settings)} />
-        )}
-        {settings.dashboard.isActive &&
-          libraries.map((library) => (
-            <Suspense
-              key={library.section_id}
-              fallback={<LibraryTileSkeleton library={library} />}
-            >
-              <LibraryTile
-                library={library}
-                settings={settings}
-                period={period}
-                periodLabel={periodLabel}
-              />
-            </Suspense>
-          ))}
-      </div>
+          )}
+          {tiles.activity && (
+            <ActivityTile settings={toPublicSettings(settings)} />
+          )}
+          {tiles.libraries &&
+            libraries.map((library) => (
+              <Suspense
+                key={library.section_id}
+                fallback={<LibraryTileSkeleton library={library} />}
+              >
+                <LibraryTile
+                  library={library}
+                  settings={settings}
+                  period={period}
+                  periodLabel={periodLabel}
+                />
+              </Suspense>
+            ))}
+        </div>
+      )}
     </div>
   )
 }

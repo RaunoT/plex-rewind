@@ -1,5 +1,8 @@
 'use client'
 
+import RetryButton from '@/components/RetryButton'
+import SourceUnreachable from '@/components/SourceUnreachable'
+import StatusMessage from '@/components/StatusMessage'
 import { PublicSettings } from '@/types/settings'
 import { useQuery } from '@tanstack/react-query'
 import { useTranslations } from 'next-intl'
@@ -16,7 +19,7 @@ type Props = {
 export default function Activities({ settings, serverId }: Props) {
   const t = useTranslations('Activity')
   const errorT = useTranslations('Error')
-  const { data, error, isLoading } = useQuery({
+  const { data, error, isLoading, refetch } = useQuery({
     queryKey: ['activity'],
     queryFn: getActivity,
     refetchInterval: 5000,
@@ -36,19 +39,24 @@ export default function Activities({ settings, serverId }: Props) {
     return <ActivitiesSkeleton />
   }
 
-  if (error || !data) {
+  if (error) {
     return (
-      <div className='flex flex-1 flex-col justify-center text-center'>
-        <h2 className='mb-4 text-3xl leading-tight sm:text-4xl'>
-          {errorT('title')}
-        </h2>
-        <button
-          className='link mx-auto w-fit'
-          onClick={() => window.location.reload()}
-        >
-          {errorT('cta')}
-        </button>
-      </div>
+      <StatusMessage
+        title={errorT('title')}
+        isInCard
+        action={<RetryButton onRetry={refetch} />}
+      />
+    )
+  }
+
+  // The server answered, but got nothing from the source
+  if (!data) {
+    return (
+      <SourceUnreachable
+        source={settings.connection.statisticsSource}
+        onRetry={refetch}
+        isInCard
+      />
     )
   }
 

@@ -3,6 +3,7 @@
 import TitleMenu from '@/components/TitleMenu'
 import { PublicSettings } from '@/types/settings'
 import { SETTINGS_PAGES } from '@/utils/constants'
+import { isSettingsPageLocked } from '@/utils/helpers'
 import {
   CheckCircleIcon,
   ExclamationCircleIcon,
@@ -11,6 +12,7 @@ import clsx from 'clsx'
 import { useTranslations } from 'next-intl'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import { useId } from 'react'
 
 type Props = {
   settings: PublicSettings
@@ -25,6 +27,10 @@ export default function SettingsNav({
 }: Props) {
   const pathname = usePathname()
   const t = useTranslations('Settings.Nav')
+  const hintId = useId()
+  const hasLockedPages = SETTINGS_PAGES.some(({ key }) =>
+    isSettingsPageLocked(key, settings),
+  )
 
   if (isMenu) {
     return (
@@ -34,12 +40,14 @@ export default function SettingsNav({
           const isComplete =
             settings[key as keyof Omit<PublicSettings, 'setupComplete'>]
               .complete
+          const isLocked = isSettingsPageLocked(key, settings)
 
           return {
             href,
             label: t(key),
             isCurrent: pathname === href,
-            isDisabled: !settings.connection.complete && key !== 'connection',
+            isDisabled: isLocked,
+            description: isLocked ? t('connectionRequired') : undefined,
             icon:
               missingSetting &&
               (isComplete ? (
@@ -60,8 +68,7 @@ export default function SettingsNav({
           const isComplete =
             settings[key as keyof Omit<PublicSettings, 'setupComplete'>]
               .complete
-          const isConnectionIncomplete = !settings.connection.complete
-          const shouldDisable = isConnectionIncomplete && key !== 'connection'
+          const isLocked = isSettingsPageLocked(key, settings)
 
           return (
             <li key={key}>
@@ -75,7 +82,11 @@ export default function SettingsNav({
                   missingSetting && pathname === href && 'opacity-80',
                 )}
                 aria-current={pathname === href && 'page'}
-                aria-disabled={shouldDisable && 'true'}
+                // Still focusable, so screen readers can reach the reason
+                aria-disabled={isLocked || undefined}
+                aria-describedby={isLocked ? hintId : undefined}
+                prefetch={isLocked ? false : undefined}
+                onClick={isLocked ? (e) => e.preventDefault() : undefined}
               >
                 {missingSetting &&
                   (isComplete ? (
@@ -95,6 +106,11 @@ export default function SettingsNav({
           )
         })}
       </ul>
+      {hasLockedPages && (
+        <p id={hintId} className='mt-2 text-center text-xs text-neutral-400'>
+          {t('connectionRequired')}
+        </p>
+      )}
     </nav>
   )
 }

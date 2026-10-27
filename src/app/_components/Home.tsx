@@ -33,7 +33,9 @@ export default function Home({ settings, missingSetting, siteUrl }: Props) {
         <div className='animate-fade-up relative mb-5 size-20 rounded-full shadow-xl ring-1 shadow-black/40 ring-white/20'>
           <Image
             src={session.user.image}
-            alt={`${session.user.name} ${tCommon('profilePictureAlt')}`}
+            alt={tCommon('profilePictureAlt', {
+              name: session.user.name ?? '',
+            })}
             className='rounded-full object-cover'
             sizes='10rem'
             fill

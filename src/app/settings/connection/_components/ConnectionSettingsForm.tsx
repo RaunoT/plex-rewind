@@ -205,6 +205,7 @@ export default function ConnectionSettingsForm({
           <span className='label'>
             {/* eslint-disable-next-line react/jsx-no-literals */}
             <span className='label-wrapper'>URL</span>
+            <small>{t('Connection.overseerrUrlDescription')}</small>
           </span>
         </label>
         <label className='input-wrapper'>

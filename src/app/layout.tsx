@@ -5,7 +5,7 @@ import getSettings from '@/utils/getSettings'
 import getVersion from '@/utils/getVersion'
 import { checkRequiredSettings, sortByActiveLibraries } from '@/utils/helpers'
 import { toPublicSettings } from '@/utils/publicSettings'
-import { getLibraries } from '@/utils/statsSource'
+import { getReachableLibraries } from '@/utils/statsSource'
 import { SerwistProvider } from '@serwist/next/react'
 import { Metadata, Viewport } from 'next'
 import { getServerSession } from 'next-auth'
@@ -73,13 +73,17 @@ export default async function RootLayout({ children }: Props) {
   // Set by the proxy. Reading it also keeps every page dynamically rendered,
   // which the nonce needs: a static page would have none.
   const nonce = (await headers()).get('x-nonce') ?? undefined
-  // For the sidebar, which lists the libraries only while the dashboard is on
+  // For the sidebar, which lists the libraries only while the dashboard is on.
+  // Not awaited, so a slow source doesn't hold up every page.
   const libraries =
     !missingSetting &&
     settings.dashboard.isActive &&
     (session || settings.general.isOutsideAccess)
-      ? sortByActiveLibraries(await getLibraries(), settings)
-      : []
+      ? getReachableLibraries().then(
+          (libraries) =>
+            libraries && sortByActiveLibraries(libraries, settings),
+        )
+      : Promise.resolve([])
 
   return (
     <html lang={locale}>
