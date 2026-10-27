@@ -3,28 +3,22 @@ import { TautulliLibrary } from '@/types/tautulli'
 import { cloneDeep } from 'lodash'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { DEFAULT_SETTINGS } from './constants'
-import fetchTautulli, {
-  getActiveUsers,
-  getLibraries,
-  getLibrariesByType,
-} from './fetchTautulli'
+import fetchTautulli from './fetchTautulli'
 import getSettings from './getSettings'
 import getUsersTop from './getUsersTop'
+import { getLibraries } from './statsSource'
 
-vi.mock('./fetchTautulli', () => ({
-  default: vi.fn(),
-  getActiveUsers: vi.fn(),
-  getLibraries: vi.fn(),
-  getLibrariesByType: vi.fn(),
-}))
+vi.mock('@/lib/auth', () => ({ authOptions: {} }))
+vi.mock('next-auth', () => ({ getServerSession: vi.fn() }))
+vi.mock('./fetchTautulli', () => ({ default: vi.fn() }))
 vi.mock('./fetchOverseerr', () => ({
   fetchOverseerrStats: vi.fn(),
   fetchOverseerrUserId: vi.fn(),
 }))
 vi.mock('./getSettings', () => ({ default: vi.fn() }))
-vi.mock('./getTracearrStats', () => ({
-  getTracearrInactiveUser: vi.fn(),
-  getTracearrUsersTop: vi.fn(),
+vi.mock('./statsSource', async (importOriginal) => ({
+  ...(await importOriginal<typeof import('./statsSource')>()),
+  getLibraries: vi.fn(),
 }))
 
 const fetchMock = vi.mocked(fetchTautulli)
@@ -43,6 +37,10 @@ function library(id: string, type: TautulliLibrary['section_type']) {
 
 const movies = [library('1', 'movie'), library('2', 'movie')]
 const shows = [library('3', 'show')]
+const serverUsers = [
+  { user_id: '1', username: 'one', is_active: 1 },
+  { user_id: '2', username: 'two', is_active: 1 },
+]
 const rankedUsers = [
   { user_id: 1, total_duration: 300 },
   { user_id: 2, total_duration: 200 },
@@ -69,6 +67,8 @@ function mockTautulli(getUser: unknown) {
     inFlight--
 
     switch (query) {
+      case 'get_users':
+        return { response: { data: serverUsers } } as never
       case 'get_home_stats':
         return { response: { data: { rows: rankedUsers } } } as never
       case 'get_user':
@@ -105,14 +105,7 @@ describe('getUsersTop with Tautulli', () => {
     maxInFlight = 0
     fetchMock.mockReset()
     vi.mocked(getSettings).mockReturnValue(settings)
-    vi.mocked(getActiveUsers).mockResolvedValue([
-      { user_id: '1' },
-      { user_id: '2' },
-    ] as never)
     vi.mocked(getLibraries).mockResolvedValue([...movies, ...shows])
-    vi.mocked(getLibrariesByType).mockImplementation(async (type) =>
-      type === 'movie' ? movies : type === 'show' ? shows : [],
-    )
   })
 
   it('counts each users plays per media type across their libraries', async () => {

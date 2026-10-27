@@ -2,7 +2,7 @@ import { AuthOptions } from 'next-auth'
 import CredentialsProvider from 'next-auth/providers/credentials'
 import { parseStringPromise } from 'xml2js'
 import { PLEX_API_ENDPOINT } from '../utils/constants'
-import { getServerUser } from '../utils/fetchTautulli'
+import { getServerUser } from '../utils/statsSource'
 
 // Admin rights and server membership are re-checked this often, so changes
 // in Tautulli/Tracearr reach existing sessions.

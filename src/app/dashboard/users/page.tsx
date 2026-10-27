@@ -3,15 +3,12 @@ import { authOptions } from '@/lib/auth'
 import { DashboardSearchParams } from '@/types/dashboard'
 import { Settings } from '@/types/settings'
 import { fetchOverseerrStats } from '@/utils/fetchOverseerr'
-import { getUsersCount } from '@/utils/fetchTautulli'
 import { secondsToTime, TranslateFunction } from '@/utils/formatting'
 import getPeriod from '@/utils/getPeriod'
 import getSettings from '@/utils/getSettings'
-import { getTautulliTotalDuration } from '@/utils/getTautulliDuration'
-import { getTracearrTotalDuration } from '@/utils/getTracearrStats'
 import getUsersTop from '@/utils/getUsersTop'
-import { isTracearrSource } from '@/utils/helpers'
 import { toPublicSettings } from '@/utils/publicSettings'
+import { getStatsSource, getUsersCount } from '@/utils/statsSource'
 import { Metadata } from 'next'
 import { getServerSession } from 'next-auth'
 import { getTranslations } from 'next-intl/server'
@@ -35,17 +32,11 @@ async function getTotalDuration(
   t: TranslateFunction,
 ) {
   if (settings.dashboard.activeTotalStatistics.includes('duration')) {
-    if (isTracearrSource(settings)) {
-      return secondsToTime(await getTracearrTotalDuration({ since: period }), t)
-    }
+    const totalDuration = await getStatsSource(settings).getTotalDuration({
+      since: period,
+    })
 
-    return secondsToTime(
-      await getTautulliTotalDuration({
-        after: period,
-        excludedUsers: settings.general.excludedUsers,
-      }),
-      t,
-    )
+    return secondsToTime(totalDuration, t)
   }
 
   return undefined

@@ -1,27 +1,8 @@
 import { Settings } from '@/types/settings'
-import { TautulliItem, TautulliLibrary } from '@/types/tautulli'
+import { TautulliLibrary } from '@/types/tautulli'
 import { getTranslations } from 'next-intl/server'
-import fetchTautulli from './fetchTautulli'
-import { getTracearrLibrariesSize } from './fetchTracearr'
 import { bytesToSize, secondsToTime } from './formatting'
-import getMediaAdditionalData, {
-  mapWatchedDataByRatingKey,
-} from './getMediaAdditionalData'
-import getSettings from './getSettings'
-import { getTautulliTotalDuration } from './getTautulliDuration'
-import { getTracearrItems, getTracearrTotalDuration } from './getTracearrStats'
-import { isTracearrSource } from './helpers'
-
-const statIdMap = {
-  movie: 'top_movies',
-  show: 'top_tv',
-  artist: 'top_music',
-}
-const popularIdMap = {
-  movie: 'popular_movies',
-  show: 'popular_tv',
-  artist: 'popular_music',
-}
+import { getStatsSource } from './statsSource'
 
 export async function getItems(
   library: TautulliLibrary,
@@ -29,66 +10,7 @@ export async function getItems(
   userId?: string,
   sortByPlays?: boolean,
 ) {
-  if (isTracearrSource(getSettings())) {
-    return getTracearrItems(library, period, userId, sortByPlays)
-  }
-
-  const sectionType = library.section_type
-  const itemsRes = await fetchTautulli<TautulliItem>('get_home_stats', {
-    stat_id: statIdMap[sectionType],
-    stats_count: 5,
-    stats_type: sortByPlays ? 'plays' : 'duration',
-    time_range: period,
-    section_id: library.section_id,
-    user_id: userId ? userId : '',
-  })
-
-  let items = []
-
-  items = itemsRes?.response?.data?.rows || []
-
-  if (items.length) {
-    const usersWatched = await fetchTautulli<TautulliItem>('get_home_stats', {
-      stat_id: popularIdMap[sectionType],
-      stats_count: 100, // TODO: https://github.com/Tautulli/Tautulli/issues/2103
-      time_range: period,
-    })
-    const usersWatchedData = usersWatched?.response?.data?.rows
-
-    if (usersWatchedData) {
-      // Get artists users listened data
-      if (sectionType === 'artist') {
-        items.map((artist) => {
-          const usersListenedMapped = mapWatchedDataByRatingKey(
-            usersWatchedData,
-            artist,
-          )
-
-          artist.users_watched = usersListenedMapped
-        })
-      }
-
-      // Get tv/movies additional data
-      if (sectionType === 'show' || sectionType === 'movie') {
-        items = await getMediaAdditionalData(
-          items,
-          sectionType === 'movie' ? 'movie' : 'tv',
-          usersWatchedData,
-        )
-      }
-
-      // Don't show how many users watched the item on personal dashboard
-      if (userId) {
-        items = items.map((item) => {
-          delete item.users_watched
-
-          return item
-        })
-      }
-    }
-  }
-
-  return items
+  return getStatsSource().getTopItems(library, period, userId, sortByPlays)
 }
 
 export async function getTotalDuration(
@@ -99,22 +21,10 @@ export async function getTotalDuration(
 ) {
   if (settings.dashboard.activeTotalStatistics.includes('duration')) {
     const t = await getTranslations()
-
-    if (isTracearrSource(settings)) {
-      const totalDuration = await getTracearrTotalDuration({
-        since: period,
-        userId: userId || undefined,
-        libraries: [library],
-      })
-
-      return secondsToTime(totalDuration, t)
-    }
-
-    const totalDuration = await getTautulliTotalDuration({
-      after: period,
-      sectionId: library.section_id,
-      userId,
-      excludedUsers: settings.general.excludedUsers,
+    const totalDuration = await getStatsSource(settings).getTotalDuration({
+      since: period,
+      userId: userId || undefined,
+      libraries: [library],
     })
 
     return secondsToTime(totalDuration, t)
@@ -129,28 +39,16 @@ export async function getTotalSize(
 ) {
   if (settings.dashboard.activeTotalStatistics.includes('size')) {
     const t = await getTranslations()
-
-    if (isTracearrSource(settings)) {
-      const { size, isPartial } = await getTracearrLibrariesSize([library])
-      const formattedSize = bytesToSize(size, 2, t)
-
-      // A Tracearr library spans every Plex library of its type, so only some
-      // of them can be missing a size. Tautulli reports one library at a time.
-      return formattedSize && isPartial
-        ? t('Dashboard.sizePartial', { size: formattedSize })
-        : formattedSize
-    }
-
-    const totalSize = await fetchTautulli<{ total_file_size: number }>(
-      'get_library_media_info',
-      {
-        section_id: library.section_id,
-        length: 0,
-      },
-      true,
+    const { size, isPartial } = await getStatsSource(settings).getLibrariesSize(
+      [library],
     )
+    const formattedSize = bytesToSize(size, 2, t)
 
-    return bytesToSize(totalSize?.response?.data?.total_file_size || 0, 2, t)
+    // A Tracearr library spans every Plex library of its type, so only some
+    // of them can be missing a size.
+    return formattedSize && isPartial
+      ? t('Dashboard.sizePartial', { size: formattedSize })
+      : formattedSize
   }
 
   return undefined

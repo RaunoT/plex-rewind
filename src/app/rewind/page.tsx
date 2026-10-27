@@ -1,11 +1,6 @@
 import { authOptions } from '@/lib/auth'
 import { RewindUser, UserRewind } from '@/types/rewind'
 import { TautulliUser } from '@/types/tautulli'
-import {
-  getActiveUsers,
-  getLibraries,
-  getServerId,
-} from '@/utils/fetchTautulli'
 import { formatPercent, secondsToTime } from '@/utils/formatting'
 import {
   getLibrariesTotalDuration,
@@ -20,6 +15,7 @@ import getSettings from '@/utils/getSettings'
 import getUsersTop from '@/utils/getUsersTop'
 import { daysBetween, getRewindStartDate } from '@/utils/helpers'
 import { toPublicSettings } from '@/utils/publicSettings'
+import { getActiveUsers, getLibraries, getServerId } from '@/utils/statsSource'
 import { Metadata } from 'next'
 import { getServerSession } from 'next-auth'
 import { getLocale, getTranslations } from 'next-intl/server'
