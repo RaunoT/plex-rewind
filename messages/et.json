@@ -315,6 +315,8 @@
       "weWillBeHere": "Igal juhul oleme olemas ka järgmine kord",
       "insightsAndStats": "veelgi huvitavama <insightsAndStats>statistikaga.</insightsAndStats>",
       "untilThen": "Seniks, naudi kogu sisu, mis <plex>{serverName}'il</plex> on pakkuda.",
+      "watchAgain": "Vaata uuesti",
+      "backToHome": "Tagasi avalehele",
       "journey": {
         "movies": "Sinu lemmikutest <movies>Filmidest</movies> alates on see olnud meeldejääv teekond.",
         "shows": "Kõige huvitavamatest <shows>Saadetest</shows> alates on see olnud meeldejääv teekond.",

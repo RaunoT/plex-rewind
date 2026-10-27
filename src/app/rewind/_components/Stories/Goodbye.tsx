@@ -1,12 +1,17 @@
 import { RewindStory } from '@/types/rewind'
 import { hasRewindPlays } from '@/utils/helpers'
 import {
+  ArrowPathIcon,
   FilmIcon,
+  HomeIcon,
   MusicalNoteIcon,
   PlayCircleIcon,
 } from '@heroicons/react/24/outline'
 import { useTranslations } from 'next-intl'
+import Link from 'next/link'
+import { useContext } from 'react'
 import RewindStat from '../RewindStat'
+import { StoryRestartContext } from '../Stories'
 
 function getJourneyKey(
   hasMovies: boolean,
@@ -46,6 +51,7 @@ function getJourneyKey(
 
 export default function StoryGoodbye({ userRewind, settings }: RewindStory) {
   const t = useTranslations('Rewind.Goodbye')
+  const restart = useContext(StoryRestartContext)
   const hasPlays = hasRewindPlays(userRewind)
 
   return (
@@ -112,6 +118,17 @@ export default function StoryGoodbye({ userRewind, settings }: RewindStory) {
             plex: (chunks) => chunks,
           })}
         </p>
+        {/* Next is disabled on the last story, so these lead on from it */}
+        <div className='mt-8 flex flex-wrap gap-3 text-base leading-normal font-normal tracking-normal'>
+          <button type='button' className='button' onClick={restart}>
+            <ArrowPathIcon className='size-5' />
+            {t('watchAgain')}
+          </button>
+          <Link href='/' className='button button--glass'>
+            <HomeIcon className='size-5' />
+            {t('backToHome')}
+          </Link>
+        </div>
       </RewindStat>
     </>
   )

@@ -315,6 +315,8 @@
       "weWillBeHere": "Dans tous les cas, nous serons là",
       "insightsAndStats": "avec encore plus <insightsAndStats>d'informations et de statistiques.</insightsAndStats>",
       "untilThen": "D'ici là, continuez à explorer et à profiter de tout ce que <plex>{serverName}</plex> a à offrir.",
+      "watchAgain": "Revoir",
+      "backToHome": "Retour à l'accueil",
       "journey": {
         "movies": "De vos <movies>Films</movies> préférés, ce fut un voyage inoubliable.",
         "shows": "Des <shows>Séries</shows> les plus divertissantes, ce fut un voyage inoubliable.",
