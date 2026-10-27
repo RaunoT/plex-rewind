@@ -175,6 +175,53 @@ describe('getTopMediaItems', () => {
     })
   })
 
+  it('keeps the rating key of an artist without artwork', async () => {
+    const { audio } = await getTop([
+      play({
+        mediaType: 'track',
+        artistName: 'Smilers',
+        grandparentRatingKey: '100',
+        startedAt: new Date('2026-02-01').getTime(),
+      }),
+      // A newer imported play has neither a rating key nor a poster.
+      play({
+        mediaType: 'track',
+        artistName: 'Smilers',
+        startedAt: new Date('2026-03-01').getTime(),
+      }),
+    ])
+
+    expect(audio).toHaveLength(1)
+    expect(audio[0]).toMatchObject({
+      total_plays: 2,
+      rating_key: 100,
+      grandparent_rating_key: 100,
+      thumb: '',
+    })
+  })
+
+  it('takes the poster from another play when the keyed one has none', async () => {
+    const { audio } = await getTop([
+      play({
+        mediaType: 'track',
+        artistName: 'Smilers',
+        grandparentRatingKey: '100',
+        startedAt: new Date('2026-02-01').getTime(),
+      }),
+      play({
+        mediaType: 'track',
+        artistName: 'Smilers',
+        thumb: 'http://tracearr/smilers',
+        startedAt: new Date('2026-03-01').getTime(),
+      }),
+    ])
+
+    expect(audio[0]).toMatchObject({
+      rating_key: 100,
+      thumb: 'http://tracearr/smilers',
+    })
+  })
+
   it('shows a show once when its episodes have several rating keys', async () => {
     const { shows } = await getTop([
       ...['1', '2', '3'].map((ratingKey, i) =>

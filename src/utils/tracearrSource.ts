@@ -192,10 +192,13 @@ function groupPlays(plays: TracearrPlay[]): TracearrPlay[][] {
 
 // Episodes roll up into their show and tracks into their artist. The newest
 // play with a rating key and a poster points at the current library item.
+// Without one, the rating key matters more than the poster, as it's what the
+// Plex link needs, and the poster can come from any play.
 function toItemRow(plays: TracearrPlay[]): TautulliItemRow {
   const newestFirst = orderBy(plays, 'startedAt', 'desc')
   const play =
     newestFirst.find((play) => getRatingKey(play) && play.thumb) ??
+    newestFirst.find(getRatingKey) ??
     newestFirst[0]
   const isMovie = play.mediaType === 'movie'
   const titleByType: Record<TracearrPlayMediaType, string | null> = {
@@ -214,7 +217,7 @@ function toItemRow(plays: TracearrPlay[]): TautulliItemRow {
     users_watched: uniqBy(plays, 'identityId').length,
     rating_key: ratingKey,
     grandparent_rating_key: ratingKey,
-    thumb: play.thumb,
+    thumb: play.thumb || newestFirst.find((play) => play.thumb)?.thumb || '',
     tmdb_id: isMovie ? play.tmdbId : null,
     imdb_id: isMovie ? play.imdbId : null,
     media_id: newestFirst.map(getMediaId).find(Boolean) ?? null,
