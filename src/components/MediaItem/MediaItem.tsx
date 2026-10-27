@@ -64,7 +64,7 @@ export default function MediaItem({
   const isUsers = type === 'users'
   const thumb = isUsers ? data.user_thumb : data.thumb
   const posterSrc = isTmdbPoster ? data.thumb : getImageProxyUrl(thumb)
-  const isAnonymized = data.user === 'Anonymous'
+  const isAnonymized = !!data.is_anonymous
   const initialImageSrc = isUsers && isAnonymized ? anonymousSvg : posterSrc
   const [imageSrc, setImageSrc] = useState<string>(initialImageSrc)
   const [prevInitialImageSrc, setPrevInitialImageSrc] =

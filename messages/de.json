@@ -24,10 +24,9 @@
   "Activity": {
     "title": "Aktivität",
     "loading": "Lädt...",
-    "poster": "Poster",
-    "avatar": "Avatar",
+    "poster": "Poster von {title}",
     "anonymousAvatar": "Anonymer Avatar",
-    "anonymous": "Anonym",
+    "anonymous": "Anonym #{number}",
     "stream": "Stream",
     "container": "Container",
     "quality": "Qualität",
@@ -212,7 +211,7 @@
     "size": "Größe",
     "defaults": "Standard",
     "startDate": "Startdatum",
-    "profilePictureAlt": "Profilbild",
+    "profilePictureAlt": "Profilbild von {name}",
     "time": {
       "zero": "0 Minuten",
       "month": "{count, plural, one {# Monat} other {# Monate}}",
@@ -327,6 +326,7 @@
   "MediaItem": {
     "request": "Anfrage",
     "deleted": "Gelöscht",
+    "anonymous": "Anonym",
     "statPlays": "{count, plural, one {# Wiedergabe} other {# Wiedergaben}}",
     "statUsers": "{count, plural, one {# Benutzer} other {# Benutzer}}",
     "statRequests": "{count, plural, one {# Anfrage} other {# Anfragen}}",

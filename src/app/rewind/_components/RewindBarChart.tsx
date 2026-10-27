@@ -4,6 +4,7 @@ import usePrefersReducedMotion from '@/hooks/usePrefersReducedMotion'
 import { instantTransition } from '@/utils/motion'
 import clsx from 'clsx'
 import { motion } from 'motion/react'
+import { useFormatter } from 'next-intl'
 
 type Props = {
   data: number[]
@@ -65,6 +66,7 @@ export default function RewindBarChart({
 }: Props) {
   const { niceMax, ticks } = getScale(Math.max(...data, 1))
   const shouldReduceMotion = usePrefersReducedMotion()
+  const format = useFormatter()
 
   return (
     <div
@@ -82,7 +84,7 @@ export default function RewindBarChart({
               className='absolute right-0 translate-y-1/2 text-xs whitespace-nowrap text-neutral-500 tabular-nums'
               style={{ bottom: `${(tick / niceMax) * 100}%` }}
             >
-              {tick}
+              {format.number(tick)}
             </span>
           ))}
         </div>

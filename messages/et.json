@@ -24,10 +24,9 @@
   "Activity": {
     "title": "Tegevus",
     "loading": "Laadimine...",
-    "poster": "plakat",
-    "avatar": "avatar",
+    "poster": "„{title}“ plakat",
     "anonymousAvatar": "Anonüümne avatar",
-    "anonymous": "Anonüümne",
+    "anonymous": "Anonüümne #{number}",
     "stream": "Voog",
     "container": "Konteiner",
     "quality": "Kvaliteet",
@@ -212,7 +211,7 @@
     "size": "Suurus",
     "defaults": "Vaikeväärtused",
     "startDate": "Algus",
-    "profilePictureAlt": "profiilipilt",
+    "profilePictureAlt": "Kasutaja {name} profiilipilt",
     "time": {
       "zero": "0 min",
       "month": "{count, plural, one {# kuu} other {# kuud}}",
@@ -327,6 +326,7 @@
   "MediaItem": {
     "request": "Telli",
     "deleted": "Kustutatud",
+    "anonymous": "Anonüümne",
     "statPlays": "{count, plural, one {# mängimine} other {# mängimist}}",
     "statUsers": "{count, plural, one {# kasutaja} other {# kasutajat}}",
     "statRequests": "{count, plural, one {# tellimus} other {# tellimust}}",

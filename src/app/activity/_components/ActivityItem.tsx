@@ -158,7 +158,7 @@ export default function ActivityItem({
               <Avatar
                 src={session.user_thumb}
                 name={friendly_name}
-                alt={friendly_name + ' ' + t('avatar')}
+                alt={tCommon('profilePictureAlt', { name: friendly_name })}
                 sizes='3rem'
                 priority
               />
@@ -170,7 +170,9 @@ export default function ActivityItem({
               isCurrentUser && 'text-plex',
             )}
           >
-            {isAnonymous ? `${t('anonymous')} #${index + 1}` : friendly_name}
+            {isAnonymous
+              ? t('anonymous', { number: index + 1 })
+              : friendly_name}
           </span>
           <span className='truncate text-neutral-400'>
             {product} ({player})
@@ -189,7 +191,7 @@ export default function ActivityItem({
             <Image
               fill
               className='object-cover object-top'
-              alt={`${grandparent_title || title} ${t('poster')}`}
+              alt={t('poster', { title: grandparent_title || title })}
               src={posterUrl}
               sizes='6rem'
               priority

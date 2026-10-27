@@ -5,6 +5,7 @@ import { REWIND_CONTROLS_ID } from '@/utils/constants'
 import getSettings from '@/utils/getSettings'
 import { getActiveUsers } from '@/utils/statsSource'
 import { getServerSession } from 'next-auth'
+import { getTranslations } from 'next-intl/server'
 import { notFound } from 'next/navigation'
 import { ReactNode, Suspense } from 'react'
 import UserSelect from './_components/UserSelect'
@@ -24,9 +25,11 @@ export default async function RewindLayout({ children }: Props) {
     return notFound()
   }
 
+  const t = await getTranslations('Rewind')
+
   return (
     <div className='page-width flex flex-1 flex-col sm:flex-none'>
-      <PageTitle title='Rewind' />
+      <PageTitle title={t('title')} />
       <div className='mb-4 flex min-h-7 items-center justify-between gap-3'>
         <div id={REWIND_CONTROLS_ID} />
         {session?.user.isAdmin && (

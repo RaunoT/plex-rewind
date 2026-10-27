@@ -156,4 +156,23 @@ describe('getUsersTop with Tautulli', () => {
       movies_plays_count: 0,
     })
   })
+
+  it('flags other users when anonymized and leaves naming them to the UI', async () => {
+    vi.mocked(getSettings).mockReturnValue({
+      ...cloneDeep(DEFAULT_SETTINGS),
+      general: { ...DEFAULT_SETTINGS.general, isAnonymized: true },
+    })
+    mockTautulli({})
+
+    const users = await getUsersTop('1', '2026-03-01', 30)
+
+    expect(users?.[0]).toMatchObject({ user_id: 1, is_anonymous: false })
+    expect(users?.[1]).toMatchObject({
+      user_id: 0,
+      user: '',
+      friendly_name: '',
+      user_thumb: '',
+      is_anonymous: true,
+    })
+  })
 })

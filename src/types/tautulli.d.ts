@@ -59,6 +59,8 @@ export type TautulliItemRow = {
   shows_plays_count: number
   user_id: number
   rank: number
+  // Set when the anonymize setting hides who this user is
+  is_anonymous?: boolean
   grandparent_rating_key?: number
   media_id?: string | null
 }

@@ -5,6 +5,7 @@ import { TautulliItemRow } from '@/types/tautulli'
 import clsx from 'clsx'
 import { debounce } from 'lodash'
 import { motion, useAnimation } from 'motion/react'
+import { useTranslations } from 'next-intl'
 import { RefObject, useEffect, useRef } from 'react'
 
 type Props = {
@@ -20,11 +21,16 @@ export default function MediaItemTitle({
   parentRef,
   loggedInUserId,
 }: Props) {
+  const t = useTranslations('MediaItem')
   const titleRef = useRef<HTMLSpanElement>(null)
   const isCurrentUser = String(data.user_id) === loggedInUserId
   const controls = useAnimation()
   const isUsersDashboard = type === 'users'
-  const title = isUsersDashboard ? data.friendly_name : data.title
+  const title = !isUsersDashboard
+    ? data.title
+    : data.is_anonymous
+      ? t('anonymous')
+      : data.friendly_name
   const shouldReduceMotion = usePrefersReducedMotion()
 
   useEffect(() => {
