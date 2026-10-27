@@ -93,6 +93,11 @@
   @apply transition-opacity group-hover:opacity-60 hover:opacity-60;
 }
 
+/* Radii: rounded-full for anything one line tall that is pressed or reads as a
+   chip. Otherwise by size: md for ~24px items (tags, posters, checkboxes), xl
+   for 40px controls and rows, 2xl for small panels, 3xl for sheets. A
+   container of rows adds its padding to their radius, so corners stay
+   concentric. */
 @layer components {
   .glass-sheet {
     @apply glass relative rounded-3xl p-5;
@@ -313,6 +318,13 @@
     }
   }
 
+  /* Used with glass-sheet, whose padding and radius it replaces */
+  .menu {
+    @apply bg-neutral-900/70 p-1.5 outline-none;
+
+    border-radius: calc(var(--radius-xl) + --spacing(1.5));
+  }
+
   .menu-item {
     @apply flex cursor-pointer items-center gap-3 rounded-xl px-3 py-2 text-sm text-neutral-200 outline-none data-focused:bg-white/10 data-focused:text-white;
 
@@ -464,7 +476,7 @@
   }
 
   .checkbox {
-    @apply relative size-6 shrink-0 rounded-lg bg-white/15 transition-colors;
+    @apply relative size-6 shrink-0 rounded-md bg-white/15 transition-colors;
   }
 
   /* Rows of boxes with their labels, so each tick clearly belongs to one

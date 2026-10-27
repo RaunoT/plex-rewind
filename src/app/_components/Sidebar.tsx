@@ -55,7 +55,7 @@ export default function Sidebar({ libraries, settings }: Props) {
   return (
     <aside
       data-sidebar
-      className='glass-sheet fixed inset-y-4 left-4 z-30 hidden w-60 flex-col overflow-y-auto rounded-[20px] p-2 lg:flex'
+      className='glass-sheet fixed inset-y-4 left-4 z-30 hidden w-60 flex-col overflow-y-auto rounded-[calc(var(--radius-xl)+--spacing(2))] p-2 lg:flex'
     >
       <Link
         href='/'
