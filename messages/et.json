@@ -35,6 +35,7 @@
     "noActivity": "Ühtegi aktiivset voogu pole. 😴",
     "playing": "Mängib",
     "paused": "Pausil",
+    "buffering": "Puhverdab",
     "endsAt": "Lõpeb {time}",
     "convertedTo": "teisendatakse:",
     "decision": {
@@ -53,7 +54,9 @@
     "movies": "{count, plural, one {film} other {filmi}}",
     "episodes": "{count, plural, one {episood} other {episoodi}}",
     "tracks": "{count, plural, one {lugu} other {lugu}}",
-    "requests": "{count, plural, one {tellimus} other {tellimust}}"
+    "requests": "{count, plural, one {tellimus} other {tellimust}}",
+    "durationWatched": "{duration} vaadatud",
+    "durationListened": "{duration} kuulatud"
   },
   "DashboardFilters": {
     "type": "Kelle statistika",
@@ -73,7 +76,8 @@
     "cta": "Proovi uuesti"
   },
   "PlexDeeplink": {
-    "available": "Saadaval"
+    "available": "Saadaval",
+    "availableLabel": "Saadaval: ava {title} Plexis"
   },
   "PeriodSelectContent": {
     "7days": "7 päeva",
@@ -107,6 +111,7 @@
     "savedChooseLibraries": "Salvestatud! Vali kogumikud jaotises Üldine.",
     "genericError": "Midagi läks valesti. Proovi uuesti.",
     "save": "Salvesta",
+    "reenterApiKey": "Sisesta API võti URL-i muutmisel uuesti.",
     "apiKey": "API võti",
     "invalidApiKey": "Vale API võti.",
     "unableToConnect": "Ühenduse loomine ebaõnnestus. Kontrolli URL-i ja seda, et server töötab.",
@@ -328,6 +333,9 @@
     "statRequests": "{count, plural, one {# tellimus} other {# tellimust}}",
     "labelShows": "Seriaalid",
     "labelMovies": "Filmid",
-    "labelAudio": "Muusika"
+    "labelAudio": "Muusika",
+    "you": "(sina)",
+    "requestLabel": "Telli {title}",
+    "imdbLabel": "{title} IMDb-s"
   }
 }

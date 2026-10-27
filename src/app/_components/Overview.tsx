@@ -1,20 +1,14 @@
+import { MediaIcon } from '@/components/icons'
 import SkeletonLine from '@/components/SkeletonLine'
 import { DashboardSearchParams } from '@/types/dashboard'
 import { Settings } from '@/types/settings'
 import { TautulliLibrary } from '@/types/tautulli'
 import { DASHBOARD_PERIOD_COOKIE_NAME, getSiteUrl } from '@/utils/constants'
 import { getItems } from '@/utils/getDashboard'
-import getPeriod from '@/utils/getPeriod'
+import getPeriod, { parseCustomPeriod } from '@/utils/getPeriod'
 import { getImageProxyUrl } from '@/utils/imageProxy'
 import { toPublicSettings } from '@/utils/publicSettings'
-import {
-  BackwardIcon,
-  ChevronRightIcon,
-  FilmIcon,
-  MusicalNoteIcon,
-  PlayCircleIcon,
-  TvIcon,
-} from '@heroicons/react/24/outline'
+import { BackwardIcon, ChevronRightIcon } from '@heroicons/react/24/outline'
 import { kebabCase } from 'lodash'
 import { Session } from 'next-auth'
 import { getTranslations } from 'next-intl/server'
@@ -42,7 +36,7 @@ export default async function Overview({
   const period = getDashboardPeriod(
     (await cookies()).get(DASHBOARD_PERIOD_COOKIE_NAME)?.value,
   )
-  const customPeriod = parseInt(settings.dashboard.customPeriod)
+  const customPeriod = parseCustomPeriod(settings.dashboard.customPeriod)
   const periodLabel =
     period === '7days'
       ? t('PeriodSelectContent.7days')
@@ -163,13 +157,7 @@ async function LibraryTile({
             <p className='truncate font-medium'>{top.title}</p>
             <ul className='icon-stats-container mt-1.5'>
               <li className='icon-stat-wrapper'>
-                {library.section_type === 'movie' ? (
-                  <FilmIcon />
-                ) : library.section_type === 'artist' ? (
-                  <MusicalNoteIcon />
-                ) : (
-                  <PlayCircleIcon />
-                )}
+                <MediaIcon type={library.section_type} />
                 {t('MediaItem.statPlays', { count: top.total_plays })}
               </li>
             </ul>
@@ -200,13 +188,12 @@ function LibraryTileSkeleton({ library }: { library: TautulliLibrary }) {
 }
 
 function TileHeading({ name, type }: { name: string; type?: string }) {
-  const Icon =
-    type === 'movie' ? FilmIcon : type === 'artist' ? MusicalNoteIcon : TvIcon
-
   return (
     <div className='flex items-center justify-between gap-3'>
       <h2 className='flex min-w-0 items-center gap-2 font-semibold'>
-        {type && <Icon className='size-5 shrink-0 text-neutral-400' />}
+        {type && (
+          <MediaIcon type={type} className='size-5 shrink-0 text-neutral-400' />
+        )}
         <span className='truncate'>{name}</span>
       </h2>
       <ChevronRightIcon className='size-4 shrink-0 text-neutral-500 transition-transform group-hover:translate-x-0.5' />

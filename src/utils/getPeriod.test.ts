@@ -2,7 +2,7 @@ import { Settings } from '@/types/settings'
 import { cloneDeep } from 'lodash'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { DEFAULT_SETTINGS } from './constants'
-import getPeriod from './getPeriod'
+import getPeriod, { parseCustomPeriod } from './getPeriod'
 
 function settingsWith(customPeriod: string): Settings {
   const settings = cloneDeep(DEFAULT_SETTINGS)
@@ -81,5 +81,18 @@ describe('getPeriod', () => {
     expect(getPeriod('custom', settingsWith('1.9')).daysAgo).toBe(1)
     expect(getPeriod('custom', settingsWith('0.5')).daysAgo).toBe(1)
     expect(getPeriod('custom', settingsWith('abc')).daysAgo).toBe(1)
+  })
+})
+
+describe('parseCustomPeriod', () => {
+  it.each([
+    ['14', 14],
+    ['1.9', 1],
+    ['0', 1],
+    ['-5', 1],
+    ['abc', 1],
+    ['', 1],
+  ])('reads %j as %i days', (value, days) => {
+    expect(parseCustomPeriod(value)).toBe(days)
   })
 })

@@ -35,6 +35,7 @@
     "noActivity": "Nessuna riproduzione in corso. 😴",
     "playing": "In riproduzione",
     "paused": "In pausa",
+    "buffering": "In buffering",
     "endsAt": "Termina alle {time}",
     "convertedTo": "convertito in",
     "decision": {
@@ -53,7 +54,9 @@
     "movies": "{count, plural, one {film} other {film}}",
     "episodes": "{count, plural, one {episodio} other {episodi}}",
     "tracks": "{count, plural, one {brano} other {brani}}",
-    "requests": "{count, plural, one {richiesta} other {richieste}}"
+    "requests": "{count, plural, one {richiesta} other {richieste}}",
+    "durationWatched": "{duration} di visione",
+    "durationListened": "{duration} di ascolto"
   },
   "DashboardFilters": {
     "type": "Statistiche",
@@ -73,7 +76,8 @@
     "cta": "Riprova"
   },
   "PlexDeeplink": {
-    "available": "Disponibile"
+    "available": "Disponibile",
+    "availableLabel": "Disponibile: apri {title} in Plex"
   },
   "PeriodSelectContent": {
     "7days": "7 giorni",
@@ -107,6 +111,7 @@
     "savedChooseLibraries": "Impostazioni salvate! Scegli le tue librerie in Generale.",
     "genericError": "Qualcosa è andato storto. Riprova.",
     "save": "Salva",
+    "reenterApiKey": "Inserisci di nuovo la chiave API dopo aver cambiato l'URL.",
     "apiKey": "Chiave API",
     "invalidApiKey": "Chiave API non valida.",
     "unableToConnect": "Impossibile connettersi. Controlla l'URL e che il server sia attivo.",
@@ -328,6 +333,9 @@
     "statRequests": "{count, plural, one {# richiesta} other {# richieste}}",
     "labelShows": "Serie TV",
     "labelMovies": "Film",
-    "labelAudio": "Musica"
+    "labelAudio": "Musica",
+    "you": "(tu)",
+    "requestLabel": "Richiedi {title}",
+    "imdbLabel": "{title} su IMDb"
   }
 }

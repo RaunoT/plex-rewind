@@ -39,7 +39,9 @@ export default function SortableLibrary({
       // The move buttons already reorder with the keyboard, so keep the row
       // itself out of the tab order.
       tabIndex={-1}
-      className='flex items-center gap-1'
+      // With the list's 8px gap this leaves 12px between rows, room for the
+      // 6px tap areas of two move buttons.
+      className='flex items-center gap-1 py-0.5'
     >
       <div
         className='flex size-8 shrink-0 cursor-move touch-none items-center justify-center select-none sm:size-6'
@@ -56,23 +58,23 @@ export default function SortableLibrary({
       </Checkbox>
       <button
         type='button'
-        className='link-light focus-visible:focus-ring ml-1 flex size-8 shrink-0 items-center justify-center rounded-lg disabled:pointer-events-none disabled:opacity-30 sm:size-6'
+        className='icon-button ml-1 sm:size-6'
         aria-label={t('moveUp', { name: library.section_name })}
         data-move={`${library.section_id}-up`}
         disabled={isFirst}
         onClick={() => onMove(-1)}
       >
-        <ChevronUpIcon className='size-5' />
+        <ChevronUpIcon />
       </button>
       <button
         type='button'
-        className='link-light focus-visible:focus-ring flex size-8 shrink-0 items-center justify-center rounded-lg disabled:pointer-events-none disabled:opacity-30 sm:size-6'
+        className='icon-button sm:size-6'
         aria-label={t('moveDown', { name: library.section_name })}
         data-move={`${library.section_id}-down`}
         disabled={isLast}
         onClick={() => onMove(1)}
       >
-        <ChevronDownIcon className='size-5' />
+        <ChevronDownIcon />
       </button>
     </Reorder.Item>
   )

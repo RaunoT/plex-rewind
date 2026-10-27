@@ -35,6 +35,7 @@
     "noActivity": "Aucune lecture en cours. 😴",
     "playing": "En lecture",
     "paused": "En pause",
+    "buffering": "Mise en mémoire tampon",
     "endsAt": "Se termine à {time}",
     "convertedTo": "converti en",
     "decision": {
@@ -53,7 +54,9 @@
     "movies": "{count, plural, one {film} other {films}}",
     "episodes": "{count, plural, one {épisode} other {épisodes}}",
     "tracks": "{count, plural, one {morceau} other {morceaux}}",
-    "requests": "{count, plural, one {demande} other {demandes}}"
+    "requests": "{count, plural, one {demande} other {demandes}}",
+    "durationWatched": "{duration} de visionnage",
+    "durationListened": "{duration} d'écoute"
   },
   "DashboardFilters": {
     "type": "Statistiques de",
@@ -73,7 +76,8 @@
     "cta": "Réessayer"
   },
   "PlexDeeplink": {
-    "available": "Disponible"
+    "available": "Disponible",
+    "availableLabel": "Disponible : ouvrir {title} dans Plex"
   },
   "PeriodSelectContent": {
     "7days": "7 jours",
@@ -107,6 +111,7 @@
     "savedChooseLibraries": "Paramètres enregistrés ! Choisissez vos bibliothèques dans Général.",
     "genericError": "Quelque chose s'est mal passé. Réessayez.",
     "save": "Enregistrer",
+    "reenterApiKey": "Saisissez à nouveau la clé API après avoir modifié l'URL.",
     "apiKey": "Clé API",
     "invalidApiKey": "Clé API invalide.",
     "unableToConnect": "Connexion impossible. Vérifiez l'URL et que le serveur est en marche.",
@@ -328,6 +333,9 @@
     "statRequests": "{count, plural, one {# demande} other {# demandes}}",
     "labelShows": "Séries",
     "labelMovies": "Films",
-    "labelAudio": "Musique"
+    "labelAudio": "Musique",
+    "you": "(vous)",
+    "requestLabel": "Demander {title}",
+    "imdbLabel": "{title} sur IMDb"
   }
 }

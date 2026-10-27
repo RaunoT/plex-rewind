@@ -18,7 +18,7 @@ import SortableLibrary from './SortableLibrary'
 type Props = {
   settings: PublicSettings
   libraries: TautulliLibrary[]
-  users: TautulliUser[]
+  users: Pick<TautulliUser, 'user_id' | 'friendly_name'>[]
 }
 
 type GeneralFormState = SettingsFormInitialState<GeneralSettings>
@@ -205,7 +205,7 @@ export default function GeneralSettingsForm({
                 name='excludedUsers'
                 defaultValue={generalSettings.excludedUsers}
               >
-                <div className='peer mr-auto flex flex-wrap gap-2'>
+                <div className='peer checkbox-grid'>
                   {users.map((user) => (
                     <Checkbox
                       key={`user-${user.user_id}`}

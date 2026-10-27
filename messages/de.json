@@ -35,6 +35,7 @@
     "noActivity": "Keine aktiven Streams. 😴",
     "playing": "Läuft",
     "paused": "Pausiert",
+    "buffering": "Puffert",
     "endsAt": "Endet um {time}",
     "convertedTo": "umgewandelt in",
     "decision": {
@@ -53,7 +54,9 @@
     "movies": "{count, plural, one {Film} other {Filme}}",
     "episodes": "{count, plural, one {Episode} other {Episoden}}",
     "tracks": "{count, plural, one {Titel} other {Titel}}",
-    "requests": "{count, plural, one {Anfrage} other {Anfragen}}"
+    "requests": "{count, plural, one {Anfrage} other {Anfragen}}",
+    "durationWatched": "{duration} geschaut",
+    "durationListened": "{duration} gehört"
   },
   "DashboardFilters": {
     "type": "Statistik für",
@@ -73,7 +76,8 @@
     "cta": "Erneut versuchen"
   },
   "PlexDeeplink": {
-    "available": "Verfügbar"
+    "available": "Verfügbar",
+    "availableLabel": "Verfügbar: {title} in Plex öffnen"
   },
   "PeriodSelectContent": {
     "7days": "7 Tage",
@@ -107,6 +111,7 @@
     "savedChooseLibraries": "Einstellungen gespeichert! Wähle deine Bibliotheken unter Allgemein.",
     "genericError": "Etwas ist schiefgelaufen. Versuche es noch einmal.",
     "save": "Speichern",
+    "reenterApiKey": "Gib den API-Schlüssel nach dem Ändern der URL erneut ein.",
     "apiKey": "API-Schlüssel",
     "invalidApiKey": "Ungültiger API-Schlüssel.",
     "unableToConnect": "Verbindung fehlgeschlagen. Prüfe die URL und ob der Server läuft.",
@@ -328,6 +333,9 @@
     "statRequests": "{count, plural, one {# Anfrage} other {# Anfragen}}",
     "labelShows": "Serien",
     "labelMovies": "Filme",
-    "labelAudio": "Musik"
+    "labelAudio": "Musik",
+    "you": "(du)",
+    "requestLabel": "Anfrage für {title}",
+    "imdbLabel": "{title} auf IMDb"
   }
 }

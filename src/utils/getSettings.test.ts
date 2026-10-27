@@ -211,6 +211,43 @@ describe('getSettings', () => {
     expect(readSavedSettings().setupComplete).toBe(true)
   })
 
+  it('keeps a setup done before it was tracked complete', async () => {
+    const settings: Partial<Settings> = completeSettings()
+
+    delete settings.setupComplete
+    // @ts-expect-error - required since v4.9.0, so missing from older files
+    delete settings.activity.complete
+    fs.writeFileSync(settingsPath, JSON.stringify(settings))
+
+    const { default: getSettings } = await loadModule()
+
+    expect(getSettings().setupComplete).toBe(true)
+    expect(readSavedSettings().setupComplete).toBe(true)
+  })
+
+  it('leaves an old file without a saved connection in setup', async () => {
+    const settings: Partial<Settings> = cloneDeep(DEFAULT_SETTINGS)
+
+    delete settings.setupComplete
+    fs.writeFileSync(settingsPath, JSON.stringify(settings))
+
+    const { default: getSettings } = await loadModule()
+
+    expect(getSettings().setupComplete).toBe(false)
+  })
+
+  it('leaves an unfinished first setup open', async () => {
+    const settings = completeSettings()
+
+    settings.activity.complete = false
+    settings.setupComplete = false
+    fs.writeFileSync(settingsPath, JSON.stringify(settings))
+
+    const { default: getSettings } = await loadModule()
+
+    expect(getSettings().setupComplete).toBe(false)
+  })
+
   it('does not fail when the filled in settings cannot be saved', async () => {
     const original = JSON.stringify({ general: { serverName: 'Home' } })
 

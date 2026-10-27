@@ -84,7 +84,7 @@ export default function DashboardSettingsForm({ settings }: Props) {
               name='activeItemStatistics'
               defaultValue={dashboardSettings.activeItemStatistics}
             >
-              <div className='peer mr-auto flex flex-wrap gap-2'>
+              <div className='peer checkbox-grid'>
                 <Checkbox
                   key='item-year'
                   value='year'
@@ -149,7 +149,7 @@ export default function DashboardSettingsForm({ settings }: Props) {
               name='activeTotalStatistics'
               defaultValue={dashboardSettings.activeTotalStatistics}
             >
-              <div className='peer mr-auto flex flex-wrap gap-2'>
+              <div className='peer checkbox-grid'>
                 <Checkbox
                   key='total-size'
                   value='size'

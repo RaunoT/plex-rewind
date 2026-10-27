@@ -1,9 +1,9 @@
 'use client'
 
 import {
-  ArrowLeftCircleIcon,
-  ArrowRightCircleIcon,
   CalendarDaysIcon,
+  ChevronLeftIcon,
+  ChevronRightIcon,
   XCircleIcon,
 } from '@heroicons/react/24/outline'
 import { CalendarDate, parseDate } from '@internationalized/date'
@@ -73,7 +73,7 @@ export default function DatePicker({
               {(segment) => (
                 <DateSegment
                   segment={segment}
-                  className='rounded-sm px-1 uppercase outline-hidden focus:bg-white/15 data-placeholder:text-neutral-50 data-[type="literal"]:text-neutral-50'
+                  className='rounded-sm px-1 uppercase outline-hidden focus:bg-white/15 data-placeholder:text-neutral-400 data-[type="literal"]:text-neutral-400'
                 />
               )}
             </DateInput>
@@ -82,7 +82,7 @@ export default function DatePicker({
                 slot={null}
                 onPress={() => setValue(null)}
                 aria-label={t('clear')}
-                className='link-dark focus-visible:focus-ring absolute inset-y-0 right-14 my-auto size-6 rounded-full'
+                className='link-dark focus-visible:focus-ring absolute inset-y-0 right-14 my-auto size-6 rounded-full after:absolute after:-inset-2'
               >
                 <XCircleIcon className='size-6 text-neutral-300' />
               </Button>
@@ -105,18 +105,12 @@ export default function DatePicker({
           <Dialog>
             <Calendar className='glass-sheet bg-neutral-900/80'>
               <div className='flex items-center justify-between gap-3 px-2'>
-                <Button
-                  slot='previous'
-                  className='link-dark focus-visible:focus-ring rounded-full p-1'
-                >
-                  <ArrowLeftCircleIcon className='size-5' />
+                <Button slot='previous' className='icon-button'>
+                  <ChevronLeftIcon />
                 </Button>
                 <Heading className='text-white' />
-                <Button
-                  slot='next'
-                  className='link-dark focus-visible:focus-ring rounded-full p-1'
-                >
-                  <ArrowRightCircleIcon className='size-5' />
+                <Button slot='next' className='icon-button'>
+                  <ChevronRightIcon />
                 </Button>
               </div>
               <CalendarGrid className='mt-2'>

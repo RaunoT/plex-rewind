@@ -93,7 +93,7 @@ export default function MediaItemTitle({
   }, [controls, parentRef, shouldReduceMotion])
 
   return (
-    <h3
+    <h2
       className={clsx(
         'mb-0.5 flex font-medium sm:text-lg',
         isCurrentUser && 'text-plex',
@@ -112,6 +112,7 @@ export default function MediaItemTitle({
           {title}
         </motion.span>
       </span>
-    </h3>
+      {isCurrentUser && <span className='sr-only'>{` ${t('you')}`}</span>}
+    </h2>
   )
 }

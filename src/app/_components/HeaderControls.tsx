@@ -53,12 +53,7 @@ export default function HeaderControls({ className }: Props) {
   const isSettings = pathname.startsWith('/settings')
 
   return (
-    <div
-      className={clsx(
-        'glass-pill flex w-fit items-center gap-0.5 p-1',
-        className,
-      )}
-    >
+    <div className={clsx('icon-button-group', className)}>
       {version.hasUpdate && isAdmin && (
         <a
           href='https://github.com/RaunoT/plex-rewind/releases'

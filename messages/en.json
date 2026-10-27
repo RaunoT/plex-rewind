@@ -35,6 +35,7 @@
     "noActivity": "No active streams. 😴",
     "playing": "Playing",
     "paused": "Paused",
+    "buffering": "Buffering",
     "endsAt": "Ends at {time}",
     "convertedTo": "converted to",
     "decision": {
@@ -53,7 +54,9 @@
     "movies": "{count, plural, one {movie} other {movies}}",
     "episodes": "{count, plural, one {episode} other {episodes}}",
     "tracks": "{count, plural, one {track} other {tracks}}",
-    "requests": "{count, plural, one {request} other {requests}}"
+    "requests": "{count, plural, one {request} other {requests}}",
+    "durationWatched": "{duration} watched",
+    "durationListened": "{duration} listened"
   },
   "DashboardFilters": {
     "type": "Stats for",
@@ -73,7 +76,8 @@
     "cta": "Try again"
   },
   "PlexDeeplink": {
-    "available": "Available"
+    "available": "Available",
+    "availableLabel": "Available: open {title} in Plex"
   },
   "PeriodSelectContent": {
     "7days": "7 days",
@@ -107,6 +111,7 @@
     "savedChooseLibraries": "Settings saved! Choose your libraries in General.",
     "genericError": "Something went wrong. Try again.",
     "save": "Save",
+    "reenterApiKey": "Enter the API key again after changing the URL.",
     "apiKey": "API key",
     "invalidApiKey": "Invalid API key.",
     "unableToConnect": "Couldn't connect. Check the URL and that the server is running.",
@@ -328,6 +333,9 @@
     "statRequests": "{count, plural, one {# request} other {# requests}}",
     "labelShows": "TV shows",
     "labelMovies": "Movies",
-    "labelAudio": "Music"
+    "labelAudio": "Music",
+    "you": "(you)",
+    "requestLabel": "Request {title}",
+    "imdbLabel": "{title} on IMDb"
   }
 }

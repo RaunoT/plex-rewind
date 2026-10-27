@@ -1,134 +1,116 @@
 import { Settings } from '@/types/settings'
 import getSettings from '@/utils/getSettings'
-import { isTracearrSource } from '@/utils/helpers'
+import { getUpstreamImageUrl, isAllowedRedirect } from '@/utils/imageUpstream'
 
-// Parameters forwarded to Tautulli's pms_image_proxy.
-const TAUTULLI_IMAGE_PARAMS = [
-  'img',
-  'rating_key',
-  'width',
-  'height',
-  'opacity',
-  'background',
-  'blur',
-  'img_format',
-  'fallback',
-  'refresh',
-  'clip',
-]
-const PUBLIC_IMAGE_HOST = /(^|\.)plex\.tv$|^image\.tmdb\.org$/
 const UPSTREAM_TIMEOUT = 15 * 1000
+const MAX_REDIRECTS = 3
+const MAX_IMAGE_BYTES = 10 * 1024 * 1024
 // Where plex.tv sends accounts without a picture: a generated coloured letter
 const PLEX_DEFAULT_AVATAR = /plex\.tv\/avatars\/[0-9a-f]{6}\//i
 
-function getOrigin(url: string): string | null {
-  try {
-    return new URL(url).origin
-  } catch {
-    return null
-  }
+type UpstreamImage = {
+  response: Response
+  url: string
 }
 
-// Tautulli's web /pms_image_proxy route is gated by its own cookie auth and
-// ignores the apikey param, so images go through the /api/v2 form, which
-// authenticates with the apikey. Only an allowlist of params is forwarded so
-// the request can't change `cmd` or `apikey`.
-function getTautulliImageUrl(
-  params: URLSearchParams,
+// Redirects are followed by hand, so each hop is checked against the same
+// allowlist as the first request.
+async function fetchImage(
+  url: string,
   settings: Settings,
-): string | null {
-  const { tautulliUrl, tautulliApiKey } = settings.connection
-  const img = params.get('img')
+  signal: AbortSignal,
+): Promise<UpstreamImage | null> {
+  let currentUrl = url
 
-  // Plex image paths only. Tautulli would fetch absolute URLs itself.
-  if (!tautulliUrl || !tautulliApiKey || !img?.startsWith('/')) {
-    return null
-  }
+  for (let redirects = 0; redirects <= MAX_REDIRECTS; redirects++) {
+    const response = await fetch(currentUrl, { redirect: 'manual', signal })
+    const location = response.headers.get('location')
 
-  const forwarded = new URLSearchParams({
-    apikey: tautulliApiKey,
-    cmd: 'pms_image_proxy',
-  })
-
-  for (const key of TAUTULLI_IMAGE_PARAMS) {
-    const value = params.get(key)
-
-    if (value !== null) {
-      forwarded.set(key, value)
+    if (response.status < 300 || response.status >= 400 || !location) {
+      return { response, url: currentUrl }
     }
-  }
 
-  return `${tautulliUrl}/api/v2?${forwarded.toString()}`
-}
+    const nextUrl = new URL(location, currentUrl).toString()
 
-// Full image URLs are only fetched from plex.tv (avatars), TMDB or the
-// configured Tracearr server, never from arbitrary hosts.
-function getAllowedImageUrl(url: string, settings: Settings): string | null {
-  let parsed: URL
+    await response.body?.cancel()
 
-  try {
-    parsed = new URL(url)
-  } catch {
-    return null
-  }
+    if (!isAllowedRedirect(nextUrl, currentUrl, settings)) {
+      // Only the host: the first request's URL carries Tautulli's API key.
+      console.warn(
+        `[IMAGE PROXY] - Not following a redirect to ${new URL(nextUrl).host}.`,
+      )
 
-  if (parsed.protocol === 'https:' && PUBLIC_IMAGE_HOST.test(parsed.hostname)) {
-    return parsed.toString()
-  }
+      return null
+    }
 
-  if (
-    isTracearrSource(settings) &&
-    parsed.origin === getOrigin(settings.connection.tracearrUrl)
-  ) {
-    return parsed.toString()
-  }
-
-  // Links built before images were requested by path.
-  const tautulliOrigin = getOrigin(settings.connection.tautulliUrl)
-
-  if (
-    tautulliOrigin &&
-    parsed.origin === tautulliOrigin &&
-    parsed.pathname.endsWith('/pms_image_proxy')
-  ) {
-    return getTautulliImageUrl(parsed.searchParams, settings)
+    currentUrl = nextUrl
   }
 
   return null
 }
 
+function limitSize(maxBytes: number) {
+  let size = 0
+
+  return new TransformStream<Uint8Array, Uint8Array>({
+    transform(chunk, controller) {
+      size += chunk.byteLength
+
+      if (size > maxBytes) {
+        controller.error(new Error('Image is too large'))
+
+        return
+      }
+
+      controller.enqueue(chunk)
+    },
+  })
+}
+
 // No session check: next/image requests this route internally without the
-// visitor's cookies. What can be fetched is limited by the allowlists above.
+// visitor's cookies. What can be fetched is limited by the allowlists in
+// imageUpstream.
 export async function GET(request: Request) {
   const settings = getSettings()
   const { searchParams } = new URL(request.url)
-  const url = searchParams.get('url')
-  const upstreamUrl = url
-    ? getAllowedImageUrl(url, settings)
-    : getTautulliImageUrl(searchParams, settings)
+  const upstreamUrl = getUpstreamImageUrl(searchParams, settings)
 
   if (!upstreamUrl) {
     return new Response('[IMAGE PROXY] - Image not allowed', { status: 400 })
   }
 
   try {
-    const res = await fetch(upstreamUrl, {
-      signal: AbortSignal.timeout(UPSTREAM_TIMEOUT),
-    })
-    const contentType = res.headers.get('content-type') || ''
+    const image = await fetchImage(
+      upstreamUrl,
+      settings,
+      AbortSignal.timeout(UPSTREAM_TIMEOUT),
+    )
+
+    if (!image) {
+      return new Response('[IMAGE PROXY] - Image not allowed', { status: 400 })
+    }
+
+    const { response, url } = image
+    const contentType = response.headers.get('content-type') || ''
+    const contentLength = Number(response.headers.get('content-length'))
 
     // The app draws its own initials for these, so it's treated as no picture
-    if (PLEX_DEFAULT_AVATAR.test(res.url)) {
+    if (PLEX_DEFAULT_AVATAR.test(url)) {
       return new Response('[IMAGE PROXY] - No picture set', { status: 404 })
     }
 
-    if (!res.ok || !contentType.startsWith('image/')) {
+    if (
+      !response.ok ||
+      !response.body ||
+      !contentType.startsWith('image/') ||
+      contentLength > MAX_IMAGE_BYTES
+    ) {
       return new Response('[IMAGE PROXY] - Failed to fetch the image', {
-        status: res.ok ? 502 : res.status,
+        status: response.ok ? 502 : response.status,
       })
     }
 
-    return new Response(res.body, {
+    return new Response(response.body.pipeThrough(limitSize(MAX_IMAGE_BYTES)), {
       headers: {
         'Content-Type': contentType,
         'Cache-Control': 'private, max-age=86400',

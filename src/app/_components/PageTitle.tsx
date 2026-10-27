@@ -47,7 +47,7 @@ export default function PageTitle({
               href='/'
               aria-label={t('title')}
               className={clsx(
-                'glass-pill group focus-visible:focus-ring flex size-10 shrink-0 items-center justify-center text-neutral-300 transition-colors hover:text-white',
+                'icon-button icon-button--glass group',
                 hiddenWithSidebar,
               )}
             >
