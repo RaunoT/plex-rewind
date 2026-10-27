@@ -54,6 +54,7 @@
   "Dashboard": {
     "sizePartial": "{size} (parcial)",
     "noActivity": "No hay actividad en este periodo. 😴",
+    "showMore": "Mostrar más",
     "title": "Panel",
     "usersTitle": "Usuarios",
     "users": "{count, plural, one {# usuario} other {# usuarios}}",

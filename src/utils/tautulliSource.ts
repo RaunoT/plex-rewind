@@ -6,6 +6,8 @@ import {
   PlaysByTime,
   ServerMembership,
   StatsSource,
+  TopItems,
+  TopItemsQuery,
   TopMediaItems,
   TopUsersQuery,
   UserPlaysCounts,
@@ -289,23 +291,22 @@ export async function getTautulliMediaData(
 
 async function getTopItems(
   library: TautulliLibrary,
-  period: number,
-  userId?: string,
-  sortByPlays?: boolean,
-): Promise<TautulliItemRow[]> {
+  { period, userId, sortByPlays, count }: TopItemsQuery,
+): Promise<TopItems> {
   const sectionType = library.section_type
+  // The extra row only tells whether the ranking goes on.
   const itemsRes = await fetchTautulli<TautulliItem>('get_home_stats', {
     stat_id: statIdMap[sectionType],
-    stats_count: 5,
+    stats_count: count + 1,
     stats_type: sortByPlays ? 'plays' : 'duration',
     time_range: period,
     section_id: library.section_id,
     user_id: userId ? userId : '',
   })
+  const rows = itemsRes?.response?.data?.rows || []
+  const hasMore = rows.length > count
 
-  let items = []
-
-  items = itemsRes?.response?.data?.rows || []
+  let items = rows.slice(0, count)
 
   if (items.length) {
     const usersWatched = await fetchTautulli<TautulliItem>('get_home_stats', {
@@ -349,7 +350,7 @@ async function getTopItems(
     }
   }
 
-  return items
+  return { items, hasMore }
 }
 
 async function getTopUsers({
