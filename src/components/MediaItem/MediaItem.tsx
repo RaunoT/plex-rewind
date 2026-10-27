@@ -4,7 +4,7 @@ import Avatar from '@/components/Avatar'
 import { MEDIA_ICONS, MediaIcon, STAT_ICONS } from '@/components/icons'
 import { ExternalLink, PublicSettings } from '@/types/settings'
 import { TautulliItemRow } from '@/types/tautulli'
-import { EXTERNAL_LINK_NAMES } from '@/utils/constants'
+import { DASHBOARD_PAGE_SIZE, EXTERNAL_LINK_NAMES } from '@/utils/constants'
 import { getDeeplinkRatingKeyFromRow } from '@/utils/deeplink'
 import { getExternalLinks, isSearchLink } from '@/utils/externalLinks'
 import { formatRating, secondsToTime } from '@/utils/formatting'
@@ -46,7 +46,6 @@ type Props = {
   activeStats: string[]
   settings: PublicSettings
   loggedInUserId?: string
-  items: TautulliItemRow[]
 }
 
 export default function MediaItem({
@@ -57,7 +56,6 @@ export default function MediaItem({
   activeStats,
   settings,
   loggedInUserId,
-  items,
 }: Props) {
   const translations = useTranslations()
   const t = useTranslations('MediaItem')
@@ -73,11 +71,6 @@ export default function MediaItem({
     useState<string>(initialImageSrc)
   const titleContainerRef = useRef<HTMLDivElement>(null)
   const isOverseerrActive = settings.connection.isOverseerrActive
-  // Hidden conditional
-  const isLoggedInUser = String(data.user_id) === loggedInUserId
-  const isHiddenUser = isUsers && i > 4 && !isLoggedInUser
-  const isSpecialCase =
-    i === 4 && items[5] && String(items[5].user_id) === loggedInUserId
   const dataKey = `${data.rating_key || data.user_id || i}-${type}`
   const rank = data.rank || i
   const isVideo = type === 'movie' || type === 'show'
@@ -97,14 +90,12 @@ export default function MediaItem({
       key={dataKey}
       // Motion animates with inline styles, which important utilities override
       // for visitors who prefer reduced motion, including during hydration.
-      className={clsx(
-        'flex items-start gap-3 py-2.5 not-first:border-t not-first:border-white/10 first:pt-0 last:pb-0 motion-reduce:transform-none! motion-reduce:opacity-100! sm:gap-4',
-        { hidden: isHiddenUser || isSpecialCase },
-      )}
+      className='flex items-start gap-3 py-2.5 not-first:border-t not-first:border-white/10 first:pt-0 last:pb-0 motion-reduce:transform-none! motion-reduce:opacity-100! sm:gap-4'
       variants={slideDown}
       initial='hidden'
       animate='show'
-      transition={{ delay: i * 0.075 }}
+      // Rows added by "Show more" stagger from the first of them
+      transition={{ delay: (i % DASHBOARD_PAGE_SIZE) * 0.075 }}
     >
       {/* The rank stays level with the poster, however tall the details get */}
       <div className='flex shrink-0 items-center gap-3 sm:gap-4'>

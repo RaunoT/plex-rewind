@@ -112,7 +112,7 @@ describe('getUsersTop with Tautulli', () => {
   it('counts each users plays per media type across their libraries', async () => {
     mockTautulli({})
 
-    const users = await getUsersTop('1', '2026-03-01', 30)
+    const users = (await getUsersTop('1', '2026-03-01', 30))?.items
 
     expect(users).toMatchObject([
       { user_id: 1, movies_plays_count: 7, shows_plays_count: 4 },
@@ -135,7 +135,7 @@ describe('getUsersTop with Tautulli', () => {
   it('leaves out a logged in user that Tautulli cannot find', async () => {
     mockTautulli({})
 
-    const users = await getUsersTop('99', '2026-03-01', 30)
+    const users = (await getUsersTop('99', '2026-03-01', 30))?.items
 
     expect(users?.map((user) => user.user_id)).toEqual([1, 2])
     // Every count is for a user, never for the whole server
@@ -148,7 +148,7 @@ describe('getUsersTop with Tautulli', () => {
   it('adds a logged in user who has no activity in the period', async () => {
     mockTautulli({ user_id: 99, friendly_name: 'Quiet', user: 'quiet' })
 
-    const users = await getUsersTop('99', '2026-03-01', 30)
+    const users = (await getUsersTop('99', '2026-03-01', 30))?.items
 
     expect(users?.map((user) => user.user_id)).toEqual([1, 2, 99])
     expect(users?.[2]).toMatchObject({
@@ -170,13 +170,58 @@ describe('getUsersTop with Tautulli', () => {
       ranked,
     )
 
-    const users = await getUsersTop('99', '2026-03-01', 30)
+    const usersTop = await getUsersTop('99', '2026-03-01', 30)
 
-    // The list is cut like for anyone outside the top, so 5 rows show.
-    expect(users?.map((user) => user.user_id)).toEqual([1, 2, 3, 4, 5, 6])
+    expect(usersTop?.items.map((user) => user.user_id)).toEqual([1, 2, 3, 4, 5])
+    expect(usersTop?.hasMore).toBe(true)
     expect(fetchMock.mock.calls.some(([query]) => query === 'get_user')).toBe(
       false,
     )
+  })
+
+  it('gives the last row to a logged in user outside the top', async () => {
+    const ranked = Array.from({ length: 7 }, (_, i) => ({
+      user_id: i + 1,
+      total_duration: 700 - i * 100,
+    }))
+
+    mockTautulli({}, ranked)
+
+    const usersTop = await getUsersTop('7', '2026-03-01', 30)
+
+    expect(usersTop?.items.map((user) => user.user_id)).toEqual([1, 2, 3, 4, 7])
+    expect(usersTop?.items[4].rank).toBe(6)
+    expect(usersTop?.hasMore).toBe(true)
+  })
+
+  it('lists as many users as asked for', async () => {
+    const ranked = Array.from({ length: 7 }, (_, i) => ({
+      user_id: i + 1,
+      total_duration: 700 - i * 100,
+    }))
+
+    mockTautulli({}, ranked)
+
+    const usersTop = await getUsersTop('7', '2026-03-01', 30, 10)
+
+    expect(usersTop?.items).toHaveLength(7)
+    expect(usersTop?.hasMore).toBe(false)
+  })
+
+  it('has more when a quiet logged in user takes the last ranked row', async () => {
+    const ranked = Array.from({ length: 5 }, (_, i) => ({
+      user_id: i + 1,
+      total_duration: 500 - i * 100,
+    }))
+
+    mockTautulli({ user_id: 99, friendly_name: 'Quiet', user: 'quiet' }, ranked)
+
+    const usersTop = await getUsersTop('99', '2026-03-01', 30)
+
+    expect(usersTop?.items.map((user) => user.user_id)).toEqual([
+      1, 2, 3, 4, 99,
+    ])
+    expect(usersTop?.hasMore).toBe(true)
   })
 
   it('flags other users when anonymized and leaves naming them to the UI', async () => {
@@ -186,7 +231,7 @@ describe('getUsersTop with Tautulli', () => {
     })
     mockTautulli({})
 
-    const users = await getUsersTop('1', '2026-03-01', 30)
+    const users = (await getUsersTop('1', '2026-03-01', 30))?.items
 
     expect(users?.[0]).toMatchObject({ user_id: 1, is_anonymous: false })
     expect(users?.[1]).toMatchObject({

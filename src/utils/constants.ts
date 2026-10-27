@@ -152,3 +152,7 @@ export const DEFAULT_LOCALE: Locale = 'en'
 export const LOCALE_COOKIE_NAME = 'locale'
 // Mirrors the dashboard's period, so the home page can use it on the server
 export const DASHBOARD_PERIOD_COOKIE_NAME = 'dashboardPeriod'
+// Dashboard lists start with this many rows, and "Show more" adds as many again
+export const DASHBOARD_PAGE_SIZE = 5
+// Each row costs the source and TMDB a lookup, so the URL can't ask for more
+export const DASHBOARD_MAX_ITEMS = 50
