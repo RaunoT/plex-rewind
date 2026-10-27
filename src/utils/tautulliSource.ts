@@ -535,7 +535,12 @@ async function getTopMediaItems(
   )
 
   res.forEach(({ type }, i) => {
-    combinedResult[typeToResultMap[type]].push(...rowsByLibrary[i])
+    // Tautulli also lists other library types, such as photos.
+    const resultType = typeToResultMap[type]
+
+    if (resultType) {
+      combinedResult[resultType].push(...rowsByLibrary[i])
+    }
   })
 
   function sortAndSlice(list: TautulliItemRow[]) {

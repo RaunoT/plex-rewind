@@ -119,6 +119,22 @@ describe('getTotalDuration', () => {
   })
 })
 
+describe('getTopMediaItems', () => {
+  it('skips libraries of other types', async () => {
+    fetchMock.mockResolvedValue(
+      tautulliData({ rows: [{ title: 'Holiday', total_duration: 60 }] }),
+    )
+
+    const items = await tautulliSource.getTopMediaItems(
+      '5',
+      [library('4', 'photo' as TautulliLibrary['section_type'])],
+      '2026-01-01',
+    )
+
+    expect(items).toEqual({ shows: [], movies: [], audio: [] })
+  })
+})
+
 describe('getMediaStats', () => {
   it('only has a duration for the media types it has data for', async () => {
     fetchMock.mockImplementation(async (_query, params) =>
