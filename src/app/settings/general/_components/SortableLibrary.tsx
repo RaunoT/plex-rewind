@@ -39,7 +39,9 @@ export default function SortableLibrary({
       // The move buttons already reorder with the keyboard, so keep the row
       // itself out of the tab order.
       tabIndex={-1}
-      className='flex items-center gap-1'
+      // With the list's 8px gap this leaves 12px between rows, room for the
+      // 6px tap areas of two move buttons.
+      className='flex items-center gap-1 py-0.5'
     >
       <div
         className='flex size-8 shrink-0 cursor-move touch-none items-center justify-center select-none sm:size-6'
