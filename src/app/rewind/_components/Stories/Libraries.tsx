@@ -1,11 +1,6 @@
+import { MEDIA_ICONS, STAT_ICONS } from '@/components/icons'
 import { RewindStory } from '@/types/rewind'
 import { bytesToSize } from '@/utils/formatting'
-import {
-  FilmIcon,
-  FolderIcon,
-  MusicalNoteIcon,
-  PlayCircleIcon,
-} from '@heroicons/react/24/outline'
 import { useTranslations } from 'next-intl'
 import { ComponentProps } from 'react'
 import RewindStat from '../RewindStat'
@@ -21,19 +16,19 @@ export default function StoryLibraries({ userRewind, settings }: RewindStory) {
         movie: {
           library: library.section_name,
           name: t('movies', { count: parseInt(library.count) }),
-          icon: <FilmIcon />,
+          icon: <MEDIA_ICONS.movie />,
           count: parseInt(library.count),
         },
         show: {
           library: library.section_name,
           name: t('episodes', { count: parseInt(library.child_count) }),
-          icon: <PlayCircleIcon />,
+          icon: <MEDIA_ICONS.show />,
           count: parseInt(library.child_count),
         },
         artist: {
           library: library.section_name,
           name: t('tracks', { count: parseInt(library.child_count) }),
-          icon: <MusicalNoteIcon />,
+          icon: <MEDIA_ICONS.artist />,
           count: parseInt(library.child_count),
         },
       }
@@ -50,7 +45,7 @@ export default function StoryLibraries({ userRewind, settings }: RewindStory) {
             filesize: (chunks) => (
               <span className='rewind-cat'>
                 {chunks}
-                <FolderIcon />
+                <STAT_ICONS.size />
               </span>
             ),
             serverName: settings.general.serverName || 'Plex',

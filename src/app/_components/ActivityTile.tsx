@@ -1,15 +1,10 @@
 'use client'
 
 import getActivity from '@/app/activity/_actions/getActivity'
+import { MediaIcon } from '@/components/icons'
 import SkeletonLine from '@/components/SkeletonLine'
 import { PublicSettings } from '@/types/settings'
-import {
-  ChevronRightIcon,
-  FilmIcon,
-  MusicalNoteIcon,
-  SignalIcon,
-  TvIcon,
-} from '@heroicons/react/24/outline'
+import { ChevronRightIcon, SignalIcon } from '@heroicons/react/24/outline'
 import { useQuery } from '@tanstack/react-query'
 import { useSession } from 'next-auth/react'
 import { useTranslations } from 'next-intl'
@@ -61,7 +56,10 @@ export default function ActivityTile({ settings }: Props) {
                 key={item.session_key}
                 className='flex min-w-0 items-center gap-2'
               >
-                {getMediaIcon(item.media_type)}
+                <MediaIcon
+                  type={item.media_type}
+                  className='size-4 shrink-0 text-neutral-400'
+                />
                 <span className='truncate'>
                   {item.grandparent_title || item.title}
                 </span>
@@ -77,17 +75,4 @@ export default function ActivityTile({ settings }: Props) {
       )}
     </Link>
   )
-}
-
-function getMediaIcon(type: string) {
-  const className = 'size-4 shrink-0 text-neutral-400'
-
-  switch (type) {
-    case 'movie':
-      return <FilmIcon className={className} />
-    case 'track':
-      return <MusicalNoteIcon className={className} />
-    default:
-      return <TvIcon className={className} />
-  }
 }

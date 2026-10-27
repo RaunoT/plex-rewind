@@ -1,24 +1,14 @@
 'use client'
 
 import Avatar from '@/components/Avatar'
+import { MEDIA_ICONS, MediaIcon, STAT_ICONS } from '@/components/icons'
 import { PublicSettings } from '@/types/settings'
 import { TautulliItemRow } from '@/types/tautulli'
 import { getDeeplinkRatingKeyFromRow } from '@/utils/deeplink'
 import { formatRating, secondsToTime } from '@/utils/formatting'
 import { getImageProxyUrl } from '@/utils/imageProxy'
 import { slideDown } from '@/utils/motion'
-import {
-  CalendarDaysIcon,
-  ClockIcon,
-  FilmIcon,
-  MusicalNoteIcon,
-  PlayCircleIcon,
-  PlusIcon,
-  QuestionMarkCircleIcon,
-  StarIcon,
-  TrashIcon,
-  UserIcon,
-} from '@heroicons/react/24/outline'
+import { TrashIcon } from '@heroicons/react/24/outline'
 import clsx from 'clsx'
 import { motion } from 'motion/react'
 import { useLocale, useTranslations } from 'next-intl'
@@ -150,7 +140,7 @@ export default function MediaItem({
               <ul className='icon-stats-container mb-2 gap-x-3 text-neutral-300'>
                 {year && (
                   <li className='icon-stat-wrapper icon-stat-wrapper--clean'>
-                    <CalendarDaysIcon />
+                    <STAT_ICONS.year />
                     <span className='sr-only'>
                       {translations('Common.year')}
                     </span>{' '}
@@ -159,7 +149,7 @@ export default function MediaItem({
                 )}
                 {rating && (
                   <li className='icon-stat-wrapper icon-stat-wrapper--clean'>
-                    <StarIcon />
+                    <STAT_ICONS.rating />
                     <span className='sr-only'>
                       {translations('Common.rating')}
                     </span>{' '}
@@ -172,7 +162,7 @@ export default function MediaItem({
               {/* Duration */}
               {activeStats.includes('duration') && (
                 <li className='icon-stat-wrapper'>
-                  <ClockIcon />
+                  <STAT_ICONS.duration />
                   {secondsToTime(data.total_duration, translations)}
                 </li>
               )}
@@ -182,21 +172,21 @@ export default function MediaItem({
                   <>
                     {data.shows_plays_count > 0 && (
                       <li className='icon-stat-wrapper'>
-                        <PlayCircleIcon />
+                        <MEDIA_ICONS.show />
                         <span className='sr-only'>{t('labelShows')}</span>{' '}
                         {t('statPlays', { count: data.shows_plays_count })}
                       </li>
                     )}
                     {data.movies_plays_count > 0 && (
                       <li className='icon-stat-wrapper'>
-                        <FilmIcon />
+                        <MEDIA_ICONS.movie />
                         <span className='sr-only'>{t('labelMovies')}</span>{' '}
                         {t('statPlays', { count: data.movies_plays_count })}
                       </li>
                     )}
                     {data.audio_plays_count > 0 && (
                       <li className='icon-stat-wrapper'>
-                        <MusicalNoteIcon />
+                        <MEDIA_ICONS.artist />
                         <span className='sr-only'>{t('labelAudio')}</span>{' '}
                         {t('statPlays', { count: data.audio_plays_count })}
                       </li>
@@ -204,20 +194,14 @@ export default function MediaItem({
                   </>
                 ) : (
                   <li className='icon-stat-wrapper'>
-                    {type === 'artist' ? (
-                      <MusicalNoteIcon />
-                    ) : type === 'movie' ? (
-                      <FilmIcon />
-                    ) : (
-                      <PlayCircleIcon />
-                    )}
+                    <MediaIcon type={type} />
                     <span>{t('statPlays', { count: data.total_plays })}</span>
                   </li>
                 ))}
               {/* Users watched */}
               {activeStats.includes('users') && !!data.users_watched && (
                 <li className='icon-stat-wrapper'>
-                  <UserIcon />
+                  <STAT_ICONS.users />
                   {t('statUsers', { count: data.users_watched })}
                 </li>
               )}
@@ -226,7 +210,7 @@ export default function MediaItem({
                 isUsers &&
                 data.requests > 0 && (
                   <li className='icon-stat-wrapper'>
-                    <QuestionMarkCircleIcon />
+                    <STAT_ICONS.requests />
                     {t('statRequests', { count: data.requests })}
                   </li>
                 )}
@@ -244,7 +228,7 @@ export default function MediaItem({
                     rel='noopener noreferrer'
                     className='button-card'
                   >
-                    <PlusIcon />
+                    <STAT_ICONS.requests />
                     {t('request')}
                   </a>
                 ) : (

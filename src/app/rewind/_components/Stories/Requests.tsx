@@ -1,9 +1,5 @@
+import { MEDIA_ICONS, STAT_ICONS } from '@/components/icons'
 import { RewindStory } from '@/types/rewind'
-import {
-  FilmIcon,
-  PlayCircleIcon,
-  QuestionMarkCircleIcon,
-} from '@heroicons/react/24/outline'
 import { useTranslations } from 'next-intl'
 import RewindStat from '../RewindStat'
 import StatListItem from '../StatListItem'
@@ -21,7 +17,7 @@ export default function StoryRequests({ userRewind, settings }: RewindStory) {
                 requests: (chunks) => (
                   <span className='rewind-cat'>
                     {chunks}
-                    <QuestionMarkCircleIcon />
+                    <STAT_ICONS.requests />
                   </span>
                 ),
                 emoji: (chunks) => <span className='not-italic'>{chunks}</span>,
@@ -37,7 +33,7 @@ export default function StoryRequests({ userRewind, settings }: RewindStory) {
                     requests: (chunks) => (
                       <span className='rewind-cat'>
                         {chunks}
-                        <QuestionMarkCircleIcon />
+                        <STAT_ICONS.requests />
                       </span>
                     ),
                     requestLink: (chunks) => (
@@ -66,7 +62,7 @@ export default function StoryRequests({ userRewind, settings }: RewindStory) {
                     requests: (chunks) => (
                       <span className='rewind-cat'>
                         {chunks}
-                        <QuestionMarkCircleIcon />
+                        <STAT_ICONS.requests />
                       </span>
                     ),
                   })}
@@ -81,13 +77,13 @@ export default function StoryRequests({ userRewind, settings }: RewindStory) {
                   count: (chunks) => (
                     <span className='rewind-cat'>
                       {chunks}
-                      <QuestionMarkCircleIcon />
+                      <STAT_ICONS.requests />
                     </span>
                   ),
                   requests: (chunks) => (
                     <span className='rewind-cat'>
                       {chunks}
-                      <QuestionMarkCircleIcon />
+                      <STAT_ICONS.requests />
                     </span>
                   ),
                 })}
@@ -100,12 +96,12 @@ export default function StoryRequests({ userRewind, settings }: RewindStory) {
                 <StatListItem
                   count={userRewind.requests.movies}
                   name={t('movies', { count: userRewind.requests.movies })}
-                  icon={<FilmIcon />}
+                  icon={<MEDIA_ICONS.movie />}
                 />
                 <StatListItem
                   count={userRewind.requests.shows}
                   name={t('shows', { count: userRewind.requests.shows })}
-                  icon={<PlayCircleIcon />}
+                  icon={<MEDIA_ICONS.show />}
                 />
               </ul>
             </RewindStat>

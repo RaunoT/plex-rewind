@@ -1,16 +1,8 @@
 import CardWrapper from '@/app/_components/CardWrapper'
+import { MediaIcon, STAT_ICONS } from '@/components/icons'
 import MediaItems from '@/components/MediaItem/MediaItems'
 import { PublicSettings } from '@/types/settings'
 import { TautulliItemRow } from '@/types/tautulli'
-import {
-  ClockIcon,
-  FilmIcon,
-  FolderIcon,
-  MusicalNoteIcon,
-  PlayCircleIcon,
-  QuestionMarkCircleIcon,
-  UserIcon,
-} from '@heroicons/react/24/outline'
 import { getTranslations } from 'next-intl/server'
 import { ReactNode } from 'react'
 
@@ -68,12 +60,12 @@ export default async function Dashboard({
           <li className='icon-stat-wrapper icon-stat-wrapper--clean'>
             {type === 'users' ? (
               <>
-                <UserIcon />
+                <STAT_ICONS.users />
                 {t('users', { count: Number(totalSize) })}
               </>
             ) : (
               <>
-                <FolderIcon />
+                <STAT_ICONS.size />
                 <span className='sr-only'>{tCommon('size')}</span> {totalSize}
               </>
             )}
@@ -81,7 +73,11 @@ export default async function Dashboard({
         )}
         {count && (
           <li className='icon-stat-wrapper icon-stat-wrapper--clean'>
-            {getCountIcon(type)}
+            {type === 'users' ? (
+              <STAT_ICONS.requests />
+            ) : (
+              <MediaIcon type={type} />
+            )}
             <span>
               <span>{count}</span>&nbsp;
               <span>
@@ -98,7 +94,7 @@ export default async function Dashboard({
         )}
         {totalDuration && (
           <li className='icon-stat-wrapper icon-stat-wrapper--clean'>
-            <ClockIcon />
+            <STAT_ICONS.duration />
             <span className='sr-only'>{tCommon('duration')}</span>{' '}
             {totalDuration}
           </li>
@@ -106,17 +102,4 @@ export default async function Dashboard({
       </ul>
     </>
   )
-}
-
-function getCountIcon(type: string) {
-  switch (type) {
-    case 'movie':
-      return <FilmIcon />
-    case 'show':
-      return <PlayCircleIcon />
-    case 'artist':
-      return <MusicalNoteIcon />
-    case 'users':
-      return <QuestionMarkCircleIcon />
-  }
 }
