@@ -210,6 +210,8 @@
   },
   "Common": {
     "enabled": "Aktiveeritud",
+    "adminOnly": "Ainult administraatoritele",
+    "adminOnlyDescription": "Peidetud kõigi eest peale serveri administraatorite, ka siis, kui väline ligipääs on lubatud.",
     "status": "Olek",
     "year": "Aasta",
     "rating": "Hinnang",

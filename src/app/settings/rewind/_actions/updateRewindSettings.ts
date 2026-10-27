@@ -17,6 +17,7 @@ export default async function saveRewindSettings(
 
   const schema = z.object({
     isActive: z.boolean(),
+    isAdminOnly: z.boolean().optional(),
     isLibrariesSizeAndCountActive: z.boolean().optional(),
     startDate: z.string().optional(),
     complete: z.boolean(),
@@ -28,6 +29,7 @@ export default async function saveRewindSettings(
   }
 
   if (isActive) {
+    data.isAdminOnly = formData.get('isAdminOnly') === 'on'
     data.isLibrariesSizeAndCountActive =
       formData.get('isLibrariesSizeAndCountActive') === 'on'
     data.startDate = formData.get('startDate') as string

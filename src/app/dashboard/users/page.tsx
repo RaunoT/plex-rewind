@@ -1,4 +1,3 @@
-import { canViewStats } from '@/lib/access'
 import { authOptions } from '@/lib/auth'
 import { DashboardSearchParams } from '@/types/dashboard'
 import { Settings } from '@/types/settings'
@@ -7,6 +6,7 @@ import { secondsToTime, TranslateFunction } from '@/utils/formatting'
 import getPeriod from '@/utils/getPeriod'
 import getSettings from '@/utils/getSettings'
 import getUsersTop from '@/utils/getUsersTop'
+import { canViewFeature, getViewer } from '@/utils/helpers'
 import { toPublicSettings } from '@/utils/publicSettings'
 import {
   getLibraries,
@@ -76,9 +76,8 @@ async function DashboardUsersContent({
   const session = await getServerSession(authOptions)
 
   if (
-    !settings.dashboard.isActive ||
     !settings.dashboard.isUsersPageActive ||
-    !canViewStats(settings, session)
+    !canViewFeature(settings, 'dashboard', getViewer(session))
   ) {
     return notFound()
   }

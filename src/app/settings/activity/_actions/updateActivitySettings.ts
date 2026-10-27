@@ -7,11 +7,12 @@ import updateSettings from '../../_actions/updateSettings'
 
 const schema = z.object({
   isActive: z.boolean(),
+  isAdminOnly: z.boolean().optional(),
   complete: z.boolean(),
 })
 
 export default async function saveActivitySettings(
-  prevState: SettingsFormInitialState<ActivitySettings>,
+  prevState: SettingsFormInitialState<Partial<ActivitySettings>>,
   formData: FormData,
 ) {
   const denied = await denySettingsAccess(prevState)
@@ -20,9 +21,14 @@ export default async function saveActivitySettings(
     return denied
   }
 
-  const data = {
-    isActive: formData.get('isActive') === 'on',
+  const isActive = formData.get('isActive') === 'on'
+  const data: Partial<ActivitySettings> = {
+    isActive,
     complete: true,
+  }
+
+  if (isActive) {
+    data.isAdminOnly = formData.get('isAdminOnly') === 'on'
   }
 
   return await updateSettings(schema, data, 'activity')

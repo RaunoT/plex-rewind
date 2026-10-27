@@ -1,10 +1,10 @@
 'use server'
 
-import { canViewStats } from '@/lib/access'
 import { authOptions } from '@/lib/auth'
 import fetchTmdb from '@/utils/fetchTmdb'
 import { getTmdbSearchParams } from '@/utils/getMediaAdditionalData'
 import getSettings from '@/utils/getSettings'
+import { canViewFeature, getViewer } from '@/utils/helpers'
 import { getServerSession } from 'next-auth'
 
 type TmdbSearchResult = {
@@ -41,7 +41,7 @@ export default async function getTmdbDetails(
   const settings = getSettings()
   const viewer = await getServerSession(authOptions)
 
-  if (!canViewStats(settings, viewer)) {
+  if (!canViewFeature(settings, 'activity', getViewer(viewer))) {
     return null
   }
 
