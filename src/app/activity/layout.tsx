@@ -4,8 +4,9 @@ import { getServerSession } from 'next-auth'
 import { getTranslations } from 'next-intl/server'
 import { notFound } from 'next/navigation'
 import { ReactNode } from 'react'
-import CardWrapper from '../_components/CardWrapper'
 import PageTitle from '../_components/PageTitle'
+import ActivitiesCard from './_components/ActivitiesCard'
+import StreamDetailsSwitch from './_components/StreamDetailsSwitch'
 
 type Props = {
   children: ReactNode
@@ -26,9 +27,10 @@ export default async function ActivityLayout({ children }: Props) {
   return (
     <div className='page-width mb-auto'>
       <PageTitle title={t('title')} />
-      <CardWrapper className='min-h-[252px] sm:min-h-[292px]'>
-        {children}
-      </CardWrapper>
+      <div className='mb-4 flex justify-end'>
+        <StreamDetailsSwitch />
+      </div>
+      <ActivitiesCard>{children}</ActivitiesCard>
     </div>
   )
 }

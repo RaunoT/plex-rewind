@@ -36,6 +36,7 @@
     "subtitles": "Subtitles",
     "location": "Location",
     "bandwidth": "Bandwidth",
+    "streamDetails": "Stream details",
     "noActivity": "No active streams. 😴",
     "loadError": "Couldn't load activity",
     "playing": "Playing",

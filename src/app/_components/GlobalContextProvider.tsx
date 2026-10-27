@@ -13,6 +13,10 @@ type GlobalContextProps = {
     sortBy: DashboardSearchParams['sortBy']
     setSortBy: (sortBy: DashboardSearchParams['sortBy']) => void
   }
+  activity: {
+    isDetailsHidden: boolean
+    setIsDetailsHidden: (isDetailsHidden: boolean) => void
+  }
 }
 
 export const GlobalContext = createContext<GlobalContextProps>({
@@ -23,6 +27,10 @@ export const GlobalContext = createContext<GlobalContextProps>({
     setPeriod: () => {},
     sortBy: undefined,
     setSortBy: () => {},
+  },
+  activity: {
+    isDetailsHidden: false,
+    setIsDetailsHidden: () => {},
   },
 })
 
@@ -51,6 +59,7 @@ export default function GlobalContextProvider({ children }: Props) {
     useState<DashboardSearchParams['period']>(undefined)
   const [sortBy, setSortBy] =
     useState<DashboardSearchParams['sortBy']>(undefined)
+  const [isDetailsHidden, setIsDetailsHidden] = useState<boolean>(false)
   const [isHydrated, setIsHydrated] = useState<boolean>(false)
 
   useEffect(() => {
@@ -77,6 +86,10 @@ export default function GlobalContextProvider({ children }: Props) {
             ? 'duration'
             : undefined),
       )
+      setIsDetailsHidden(
+        (prev) =>
+          prev || localStorage.getItem('activityDetailsHidden') === 'true',
+      )
     } catch {}
 
     setIsHydrated(true)
@@ -101,6 +114,12 @@ export default function GlobalContextProvider({ children }: Props) {
     }
   }, [isHydrated, sortBy])
 
+  useEffect(() => {
+    if (isHydrated) {
+      writeStorage('activityDetailsHidden', isDetailsHidden ? 'true' : '')
+    }
+  }, [isHydrated, isDetailsHidden])
+
   return (
     <GlobalContext.Provider
       value={{
@@ -111,6 +130,10 @@ export default function GlobalContextProvider({ children }: Props) {
           setPeriod,
           sortBy,
           setSortBy,
+        },
+        activity: {
+          isDetailsHidden,
+          setIsDetailsHidden,
         },
       }}
     >

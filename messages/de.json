@@ -36,6 +36,7 @@
     "subtitles": "Untertitel",
     "location": "Standort",
     "bandwidth": "Bandbreite",
+    "streamDetails": "Stream-Details",
     "noActivity": "Keine aktiven Streams. 😴",
     "loadError": "Aktivität konnte nicht geladen werden",
     "playing": "Läuft",

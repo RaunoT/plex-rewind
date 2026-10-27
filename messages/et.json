@@ -36,6 +36,7 @@
     "subtitles": "Subtiitrid",
     "location": "Asukoht",
     "bandwidth": "Ribalaidus",
+    "streamDetails": "Voo üksikasjad",
     "noActivity": "Ühtegi aktiivset voogu pole. 😴",
     "loadError": "Tegevust ei õnnestunud laadida",
     "playing": "Mängib",
