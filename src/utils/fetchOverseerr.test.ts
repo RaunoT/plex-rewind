@@ -16,9 +16,11 @@ const USER_REQUESTS_PARAMS = ['take', 'skip']
 
 type Fetch = typeof fetch
 
+// `override` answers a page itself, given its `skip`, instead of the list.
 function overseerrFetch(
   items: unknown[],
   stats = { inFlight: 0, maxInFlight: 0 },
+  override?: (skip: number) => Response | undefined,
 ) {
   const requests: URL[] = []
   const stub = vi.fn<Fetch>(async (input) => {
@@ -27,6 +29,12 @@ function overseerrFetch(
     const skip = Number(url.searchParams.get('skip'))
 
     requests.push(url)
+
+    const overridden = override?.(skip)
+
+    if (overridden) {
+      return overridden
+    }
 
     if (
       /^\/api\/v1\/user\/\d+\/requests$/.test(url.pathname) &&
@@ -182,6 +190,41 @@ describe('fetchOverseerrStats', () => {
     expect(stats).toHaveLength(20)
   })
 
+  it('returns null when a page after the first one fails', async () => {
+    vi.spyOn(console, 'error').mockImplementation(() => {})
+    overseerrFetch(hourlyRequests(250), undefined, (skip) =>
+      skip === 100
+        ? new Response('nope', { status: 500, statusText: 'Server Error' })
+        : undefined,
+    )
+
+    const { fetchOverseerrStats } = await load()
+
+    // The first page alone would have passed for 100 requests in total
+    expect(
+      await fetchOverseerrStats(
+        'request',
+        new Date(Date.now() - 1000 * HOUR).toISOString(),
+      ),
+    ).toBeNull()
+  })
+
+  it('returns null when a later page has no list of results', async () => {
+    vi.spyOn(console, 'error').mockImplementation(() => {})
+    overseerrFetch(hourlyRequests(250), undefined, (skip) =>
+      skip === 200 ? Response.json({ pageInfo: { pages: 3 } }) : undefined,
+    )
+
+    const { fetchOverseerrStats } = await load()
+
+    expect(
+      await fetchOverseerrStats(
+        'request',
+        new Date(Date.now() - 1000 * HOUR).toISOString(),
+      ),
+    ).toBeNull()
+  })
+
   it('returns null, not an empty list, when Overseerr fails', async () => {
     vi.spyOn(console, 'error').mockImplementation(() => {})
     vi.stubGlobal(
@@ -244,6 +287,31 @@ describe('fetchOverseerrUserId', () => {
     await fetchOverseerrUserId('1002')
 
     expect(requests).toHaveLength(6)
+  })
+
+  it('does not use or keep a partial user list', async () => {
+    vi.spyOn(console, 'error').mockImplementation(() => {})
+
+    let isFailing = true
+
+    const { requests } = overseerrFetch(users, undefined, (skip) =>
+      isFailing && skip === 100
+        ? new Response('nope', { status: 500, statusText: 'Server Error' })
+        : undefined,
+    )
+    const { fetchOverseerrUserId } = await load()
+
+    // User 1000 is on the page that loaded, but with a gap in the list, the
+    // users after it would wrongly look like they have no account
+    expect(await fetchOverseerrUserId('1000')).toBeNull()
+    expect(await fetchOverseerrUserId('1249')).toBeNull()
+    expect(requests).toHaveLength(6)
+
+    isFailing = false
+
+    expect(await fetchOverseerrUserId('1000')).toBe(1)
+    expect(await fetchOverseerrUserId('1249')).toBe(250)
+    expect(requests).toHaveLength(9)
   })
 
   it('does not keep a failed lookup', async () => {

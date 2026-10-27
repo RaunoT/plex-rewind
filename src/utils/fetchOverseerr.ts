@@ -106,7 +106,9 @@ type UserIdsCache = {
 let userIdsCache: UserIdsCache | null = null
 
 // Reads a paginated list, a few pages at a time. `isPastEnd` is given each
-// batch's last page and stops the paging once nothing further is needed.
+// batch's last page and stops the paging once nothing further is needed. A
+// page that fails fails the whole list, since a list with a gap would pass
+// for a complete one.
 async function fetchOverseerrPages<T>(
   endpoint: string,
   isPastEnd: (page: T[]) => boolean = () => false,
@@ -137,10 +139,14 @@ async function fetchOverseerrPages<T>(
     )
 
     for (const res of batch) {
-      items.push(...(res?.results || []))
+      if (!res || !Array.isArray(res.results)) {
+        return null
+      }
+
+      items.push(...res.results)
     }
 
-    lastPage = batch[batch.length - 1]?.results || []
+    lastPage = batch[batch.length - 1]?.results ?? []
     nextPage += batchSize
   }
 
