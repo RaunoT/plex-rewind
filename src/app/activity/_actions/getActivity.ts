@@ -80,8 +80,10 @@ function toPublicSession(
     delete publicSession.location
   }
 
+  // Device names such as "Alice's iPhone" give the user away too
   if (isAnonymized && !isOwnSession) {
     publicSession.friendly_name = ''
+    publicSession.player = ''
     publicSession.user_id = 0
     publicSession.user_thumb = ''
   }

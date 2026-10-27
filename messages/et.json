@@ -39,6 +39,7 @@
     "noActivity": "Ühtegi aktiivset sessiooni pole.. 😴",
     "playing": "Mängib",
     "paused": "Pausil",
+    "buffering": "Puhverdab",
     "endsAt": "Lõpeb {time}",
     "convertedTo": "teisendatakse:",
     "decision": {

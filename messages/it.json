@@ -39,6 +39,7 @@
     "noActivity": "Nessuna sessione attiva… 😴",
     "playing": "In riproduzione",
     "paused": "In pausa",
+    "buffering": "In buffering",
     "endsAt": "Termina alle {time}",
     "convertedTo": "convertito in",
     "decision": {

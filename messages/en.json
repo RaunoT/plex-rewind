@@ -39,6 +39,7 @@
     "noActivity": "No active sessions.. 😴",
     "playing": "Playing",
     "paused": "Paused",
+    "buffering": "Buffering",
     "endsAt": "Ends at {time}",
     "convertedTo": "converted to",
     "decision": {

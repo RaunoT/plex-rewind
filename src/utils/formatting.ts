@@ -90,18 +90,19 @@ function formatOneDecimal(value: number, locale: string): string {
   })
 }
 
+// Empty without a bitrate, so callers can fall back to another value or a dash
 export function formatBitrate(
   bitrate: number | string,
   locale: string,
 ): string {
-  if (!bitrate || bitrate === '') {
-    return 'N/A'
+  if (!bitrate) {
+    return ''
   }
 
   const numeric = typeof bitrate === 'string' ? parseFloat(bitrate) : bitrate
 
   if (isNaN(numeric) || numeric <= 0) {
-    return 'N/A'
+    return ''
   }
 
   const megabits = numeric / 1000
@@ -135,9 +136,11 @@ export function millisecondsToTimeString(milliseconds: number): string {
     : `${minutes}:${paddedSeconds}`
 }
 
+// In the time zone of whoever runs it, so it belongs in the browser
 export function calculateETA(
-  durationMs?: string,
-  viewOffsetMs?: string,
+  durationMs: string | undefined,
+  viewOffsetMs: string | undefined,
+  locale: string,
 ): string | null {
   if (!durationMs || !viewOffsetMs) return null
 
@@ -150,13 +153,17 @@ export function calculateETA(
 
   if (remainingMs <= 0) return null
 
-  const now = new Date()
-  const eta = new Date(now.getTime() + remainingMs)
-  // Format as HH:MM
-  const hours = eta.getHours().toString().padStart(2, '0')
-  const minutes = eta.getMinutes().toString().padStart(2, '0')
+  const eta = new Date(Date.now() + remainingMs)
 
-  return `${hours}:${minutes}`
+  return new Intl.DateTimeFormat(locale, {
+    hour: 'numeric',
+    minute: '2-digit',
+  }).format(eta)
+}
+
+// The app and the device it plays on, such as "Plex Web (Chrome)"
+export function formatDevice(product: string, player: string): string {
+  return product && player ? `${product} (${player})` : product || player
 }
 
 const CODEC_NAMES: Record<
