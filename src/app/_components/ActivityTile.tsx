@@ -82,7 +82,7 @@ export default function ActivityTile({ settings }: Props) {
                 </span>
                 <span className='max-w-1/2 shrink-0 truncate text-neutral-400'>
                   {isAnonymous
-                    ? `${t('Activity.anonymous')} #${index + 1}`
+                    ? t('Activity.anonymous', { number: index + 1 })
                     : item.friendly_name}
                 </span>
               </li>

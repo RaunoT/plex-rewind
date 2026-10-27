@@ -50,9 +50,7 @@ export default async function Overview({
         ? t('PeriodSelectContent.pastYear')
         : period === 'allTime'
           ? t('PeriodSelectContent.allTime')
-          : customPeriod > 1
-            ? t('PeriodSelectContent.days', { count: customPeriod })
-            : t('PeriodSelectContent.today')
+          : t('PeriodSelectContent.days', { count: customPeriod })
 
   return (
     <div className='page-width'>

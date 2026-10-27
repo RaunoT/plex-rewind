@@ -137,7 +137,7 @@ describe('placeholders', () => {
   it('reads arguments, plural branches and tags', () => {
     expect(
       placeholders(
-        '<b>{name}</b> has {count, plural, =1 {# play} other {# plays}}',
+        '<b>{name}</b> has {count, plural, one {# play} other {# plays}}',
       ),
     ).toEqual(['<b>', 'count', 'name'])
   })
@@ -170,3 +170,15 @@ describe.each(LOCALES.filter((locale) => locale !== 'en'))(
     })
   },
 )
+
+// `=1` only matches exactly one, while CLDR's `one` also covers languages like
+// French, where 0 takes the singular too.
+describe.each(LOCALES)('messages/%s.json plurals', (locale) => {
+  it('use CLDR categories instead of =1', () => {
+    for (const [key, message] of Object.entries(
+      flatten(loadMessages(locale)),
+    )) {
+      expect(message, key).not.toMatch(/=1\s*\{/)
+    }
+  })
+})

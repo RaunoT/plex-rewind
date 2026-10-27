@@ -114,12 +114,14 @@ function anonymizeUsers(
   return users.map((user) => {
     const isLoggedIn = user.user_id === Number(loggedInUserId)
 
+    // The UI shows a translated name for anonymous users
     return {
       ...user,
-      user: isLoggedIn ? user.user : 'Anonymous',
-      friendly_name: isLoggedIn ? user.friendly_name : 'Anonymous',
+      user: isLoggedIn ? user.user : '',
+      friendly_name: isLoggedIn ? user.friendly_name : '',
       user_thumb: isLoggedIn ? user.user_thumb : '',
       user_id: isLoggedIn ? user.user_id : 0,
+      is_anonymous: !isLoggedIn,
     }
   })
 }

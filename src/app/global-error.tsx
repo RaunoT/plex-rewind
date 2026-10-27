@@ -18,7 +18,7 @@ type Props = {
 // Other locales load on demand, so they don't add to every page's bundle.
 const ENGLISH_MESSAGES: AbstractIntlMessages = {
   Error: {
-    title: 'Uh oh.. something went wrong!',
+    title: 'Uh oh. Something went wrong!',
     cta: 'Try again',
   },
 }

@@ -15,7 +15,7 @@ import {
 } from '@/utils/statsSource'
 import { Metadata } from 'next'
 import { getServerSession } from 'next-auth'
-import { getTranslations } from 'next-intl/server'
+import { getLocale, getTranslations } from 'next-intl/server'
 import { notFound } from 'next/navigation'
 import { ReactNode, Suspense } from 'react'
 import Dashboard from '../_components/Dashboard'
@@ -58,7 +58,7 @@ async function getTotalRequests(period: string, settings: Settings) {
   ) {
     const requests = await fetchOverseerrStats('request', period)
 
-    return requests?.length.toString()
+    return requests?.length.toLocaleString(await getLocale())
   }
 
   return undefined

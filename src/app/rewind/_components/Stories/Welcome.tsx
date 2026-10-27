@@ -32,7 +32,7 @@ export default function StoryWelcome({ userRewind, settings }: RewindStory) {
           <Avatar
             src={userRewind.user.image}
             name={userRewind.user.name}
-            alt={`${userRewind.user.name} ${tCommon('profilePictureAlt')}`}
+            alt={tCommon('profilePictureAlt', { name: userRewind.user.name })}
             sizes='10rem'
             priority
           />
