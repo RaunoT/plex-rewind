@@ -11,8 +11,8 @@ type PlayFilter = {
   excludedIdentityIds?: string[]
 }
 
-// Plays are fetched from a whole UTC day (so periods share a cache), so the
-// window is narrowed back down to the exact start here.
+// Narrows plays down to a window that starts at an exact time, and to the
+// media types and users asked for.
 export function filterPlays(
   plays: TracearrPlay[],
   { since, mediaTypes, identityId, excludedIdentityIds = [] }: PlayFilter,
