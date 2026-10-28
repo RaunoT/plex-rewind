@@ -7,9 +7,16 @@ const fetchMock = vi.fn()
 let clock = Date.UTC(2026, 0, 1)
 
 describe('compareVersions', () => {
-  it('reports an update when a stable version differs', () => {
+  it('compares stable versions numerically', () => {
     expect(compareVersions('v5.1.0', 'v5.2.0')).toBe(true)
     expect(compareVersions('v5.2.0', 'v5.2.0')).toBe(false)
+    expect(compareVersions('v5.9.0', 'v5.10.0')).toBe(true)
+    expect(compareVersions('v5.10.0', 'v5.9.0')).toBe(false)
+  })
+
+  it('puts a release after its develop builds', () => {
+    expect(compareVersions('v5.3.0-develop.18', 'v5.3.0')).toBe(true)
+    expect(compareVersions('v5.3.0', 'v5.3.0-develop.18')).toBe(false)
   })
 
   it('compares develop versions numerically', () => {
@@ -52,6 +59,25 @@ describe('getVersion', () => {
     expect(version).toMatchObject({
       currentVersion: 'v5.0.0',
       latestVersion: 'v5.1.0',
+      hasUpdate: true,
+    })
+  })
+
+  it('finds the highest develop release in the order GitHub lists them', async () => {
+    vi.stubEnv('NEXT_PUBLIC_VERSION_TAG', '5.3.0-develop.10')
+    fetchMock.mockResolvedValue(
+      Response.json([
+        { tag_name: 'v5.3.0-develop.9', draft: false, prerelease: true },
+        { tag_name: 'v5.3.0-develop.18', draft: false, prerelease: true },
+        { tag_name: 'v5.3.0-develop.10', draft: false, prerelease: true },
+      ]),
+    )
+
+    const version = await getVersion()
+
+    expect(version).toMatchObject({
+      currentVersion: 'v5.3.0-develop.10',
+      latestVersion: 'v5.3.0-develop.18',
       hasUpdate: true,
     })
   })
