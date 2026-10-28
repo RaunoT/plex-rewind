@@ -19,7 +19,7 @@ Present [Plex](https://plex.tv) user statistics and habits in a beautiful and or
 - ⚡ Activity - see what's happening on your server in real time.
 - 📊 Fuelled by data from [Tautulli](https://tautulli.com) or [Tracearr](https://github.com/connorgallopo/Tracearr) - the backbone responsible for the heavy lifting regarding statistics.
 - 🔗 Integrates with [Seerr](https://seerr.dev) - show request breakdowns and totals and display request buttons next to deleted fan-favorite media items.
-- 🍅 Ratings from TMDB, IMDb and Rotten Tomatoes (movies only) - each can be turned on or off.
+- 🍅 Ratings from TMDB, IMDb and Rotten Tomatoes - each can be turned on or off.
 - 🔐 Log in with Plex - secure login and session management with your Plex account.
 - 🚀 PWA support - installable on mobile devices and desktops.
 - 🐳 Easy deployment - run the application in a containerized environment with [Docker](https://www.docker.com).
