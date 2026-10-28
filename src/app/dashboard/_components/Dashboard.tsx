@@ -1,12 +1,15 @@
 import CardWrapper from '@/app/_components/CardWrapper'
 import { MediaIcon, STAT_ICONS } from '@/components/icons'
 import MediaItems from '@/components/MediaItem/MediaItems'
+import SkeletonSized from '@/components/SkeletonSized'
 import StatusMessage from '@/components/StatusMessage'
 import { PublicSettings } from '@/types/settings'
 import { TautulliItemRow } from '@/types/tautulli'
+import { MoonIcon } from '@heroicons/react/24/outline'
 import { getTranslations } from 'next-intl/server'
 import { ReactNode, Suspense } from 'react'
 import DashboardHeader from './DashboardHeader'
+import { DashboardListSkeleton } from './DashboardLoader'
 import ShowMore from './ShowMore'
 
 type Props = {
@@ -75,9 +78,7 @@ export default async function Dashboard({
       />
 
       <CardWrapper>
-        {status ? (
-          <div className='flex flex-1 flex-col py-24'>{status}</div>
-        ) : items?.length ? (
+        {!status && items?.length ? (
           <>
             <MediaItems
               items={items}
@@ -96,9 +97,17 @@ export default async function Dashboard({
             )}
           </>
         ) : (
-          <div className='flex flex-1 flex-col py-24'>
-            <StatusMessage title='😴' description={t('noActivity')} isInCard />
-          </div>
+          <SkeletonSized
+            skeleton={<DashboardListSkeleton type={type} settings={settings} />}
+          >
+            {status ?? (
+              <StatusMessage
+                icon={MoonIcon}
+                description={t('noActivity')}
+                isInCard
+              />
+            )}
+          </SkeletonSized>
         )}
       </CardWrapper>
 

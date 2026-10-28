@@ -80,6 +80,7 @@ export type PlayStats = Pick<
   | 'getMediaStats'
   | 'getTopMediaItems'
   | 'getPlaysByTime'
+  | 'getPlayItem'
 >
 
 type PlaysQuery = Omit<DurationQuery, 'since'> & {
@@ -408,6 +409,12 @@ export function createPlayStats(provider: PlaysProvider): PlayStats {
       .sort((a, b) => b.total_duration - a.total_duration)
   }
 
+  async function getPlayItem(play: Play): Promise<TautulliItemRow> {
+    const [item] = await addAdditionalData([toItemRow([play])], play.mediaType)
+
+    return item
+  }
+
   return {
     getTotalDuration,
     getTopItems,
@@ -415,5 +422,6 @@ export function createPlayStats(provider: PlaysProvider): PlayStats {
     getMediaStats,
     getTopMediaItems,
     getPlaysByTime,
+    getPlayItem,
   }
 }

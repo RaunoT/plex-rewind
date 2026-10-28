@@ -1,19 +1,28 @@
 import AutoRefresh from '@/components/AutoRefresh'
 import { MediaIcon } from '@/components/icons'
+import PosterImage from '@/components/PosterImage'
 import SkeletonLine from '@/components/SkeletonLine'
 import SourceUnreachable from '@/components/SourceUnreachable'
 import StatusMessage from '@/components/StatusMessage'
 import { DashboardSearchParams } from '@/types/dashboard'
 import { Settings } from '@/types/settings'
 import { TautulliLibrary } from '@/types/tautulli'
-import { DASHBOARD_PERIOD_COOKIE_NAME, getSiteUrl } from '@/utils/constants'
+import {
+  DASHBOARD_PERIOD_COOKIE_NAME,
+  getSiteUrl,
+  SETTINGS_HREF,
+} from '@/utils/constants'
 import { getItems } from '@/utils/getDashboard'
 import getPeriod, { parseCustomPeriod } from '@/utils/getPeriod'
 import { getHomeTiles, getViewer } from '@/utils/helpers'
 import { getImageProxyUrl } from '@/utils/imageProxy'
 import { toPublicSettings } from '@/utils/publicSettings'
 import { getHistoryProgress } from '@/utils/statsSource'
-import { BackwardIcon, ChevronRightIcon } from '@heroicons/react/24/outline'
+import {
+  BackwardIcon,
+  ChevronRightIcon,
+  InboxIcon,
+} from '@heroicons/react/24/outline'
 import { kebabCase } from 'lodash'
 import { Session } from 'next-auth'
 import { getTranslations } from 'next-intl/server'
@@ -23,7 +32,6 @@ import { Suspense } from 'react'
 import ActivityTile from './ActivityTile'
 import HeaderControls from './HeaderControls'
 import LoginButton from './LoginButton'
-import TilePoster from './TilePoster'
 
 type Props = {
   settings: Settings
@@ -86,6 +94,7 @@ export default async function Overview({
         />
       ) : !tiles.rewind && !tiles.activity && !tiles.libraries ? (
         <StatusMessage
+          icon={InboxIcon}
           title={t('Home.emptyTitle')}
           description={
             isAdmin
@@ -94,7 +103,7 @@ export default async function Overview({
           }
           action={
             isAdmin && (
-              <Link href='/settings/general' className='button w-full'>
+              <Link href={SETTINGS_HREF} className='button w-full'>
                 {t('Home.openSettings')}
               </Link>
             )
@@ -192,7 +201,11 @@ async function LibraryTile({
       {top ? (
         <div className='flex items-center gap-3'>
           <div className='poster w-12'>
-            <TilePoster key={poster} src={poster} />
+            <PosterImage
+              srcs={[poster, top.tmdb_poster]}
+              type={library.section_type}
+              sizes='6rem'
+            />
           </div>
           <div className='min-w-0'>
             <p className='text-xs text-neutral-400'>
@@ -209,7 +222,7 @@ async function LibraryTile({
         </div>
       ) : progress ? (
         <p className='text-sm text-neutral-400'>
-          {t('History.readingShort')}
+          {t('History.syncingShort')}
           <AutoRefresh />
         </p>
       ) : (

@@ -20,7 +20,7 @@
     "mostListened": "Lo más escuchado",
     "emptyTitle": "Aún no hay nada que mostrar",
     "emptyDescription": "Todavía no hay nada para ti. Vuelve más tarde.",
-    "emptyAdminDescription": "Activa Rewind, Actividad o el Panel en los ajustes y elige al menos una biblioteca.",
+    "emptyAdminDescription": "Activa Rewind, Actividad o el Panel en los ajustes y elige al menos una biblioteca",
     "openSettings": "Abrir ajustes"
   },
   "Activity": {
@@ -28,7 +28,6 @@
     "poster": "Póster de {title}",
     "anonymousAvatar": "Avatar anónimo",
     "anonymous": "Anónimo #{number}",
-    "stream": "Transmisión",
     "container": "Contenedor",
     "quality": "Calidad",
     "video": "Video",
@@ -37,7 +36,7 @@
     "location": "Ubicación",
     "bandwidth": "Ancho de banda",
     "streamDetails": "Detalles de la transmisión",
-    "noActivity": "No hay reproducciones activas.",
+    "noActivity": "No hay reproducciones activas",
     "loadError": "No se pudo cargar la actividad",
     "playing": "Reproduciendo",
     "paused": "En pausa",
@@ -53,7 +52,7 @@
   },
   "Dashboard": {
     "sizePartial": "{size} (parcial)",
-    "noActivity": "No hay actividad en este periodo.",
+    "noActivity": "No hay actividad en este periodo",
     "showMore": "Mostrar más",
     "title": "Panel",
     "usersTitle": "Usuarios",
@@ -83,13 +82,13 @@
     "title": "¡Vaya! Algo salió mal.",
     "cta": "Intentar de nuevo",
     "sourceUnreachable": "No se pudo conectar con {source}",
-    "sourceUnreachableDescription": "Comprueba que {source} esté en marcha y sea accesible desde Plex Rewind, y vuelve a intentarlo.",
+    "sourceUnreachableDescription": "Comprueba que {source} esté en marcha y sea accesible desde Plex Rewind, y vuelve a intentarlo",
     "connectionSettings": "Revisar los ajustes de conexión"
   },
   "History": {
-    "readingTitle": "Leyendo el historial",
-    "readingDescription": "El historial de reproducciones de {source} se lee una sola vez, lo que puede tardar unos minutos. {count, plural, =0 {Acaba de empezar.} one {Por ahora # reproducción, desde {date}.} other {Por ahora # reproducciones, desde {date}.}} Esta página se actualiza sola.",
-    "readingShort": "Leyendo el historial…"
+    "syncingTitle": "Sincronizando el historial",
+    "syncingDescription": "El historial de reproducciones de {source} se sincroniza una sola vez, lo que puede tardar unos minutos. {count, plural, =0 {Acaba de empezar.} one {Por ahora # reproducción, desde {date}.} other {Por ahora # reproducciones, desde {date}.}} Esta página se actualiza sola.",
+    "syncingShort": "Sincronizando el historial…"
   },
   "PlexDeeplink": {
     "available": "Disponible",
@@ -104,7 +103,7 @@
   },
   "NotFound": {
     "title": "404",
-    "description": "No se encontró la página solicitada.",
+    "description": "No se encontró la página solicitada",
     "cta": "Quizá sea mejor empezar de nuevo."
   },
   "AppProvider": {
@@ -122,7 +121,6 @@
   "Settings": {
     "title": "Ajustes",
     "getStarted": "Empecemos",
-    "updateAvailable": "Actualización disponible",
     "saved": "¡Ajustes guardados!",
     "savedChooseLibraries": "¡Ajustes guardados! Elige tus bibliotecas en General.",
     "savedLibrariesActive": "¡Ajustes guardados! Todas las bibliotecas están activas; puedes cambiarlo en General.",
@@ -140,8 +138,8 @@
     "unexpectedResponse": "Respuesta inesperada (HTTP {status}).",
     "certificateError": "Error de certificado HTTPS. Comprueba que la URL coincida con un certificado válido.",
     "invalidField": "Revisa {field, select, tautulliUrl {la URL de Tautulli} tautulliApiKey {la clave de API de Tautulli} tracearrUrl {la URL de Tracearr} tracearrApiKey {la clave de API de Tracearr} plexUrl {la URL de Plex} seerrUrl {la URL de Seerr} seerrApiKey {la clave de API de Seerr} googleAnalyticsId {el ID de Google Analytics} other {los ajustes}}.",
-    "buyMeACoffee": "Invítame a un café",
     "becomeASponsor": "Hazte patrocinador",
+    "buyMeABeer": "Invítame a una cerveza",
     "reportAnIssue": "Informar de un problema",
     "Nav": {
       "label": "Navegación",
@@ -160,20 +158,19 @@
       "source": "Fuente",
       "server": "Servidor",
       "chooseServer": "Elige un servidor",
-      "seerrUrlDescription": "Los enlaces de solicitud abren esta dirección en el navegador de quien los usa, así que elige una a la que pueda acceder, no una dirección de red local.",
       "optionalService": "{service} (opcional)",
       "history": "Historial de reproducciones",
-      "historyDescription": "Se lee de {source} una vez y se guarda; después solo se leen las reproducciones nuevas. El historial completo se vuelve a leer una vez por semana.",
-      "historyReading": "Leyendo el historial…",
+      "historyDescription": "Las reproducciones nuevas se añaden automáticamente",
+      "historySyncing": "Sincronizando el historial…",
       "historyComplete": "Al día",
-      "historyRereading": "Volviendo a leer todo el historial en segundo plano",
-      "historySaveFailed": "No se pudo guardar el historial en la carpeta config, así que se volverá a leer después de reiniciar.",
-      "read": "Leer historial",
-      "readAgain": "Volver a leer",
-      "readOn": "Seguir leyendo",
+      "historyResyncing": "Volviendo a sincronizar todo el historial en segundo plano",
+      "historySaveFailed": "No se pudo guardar el historial en la carpeta config, así que se volverá a sincronizar después de reiniciar.",
+      "sync": "Sincronizar historial",
+      "resync": "Volver a sincronizar",
+      "continueSync": "Seguir sincronizando",
       "historyFailed": "{source} dejó de responder. Se volverá a intentar en un minuto.",
       "historyPaused": "En pausa",
-      "historyNotRead": "Aún no se ha leído",
+      "historyNotSynced": "Aún no se ha sincronizado",
       "historyPlaysSoFar": "{count, plural, =0 {Todavía no hay reproducciones} one {Por ahora # reproducción, desde {date}} other {Por ahora # reproducciones, desde {date}}}",
       "historyPlaysSince": "{count, plural, =0 {Todavía no hay reproducciones} one {# reproducción desde {date}} other {# reproducciones desde {date}}}",
       "historyRereadPlays": "{count, plural, one {Por ahora # reproducción} other {Por ahora # reproducciones}}",
@@ -185,10 +182,10 @@
       "startDateError": "Revisa la fecha de inicio.",
       "usersPage": "Página de usuarios",
       "statistics": "Estadísticas",
-      "totalStatistics": "Estadísticas totales",
+      "totals": "Totales",
       "customPeriod": "Periodo personalizado",
-      "inDays": "En días. El panel y la página de inicio se abren con este periodo.",
-      "startDateHelperText": "Inicio del periodo “Desde siempre”."
+      "inDays": "Sustituye el periodo de 30 días",
+      "startDateHelperText": "Inicio personalizado de “Desde siempre”"
     },
     "Activity": {
       "title": "Ajustes de actividad"
@@ -202,27 +199,25 @@
       "moveUp": "Subir {name}",
       "moveDown": "Bajar {name}",
       "movedTo": "{name} se movió a la posición {position} de {total}",
-      "noLibrariesMessage1": "Crea una biblioteca en Plex para continuar.",
-      "noLibrariesMessage2": "Plex Rewind necesita al menos una biblioteca para funcionar.",
+      "noLibrariesMessage1": "Crea una biblioteca en Plex para continuar",
+      "noLibrariesMessage2": "Plex Rewind necesita al menos una biblioteca para funcionar",
       "media": "Multimedia",
       "tmdbOnlyPosters": "Solo pósteres de TMDB",
-      "tmdbOnlyPostersDescription": "Ignorar los pósteres de Plex para series y películas.",
       "externalLinks": "Enlaces externos",
+      "externalLinksDescription": "Si se muestra la valoración de un sitio, es la valoración la que enlaza a él",
       "itemStatistics": "Estadísticas por elemento",
-      "itemStatisticsDescription": "Se muestran para cada título y usuario en las listas del panel y de Rewind.",
       "privacy": "Privacidad",
       "excludedUsers": "Usuarios excluidos",
       "outsideAccess": "Permitir acceso externo",
-      "outsideAccessDescription": "Cualquiera puede ver las estadísticas de tu servidor sin iniciar sesión.",
-      "anonymize": "Anonimizar",
-      "anonymizeDescription": "Oculta los nombres de los demás usuarios, incluso a los administradores. También se ocultan las direcciones IP y las ubicaciones en la página de actividad.",
+      "outsideAccessDescription": "Permite el acceso sin iniciar sesión",
+      "anonymizeUsers": "Anonimizar usuarios",
       "analytics": "Analítica"
     },
     "Rewind": {
       "title": "Ajustes de Rewind",
       "cards": "Historias",
       "librariesSizeAndCountCard": "Tamaño y recuento de bibliotecas",
-      "startDateHelperText": "Por defecto, hace 365 días."
+      "startDateHelperText": "Por defecto hace 365 días"
     }
   },
   "LocaleSelect": {
@@ -237,7 +232,6 @@
     "adminOnly": "Solo administradores",
     "status": "Estado",
     "year": "Año",
-    "rating": "Valoración",
     "ratingBy": "Valoración de {provider}",
     "rottenTomatoesCritics": "Valoración de la crítica en Rotten Tomatoes",
     "rottenTomatoesAudience": "Valoración del público en Rotten Tomatoes",
@@ -311,9 +305,9 @@
       "sizePartial": "Algunas bibliotecas no tienen datos de tamaño. Activa “Calculate Total File Sizes” en Tautulli.",
       "sizePartialTracearr": "Algunas bibliotecas no tienen datos de tamaño en Tracearr.",
       "libraries": "Ahora mismo, las bibliotecas contienen:",
-      "movies": "{count, plural, one {Película} other {Películas}}",
-      "episodes": "{count, plural, one {Episodio} other {Episodios}}",
-      "tracks": "{count, plural, one {Canción} other {Canciones}}"
+      "movies": "{count, plural, one {película} other {películas}}",
+      "episodes": "{count, plural, one {episodio} other {episodios}}",
+      "tracks": "{count, plural, one {canción} other {canciones}}"
     },
     "Shows": {
       "duration": "Las <library>series</library> ocuparon <duration>{durationValue}</duration> de tu tiempo en <plex>{serverName}.</plex>",
@@ -327,8 +321,8 @@
       "count": "Hiciste <count>{countValue, number}</count> <requests>{countValue, plural, one {solicitud} other {solicitudes}}</requests>",
       "countTotal": "En total, hubo <count>{countValue, plural, one {# solicitud} other {# solicitudes}}</count> en el mismo periodo.",
       "breakdown": "Este es el desglose:",
-      "movies": "{count, plural, one {Película} other {Películas}}",
-      "shows": "{count, plural, one {Serie} other {Series}}"
+      "movies": "{count, plural, one {película} other {películas}}",
+      "shows": "{count, plural, one {serie} other {series}}"
     },
     "Movies": {
       "duration": "Pasaste <duration>{durationValue}</duration> de tu tiempo viendo <movies>películas</movies>",

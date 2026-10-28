@@ -48,6 +48,11 @@ export type UserRewind = {
     date: string
     timeSince: string
     title: string
+    // Shown as a card, like the favorites
+    item: {
+      data: TautulliItemRow
+      type: 'movie' | 'show' | 'artist'
+    } | null
   } | null
   user: RewindUser
 }

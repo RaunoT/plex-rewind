@@ -84,7 +84,7 @@ const MEDIA = {
     ['One Battle After Another', 2025, 8, 162, 6],
     ['Project Hail Mary', 2026, 7, 156, 6],
     ['Weapons', 2025, 6, 128, 5],
-    ['KPop Demon Hunters', 2025, 6, 100, 4, true],
+    ['Marty Supreme', 2025, 6, 149, 4, true],
     ['F1', 2025, 5, 156, 4],
     ['Superman', 2025, 4, 129, 4],
     ['Dune: Part Two', 2024, 3, 166, 3],
@@ -193,24 +193,6 @@ function userPlays(user, type, days) {
 
 function userSeconds(user, type, days) {
   return Math.round((user.hours[type] * 3600 * activeDays(user, days)) / 30)
-}
-
-function formatDuration(seconds) {
-  const days = Math.floor(seconds / DAY)
-  const hours = Math.floor((seconds % DAY) / 3600)
-  const mins = Math.floor((seconds % 3600) / 60)
-
-  return [
-    days && `${days} days`,
-    hours && `${hours} hrs`,
-    mins && `${mins} mins`,
-  ]
-    .filter(Boolean)
-    .join(' ')
-}
-
-function daysSince(date) {
-  return date ? Math.max(1, (NOW - Date.parse(date) / 1000) / DAY) : 365 * 20
 }
 
 // A user's own top five, their favorites or else the server's from a
@@ -322,48 +304,140 @@ function homeStats(params) {
   return { stat_id: statId, rows: rows.slice(0, count) }
 }
 
+// Each library's plays of the last HISTORY_DAYS, newest first, made up the
+// same way on every start. Rows are grouped like Tautulli's, one per play
+// however often it was resumed.
+const HISTORY_DAYS = 400
+const PLAY_TYPE = { movie: 'movie', show: 'episode', artist: 'track' }
+
+let plays
+
+function makePlays() {
+  let seed = 11
+
+  const random = () => (seed = (seed * 16807) % 2147483647) / 2147483647
+
+  let referenceId = 0
+
+  return Object.fromEntries(
+    Object.entries(items).map(([type, list]) => {
+      const rows = []
+
+      for (const user of USERS) {
+        const perDay = (user.hours[type] * 60) / PLAY_MINUTES[type] / 30
+        // The owner's favorites come up more often
+        const weights = list.map(
+          (item, i) =>
+            item.plays * (user.favorites?.[type].includes(i + 1) ? 4 : 1),
+        )
+        const totalWeight = weights.reduce((sum, weight) => sum + weight, 0)
+
+        for (let day = 0; day < activeDays(user, HISTORY_DAYS); day++) {
+          const count = Math.floor(perDay) + (random() < perDay % 1 ? 1 : 0)
+
+          for (let n = 0; n < count; n++) {
+            let pick = random() * totalWeight
+
+            const item = list.find((_, i) => (pick -= weights[i]) < 0)
+            const started = Math.floor(NOW - (day + random()) * DAY)
+            const seconds = Math.round(item.minutes * 60 * (0.8 + random() / 5))
+            const number = 1 + Math.floor(random() * (item.episodes || 12))
+
+            referenceId++
+            rows.push({
+              reference_id: referenceId,
+              id: referenceId,
+              date: started,
+              started,
+              stopped: started + seconds,
+              duration: seconds,
+              play_duration: seconds,
+              media_type: PLAY_TYPE[type],
+              title:
+                type === 'movie'
+                  ? item.title
+                  : type === 'show'
+                    ? `Episode ${number}`
+                    : `Track ${number}`,
+              parent_title: type === 'show' ? 'Season 1' : '',
+              grandparent_title: type === 'movie' ? '' : item.title,
+              year: item.year,
+              rating_key: type === 'movie' ? item.key : item.key * 100 + number,
+              grandparent_rating_key: type === 'movie' ? '' : item.key,
+              // Posters come from TMDB, but artists have none there
+              thumb: '',
+              user_id: Number(user.id),
+              user: user.email.split('@')[0],
+              friendly_name: user.name,
+              user_thumb: user.thumb,
+            })
+          }
+        }
+      }
+
+      return [type, rows.sort((a, b) => b.date - a.date)]
+    }),
+  )
+}
+
 function history(params) {
   const users = params.user_id
     ? USERS.filter((u) => u.id === String(params.user_id))
     : USERS
-  const type =
-    libraryById[params.section_id]?.section_type ??
-    HISTORY_TYPE[params.media_type]
-  const types = type ? [type] : ['movie', 'show', 'artist']
-  const days = daysSince(params.after)
 
   // The first play, for when someone joined
-  if (params.order_dir === 'asc' && Number(params.length) === 1) {
-    const first = [...users].sort((a, b) => a.joined.localeCompare(b.joined))[0]
+  if (
+    params.user_id &&
+    params.order_dir === 'asc' &&
+    Number(params.length) === 1
+  ) {
+    const first = users[0]
+    const show = items.show[3]
+    const started = Date.parse(`${first?.joined}T19:42:00Z`) / 1000
 
     return {
-      recordsFiltered: 1,
+      recordsFiltered: first ? 1 : 0,
       data: first
         ? [
             {
-              date: Date.parse(`${first.joined}T19:42:00Z`) / 1000,
-              title: 'Pilot',
-              grandparent_title: 'Severance',
+              reference_id: 1_000_000,
+              date: started,
+              started,
+              duration: show.minutes * 60,
+              play_duration: show.minutes * 60,
+              media_type: 'episode',
+              title: 'Chapter One: The Vanishing of Will Byers',
+              parent_title: 'Season 1',
+              grandparent_title: show.title,
+              year: show.year,
+              rating_key: show.key * 100 + 1,
+              grandparent_rating_key: show.key,
+              thumb: '',
+              user_id: Number(first.id),
+              friendly_name: first.name,
+              user_thumb: first.thumb,
             },
           ]
         : [],
     }
   }
 
-  let plays = 0
-  let seconds = 0
+  plays ??= makePlays()
 
-  for (const user of users) {
-    for (const t of types) {
-      plays += userPlays(user, t, days)
-      seconds += userSeconds(user, t, days)
-    }
-  }
+  const type =
+    libraryById[params.section_id]?.section_type ??
+    HISTORY_TYPE[params.media_type]
+  const ids = new Set(users.map((user) => Number(user.id)))
+  const rows = (type ? plays[type] : Object.values(plays).flat())
+    .filter((row) => ids.has(row.user_id))
+    .sort((a, b) =>
+      params.order_dir === 'asc' ? a.date - b.date : b.date - a.date,
+    )
+  const start = Number(params.start) || 0
 
   return {
-    recordsFiltered: plays,
-    total_duration: formatDuration(seconds),
-    data: [],
+    recordsFiltered: rows.length,
+    data: rows.slice(start, start + (Number(params.length) || 25)),
   }
 }
 

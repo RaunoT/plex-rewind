@@ -2,6 +2,7 @@ import { HistoryStatus } from '@/types/playHistory'
 import { STATS_SOURCE_NAMES } from '@/utils/constants'
 import { formatMonthYear } from '@/utils/formatting'
 import getSettings from '@/utils/getSettings'
+import { ArrowPathIcon } from '@heroicons/react/24/outline'
 import { getFormatter, getLocale, getTranslations } from 'next-intl/server'
 import { ComponentProps } from 'react'
 import AutoRefresh from './AutoRefresh'
@@ -27,8 +28,9 @@ export default async function HistoryReading({
   return (
     <>
       <StatusMessage
-        title={t('readingTitle')}
-        description={t('readingDescription', {
+        icon={ArrowPathIcon}
+        title={t('syncingTitle')}
+        description={t('syncingDescription', {
           source: STATS_SOURCE_NAMES[getSettings().connection.statisticsSource],
           count: playCount,
           date: oldestPlayAt
@@ -39,7 +41,7 @@ export default async function HistoryReading({
         isInCard={isInCard}
         action={
           <div className='w-full text-xs text-neutral-400 tabular-nums'>
-            <ProgressBar value={progress.progress} label={t('readingTitle')} />
+            <ProgressBar value={progress.progress} label={t('syncingTitle')} />
             <p className='mt-1.5 text-right'>
               {format.number(progress.progress, { style: 'percent' })}
             </p>

@@ -20,7 +20,7 @@
     "mostListened": "Enim kuulatud",
     "emptyTitle": "Siin pole veel midagi",
     "emptyDescription": "Sinu jaoks pole siin veel midagi. Vaata hiljem uuesti.",
-    "emptyAdminDescription": "Lülita seadetes sisse Rewind, Tegevus või Edetabel ja vali vähemalt üks kogumik.",
+    "emptyAdminDescription": "Lülita seadetes sisse Rewind, Tegevus või Edetabel ja vali vähemalt üks kogumik",
     "openSettings": "Ava seaded"
   },
   "Activity": {
@@ -28,7 +28,6 @@
     "poster": "„{title}“ plakat",
     "anonymousAvatar": "Anonüümne avatar",
     "anonymous": "Anonüümne #{number}",
-    "stream": "Voog",
     "container": "Konteiner",
     "quality": "Kvaliteet",
     "video": "Video",
@@ -37,7 +36,7 @@
     "location": "Asukoht",
     "bandwidth": "Ribalaidus",
     "streamDetails": "Voo üksikasjad",
-    "noActivity": "Ühtegi aktiivset voogu pole.",
+    "noActivity": "Ühtegi aktiivset voogu pole",
     "loadError": "Tegevust ei õnnestunud laadida",
     "playing": "Mängib",
     "paused": "Pausil",
@@ -53,7 +52,7 @@
   },
   "Dashboard": {
     "sizePartial": "{size} (osaline)",
-    "noActivity": "Valitud perioodil puudub tegevus.",
+    "noActivity": "Valitud perioodil puudub tegevus",
     "showMore": "Näita rohkem",
     "title": "Edetabel",
     "usersTitle": "Kasutajad",
@@ -83,13 +82,13 @@
     "title": "Oih. Midagi läks valesti!",
     "cta": "Proovi uuesti",
     "sourceUnreachable": "{source} pole kättesaadav",
-    "sourceUnreachableDescription": "Veendu, et {source} töötab ja Plex Rewind saab sellega ühendust, ning proovi uuesti.",
+    "sourceUnreachableDescription": "Veendu, et {source} töötab ja Plex Rewind saab sellega ühendust, ning proovi uuesti",
     "connectionSettings": "Kontrolli ühenduse seadeid"
   },
   "History": {
-    "readingTitle": "Esitusajaloo lugemine",
-    "readingDescription": "Allika {source} esitusajalugu loetakse üks kord ja see võib võtta paar minutit. {count, plural, =0 {Lugemine just algas.} one {Seni on loetud # mängimine, alates {date}.} other {Seni on loetud # mängimist, alates {date}.}} Leht uueneb ise.",
-    "readingShort": "Esitusajaloo lugemine…"
+    "syncingTitle": "Esitusajaloo sünkroonimine",
+    "syncingDescription": "Allika {source} esitusajalugu sünkroonitakse üks kord ja see võib võtta paar minutit. {count, plural, =0 {Sünkroonimine just algas.} one {Seni on sünkroonitud # mängimine, alates {date}.} other {Seni on sünkroonitud # mängimist, alates {date}.}} Leht uueneb ise.",
+    "syncingShort": "Esitusajaloo sünkroonimine…"
   },
   "PlexDeeplink": {
     "available": "Saadaval",
@@ -104,7 +103,7 @@
   },
   "NotFound": {
     "title": "404",
-    "description": "Soovitud lehte ei leitud.",
+    "description": "Soovitud lehte ei leitud",
     "cta": "Ehk on parem alustada uuesti."
   },
   "AppProvider": {
@@ -122,7 +121,6 @@
   "Settings": {
     "title": "Seaded",
     "getStarted": "Teeme algust!",
-    "updateAvailable": "Uuendus saadaval",
     "saved": "Salvestatud!",
     "savedChooseLibraries": "Salvestatud! Vali kogumikud jaotises Üldine.",
     "savedLibrariesActive": "Salvestatud! Kõik kogumikud on aktiivsed, seda saad muuta jaotises Üldine.",
@@ -140,8 +138,8 @@
     "unexpectedResponse": "Ootamatu vastus (HTTP {status}).",
     "certificateError": "HTTPS-sertifikaadi viga. Kontrolli, et URL vastaks kehtivale sertifikaadile.",
     "invalidField": "Kontrolli {field, select, tautulliUrl {Tautulli URL-i} tautulliApiKey {Tautulli API võtit} tracearrUrl {Tracearr URL-i} tracearrApiKey {Tracearr API võtit} plexUrl {Plexi URL-i} seerrUrl {Seerr URL-i} seerrApiKey {Seerr API võtit} googleAnalyticsId {Google Analyticsi ID-d} other {seadeid}}.",
-    "buyMeACoffee": "Osta mulle kohvi",
     "becomeASponsor": "Hakka sponsoriks",
+    "buyMeABeer": "Osta mulle õlut",
     "reportAnIssue": "Teata probleemist",
     "Nav": {
       "label": "Navigatsioon",
@@ -160,20 +158,19 @@
       "source": "Allikas",
       "server": "Server",
       "chooseServer": "Vali server",
-      "seerrUrlDescription": "Tellimuste lingid avanevad vaataja brauseris, seega kasuta aadressi, millele ta ligi pääseb, mitte kohtvõrgu aadressi.",
       "optionalService": "{service} (valikuline)",
       "history": "Esitusajalugu",
-      "historyDescription": "Loetakse allikast {source} üks kord ja salvestatakse, seejärel loetakse ainult uued mängimised. Kogu ajalugu loetakse uuesti kord nädalas.",
-      "historyReading": "Ajaloo lugemine…",
+      "historyDescription": "Uued mängimised lisatakse automaatselt",
+      "historySyncing": "Ajaloo sünkroonimine…",
       "historyComplete": "Ajakohane",
-      "historyRereading": "Kogu ajalugu loetakse taustal uuesti",
-      "historySaveFailed": "Ajalugu ei õnnestunud config-kausta salvestada, seega loetakse see pärast taaskäivitust uuesti.",
-      "read": "Loe ajalugu",
-      "readAgain": "Loe uuesti",
-      "readOn": "Jätka lugemist",
+      "historyResyncing": "Kogu ajalugu sünkroonitakse taustal uuesti",
+      "historySaveFailed": "Ajalugu ei õnnestunud config-kausta salvestada, seega sünkroonitakse see pärast taaskäivitust uuesti.",
+      "sync": "Sünkrooni ajalugu",
+      "resync": "Sünkrooni uuesti",
+      "continueSync": "Jätka sünkroonimist",
       "historyFailed": "{source} lakkas vastamast. Proovin minuti pärast uuesti.",
       "historyPaused": "Peatatud",
-      "historyNotRead": "Veel lugemata",
+      "historyNotSynced": "Veel sünkroonimata",
       "historyPlaysSoFar": "{count, plural, =0 {Mängimisi veel pole} one {Seni # mängimine, alates {date}} other {Seni # mängimist, alates {date}}}",
       "historyPlaysSince": "{count, plural, =0 {Mängimisi veel pole} one {# mängimine alates {date}} other {# mängimist alates {date}}}",
       "historyRereadPlays": "{count, plural, one {Seni # mängimine} other {Seni # mängimist}}",
@@ -185,10 +182,10 @@
       "startDateError": "Kontrolli alguskuupäeva.",
       "usersPage": "Kasutajate leht",
       "statistics": "Statistika",
-      "totalStatistics": "Kokkuvõtlik statistika",
+      "totals": "Kokkuvõte",
       "customPeriod": "Kohandatud periood",
-      "inDays": "Päevades. Edetabel ja avaleht avanevad selle perioodiga.",
-      "startDateHelperText": "Perioodi „Kokku“ algus."
+      "inDays": "Asendab 30-päevase perioodi",
+      "startDateHelperText": "Perioodi „Kokku“ kohandatud algus"
     },
     "Activity": {
       "title": "Tegevuse seaded"
@@ -202,27 +199,25 @@
       "moveUp": "Liiguta {name} üles",
       "moveDown": "Liiguta {name} alla",
       "movedTo": "{name} liigutati kohale {position} (kokku {total})",
-      "noLibrariesMessage1": "Palun loo kogumik Plex'is.",
-      "noLibrariesMessage2": "Plex Rewind vajab toimimiseks vähemalt ühte kogumikku.",
+      "noLibrariesMessage1": "Palun loo kogumik Plex'is",
+      "noLibrariesMessage2": "Plex Rewind vajab toimimiseks vähemalt ühte kogumikku",
       "media": "Meedia",
       "tmdbOnlyPosters": "Ainult TMDB pildid",
-      "tmdbOnlyPostersDescription": "Ära kasuta Plex'i postreid.",
       "externalLinks": "Välised lingid",
+      "externalLinksDescription": "Kui saidi hinnang on näha, viib saidile hoopis hinnang",
       "itemStatistics": "Kirje statistika",
-      "itemStatisticsDescription": "Kuvatakse iga pealkirja ja kasutaja juures edetabelis ja Rewind'is.",
       "privacy": "Privaatsus",
       "excludedUsers": "Välistatud kasutajad",
       "outsideAccess": "Luba väline ligipääs",
-      "outsideAccessDescription": "Igaüks näeb sinu serveri statistikat ilma sisse logimata.",
-      "anonymize": "Anonümiseeri",
-      "anonymizeDescription": "Peida teiste kasutajate nimed, ka administraatorite eest. Tegevuse lehel peidetakse ka IP-aadressid ja asukohad.",
+      "outsideAccessDescription": "Luba ligipääs ilma sisse logimata",
+      "anonymizeUsers": "Anonümiseeri kasutajad",
       "analytics": "Analüütika"
     },
     "Rewind": {
       "title": "Rewind seaded",
       "cards": "Lood",
       "librariesSizeAndCountCard": "Kogumike suurus ja sisu",
-      "startDateHelperText": "Vaikimisi 365 päeva tagasi."
+      "startDateHelperText": "Vaikimisi 365 päeva tagasi"
     }
   },
   "LocaleSelect": {
@@ -237,7 +232,6 @@
     "adminOnly": "Ainult administraatoritele",
     "status": "Olek",
     "year": "Aasta",
-    "rating": "Hinnang",
     "ratingBy": "{provider} hinnang",
     "rottenTomatoesCritics": "Rotten Tomatoesi kriitikute hinnang",
     "rottenTomatoesAudience": "Rotten Tomatoesi vaatajate hinnang",
@@ -311,9 +305,9 @@
       "sizePartial": "Mõne kogumiku suurus on teadmata. Lülita Tautullis sisse „Calculate Total File Sizes“.",
       "sizePartialTracearr": "Tracearr'is puuduvad mõne kogumiku suuruse andmed.",
       "libraries": "Hetkel on saadaval:",
-      "movies": "{count, plural, one {Film} other {Filmi}}",
-      "episodes": "{count, plural, one {Episood} other {Episoodi}}",
-      "tracks": "{count, plural, one {Lugu} other {Lugu}}"
+      "movies": "{count, plural, one {film} other {filmi}}",
+      "episodes": "{count, plural, one {episood} other {episoodi}}",
+      "tracks": "{count, plural, one {lugu} other {lugu}}"
     },
     "Shows": {
       "duration": "<library>Seriaalid</library> võtsid <duration>{durationValue}</duration> sinu ajast <plex>{serverName}'is.</plex>",
@@ -327,8 +321,8 @@
       "count": "Sa tegid <count>{countValue, number}</count> <requests>{countValue, plural, one {tellimuse} other {tellimust}}</requests>",
       "countTotal": "Kokku tehti samal perioodil <count>{countValue, plural, one {# tellimus} other {# tellimust}}</count>.",
       "breakdown": "Siin on täpsem jaotus:",
-      "movies": "{count, plural, one {Film} other {Filmi}}",
-      "shows": "{count, plural, one {Seriaal} other {Seriaali}}"
+      "movies": "{count, plural, one {film} other {filmi}}",
+      "shows": "{count, plural, one {seriaal} other {seriaali}}"
     },
     "Movies": {
       "duration": "<duration>{durationValue}</duration> kulus sul <movies>filmidele</movies>",

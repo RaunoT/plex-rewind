@@ -1,3 +1,4 @@
+import { Play } from '@/types/playHistory'
 import { LibrariesSize } from '@/utils/librariesSize'
 import { HistoryReader } from '@/utils/playHistory'
 import {
@@ -55,6 +56,8 @@ export type FirstPlay = {
   date: string
   // The show or artist for an episode or track
   title: string
+  // For showing what was played, null for media the stats leave out
+  play: Play | null
 }
 
 // `unavailable` when the source couldn't be asked, which says nothing about
@@ -97,6 +100,8 @@ export type StatsSource = {
   getPlaysByTime: (userId: string, since: string) => Promise<PlaysByTime>
   // Null when the user has no plays or the source couldn't be asked
   getFirstPlay: (userId: string) => Promise<FirstPlay | null>
+  // A play's movie, show or artist as a row, with its poster and ratings
+  getPlayItem: (play: Play) => Promise<TautulliItemRow>
   // The play histories the stats are read from. Without libraries, those of
   // every library, whoever is signed in.
   getHistoryReaders: (libraries?: TautulliLibrary[]) => Promise<HistoryReader[]>

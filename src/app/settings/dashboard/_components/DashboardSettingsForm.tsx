@@ -6,7 +6,8 @@ import {
   PublicSettings,
   SettingsFormInitialState,
 } from '@/types/settings'
-import { useTranslations } from 'next-intl'
+import { sortByLabel } from '@/utils/helpers'
+import { useLocale, useTranslations } from 'next-intl'
 import { useActionState, useState } from 'react'
 import { Checkbox, CheckboxGroup, Label, Switch } from 'react-aria-components'
 import SettingsForm from '../../_components/SettingsForm'
@@ -22,6 +23,18 @@ export default function DashboardSettingsForm({ settings }: Props) {
   const isSeerrActive = settings.connection.isSeerrActive
   const t = useTranslations('Settings.Dashboard')
   const tCommon = useTranslations('Common')
+  const locale = useLocale()
+  const totalStatisticOptions = sortByLabel(
+    [
+      { value: 'size', label: tCommon('size') },
+      { value: 'duration', label: tCommon('duration') },
+      { value: 'count', label: tCommon('count') },
+      ...(isSeerrActive
+        ? [{ value: 'requests', label: tCommon('requests') }]
+        : []),
+    ],
+    locale,
+  )
   const [isActive, setIsActive] = useState<boolean>(settings.dashboard.isActive)
   const initialState: DashboardFormState = {
     message: '',
@@ -98,43 +111,19 @@ export default function DashboardSettingsForm({ settings }: Props) {
               defaultValue={dashboardSettings.activeTotalStatistics}
             >
               <div className='peer checkbox-grid'>
-                <Checkbox
-                  key='total-size'
-                  value='size'
-                  className='checkbox-wrapper'
-                >
-                  <div className='checkbox' aria-hidden='true'></div>
-                  {tCommon('size')}
-                </Checkbox>
-                <Checkbox
-                  key='total-duration'
-                  value='duration'
-                  className='checkbox-wrapper'
-                >
-                  <div className='checkbox' aria-hidden='true'></div>
-                  {tCommon('duration')}
-                </Checkbox>
-                <Checkbox
-                  key='total-count'
-                  value='count'
-                  className='checkbox-wrapper'
-                >
-                  <div className='checkbox' aria-hidden='true'></div>
-                  {tCommon('count')}
-                </Checkbox>
-                {isSeerrActive && (
+                {totalStatisticOptions.map(({ value, label }) => (
                   <Checkbox
-                    key='total-requests'
-                    value='requests'
+                    key={`total-${value}`}
+                    value={value}
                     className='checkbox-wrapper'
                   >
                     <div className='checkbox' aria-hidden='true'></div>
-                    {tCommon('requests')}
+                    {label}
                   </Checkbox>
-                )}
+                ))}
               </div>
               <Label className='label label--start'>
-                <span className='label-wrapper'>{t('totalStatistics')}</span>
+                <span className='label-wrapper'>{t('totals')}</span>
               </Label>
             </CheckboxGroup>
           </section>
@@ -163,7 +152,6 @@ export default function DashboardSettingsForm({ settings }: Props) {
               helperText={t('startDateHelperText')}
               name='startDate'
               defaultValue={dashboardSettings.startDate}
-              required
             />
           </section>
         </>

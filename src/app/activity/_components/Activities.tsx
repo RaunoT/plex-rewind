@@ -1,9 +1,11 @@
 'use client'
 
 import RetryButton from '@/components/RetryButton'
+import SkeletonSized from '@/components/SkeletonSized'
 import SourceUnreachable from '@/components/SourceUnreachable'
 import StatusMessage from '@/components/StatusMessage'
 import { PublicSettings } from '@/types/settings'
+import { ExclamationTriangleIcon, MoonIcon } from '@heroicons/react/24/outline'
 import { useQuery } from '@tanstack/react-query'
 import { useTranslations } from 'next-intl'
 import { useEffect } from 'react'
@@ -39,29 +41,32 @@ export default function Activities({ settings, serverId }: Props) {
     return <ActivitiesSkeleton />
   }
 
-  if (error) {
+  if (error || !data?.sessions.length) {
     return (
-      <StatusMessage
-        title={errorT('title')}
-        isInCard
-        action={<RetryButton onRetry={refetch} />}
-      />
+      <SkeletonSized skeleton={<ActivitiesSkeleton />}>
+        {error ? (
+          <StatusMessage
+            icon={ExclamationTriangleIcon}
+            title={errorT('title')}
+            isInCard
+            action={<RetryButton onRetry={refetch} />}
+          />
+        ) : !data ? (
+          // The server answered, but got nothing from the source
+          <SourceUnreachable
+            source={settings.connection.statisticsSource}
+            onRetry={refetch}
+            isInCard
+          />
+        ) : (
+          <StatusMessage
+            icon={MoonIcon}
+            description={t('noActivity')}
+            isInCard
+          />
+        )}
+      </SkeletonSized>
     )
-  }
-
-  // The server answered, but got nothing from the source
-  if (!data) {
-    return (
-      <SourceUnreachable
-        source={settings.connection.statisticsSource}
-        onRetry={refetch}
-        isInCard
-      />
-    )
-  }
-
-  if (!data.sessions.length) {
-    return <StatusMessage title='😴' description={t('noActivity')} isInCard />
   }
 
   return (

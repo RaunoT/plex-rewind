@@ -43,22 +43,9 @@ export default function SortableLibrary({
       // 6px tap areas of two move buttons.
       className='flex items-center gap-1 py-0.5'
     >
-      <div
-        className='flex size-8 shrink-0 cursor-move touch-none items-center justify-center select-none sm:size-6'
-        onPointerDown={(event) => dragControls.start(event)}
-      >
-        <Bars2Icon className='size-5' />
-      </div>
-      <Checkbox
-        value={kebabCase(library.section_name)}
-        className='checkbox-wrapper flex-1'
-      >
-        <div className='checkbox' aria-hidden='true'></div>
-        {library.section_name}
-      </Checkbox>
       <button
         type='button'
-        className='icon-button ml-1 sm:size-6'
+        className='icon-button sm:size-6'
         aria-label={t('moveUp', { name: library.section_name })}
         data-move={`${library.section_id}-up`}
         disabled={isFirst}
@@ -76,6 +63,19 @@ export default function SortableLibrary({
       >
         <ChevronDownIcon />
       </button>
+      <div
+        className='flex size-8 shrink-0 cursor-move touch-none items-center justify-center select-none sm:size-6'
+        onPointerDown={(event) => dragControls.start(event)}
+      >
+        <Bars2Icon className='size-5' />
+      </div>
+      <Checkbox
+        value={kebabCase(library.section_name)}
+        className='checkbox-wrapper flex-1'
+      >
+        <div className='checkbox' aria-hidden='true'></div>
+        {library.section_name}
+      </Checkbox>
     </Reorder.Item>
   )
 }

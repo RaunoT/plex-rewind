@@ -77,6 +77,7 @@ type TracearrMediaFields = {
   show_media_id: string | null
   imdb_id: string | null
   tmdb_id: number | null
+  tvdb_id?: number | null
   rating_key: string | null
   parent_rating_key: string | null
   grandparent_rating_key: string | null

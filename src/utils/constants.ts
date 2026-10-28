@@ -71,10 +71,9 @@ export const DEFAULT_SETTINGS: Settings = {
     activeLibraries: [],
     excludedUsers: [],
     isPostersTmdbOnly: false,
-    activeExternalLinks: ['imdb', 'tmdb', 'rottenTomatoes', 'letterboxd'],
+    activeExternalLinks: ['imdb', 'rottenTomatoes', 'letterboxd'],
     activeItemStatistics: [
       'year',
-      'tmdbRating',
       'imdbRating',
       'rottenTomatoesRating',
       'rottenTomatoesAudienceRating',
@@ -101,7 +100,7 @@ export const DEFAULT_SETTINGS: Settings = {
     isUsersPageActive: true,
     activeTotalStatistics: ['size', 'duration', 'count', 'requests'],
     customPeriod: '30',
-    startDate: '2010-01-01',
+    startDate: '',
     complete: false,
   },
   activity: {
@@ -123,6 +122,9 @@ export const SETTINGS_PAGES = [
   { href: '/settings/dashboard', key: 'dashboard' },
   { href: '/settings/activity', key: 'activity' },
 ]
+
+// Wherever they're opened from, the settings start on the first page
+export const SETTINGS_HREF = SETTINGS_PAGES[0].href
 
 export const STATS_SOURCE_NAMES: Record<StatisticsSource, string> = {
   tautulli: 'Tautulli',
@@ -178,6 +180,10 @@ export const DEFAULT_LOCALE: Locale = 'en'
 export const LOCALE_COOKIE_NAME = 'locale'
 // Mirrors the dashboard's period, so the home page can use it on the server
 export const DASHBOARD_PERIOD_COOKIE_NAME = 'dashboardPeriod'
+
+// So the server renders the activity with its details open or closed, as the
+// browser will
+export const ACTIVITY_DETAILS_COOKIE_NAME = 'activityDetails'
 // Dashboard lists start with this many rows, and "Show more" adds as many again
 export const DASHBOARD_PAGE_SIZE = 5
 // Each row costs the source and TMDB a lookup, so the URL can't ask for more

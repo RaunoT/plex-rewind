@@ -1,6 +1,7 @@
 'use client'
 
 import SourceUnreachable from '@/components/SourceUnreachable'
+import StatusMessage from '@/components/StatusMessage'
 import {
   GeneralSettings,
   PublicSettings,
@@ -8,9 +9,11 @@ import {
 } from '@/types/settings'
 import { TautulliLibrary, TautulliUser } from '@/types/tautulli'
 import { EXTERNAL_LINK_NAMES, EXTERNAL_LINKS } from '@/utils/constants'
+import { sortByLabel } from '@/utils/helpers'
+import { RectangleStackIcon } from '@heroicons/react/24/outline'
 import { kebabCase } from 'lodash'
 import { Reorder } from 'motion/react'
-import { useTranslations } from 'next-intl'
+import { useLocale, useTranslations } from 'next-intl'
 import { useActionState, useEffect, useRef, useState } from 'react'
 import { Checkbox, CheckboxGroup, Label, Switch } from 'react-aria-components'
 import SettingsForm from '../../_components/SettingsForm'
@@ -57,7 +60,44 @@ export default function GeneralSettingsForm({
   const focusAfterMoveRef = useRef<string | null>(null)
   const t = useTranslations('Settings.General')
   const tCommon = useTranslations('Common')
+  const locale = useLocale()
   const isSeerrActive = settings.connection.isSeerrActive
+  const externalLinkOptions = sortByLabel(
+    EXTERNAL_LINKS.map((site) => ({
+      value: site,
+      label: EXTERNAL_LINK_NAMES[site],
+    })),
+    locale,
+  )
+  const itemStatisticOptions = sortByLabel(
+    [
+      { value: 'year', label: tCommon('year') },
+      { value: 'tmdbRating', label: tCommon('ratingBy', { provider: 'TMDB' }) },
+      { value: 'imdbRating', label: tCommon('ratingBy', { provider: 'IMDb' }) },
+      {
+        value: 'rottenTomatoesRating',
+        label: tCommon('rottenTomatoesCritics'),
+      },
+      {
+        value: 'rottenTomatoesAudienceRating',
+        label: tCommon('rottenTomatoesAudience'),
+      },
+      { value: 'duration', label: tCommon('duration') },
+      { value: 'plays', label: tCommon('plays') },
+      { value: 'users', label: tCommon('users') },
+      ...(isSeerrActive
+        ? [{ value: 'requests', label: tCommon('requests') }]
+        : []),
+    ],
+    locale,
+  )
+  const userOptions = sortByLabel(
+    users.map((user) => ({
+      value: String(user.user_id),
+      label: user.friendly_name,
+    })),
+    locale,
+  )
   const initialState: GeneralFormState = {
     message: '',
     status: '',
@@ -182,14 +222,13 @@ export default function GeneralSettingsForm({
             </Label>
           </CheckboxGroup>
         ) : (
-          <p
-            aria-live='polite'
-            role='status'
-            className='text-center text-neutral-400'
-          >
-            {t('noLibrariesMessage1')} <br />
-            {t('noLibrariesMessage2')}
-          </p>
+          <StatusMessage
+            icon={RectangleStackIcon}
+            title={t('noLibrariesMessage1')}
+            description={t('noLibrariesMessage2')}
+            as='h3'
+            isInCard
+          />
         )}
       </section>
       {hasLibraries && (
@@ -198,14 +237,13 @@ export default function GeneralSettingsForm({
             <h2 className='heading-settings'>{t('media')}</h2>
             <Switch
               key={`posters-tmdb-${generalSettings.isPostersTmdbOnly}`}
-              className='switch items-start'
+              className='switch'
               name='isPostersTmdbOnly'
               defaultSelected={generalSettings.isPostersTmdbOnly}
             >
               <div className='indicator'></div>
               <span className='label'>
                 <span className='label-wrapper'>{t('tmdbOnlyPosters')}</span>
-                <small>{t('tmdbOnlyPostersDescription')}</small>
               </span>
             </Switch>
             <CheckboxGroup
@@ -215,19 +253,20 @@ export default function GeneralSettingsForm({
               defaultValue={generalSettings.activeExternalLinks}
             >
               <div className='peer checkbox-grid'>
-                {EXTERNAL_LINKS.map((site) => (
+                {externalLinkOptions.map(({ value, label }) => (
                   <Checkbox
-                    key={`external-link-${site}`}
-                    value={site}
+                    key={`external-link-${value}`}
+                    value={value}
                     className='checkbox-wrapper'
                   >
                     <div className='checkbox' aria-hidden='true'></div>
-                    {EXTERNAL_LINK_NAMES[site]}
+                    {label}
                   </Checkbox>
                 ))}
               </div>
               <Label className='label label--start'>
                 <span className='label-wrapper'>{t('externalLinks')}</span>
+                <small>{t('externalLinksDescription')}</small>
               </Label>
             </CheckboxGroup>
             <CheckboxGroup
@@ -239,84 +278,19 @@ export default function GeneralSettingsForm({
               defaultValue={generalSettings.activeItemStatistics}
             >
               <div className='peer checkbox-grid'>
-                <Checkbox
-                  key='item-year'
-                  value='year'
-                  className='checkbox-wrapper'
-                >
-                  <div className='checkbox' aria-hidden='true'></div>
-                  {tCommon('year')}
-                </Checkbox>
-                <Checkbox
-                  key='item-tmdb-rating'
-                  value='tmdbRating'
-                  className='checkbox-wrapper'
-                >
-                  <div className='checkbox' aria-hidden='true'></div>
-                  {tCommon('ratingBy', { provider: 'TMDB' })}
-                </Checkbox>
-                <Checkbox
-                  key='item-imdb-rating'
-                  value='imdbRating'
-                  className='checkbox-wrapper'
-                >
-                  <div className='checkbox' aria-hidden='true'></div>
-                  {tCommon('ratingBy', { provider: 'IMDb' })}
-                </Checkbox>
-                <Checkbox
-                  key='item-rotten-tomatoes-rating'
-                  value='rottenTomatoesRating'
-                  className='checkbox-wrapper'
-                >
-                  <div className='checkbox' aria-hidden='true'></div>
-                  {tCommon('rottenTomatoesCritics')}
-                </Checkbox>
-                <Checkbox
-                  key='item-rotten-tomatoes-audience-rating'
-                  value='rottenTomatoesAudienceRating'
-                  className='checkbox-wrapper'
-                >
-                  <div className='checkbox' aria-hidden='true'></div>
-                  {tCommon('rottenTomatoesAudience')}
-                </Checkbox>
-                <Checkbox
-                  key='item-duration'
-                  value='duration'
-                  className='checkbox-wrapper'
-                >
-                  <div className='checkbox' aria-hidden='true'></div>
-                  {tCommon('duration')}
-                </Checkbox>
-                <Checkbox
-                  key='item-plays'
-                  value='plays'
-                  className='checkbox-wrapper'
-                >
-                  <div className='checkbox' aria-hidden='true'></div>
-                  {tCommon('plays')}
-                </Checkbox>
-                <Checkbox
-                  key='item-users'
-                  value='users'
-                  className='checkbox-wrapper'
-                >
-                  <div className='checkbox' aria-hidden='true'></div>
-                  {tCommon('users')}
-                </Checkbox>
-                {isSeerrActive && (
+                {itemStatisticOptions.map(({ value, label }) => (
                   <Checkbox
-                    key='item-requests'
-                    value='requests'
+                    key={`item-${value}`}
+                    value={value}
                     className='checkbox-wrapper'
                   >
                     <div className='checkbox' aria-hidden='true'></div>
-                    {tCommon('requests')}
+                    {label}
                   </Checkbox>
-                )}
+                ))}
               </div>
               <Label className='label label--start'>
                 <span className='label-wrapper'>{t('itemStatistics')}</span>
-                <small>{t('itemStatisticsDescription')}</small>
               </Label>
             </CheckboxGroup>
           </section>
@@ -330,14 +304,14 @@ export default function GeneralSettingsForm({
                 defaultValue={generalSettings.excludedUsers}
               >
                 <div className='peer checkbox-grid'>
-                  {users.map((user) => (
+                  {userOptions.map(({ value, label }) => (
                     <Checkbox
-                      key={`user-${user.user_id}`}
-                      value={String(user.user_id)}
+                      key={`user-${value}`}
+                      value={value}
                       className='checkbox-wrapper'
                     >
                       <div className='checkbox' aria-hidden='true'></div>
-                      {user.friendly_name}
+                      {label}
                     </Checkbox>
                   ))}
                 </div>
@@ -371,14 +345,13 @@ export default function GeneralSettingsForm({
             </Switch>
             <Switch
               key={`anonymized-${generalSettings.isAnonymized}`}
-              className='switch items-start'
+              className='switch'
               name='isAnonymized'
               defaultSelected={generalSettings.isAnonymized}
             >
               <div className='indicator'></div>
               <span className='label'>
-                <span className='label-wrapper'>{t('anonymize')}</span>
-                <small>{t('anonymizeDescription')}</small>
+                <span className='label-wrapper'>{t('anonymizeUsers')}</span>
               </span>
             </Switch>
           </section>

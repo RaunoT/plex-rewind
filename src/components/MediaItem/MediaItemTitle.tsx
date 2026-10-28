@@ -95,7 +95,7 @@ export default function MediaItemTitle({
   return (
     <h2
       className={clsx(
-        'mb-0.5 flex font-medium sm:text-lg',
+        'mb-1.5 flex leading-snug font-medium sm:text-lg',
         isCurrentUser && 'text-plex',
       )}
     >
