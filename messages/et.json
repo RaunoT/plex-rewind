@@ -125,6 +125,7 @@
     "updateAvailable": "Uuendus saadaval",
     "saved": "Salvestatud!",
     "savedChooseLibraries": "Salvestatud! Vali kogumikud jaotises Üldine.",
+    "savedLibrariesActive": "Salvestatud! Kõik kogumikud on aktiivsed, seda saad muuta jaotises Üldine.",
     "genericError": "Midagi läks valesti. Proovi uuesti.",
     "save": "Salvesta",
     "continue": "Jätka",

@@ -125,6 +125,7 @@
     "updateAvailable": "Aktualisierung verfügbar",
     "saved": "Einstellungen gespeichert!",
     "savedChooseLibraries": "Einstellungen gespeichert! Wähle deine Bibliotheken unter Allgemein.",
+    "savedLibrariesActive": "Einstellungen gespeichert! Alle Bibliotheken sind aktiv, das kannst du unter Allgemein ändern.",
     "genericError": "Etwas ist schiefgelaufen. Versuche es noch einmal.",
     "save": "Speichern",
     "continue": "Weiter",

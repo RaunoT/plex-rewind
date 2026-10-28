@@ -125,6 +125,7 @@
     "updateAvailable": "Mise à jour disponible",
     "saved": "Paramètres enregistrés !",
     "savedChooseLibraries": "Paramètres enregistrés ! Choisissez vos bibliothèques dans Général.",
+    "savedLibrariesActive": "Paramètres enregistrés ! Toutes les bibliothèques sont actives, ce que vous pouvez changer dans Général.",
     "genericError": "Quelque chose s'est mal passé. Réessayez.",
     "save": "Enregistrer",
     "continue": "Continuer",

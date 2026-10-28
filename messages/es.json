@@ -125,6 +125,7 @@
     "updateAvailable": "Actualización disponible",
     "saved": "¡Ajustes guardados!",
     "savedChooseLibraries": "¡Ajustes guardados! Elige tus bibliotecas en General.",
+    "savedLibrariesActive": "¡Ajustes guardados! Todas las bibliotecas están activas; puedes cambiarlo en General.",
     "genericError": "Algo salió mal. Inténtalo de nuevo.",
     "save": "Guardar",
     "continue": "Continuar",

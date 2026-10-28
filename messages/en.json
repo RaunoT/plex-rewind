@@ -125,6 +125,7 @@
     "updateAvailable": "Update available",
     "saved": "Settings saved!",
     "savedChooseLibraries": "Settings saved! Choose your libraries in General.",
+    "savedLibrariesActive": "Settings saved! Every library is active, which you can change in General.",
     "genericError": "Something went wrong. Try again.",
     "save": "Save",
     "continue": "Continue",
