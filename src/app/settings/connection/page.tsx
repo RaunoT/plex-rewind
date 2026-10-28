@@ -1,6 +1,9 @@
 import { requireSettingsAccess } from '@/lib/access'
 import { maskApiKeys } from '@/utils/connectionSecrets'
-import { getTracearrPlexServers } from '@/utils/fetchTracearr'
+import {
+  getTracearrHistoryStatus,
+  getTracearrPlexServers,
+} from '@/utils/fetchTracearr'
 import getSettings from '@/utils/getSettings'
 import { isTracearrSource } from '@/utils/helpers'
 import { Metadata } from 'next'
@@ -19,9 +22,13 @@ export default async function ConnectionSettingsPage() {
   await requireSettingsAccess()
 
   const settings = getSettings()
-  const tracearrServers = isTracearrSource(settings)
-    ? await getTracearrPlexServers()
-    : []
+  const isTracearr = isTracearrSource(settings)
+  const [tracearrServers, historyStatus] = await Promise.all([
+    isTracearr ? getTracearrPlexServers() : [],
+    isTracearr && settings.connection.complete
+      ? getTracearrHistoryStatus()
+      : null,
+  ])
 
   return (
     <ConnectionSettingsForm
@@ -30,6 +37,7 @@ export default async function ConnectionSettingsPage() {
         connection: maskApiKeys(settings.connection),
       }}
       tracearrServers={tracearrServers}
+      historyStatus={historyStatus}
     />
   )
 }

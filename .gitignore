@@ -45,6 +45,7 @@ public/swe-worker-*.js
 #config
 config/settings.json
 config/settings-backup.json
+config/tracearr-history.json.gz*
 
 # claude
 .claude

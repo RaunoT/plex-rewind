@@ -28,6 +28,23 @@ export type TracearrPlexServer = Pick<
   'server_id' | 'server_name'
 >
 
+// How far Plex Rewind has read Tracearr's play history
+export type TracearrHistoryStatus = {
+  playCount: number
+  // When the oldest play read so far started
+  oldestPlayAt: number | null
+  // From 0 to 1, by the time between now and the server's first play
+  progress: number
+  // Read back to the oldest play
+  isComplete: boolean
+  isReading: boolean
+  // A page failed, and the read tries again in a minute
+  hasFailed: boolean
+  // While the whole history is read again in the background
+  reread: { playCount: number; progress: number } | null
+  hasSaveFailed: boolean
+}
+
 export type TracearrUserAccount = {
   server_id: string
   server_type: TracearrServerType

@@ -6,16 +6,19 @@ import {
   SettingsFormInitialState,
   StatisticsSource,
 } from '@/types/settings'
-import { TracearrPlexServer } from '@/types/tracearr'
+import { TracearrHistoryStatus, TracearrPlexServer } from '@/types/tracearr'
 import clsx from 'clsx'
 import { useTranslations } from 'next-intl'
 import { useActionState, useState } from 'react'
 import SettingsForm from '../../_components/SettingsForm'
 import saveConnectionSettings from '../_actions/updateConnectionSettings'
+import TracearrHistory from './TracearrHistory'
 
 type Props = {
   settings: Settings
   tracearrServers: TracearrPlexServer[]
+  // Null until Tracearr is the saved source
+  historyStatus: TracearrHistoryStatus | null
 }
 
 type ConnectionFormState = SettingsFormInitialState<ConnectionSettings> & {
@@ -25,6 +28,7 @@ type ConnectionFormState = SettingsFormInitialState<ConnectionSettings> & {
 export default function ConnectionSettingsForm({
   settings,
   tracearrServers: initialTracearrServers,
+  historyStatus,
 }: Props) {
   const t = useTranslations('Settings')
   const initialState: ConnectionFormState = {
@@ -170,6 +174,7 @@ export default function ConnectionSettingsForm({
             </span>
           </label>
         )}
+        {historyStatus && <TracearrHistory initialStatus={historyStatus} />}
       </section>
       <section className='group-settings group'>
         {/* eslint-disable-next-line react/jsx-no-literals */}

@@ -86,6 +86,11 @@
     "sourceUnreachableDescription": "Vérifiez que {source} est démarré et accessible depuis Plex Rewind, puis réessayez.",
     "connectionSettings": "Vérifier les paramètres de connexion"
   },
+  "History": {
+    "readingTitle": "Lecture de l'historique",
+    "readingDescription": "L'historique de lecture de Tracearr n'est lu qu'une fois, ce qui peut prendre quelques minutes. {count, plural, =0 {Cela vient de commencer.} one {# lecture pour l'instant, depuis {date}.} other {# lectures pour l'instant, depuis {date}.}} Cette page se met à jour toute seule.",
+    "readingShort": "Lecture de l'historique…"
+  },
   "PlexDeeplink": {
     "available": "Disponible",
     "availableLabel": "Disponible : ouvrir {title} dans Plex"
@@ -155,7 +160,23 @@
       "server": "Serveur",
       "chooseServer": "Choisissez un serveur",
       "seerrUrlDescription": "Les liens de demande s'ouvrent dans le navigateur de l'utilisateur : utilisez une adresse qu'il peut joindre, pas une adresse du réseau local.",
-      "optionalService": "{service} (facultatif)"
+      "optionalService": "{service} (facultatif)",
+      "history": "Historique de lecture",
+      "historyDescription": "Lu une fois depuis Tracearr et enregistré, puis seules les nouvelles lectures sont lues. L'historique complet est relu une fois par semaine.",
+      "historyReading": "Lecture de l'historique…",
+      "historyComplete": "À jour",
+      "historyRereading": "Relecture de tout l'historique en arrière-plan",
+      "historySaveFailed": "Impossible d'enregistrer l'historique dans le dossier config ; il sera relu après un redémarrage.",
+      "read": "Lire l'historique",
+      "readAgain": "Relire",
+      "readOn": "Continuer la lecture",
+      "historyFailed": "Tracearr ne répond plus. Nouvel essai dans une minute.",
+      "historyPaused": "En pause",
+      "historyNotRead": "Pas encore lu",
+      "historyPlaysSoFar": "{count, plural, =0 {Aucune lecture pour l'instant} one {# lecture pour l'instant, depuis {date}} other {# lectures pour l'instant, depuis {date}}}",
+      "historyPlaysSince": "{count, plural, =0 {Aucune lecture pour l'instant} one {# lecture depuis {date}} other {# lectures depuis {date}}}",
+      "historyRereadPlays": "{count, plural, one {# lecture pour l'instant} other {# lectures pour l'instant}}",
+      "retry": "Réessayer"
     },
     "Dashboard": {
       "title": "Paramètres du tableau de bord",

@@ -10,6 +10,7 @@ import {
 import {
   TracearrCursorPage,
   TracearrHistoryRecord,
+  TracearrHistoryStatus,
   TracearrLibrary,
   TracearrMedia,
   TracearrPlexServer,
@@ -24,6 +25,11 @@ import { unstable_rethrow } from 'next/navigation'
 import qs from 'qs'
 import getSettings from './getSettings'
 import { LibrariesSize, sumLibrariesSize } from './librariesSize'
+import {
+  getPlaysSnapshotPath,
+  readPlaysSnapshot,
+  writePlaysSnapshot,
+} from './tracearrHistoryFile'
 
 type QueryParams = {
   [key: string]: string | number | undefined
@@ -60,16 +66,66 @@ export type TracearrPlexUser = {
   isAdmin: boolean
 }
 
-type HistoryCache = {
+type PlaysWaiter = {
+  since: number
+  resolve: (hasPlays: boolean) => void
+  reject: (error: unknown) => void
+}
+
+// The plays of every window, read newest first back to the oldest play. A
+// window is answered as soon as the read gets back to its start.
+type PlayStore = {
+  // The settings the plays were read with
+  key: string
   plays: TracearrPlay[]
-  fetchedAt: number
-  fullyFetchedAt: number
-  usedAt: number
+  // Every play that started after this is in `plays`. Infinity before the
+  // first page, and -Infinity once the oldest play was read.
+  readTo: number
+  // Where the read back through the history goes on from
+  cursor?: string
+  read: Promise<void> | null
+  // When a page last failed, which stops the read until it tries again
+  readFailedAt: number | null
+  waiters: PlaysWaiter[]
+  // When the newest plays were last read
+  toppedUpAt: number
+  topUp: Promise<void> | null
+  rebuildAt: number
+}
+
+type CachedValue = {
+  value: unknown
+  key: string
+  expiresAt: number
+  pending: Promise<unknown> | null
+}
+
+type RateLimit = {
+  limit: number
+  remaining: number
+  resetsAt: number
+}
+
+type TracearrState = {
+  plays: PlayStore | null
+  // The store being set up from the saved history, for the settings in `key`
+  loading: { key: string; store: Promise<PlayStore> } | null
+  // The store the whole history is read into again, while that runs
+  rebuild: { store: PlayStore; done: Promise<void> } | null
+  saveTimer: ReturnType<typeof setTimeout> | null
+  saving: Promise<void>
+  hasLoggedSaveError: boolean
+  cachedValues: Map<string, CachedValue>
+  firstPlays: Map<string, { firstPlay: FirstPlay | null; expiresAt: number }>
+  rateLimit: RateLimit | null
+  nextPacedRequestAt: number
+  warnedMissingServerId: string
 }
 
 const PAGE_SIZE = 100
 const MAX_PAGES = 5000
-// Bounds the whole paging run, since each page can take up to the timeout
+// Bounds a paging run, and how long a request waits for the play history,
+// since each page can take up to the timeout
 const PAGINATION_DEADLINE = 20 * 60 * 1000
 const MAX_RATE_LIMIT_RETRIES = 3
 const REQUEST_TIMEOUT = 30 * 1000
@@ -77,10 +133,20 @@ const CACHE_TTL = 5 * 60 * 1000
 const ACTIVITY_CACHE_TTL = 3000
 const DAY = 24 * 60 * 60 * 1000
 // Tracearr keeps a play open for resumes for a day after it stops, so a
-// refresh re-reads a wider window than the time since the last fetch.
+// top-up re-reads a wider window than the time since the last one.
 const HISTORY_REFRESH_OVERLAP = 2 * DAY
-const HISTORY_FULL_REFRESH = DAY
-const HISTORY_CACHE_IDLE = 60 * 60 * 1000
+// How often the whole history is read again, so plays deleted or changed in
+// Tracearr drop out
+const HISTORY_FULL_REFRESH = 7 * DAY
+const HISTORY_PROGRESS_PAGES = 100
+// The history is saved at most this often, as the file holds every play
+const HISTORY_SAVE_DELAY = 60 * 1000
+// How long a page waits for the history before showing how far the read is
+const HISTORY_PAGE_WAIT = 5 * 1000
+// How long a read waits after a failed page before it tries again
+const HISTORY_RETRY_DELAY = 60 * 1000
+// The share of the rate limit that paced requests leave for everything else
+const RATE_LIMIT_RESERVE = 0.2
 const FIRST_PLAY_CACHE_TTL = DAY
 // Plex came out in 2008, so no play is older
 const EARLIEST_PLAY = Date.UTC(2008, 0, 1)
@@ -102,14 +168,24 @@ const LIBRARY_NAMES: Record<TautulliMediaType, string> = {
   show: 'TV Shows',
   artist: 'Music',
 }
-const historyCaches = new Map<string, HistoryCache>()
-const firstPlayCaches = new Map<
-  string,
-  { firstPlay: FirstPlay | null; expiresAt: number }
->()
-
-let historyQueue: Promise<unknown> = Promise.resolve()
-let warnedMissingServerId = ''
+// Next.js can bundle this file into more than one chunk, and each copy would
+// otherwise read the history and spend the rate limit on its own.
+const globalForTracearr = globalThis as unknown as {
+  plexRewindTracearr?: TracearrState
+}
+const state = (globalForTracearr.plexRewindTracearr ??= {
+  plays: null,
+  loading: null,
+  rebuild: null,
+  saveTimer: null,
+  saving: Promise.resolve(),
+  hasLoggedSaveError: false,
+  cachedValues: new Map(),
+  firstPlays: new Map(),
+  rateLimit: null,
+  nextPacedRequestAt: 0,
+  warnedMissingServerId: '',
+})
 
 export function getTracearrUrl(settings: Settings = getSettings()): string {
   return settings.connection.tracearrUrl.replace(/\/+$/, '')
@@ -124,36 +200,86 @@ function getCacheKey(): string {
 
 // Caches a successful result for `ttl` and shares one in-flight request
 // between concurrent callers.
-function cached<T>(load: () => Promise<T | null>, ttl = CACHE_TTL) {
-  let value: T | null = null
-  let valueKey = ''
-  let expiresAt = 0
-  let pending: Promise<T | null> | null = null
-
+function cached<T>(
+  name: string,
+  load: () => Promise<T | null>,
+  ttl = CACHE_TTL,
+) {
   return async (): Promise<T | null> => {
     const key = getCacheKey()
 
-    if (value && key === valueKey && Date.now() < expiresAt) {
-      return value
+    let entry = state.cachedValues.get(name)
+
+    if (!entry) {
+      entry = { value: null, key: '', expiresAt: 0, pending: null }
+      state.cachedValues.set(name, entry)
     }
 
-    if (!pending) {
-      pending = load()
+    if (entry.value && entry.key === key && Date.now() < entry.expiresAt) {
+      return entry.value as T
+    }
+
+    if (!entry.pending) {
+      const current = entry
+
+      current.pending = load()
         .then((result) => {
           if (result) {
-            value = result
-            valueKey = key
-            expiresAt = Date.now() + ttl
+            current.value = result
+            current.key = key
+            current.expiresAt = Date.now() + ttl
           }
 
           return result
         })
         .finally(() => {
-          pending = null
+          current.pending = null
         })
     }
 
-    return pending
+    return entry.pending as Promise<T | null>
+  }
+}
+
+function sleep(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms))
+}
+
+function updateRateLimit(headers: Headers): void {
+  const [limit, remaining, reset] = [
+    'x-ratelimit-limit',
+    'x-ratelimit-remaining',
+    'x-ratelimit-reset',
+  ].map((name) => Number(headers.get(name) ?? NaN))
+
+  if ([limit, remaining, reset].every(Number.isFinite) && limit > 0) {
+    state.rateLimit = { limit, remaining, resetsAt: Date.now() + reset * 1000 }
+  }
+}
+
+// Paced requests leave a share of the rate limit for everything else, and
+// spread the rest over what's left of the window instead of using it up at
+// once. Without rate limit headers, they aren't held back.
+async function waitForRateLimit(): Promise<void> {
+  const rateLimit = state.rateLimit
+  const now = Date.now()
+
+  if (!rateLimit || now >= rateLimit.resetsAt) {
+    return
+  }
+
+  const spare =
+    rateLimit.remaining - Math.ceil(rateLimit.limit * RATE_LIMIT_RESERVE)
+  const sendAt =
+    spare > 0 ? Math.max(now, state.nextPacedRequestAt) : rateLimit.resetsAt
+
+  // The rest of the spare requests go evenly between this one and the reset
+  state.nextPacedRequestAt =
+    spare > 0 ? sendAt + (rateLimit.resetsAt - sendAt) / spare : sendAt
+  rateLimit.remaining--
+
+  if (sendAt > now) {
+    await sleep(sendAt - now)
   }
 }
 
@@ -165,9 +291,15 @@ function toAbsoluteUrl(url: string | null, baseUrl: string): string {
   return url.startsWith('/') ? `${baseUrl}${url}` : url
 }
 
+type FetchOptions = {
+  // Waits for its share of the rate limit, for requests that come in long runs
+  paced?: boolean
+}
+
 export default async function fetchTracearr<T>(
   path: string,
   params?: QueryParams,
+  { paced = false }: FetchOptions = {},
 ): Promise<T | null> {
   const settings = getSettings()
   const tracearrUrl = getTracearrUrl(settings)
@@ -189,6 +321,10 @@ export default async function fetchTracearr<T>(
   const url = `${tracearrUrl}/api/v2/public/${path}${query ? `?${query}` : ''}`
 
   for (let attempt = 0; ; attempt++) {
+    if (paced) {
+      await waitForRateLimit()
+    }
+
     try {
       const res = await fetch(url, {
         headers: {
@@ -200,6 +336,8 @@ export default async function fetchTracearr<T>(
         signal: AbortSignal.timeout(REQUEST_TIMEOUT),
       })
 
+      updateRateLimit(res.headers)
+
       // Every v2 route shares one per-key budget, which a long history read
       // can use up.
       if (res.status === 429 && attempt < MAX_RATE_LIMIT_RETRIES) {
@@ -208,9 +346,7 @@ export default async function fetchTracearr<T>(
         console.warn(
           `[TRACEARR] - Rate limited! Retrying '${path}' in ${retryAfter}s.`,
         )
-        await new Promise((resolve) =>
-          setTimeout(resolve, Math.min(retryAfter, 60) * 1000),
-        )
+        await sleep(Math.min(retryAfter, 60) * 1000)
 
         continue
       }
@@ -305,15 +441,7 @@ async function fetchPages<T>(
   return { items, isComplete: false }
 }
 
-// Whatever was read, even when paging stopped early
-async function fetchAllPages<T>(
-  path: string,
-  params?: QueryParams,
-): Promise<T[] | null> {
-  return (await fetchPages<T>(path, params))?.items ?? null
-}
-
-const getServers = cached<TracearrServer[]>(async () => {
+const getServers = cached<TracearrServer[]>('servers', async () => {
   const res = await fetchTracearr<TracearrServersResponse>('servers')
 
   return Array.isArray(res?.data) ? res.data : null
@@ -357,8 +485,8 @@ async function getPlexServerId(): Promise<string | null> {
   if (!server && tracearrServerId) {
     server = selectPlexServer(servers, '')
 
-    if (server && warnedMissingServerId !== tracearrServerId) {
-      warnedMissingServerId = tracearrServerId
+    if (server && state.warnedMissingServerId !== tracearrServerId) {
+      state.warnedMissingServerId = tracearrServerId
       console.warn(
         `[TRACEARR] - The saved Plex server '${tracearrServerId}' no longer exists! Using '${server.server_name}' instead.`,
       )
@@ -382,7 +510,7 @@ type PlexUsers = {
   isComplete: boolean
 }
 
-const getPlexUsers = cached<PlexUsers>(async () => {
+const getPlexUsers = cached<PlexUsers>('users', async () => {
   const [pages, serverId] = await Promise.all([
     fetchPages<TracearrUser>('users'),
     getPlexServerId(),
@@ -455,11 +583,9 @@ export async function getTracearrUser(
 function getCachedAvatars(): Map<string, string> {
   const avatars = new Map<string, string>()
 
-  for (const cache of historyCaches.values()) {
-    for (const play of cache.plays) {
-      if (play.avatar && !avatars.has(play.identityId)) {
-        avatars.set(play.identityId, play.avatar)
-      }
+  for (const play of state.plays?.plays ?? []) {
+    if (play.avatar && !avatars.has(play.identityId)) {
+      avatars.set(play.identityId, play.avatar)
     }
   }
 
@@ -525,104 +651,388 @@ function toPlay(
   }
 }
 
-async function fetchPlays(since: number): Promise<TracearrPlay[] | null> {
+type PlaysPage = {
+  plays: TracearrPlay[]
+  // When the oldest play on the page started
+  oldest: number
+  cursor?: string
+}
+
+// A page of the history, newest first. Without a window, Tracearr returns
+// every segment of a play, not only the ones inside the window.
+async function fetchPlaysPage(cursor?: string): Promise<PlaysPage | null> {
   const serverId = await getPlexServerId()
 
   if (!serverId) {
     return null
   }
 
-  const baseUrl = getTracearrUrl()
-  const records = await fetchAllPages<TracearrHistoryRecord>('history', {
-    since: new Date(since).toISOString(),
-    server_id: serverId,
-  })
+  const page = await fetchTracearr<TracearrCursorPage<TracearrHistoryRecord>>(
+    'history',
+    { server_id: serverId, pageSize: PAGE_SIZE, cursor },
+    { paced: true },
+  )
 
-  if (!records) {
+  if (!page) {
     return null
   }
 
-  return records.flatMap((record) => {
-    const play = record.server_id === serverId ? toPlay(record, baseUrl) : null
+  if (!Array.isArray(page.data)) {
+    console.error(`[TRACEARR] - Unexpected response for 'history'!`)
 
-    return play ? [play] : []
+    return null
+  }
+
+  const baseUrl = getTracearrUrl()
+
+  return {
+    plays: page.data.flatMap((record) => {
+      const play =
+        record.server_id === serverId ? toPlay(record, baseUrl) : null
+
+      return play ? [play] : []
+    }),
+    oldest: Math.min(...page.data.map(getStartedAt).filter(Number.isFinite)),
+    cursor: page.meta?.nextCursor ?? undefined,
+  }
+}
+
+function createPlayStore(key: string): PlayStore {
+  const now = Date.now()
+
+  return {
+    key,
+    plays: [],
+    readTo: Infinity,
+    read: null,
+    readFailedAt: null,
+    waiters: [],
+    toppedUpAt: now,
+    topUp: null,
+    rebuildAt: now + HISTORY_FULL_REFRESH,
+  }
+}
+
+async function loadPlayStore(key: string): Promise<PlayStore> {
+  const snapshot = await readPlaysSnapshot(key).catch(() => null)
+
+  if (state.loading?.key === key) {
+    state.loading = null
+  }
+
+  if (state.plays?.key === key) {
+    return state.plays
+  }
+
+  if (snapshot) {
+    console.log(`[TRACEARR] - Loaded ${snapshot.plays.length} saved plays.`)
+  }
+
+  const store = snapshot
+    ? { ...createPlayStore(key), ...snapshot }
+    : createPlayStore(key)
+
+  state.plays = store
+
+  return store
+}
+
+// The first store for a set of settings starts from the history saved before
+// a restart, if it was read with the same settings.
+function getPlayStore(): Promise<PlayStore> {
+  const key = getCacheKey()
+
+  if (state.plays?.key === key) {
+    return Promise.resolve(state.plays)
+  }
+
+  if (!state.loading || state.loading.key !== key) {
+    state.loading = { key, store: loadPlayStore(key) }
+  }
+
+  return state.loading.store
+}
+
+async function savePlays(): Promise<void> {
+  const store = state.plays
+
+  if (!store || store.readTo === Infinity) {
+    return
+  }
+
+  try {
+    await writePlaysSnapshot(store.key, store)
+    state.hasLoggedSaveError = false
+  } catch (error) {
+    if (!state.hasLoggedSaveError) {
+      state.hasLoggedSaveError = true
+      console.error(
+        `[TRACEARR] - Unable to save the history to ${getPlaysSnapshotPath()}! After a restart, it's read from Tracearr again.`,
+        error,
+      )
+    }
+  }
+}
+
+// Saves the history a while after it changes, so a restart doesn't read it all
+// from Tracearr again. Changes made in the meantime go into the same save.
+function saveSoon(store: PlayStore): void {
+  if (store !== state.plays || state.saveTimer) {
+    return
+  }
+
+  state.saveTimer = setTimeout(() => {
+    state.saveTimer = null
+    state.saving = state.saving.then(savePlays)
+  }, HISTORY_SAVE_DELAY)
+}
+
+function hasPlaysSince(store: PlayStore, since: number): boolean {
+  return store.readTo < since || store.readTo === -Infinity
+}
+
+// Answers the windows the store now goes back to. Without a read under way,
+// the others get no plays.
+function settleWaiters(store: PlayStore, error?: unknown): void {
+  store.waiters = store.waiters.filter((waiter) => {
+    if (hasPlaysSince(store, waiter.since)) {
+      waiter.resolve(true)
+    } else if (error !== undefined) {
+      waiter.reject(error)
+    } else if (!store.read) {
+      waiter.resolve(false)
+    } else {
+      return true
+    }
+
+    return false
   })
 }
 
-// Tracearr applies a window to the segments of a play, so the same play can
-// count differently in a shorter window. Each window keeps its own plays, and
-// later requests refetch only the newest of them.
-async function loadPlays(since: number): Promise<TracearrPlay[] | null> {
-  const key = `${getCacheKey()}|${since}`
-  const now = Date.now()
-  const cache = historyCaches.get(key)
+// Reads back through the history to the oldest play. What was read stays, so
+// a read that stops goes on from there next time.
+function readBack(store: PlayStore): void {
+  store.read ??= Promise.resolve().then(() => runReadBack(store))
+}
 
-  if (cache && now - cache.fetchedAt < CACHE_TTL) {
-    cache.usedAt = now
-
-    return cache.plays
+// Goes on with a read that stopped, but only a while after a failed page
+function resumeRead(store: PlayStore): void {
+  if (
+    store === state.plays &&
+    store.readTo !== -Infinity &&
+    !store.read &&
+    (store.readFailedAt === null ||
+      Date.now() - store.readFailedAt >= HISTORY_RETRY_DELAY)
+  ) {
+    readBack(store)
   }
+}
 
-  if (cache && now - cache.fullyFetchedAt < HISTORY_FULL_REFRESH) {
-    let refreshSince = Math.max(
-      since,
-      cache.fetchedAt - HISTORY_REFRESH_OVERLAP,
-    )
-    let recentPlays: TracearrPlay[] = []
+async function runReadBack(store: PlayStore): Promise<void> {
+  let error: unknown
 
-    // A play resumed across `refreshSince` comes back with only its newer
-    // segments, so it's read again from where it started.
-    for (;;) {
-      const fetchedPlays = await fetchPlays(refreshSince)
-
-      if (!fetchedPlays) {
-        return cache.plays
-      }
-
-      const fetchedIds = new Set(fetchedPlays.map((play) => play.id))
-      const resumedSince = Math.min(
-        ...cache.plays
-          .filter(
-            (play) => play.startedAt < refreshSince && fetchedIds.has(play.id),
-          )
-          .map((play) => play.startedAt),
-      )
-
-      recentPlays = fetchedPlays
-
-      if (!Number.isFinite(resumedSince)) {
+  try {
+    for (let pageCount = 0; store.readTo !== -Infinity; pageCount++) {
+      if (store.key !== getCacheKey()) {
         break
       }
 
-      refreshSince = resumedSince
+      if (pageCount === MAX_PAGES) {
+        console.warn(
+          `[TRACEARR] - Read ${MAX_PAGES} pages of history in one go! The next request goes on from there.`,
+        )
+
+        break
+      }
+
+      const page = await fetchPlaysPage(store.cursor)
+
+      if (!page) {
+        store.readFailedAt = Date.now()
+
+        break
+      }
+
+      if (page.cursor && page.cursor === store.cursor) {
+        console.warn(
+          `[TRACEARR] - 'history' repeated a pagination cursor! Stopping at ${store.plays.length} plays.`,
+        )
+        store.readFailedAt = Date.now()
+
+        break
+      }
+
+      store.readFailedAt = null
+      store.plays.push(...page.plays)
+      store.readTo = page.cursor
+        ? Math.min(store.readTo, page.oldest)
+        : -Infinity
+      store.cursor = page.cursor
+
+      if (page.cursor && (pageCount + 1) % HISTORY_PROGRESS_PAGES === 0) {
+        console.log(
+          `[TRACEARR] - Read ${store.plays.length} plays so far, back to ${new Date(store.readTo).toISOString()}.`,
+        )
+      }
+
+      settleWaiters(store)
+      saveSoon(store)
     }
+  } catch (caught) {
+    error = caught
+  } finally {
+    // In the same step as the read's last check, so a window that comes in
+    // after this starts a new read instead of missing out.
+    store.read = null
+    settleWaiters(store, error)
 
-    const plays = [
-      ...recentPlays,
-      ...cache.plays.filter((play) => play.startedAt < refreshSince),
-    ]
-
-    historyCaches.set(key, { ...cache, plays, fetchedAt: now, usedAt: now })
-
-    return plays
+    if (store.readFailedAt !== null) {
+      setTimeout(() => resumeRead(store), HISTORY_RETRY_DELAY)
+    }
   }
-
-  const plays = await fetchPlays(since)
-
-  if (!plays) {
-    return cache?.plays ?? null
-  }
-
-  historyCaches.set(key, {
-    plays,
-    fetchedAt: now,
-    fullyFetchedAt: now,
-    usedAt: now,
-  })
-
-  return plays
 }
 
+// True once the store has every play since `since`, false when the read
+// stops first or takes longer than `timeout`.
+function waitForPlays(
+  store: PlayStore,
+  since: number,
+  timeout = PAGINATION_DEADLINE,
+): Promise<boolean> {
+  if (hasPlaysSince(store, since)) {
+    return Promise.resolve(true)
+  }
+
+  const hasPlays = new Promise<boolean>((resolve, reject) => {
+    let timer: ReturnType<typeof setTimeout> | undefined
+
+    const waiter: PlaysWaiter = {
+      since,
+      resolve: (value) => {
+        clearTimeout(timer)
+        resolve(value)
+      },
+      reject: (error) => {
+        clearTimeout(timer)
+        reject(error)
+      },
+    }
+
+    store.waiters.push(waiter)
+
+    // The read goes on for the windows still waiting, and for the next one
+    if (Number.isFinite(timeout)) {
+      timer = setTimeout(() => {
+        store.waiters = store.waiters.filter((other) => other !== waiter)
+        resolve(false)
+      }, timeout)
+    }
+  })
+
+  readBack(store)
+
+  return hasPlays
+}
+
+// Reads the newest plays again, back to a while before the last top-up, which
+// picks up new plays, resumed ones and ones deleted since.
+async function topUp(store: PlayStore): Promise<void> {
+  const startedAt = Date.now()
+  const refreshFrom = store.toppedUpAt - HISTORY_REFRESH_OVERLAP
+
+  // Not read that far back yet, so the read itself is still recent
+  if (!hasPlaysSince(store, refreshFrom)) {
+    return
+  }
+
+  const plays: TracearrPlay[] = []
+
+  let readTo = Infinity
+  let cursor: string | undefined
+
+  for (let pageCount = 0; readTo >= refreshFrom; pageCount++) {
+    const page = pageCount < MAX_PAGES ? await fetchPlaysPage(cursor) : null
+
+    if (!page || (page.cursor && page.cursor === cursor)) {
+      return
+    }
+
+    plays.push(...page.plays)
+    readTo = page.cursor ? Math.min(readTo, page.oldest) : -Infinity
+    cursor = page.cursor
+  }
+
+  if (store.key !== getCacheKey()) {
+    return
+  }
+
+  // Both reads have every play that started after this, and the newer wins
+  const floor = Math.max(readTo, store.readTo)
+
+  store.plays = [
+    ...plays.filter((play) => play.startedAt > floor),
+    ...store.plays.filter((play) => play.startedAt <= floor),
+  ]
+  store.toppedUpAt = startedAt
+  saveSoon(store)
+}
+
+// Reads the whole history again into a new store, which takes over once it
+// goes back as far as the current one. Until then the current one answers.
+async function rebuild(current: PlayStore, next: PlayStore): Promise<void> {
+  try {
+    do {
+      if (!(await waitForPlays(next, current.readTo, Infinity))) {
+        current.rebuildAt = Date.now() + DAY
+
+        return
+      }
+
+      // A window may be taking the current store further back meanwhile
+      await current.read
+    } while (!hasPlaysSince(next, current.readTo))
+  } catch {
+    current.rebuildAt = Date.now() + DAY
+
+    return
+  }
+
+  if (state.plays === current) {
+    state.plays = next
+    saveSoon(next)
+  }
+}
+
+function rebuildInBackground(store: PlayStore): void {
+  if (!state.rebuild && Date.now() >= store.rebuildAt) {
+    const next = createPlayStore(store.key)
+
+    state.rebuild = {
+      store: next,
+      done: rebuild(store, next).finally(() => {
+        state.rebuild = null
+      }),
+    }
+  }
+}
+
+// Tops up plays older than the cache allows, goes on with a read that stopped,
+// and reads the whole history again in the background once it's due.
+async function refreshPlays(store: PlayStore): Promise<void> {
+  resumeRead(store)
+
+  if (Date.now() - store.toppedUpAt >= CACHE_TTL) {
+    store.topUp ??= topUp(store).finally(() => {
+      store.topUp = null
+    })
+    await store.topUp
+  }
+
+  rebuildInBackground(store)
+}
+
+// Every window reads from one store, so a shorter window is answered as soon
+// as the read gets back to its start, without waiting for a longer one.
 export async function getTracearrPlays(
   since: string | Date,
 ): Promise<TracearrPlay[]> {
@@ -634,20 +1044,126 @@ export async function getTracearrPlays(
     return []
   }
 
-  // Windows start at a whole UTC day, so requests for the same period share
-  // one cache.
-  const windowStart = new Date(sinceTime).setUTCHours(0, 0, 0, 0)
-  const run = historyQueue.then(() => loadPlays(windowStart))
+  const store = await getPlayStore()
 
-  historyQueue = run.catch(() => undefined)
-
-  for (const [key, cache] of historyCaches) {
-    if (Date.now() - cache.usedAt > HISTORY_CACHE_IDLE) {
-      historyCaches.delete(key)
+  if (!(await waitForPlays(store, sinceTime))) {
+    if (store.read) {
+      console.error(
+        `[TRACEARR] - Reading the history took longer than ${PAGINATION_DEADLINE / 60000} minutes! It goes on in the background.`,
+      )
     }
+
+    return []
   }
 
-  return (await run) ?? []
+  await refreshPlays(store)
+
+  // A play counts in the window it started in.
+  return store.plays.filter((play) => play.startedAt >= sinceTime)
+}
+
+// How far back a read has got, from 0 to 1, by the time between now and the
+// server's first play. It stays short of 1 until the oldest play is read.
+function getReadProgress(
+  store: PlayStore,
+  firstPlayAt: number | null,
+  now: number,
+): number {
+  if (store.readTo === -Infinity) {
+    return 1
+  }
+
+  const oldestPlayAt = store.plays.at(-1)?.startedAt
+
+  if (
+    oldestPlayAt === undefined ||
+    firstPlayAt === null ||
+    firstPlayAt >= now
+  ) {
+    return 0
+  }
+
+  return Math.min(Math.max((now - oldestPlayAt) / (now - firstPlayAt), 0), 0.99)
+}
+
+async function getHistoryStatus(
+  store: PlayStore,
+): Promise<TracearrHistoryStatus> {
+  const now = Date.now()
+  const isComplete = store.readTo === -Infinity
+  const oldestPlayAt = store.plays.at(-1)?.startedAt ?? null
+  // Read again, the history goes back as far as the complete one
+  const firstPlayAt = isComplete ? oldestPlayAt : await getServerFirstPlayAt()
+  const rebuild = state.rebuild
+
+  return {
+    playCount: store.plays.length,
+    oldestPlayAt,
+    progress: getReadProgress(store, firstPlayAt, now),
+    isComplete,
+    isReading: !!store.read,
+    hasFailed: store.readFailedAt !== null,
+    reread: rebuild && {
+      playCount: rebuild.store.plays.length,
+      progress: getReadProgress(rebuild.store, firstPlayAt, now),
+    },
+    hasSaveFailed: state.hasLoggedSaveError,
+  }
+}
+
+export async function getTracearrHistoryStatus(): Promise<TracearrHistoryStatus> {
+  return getHistoryStatus(await getPlayStore())
+}
+
+// Null once the plays since `since` are read, or reading them has stopped, so
+// the stats can be shown. Otherwise how far the read has got, after waiting a
+// few seconds for it.
+export async function getTracearrReadProgress(
+  since: string | Date,
+  timeout = HISTORY_PAGE_WAIT,
+): Promise<TracearrHistoryStatus | null> {
+  const sinceTime = new Date(since).getTime()
+  const store = await getPlayStore()
+
+  if (
+    !Number.isFinite(sinceTime) ||
+    (await waitForPlays(store, sinceTime, timeout)) ||
+    !store.read
+  ) {
+    return null
+  }
+
+  return getHistoryStatus(store)
+}
+
+async function readWholeHistory(): Promise<void> {
+  const store = await getPlayStore()
+
+  if (await waitForPlays(store, -Infinity, Infinity)) {
+    await refreshPlays(store)
+  }
+}
+
+// Reads the whole history in the background, so pages find it ready
+export function startTracearrHistoryRead(): void {
+  readWholeHistory().catch((error) => {
+    console.error('[TRACEARR] - Unable to read the history!', error)
+  })
+}
+
+// Reads the whole history again now, instead of when the weekly read is due. A
+// read that hasn't got back to the oldest play yet goes on instead.
+export async function rereadTracearrHistory(): Promise<void> {
+  const store = await getPlayStore()
+
+  if (store.readTo !== -Infinity) {
+    startTracearrHistoryRead()
+
+    return
+  }
+
+  store.rebuildAt = 0
+  rebuildInBackground(store)
 }
 
 function getStartedAt(record: TracearrHistoryRecord): number {
@@ -732,18 +1248,25 @@ async function findFirstPlay(
 }
 
 // No user's first play is older than the server's, so it bounds every search
-const getServerFirstPlayAt = cached<number>(async () => {
-  const serverId = await getPlexServerId()
+const getServerFirstPlayAt = cached<number>(
+  'serverFirstPlayAt',
+  async () => {
+    const serverId = await getPlexServerId()
 
-  if (!serverId) {
-    return null
-  }
+    if (!serverId) {
+      return null
+    }
 
-  const firstPlay = await findFirstPlay({ server_id: serverId }, EARLIEST_PLAY)
-  const firstPlayAt = firstPlay ? getStartedAt(firstPlay) : NaN
+    const firstPlay = await findFirstPlay(
+      { server_id: serverId },
+      EARLIEST_PLAY,
+    )
+    const firstPlayAt = firstPlay ? getStartedAt(firstPlay) : NaN
 
-  return Number.isFinite(firstPlayAt) ? firstPlayAt : null
-}, FIRST_PLAY_CACHE_TTL)
+    return Number.isFinite(firstPlayAt) ? firstPlayAt : null
+  },
+  FIRST_PLAY_CACHE_TTL,
+)
 
 export async function getTracearrFirstPlay(
   plexId: string,
@@ -759,15 +1282,15 @@ export async function getTracearrFirstPlay(
 
   const key = `${getCacheKey()}|${user.identityId}`
   const now = Date.now()
-  const cache = firstPlayCaches.get(key)
+  const cache = state.firstPlays.get(key)
 
   if (cache && now < cache.expiresAt) {
     return cache.firstPlay
   }
 
-  for (const [cacheKey, { expiresAt }] of firstPlayCaches) {
+  for (const [cacheKey, { expiresAt }] of state.firstPlays) {
     if (now >= expiresAt) {
-      firstPlayCaches.delete(cacheKey)
+      state.firstPlays.delete(cacheKey)
     }
   }
 
@@ -789,7 +1312,7 @@ export async function getTracearrFirstPlay(
       : null
 
   // The first play only changes once a user without plays starts watching
-  firstPlayCaches.set(key, {
+  state.firstPlays.set(key, {
     firstPlay,
     expiresAt: now + (firstPlay ? FIRST_PLAY_CACHE_TTL : CACHE_TTL),
   })
@@ -797,7 +1320,7 @@ export async function getTracearrFirstPlay(
   return firstPlay
 }
 
-const getAllLibraries = cached<TracearrLibrary[]>(async () => {
+const getAllLibraries = cached<TracearrLibrary[]>('libraries', async () => {
   const res = await fetchTracearr<{ data: TracearrLibrary[] }>('libraries')
 
   return Array.isArray(res?.data) ? res.data : null
@@ -1046,34 +1569,38 @@ function toSession(
   }
 }
 
-const getStreams = cached<TautulliActivity>(async () => {
-  const [serverId, users] = await Promise.all([
-    getPlexServerId(),
-    getTracearrPlexUsers(),
-  ])
+const getStreams = cached<TautulliActivity>(
+  'streams',
+  async () => {
+    const [serverId, users] = await Promise.all([
+      getPlexServerId(),
+      getTracearrPlexUsers(),
+    ])
 
-  if (!serverId) {
-    return null
-  }
+    if (!serverId) {
+      return null
+    }
 
-  const res = await fetchTracearr<TracearrStreamsResponse>('streams', {
-    server_id: serverId,
-  })
+    const res = await fetchTracearr<TracearrStreamsResponse>('streams', {
+      server_id: serverId,
+    })
 
-  if (!res) {
-    return null
-  }
+    if (!res) {
+      return null
+    }
 
-  const baseUrl = getTracearrUrl()
-  const sessions = (res.data ?? [])
-    .filter((stream) => stream.server_id === serverId)
-    .map((stream) => toSession(stream, users, baseUrl))
+    const baseUrl = getTracearrUrl()
+    const sessions = (res.data ?? [])
+      .filter((stream) => stream.server_id === serverId)
+      .map((stream) => toSession(stream, users, baseUrl))
 
-  return {
-    sessions,
-    stream_count: sessions.length,
-  }
-}, ACTIVITY_CACHE_TTL)
+    return {
+      sessions,
+      stream_count: sessions.length,
+    }
+  },
+  ACTIVITY_CACHE_TTL,
+)
 
 export async function getTracearrActivity(): Promise<TautulliActivity | null> {
   return getStreams()

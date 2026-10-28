@@ -1,3 +1,4 @@
+import AutoRefresh from '@/components/AutoRefresh'
 import { MediaIcon } from '@/components/icons'
 import SkeletonLine from '@/components/SkeletonLine'
 import SourceUnreachable from '@/components/SourceUnreachable'
@@ -11,6 +12,7 @@ import getPeriod, { parseCustomPeriod } from '@/utils/getPeriod'
 import { getHomeTiles, getViewer } from '@/utils/helpers'
 import { getImageProxyUrl } from '@/utils/imageProxy'
 import { toPublicSettings } from '@/utils/publicSettings'
+import { getHistoryProgress } from '@/utils/statsSource'
 import { BackwardIcon, ChevronRightIcon } from '@heroicons/react/24/outline'
 import { kebabCase } from 'lodash'
 import { Session } from 'next-auth'
@@ -160,10 +162,17 @@ async function LibraryTile({
   periodLabel,
 }: LibraryTileProps) {
   const t = await getTranslations()
-  const { daysAgo } = getPeriod(period, settings)
-  const {
-    items: [top],
-  } = await getItems(library, { period: daysAgo, sortByPlays: true, count: 1 })
+  const { daysAgo, string: since } = getPeriod(period, settings)
+  const progress = await getHistoryProgress(since, settings)
+  const [top] = progress
+    ? []
+    : (
+        await getItems(library, {
+          period: daysAgo,
+          sortByPlays: true,
+          count: 1,
+        })
+      ).items
   const topLabel =
     library.section_type === 'artist'
       ? t('Home.mostListened')
@@ -198,6 +207,11 @@ async function LibraryTile({
             </ul>
           </div>
         </div>
+      ) : progress ? (
+        <p className='text-sm text-neutral-400'>
+          {t('History.readingShort')}
+          <AutoRefresh />
+        </p>
       ) : (
         <p className='text-sm text-neutral-400'>{t('Dashboard.noActivity')}</p>
       )}

@@ -86,6 +86,11 @@
     "sourceUnreachableDescription": "Comprueba que {source} esté en marcha y sea accesible desde Plex Rewind, y vuelve a intentarlo.",
     "connectionSettings": "Revisar los ajustes de conexión"
   },
+  "History": {
+    "readingTitle": "Leyendo el historial",
+    "readingDescription": "El historial de reproducciones de Tracearr se lee una sola vez, lo que puede tardar unos minutos. {count, plural, =0 {Acaba de empezar.} one {Por ahora # reproducción, desde {date}.} other {Por ahora # reproducciones, desde {date}.}} Esta página se actualiza sola.",
+    "readingShort": "Leyendo el historial…"
+  },
   "PlexDeeplink": {
     "available": "Disponible",
     "availableLabel": "Disponible: abrir {title} en Plex"
@@ -155,7 +160,23 @@
       "server": "Servidor",
       "chooseServer": "Elige un servidor",
       "seerrUrlDescription": "Los enlaces de solicitud abren esta dirección en el navegador de quien los usa, así que elige una a la que pueda acceder, no una dirección de red local.",
-      "optionalService": "{service} (opcional)"
+      "optionalService": "{service} (opcional)",
+      "history": "Historial de reproducciones",
+      "historyDescription": "Se lee de Tracearr una vez y se guarda; después solo se leen las reproducciones nuevas. El historial completo se vuelve a leer una vez por semana.",
+      "historyReading": "Leyendo el historial…",
+      "historyComplete": "Al día",
+      "historyRereading": "Volviendo a leer todo el historial en segundo plano",
+      "historySaveFailed": "No se pudo guardar el historial en la carpeta config, así que se volverá a leer después de reiniciar.",
+      "read": "Leer historial",
+      "readAgain": "Volver a leer",
+      "readOn": "Seguir leyendo",
+      "historyFailed": "Tracearr dejó de responder. Se volverá a intentar en un minuto.",
+      "historyPaused": "En pausa",
+      "historyNotRead": "Aún no se ha leído",
+      "historyPlaysSoFar": "{count, plural, =0 {Todavía no hay reproducciones} one {Por ahora # reproducción, desde {date}} other {Por ahora # reproducciones, desde {date}}}",
+      "historyPlaysSince": "{count, plural, =0 {Todavía no hay reproducciones} one {# reproducción desde {date}} other {# reproducciones desde {date}}}",
+      "historyRereadPlays": "{count, plural, one {Por ahora # reproducción} other {Por ahora # reproducciones}}",
+      "retry": "Intentar de nuevo"
     },
     "Dashboard": {
       "title": "Ajustes del panel",

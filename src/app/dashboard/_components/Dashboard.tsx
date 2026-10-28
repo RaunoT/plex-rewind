@@ -22,6 +22,8 @@ type Props = {
   toolbar: ReactNode
   // The limit "Show more" leads to, left out when there's nothing more
   nextLimit?: number
+  // Shown in the card instead of the items, such as while they can't be read yet
+  status?: ReactNode
 }
 
 export default async function Dashboard({
@@ -36,6 +38,7 @@ export default async function Dashboard({
   loggedInUserId,
   toolbar,
   nextLimit,
+  status,
 }: Props) {
   const t = await getTranslations('Dashboard')
   const tCommon = await getTranslations('Common')
@@ -72,7 +75,9 @@ export default async function Dashboard({
       />
 
       <CardWrapper>
-        {items?.length ? (
+        {status ? (
+          <div className='flex flex-1 flex-col py-24'>{status}</div>
+        ) : items?.length ? (
           <>
             <MediaItems
               items={items}
