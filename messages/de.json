@@ -103,8 +103,7 @@
   },
   "NotFound": {
     "title": "404",
-    "description": "Die angefragte Seite wurde nicht gefunden",
-    "cta": "Bitte von vorne beginnen."
+    "cta": "Bitte von vorne beginnen"
   },
   "AppProvider": {
     "updateAvailable": "Aktualisierung verfügbar",

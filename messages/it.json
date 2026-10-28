@@ -103,8 +103,7 @@
   },
   "NotFound": {
     "title": "404",
-    "description": "La pagina richiesta non è stata trovata",
-    "cta": "Forse conviene ricominciare dall'inizio."
+    "cta": "Forse conviene ricominciare dall'inizio"
   },
   "AppProvider": {
     "updateAvailable": "Aggiornamento disponibile",

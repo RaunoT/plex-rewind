@@ -103,8 +103,7 @@
   },
   "NotFound": {
     "title": "404",
-    "description": "Soovitud lehte ei leitud",
-    "cta": "Ehk on parem alustada uuesti."
+    "cta": "Ehk on parem alustada uuesti"
   },
   "AppProvider": {
     "updateAvailable": "Uuendus saadaval",

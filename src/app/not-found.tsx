@@ -10,7 +10,6 @@ export default async function NotFound() {
     <StatusMessage
       icon={MagnifyingGlassIcon}
       title={t('title')}
-      description={t('description')}
       as='h1'
       action={
         <Link href='/' className='button w-full'>

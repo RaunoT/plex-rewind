@@ -79,7 +79,7 @@
     "users": "Usuarios"
   },
   "Error": {
-    "title": "¡Vaya! Algo salió mal.",
+    "title": "¡Vaya! Algo salió mal",
     "cta": "Intentar de nuevo",
     "sourceUnreachable": "No se pudo conectar con {source}",
     "sourceUnreachableDescription": "Comprueba que {source} esté en marcha y sea accesible desde Plex Rewind, y vuelve a intentarlo",
@@ -103,8 +103,7 @@
   },
   "NotFound": {
     "title": "404",
-    "description": "No se encontró la página solicitada",
-    "cta": "Quizá sea mejor empezar de nuevo."
+    "cta": "Quizá sea mejor empezar de nuevo"
   },
   "AppProvider": {
     "updateAvailable": "Actualización disponible",
