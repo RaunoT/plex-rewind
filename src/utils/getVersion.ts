@@ -14,53 +14,29 @@ const GITHUB_RETRY_AFTER_MS = 15 * 60 * 1000
 
 let lastFailedAt = 0
 
+function parseVersion(version: string): number[] | null {
+  const match = /^v?(\d+)\.(\d+)\.(\d+)(?:-develop\.(\d+))?$/.exec(version)
+
+  if (!match) return null
+
+  const [, major, minor, patch, develop] = match
+
+  // A release comes after all of its develop builds
+  return [major, minor, patch, develop ?? Infinity].map(Number)
+}
+
 export function compareVersions(current: string, latest: string): boolean {
-  if (!current.includes('develop') || !latest.includes('develop')) {
-    return latest !== current
-  }
-
-  const parseVersion = (version: string) => {
-    // Remove 'v' prefix if present
-    const cleanVersion = version.startsWith('v') ? version.slice(1) : version
-    // Split on '-develop.' to get base version and develop number
-    const parts = cleanVersion.split('-develop.')
-
-    if (parts.length !== 2) return null
-
-    const [baseVersion, developNum] = parts
-    const baseParts = baseVersion.split('.').map(Number)
-    const developNumber = parseInt(developNum, 10)
-
-    return {
-      major: baseParts[0] || 0,
-      minor: baseParts[1] || 0,
-      patch: baseParts[2] || 0,
-      develop: developNumber,
-    }
-  }
-  const currentParsed = parseVersion(current)
-  const latestParsed = parseVersion(latest)
+  const currentParts = parseVersion(current)
+  const latestParts = parseVersion(latest)
 
   // Fallback to string comparison if parsing fails
-  if (!currentParsed || !latestParsed) {
+  if (!currentParts || !latestParts) {
     return latest !== current
   }
 
-  // Compare base version first
-  if (latestParsed.major !== currentParsed.major) {
-    return latestParsed.major > currentParsed.major
-  }
+  const index = latestParts.findIndex((part, i) => part !== currentParts[i])
 
-  if (latestParsed.minor !== currentParsed.minor) {
-    return latestParsed.minor > currentParsed.minor
-  }
-
-  if (latestParsed.patch !== currentParsed.patch) {
-    return latestParsed.patch > currentParsed.patch
-  }
-
-  // Compare develop number
-  return latestParsed.develop > currentParsed.develop
+  return index !== -1 && latestParts[index] > currentParts[index]
 }
 
 export default async function getVersion(): Promise<Version> {
@@ -99,12 +75,22 @@ export default async function getVersion(): Promise<Version> {
         const data = await res.json()
 
         if (Array.isArray(data)) {
-          const latestRelease = data.find(
-            (release: GitHubRelease) =>
-              typeof release?.tag_name === 'string' &&
-              !release.draft &&
-              (isDevelop ? release.prerelease : !release.prerelease),
-          )
+          // GitHub doesn't list releases in version order (develop.9 comes
+          // before develop.18), so take the highest one.
+          const latestRelease = data
+            .filter(
+              (release: GitHubRelease) =>
+                typeof release?.tag_name === 'string' &&
+                !release.draft &&
+                (isDevelop ? release.prerelease : !release.prerelease),
+            )
+            .reduce<GitHubRelease | undefined>(
+              (latest, release) =>
+                !latest || compareVersions(latest.tag_name, release.tag_name)
+                  ? release
+                  : latest,
+              undefined,
+            )
 
           if (latestRelease) {
             latestVersion = latestRelease.tag_name
