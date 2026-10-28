@@ -1,5 +1,4 @@
 import { Version } from '@/types'
-import { getRuntimeEnv } from './constants'
 
 type GitHubRelease = {
   tag_name: string
@@ -40,7 +39,9 @@ export function compareVersions(current: string, latest: string): boolean {
 }
 
 export default async function getVersion(): Promise<Version> {
-  const tag = getRuntimeEnv('NEXT_PUBLIC_VERSION_TAG') || ''
+  // Read statically so Next.js inlines the build's tag. A container can carry
+  // an older image's value in its env, which must not change the version.
+  const tag = process.env.NEXT_PUBLIC_VERSION_TAG || ''
   const isSHA = /^[0-9a-f]{40}$/i.test(tag) // Check if tag is a 40-character SHA
   const currentVersion = tag ? (isSHA ? tag : `v${tag}`) : 'local' // Prefix with 'v' if not a SHA
   const isDevelop = currentVersion.includes('develop')
