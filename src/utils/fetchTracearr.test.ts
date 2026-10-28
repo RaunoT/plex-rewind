@@ -2,8 +2,15 @@ import { Settings } from '@/types/settings'
 import { cloneDeep } from 'lodash'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { DEFAULT_SETTINGS } from './constants'
+import type { TracearrPlay } from './fetchTracearr'
+import type { PlaysSnapshot } from './tracearrHistoryFile'
 
 vi.mock('./getSettings', () => ({ default: vi.fn() }))
+vi.mock('./tracearrHistoryFile', () => ({
+  getPlaysSnapshotPath: () => '/app/config/tracearr-history.json.gz',
+  readPlaysSnapshot: vi.fn(async () => null),
+  writePlaysSnapshot: vi.fn(async () => undefined),
+}))
 
 const fetchMock = vi.fn()
 
@@ -1040,5 +1047,148 @@ describe('getTracearrPlays', () => {
     )
     expect(requestsTo('history')).toHaveLength(1)
     expect(requestsTo('servers')).toHaveLength(1)
+  })
+
+  describe('saved history', () => {
+    function savedPlay(startedAt: number): TracearrPlay {
+      return {
+        id: String(startedAt),
+        startedAt,
+        mediaType: 'movie',
+        durationMs: 60_000,
+        title: 'Dune',
+        showTitle: null,
+        artistName: null,
+        year: null,
+        thumb: '',
+        ratingKey: null,
+        grandparentRatingKey: null,
+        mediaId: null,
+        showMediaId: null,
+        imdbId: null,
+        tmdbId: null,
+        identityId: 'u1',
+        avatar: '',
+      }
+    }
+
+    async function loadWithSnapshot(snapshot: PlaysSnapshot | null = null) {
+      const tracearr = await load()
+      const historyFile = await import('./tracearrHistoryFile')
+
+      vi.mocked(historyFile.readPlaysSnapshot).mockResolvedValue(snapshot)
+
+      return { ...tracearr, ...historyFile }
+    }
+
+    function savedHistory(overrides: Partial<PlaysSnapshot> = {}) {
+      return {
+        plays: playTimes.map(savedPlay),
+        readTo: -Infinity,
+        toppedUpAt: now,
+        rebuildAt: now + 7 * DAY,
+        ...overrides,
+      }
+    }
+
+    it('starts from the history saved before a restart', async () => {
+      route(historyRoute(() => playTimes))
+
+      const { getTracearrPlays, readPlaysSnapshot } =
+        await loadWithSnapshot(savedHistory())
+      const [allTime, year] = await Promise.all([
+        getTracearrPlays('2010-01-01'),
+        getTracearrPlays(yearAgo),
+      ])
+
+      expect(allTime).toHaveLength(2920)
+      expect(year).toHaveLength(1460)
+      expect(requestsTo('history')).toHaveLength(0)
+      expect(readPlaysSnapshot).toHaveBeenCalledTimes(1)
+      expect(readPlaysSnapshot).toHaveBeenCalledWith(
+        'http://tracearr:3000|key|',
+      )
+    })
+
+    it('catches up on plays since the history was saved', async () => {
+      const newPlay = now - 60 * 60 * 1000
+
+      route(historyRoute(() => [newPlay, ...playTimes]))
+
+      const { getTracearrPlays } = await loadWithSnapshot(
+        savedHistory({ toppedUpAt: now - 3 * DAY }),
+      )
+      const plays = startTimes(await getTracearrPlays('2010-01-01'))
+
+      // One page goes back past two days before the save
+      expect(requestsTo('history')).toHaveLength(1)
+      expect(plays).toContain(newPlay)
+      expect(plays).toHaveLength(2921)
+    })
+
+    it('goes on reading from where the saved history stopped', async () => {
+      route(historyRoute(() => playTimes))
+
+      const { getTracearrPlays } = await loadWithSnapshot(
+        savedHistory({
+          plays: playTimes.slice(0, 1000).map(savedPlay),
+          readTo: playTimes[999],
+          cursor: '1000',
+        }),
+      )
+
+      await expect(getTracearrPlays('2010-01-01')).resolves.toHaveLength(2920)
+      expect(historyCursors()[0]).toBe('1000')
+      expect(historyCursors()).toHaveLength(20)
+    })
+
+    it('saves the history a minute after it changes', async () => {
+      vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout', 'Date'] })
+      vi.setSystemTime(now)
+      route(historyRoute(() => playTimes))
+
+      const { getTracearrPlays, writePlaysSnapshot } = await loadWithSnapshot()
+
+      await getTracearrPlays('2010-01-01')
+
+      // Each of the 30 pages changed the history
+      expect(writePlaysSnapshot).not.toHaveBeenCalled()
+
+      await vi.advanceTimersByTimeAsync(60 * 1000)
+
+      expect(writePlaysSnapshot).toHaveBeenCalledTimes(1)
+
+      const [key, saved] = vi.mocked(writePlaysSnapshot).mock.calls[0]
+
+      expect(key).toBe('http://tracearr:3000|key|')
+      expect(saved.plays).toHaveLength(2920)
+      expect(saved).toMatchObject({ readTo: -Infinity, toppedUpAt: now })
+    })
+
+    it('goes on without saving when the history cannot be written', async () => {
+      vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout', 'Date'] })
+      vi.setSystemTime(now)
+      route(historyRoute(() => playTimes))
+
+      const { getTracearrPlays, writePlaysSnapshot } = await loadWithSnapshot()
+
+      vi.mocked(writePlaysSnapshot).mockRejectedValue(new Error('EROFS'))
+
+      await getTracearrPlays('2010-01-01')
+      await vi.advanceTimersByTimeAsync(60 * 1000)
+
+      // A top-up tries again, without logging the same problem twice
+      vi.setSystemTime(now + 10 * 60 * 1000)
+
+      await expect(getTracearrPlays('2010-01-01')).resolves.toHaveLength(2920)
+      await vi.advanceTimersByTimeAsync(60 * 1000)
+
+      expect(writePlaysSnapshot).toHaveBeenCalledTimes(2)
+      expect(console.error).toHaveBeenCalledTimes(1)
+      expect(console.error).toHaveBeenCalledWith(
+        expect.stringContaining('Unable to save the history'),
+        expect.any(Error),
+      )
+    })
   })
 })

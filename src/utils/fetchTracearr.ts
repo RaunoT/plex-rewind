@@ -24,6 +24,11 @@ import { unstable_rethrow } from 'next/navigation'
 import qs from 'qs'
 import getSettings from './getSettings'
 import { LibrariesSize, sumLibrariesSize } from './librariesSize'
+import {
+  getPlaysSnapshotPath,
+  readPlaysSnapshot,
+  writePlaysSnapshot,
+} from './tracearrHistoryFile'
 
 type QueryParams = {
   [key: string]: string | number | undefined
@@ -103,7 +108,12 @@ type RateLimit = {
 
 type TracearrState = {
   plays: PlayStore | null
+  // The store being set up from the saved history, for the settings in `key`
+  loading: { key: string; store: Promise<PlayStore> } | null
   rebuild: Promise<void> | null
+  saveTimer: ReturnType<typeof setTimeout> | null
+  saving: Promise<void>
+  hasLoggedSaveError: boolean
   cachedValues: Map<string, CachedValue>
   firstPlays: Map<string, { firstPlay: FirstPlay | null; expiresAt: number }>
   rateLimit: RateLimit | null
@@ -128,6 +138,8 @@ const HISTORY_REFRESH_OVERLAP = 2 * DAY
 // Tracearr drop out
 const HISTORY_FULL_REFRESH = 7 * DAY
 const HISTORY_PROGRESS_PAGES = 100
+// The history is saved at most this often, as the file holds every play
+const HISTORY_SAVE_DELAY = 60 * 1000
 // The share of the rate limit that paced requests leave for everything else
 const RATE_LIMIT_RESERVE = 0.2
 const FIRST_PLAY_CACHE_TTL = DAY
@@ -158,7 +170,11 @@ const globalForTracearr = globalThis as unknown as {
 }
 const state = (globalForTracearr.plexRewindTracearr ??= {
   plays: null,
+  loading: null,
   rebuild: null,
+  saveTimer: null,
+  saving: Promise.resolve(),
+  hasLoggedSaveError: false,
   cachedValues: new Map(),
   firstPlays: new Map(),
   rateLimit: null,
@@ -692,14 +708,78 @@ function createPlayStore(key: string): PlayStore {
   }
 }
 
-function getPlayStore(): PlayStore {
-  const key = getCacheKey()
+async function loadPlayStore(key: string): Promise<PlayStore> {
+  const snapshot = await readPlaysSnapshot(key).catch(() => null)
 
-  if (!state.plays || state.plays.key !== key) {
-    state.plays = createPlayStore(key)
+  if (state.loading?.key === key) {
+    state.loading = null
   }
 
-  return state.plays
+  if (state.plays?.key === key) {
+    return state.plays
+  }
+
+  if (snapshot) {
+    console.log(`[TRACEARR] - Loaded ${snapshot.plays.length} saved plays.`)
+  }
+
+  const store = snapshot
+    ? { ...createPlayStore(key), ...snapshot }
+    : createPlayStore(key)
+
+  state.plays = store
+
+  return store
+}
+
+// The first store for a set of settings starts from the history saved before
+// a restart, if it was read with the same settings.
+function getPlayStore(): Promise<PlayStore> {
+  const key = getCacheKey()
+
+  if (state.plays?.key === key) {
+    return Promise.resolve(state.plays)
+  }
+
+  if (!state.loading || state.loading.key !== key) {
+    state.loading = { key, store: loadPlayStore(key) }
+  }
+
+  return state.loading.store
+}
+
+async function savePlays(): Promise<void> {
+  const store = state.plays
+
+  if (!store || store.readTo === Infinity) {
+    return
+  }
+
+  try {
+    await writePlaysSnapshot(store.key, store)
+    state.hasLoggedSaveError = false
+  } catch (error) {
+    if (!state.hasLoggedSaveError) {
+      state.hasLoggedSaveError = true
+      console.error(
+        `[TRACEARR] - Unable to save the history to ${getPlaysSnapshotPath()}! After a restart, it's read from Tracearr again.`,
+        error,
+      )
+    }
+  }
+}
+
+// Saves the history a while after it changes, so a restart doesn't read it all
+// from Tracearr again. Changes made in the meantime go into the same save.
+function saveSoon(store: PlayStore): void {
+  if (store !== state.plays || state.saveTimer) {
+    return
+  }
+
+  state.saveTimer = setTimeout(() => {
+    state.saveTimer = null
+    state.saving = state.saving.then(savePlays)
+  }, HISTORY_SAVE_DELAY)
 }
 
 function hasPlaysSince(store: PlayStore, since: number): boolean {
@@ -781,6 +861,7 @@ async function runReadBack(store: PlayStore): Promise<void> {
       }
 
       settleWaiters(store)
+      saveSoon(store)
     }
   } catch (caught) {
     error = caught
@@ -859,6 +940,7 @@ async function topUp(store: PlayStore): Promise<void> {
     ...store.plays.filter((play) => play.startedAt <= floor),
   ]
   store.toppedUpAt = startedAt
+  saveSoon(store)
 }
 
 // Reads the whole history again into a new store, which takes over once it
@@ -885,6 +967,7 @@ async function rebuild(current: PlayStore): Promise<void> {
 
   if (state.plays === current) {
     state.plays = next
+    saveSoon(next)
   }
 }
 
@@ -909,7 +992,7 @@ export async function getTracearrPlays(
     return []
   }
 
-  const store = getPlayStore()
+  const store = await getPlayStore()
 
   if (!(await waitForPlays(store, sinceTime))) {
     return []

@@ -63,7 +63,7 @@ services:
 
 > _NOTE: If you run into authentication issues, try setting `NEXTAUTH_URL` and `NEXT_PUBLIC_SITE_URL` to your external Docker IP, instead of localhost. For example `http://192.168.1.1:8383`._
 
-> _NOTE: With Tracearr, Plex Rewind reads the play history 100 plays at a time through Tracearr's public API, which allows 240 requests a minute by default. A history of 100,000 plays takes about 1,000 requests, so the first read after a start can take several minutes. After that, only the newest plays are read again. To speed up the first read, raise the public API rate limit (`publicApiRateLimitPerMinute`) in Tracearr under Settings → Data → API._
+> _NOTE: With Tracearr, Plex Rewind reads the play history 100 plays at a time through Tracearr's public API, which allows 240 requests a minute by default. A history of 100,000 plays takes about 1,000 requests, so the first read can take several minutes. The plays are saved to `config/tracearr-history.json.gz`, so after that, even across restarts, only the newest plays are read again. To speed up the first read, raise the public API rate limit (`publicApiRateLimitPerMinute`) in Tracearr under Settings → Data → API._
 
 For those that need it, a simple status page is also available at `/api/status`.
 
