@@ -279,13 +279,14 @@ async function testAndSave(
     previousSettings.general.complete &&
     schema.safeParse(data).success
 
-  // Libraries are matched by name, which differs between the sources. General
-  // is marked incomplete first, so a failed write never leaves the new source
-  // saved with the old source's libraries still counted as set up.
+  // Libraries are matched by name, which differs between the sources, so the
+  // old source's are cleared and the new source starts with all of them on,
+  // like a first setup. General is marked incomplete first, so a failed write
+  // never leaves the new source saved with the old libraries still set up.
   if (isSourceSwitch) {
     const generalResult = await updateSettings(
       generalSchema,
-      { ...previousSettings.general, complete: false },
+      { ...previousSettings.general, activeLibraries: [], complete: false },
       'general',
     )
 
