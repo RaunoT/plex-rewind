@@ -17,6 +17,7 @@ import {
 import { maskApiKeys, restoreApiKeys } from '@/utils/connectionSecrets'
 import { selectPlexServer } from '@/utils/fetchTracearr'
 import getSettings from '@/utils/getSettings'
+import { startHistoryRead } from '@/utils/statsSource'
 import { normalizeUrl } from '@/utils/url'
 import { getTranslations } from 'next-intl/server'
 import { z } from 'zod'
@@ -294,6 +295,10 @@ async function testAndSave(
   }
 
   const result = await updateSettings(schema, data, 'connection')
+
+  if (result.status === 'success') {
+    startHistoryRead()
+  }
 
   return isSourceSwitch && result.status === 'success'
     ? { ...result, message: t('savedChooseLibraries') }

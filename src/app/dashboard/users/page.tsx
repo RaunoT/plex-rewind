@@ -1,3 +1,4 @@
+import HistoryReading from '@/components/HistoryReading'
 import { authOptions } from '@/lib/auth'
 import { DashboardSearchParams } from '@/types/dashboard'
 import { Settings } from '@/types/settings'
@@ -13,6 +14,7 @@ import getUsersTop from '@/utils/getUsersTop'
 import { canViewFeature, getViewer } from '@/utils/helpers'
 import { toPublicSettings } from '@/utils/publicSettings'
 import {
+  getHistoryProgress,
   getLibraries,
   getStatsSource,
   getUsersCount,
@@ -74,6 +76,19 @@ async function DashboardUsersContent({
 
   const loggedInUserId = session?.user.id
   const period = getPeriod(periodSp, settings)
+  const progress = await getHistoryProgress(period.string, settings)
+
+  if (progress) {
+    return (
+      <Dashboard
+        type='users'
+        settings={toPublicSettings(settings)}
+        toolbar={toolbar}
+        status={<HistoryReading progress={progress} isInCard />}
+      />
+    )
+  }
+
   const [usersData, totalDuration, usersCount, totalRequests] =
     await Promise.all([
       getUsersTop(

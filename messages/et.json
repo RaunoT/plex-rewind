@@ -86,6 +86,11 @@
     "sourceUnreachableDescription": "Veendu, et {source} töötab ja Plex Rewind saab sellega ühendust, ning proovi uuesti.",
     "connectionSettings": "Kontrolli ühenduse seadeid"
   },
+  "History": {
+    "readingTitle": "Esitusajaloo lugemine",
+    "readingDescription": "Tracearri esitusajalugu loetakse üks kord ja see võib võtta paar minutit. {count, plural, =0 {Lugemine just algas.} one {Seni on loetud # mängimine, alates {date}.} other {Seni on loetud # mängimist, alates {date}.}} Leht uueneb ise.",
+    "readingShort": "Esitusajaloo lugemine…"
+  },
   "PlexDeeplink": {
     "available": "Saadaval",
     "availableLabel": "Saadaval: ava {title} Plexis"
@@ -155,7 +160,23 @@
       "server": "Server",
       "chooseServer": "Vali server",
       "seerrUrlDescription": "Tellimuste lingid avanevad vaataja brauseris, seega kasuta aadressi, millele ta ligi pääseb, mitte kohtvõrgu aadressi.",
-      "optionalService": "{service} (valikuline)"
+      "optionalService": "{service} (valikuline)",
+      "history": "Esitusajalugu",
+      "historyDescription": "Loetakse Tracearrist üks kord ja salvestatakse, seejärel loetakse ainult uued mängimised. Kogu ajalugu loetakse uuesti kord nädalas.",
+      "historyReading": "Ajaloo lugemine…",
+      "historyComplete": "Ajakohane",
+      "historyRereading": "Kogu ajalugu loetakse taustal uuesti",
+      "historySaveFailed": "Ajalugu ei õnnestunud config-kausta salvestada, seega loetakse see pärast taaskäivitust uuesti.",
+      "read": "Loe ajalugu",
+      "readAgain": "Loe uuesti",
+      "readOn": "Jätka lugemist",
+      "historyFailed": "Tracearr lakkas vastamast. Proovin minuti pärast uuesti.",
+      "historyPaused": "Peatatud",
+      "historyNotRead": "Veel lugemata",
+      "historyPlaysSoFar": "{count, plural, =0 {Mängimisi veel pole} one {Seni # mängimine, alates {date}} other {Seni # mängimist, alates {date}}}",
+      "historyPlaysSince": "{count, plural, =0 {Mängimisi veel pole} one {# mängimine alates {date}} other {# mängimist alates {date}}}",
+      "historyRereadPlays": "{count, plural, one {Seni # mängimine} other {Seni # mängimist}}",
+      "retry": "Proovi uuesti"
     },
     "Dashboard": {
       "title": "Edetabeli seaded",

@@ -10,6 +10,7 @@ import {
 import {
   TracearrCursorPage,
   TracearrHistoryRecord,
+  TracearrHistoryStatus,
   TracearrLibrary,
   TracearrMedia,
   TracearrPlexServer,
@@ -67,13 +68,12 @@ export type TracearrPlexUser = {
 
 type PlaysWaiter = {
   since: number
-  deadline: number
   resolve: (hasPlays: boolean) => void
   reject: (error: unknown) => void
 }
 
-// The plays of every window, read newest first and only as far back as the
-// oldest window asked for.
+// The plays of every window, read newest first back to the oldest play. A
+// window is answered as soon as the read gets back to its start.
 type PlayStore = {
   // The settings the plays were read with
   key: string
@@ -83,9 +83,9 @@ type PlayStore = {
   readTo: number
   // Where the read back through the history goes on from
   cursor?: string
-  // The oldest start a window asked for, which the read goes back to
-  target: number
   read: Promise<void> | null
+  // When a page last failed, which stops the read until it tries again
+  readFailedAt: number | null
   waiters: PlaysWaiter[]
   // When the newest plays were last read
   toppedUpAt: number
@@ -110,7 +110,8 @@ type TracearrState = {
   plays: PlayStore | null
   // The store being set up from the saved history, for the settings in `key`
   loading: { key: string; store: Promise<PlayStore> } | null
-  rebuild: Promise<void> | null
+  // The store the whole history is read into again, while that runs
+  rebuild: { store: PlayStore; done: Promise<void> } | null
   saveTimer: ReturnType<typeof setTimeout> | null
   saving: Promise<void>
   hasLoggedSaveError: boolean
@@ -140,6 +141,10 @@ const HISTORY_FULL_REFRESH = 7 * DAY
 const HISTORY_PROGRESS_PAGES = 100
 // The history is saved at most this often, as the file holds every play
 const HISTORY_SAVE_DELAY = 60 * 1000
+// How long a page waits for the history before showing how far the read is
+const HISTORY_PAGE_WAIT = 5 * 1000
+// How long a read waits after a failed page before it tries again
+const HISTORY_RETRY_DELAY = 60 * 1000
 // The share of the rate limit that paced requests leave for everything else
 const RATE_LIMIT_RESERVE = 0.2
 const FIRST_PLAY_CACHE_TTL = DAY
@@ -699,8 +704,8 @@ function createPlayStore(key: string): PlayStore {
     key,
     plays: [],
     readTo: Infinity,
-    target: Infinity,
     read: null,
+    readFailedAt: null,
     waiters: [],
     toppedUpAt: now,
     topUp: null,
@@ -787,21 +792,14 @@ function hasPlaysSince(store: PlayStore, since: number): boolean {
 }
 
 // Answers the windows the store now goes back to. Without a read under way,
-// or after waiting too long, the others get no plays.
+// the others get no plays.
 function settleWaiters(store: PlayStore, error?: unknown): void {
-  const now = Date.now()
-
   store.waiters = store.waiters.filter((waiter) => {
     if (hasPlaysSince(store, waiter.since)) {
       waiter.resolve(true)
     } else if (error !== undefined) {
       waiter.reject(error)
     } else if (!store.read) {
-      waiter.resolve(false)
-    } else if (now > waiter.deadline) {
-      console.error(
-        `[TRACEARR] - Reading the history took longer than ${PAGINATION_DEADLINE / 60000} minutes! It goes on in the background.`,
-      )
       waiter.resolve(false)
     } else {
       return true
@@ -811,17 +809,30 @@ function settleWaiters(store: PlayStore, error?: unknown): void {
   })
 }
 
-// Reads back through the history until the store goes back to its target.
-// What was read stays, so a read that stops goes on from there next time.
+// Reads back through the history to the oldest play. What was read stays, so
+// a read that stops goes on from there next time.
 function readBack(store: PlayStore): void {
   store.read ??= Promise.resolve().then(() => runReadBack(store))
+}
+
+// Goes on with a read that stopped, but only a while after a failed page
+function resumeRead(store: PlayStore): void {
+  if (
+    store === state.plays &&
+    store.readTo !== -Infinity &&
+    !store.read &&
+    (store.readFailedAt === null ||
+      Date.now() - store.readFailedAt >= HISTORY_RETRY_DELAY)
+  ) {
+    readBack(store)
+  }
 }
 
 async function runReadBack(store: PlayStore): Promise<void> {
   let error: unknown
 
   try {
-    for (let pageCount = 0; !hasPlaysSince(store, store.target); pageCount++) {
+    for (let pageCount = 0; store.readTo !== -Infinity; pageCount++) {
       if (store.key !== getCacheKey()) {
         break
       }
@@ -837,6 +848,8 @@ async function runReadBack(store: PlayStore): Promise<void> {
       const page = await fetchPlaysPage(store.cursor)
 
       if (!page) {
+        store.readFailedAt = Date.now()
+
         break
       }
 
@@ -844,10 +857,12 @@ async function runReadBack(store: PlayStore): Promise<void> {
         console.warn(
           `[TRACEARR] - 'history' repeated a pagination cursor! Stopping at ${store.plays.length} plays.`,
         )
+        store.readFailedAt = Date.now()
 
         break
       }
 
+      store.readFailedAt = null
       store.plays.push(...page.plays)
       store.readTo = page.cursor
         ? Math.min(store.readTo, page.oldest)
@@ -866,10 +881,14 @@ async function runReadBack(store: PlayStore): Promise<void> {
   } catch (caught) {
     error = caught
   } finally {
-    // In the same step as the last check of the target, so a window that
-    // lowers it after this starts a new read instead of missing out.
+    // In the same step as the read's last check, so a window that comes in
+    // after this starts a new read instead of missing out.
     store.read = null
     settleWaiters(store, error)
+
+    if (store.readFailedAt !== null) {
+      setTimeout(() => resumeRead(store), HISTORY_RETRY_DELAY)
+    }
   }
 }
 
@@ -884,15 +903,30 @@ function waitForPlays(
     return Promise.resolve(true)
   }
 
-  store.target = Math.min(store.target, since)
-
   const hasPlays = new Promise<boolean>((resolve, reject) => {
-    store.waiters.push({
+    let timer: ReturnType<typeof setTimeout> | undefined
+
+    const waiter: PlaysWaiter = {
       since,
-      deadline: Date.now() + timeout,
-      resolve,
-      reject,
-    })
+      resolve: (value) => {
+        clearTimeout(timer)
+        resolve(value)
+      },
+      reject: (error) => {
+        clearTimeout(timer)
+        reject(error)
+      },
+    }
+
+    store.waiters.push(waiter)
+
+    // The read goes on for the windows still waiting, and for the next one
+    if (Number.isFinite(timeout)) {
+      timer = setTimeout(() => {
+        store.waiters = store.waiters.filter((other) => other !== waiter)
+        resolve(false)
+      }, timeout)
+    }
   })
 
   readBack(store)
@@ -945,9 +979,7 @@ async function topUp(store: PlayStore): Promise<void> {
 
 // Reads the whole history again into a new store, which takes over once it
 // goes back as far as the current one. Until then the current one answers.
-async function rebuild(current: PlayStore): Promise<void> {
-  const next = createPlayStore(current.key)
-
+async function rebuild(current: PlayStore, next: PlayStore): Promise<void> {
   try {
     do {
       if (!(await waitForPlays(next, current.readTo, Infinity))) {
@@ -973,10 +1005,30 @@ async function rebuild(current: PlayStore): Promise<void> {
 
 function rebuildInBackground(store: PlayStore): void {
   if (!state.rebuild && Date.now() >= store.rebuildAt) {
-    state.rebuild = rebuild(store).finally(() => {
-      state.rebuild = null
-    })
+    const next = createPlayStore(store.key)
+
+    state.rebuild = {
+      store: next,
+      done: rebuild(store, next).finally(() => {
+        state.rebuild = null
+      }),
+    }
   }
+}
+
+// Tops up plays older than the cache allows, goes on with a read that stopped,
+// and reads the whole history again in the background once it's due.
+async function refreshPlays(store: PlayStore): Promise<void> {
+  resumeRead(store)
+
+  if (Date.now() - store.toppedUpAt >= CACHE_TTL) {
+    store.topUp ??= topUp(store).finally(() => {
+      store.topUp = null
+    })
+    await store.topUp
+  }
+
+  rebuildInBackground(store)
 }
 
 // Every window reads from one store, so a shorter window is answered as soon
@@ -995,20 +1047,123 @@ export async function getTracearrPlays(
   const store = await getPlayStore()
 
   if (!(await waitForPlays(store, sinceTime))) {
+    if (store.read) {
+      console.error(
+        `[TRACEARR] - Reading the history took longer than ${PAGINATION_DEADLINE / 60000} minutes! It goes on in the background.`,
+      )
+    }
+
     return []
   }
 
-  if (Date.now() - store.toppedUpAt >= CACHE_TTL) {
-    store.topUp ??= topUp(store).finally(() => {
-      store.topUp = null
-    })
-    await store.topUp
-  }
-
-  rebuildInBackground(store)
+  await refreshPlays(store)
 
   // A play counts in the window it started in.
   return store.plays.filter((play) => play.startedAt >= sinceTime)
+}
+
+// How far back a read has got, from 0 to 1, by the time between now and the
+// server's first play. It stays short of 1 until the oldest play is read.
+function getReadProgress(
+  store: PlayStore,
+  firstPlayAt: number | null,
+  now: number,
+): number {
+  if (store.readTo === -Infinity) {
+    return 1
+  }
+
+  const oldestPlayAt = store.plays.at(-1)?.startedAt
+
+  if (
+    oldestPlayAt === undefined ||
+    firstPlayAt === null ||
+    firstPlayAt >= now
+  ) {
+    return 0
+  }
+
+  return Math.min(Math.max((now - oldestPlayAt) / (now - firstPlayAt), 0), 0.99)
+}
+
+async function getHistoryStatus(
+  store: PlayStore,
+): Promise<TracearrHistoryStatus> {
+  const now = Date.now()
+  const isComplete = store.readTo === -Infinity
+  const oldestPlayAt = store.plays.at(-1)?.startedAt ?? null
+  // Read again, the history goes back as far as the complete one
+  const firstPlayAt = isComplete ? oldestPlayAt : await getServerFirstPlayAt()
+  const rebuild = state.rebuild
+
+  return {
+    playCount: store.plays.length,
+    oldestPlayAt,
+    progress: getReadProgress(store, firstPlayAt, now),
+    isComplete,
+    isReading: !!store.read,
+    hasFailed: store.readFailedAt !== null,
+    reread: rebuild && {
+      playCount: rebuild.store.plays.length,
+      progress: getReadProgress(rebuild.store, firstPlayAt, now),
+    },
+    hasSaveFailed: state.hasLoggedSaveError,
+  }
+}
+
+export async function getTracearrHistoryStatus(): Promise<TracearrHistoryStatus> {
+  return getHistoryStatus(await getPlayStore())
+}
+
+// Null once the plays since `since` are read, or reading them has stopped, so
+// the stats can be shown. Otherwise how far the read has got, after waiting a
+// few seconds for it.
+export async function getTracearrReadProgress(
+  since: string | Date,
+  timeout = HISTORY_PAGE_WAIT,
+): Promise<TracearrHistoryStatus | null> {
+  const sinceTime = new Date(since).getTime()
+  const store = await getPlayStore()
+
+  if (
+    !Number.isFinite(sinceTime) ||
+    (await waitForPlays(store, sinceTime, timeout)) ||
+    !store.read
+  ) {
+    return null
+  }
+
+  return getHistoryStatus(store)
+}
+
+async function readWholeHistory(): Promise<void> {
+  const store = await getPlayStore()
+
+  if (await waitForPlays(store, -Infinity, Infinity)) {
+    await refreshPlays(store)
+  }
+}
+
+// Reads the whole history in the background, so pages find it ready
+export function startTracearrHistoryRead(): void {
+  readWholeHistory().catch((error) => {
+    console.error('[TRACEARR] - Unable to read the history!', error)
+  })
+}
+
+// Reads the whole history again now, instead of when the weekly read is due. A
+// read that hasn't got back to the oldest play yet goes on instead.
+export async function rereadTracearrHistory(): Promise<void> {
+  const store = await getPlayStore()
+
+  if (store.readTo !== -Infinity) {
+    startTracearrHistoryRead()
+
+    return
+  }
+
+  store.rebuildAt = 0
+  rebuildInBackground(store)
 }
 
 function getStartedAt(record: TracearrHistoryRecord): number {

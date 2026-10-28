@@ -784,7 +784,8 @@ describe('getTracearrPlays', () => {
     }
   }
 
-  // Like Tracearr, the plays newest first, with the offset as the cursor
+  // Like Tracearr, the plays up to `until` newest first, with the offset as the
+  // cursor
   function historyRoute(
     getPlayTimes: () => number[],
     isFailing: (url: URL) => boolean = () => false,
@@ -796,7 +797,10 @@ describe('getTracearrPlays', () => {
           return 'not a page'
         }
 
-        const times = [...getPlayTimes()].sort((a, b) => b - a)
+        const until = url.searchParams.get('until')
+        const times = getPlayTimes()
+          .filter((time) => !until || time <= Date.parse(until))
+          .sort((a, b) => b - a)
         const offset = Number(url.searchParams.get('cursor') ?? 0)
         const pageSize = Number(url.searchParams.get('pageSize'))
         const end = offset + pageSize
@@ -827,7 +831,7 @@ describe('getTracearrPlays', () => {
     vi.setSystemTime(now)
   })
 
-  it('reads back as far as a window needs, and on from there for a longer one', async () => {
+  it('answers a window once the read gets back to it, and reads on to the oldest play', async () => {
     route(historyRoute(() => playTimes))
 
     const { getTracearrPlays } = await load()
@@ -837,8 +841,10 @@ describe('getTracearrPlays', () => {
     expect(yearPlays.every((play) => play.startedAt >= yearAgo.getTime())).toBe(
       true,
     )
-    expect(requestsTo('history')).toHaveLength(15)
 
+    await vi.waitFor(() => {
+      expect(requestsTo('history')).toHaveLength(30)
+    })
     await expect(getTracearrPlays('2010-01-01')).resolves.toHaveLength(2920)
 
     // Every page was read once
@@ -1047,6 +1053,203 @@ describe('getTracearrPlays', () => {
     )
     expect(requestsTo('history')).toHaveLength(1)
     expect(requestsTo('servers')).toHaveLength(1)
+  })
+
+  describe('reading in the background', () => {
+    it('shows how far the read is while a period is still being read', async () => {
+      const handlers = historyRoute(() => playTimes)
+      const gate = Promise.withResolvers<void>()
+
+      // Holds back the pages after the first five
+      fetchMock.mockImplementation(async (input: string) => {
+        const url = new URL(input)
+
+        if (Number(url.searchParams.get('cursor')) >= 500) {
+          await gate.promise
+        }
+
+        return Response.json(
+          handlers[url.pathname.replace('/api/v2/public/', '')](url),
+        )
+      })
+
+      const { getTracearrPlays, getTracearrReadProgress } = await load()
+      const progress = await getTracearrReadProgress('2010-01-01', 200)
+
+      expect(progress).toMatchObject({
+        playCount: 500,
+        oldestPlayAt: playTimes[499],
+        isComplete: false,
+        isReading: true,
+        hasFailed: false,
+        reread: null,
+        hasSaveFailed: false,
+      })
+      // By time, from now back to the server's first play
+      expect(progress?.progress).toBeCloseTo(500 / 2920, 2)
+      // A period the read has already passed can be shown
+      await expect(
+        getTracearrReadProgress(new Date(now - 7 * DAY), 200),
+      ).resolves.toBeNull()
+
+      gate.resolve()
+
+      await expect(getTracearrPlays('2010-01-01')).resolves.toHaveLength(2920)
+      await expect(
+        getTracearrReadProgress('2010-01-01', 200),
+      ).resolves.toBeNull()
+    })
+
+    it('lets the page through when the read stops', async () => {
+      route(
+        historyRoute(
+          () => playTimes,
+          () => true,
+        ),
+      )
+
+      const { getTracearrReadProgress } = await load()
+
+      await expect(
+        getTracearrReadProgress('2010-01-01', 200),
+      ).resolves.toBeNull()
+    })
+
+    it('reads the whole history without a page asking for it', async () => {
+      route(historyRoute(() => playTimes))
+
+      const { getTracearrHistoryStatus, startTracearrHistoryRead } =
+        await load()
+
+      startTracearrHistoryRead()
+
+      await vi.waitFor(async () => {
+        expect(await getTracearrHistoryStatus()).toMatchObject({
+          playCount: 2920,
+          oldestPlayAt: playTimes[2919],
+          progress: 1,
+          isComplete: true,
+          isReading: false,
+        })
+      })
+
+      // Every page was read once. The search for the first play has no cursor.
+      const pageCursors = historyCursors().filter(Boolean)
+
+      expect(pageCursors).toHaveLength(29)
+      expect(new Set(pageCursors).size).toBe(29)
+    })
+
+    it('reads the whole history again when asked', async () => {
+      let times = playTimes
+
+      route(historyRoute(() => times))
+
+      const {
+        getTracearrHistoryStatus,
+        getTracearrPlays,
+        rereadTracearrHistory,
+      } = await load()
+
+      await getTracearrPlays('2010-01-01')
+
+      const deletedPlay = playTimes[2000]
+
+      times = playTimes.filter((time) => time !== deletedPlay)
+
+      await rereadTracearrHistory()
+
+      // The current plays answer until the new read is done
+      expect((await getTracearrHistoryStatus()).reread).not.toBeNull()
+
+      await vi.waitFor(async () => {
+        expect(await getTracearrHistoryStatus()).toMatchObject({
+          playCount: 2919,
+          reread: null,
+        })
+      })
+      expect(startTimes(await getTracearrPlays('2010-01-01'))).not.toContain(
+        deletedPlay,
+      )
+    })
+
+    it('goes on with a read that stopped when asked to read again', async () => {
+      let failures = 1
+
+      route(
+        historyRoute(
+          () => playTimes,
+          (url) => url.searchParams.get('cursor') === '1000' && failures-- > 0,
+        ),
+      )
+
+      const {
+        getTracearrHistoryStatus,
+        rereadTracearrHistory,
+        startTracearrHistoryRead,
+      } = await load()
+
+      startTracearrHistoryRead()
+
+      await vi.waitFor(async () => {
+        expect(await getTracearrHistoryStatus()).toMatchObject({
+          playCount: 1000,
+          isReading: false,
+          hasFailed: true,
+        })
+      })
+
+      await rereadTracearrHistory()
+      await vi.waitFor(async () => {
+        expect(await getTracearrHistoryStatus()).toMatchObject({
+          isComplete: true,
+          hasFailed: false,
+        })
+      })
+      expect(
+        historyCursors().filter((cursor) => cursor === '100'),
+      ).toHaveLength(1)
+    })
+
+    it('tries again a minute after a page fails', async () => {
+      let failures = 1
+
+      vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout', 'Date'] })
+      vi.setSystemTime(now)
+      route(
+        historyRoute(
+          () => playTimes,
+          (url) => url.searchParams.get('cursor') === '1000' && failures-- > 0,
+        ),
+      )
+
+      const { getTracearrHistoryStatus, startTracearrHistoryRead } =
+        await load()
+
+      startTracearrHistoryRead()
+
+      await vi.waitFor(async () => {
+        expect(await getTracearrHistoryStatus()).toMatchObject({
+          playCount: 1000,
+          hasFailed: true,
+        })
+      })
+      await vi.advanceTimersByTimeAsync(30 * 1000)
+
+      expect(await getTracearrHistoryStatus()).toMatchObject({
+        playCount: 1000,
+        isReading: false,
+      })
+
+      await vi.advanceTimersByTimeAsync(30 * 1000)
+      await vi.waitFor(async () => {
+        expect(await getTracearrHistoryStatus()).toMatchObject({
+          playCount: 2920,
+          isComplete: true,
+          hasFailed: false,
+        })
+      })
+    })
   })
 
   describe('saved history', () => {

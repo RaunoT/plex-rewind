@@ -5,8 +5,13 @@ import {
   TautulliLibrary,
   TautulliUser,
 } from '@/types/tautulli'
+import { TracearrHistoryStatus } from '@/types/tracearr'
 import { kebabCase } from 'lodash'
-import { isTracearrReachable } from './fetchTracearr'
+import {
+  getTracearrReadProgress,
+  isTracearrReachable,
+  startTracearrHistoryRead,
+} from './fetchTracearr'
 import getSettings from './getSettings'
 import { isTracearrSource } from './helpers'
 import tautulliSource, { isTautulliReachable } from './tautulliSource'
@@ -26,6 +31,23 @@ export async function isStatsSourceReachable(
   return isTracearrSource(settings)
     ? isTracearrReachable()
     : isTautulliReachable()
+}
+
+// Tracearr's stats come from its play history, which is read once before a
+// period can be shown. Null when the period can be shown, otherwise how far
+// the read has got.
+export async function getHistoryProgress(
+  since: string | Date,
+  settings: Settings = getSettings(),
+): Promise<TracearrHistoryStatus | null> {
+  return isTracearrSource(settings) ? getTracearrReadProgress(since) : null
+}
+
+// So that pages find the history ready, instead of starting on it themselves
+export function startHistoryRead(settings: Settings = getSettings()): void {
+  if (isTracearrSource(settings) && settings.connection.complete) {
+    startTracearrHistoryRead()
+  }
 }
 
 export async function getServerId(): Promise<string> {

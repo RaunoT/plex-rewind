@@ -1,3 +1,4 @@
+import HistoryReading from '@/components/HistoryReading'
 import { authOptions } from '@/lib/auth'
 import { RewindUser, UserRewind } from '@/types/rewind'
 import {
@@ -27,6 +28,7 @@ import {
 import { toPublicSettings } from '@/utils/publicSettings'
 import {
   getActiveUsers,
+  getHistoryProgress,
   getLibraries,
   getServerId,
   getStatsSource,
@@ -81,10 +83,16 @@ async function RewindContent({ userId }: { userId?: string }) {
     return notFound()
   }
 
+  const startDate = getRewindStartDate(settings)
+  const progress = await getHistoryProgress(startDate, settings)
+
+  if (progress) {
+    return <HistoryReading progress={progress} isInCard />
+  }
+
   const t = await getTranslations()
   const locale = await getLocale()
   const libraries = await getLibraries()
-  const startDate = getRewindStartDate(settings)
   const [
     topMediaItems,
     topMediaStats,

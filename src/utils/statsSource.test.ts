@@ -5,12 +5,14 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { DEFAULT_SETTINGS } from './constants'
 import getSettings from './getSettings'
 import {
+  getHistoryProgress,
   getLibraries,
   getReachableLibraries,
   getServerId,
   getStatsSource,
   getUsers,
   isStatsSourceReachable,
+  startHistoryRead,
 } from './statsSource'
 import tautulliSource from './tautulliSource'
 import tracearrSource from './tracearrSource'
@@ -60,6 +62,26 @@ describe('getStatsSource', () => {
     settings.connection.statisticsSource = 'tracearr'
 
     expect(getStatsSource(settings)).toBe(tracearrSource)
+  })
+})
+
+describe('play history', () => {
+  it('has no history to wait for with Tautulli', async () => {
+    await expect(getHistoryProgress('2010-01-01')).resolves.toBeNull()
+
+    startHistoryRead()
+
+    expect(fetchMock).not.toHaveBeenCalled()
+  })
+
+  it('reads nothing until the Tracearr connection is saved', () => {
+    const settings = testSettings()
+
+    settings.connection.statisticsSource = 'tracearr'
+    settings.connection.complete = false
+    startHistoryRead(settings)
+
+    expect(fetchMock).not.toHaveBeenCalled()
   })
 })
 
