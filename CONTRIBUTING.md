@@ -105,14 +105,7 @@ The screenshots in `.github/screenshots` use made-up data, so they don't show an
      },
      "general": {
        "activeLibraries": ["movies", "tv-shows", "music"],
-       "activeExternalLinks": [
-         "imdb",
-         "tmdb",
-         "tvdb",
-         "rottenTomatoes",
-         "letterboxd",
-         "trakt"
-       ],
+       "activeExternalLinks": ["imdb", "tvdb", "rottenTomatoes", "letterboxd"],
        "complete": true
      },
      "rewind": { "complete": true },

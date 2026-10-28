@@ -5,7 +5,7 @@ import { MediaIcon } from '@/components/icons'
 import SkeletonLine from '@/components/SkeletonLine'
 import { PublicSettings } from '@/types/settings'
 import { TautulliLibrary } from '@/types/tautulli'
-import { STATS_SOURCE_NAMES } from '@/utils/constants'
+import { SETTINGS_HREF, STATS_SOURCE_NAMES } from '@/utils/constants'
 import { canViewFeature, Viewer } from '@/utils/helpers'
 import {
   ArrowPathIcon,
@@ -24,7 +24,7 @@ import { usePathname } from 'next/navigation'
 import { ReactNode, Suspense, use, useContext } from 'react'
 import AccountMenu from './AccountMenu'
 import { GlobalContext } from './GlobalContextProvider'
-import { AppInfoContext, getSettingsLink } from './HeaderControls'
+import { AppInfoContext } from './HeaderControls'
 
 type Props = {
   libraries: Promise<TautulliLibrary[] | null>
@@ -118,7 +118,7 @@ export default function Sidebar({ libraries, settings }: Props) {
         {isAdmin && (
           <ul className='flex flex-col gap-0.5'>
             <SidebarLink
-              href={isSettings ? pathname : getSettingsLink(pathname)}
+              href={isSettings ? pathname : SETTINGS_HREF}
               icon={<Cog6ToothIcon />}
               isActive={isSettings}
             >

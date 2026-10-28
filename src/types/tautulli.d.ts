@@ -53,6 +53,8 @@ export type TautulliItemRow = {
   users_watched: number | undefined
   rating_key: number
   thumb: string
+  // TMDB's, for when the source can't serve its own
+  tmdb_poster?: string | null
   is_deleted: boolean
   rating: string | null
   // IMDb's from Radarr or Sonarr, Rotten Tomatoes' from its own search
@@ -90,9 +92,14 @@ export type TautulliSession = {
   container: string
   duration?: string
   friendly_name: string
+  // Plex's IDs for the show of an episode, like `tmdb://61575`. Only
+  // Tautulli has them.
+  grandparent_guids?: string[]
   grandparent_rating_key?: number
   grandparent_thumb: string
   grandparent_title: string
+  // Plex's IDs for the item itself, so an episode's own
+  guids?: string[]
   ip_address?: string
   ip_address_public?: string
   location?: string

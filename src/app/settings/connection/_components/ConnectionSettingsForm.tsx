@@ -114,7 +114,7 @@ export default function ConnectionSettingsForm({
             key={`tautulli-url-${connectionSettings.tautulliUrl}`}
             type='url'
             className='input'
-            placeholder='http://192.168.1.2:8181'
+            placeholder='https://tautulli.example.com'
             name='tautulliUrl'
             required={!isTracearr}
             defaultValue={connectionSettings.tautulliUrl}
@@ -148,7 +148,7 @@ export default function ConnectionSettingsForm({
             key={`tracearr-url-${connectionSettings.tracearrUrl}`}
             type='url'
             className='input'
-            placeholder='http://192.168.1.2:3000'
+            placeholder='https://tracearr.example.com'
             name='tracearrUrl'
             required={isTracearr}
             defaultValue={connectionSettings.tracearrUrl}
@@ -163,7 +163,6 @@ export default function ConnectionSettingsForm({
             key={`tracearr-api-key-${connectionSettings.tracearrApiKey}`}
             type='password'
             className='input'
-            placeholder='trr_pub_…'
             name='tracearrApiKey'
             required={isTracearr}
             defaultValue={connectionSettings.tracearrApiKey}
@@ -206,7 +205,7 @@ export default function ConnectionSettingsForm({
             key={`plex-url-${connectionSettings.plexUrl}`}
             type='url'
             className='input'
-            placeholder='http://192.168.1.2:32400'
+            placeholder='https://plex.example.com'
             name='plexUrl'
             required
             defaultValue={connectionSettings.plexUrl}
@@ -233,7 +232,6 @@ export default function ConnectionSettingsForm({
           <span className='label'>
             {/* eslint-disable-next-line react/jsx-no-literals */}
             <span className='label-wrapper'>URL</span>
-            <small>{t('Connection.seerrUrlDescription')}</small>
           </span>
         </label>
         <label className='input-wrapper'>

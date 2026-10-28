@@ -1,6 +1,7 @@
 'use client'
 
 import { Version } from '@/types'
+import { SETTINGS_HREF } from '@/utils/constants'
 import {
   ArrowPathIcon,
   Cog6ToothIcon,
@@ -47,17 +48,6 @@ function getSettingsReturn() {
   }
 }
 
-// Opens the settings for the section being viewed
-export function getSettingsLink(pathname: string) {
-  return pathname.startsWith('/dashboard')
-    ? '/settings/dashboard'
-    : pathname.startsWith('/rewind')
-      ? '/settings/rewind'
-      : pathname.startsWith('/activity')
-        ? '/settings/activity'
-        : '/settings/general'
-}
-
 export default function HeaderControls({ className }: Props) {
   const { missingSetting, version } = useContext(AppInfoContext)
   const pathname = usePathname()
@@ -89,7 +79,7 @@ export default function HeaderControls({ className }: Props) {
       )}
       {!missingSetting && isAdmin && (
         <Link
-          href={isSettings ? settingsReturn : getSettingsLink(pathname)}
+          href={isSettings ? settingsReturn : SETTINGS_HREF}
           aria-label={isSettings ? t('closeSettings') : t('openSettings')}
           className='icon-button'
         >

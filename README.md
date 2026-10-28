@@ -75,7 +75,7 @@ To help translate the application to your language, create a new `<language-code
 
 ## Donate
 
-If you like this project and wish to support it, you can do so with a one-time donation via [PayPal](https://paypal.me/raunot) or a recurring one on [Patreon](https://www.patreon.com/PlexRewind) or [GitHub Sponsors](https://github.com/sponsors/RaunoT) (preferred). Thank you! ❤️
+If you like this project and wish to support it, you can do so on [GitHub Sponsors](https://github.com/sponsors/RaunoT) (preferred) or [Buy Me a Coffee](https://buymeacoffee.com/fr9lzfrhdh). Thank you! ❤️
 
 ### Supporters
 

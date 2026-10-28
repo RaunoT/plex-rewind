@@ -549,6 +549,7 @@ describe('getTracearrFirstPlay', () => {
       media_title: movieTitle ?? 'Pilot',
       show_title: movieTitle ? null : 'The Office',
       artist_name: null,
+      user: { id: 'u1', avatar_url: null },
     }
   }
 
@@ -608,9 +609,10 @@ describe('getTracearrFirstPlay', () => {
 
     const { getTracearrFirstPlay } = await load()
 
-    await expect(getTracearrFirstPlay('42')).resolves.toEqual({
+    await expect(getTracearrFirstPlay('42')).resolves.toMatchObject({
       date: '2021-03-15T20:00:00.000Z',
       title: 'The Office',
+      play: { startedAt: Date.parse('2021-03-15T20:00:00.000Z') },
     })
     expect(
       requestsTo('history').every(([input]) => {
@@ -668,9 +670,10 @@ describe('getTracearrFirstPlay', () => {
 
     const { getTracearrFirstPlay } = await load()
 
-    await expect(getTracearrFirstPlay('42')).resolves.toEqual({
+    await expect(getTracearrFirstPlay('42')).resolves.toMatchObject({
       date: '2021-03-31T23:30:00.000Z',
       title: 'First film',
+      play: { mediaType: 'movie', title: 'First film' },
     })
   })
 

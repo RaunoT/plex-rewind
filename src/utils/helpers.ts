@@ -15,7 +15,6 @@ const REQUIRED_SETTINGS = [
   'general.complete',
   'rewind.complete',
   'dashboard.customPeriod',
-  'dashboard.startDate',
   'dashboard.complete',
   'activity.complete',
 ]
@@ -154,4 +153,14 @@ export function isPostUpdateMissingSettings(settings: Settings): boolean {
   // Post-update missing settings is when setupComplete is true (app was configured before)
   // but there are currently missing required settings (new settings were added)
   return settings.setupComplete && checkRequiredSettings(settings) !== null
+}
+
+// Option lists read alphabetically, by the rules of the viewer's language
+export function sortByLabel<T extends { label: string }>(
+  items: T[],
+  locale: string,
+): T[] {
+  const collator = new Intl.Collator(locale)
+
+  return [...items].sort((a, b) => collator.compare(a.label, b.label))
 }

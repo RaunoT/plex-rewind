@@ -1,4 +1,6 @@
+import MediaItems from '@/components/MediaItem/MediaItems'
 import { RewindStory } from '@/types/rewind'
+import { RATING_STATISTICS } from '@/utils/constants'
 import { CalendarIcon } from '@heroicons/react/24/outline'
 import { useTranslations } from 'next-intl'
 import RewindStat from '../RewindStat'
@@ -44,12 +46,31 @@ export default function StoryFirstPlay({ userRewind, settings }: RewindStory) {
 
       {firstPlay.title && (
         <RewindStat renderDelay={6} loaderDelay={3} noScale>
-          <p>
+          <p className={firstPlay.item ? 'mb-2' : undefined}>
             {t.rich('title', {
               titleValue: firstPlay.title,
               title: (chunks) => <span className='rewind-cat'>{chunks}</span>,
             })}
           </p>
+
+          {firstPlay.item && (
+            <div className='text-base leading-normal font-normal tracking-normal'>
+              <MediaItems
+                type={firstPlay.item.type}
+                items={[firstPlay.item.data]}
+                serverId={userRewind.server_id}
+                rows
+                settings={settings}
+                isRanked={false}
+                // Its year and ratings. Play counts would only say it's played.
+                activeStats={settings.general.activeItemStatistics.filter(
+                  (stat) =>
+                    stat === 'year' ||
+                    (RATING_STATISTICS as readonly string[]).includes(stat),
+                )}
+              />
+            </div>
+          )}
         </RewindStat>
       )}
     </>

@@ -1,5 +1,6 @@
 import { StatisticsSource } from '@/types/settings'
 import { STATS_SOURCE_NAMES } from '@/utils/constants'
+import { ServerStackIcon } from '@heroicons/react/24/outline'
 import { useTranslations } from 'next-intl'
 import Link from 'next/link'
 import { ComponentProps } from 'react'
@@ -27,6 +28,7 @@ export default function SourceUnreachable({
 
   return (
     <StatusMessage
+      icon={ServerStackIcon}
       title={t('sourceUnreachable', { source: name })}
       description={t('sourceUnreachableDescription', { source: name })}
       as={as}

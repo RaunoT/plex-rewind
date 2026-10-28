@@ -22,7 +22,9 @@ vi.mock('./statsSource', async (importOriginal) => ({
   ...(await importOriginal<typeof import('./statsSource')>()),
   getLibraries: vi.fn(),
 }))
-vi.mock('./tautulliHistory', () => ({
+// The first play is made into a play the real way
+vi.mock('./tautulliHistory', async (importOriginal) => ({
+  ...(await importOriginal<typeof import('./tautulliHistory')>()),
   getTautulliPlays: vi.fn(),
   getTautulliHistoryReaders: vi.fn(() => []),
 }))

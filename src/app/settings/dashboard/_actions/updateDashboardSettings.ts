@@ -43,7 +43,8 @@ export default async function saveDashboardSettings(
       .optional(),
     startDate: z
       .string()
-      .refine((val) => !isNaN(Date.parse(val)), {
+      // Empty starts all time at the first play
+      .refine((val) => !val || !isNaN(Date.parse(val)), {
         message: t('startDateError'),
       })
       .optional(),

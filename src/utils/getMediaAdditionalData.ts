@@ -118,13 +118,11 @@ export default async function getMediaAdditionalData(
           ? fetchRottenTomatoes(item.title, year, type)
           : null,
       ])
-
-      let poster = source.thumb || ''
-
-      // Test if thumb exists, if not, fetch from TMDB
-      if ((!poster || isPostersTmdbOnly) && details?.poster_path) {
-        poster = `https://image.tmdb.org/t/p/w300/${details.poster_path}`
-      }
+      const tmdbPoster = details?.poster_path
+        ? `https://image.tmdb.org/t/p/w300/${details.poster_path}`
+        : null
+      const poster =
+        (isPostersTmdbOnly && tmdbPoster) || source.thumb || tmdbPoster || ''
 
       return {
         year: Number(details?.first_air_date?.slice(0, 4)) || null,
@@ -140,6 +138,7 @@ export default async function getMediaAdditionalData(
         imdb_id: imdbId,
         tvdb_id: tvdbId,
         thumb: poster,
+        tmdb_poster: tmdbPoster,
       }
     }),
   )
@@ -156,6 +155,7 @@ export default async function getMediaAdditionalData(
     mediaItem.imdb_id = additionalData[i].imdb_id
     mediaItem.tvdb_id = additionalData[i].tvdb_id
     mediaItem.thumb = additionalData[i].thumb
+    mediaItem.tmdb_poster = additionalData[i].tmdb_poster
 
     if (type === 'tv') {
       mediaItem.year = mediaItem.year || additionalData[i].year

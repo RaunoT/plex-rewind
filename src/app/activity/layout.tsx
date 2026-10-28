@@ -1,3 +1,4 @@
+import CardWrapper from '@/app/_components/CardWrapper'
 import { authOptions } from '@/lib/auth'
 import getSettings from '@/utils/getSettings'
 import { canViewFeature, getViewer } from '@/utils/helpers'
@@ -6,8 +7,6 @@ import { getTranslations } from 'next-intl/server'
 import { notFound } from 'next/navigation'
 import { ReactNode } from 'react'
 import PageTitle from '../_components/PageTitle'
-import ActivitiesCard from './_components/ActivitiesCard'
-import StreamDetailsSwitch from './_components/StreamDetailsSwitch'
 
 type Props = {
   children: ReactNode
@@ -23,10 +22,9 @@ export default async function ActivityLayout({ children }: Props) {
   }
 
   return (
-    <div className='page-width mb-auto'>
+    <div className='page-width-narrow mb-auto'>
       <PageTitle title={t('title')} />
-      <StreamDetailsSwitch />
-      <ActivitiesCard>{children}</ActivitiesCard>
+      <CardWrapper>{children}</CardWrapper>
     </div>
   )
 }

@@ -13,7 +13,9 @@ vi.mock('@/lib/auth', () => ({ authOptions: {} }))
 vi.mock('next-auth', () => ({ getServerSession: vi.fn() }))
 vi.mock('./fetchTautulli', () => ({ default: vi.fn() }))
 vi.mock('./getSettings', () => ({ default: vi.fn() }))
-vi.mock('./tautulliHistory', () => ({
+// The first play is made into a play the real way
+vi.mock('./tautulliHistory', async (importOriginal) => ({
+  ...(await importOriginal<typeof import('./tautulliHistory')>()),
   getTautulliPlays: vi.fn(),
   getTautulliHistoryReaders: vi.fn(() => []),
 }))
@@ -311,6 +313,8 @@ describe('getFirstPlay', () => {
     await expect(tautulliSource.getFirstPlay('5')).resolves.toEqual({
       date: '2021-03-15T00:00:00.000Z',
       title: 'The Office',
+      // The row has too little for a play
+      play: null,
     })
     expect(fetchMock).toHaveBeenCalledWith(
       'get_history',

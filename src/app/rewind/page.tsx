@@ -113,6 +113,10 @@ async function RewindContent({ userId }: { userId?: string }) {
     getPlaybackHabits(user.id),
     getStatsSource(settings).getFirstPlay(user.id),
   ])
+  // The card for the first play needs its poster and ratings looked up
+  const firstPlayItem = firstPlay?.play
+    ? await getStatsSource(settings).getPlayItem(firstPlay.play)
+    : null
   const share = getUserShare(
     userTotalDuration,
     librariesTotalDuration,
@@ -149,6 +153,13 @@ async function RewindContent({ userId }: { userId?: string }) {
       date: formatMonthYear(firstPlay.date, locale, 'long'),
       timeSince: formatTimeSince(firstPlay.date, locale),
       title: firstPlay.title,
+      item:
+        firstPlay.play && firstPlayItem
+          ? {
+              data: firstPlayItem,
+              type: ITEM_TYPES[firstPlay.play.mediaType],
+            }
+          : null,
     },
     libraries: libraries,
     libraries_total_size: librariesTotalSize.size,
@@ -178,6 +189,13 @@ type Props = {
     userId?: string
   }>
 }
+
+// What a play rolls up into, as in the dashboard's lists
+const ITEM_TYPES = {
+  movie: 'movie',
+  episode: 'show',
+  track: 'artist',
+} as const
 
 export default async function RewindPage({ searchParams }: Props) {
   const { userId } = await searchParams

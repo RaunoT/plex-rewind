@@ -117,14 +117,14 @@ export default function PlayHistory({
               <CheckCircleIcon className='text-success size-5 shrink-0' />
             )}
             {isReading
-              ? t('historyReading')
+              ? t('historySyncing')
               : isComplete
                 ? t('historyComplete')
                 : hasFailed
                   ? t('historyFailed', { source: STATS_SOURCE_NAMES[source] })
                   : playCount
                     ? t('historyPaused')
-                    : t('historyNotRead')}
+                    : t('historyNotSynced')}
           </p>
           <div className='mt-2'>
             <ProgressBar
@@ -143,11 +143,11 @@ export default function PlayHistory({
           </div>
           {reread && (
             <div className='mt-4'>
-              <p className='text-neutral-300'>{t('historyRereading')}</p>
+              <p className='text-neutral-300'>{t('historyResyncing')}</p>
               <div className='mt-2'>
                 <ProgressBar
                   value={reread.progress}
-                  label={t('historyRereading')}
+                  label={t('historyResyncing')}
                 />
               </div>
               <div className='mt-1.5 flex justify-between gap-3 text-xs text-neutral-400 tabular-nums'>
@@ -173,17 +173,15 @@ export default function PlayHistory({
           {hasStopped
             ? t('retry')
             : isComplete
-              ? t('readAgain')
+              ? t('resync')
               : playCount
-                ? t('readOn')
-                : t('read')}
+                ? t('continueSync')
+                : t('sync')}
         </button>
       </div>
       <span className='label label--start'>
         <span className='label-wrapper'>{t('history')}</span>
-        <small>
-          {t('historyDescription', { source: STATS_SOURCE_NAMES[source] })}
-        </small>
+        <small>{t('historyDescription')}</small>
       </span>
     </div>
   )

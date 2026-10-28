@@ -57,6 +57,9 @@ export default function PeriodSelect({ settings }: Props) {
   function getUpdatedQueryParams(newPeriod: string) {
     const params = new URLSearchParams(searchParams.toString())
 
+    // A new list starts from its first rows again
+    params.delete('limit')
+
     if (newPeriod) {
       params.set('period', newPeriod)
     } else {

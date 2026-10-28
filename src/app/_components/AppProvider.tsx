@@ -25,6 +25,8 @@ type Props = {
   libraries: Promise<TautulliLibrary[] | null>
   settings: PublicSettings
   canBrowse: boolean
+  // From its cookie, missing until the choice was first saved there
+  isActivityDetailsHidden?: boolean
 }
 
 const SIDEBAR_ROUTES = ['/dashboard', '/rewind', '/activity', '/settings']
@@ -37,6 +39,7 @@ export default function AppProvider({
   libraries,
   settings,
   canBrowse,
+  isActivityDetailsHidden,
 }: Props) {
   const pathname = usePathname()
   // Not during setup or before logging in, when there's nothing to browse yet
@@ -59,7 +62,7 @@ export default function AppProvider({
 
   return (
     <QueryClientProvider client={queryClient}>
-      <GlobalContextProvider>
+      <GlobalContextProvider isDetailsHidden={isActivityDetailsHidden}>
         <AppInfoContext value={{ missingSetting, version }}>
           <div className='group/app' data-sidebar={hasSidebar || undefined}>
             {hasSidebar && (
@@ -91,8 +94,8 @@ export default function AppProvider({
                 <div className='bg-clouds sm:opacity-50' />
               </div>
 
-              {/* Pages with a header, or the sidebar, show these controls instead */}
-              <HeaderControls className='absolute top-4 right-4 z-10 group-has-[[data-page-header]]/main:hidden lg:group-data-[sidebar]/app:hidden' />
+              {/* The sidebar, or a page's header on smaller screens, shows these controls instead */}
+              <HeaderControls className='absolute top-4 right-4 z-10 max-lg:group-has-[[data-page-header]]/main:hidden lg:group-data-[sidebar]/app:hidden' />
 
               {children}
             </main>

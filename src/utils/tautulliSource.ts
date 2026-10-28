@@ -3,6 +3,7 @@ import { Settings } from '@/types/settings'
 import { FirstPlay, ServerMembership, StatsSource } from '@/types/statsSource'
 import {
   TautulliActivity,
+  TautulliHistoryRow,
   TautulliItemRow,
   TautulliLibrary,
   TautulliUser,
@@ -14,7 +15,11 @@ import { SourceMediaData } from './getMediaAdditionalData'
 import getSettings from './getSettings'
 import { LibrariesSize, sumLibrariesSize } from './librariesSize'
 import { createPlayStats, EMPTY_ROW, StatsUser } from './playStats'
-import { getTautulliHistoryReaders, getTautulliPlays } from './tautulliHistory'
+import {
+  getTautulliHistoryReaders,
+  getTautulliPlays,
+  toTautulliPlay,
+} from './tautulliHistory'
 
 // The timeout signal opts requests out of fetch's per-render deduplication, so
 // lookups repeated by a page's layout, metadata and content share one call.
@@ -210,22 +215,21 @@ async function getInactiveUser(id: string): Promise<TautulliItemRow | null> {
 }
 
 async function getFirstPlay(userId: string): Promise<FirstPlay | null> {
-  const res = await fetchTautulli<{
-    data: { date: number; title: string; grandparent_title: string }[]
-  }>(
+  const res = await fetchTautulli<{ data: TautulliHistoryRow[] }>(
     'get_history',
     { user_id: userId, order_column: 'date', order_dir: 'asc', length: 1 },
     true,
   )
-  const play = res?.response?.data?.data?.[0]
+  const row = res?.response?.data?.data?.[0]
 
-  if (!play?.date) {
+  if (!row?.date) {
     return null
   }
 
   return {
-    date: new Date(play.date * 1000).toISOString(),
-    title: play.grandparent_title || play.title,
+    date: new Date(row.date * 1000).toISOString(),
+    title: row.grandparent_title || row.title,
+    play: toTautulliPlay(row),
   }
 }
 

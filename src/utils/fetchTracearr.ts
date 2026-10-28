@@ -777,6 +777,7 @@ export async function getTracearrFirstPlay(
       ? {
           date: new Date(record.started_at).toISOString(),
           title: record.show_title || record.artist_name || record.media_title,
+          play: toPlay(record, getTracearrUrl()),
         }
       : null
 
@@ -929,6 +930,15 @@ const CHANNEL_LAYOUTS: Record<number, string> = {
   8: '7.1',
 }
 
+// In Plex's form, as Tautulli sends them
+function toGuids({ imdb_id, tmdb_id, tvdb_id }: TracearrStream): string[] {
+  return [
+    imdb_id && `imdb://${imdb_id}`,
+    tmdb_id && `tmdb://${tmdb_id}`,
+    tvdb_id && `tvdb://${tvdb_id}`,
+  ].filter((guid): guid is string => !!guid)
+}
+
 function toSession(
   stream: TracearrStream,
   users: TracearrPlexUser[],
@@ -975,6 +985,7 @@ function toSession(
     grandparent_thumb: '',
     grandparent_title:
       (isEpisode ? stream.show_title : stream.artist_name) ?? '',
+    guids: toGuids(stream),
     media_type: stream.media_type,
     parent_rating_key: Number(stream.parent_rating_key) || undefined,
     parent_title: isEpisode
