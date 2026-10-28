@@ -66,19 +66,18 @@ describe('getStatsSource', () => {
 })
 
 describe('play history', () => {
-  it('has no history to wait for with Tautulli', async () => {
-    await expect(getHistoryProgress('2010-01-01')).resolves.toBeNull()
-
-    startHistoryRead()
+  it('has nothing to wait for without a valid start', async () => {
+    await expect(getHistoryProgress('not a date')).resolves.toBeNull()
 
     expect(fetchMock).not.toHaveBeenCalled()
   })
 
-  it('reads nothing until the Tracearr connection is saved', () => {
+  it('reads nothing until the connection is saved', () => {
     const settings = testSettings()
 
-    settings.connection.statisticsSource = 'tracearr'
     settings.connection.complete = false
+    startHistoryRead(settings)
+    settings.connection.statisticsSource = 'tracearr'
     startHistoryRead(settings)
 
     expect(fetchMock).not.toHaveBeenCalled()

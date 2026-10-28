@@ -25,17 +25,24 @@ export type TautulliUser = {
   shared_libraries: string[]
 }
 
-export type TautulliItem = {
-  rows: TautulliItemRow[]
-  stat_id: string
-}
-
-export type TautulliGraph = {
-  categories: string[]
-  series: {
-    name: string
-    data: number[]
-  }[]
+// A grouped get_history row: one play with the sessions it was resumed in
+export type TautulliHistoryRow = {
+  reference_id: number
+  // When the play started, and when its last session started
+  started: number
+  date: number
+  // In seconds, without pauses
+  play_duration: number | null
+  duration: number | null
+  media_type: string
+  title: string
+  grandparent_title: string
+  year: number | string | null
+  thumb: string
+  rating_key: number | string | null
+  grandparent_rating_key: number | string | null
+  user_id: number
+  user_thumb: string
 }
 
 export type TautulliItemRow = {

@@ -145,20 +145,6 @@ export function getUserShare(
   }
 }
 
-// Whole-day count from `startDate` up to `endDate` (defaults to now). Used to
-// express the rewind window as a rolling `time_range` for the Tautulli stat and
-// graph endpoints that don't accept before/after.
-export function daysBetween(startDate: string, endDate?: string): number {
-  const end = endDate ? new Date(endDate).getTime() : Date.now()
-  const ms = end - new Date(startDate).getTime()
-
-  if (!Number.isFinite(ms)) {
-    return 1
-  }
-
-  return Math.max(1, Math.ceil(ms / 86400000))
-}
-
 export function isInitialSetup(settings: Settings): boolean {
   // Initial setup is when setupComplete is false, meaning the app has never been fully configured
   return !settings.setupComplete

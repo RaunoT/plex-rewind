@@ -88,7 +88,7 @@
   },
   "History": {
     "readingTitle": "Wiedergabeverlauf wird gelesen",
-    "readingDescription": "Der Wiedergabeverlauf von Tracearr wird einmal gelesen, was ein paar Minuten dauern kann. {count, plural, =0 {Es hat gerade begonnen.} one {Bisher # Wiedergabe, zurück bis {date}.} other {Bisher # Wiedergaben, zurück bis {date}.}} Diese Seite aktualisiert sich von selbst.",
+    "readingDescription": "Der Wiedergabeverlauf von {source} wird einmal gelesen, was ein paar Minuten dauern kann. {count, plural, =0 {Es hat gerade begonnen.} one {Bisher # Wiedergabe, zurück bis {date}.} other {Bisher # Wiedergaben, zurück bis {date}.}} Diese Seite aktualisiert sich von selbst.",
     "readingShort": "Wiedergabeverlauf wird gelesen…"
   },
   "PlexDeeplink": {
@@ -125,6 +125,7 @@
     "updateAvailable": "Aktualisierung verfügbar",
     "saved": "Einstellungen gespeichert!",
     "savedChooseLibraries": "Einstellungen gespeichert! Wähle deine Bibliotheken unter Allgemein.",
+    "savedLibrariesActive": "Einstellungen gespeichert! Alle Bibliotheken sind aktiv, das kannst du unter Allgemein ändern.",
     "genericError": "Etwas ist schiefgelaufen. Versuche es noch einmal.",
     "save": "Speichern",
     "continue": "Weiter",
@@ -162,7 +163,7 @@
       "seerrUrlDescription": "Anfrage-Links öffnen sich im Browser der Benutzer. Nutze daher eine Adresse, die sie erreichen können, keine reine Adresse im lokalen Netzwerk.",
       "optionalService": "{service} (optional)",
       "history": "Wiedergabeverlauf",
-      "historyDescription": "Wird einmal aus Tracearr gelesen und gespeichert, danach werden nur neue Wiedergaben gelesen. Der gesamte Verlauf wird einmal pro Woche neu gelesen.",
+      "historyDescription": "Wird einmal aus {source} gelesen und gespeichert, danach werden nur neue Wiedergaben gelesen. Der gesamte Verlauf wird einmal pro Woche neu gelesen.",
       "historyReading": "Verlauf wird gelesen…",
       "historyComplete": "Aktuell",
       "historyRereading": "Der gesamte Verlauf wird im Hintergrund neu gelesen",
@@ -170,7 +171,7 @@
       "read": "Verlauf lesen",
       "readAgain": "Neu lesen",
       "readOn": "Weiterlesen",
-      "historyFailed": "Tracearr antwortet nicht mehr. Neuer Versuch in einer Minute.",
+      "historyFailed": "{source} antwortet nicht mehr. Neuer Versuch in einer Minute.",
       "historyPaused": "Pausiert",
       "historyNotRead": "Noch nicht gelesen",
       "historyPlaysSoFar": "{count, plural, =0 {Noch keine Wiedergaben} one {Bisher # Wiedergabe, zurück bis {date}} other {Bisher # Wiedergaben, zurück bis {date}}}",
@@ -211,7 +212,6 @@
       "itemStatisticsDescription": "Wird bei jedem Titel und Benutzer in den Listen von Dashboard und Rewind angezeigt.",
       "privacy": "Datenschutz",
       "excludedUsers": "Ausgeschlossene Benutzer",
-      "excludedUsersDescription": "Mit Tautulli enthalten die beliebtesten Filme, Serien und Künstler weiterhin ihre Wiedergaben.",
       "outsideAccess": "Zugang von Außen zulassen",
       "outsideAccessDescription": "Jeder kann die Statistiken deines Servers ohne Anmeldung sehen.",
       "anonymize": "Anonymisieren",

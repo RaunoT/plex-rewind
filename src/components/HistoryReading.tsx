@@ -1,5 +1,7 @@
-import { TracearrHistoryStatus } from '@/types/tracearr'
+import { HistoryStatus } from '@/types/playHistory'
+import { STATS_SOURCE_NAMES } from '@/utils/constants'
 import { formatMonthYear } from '@/utils/formatting'
+import getSettings from '@/utils/getSettings'
 import { getFormatter, getLocale, getTranslations } from 'next-intl/server'
 import { ComponentProps } from 'react'
 import AutoRefresh from './AutoRefresh'
@@ -7,7 +9,7 @@ import ProgressBar from './ProgressBar'
 import StatusMessage from './StatusMessage'
 
 type Props = Pick<ComponentProps<typeof StatusMessage>, 'as' | 'isInCard'> & {
-  progress: TracearrHistoryStatus
+  progress: HistoryStatus
 }
 
 // Shown instead of the stats while the play history is still being read, and
@@ -27,6 +29,7 @@ export default async function HistoryReading({
       <StatusMessage
         title={t('readingTitle')}
         description={t('readingDescription', {
+          source: STATS_SOURCE_NAMES[getSettings().connection.statisticsSource],
           count: playCount,
           date: oldestPlayAt
             ? formatMonthYear(new Date(oldestPlayAt).toISOString(), locale)

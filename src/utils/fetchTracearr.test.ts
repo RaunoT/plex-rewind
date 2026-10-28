@@ -1,15 +1,15 @@
+import type { Play } from '@/types/playHistory'
 import { Settings } from '@/types/settings'
 import { cloneDeep } from 'lodash'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { DEFAULT_SETTINGS } from './constants'
-import type { TracearrPlay } from './fetchTracearr'
-import type { PlaysSnapshot } from './tracearrHistoryFile'
+import type { PlaysSnapshot } from './playHistoryFile'
 
 vi.mock('./getSettings', () => ({ default: vi.fn() }))
-vi.mock('./tracearrHistoryFile', () => ({
-  getPlaysSnapshotPath: () => '/app/config/tracearr-history.json.gz',
-  readPlaysSnapshot: vi.fn(async () => null),
-  writePlaysSnapshot: vi.fn(async () => undefined),
+vi.mock('./playHistoryFile', () => ({
+  getHistoryFilePath: () => '/app/config/play-history.json.gz',
+  readHistoryFile: vi.fn(async () => new Map()),
+  writeHistoryFile: vi.fn(async () => undefined),
 }))
 
 const fetchMock = vi.fn()
@@ -82,6 +82,8 @@ async function load(savedServerId = '') {
 beforeEach(() => {
   // The module keeps its state on globalThis, which outlives resetModules
   delete (globalThis as { plexRewindTracearr?: unknown }).plexRewindTracearr
+  delete (globalThis as { plexRewindPlayHistory?: unknown })
+    .plexRewindPlayHistory
   vi.resetModules()
   vi.stubGlobal('fetch', fetchMock)
   vi.spyOn(console, 'error').mockImplementation(() => {})
@@ -816,6 +818,22 @@ describe('getTracearrPlays', () => {
     }
   }
 
+  // The shared store's functions for Tracearr's history, as the pages use them
+  async function loadHistory() {
+    const tracearr = await load()
+    const history = await import('./playHistory')
+    const readers = () => [tracearr.getTracearrHistoryReader()]
+
+    return {
+      ...tracearr,
+      getTracearrReadProgress: (since: string | Date, timeout?: number) =>
+        history.getReadProgress(readers(), new Date(since).getTime(), timeout),
+      getTracearrHistoryStatus: () => history.getReadStatus(readers()),
+      startTracearrHistoryRead: () => history.startReading(readers()),
+      rereadTracearrHistory: () => history.readAgain(readers()),
+    }
+  }
+
   function historyCursors() {
     return requestsTo('history').map(([input]) =>
       new URL(input).searchParams.get('cursor'),
@@ -1073,7 +1091,7 @@ describe('getTracearrPlays', () => {
         )
       })
 
-      const { getTracearrPlays, getTracearrReadProgress } = await load()
+      const { getTracearrPlays, getTracearrReadProgress } = await loadHistory()
       const progress = await getTracearrReadProgress('2010-01-01', 200)
 
       expect(progress).toMatchObject({
@@ -1108,7 +1126,7 @@ describe('getTracearrPlays', () => {
         ),
       )
 
-      const { getTracearrReadProgress } = await load()
+      const { getTracearrReadProgress } = await loadHistory()
 
       await expect(
         getTracearrReadProgress('2010-01-01', 200),
@@ -1119,7 +1137,7 @@ describe('getTracearrPlays', () => {
       route(historyRoute(() => playTimes))
 
       const { getTracearrHistoryStatus, startTracearrHistoryRead } =
-        await load()
+        await loadHistory()
 
       startTracearrHistoryRead()
 
@@ -1149,7 +1167,7 @@ describe('getTracearrPlays', () => {
         getTracearrHistoryStatus,
         getTracearrPlays,
         rereadTracearrHistory,
-      } = await load()
+      } = await loadHistory()
 
       await getTracearrPlays('2010-01-01')
 
@@ -1187,7 +1205,7 @@ describe('getTracearrPlays', () => {
         getTracearrHistoryStatus,
         rereadTracearrHistory,
         startTracearrHistoryRead,
-      } = await load()
+      } = await loadHistory()
 
       startTracearrHistoryRead()
 
@@ -1224,7 +1242,7 @@ describe('getTracearrPlays', () => {
       )
 
       const { getTracearrHistoryStatus, startTracearrHistoryRead } =
-        await load()
+        await loadHistory()
 
       startTracearrHistoryRead()
 
@@ -1253,7 +1271,9 @@ describe('getTracearrPlays', () => {
   })
 
   describe('saved history', () => {
-    function savedPlay(startedAt: number): TracearrPlay {
+    const HISTORY_KEY = 'tracearr|http://tracearr:3000|'
+
+    function savedPlay(startedAt: number): Play {
       return {
         id: String(startedAt),
         startedAt,
@@ -1277,9 +1297,11 @@ describe('getTracearrPlays', () => {
 
     async function loadWithSnapshot(snapshot: PlaysSnapshot | null = null) {
       const tracearr = await load()
-      const historyFile = await import('./tracearrHistoryFile')
+      const historyFile = await import('./playHistoryFile')
 
-      vi.mocked(historyFile.readPlaysSnapshot).mockResolvedValue(snapshot)
+      vi.mocked(historyFile.readHistoryFile).mockResolvedValue(
+        new Map(snapshot ? [[HISTORY_KEY, snapshot]] : []),
+      )
 
       return { ...tracearr, ...historyFile }
     }
@@ -1297,7 +1319,7 @@ describe('getTracearrPlays', () => {
     it('starts from the history saved before a restart', async () => {
       route(historyRoute(() => playTimes))
 
-      const { getTracearrPlays, readPlaysSnapshot } =
+      const { getTracearrPlays, readHistoryFile } =
         await loadWithSnapshot(savedHistory())
       const [allTime, year] = await Promise.all([
         getTracearrPlays('2010-01-01'),
@@ -1307,10 +1329,7 @@ describe('getTracearrPlays', () => {
       expect(allTime).toHaveLength(2920)
       expect(year).toHaveLength(1460)
       expect(requestsTo('history')).toHaveLength(0)
-      expect(readPlaysSnapshot).toHaveBeenCalledTimes(1)
-      expect(readPlaysSnapshot).toHaveBeenCalledWith(
-        'http://tracearr:3000|key|',
-      )
+      expect(readHistoryFile).toHaveBeenCalledTimes(1)
     })
 
     it('catches up on plays since the history was saved', async () => {
@@ -1350,20 +1369,21 @@ describe('getTracearrPlays', () => {
       vi.setSystemTime(now)
       route(historyRoute(() => playTimes))
 
-      const { getTracearrPlays, writePlaysSnapshot } = await loadWithSnapshot()
+      const { getTracearrPlays, writeHistoryFile } = await loadWithSnapshot()
 
       await getTracearrPlays('2010-01-01')
 
       // Each of the 30 pages changed the history
-      expect(writePlaysSnapshot).not.toHaveBeenCalled()
+      expect(writeHistoryFile).not.toHaveBeenCalled()
 
       await vi.advanceTimersByTimeAsync(60 * 1000)
 
-      expect(writePlaysSnapshot).toHaveBeenCalledTimes(1)
+      expect(writeHistoryFile).toHaveBeenCalledTimes(1)
 
-      const [key, saved] = vi.mocked(writePlaysSnapshot).mock.calls[0]
+      const [[key, saved]] = vi.mocked(writeHistoryFile).mock.calls[0][0]
 
-      expect(key).toBe('http://tracearr:3000|key|')
+      // Without the API key
+      expect(key).toBe(HISTORY_KEY)
       expect(saved.plays).toHaveLength(2920)
       expect(saved).toMatchObject({ readTo: -Infinity, toppedUpAt: now })
     })
@@ -1373,9 +1393,9 @@ describe('getTracearrPlays', () => {
       vi.setSystemTime(now)
       route(historyRoute(() => playTimes))
 
-      const { getTracearrPlays, writePlaysSnapshot } = await loadWithSnapshot()
+      const { getTracearrPlays, writeHistoryFile } = await loadWithSnapshot()
 
-      vi.mocked(writePlaysSnapshot).mockRejectedValue(new Error('EROFS'))
+      vi.mocked(writeHistoryFile).mockRejectedValue(new Error('EROFS'))
 
       await getTracearrPlays('2010-01-01')
       await vi.advanceTimersByTimeAsync(60 * 1000)
@@ -1386,10 +1406,10 @@ describe('getTracearrPlays', () => {
       await expect(getTracearrPlays('2010-01-01')).resolves.toHaveLength(2920)
       await vi.advanceTimersByTimeAsync(60 * 1000)
 
-      expect(writePlaysSnapshot).toHaveBeenCalledTimes(2)
+      expect(writeHistoryFile).toHaveBeenCalledTimes(2)
       expect(console.error).toHaveBeenCalledTimes(1)
       expect(console.error).toHaveBeenCalledWith(
-        expect.stringContaining('Unable to save the history'),
+        expect.stringContaining('Unable to save the play history'),
         expect.any(Error),
       )
     })

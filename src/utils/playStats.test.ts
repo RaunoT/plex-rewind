@@ -1,20 +1,16 @@
+import { Play, PlayMediaType } from '@/types/playHistory'
 import { describe, expect, it } from 'vitest'
-import {
-  TracearrPlay,
-  TracearrPlayMediaType,
-  TracearrPlexUser,
-} from './fetchTracearr'
-import { filterPlays, getExcludedIdentityIds } from './tracearrPlays'
+import { filterPlays, getExcludedIdentityIds, StatsUser } from './playStats'
 
 function play(
   id: string,
   startedAt: string,
-  overrides: Partial<TracearrPlay> = {},
-): TracearrPlay {
+  overrides: Partial<Play> = {},
+): Play {
   return {
     id,
     startedAt: new Date(startedAt).getTime(),
-    mediaType: 'movie' as TracearrPlayMediaType,
+    mediaType: 'movie' as PlayMediaType,
     durationMs: 1000,
     title: id,
     showTitle: null,
@@ -33,14 +29,12 @@ function play(
   }
 }
 
-function user(plexId: string, identityId: string): TracearrPlexUser {
+function user(plexId: string, identityId: string): StatsUser {
   return {
     identityId,
     plexId,
     username: identityId,
     friendlyName: identityId,
-    email: '',
-    isAdmin: false,
   }
 }
 

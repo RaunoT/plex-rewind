@@ -88,7 +88,7 @@
   },
   "History": {
     "readingTitle": "Reading the play history",
-    "readingDescription": "Tracearr's play history is read once, which can take a few minutes. {count, plural, =0 {It has just started.} one {# play so far, back to {date}.} other {# plays so far, back to {date}.}} This page updates on its own.",
+    "readingDescription": "The play history from {source} is read once, which can take a few minutes. {count, plural, =0 {It has just started.} one {# play so far, back to {date}.} other {# plays so far, back to {date}.}} This page updates on its own.",
     "readingShort": "Reading the play history…"
   },
   "PlexDeeplink": {
@@ -125,6 +125,7 @@
     "updateAvailable": "Update available",
     "saved": "Settings saved!",
     "savedChooseLibraries": "Settings saved! Choose your libraries in General.",
+    "savedLibrariesActive": "Settings saved! Every library is active, which you can change in General.",
     "genericError": "Something went wrong. Try again.",
     "save": "Save",
     "continue": "Continue",
@@ -162,7 +163,7 @@
       "seerrUrlDescription": "Request links open this address in the viewer's browser, so use one they can reach, not a local network address.",
       "optionalService": "{service} (optional)",
       "history": "Play history",
-      "historyDescription": "Read from Tracearr once and saved, then only new plays are read. The whole history is read again once a week.",
+      "historyDescription": "Read from {source} once and saved, then only new plays are read. The whole history is read again once a week.",
       "historyReading": "Reading the history…",
       "historyComplete": "Up to date",
       "historyRereading": "Reading everything again in the background",
@@ -170,7 +171,7 @@
       "read": "Read history",
       "readAgain": "Read again",
       "readOn": "Continue reading",
-      "historyFailed": "Tracearr stopped answering. Trying again in a minute.",
+      "historyFailed": "{source} stopped answering. Trying again in a minute.",
       "historyPaused": "Paused",
       "historyNotRead": "Not read yet",
       "historyPlaysSoFar": "{count, plural, =0 {No plays yet} one {# play so far, back to {date}} other {# plays so far, back to {date}}}",
@@ -211,7 +212,6 @@
       "itemStatisticsDescription": "Shown for each title and user in the dashboard and Rewind lists.",
       "privacy": "Privacy",
       "excludedUsers": "Excluded users",
-      "excludedUsersDescription": "With Tautulli, top movies, TV shows and artists still include their plays.",
       "outsideAccess": "Allow outside access",
       "outsideAccessDescription": "Anyone can see your server's statistics without signing in.",
       "anonymize": "Anonymize",

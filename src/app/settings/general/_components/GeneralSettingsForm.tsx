@@ -343,7 +343,6 @@ export default function GeneralSettingsForm({
                 </div>
                 <Label className='label label--start'>
                   <span className='label-wrapper'>{t('excludedUsers')}</span>
-                  <small>{t('excludedUsersDescription')}</small>
                 </Label>
               </CheckboxGroup>
             ) : (

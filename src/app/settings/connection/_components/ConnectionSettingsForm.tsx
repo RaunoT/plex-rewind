@@ -1,24 +1,25 @@
 'use client'
 
+import { HistoryStatus } from '@/types/playHistory'
 import {
   ConnectionSettings,
   Settings,
   SettingsFormInitialState,
   StatisticsSource,
 } from '@/types/settings'
-import { TracearrHistoryStatus, TracearrPlexServer } from '@/types/tracearr'
+import { TracearrPlexServer } from '@/types/tracearr'
 import clsx from 'clsx'
 import { useTranslations } from 'next-intl'
 import { useActionState, useState } from 'react'
 import SettingsForm from '../../_components/SettingsForm'
 import saveConnectionSettings from '../_actions/updateConnectionSettings'
-import TracearrHistory from './TracearrHistory'
+import PlayHistory from './PlayHistory'
 
 type Props = {
   settings: Settings
   tracearrServers: TracearrPlexServer[]
-  // Null until Tracearr is the saved source
-  historyStatus: TracearrHistoryStatus | null
+  // Null until the connection is saved
+  historyStatus: HistoryStatus | null
 }
 
 type ConnectionFormState = SettingsFormInitialState<ConnectionSettings> & {
@@ -50,6 +51,16 @@ export default function ConnectionSettingsForm({
     connectionSettings.statisticsSource,
   )
   const isTracearr = statisticsSource === 'tracearr'
+  // The page's settings are from before any save made since it loaded
+  const savedConnection =
+    formState.status === 'success'
+      ? { ...settings.connection, ...formState.fields }
+      : settings.connection
+  // Each source keeps its history, so it shows for any source whose
+  // connection was saved, not only the one in use
+  const hasSavedConnection = isTracearr
+    ? !!(savedConnection.tracearrUrl && savedConnection.tracearrApiKey)
+    : !!(savedConnection.tautulliUrl && savedConnection.tautulliApiKey)
   // Saving returns the servers when several Plex servers need a choice.
   const tracearrServers = formState.tracearrServers ?? initialTracearrServers
 
@@ -82,6 +93,18 @@ export default function ConnectionSettingsForm({
             <span className='label-wrapper'>{t('Connection.source')}</span>
           </span>
         </label>
+        {connectionSettings.complete && hasSavedConnection && (
+          <PlayHistory
+            key={statisticsSource}
+            initialStatus={
+              statisticsSource === settings.connection.statisticsSource
+                ? historyStatus
+                : null
+            }
+            source={statisticsSource}
+            refreshOn={formState}
+          />
+        )}
       </section>
       <section className={clsx('group-settings group', { hidden: isTracearr })}>
         {/* eslint-disable-next-line react/jsx-no-literals */}
@@ -174,7 +197,6 @@ export default function ConnectionSettingsForm({
             </span>
           </label>
         )}
-        {historyStatus && <TracearrHistory initialStatus={historyStatus} />}
       </section>
       <section className='group-settings group'>
         {/* eslint-disable-next-line react/jsx-no-literals */}
