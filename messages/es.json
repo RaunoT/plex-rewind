@@ -88,7 +88,7 @@
   },
   "History": {
     "readingTitle": "Leyendo el historial",
-    "readingDescription": "El historial de reproducciones de Tracearr se lee una sola vez, lo que puede tardar unos minutos. {count, plural, =0 {Acaba de empezar.} one {Por ahora # reproducción, desde {date}.} other {Por ahora # reproducciones, desde {date}.}} Esta página se actualiza sola.",
+    "readingDescription": "El historial de reproducciones de {source} se lee una sola vez, lo que puede tardar unos minutos. {count, plural, =0 {Acaba de empezar.} one {Por ahora # reproducción, desde {date}.} other {Por ahora # reproducciones, desde {date}.}} Esta página se actualiza sola.",
     "readingShort": "Leyendo el historial…"
   },
   "PlexDeeplink": {
@@ -162,7 +162,7 @@
       "seerrUrlDescription": "Los enlaces de solicitud abren esta dirección en el navegador de quien los usa, así que elige una a la que pueda acceder, no una dirección de red local.",
       "optionalService": "{service} (opcional)",
       "history": "Historial de reproducciones",
-      "historyDescription": "Se lee de Tracearr una vez y se guarda; después solo se leen las reproducciones nuevas. El historial completo se vuelve a leer una vez por semana.",
+      "historyDescription": "Se lee de {source} una vez y se guarda; después solo se leen las reproducciones nuevas. El historial completo se vuelve a leer una vez por semana.",
       "historyReading": "Leyendo el historial…",
       "historyComplete": "Al día",
       "historyRereading": "Volviendo a leer todo el historial en segundo plano",
@@ -170,7 +170,7 @@
       "read": "Leer historial",
       "readAgain": "Volver a leer",
       "readOn": "Seguir leyendo",
-      "historyFailed": "Tracearr dejó de responder. Se volverá a intentar en un minuto.",
+      "historyFailed": "{source} dejó de responder. Se volverá a intentar en un minuto.",
       "historyPaused": "En pausa",
       "historyNotRead": "Aún no se ha leído",
       "historyPlaysSoFar": "{count, plural, =0 {Todavía no hay reproducciones} one {Por ahora # reproducción, desde {date}} other {Por ahora # reproducciones, desde {date}}}",
@@ -211,7 +211,6 @@
       "itemStatisticsDescription": "Se muestran para cada título y usuario en las listas del panel y de Rewind.",
       "privacy": "Privacidad",
       "excludedUsers": "Usuarios excluidos",
-      "excludedUsersDescription": "Con Tautulli, las películas, series y artistas más populares siguen incluyendo sus reproducciones.",
       "outsideAccess": "Permitir acceso externo",
       "outsideAccessDescription": "Cualquiera puede ver las estadísticas de tu servidor sin iniciar sesión.",
       "anonymize": "Anonimizar",

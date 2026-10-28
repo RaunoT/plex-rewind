@@ -79,7 +79,7 @@ async function DashboardContent({
 
   const loggedInUserId = session?.user.id
   const period = getPeriod(periodSp, settings)
-  const progress = await getHistoryProgress(period.string, settings)
+  const progress = await getHistoryProgress(period.string, [library])
 
   if (progress) {
     return (

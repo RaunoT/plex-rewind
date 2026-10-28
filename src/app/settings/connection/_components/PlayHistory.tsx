@@ -1,30 +1,92 @@
 'use client'
 
 import ProgressBar from '@/components/ProgressBar'
-import { TracearrHistoryStatus } from '@/types/tracearr'
+import { HistoryStatus } from '@/types/playHistory'
+import { StatisticsSource } from '@/types/settings'
+import { STATS_SOURCE_NAMES } from '@/utils/constants'
 import { formatMonthYear } from '@/utils/formatting'
 import { CheckCircleIcon } from '@heroicons/react/24/outline'
 import clsx from 'clsx'
 import { useFormatter, useLocale, useTranslations } from 'next-intl'
 import { useEffect, useState, useTransition } from 'react'
-import { getHistoryStatus, readHistoryAgain } from '../_actions/tracearrHistory'
+import { getHistoryStatus, readHistoryAgain } from '../_actions/playHistory'
 
 const POLL_INTERVAL = 3 * 1000
 // After a failed page the read only tries again a minute later
 const FAILED_POLL_INTERVAL = 15 * 1000
 
 type Props = {
-  initialStatus: TracearrHistoryStatus
+  // Null until the page knows it, such as right after the first save
+  initialStatus: HistoryStatus | null
+  source: StatisticsSource
+  // The status is asked for again whenever this changes, such as on a save
+  refreshOn?: unknown
 }
 
-// How far Tracearr's play history has been read, kept up to date while a read
-// runs
-export default function TracearrHistory({ initialStatus }: Props) {
+// How far the source's play history has been read, kept up to date while a
+// read runs
+export default function PlayHistory({
+  initialStatus,
+  source,
+  refreshOn,
+}: Props) {
   const t = useTranslations('Settings.Connection')
   const format = useFormatter()
   const locale = useLocale()
   const [status, setStatus] = useState(initialStatus)
   const [isPending, startTransition] = useTransition()
+  const isBusy = !!status && (status.isReading || status.reread !== null)
+  const pollInterval = isBusy
+    ? POLL_INTERVAL
+    : status?.hasFailed
+      ? FAILED_POLL_INTERVAL
+      : null
+
+  // A save can start a read, or switch to another source's history
+  useEffect(() => {
+    let isCurrent = true
+
+    getHistoryStatus(source).then((nextStatus) => {
+      if (isCurrent && nextStatus) {
+        setStatus(nextStatus)
+      }
+    })
+
+    return () => {
+      isCurrent = false
+    }
+  }, [refreshOn, source])
+
+  useEffect(() => {
+    if (!pollInterval) {
+      return
+    }
+
+    const timer = setInterval(async () => {
+      const nextStatus = await getHistoryStatus(source)
+
+      if (nextStatus) {
+        setStatus(nextStatus)
+      }
+    }, pollInterval)
+
+    return () => clearInterval(timer)
+  }, [pollInterval, source])
+
+  function readAgain() {
+    startTransition(async () => {
+      const nextStatus = await readHistoryAgain(source)
+
+      if (nextStatus) {
+        setStatus(nextStatus)
+      }
+    })
+  }
+
+  if (!status) {
+    return null
+  }
+
   const {
     playCount,
     oldestPlayAt,
@@ -35,42 +97,10 @@ export default function TracearrHistory({ initialStatus }: Props) {
     reread,
     hasSaveFailed,
   } = status
-  const isBusy = isReading || reread !== null
   const hasStopped = hasFailed && !isReading
-  const pollInterval = isBusy
-    ? POLL_INTERVAL
-    : hasFailed
-      ? FAILED_POLL_INTERVAL
-      : null
   const date = oldestPlayAt
     ? formatMonthYear(new Date(oldestPlayAt).toISOString(), locale)
     : ''
-
-  useEffect(() => {
-    if (!pollInterval) {
-      return
-    }
-
-    const timer = setInterval(async () => {
-      const nextStatus = await getHistoryStatus()
-
-      if (nextStatus) {
-        setStatus(nextStatus)
-      }
-    }, pollInterval)
-
-    return () => clearInterval(timer)
-  }, [pollInterval])
-
-  function readAgain() {
-    startTransition(async () => {
-      const nextStatus = await readHistoryAgain()
-
-      if (nextStatus) {
-        setStatus(nextStatus)
-      }
-    })
-  }
 
   return (
     <div className='input-wrapper'>
@@ -91,7 +121,7 @@ export default function TracearrHistory({ initialStatus }: Props) {
               : isComplete
                 ? t('historyComplete')
                 : hasFailed
-                  ? t('historyFailed')
+                  ? t('historyFailed', { source: STATS_SOURCE_NAMES[source] })
                   : playCount
                     ? t('historyPaused')
                     : t('historyNotRead')}
@@ -151,7 +181,9 @@ export default function TracearrHistory({ initialStatus }: Props) {
       </div>
       <span className='label label--start'>
         <span className='label-wrapper'>{t('history')}</span>
-        <small>{t('historyDescription')}</small>
+        <small>
+          {t('historyDescription', { source: STATS_SOURCE_NAMES[source] })}
+        </small>
       </span>
     </div>
   )

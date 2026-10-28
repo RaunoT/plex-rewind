@@ -20,7 +20,6 @@ import getSettings from '@/utils/getSettings'
 import getUsersTop from '@/utils/getUsersTop'
 import {
   canViewFeature,
-  daysBetween,
   getRewindStartDate,
   getUserShare,
   getViewer,
@@ -84,7 +83,8 @@ async function RewindContent({ userId }: { userId?: string }) {
   }
 
   const startDate = getRewindStartDate(settings)
-  const progress = await getHistoryProgress(startDate, settings)
+  const libraries = await getLibraries()
+  const progress = await getHistoryProgress(startDate, libraries)
 
   if (progress) {
     return <HistoryReading progress={progress} isInCard />
@@ -92,7 +92,6 @@ async function RewindContent({ userId }: { userId?: string }) {
 
   const t = await getTranslations()
   const locale = await getLocale()
-  const libraries = await getLibraries()
   const [
     topMediaItems,
     topMediaStats,
@@ -110,7 +109,7 @@ async function RewindContent({ userId }: { userId?: string }) {
     getlibrariesTotalSize(libraries),
     getLibrariesTotalDuration(libraries),
     getServerId(),
-    getUsersTop(user.id, startDate, daysBetween(startDate)),
+    getUsersTop(user.id, startDate),
     getPlaybackHabits(user.id),
     getStatsSource(settings).getFirstPlay(user.id),
   ])

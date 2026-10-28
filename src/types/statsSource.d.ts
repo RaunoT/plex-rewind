@@ -1,4 +1,5 @@
 import { LibrariesSize } from '@/utils/librariesSize'
+import { HistoryReader } from '@/utils/playHistory'
 import {
   TautulliActivity,
   TautulliItemRow,
@@ -16,15 +17,8 @@ export type DurationQuery = {
 
 export type TopUsersQuery = {
   since: string
-  // The same window as `since`, in days
-  period?: number
   libraries: TautulliLibrary[]
 }
-
-export type UserPlaysCounts = Pick<
-  TautulliItemRow,
-  'movies_plays_count' | 'shows_plays_count' | 'audio_plays_count'
->
 
 // The duration is null when there is no library of that type.
 export type MediaStats = Record<
@@ -86,13 +80,8 @@ export type StatsSource = {
     library: TautulliLibrary,
     query: TopItemsQuery,
   ) => Promise<TopItems>
-  // Ranked by watch time, without excluded users
+  // Ranked by watch time with each user's play counts, without excluded users
   getTopUsers: (query: TopUsersQuery) => Promise<TautulliItemRow[] | null>
-  getPlaysCounts: (
-    users: TautulliItemRow[],
-    since: string,
-    libraries: TautulliLibrary[],
-  ) => Promise<UserPlaysCounts[]>
   // A user with no plays in the period
   getInactiveUser: (userId: string) => Promise<TautulliItemRow | null>
   getMediaStats: (
@@ -108,4 +97,7 @@ export type StatsSource = {
   getPlaysByTime: (userId: string, since: string) => Promise<PlaysByTime>
   // Null when the user has no plays or the source couldn't be asked
   getFirstPlay: (userId: string) => Promise<FirstPlay | null>
+  // The play histories the stats are read from. Without libraries, those of
+  // every library, whoever is signed in.
+  getHistoryReaders: (libraries?: TautulliLibrary[]) => Promise<HistoryReader[]>
 }

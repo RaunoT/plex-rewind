@@ -88,7 +88,7 @@
   },
   "History": {
     "readingTitle": "Lettura della cronologia",
-    "readingDescription": "La cronologia delle riproduzioni di Tracearr viene letta una sola volta e può richiedere qualche minuto. {count, plural, =0 {È appena iniziata.} one {Finora # riproduzione, a partire da {date}.} other {Finora # riproduzioni, a partire da {date}.}} Questa pagina si aggiorna da sola.",
+    "readingDescription": "La cronologia delle riproduzioni di {source} viene letta una sola volta e può richiedere qualche minuto. {count, plural, =0 {È appena iniziata.} one {Finora # riproduzione, a partire da {date}.} other {Finora # riproduzioni, a partire da {date}.}} Questa pagina si aggiorna da sola.",
     "readingShort": "Lettura della cronologia…"
   },
   "PlexDeeplink": {
@@ -162,7 +162,7 @@
       "seerrUrlDescription": "I link alle richieste si aprono nel browser degli utenti, quindi usa un indirizzo che possono raggiungere, non uno della rete locale.",
       "optionalService": "{service} (facoltativo)",
       "history": "Cronologia riproduzioni",
-      "historyDescription": "Letta da Tracearr una volta e salvata, poi vengono lette solo le nuove riproduzioni. L'intera cronologia viene riletta una volta alla settimana.",
+      "historyDescription": "Letta da {source} una volta e salvata, poi vengono lette solo le nuove riproduzioni. L'intera cronologia viene riletta una volta alla settimana.",
       "historyReading": "Lettura della cronologia…",
       "historyComplete": "Aggiornata",
       "historyRereading": "Rilettura dell'intera cronologia in background",
@@ -170,7 +170,7 @@
       "read": "Leggi cronologia",
       "readAgain": "Rileggi",
       "readOn": "Continua lettura",
-      "historyFailed": "Tracearr ha smesso di rispondere. Nuovo tentativo tra un minuto.",
+      "historyFailed": "{source} ha smesso di rispondere. Nuovo tentativo tra un minuto.",
       "historyPaused": "In pausa",
       "historyNotRead": "Non ancora letta",
       "historyPlaysSoFar": "{count, plural, =0 {Ancora nessuna riproduzione} one {Finora # riproduzione, a partire da {date}} other {Finora # riproduzioni, a partire da {date}}}",
@@ -211,7 +211,6 @@
       "itemStatisticsDescription": "Mostrate per ogni titolo e utente negli elenchi della dashboard e del Rewind.",
       "privacy": "Privacy",
       "excludedUsers": "Utenti esclusi",
-      "excludedUsersDescription": "Con Tautulli, nelle classifiche di film, serie TV e artisti le loro riproduzioni contano comunque.",
       "outsideAccess": "Consenti l'accesso esterno",
       "outsideAccessDescription": "Chiunque può vedere le statistiche del tuo server senza accedere.",
       "anonymize": "Anonimizza",

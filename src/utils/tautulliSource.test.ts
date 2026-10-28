@@ -1,3 +1,4 @@
+import { Play } from '@/types/playHistory'
 import { Settings } from '@/types/settings'
 import { TautulliItemRow, TautulliLibrary } from '@/types/tautulli'
 import { cloneDeep } from 'lodash'
@@ -5,12 +6,21 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { DEFAULT_SETTINGS } from './constants'
 import fetchTautulli from './fetchTautulli'
 import getSettings from './getSettings'
+import { getTautulliPlays } from './tautulliHistory'
 import tautulliSource, { getTautulliMediaData } from './tautulliSource'
 
 vi.mock('@/lib/auth', () => ({ authOptions: {} }))
 vi.mock('next-auth', () => ({ getServerSession: vi.fn() }))
 vi.mock('./fetchTautulli', () => ({ default: vi.fn() }))
 vi.mock('./getSettings', () => ({ default: vi.fn() }))
+vi.mock('./tautulliHistory', () => ({
+  getTautulliPlays: vi.fn(),
+  getTautulliHistoryReaders: vi.fn(() => []),
+}))
+// The item lookups have tests of their own
+vi.mock('./getMediaAdditionalData', () => ({
+  default: vi.fn(async (items: unknown) => items),
+}))
 
 const fetchMock = vi.mocked(fetchTautulli)
 
@@ -72,40 +82,66 @@ describe('getTautulliMediaData', () => {
   })
 })
 
-describe('getTotalDuration', () => {
-  // By section and user, 'all' when the request leaves one out
-  const durations: Record<string, string> = {
-    'all-all': '5 hrs',
-    'all-3': '1 hr',
-    '1-all': '2 hrs',
-    '1-3': '30 mins',
-    '2-all': '1 hr',
+// Tautulli's plays, in the libraries they were read from
+function play(userId: string, overrides: Partial<Play> = {}): Play {
+  return {
+    id: `${userId}-${overrides.title ?? 'Dune'}-${Math.random()}`,
+    startedAt: Date.parse('2026-02-01T20:00:00Z'),
+    mediaType: 'movie',
+    durationMs: 30 * 60 * 1000,
+    title: 'Dune',
+    showTitle: null,
+    artistName: null,
+    year: 2021,
+    thumb: '',
+    ratingKey: '10',
+    grandparentRatingKey: null,
+    mediaId: null,
+    showMediaId: null,
+    imdbId: null,
+    tmdbId: null,
+    identityId: userId,
+    avatar: '',
+    ...overrides,
   }
+}
 
+function mockServer(plays: Play[]) {
+  vi.mocked(getTautulliPlays).mockResolvedValue(plays)
+  fetchMock.mockImplementation(async (query) => {
+    switch (query) {
+      case 'get_users':
+        return tautulliData(
+          ['1', '3', '5'].map((id) => ({
+            user_id: Number(id),
+            username: `user${id}`,
+            friendly_name: `User ${id}`,
+            is_active: 1,
+          })),
+        )
+      case 'get_libraries':
+        return tautulliData([library('1', 'movie'), library('2', 'show')])
+    }
+
+    return null
+  })
+}
+
+describe('getTotalDuration', () => {
   beforeEach(() => {
-    fetchMock.mockImplementation(async (_query, params) =>
-      tautulliData({
-        total_duration:
-          durations[
-            `${params?.section_id ?? 'all'}-${params?.user_id ?? 'all'}`
-          ] ?? '',
-      }),
-    )
+    mockServer([play('1', { durationMs: 60 * 60 * 1000 }), play('3')])
   })
 
-  it('reads the whole server without libraries', async () => {
-    const total = await tautulliSource.getTotalDuration({ since: '2026-01-01' })
-
-    expect(total).toBe(4 * 3600)
-  })
-
-  it('adds up the libraries without the excluded users', async () => {
+  it('leaves out the plays of excluded users', async () => {
     const total = await tautulliSource.getTotalDuration({
       since: '2026-01-01',
-      libraries: [library('1', 'movie'), library('2', 'show')],
+      libraries: [library('1', 'movie')],
     })
 
-    expect(total).toBe(1.5 * 3600 + 3600)
+    expect(total).toBe(3600)
+    expect(getTautulliPlays).toHaveBeenCalledWith('2026-01-01', [
+      library('1', 'movie'),
+    ])
   })
 
   it('counts an excluded user when asking for them', async () => {
@@ -117,82 +153,78 @@ describe('getTotalDuration', () => {
 
     expect(total).toBe(30 * 60)
   })
+
+  it('reads every library without libraries, active or not', async () => {
+    await tautulliSource.getTotalDuration({ since: '2026-01-01' })
+
+    expect(getTautulliPlays).toHaveBeenCalledWith('2026-01-01', [
+      library('1', 'movie'),
+      library('2', 'show'),
+    ])
+  })
 })
 
 describe('getTopItems', () => {
-  function mockRows(count: number) {
-    fetchMock.mockImplementation(async (_query, params) =>
-      tautulliData({
-        rows:
-          params?.stat_id === 'top_music'
-            ? Array.from({ length: count }, (_, i) => ({ rating_key: i }))
-            : [],
-      }),
-    )
-  }
+  const artists = ['Smilers', 'Ewert', 'Terminaator'].map((artistName) =>
+    play('1', { mediaType: 'track', title: 'Song', artistName }),
+  )
 
-  it('asks for one more row to tell if the ranking goes on', async () => {
-    mockRows(3)
+  it('leaves out the plays of excluded users', async () => {
+    mockServer([
+      ...Array.from({ length: 3 }, () => play('3', { title: 'Dune' })),
+      play('1', { title: 'Heat', year: 1995, ratingKey: '20' }),
+    ])
 
-    const { items, hasMore } = await tautulliSource.getTopItems(
-      library('1', 'artist'),
-      { period: 30, count: 2 },
-    )
+    const { items } = await tautulliSource.getTopItems(library('1', 'movie'), {
+      period: 3650,
+      count: 5,
+    })
 
-    expect(fetchMock).toHaveBeenCalledWith(
-      'get_home_stats',
-      expect.objectContaining({ stat_id: 'top_music', stats_count: 3 }),
-    )
-    expect(items).toHaveLength(2)
-    expect(hasMore).toBe(true)
+    expect(items.map((item) => item.title)).toEqual(['Heat'])
   })
 
-  it('has no more once the ranking ends', async () => {
-    mockRows(2)
+  it('counts how many users watched each item', async () => {
+    mockServer([play('1'), play('5'), play('5')])
 
-    const { items, hasMore } = await tautulliSource.getTopItems(
-      library('1', 'artist'),
-      { period: 30, count: 2 },
-    )
+    const { items } = await tautulliSource.getTopItems(library('1', 'movie'), {
+      period: 3650,
+      count: 5,
+    })
 
-    expect(items).toHaveLength(2)
-    expect(hasMore).toBe(false)
+    expect(items[0]).toMatchObject({ total_plays: 3, users_watched: 2 })
   })
-})
 
-describe('getTopMediaItems', () => {
-  it('skips libraries of other types', async () => {
-    fetchMock.mockResolvedValue(
-      tautulliData({ rows: [{ title: 'Holiday', total_duration: 60 }] }),
+  it('tells whether the ranking goes on past the count', async () => {
+    mockServer(artists)
+
+    const twoOfThree = await tautulliSource.getTopItems(
+      library('3', 'artist'),
+      { period: 3650, count: 2 },
     )
+    const all = await tautulliSource.getTopItems(library('3', 'artist'), {
+      period: 3650,
+      count: 3,
+    })
 
-    const items = await tautulliSource.getTopMediaItems(
-      '5',
-      [library('4', 'photo' as TautulliLibrary['section_type'])],
-      '2026-01-01',
-    )
-
-    expect(items).toEqual({ shows: [], movies: [], audio: [] })
+    expect(twoOfThree.items).toHaveLength(2)
+    expect(twoOfThree.hasMore).toBe(true)
+    expect(all.hasMore).toBe(false)
   })
 })
 
 describe('getMediaStats', () => {
-  it('only has a duration for the media types it has data for', async () => {
-    fetchMock.mockImplementation(async (_query, params) =>
-      params?.section_id === '1'
-        ? tautulliData({ recordsFiltered: 2, total_duration: '1 hr' })
-        : null,
-    )
+  it('only has a duration for the media types of the libraries', async () => {
+    mockServer([play('5'), play('5'), play('5', { mediaType: 'episode' })])
 
     const stats = await tautulliSource.getMediaStats(
       '5',
-      [library('1', 'movie'), library('2', 'show')],
+      [library('1', 'movie')],
       '2026-01-01',
     )
 
     expect(stats).toEqual({
       movies: { count: 2, duration: 3600 },
-      shows: { count: 0, duration: null },
+      shows: { count: 1, duration: null },
       audio: { count: 0, duration: null },
     })
   })

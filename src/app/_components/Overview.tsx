@@ -163,7 +163,7 @@ async function LibraryTile({
 }: LibraryTileProps) {
   const t = await getTranslations()
   const { daysAgo, string: since } = getPeriod(period, settings)
-  const progress = await getHistoryProgress(since, settings)
+  const progress = await getHistoryProgress(since, [library])
   const [top] = progress
     ? []
     : (
