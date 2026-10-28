@@ -1,36 +1,30 @@
 'use client'
 
-import audienceFreshSvg from '@/assets/rotten-tomatoes/audience-fresh.svg'
-import audienceRottenSvg from '@/assets/rotten-tomatoes/audience-rotten.svg'
-import freshSvg from '@/assets/rotten-tomatoes/fresh.svg'
-import rottenSvg from '@/assets/rotten-tomatoes/rotten.svg'
 import Avatar from '@/components/Avatar'
 import { MEDIA_ICONS, MediaIcon, STAT_ICONS } from '@/components/icons'
+import ImageFallback from '@/components/ImageFallback'
+import PosterImage from '@/components/PosterImage'
 import { PublicSettings } from '@/types/settings'
 import { TautulliItemRow } from '@/types/tautulli'
 import { DASHBOARD_PAGE_SIZE, EXTERNAL_LINK_NAMES } from '@/utils/constants'
 import { getDeeplinkRatingKeyFromRow } from '@/utils/deeplink'
-import { getExternalLinks } from '@/utils/externalLinks'
-import {
-  formatMonthYear,
-  formatPercent,
-  formatRating,
-  secondsToTime,
-} from '@/utils/formatting'
+import { getExternalLinks, getRatedSites } from '@/utils/externalLinks'
+import { formatMonthYear, secondsToTime } from '@/utils/formatting'
 import { getImageProxyUrl } from '@/utils/imageProxy'
 import { slideDown } from '@/utils/motion'
-import { TrashIcon } from '@heroicons/react/24/outline'
+import { TrashIcon, UserIcon } from '@heroicons/react/24/outline'
 import clsx from 'clsx'
 import { motion } from 'motion/react'
 import { useLocale, useTranslations } from 'next-intl'
-import Image from 'next/image'
-import { useRef, useState } from 'react'
-import anonymousSvg from './anonymous.svg'
+import { useRef } from 'react'
 import MediaItemTitle from './MediaItemTitle'
-import placeholderSvg from './placeholder.svg'
 import PlexDeeplink from './PlexDeeplink'
 import SiteLogo from './SiteLogo'
+import TitleDetails from './TitleDetails'
 
+// A viewing stat: a pill from sm up, plain text on phones
+const STAT_PILL =
+  'icon-stat-wrapper max-sm:bg-transparent max-sm:p-0 max-sm:ring-0'
 // Gold, silver and bronze for the top three
 const RANK_COLORS = [
   'bg-linear-to-b from-yellow-200 to-yellow-500 bg-clip-text text-transparent',
@@ -46,6 +40,8 @@ type Props = {
   activeStats: string[]
   settings: PublicSettings
   loggedInUserId?: string
+  // Without a place in a ranking, there's no number before the poster
+  isRanked?: boolean
 }
 
 export default function MediaItem({
@@ -56,105 +52,93 @@ export default function MediaItem({
   activeStats,
   settings,
   loggedInUserId,
+  isRanked = true,
 }: Props) {
   const translations = useTranslations()
   const t = useTranslations('MediaItem')
   const locale = useLocale()
-  const isTmdbPoster = data.thumb?.startsWith('https://image.tmdb.org')
   const isUsers = type === 'users'
-  const thumb = isUsers ? data.user_thumb : data.thumb
-  const posterSrc = isTmdbPoster ? data.thumb : getImageProxyUrl(thumb)
+  const posterSrc = !data.thumb
+    ? null
+    : data.thumb.startsWith('https://image.tmdb.org')
+      ? data.thumb
+      : getImageProxyUrl(data.thumb)
   const isAnonymized = !!data.is_anonymous
-  const initialImageSrc = isUsers && isAnonymized ? anonymousSvg : posterSrc
-  const [imageSrc, setImageSrc] = useState<string>(initialImageSrc)
-  const [prevInitialImageSrc, setPrevInitialImageSrc] =
-    useState<string>(initialImageSrc)
   const titleContainerRef = useRef<HTMLDivElement>(null)
   const isSeerrActive = settings.connection.isSeerrActive
   const dataKey = `${data.rating_key || data.user_id || i}-${type}`
   const rank = data.rank || i
   const isVideo = type === 'movie' || type === 'show'
-  const year = isVideo && activeStats.includes('year') ? data.year : null
-  const tmdbRating =
-    isVideo && activeStats.includes('tmdbRating') ? data.rating : null
-  const imdbRating =
-    isVideo && activeStats.includes('imdbRating') ? data.imdb_rating : null
-  const rottenTomatoesRating =
-    isVideo && activeStats.includes('rottenTomatoesRating')
-      ? (data.rotten_tomatoes_rating ?? null)
-      : null
-  const rottenTomatoesAudienceRating =
-    isVideo && activeStats.includes('rottenTomatoesAudienceRating')
-      ? (data.rotten_tomatoes_audience_rating ?? null)
-      : null
-  // From the settings rather than this title's data, so every row matches
-  const hasOtherRatings =
-    activeStats.includes('imdbRating') ||
-    activeStats.includes('rottenTomatoesRating') ||
-    activeStats.includes('rottenTomatoesAudienceRating')
   const firstPlayedAt = isUsers ? data.first_played_at : null
-  const hasDetails =
-    year ||
-    tmdbRating ||
-    imdbRating ||
-    rottenTomatoesRating !== null ||
-    rottenTomatoesAudienceRating !== null ||
-    firstPlayedAt
-  const externalLinks = isVideo
+  const links = isVideo
     ? getExternalLinks(data, type, settings.general.activeExternalLinks)
     : []
-
-  if (initialImageSrc !== prevInitialImageSrc) {
-    setPrevInitialImageSrc(initialImageSrc)
-    setImageSrc(initialImageSrc)
-  }
+  // A site whose rating is shown opens from the rating, so it gets no button
+  const ratedSites = getRatedSites(data, activeStats)
+  const externalLinks = links.filter(({ site }) => !ratedSites.includes(site))
+  const ratingLinks = Object.fromEntries(links.map((link) => [link.site, link]))
 
   return (
     <motion.li
       key={dataKey}
       // Motion animates with inline styles, which important utilities override
       // for visitors who prefer reduced motion, including during hydration.
-      className='flex items-start gap-3 py-2.5 not-first:border-t not-first:border-white/10 first:pt-0 last:pb-0 motion-reduce:transform-none! motion-reduce:opacity-100! sm:gap-4'
+      className='flex items-center gap-3 py-2.5 not-first:border-t not-first:border-white/10 first:pt-0 last:pb-0 motion-reduce:transform-none! motion-reduce:opacity-100! max-sm:flex-wrap sm:gap-4'
       variants={slideDown}
       initial='hidden'
       animate='show'
       // Rows added by "Show more" stagger from the first of them
       transition={{ delay: (i % DASHBOARD_PAGE_SIZE) * 0.075 }}
     >
-      {/* The rank stays level with the poster, however tall the details get */}
-      <div className='flex shrink-0 items-center gap-3 sm:gap-4'>
-        <span
-          className={clsx(
-            'w-6 text-center text-xl leading-none font-bold tracking-tight tabular-nums sm:w-8 sm:text-2xl',
-            RANK_COLORS[rank] || 'text-neutral-500',
-          )}
-        >
-          {rank + 1}
-        </span>
-        <div className='poster'>
-          {isUsers && !isAnonymized ? (
-            <Avatar
-              src={thumb}
-              name={data.friendly_name}
+      {/* The rank stays level with the poster, however tall the details get.
+          On phones it's a badge on the poster's corner, and the poster is
+          smaller, so a line of ratings or stats fits the width. The poster
+          moves in by the badge's overhang, which the list would clip, and the
+          badge's outline is a border, which stays inside it. */}
+      <div
+        className={clsx(
+          'relative flex shrink-0 items-center gap-3 sm:gap-4',
+          isRanked && 'max-sm:pt-1 max-sm:pl-1',
+        )}
+      >
+        {isRanked && (
+          <span className='text-center text-2xl leading-none font-bold tracking-tight tabular-nums max-sm:absolute max-sm:top-0 max-sm:left-0 max-sm:z-10 max-sm:flex max-sm:size-6 max-sm:items-center max-sm:justify-center max-sm:rounded-full max-sm:border max-sm:border-white/15 max-sm:bg-neutral-900 max-sm:text-xs sm:w-8'>
+            <span
+              className={
+                RANK_COLORS[rank] || 'text-neutral-500 max-sm:text-neutral-300'
+              }
+            >
+              {rank + 1}
+            </span>
+          </span>
+        )}
+        <div className='poster max-sm:w-12'>
+          {!isUsers ? (
+            <PosterImage
+              srcs={[posterSrc, data.tmdb_poster]}
+              type={type}
               sizes='10rem'
               priority
             />
+          ) : isAnonymized ? (
+            <ImageFallback>
+              <UserIcon className='size-[40cqw]' />
+            </ImageFallback>
           ) : (
-            <Image
-              fill
-              className='object-cover object-top'
-              alt=''
-              src={imageSrc}
+            <Avatar
+              src={data.user_thumb}
+              name={data.friendly_name}
               sizes='10rem'
-              onError={() => setImageSrc(placeholderSvg)}
               priority
             />
           )}
         </div>
       </div>
-      {/* Wide rows put the links level with the title, narrow ones under the stats */}
-      <div className='@container min-w-0 flex-1'>
-        <div className='flex flex-col gap-2 @xl:flex-row @xl:items-start @xl:gap-4'>
+      {/* Wide rows put the links level with the title, narrow ones under the
+          stats. On phones these wrappers step aside, so the links wrap onto a
+          row of their own, as wide as the poster and details together. */}
+      <div className='@container min-w-0 flex-1 max-sm:contents'>
+        <div className='flex flex-col gap-2 max-sm:contents @md:flex-row @md:items-start @md:gap-4'>
           <div
             className='min-w-0 flex-1 overflow-hidden'
             ref={titleContainerRef}
@@ -166,85 +150,27 @@ export default function MediaItem({
               loggedInUserId={loggedInUserId}
             />
             {/* Details about the title, kept apart from the viewing stats */}
-            {hasDetails && (
-              <ul className='icon-stats-container mb-2 gap-x-3 text-neutral-300'>
-                {year && (
-                  <li className='icon-stat-wrapper icon-stat-wrapper--clean'>
-                    <STAT_ICONS.year />
-                    <span className='sr-only'>
-                      {translations('Common.year')}
-                    </span>{' '}
-                    {year}
-                  </li>
-                )}
-                {tmdbRating && (
-                  <li className='icon-stat-wrapper icon-stat-wrapper--clean'>
-                    {/* Next to other sites' ratings, its source needs showing too */}
-                    {hasOtherRatings ? (
-                      <SiteLogo site='tmdb' />
-                    ) : (
-                      <STAT_ICONS.rating />
-                    )}
-                    <span className='sr-only'>
-                      {translations('Common.ratingBy', { provider: 'TMDB' })}
-                    </span>{' '}
-                    {formatRating(tmdbRating, locale)}
-                  </li>
-                )}
-                {imdbRating && (
-                  <li className='icon-stat-wrapper icon-stat-wrapper--clean'>
-                    <SiteLogo site='imdb' />
-                    <span className='sr-only'>
-                      {translations('Common.ratingBy', { provider: 'IMDb' })}
-                    </span>{' '}
-                    {formatRating(imdbRating, locale)}
-                  </li>
-                )}
-                {/* Rotten Tomatoes' own icons, fresh from 60% like on its site */}
-                {rottenTomatoesRating !== null && (
-                  <li className='icon-stat-wrapper icon-stat-wrapper--clean'>
-                    <Image
-                      src={rottenTomatoesRating >= 60 ? freshSvg : rottenSvg}
-                      alt=''
-                      className='size-4 shrink-0'
-                    />
-                    <span className='sr-only'>
-                      {translations('Common.rottenTomatoesCritics')}
-                    </span>{' '}
-                    {formatPercent(rottenTomatoesRating, locale)}
-                  </li>
-                )}
-                {rottenTomatoesAudienceRating !== null && (
-                  <li className='icon-stat-wrapper icon-stat-wrapper--clean'>
-                    <Image
-                      src={
-                        rottenTomatoesAudienceRating >= 60
-                          ? audienceFreshSvg
-                          : audienceRottenSvg
-                      }
-                      alt=''
-                      className='size-4 shrink-0'
-                    />
-                    <span className='sr-only'>
-                      {translations('Common.rottenTomatoesAudience')}
-                    </span>{' '}
-                    {formatPercent(rottenTomatoesAudienceRating, locale)}
-                  </li>
-                )}
-                {firstPlayedAt && (
-                  <li className='icon-stat-wrapper icon-stat-wrapper--clean'>
-                    <STAT_ICONS.firstPlay />
-                    {t('statSince', {
-                      date: formatMonthYear(firstPlayedAt, locale),
-                    })}
-                  </li>
-                )}
-              </ul>
-            )}
-            <ul className='icon-stats-container'>
+            <TitleDetails
+              data={data}
+              activeStats={isVideo ? activeStats : []}
+              links={ratingLinks}
+              className='mb-2'
+            >
+              {firstPlayedAt && (
+                <li className='icon-stat-wrapper icon-stat-wrapper--clean'>
+                  <STAT_ICONS.firstPlay />
+                  {t('statSince', {
+                    date: formatMonthYear(firstPlayedAt, locale),
+                  })}
+                </li>
+              )}
+            </TitleDetails>
+            {/* Pills from sm up. Phones show them as plain text like the
+                details above, which reads lighter in the narrow column. */}
+            <ul className='icon-stats-container max-sm:gap-x-2.5'>
               {/* Duration */}
               {activeStats.includes('duration') && (
-                <li className='icon-stat-wrapper'>
+                <li className={STAT_PILL}>
                   <STAT_ICONS.duration />
                   {secondsToTime(data.total_duration, translations)}
                 </li>
@@ -254,21 +180,21 @@ export default function MediaItem({
                 (isUsers ? (
                   <>
                     {data.shows_plays_count > 0 && (
-                      <li className='icon-stat-wrapper'>
+                      <li className={STAT_PILL}>
                         <MEDIA_ICONS.show />
                         <span className='sr-only'>{t('labelShows')}</span>{' '}
                         {t('statPlays', { count: data.shows_plays_count })}
                       </li>
                     )}
                     {data.movies_plays_count > 0 && (
-                      <li className='icon-stat-wrapper'>
+                      <li className={STAT_PILL}>
                         <MEDIA_ICONS.movie />
                         <span className='sr-only'>{t('labelMovies')}</span>{' '}
                         {t('statPlays', { count: data.movies_plays_count })}
                       </li>
                     )}
                     {data.audio_plays_count > 0 && (
-                      <li className='icon-stat-wrapper'>
+                      <li className={STAT_PILL}>
                         <MEDIA_ICONS.artist />
                         <span className='sr-only'>{t('labelAudio')}</span>{' '}
                         {t('statPlays', { count: data.audio_plays_count })}
@@ -276,14 +202,14 @@ export default function MediaItem({
                     )}
                   </>
                 ) : (
-                  <li className='icon-stat-wrapper'>
+                  <li className={STAT_PILL}>
                     <MediaIcon type={type} />
                     <span>{t('statPlays', { count: data.total_plays })}</span>
                   </li>
                 ))}
               {/* Users watched */}
               {activeStats.includes('users') && !!data.users_watched && (
-                <li className='icon-stat-wrapper'>
+                <li className={STAT_PILL}>
                   <STAT_ICONS.users />
                   {t('statUsers', { count: data.users_watched })}
                 </li>
@@ -292,18 +218,18 @@ export default function MediaItem({
               {activeStats.includes('requests') &&
                 isUsers &&
                 data.requests > 0 && (
-                  <li className='icon-stat-wrapper'>
+                  <li className={STAT_PILL}>
                     <STAT_ICONS.requests />
                     {t('statRequests', { count: data.requests })}
                   </li>
                 )}
             </ul>
           </div>
-          {/* Wrapped rows are far enough apart that a tag's tap area never
-              covers the tag above it. On wider cards, availability gets a row
-              of its own above the links. */}
+          {/* Availability and the links share a row, split evenly on phones.
+              Wrapped rows are far enough apart that a tag's tap area never
+              covers the tag above it. */}
           {(type === 'movie' || type === 'show' || type === 'artist') && (
-            <div className='relative z-10 flex shrink-0 flex-wrap items-center gap-x-1.5 gap-y-2.5 empty:hidden @xl:mt-0.5 @xl:flex-col @xl:items-end'>
+            <div className='relative z-10 flex shrink-0 flex-wrap items-center gap-x-1.5 gap-y-2.5 empty:hidden max-sm:basis-full max-sm:*:flex-1 max-sm:*:justify-center @md:mt-0.5 @md:max-w-56 @md:justify-end'>
               {data.is_deleted ? (
                 isSeerrActive && (type === 'movie' || type === 'show') ? (
                   <a
@@ -333,26 +259,22 @@ export default function MediaItem({
                   />
                 )
               )}
-              {externalLinks.length > 0 && (
-                <div className='contents @xl:flex @xl:max-w-56 @xl:flex-wrap @xl:justify-end @xl:gap-x-1.5 @xl:gap-y-2.5'>
-                  {externalLinks.map(({ site, href, isSearch }) => (
-                    <a
-                      key={site}
-                      href={href}
-                      target='_blank'
-                      rel='noopener noreferrer'
-                      className='button-card'
-                      aria-label={t(
-                        isSearch ? 'externalSearchLabel' : 'externalLinkLabel',
-                        { title: data.title, site: EXTERNAL_LINK_NAMES[site] },
-                      )}
-                    >
-                      {/* Just the logo, the label carries the name */}
-                      <SiteLogo site={site} />
-                    </a>
-                  ))}
-                </div>
-              )}
+              {externalLinks.map(({ site, href, isSearch }) => (
+                <a
+                  key={site}
+                  href={href}
+                  target='_blank'
+                  rel='noopener noreferrer'
+                  className='button-card'
+                  aria-label={t(
+                    isSearch ? 'externalSearchLabel' : 'externalLinkLabel',
+                    { title: data.title, site: EXTERNAL_LINK_NAMES[site] },
+                  )}
+                >
+                  {/* Just the logo, the label carries the name */}
+                  <SiteLogo site={site} />
+                </a>
+              ))}
             </div>
           )}
         </div>

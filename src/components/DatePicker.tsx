@@ -77,21 +77,23 @@ export default function DatePicker({
                 />
               )}
             </DateInput>
+            {/* Not link-dark: settings sections are groups, so its group hover
+                would fade both icons as soon as the pointer enters one */}
             {value && (
               <Button
                 slot={null}
                 onPress={() => setValue(null)}
                 aria-label={t('clear')}
-                className='link-dark focus-visible:focus-ring absolute inset-y-0 right-14 my-auto size-6 rounded-full after:absolute after:-inset-2'
+                className='focus-visible:focus-ring absolute inset-y-0 right-14 my-auto size-6 rounded-full text-neutral-300 transition-colors after:absolute after:-inset-2 hover:text-white'
               >
-                <XCircleIcon className='size-6 text-neutral-300' />
+                <XCircleIcon className='size-6' />
               </Button>
             )}
             <Button
               aria-label={t('open')}
-              className='link-dark focus-visible:focus-ring absolute inset-y-0 right-0 flex w-12 items-center justify-center rounded-r-xl'
+              className='focus-visible:focus-ring absolute inset-y-0 right-0 flex w-12 items-center justify-center rounded-r-xl text-neutral-300 transition-colors hover:text-white'
             >
-              <CalendarDaysIcon className='size-5 text-neutral-300' />
+              <CalendarDaysIcon className='size-5' />
             </Button>
           </div>
         </Group>

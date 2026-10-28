@@ -40,9 +40,14 @@
   }
 }
 
-/* Every page with a header shares one width */
+/* The home page and the dashboard, with their tiles and lists */
 @utility page-width {
   @apply w-full max-w-4xl;
+}
+
+/* Settings, Rewind and Activity, whose forms and cards would stretch wider */
+@utility page-width-narrow {
+  @apply w-full max-w-2xl;
 }
 
 @utility focus-ring {
@@ -234,7 +239,7 @@
   }
 
   .poster {
-    @apply relative aspect-2/3 h-full w-14 shrink-0 overflow-hidden rounded-md! shadow-lg ring-1 shadow-black/40 ring-white/10 sm:w-16;
+    @apply relative aspect-2/3 w-16 shrink-0 overflow-hidden rounded-md! shadow-lg ring-1 shadow-black/40 ring-white/10 sm:w-18;
   }
 
   .link {
@@ -453,7 +458,7 @@
   }
 
   .heading-settings {
-    @apply border-b border-white/10 pb-2 text-left text-xs font-semibold tracking-widest text-neutral-400 uppercase sm:w-48 sm:text-right;
+    @apply border-b border-white/10 pb-2 text-left text-xs font-semibold tracking-widest text-neutral-400 uppercase transition-colors group-focus-within:text-white group-hover:text-white sm:w-48 sm:text-right;
   }
 
   .group-settings {

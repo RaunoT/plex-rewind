@@ -24,7 +24,8 @@ export default async function GeneralSettingsPage() {
   ])
   const settings = getSettings()
 
-  // A first setup starts with every library on, so it has something to show
+  // A first setup, or a source switch whose libraries couldn't be read yet,
+  // starts with every library on, so it has something to show
   if (!settings.general.complete && !settings.general.activeLibraries.length) {
     settings.general.activeLibraries =
       libraries?.map((library) => kebabCase(library.section_name)) ?? []

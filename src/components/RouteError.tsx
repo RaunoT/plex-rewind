@@ -1,5 +1,6 @@
 'use client'
 
+import { ExclamationTriangleIcon } from '@heroicons/react/24/outline'
 import { useTranslations } from 'next-intl'
 import { useRouter } from 'next/navigation'
 import { ComponentProps, useEffect } from 'react'
@@ -33,6 +34,7 @@ export default function RouteError({
 
   return (
     <StatusMessage
+      icon={ExclamationTriangleIcon}
       title={t('title')}
       as={as}
       isInCard={isInCard}

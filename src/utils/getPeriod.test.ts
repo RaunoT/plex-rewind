@@ -50,6 +50,12 @@ describe('getPeriod', () => {
     })
   })
 
+  it('counts all time from before any play without a start date', () => {
+    expect(getPeriod('allTime', settingsWith('30'))).toMatchObject({
+      string: '1970-01-01',
+    })
+  })
+
   it('does not freeze the named periods at first use', () => {
     const settings = settingsWith('30')
 

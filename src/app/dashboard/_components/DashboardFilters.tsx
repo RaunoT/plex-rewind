@@ -42,6 +42,9 @@ export default function DashboardFilters({ personalFilter }: Props) {
     ) => {
       const params = new URLSearchParams(searchParams.toString())
 
+      // A new list starts from its first rows again
+      params.delete('limit')
+
       if (personal === 'true') {
         params.set('personal', 'true')
       } else {

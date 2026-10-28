@@ -15,7 +15,6 @@ const REQUIRED_SETTINGS = [
   'general.complete',
   'rewind.complete',
   'dashboard.customPeriod',
-  'dashboard.startDate',
   'dashboard.complete',
   'activity.complete',
 ]
@@ -145,20 +144,6 @@ export function getUserShare(
   }
 }
 
-// Whole-day count from `startDate` up to `endDate` (defaults to now). Used to
-// express the rewind window as a rolling `time_range` for the Tautulli stat and
-// graph endpoints that don't accept before/after.
-export function daysBetween(startDate: string, endDate?: string): number {
-  const end = endDate ? new Date(endDate).getTime() : Date.now()
-  const ms = end - new Date(startDate).getTime()
-
-  if (!Number.isFinite(ms)) {
-    return 1
-  }
-
-  return Math.max(1, Math.ceil(ms / 86400000))
-}
-
 export function isInitialSetup(settings: Settings): boolean {
   // Initial setup is when setupComplete is false, meaning the app has never been fully configured
   return !settings.setupComplete
@@ -168,4 +153,14 @@ export function isPostUpdateMissingSettings(settings: Settings): boolean {
   // Post-update missing settings is when setupComplete is true (app was configured before)
   // but there are currently missing required settings (new settings were added)
   return settings.setupComplete && checkRequiredSettings(settings) !== null
+}
+
+// Option lists read alphabetically, by the rules of the viewer's language
+export function sortByLabel<T extends { label: string }>(
+  items: T[],
+  locale: string,
+): T[] {
+  const collator = new Intl.Collator(locale)
+
+  return [...items].sort((a, b) => collator.compare(a.label, b.label))
 }

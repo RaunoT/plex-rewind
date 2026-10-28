@@ -1,9 +1,16 @@
+import type { Play } from '@/types/playHistory'
 import { Settings } from '@/types/settings'
 import { cloneDeep } from 'lodash'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { DEFAULT_SETTINGS } from './constants'
+import type { PlaysSnapshot } from './playHistoryFile'
 
 vi.mock('./getSettings', () => ({ default: vi.fn() }))
+vi.mock('./playHistoryFile', () => ({
+  getHistoryFilePath: () => '/app/config/play-history.json.gz',
+  readHistoryFile: vi.fn(async () => new Map()),
+  writeHistoryFile: vi.fn(async () => undefined),
+}))
 
 const fetchMock = vi.fn()
 
@@ -73,6 +80,10 @@ async function load(savedServerId = '') {
 }
 
 beforeEach(() => {
+  // The module keeps its state on globalThis, which outlives resetModules
+  delete (globalThis as { plexRewindTracearr?: unknown }).plexRewindTracearr
+  delete (globalThis as { plexRewindPlayHistory?: unknown })
+    .plexRewindPlayHistory
   vi.resetModules()
   vi.stubGlobal('fetch', fetchMock)
   vi.spyOn(console, 'error').mockImplementation(() => {})
@@ -538,6 +549,7 @@ describe('getTracearrFirstPlay', () => {
       media_title: movieTitle ?? 'Pilot',
       show_title: movieTitle ? null : 'The Office',
       artist_name: null,
+      user: { id: 'u1', avatar_url: null },
     }
   }
 
@@ -597,9 +609,10 @@ describe('getTracearrFirstPlay', () => {
 
     const { getTracearrFirstPlay } = await load()
 
-    await expect(getTracearrFirstPlay('42')).resolves.toEqual({
+    await expect(getTracearrFirstPlay('42')).resolves.toMatchObject({
       date: '2021-03-15T20:00:00.000Z',
       title: 'The Office',
+      play: { startedAt: Date.parse('2021-03-15T20:00:00.000Z') },
     })
     expect(
       requestsTo('history').every(([input]) => {
@@ -657,9 +670,10 @@ describe('getTracearrFirstPlay', () => {
 
     const { getTracearrFirstPlay } = await load()
 
-    await expect(getTracearrFirstPlay('42')).resolves.toEqual({
+    await expect(getTracearrFirstPlay('42')).resolves.toMatchObject({
       date: '2021-03-31T23:30:00.000Z',
       title: 'First film',
+      play: { mediaType: 'movie', title: 'First film' },
     })
   })
 
@@ -747,5 +761,660 @@ describe('getTracearrFirstPlay', () => {
 
     await expect(getTracearrFirstPlay('42')).resolves.toBeNull()
     expect(historyRequests(true)).toHaveLength(2)
+  })
+})
+
+describe('getTracearrPlays', () => {
+  const DAY = 24 * 60 * 60 * 1000
+  const now = Date.parse('2026-10-28T12:00:00.000Z')
+  // A play every 6 hours for two years: 30 pages, 15 of them for the past year
+  const playTimes = Array.from(
+    { length: 4 * 730 },
+    (_, i) => now - (i + 1) * 6 * 60 * 60 * 1000,
+  )
+  const yearAgo = new Date(now - 365 * DAY)
+
+  function record(startedAt: number) {
+    return {
+      id: String(startedAt),
+      server_id: 's1',
+      started_at: new Date(startedAt).toISOString(),
+      media_type: 'movie',
+      media_title: 'Dune',
+      show_title: null,
+      artist_name: null,
+      duration_ms: 60_000,
+      poster_url: null,
+      user: { id: 'u1', avatar_url: null },
+    }
+  }
+
+  // Like Tracearr, the plays up to `until` newest first, with the offset as the
+  // cursor
+  function historyRoute(
+    getPlayTimes: () => number[],
+    isFailing: (url: URL) => boolean = () => false,
+  ): Handlers {
+    return {
+      servers: () => ({ data: [plexServer('s1')] }),
+      history: (url) => {
+        if (isFailing(url)) {
+          return 'not a page'
+        }
+
+        const until = url.searchParams.get('until')
+        const times = getPlayTimes()
+          .filter((time) => !until || time <= Date.parse(until))
+          .sort((a, b) => b - a)
+        const offset = Number(url.searchParams.get('cursor') ?? 0)
+        const pageSize = Number(url.searchParams.get('pageSize'))
+        const end = offset + pageSize
+
+        return {
+          data: times.slice(offset, end).map(record),
+          meta: {
+            nextCursor: end < times.length ? String(end) : null,
+            pageSize,
+          },
+        }
+      },
+    }
+  }
+
+  // The shared store's functions for Tracearr's history, as the pages use them
+  async function loadHistory() {
+    const tracearr = await load()
+    const history = await import('./playHistory')
+    const readers = () => [tracearr.getTracearrHistoryReader()]
+
+    return {
+      ...tracearr,
+      getTracearrReadProgress: (since: string | Date, timeout?: number) =>
+        history.getReadProgress(readers(), new Date(since).getTime(), timeout),
+      getTracearrHistoryStatus: () => history.getReadStatus(readers()),
+      startTracearrHistoryRead: () => history.startReading(readers()),
+      rereadTracearrHistory: () => history.readAgain(readers()),
+    }
+  }
+
+  function historyCursors() {
+    return requestsTo('history').map(([input]) =>
+      new URL(input).searchParams.get('cursor'),
+    )
+  }
+
+  function startTimes(plays: { startedAt: number }[]) {
+    return plays.map((play) => play.startedAt)
+  }
+
+  beforeEach(() => {
+    vi.useFakeTimers({ toFake: ['Date'] })
+    vi.setSystemTime(now)
+  })
+
+  it('answers a window once the read gets back to it, and reads on to the oldest play', async () => {
+    route(historyRoute(() => playTimes))
+
+    const { getTracearrPlays } = await load()
+    const yearPlays = await getTracearrPlays(yearAgo)
+
+    expect(yearPlays).toHaveLength(1460)
+    expect(yearPlays.every((play) => play.startedAt >= yearAgo.getTime())).toBe(
+      true,
+    )
+
+    await vi.waitFor(() => {
+      expect(requestsTo('history')).toHaveLength(30)
+    })
+    await expect(getTracearrPlays('2010-01-01')).resolves.toHaveLength(2920)
+
+    // Every page was read once
+    expect(historyCursors()).toHaveLength(30)
+    expect(new Set(historyCursors()).size).toBe(30)
+    expect(
+      requestsTo('history').every(([input]) => {
+        const url = new URL(input)
+
+        return (
+          url.searchParams.get('server_id') === 's1' &&
+          !url.searchParams.has('since')
+        )
+      }),
+    ).toBe(true)
+  })
+
+  it('answers a shorter window while a longer read goes on', async () => {
+    const handlers = historyRoute(() => playTimes)
+    const gate = Promise.withResolvers<void>()
+
+    // Holds back the pages after the first five
+    fetchMock.mockImplementation(async (input: string) => {
+      const url = new URL(input)
+
+      if (Number(url.searchParams.get('cursor')) >= 500) {
+        await gate.promise
+      }
+
+      return Response.json(
+        handlers[url.pathname.replace('/api/v2/public/', '')](url),
+      )
+    })
+
+    const { getTracearrPlays } = await load()
+    const allTime = getTracearrPlays('2010-01-01')
+
+    let isAllTimeRead = false
+
+    void allTime.then(() => {
+      isAllTimeRead = true
+    })
+
+    await expect(
+      getTracearrPlays(new Date(now - 7 * DAY)),
+    ).resolves.toHaveLength(28)
+    expect(isAllTimeRead).toBe(false)
+
+    gate.resolve()
+
+    await expect(allTime).resolves.toHaveLength(2920)
+  })
+
+  it('keeps what it read when a page fails, and goes on from there', async () => {
+    let failures = 1
+
+    route(
+      historyRoute(
+        () => playTimes,
+        (url) => url.searchParams.get('cursor') === '1000' && failures-- > 0,
+      ),
+    )
+
+    const { getTracearrPlays } = await load()
+
+    await expect(getTracearrPlays('2010-01-01')).resolves.toEqual([])
+    await expect(getTracearrPlays('2010-01-01')).resolves.toHaveLength(2920)
+
+    const cursors = historyCursors()
+
+    expect(cursors.filter((cursor) => cursor === null)).toHaveLength(1)
+    expect(cursors.filter((cursor) => cursor === '1000')).toHaveLength(2)
+  })
+
+  it('reads only the newest plays again after a while', async () => {
+    let times = playTimes
+
+    route(historyRoute(() => times))
+
+    const { getTracearrPlays } = await load()
+
+    await getTracearrPlays('2010-01-01')
+
+    const newPlay = now + 5 * 60 * 1000
+    const [deletedPlay] = playTimes
+    const oldDeletedPlay = playTimes[2000]
+
+    times = [
+      newPlay,
+      ...playTimes.filter(
+        (time) => time !== deletedPlay && time !== oldDeletedPlay,
+      ),
+    ]
+    vi.setSystemTime(now + 4 * 60 * 1000)
+    await getTracearrPlays('2010-01-01')
+
+    expect(requestsTo('history')).toHaveLength(30)
+
+    vi.setSystemTime(now + 10 * 60 * 1000)
+
+    const plays = startTimes(await getTracearrPlays('2010-01-01'))
+
+    // One page goes back past two days before the last read
+    expect(requestsTo('history')).toHaveLength(31)
+    expect(plays).toContain(newPlay)
+    expect(plays).not.toContain(deletedPlay)
+    // Only reading the whole history again drops an older deleted play
+    expect(plays).toContain(oldDeletedPlay)
+    expect(plays).toHaveLength(2920)
+  })
+
+  it('reads the whole history again in the background after a week', async () => {
+    let times = playTimes
+
+    route(historyRoute(() => times))
+
+    const { getTracearrPlays } = await load()
+
+    await getTracearrPlays('2010-01-01')
+
+    const deletedPlay = playTimes[2000]
+
+    times = playTimes.filter((time) => time !== deletedPlay)
+    vi.setSystemTime(now + 8 * DAY)
+
+    // The current plays answer while the history is read again
+    expect(startTimes(await getTracearrPlays('2010-01-01'))).toContain(
+      deletedPlay,
+    )
+
+    await vi.waitFor(async () => {
+      expect(startTimes(await getTracearrPlays('2010-01-01'))).not.toContain(
+        deletedPlay,
+      )
+    })
+    expect(requestsTo('history')).toHaveLength(30 + 1 + 30)
+  })
+
+  it('leaves part of the rate limit for other requests', async () => {
+    const LIMIT = 10
+    const WINDOW = 60 * 1000
+    const handlers = historyRoute(() => playTimes.slice(0, 1500))
+    const requestCounts: number[] = []
+
+    let windowStart = -Infinity
+    let rateLimited = 0
+
+    // Responses are still read on the real event loop
+    vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout', 'Date'] })
+    vi.setSystemTime(now)
+
+    // Like Tracearr, a fixed window that starts with its first request
+    fetchMock.mockImplementation(async (input: string) => {
+      const time = Date.now()
+
+      if (time >= windowStart + WINDOW) {
+        windowStart = time
+        requestCounts.push(0)
+      }
+
+      const count = ++requestCounts[requestCounts.length - 1]
+      const headers = {
+        'x-ratelimit-limit': String(LIMIT),
+        'x-ratelimit-remaining': String(Math.max(0, LIMIT - count)),
+        'x-ratelimit-reset': String(
+          Math.ceil((windowStart + WINDOW - time) / 1000),
+        ),
+      }
+
+      if (count > LIMIT) {
+        rateLimited++
+
+        return new Response('Too many requests', { status: 429, headers })
+      }
+
+      const url = new URL(input)
+      const handler = handlers[url.pathname.replace('/api/v2/public/', '')]
+
+      return Response.json(handler(url), { headers })
+    })
+
+    const { getTracearrPlays } = await load()
+    const plays = getTracearrPlays(yearAgo)
+
+    await vi.advanceTimersByTimeAsync(10 * WINDOW)
+
+    await expect(plays).resolves.toHaveLength(1460)
+    expect(rateLimited).toBe(0)
+    // The servers request and 15 pages of history, at most 8 a minute
+    expect(requestCounts.reduce((sum, count) => sum + count)).toBe(16)
+    expect(Math.max(...requestCounts)).toBe(8)
+  })
+
+  it('shares its plays with another copy of the module', async () => {
+    route(historyRoute(() => playTimes.slice(0, 50)))
+
+    const first = await load()
+
+    await first.getTracearrPlays('2010-01-01')
+    vi.resetModules()
+
+    const second = await load()
+
+    await expect(second.getTracearrPlays('2010-01-01')).resolves.toHaveLength(
+      50,
+    )
+    expect(requestsTo('history')).toHaveLength(1)
+    expect(requestsTo('servers')).toHaveLength(1)
+  })
+
+  describe('reading in the background', () => {
+    it('shows how far the read is while a period is still being read', async () => {
+      const handlers = historyRoute(() => playTimes)
+      const gate = Promise.withResolvers<void>()
+
+      // Holds back the pages after the first five
+      fetchMock.mockImplementation(async (input: string) => {
+        const url = new URL(input)
+
+        if (Number(url.searchParams.get('cursor')) >= 500) {
+          await gate.promise
+        }
+
+        return Response.json(
+          handlers[url.pathname.replace('/api/v2/public/', '')](url),
+        )
+      })
+
+      const { getTracearrPlays, getTracearrReadProgress } = await loadHistory()
+      const progress = await getTracearrReadProgress('2010-01-01', 200)
+
+      expect(progress).toMatchObject({
+        playCount: 500,
+        oldestPlayAt: playTimes[499],
+        isComplete: false,
+        isReading: true,
+        hasFailed: false,
+        reread: null,
+        hasSaveFailed: false,
+      })
+      // By time, from now back to the server's first play
+      expect(progress?.progress).toBeCloseTo(500 / 2920, 2)
+      // A period the read has already passed can be shown
+      await expect(
+        getTracearrReadProgress(new Date(now - 7 * DAY), 200),
+      ).resolves.toBeNull()
+
+      gate.resolve()
+
+      await expect(getTracearrPlays('2010-01-01')).resolves.toHaveLength(2920)
+      await expect(
+        getTracearrReadProgress('2010-01-01', 200),
+      ).resolves.toBeNull()
+    })
+
+    it('lets the page through when the read stops', async () => {
+      route(
+        historyRoute(
+          () => playTimes,
+          () => true,
+        ),
+      )
+
+      const { getTracearrReadProgress } = await loadHistory()
+
+      await expect(
+        getTracearrReadProgress('2010-01-01', 200),
+      ).resolves.toBeNull()
+    })
+
+    it('reads the whole history without a page asking for it', async () => {
+      route(historyRoute(() => playTimes))
+
+      const { getTracearrHistoryStatus, startTracearrHistoryRead } =
+        await loadHistory()
+
+      startTracearrHistoryRead()
+
+      await vi.waitFor(async () => {
+        expect(await getTracearrHistoryStatus()).toMatchObject({
+          playCount: 2920,
+          oldestPlayAt: playTimes[2919],
+          progress: 1,
+          isComplete: true,
+          isReading: false,
+        })
+      })
+
+      // Every page was read once. The search for the first play has no cursor.
+      const pageCursors = historyCursors().filter(Boolean)
+
+      expect(pageCursors).toHaveLength(29)
+      expect(new Set(pageCursors).size).toBe(29)
+    })
+
+    it('reads the whole history again when asked', async () => {
+      let times = playTimes
+
+      route(historyRoute(() => times))
+
+      const {
+        getTracearrHistoryStatus,
+        getTracearrPlays,
+        rereadTracearrHistory,
+      } = await loadHistory()
+
+      await getTracearrPlays('2010-01-01')
+
+      const deletedPlay = playTimes[2000]
+
+      times = playTimes.filter((time) => time !== deletedPlay)
+
+      await rereadTracearrHistory()
+
+      // The current plays answer until the new read is done
+      expect((await getTracearrHistoryStatus()).reread).not.toBeNull()
+
+      await vi.waitFor(async () => {
+        expect(await getTracearrHistoryStatus()).toMatchObject({
+          playCount: 2919,
+          reread: null,
+        })
+      })
+      expect(startTimes(await getTracearrPlays('2010-01-01'))).not.toContain(
+        deletedPlay,
+      )
+    })
+
+    it('goes on with a read that stopped when asked to read again', async () => {
+      let failures = 1
+
+      route(
+        historyRoute(
+          () => playTimes,
+          (url) => url.searchParams.get('cursor') === '1000' && failures-- > 0,
+        ),
+      )
+
+      const {
+        getTracearrHistoryStatus,
+        rereadTracearrHistory,
+        startTracearrHistoryRead,
+      } = await loadHistory()
+
+      startTracearrHistoryRead()
+
+      await vi.waitFor(async () => {
+        expect(await getTracearrHistoryStatus()).toMatchObject({
+          playCount: 1000,
+          isReading: false,
+          hasFailed: true,
+        })
+      })
+
+      await rereadTracearrHistory()
+      await vi.waitFor(async () => {
+        expect(await getTracearrHistoryStatus()).toMatchObject({
+          isComplete: true,
+          hasFailed: false,
+        })
+      })
+      expect(
+        historyCursors().filter((cursor) => cursor === '100'),
+      ).toHaveLength(1)
+    })
+
+    it('tries again a minute after a page fails', async () => {
+      let failures = 1
+
+      vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout', 'Date'] })
+      vi.setSystemTime(now)
+      route(
+        historyRoute(
+          () => playTimes,
+          (url) => url.searchParams.get('cursor') === '1000' && failures-- > 0,
+        ),
+      )
+
+      const { getTracearrHistoryStatus, startTracearrHistoryRead } =
+        await loadHistory()
+
+      startTracearrHistoryRead()
+
+      await vi.waitFor(async () => {
+        expect(await getTracearrHistoryStatus()).toMatchObject({
+          playCount: 1000,
+          hasFailed: true,
+        })
+      })
+      await vi.advanceTimersByTimeAsync(30 * 1000)
+
+      expect(await getTracearrHistoryStatus()).toMatchObject({
+        playCount: 1000,
+        isReading: false,
+      })
+
+      await vi.advanceTimersByTimeAsync(30 * 1000)
+      await vi.waitFor(async () => {
+        expect(await getTracearrHistoryStatus()).toMatchObject({
+          playCount: 2920,
+          isComplete: true,
+          hasFailed: false,
+        })
+      })
+    })
+  })
+
+  describe('saved history', () => {
+    const HISTORY_KEY = 'tracearr|http://tracearr:3000|'
+
+    function savedPlay(startedAt: number): Play {
+      return {
+        id: String(startedAt),
+        startedAt,
+        mediaType: 'movie',
+        durationMs: 60_000,
+        title: 'Dune',
+        showTitle: null,
+        artistName: null,
+        year: null,
+        thumb: '',
+        ratingKey: null,
+        grandparentRatingKey: null,
+        mediaId: null,
+        showMediaId: null,
+        imdbId: null,
+        tmdbId: null,
+        identityId: 'u1',
+        avatar: '',
+      }
+    }
+
+    async function loadWithSnapshot(snapshot: PlaysSnapshot | null = null) {
+      const tracearr = await load()
+      const historyFile = await import('./playHistoryFile')
+
+      vi.mocked(historyFile.readHistoryFile).mockResolvedValue(
+        new Map(snapshot ? [[HISTORY_KEY, snapshot]] : []),
+      )
+
+      return { ...tracearr, ...historyFile }
+    }
+
+    function savedHistory(overrides: Partial<PlaysSnapshot> = {}) {
+      return {
+        plays: playTimes.map(savedPlay),
+        readTo: -Infinity,
+        toppedUpAt: now,
+        rebuildAt: now + 7 * DAY,
+        ...overrides,
+      }
+    }
+
+    it('starts from the history saved before a restart', async () => {
+      route(historyRoute(() => playTimes))
+
+      const { getTracearrPlays, readHistoryFile } =
+        await loadWithSnapshot(savedHistory())
+      const [allTime, year] = await Promise.all([
+        getTracearrPlays('2010-01-01'),
+        getTracearrPlays(yearAgo),
+      ])
+
+      expect(allTime).toHaveLength(2920)
+      expect(year).toHaveLength(1460)
+      expect(requestsTo('history')).toHaveLength(0)
+      expect(readHistoryFile).toHaveBeenCalledTimes(1)
+    })
+
+    it('catches up on plays since the history was saved', async () => {
+      const newPlay = now - 60 * 60 * 1000
+
+      route(historyRoute(() => [newPlay, ...playTimes]))
+
+      const { getTracearrPlays } = await loadWithSnapshot(
+        savedHistory({ toppedUpAt: now - 3 * DAY }),
+      )
+      const plays = startTimes(await getTracearrPlays('2010-01-01'))
+
+      // One page goes back past two days before the save
+      expect(requestsTo('history')).toHaveLength(1)
+      expect(plays).toContain(newPlay)
+      expect(plays).toHaveLength(2921)
+    })
+
+    it('goes on reading from where the saved history stopped', async () => {
+      route(historyRoute(() => playTimes))
+
+      const { getTracearrPlays } = await loadWithSnapshot(
+        savedHistory({
+          plays: playTimes.slice(0, 1000).map(savedPlay),
+          readTo: playTimes[999],
+          cursor: '1000',
+        }),
+      )
+
+      await expect(getTracearrPlays('2010-01-01')).resolves.toHaveLength(2920)
+      expect(historyCursors()[0]).toBe('1000')
+      expect(historyCursors()).toHaveLength(20)
+    })
+
+    it('saves the history a minute after it changes', async () => {
+      vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout', 'Date'] })
+      vi.setSystemTime(now)
+      route(historyRoute(() => playTimes))
+
+      const { getTracearrPlays, writeHistoryFile } = await loadWithSnapshot()
+
+      await getTracearrPlays('2010-01-01')
+
+      // Each of the 30 pages changed the history
+      expect(writeHistoryFile).not.toHaveBeenCalled()
+
+      await vi.advanceTimersByTimeAsync(60 * 1000)
+
+      expect(writeHistoryFile).toHaveBeenCalledTimes(1)
+
+      const [[key, saved]] = vi.mocked(writeHistoryFile).mock.calls[0][0]
+
+      // Without the API key
+      expect(key).toBe(HISTORY_KEY)
+      expect(saved.plays).toHaveLength(2920)
+      expect(saved).toMatchObject({ readTo: -Infinity, toppedUpAt: now })
+    })
+
+    it('goes on without saving when the history cannot be written', async () => {
+      vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout', 'Date'] })
+      vi.setSystemTime(now)
+      route(historyRoute(() => playTimes))
+
+      const { getTracearrPlays, writeHistoryFile } = await loadWithSnapshot()
+
+      vi.mocked(writeHistoryFile).mockRejectedValue(new Error('EROFS'))
+
+      await getTracearrPlays('2010-01-01')
+      await vi.advanceTimersByTimeAsync(60 * 1000)
+
+      // A top-up tries again, without logging the same problem twice
+      vi.setSystemTime(now + 10 * 60 * 1000)
+
+      await expect(getTracearrPlays('2010-01-01')).resolves.toHaveLength(2920)
+      await vi.advanceTimersByTimeAsync(60 * 1000)
+
+      expect(writeHistoryFile).toHaveBeenCalledTimes(2)
+      expect(console.error).toHaveBeenCalledTimes(1)
+      expect(console.error).toHaveBeenCalledWith(
+        expect.stringContaining('Unable to save the play history'),
+        expect.any(Error),
+      )
+    })
   })
 })

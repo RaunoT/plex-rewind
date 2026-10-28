@@ -1,3 +1,4 @@
+import { Play, PlayMediaType } from '@/types/playHistory'
 import { Settings } from '@/types/settings'
 import { FirstPlay } from '@/types/statsSource'
 import {
@@ -24,31 +25,17 @@ import { unstable_rethrow } from 'next/navigation'
 import qs from 'qs'
 import getSettings from './getSettings'
 import { LibrariesSize, sumLibrariesSize } from './librariesSize'
+import {
+  dropStaleHistories,
+  getStoredPlays,
+  HistoryReader,
+  PlaysPage,
+  readPlays,
+} from './playHistory'
+import { PLAY_MEDIA_TYPES } from './playStats'
 
 type QueryParams = {
   [key: string]: string | number | undefined
-}
-
-export type TracearrPlayMediaType = 'movie' | 'episode' | 'track'
-
-export type TracearrPlay = {
-  id: string
-  startedAt: number
-  mediaType: TracearrPlayMediaType
-  durationMs: number
-  title: string
-  showTitle: string | null
-  artistName: string | null
-  year: number | null
-  thumb: string
-  ratingKey: string | null
-  grandparentRatingKey: string | null
-  mediaId: string | null
-  showMediaId: string | null
-  imdbId: string | null
-  tmdbId: number | null
-  identityId: string
-  avatar: string
 }
 
 export type TracearrPlexUser = {
@@ -60,11 +47,25 @@ export type TracearrPlexUser = {
   isAdmin: boolean
 }
 
-type HistoryCache = {
-  plays: TracearrPlay[]
-  fetchedAt: number
-  fullyFetchedAt: number
-  usedAt: number
+type CachedValue = {
+  value: unknown
+  key: string
+  expiresAt: number
+  pending: Promise<unknown> | null
+}
+
+type RateLimit = {
+  limit: number
+  remaining: number
+  resetsAt: number
+}
+
+type TracearrState = {
+  cachedValues: Map<string, CachedValue>
+  firstPlays: Map<string, { firstPlay: FirstPlay | null; expiresAt: number }>
+  rateLimit: RateLimit | null
+  nextPacedRequestAt: number
+  warnedMissingServerId: string
 }
 
 const PAGE_SIZE = 100
@@ -76,43 +77,41 @@ const REQUEST_TIMEOUT = 30 * 1000
 const CACHE_TTL = 5 * 60 * 1000
 const ACTIVITY_CACHE_TTL = 3000
 const DAY = 24 * 60 * 60 * 1000
-// Tracearr keeps a play open for resumes for a day after it stops, so a
-// refresh re-reads a wider window than the time since the last fetch.
-const HISTORY_REFRESH_OVERLAP = 2 * DAY
-const HISTORY_FULL_REFRESH = DAY
-const HISTORY_CACHE_IDLE = 60 * 60 * 1000
+// The share of the rate limit that paced requests leave for everything else
+const RATE_LIMIT_RESERVE = 0.2
 const FIRST_PLAY_CACHE_TTL = DAY
 // Plex came out in 2008, so no play is older
 const EARLIEST_PLAY = Date.UTC(2008, 0, 1)
 // Plex numbers the server owner's local account 1.
 const PLEX_OWNER_ACCOUNT_ID = '1'
-const PLAY_MEDIA_TYPES: TracearrPlayMediaType[] = ['movie', 'episode', 'track']
-
-export const TRACEARR_MEDIA_TYPES: Record<
-  TautulliMediaType,
-  TracearrPlayMediaType
-> = {
-  movie: 'movie',
-  show: 'episode',
-  artist: 'track',
-}
-
 const LIBRARY_NAMES: Record<TautulliMediaType, string> = {
   movie: 'Movies',
   show: 'TV Shows',
   artist: 'Music',
 }
-const historyCaches = new Map<string, HistoryCache>()
-const firstPlayCaches = new Map<
-  string,
-  { firstPlay: FirstPlay | null; expiresAt: number }
->()
-
-let historyQueue: Promise<unknown> = Promise.resolve()
-let warnedMissingServerId = ''
+// Next.js can bundle this file into more than one chunk, and each copy would
+// otherwise read the history and spend the rate limit on its own.
+const globalForTracearr = globalThis as unknown as {
+  plexRewindTracearr?: TracearrState
+}
+const state = (globalForTracearr.plexRewindTracearr ??= {
+  cachedValues: new Map(),
+  firstPlays: new Map(),
+  rateLimit: null,
+  nextPacedRequestAt: 0,
+  warnedMissingServerId: '',
+})
 
 export function getTracearrUrl(settings: Settings = getSettings()): string {
   return settings.connection.tracearrUrl.replace(/\/+$/, '')
+}
+
+// Tracearr's history of the Plex server. Without the API key, so a new key
+// keeps the plays read with the old one.
+function getHistoryKey(): string {
+  const settings = getSettings()
+
+  return `tracearr|${getTracearrUrl(settings)}|${settings.connection.tracearrServerId}`
 }
 
 function getCacheKey(): string {
@@ -124,36 +123,86 @@ function getCacheKey(): string {
 
 // Caches a successful result for `ttl` and shares one in-flight request
 // between concurrent callers.
-function cached<T>(load: () => Promise<T | null>, ttl = CACHE_TTL) {
-  let value: T | null = null
-  let valueKey = ''
-  let expiresAt = 0
-  let pending: Promise<T | null> | null = null
-
+function cached<T>(
+  name: string,
+  load: () => Promise<T | null>,
+  ttl = CACHE_TTL,
+) {
   return async (): Promise<T | null> => {
     const key = getCacheKey()
 
-    if (value && key === valueKey && Date.now() < expiresAt) {
-      return value
+    let entry = state.cachedValues.get(name)
+
+    if (!entry) {
+      entry = { value: null, key: '', expiresAt: 0, pending: null }
+      state.cachedValues.set(name, entry)
     }
 
-    if (!pending) {
-      pending = load()
+    if (entry.value && entry.key === key && Date.now() < entry.expiresAt) {
+      return entry.value as T
+    }
+
+    if (!entry.pending) {
+      const current = entry
+
+      current.pending = load()
         .then((result) => {
           if (result) {
-            value = result
-            valueKey = key
-            expiresAt = Date.now() + ttl
+            current.value = result
+            current.key = key
+            current.expiresAt = Date.now() + ttl
           }
 
           return result
         })
         .finally(() => {
-          pending = null
+          current.pending = null
         })
     }
 
-    return pending
+    return entry.pending as Promise<T | null>
+  }
+}
+
+function sleep(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms))
+}
+
+function updateRateLimit(headers: Headers): void {
+  const [limit, remaining, reset] = [
+    'x-ratelimit-limit',
+    'x-ratelimit-remaining',
+    'x-ratelimit-reset',
+  ].map((name) => Number(headers.get(name) ?? NaN))
+
+  if ([limit, remaining, reset].every(Number.isFinite) && limit > 0) {
+    state.rateLimit = { limit, remaining, resetsAt: Date.now() + reset * 1000 }
+  }
+}
+
+// Paced requests leave a share of the rate limit for everything else, and
+// spread the rest over what's left of the window instead of using it up at
+// once. Without rate limit headers, they aren't held back.
+async function waitForRateLimit(): Promise<void> {
+  const rateLimit = state.rateLimit
+  const now = Date.now()
+
+  if (!rateLimit || now >= rateLimit.resetsAt) {
+    return
+  }
+
+  const spare =
+    rateLimit.remaining - Math.ceil(rateLimit.limit * RATE_LIMIT_RESERVE)
+  const sendAt =
+    spare > 0 ? Math.max(now, state.nextPacedRequestAt) : rateLimit.resetsAt
+
+  // The rest of the spare requests go evenly between this one and the reset
+  state.nextPacedRequestAt =
+    spare > 0 ? sendAt + (rateLimit.resetsAt - sendAt) / spare : sendAt
+  rateLimit.remaining--
+
+  if (sendAt > now) {
+    await sleep(sendAt - now)
   }
 }
 
@@ -165,9 +214,15 @@ function toAbsoluteUrl(url: string | null, baseUrl: string): string {
   return url.startsWith('/') ? `${baseUrl}${url}` : url
 }
 
+type FetchOptions = {
+  // Waits for its share of the rate limit, for requests that come in long runs
+  paced?: boolean
+}
+
 export default async function fetchTracearr<T>(
   path: string,
   params?: QueryParams,
+  { paced = false }: FetchOptions = {},
 ): Promise<T | null> {
   const settings = getSettings()
   const tracearrUrl = getTracearrUrl(settings)
@@ -189,6 +244,10 @@ export default async function fetchTracearr<T>(
   const url = `${tracearrUrl}/api/v2/public/${path}${query ? `?${query}` : ''}`
 
   for (let attempt = 0; ; attempt++) {
+    if (paced) {
+      await waitForRateLimit()
+    }
+
     try {
       const res = await fetch(url, {
         headers: {
@@ -200,6 +259,8 @@ export default async function fetchTracearr<T>(
         signal: AbortSignal.timeout(REQUEST_TIMEOUT),
       })
 
+      updateRateLimit(res.headers)
+
       // Every v2 route shares one per-key budget, which a long history read
       // can use up.
       if (res.status === 429 && attempt < MAX_RATE_LIMIT_RETRIES) {
@@ -208,9 +269,7 @@ export default async function fetchTracearr<T>(
         console.warn(
           `[TRACEARR] - Rate limited! Retrying '${path}' in ${retryAfter}s.`,
         )
-        await new Promise((resolve) =>
-          setTimeout(resolve, Math.min(retryAfter, 60) * 1000),
-        )
+        await sleep(Math.min(retryAfter, 60) * 1000)
 
         continue
       }
@@ -305,15 +364,7 @@ async function fetchPages<T>(
   return { items, isComplete: false }
 }
 
-// Whatever was read, even when paging stopped early
-async function fetchAllPages<T>(
-  path: string,
-  params?: QueryParams,
-): Promise<T[] | null> {
-  return (await fetchPages<T>(path, params))?.items ?? null
-}
-
-const getServers = cached<TracearrServer[]>(async () => {
+const getServers = cached<TracearrServer[]>('servers', async () => {
   const res = await fetchTracearr<TracearrServersResponse>('servers')
 
   return Array.isArray(res?.data) ? res.data : null
@@ -357,8 +408,8 @@ async function getPlexServerId(): Promise<string | null> {
   if (!server && tracearrServerId) {
     server = selectPlexServer(servers, '')
 
-    if (server && warnedMissingServerId !== tracearrServerId) {
-      warnedMissingServerId = tracearrServerId
+    if (server && state.warnedMissingServerId !== tracearrServerId) {
+      state.warnedMissingServerId = tracearrServerId
       console.warn(
         `[TRACEARR] - The saved Plex server '${tracearrServerId}' no longer exists! Using '${server.server_name}' instead.`,
       )
@@ -382,7 +433,7 @@ type PlexUsers = {
   isComplete: boolean
 }
 
-const getPlexUsers = cached<PlexUsers>(async () => {
+const getPlexUsers = cached<PlexUsers>('users', async () => {
   const [pages, serverId] = await Promise.all([
     fetchPages<TracearrUser>('users'),
     getPlexServerId(),
@@ -455,11 +506,9 @@ export async function getTracearrUser(
 function getCachedAvatars(): Map<string, string> {
   const avatars = new Map<string, string>()
 
-  for (const cache of historyCaches.values()) {
-    for (const play of cache.plays) {
-      if (play.avatar && !avatars.has(play.identityId)) {
-        avatars.set(play.identityId, play.avatar)
-      }
+  for (const play of getStoredPlays(getHistoryKey())) {
+    if (play.avatar && !avatars.has(play.identityId)) {
+      avatars.set(play.identityId, play.avatar)
     }
   }
 
@@ -494,11 +543,8 @@ export async function getTracearrUsers(): Promise<TautulliUser[]> {
   })
 }
 
-function toPlay(
-  record: TracearrHistoryRecord,
-  baseUrl: string,
-): TracearrPlay | null {
-  const mediaType = record.media_type as TracearrPlayMediaType
+function toPlay(record: TracearrHistoryRecord, baseUrl: string): Play | null {
+  const mediaType = record.media_type as PlayMediaType
 
   if (!PLAY_MEDIA_TYPES.includes(mediaType)) {
     return null
@@ -525,107 +571,59 @@ function toPlay(
   }
 }
 
-async function fetchPlays(since: number): Promise<TracearrPlay[] | null> {
+// A page of the history, newest first. Without a window, Tracearr returns
+// every segment of a play, not only the ones inside the window.
+async function fetchPlaysPage(cursor?: string): Promise<PlaysPage | null> {
   const serverId = await getPlexServerId()
 
   if (!serverId) {
     return null
   }
 
-  const baseUrl = getTracearrUrl()
-  const records = await fetchAllPages<TracearrHistoryRecord>('history', {
-    since: new Date(since).toISOString(),
-    server_id: serverId,
-  })
+  const page = await fetchTracearr<TracearrCursorPage<TracearrHistoryRecord>>(
+    'history',
+    { server_id: serverId, pageSize: PAGE_SIZE, cursor },
+    { paced: true },
+  )
 
-  if (!records) {
+  if (!page) {
     return null
   }
 
-  return records.flatMap((record) => {
-    const play = record.server_id === serverId ? toPlay(record, baseUrl) : null
+  if (!Array.isArray(page.data)) {
+    console.error(`[TRACEARR] - Unexpected response for 'history'!`)
 
-    return play ? [play] : []
-  })
+    return null
+  }
+
+  const baseUrl = getTracearrUrl()
+
+  return {
+    plays: page.data.flatMap((record) => {
+      const play =
+        record.server_id === serverId ? toPlay(record, baseUrl) : null
+
+      return play ? [play] : []
+    }),
+    oldest: Math.min(...page.data.map(getStartedAt).filter(Number.isFinite)),
+    cursor: page.meta?.nextCursor ?? undefined,
+  }
 }
 
-// Tracearr applies a window to the segments of a play, so the same play can
-// count differently in a shorter window. Each window keeps its own plays, and
-// later requests refetch only the newest of them.
-async function loadPlays(since: number): Promise<TracearrPlay[] | null> {
-  const key = `${getCacheKey()}|${since}`
-  const now = Date.now()
-  const cache = historyCaches.get(key)
+// Tracearr's history of the Plex server, read into the shared play store
+export function getTracearrHistoryReader(): HistoryReader {
+  const key = getHistoryKey()
 
-  if (cache && now - cache.fetchedAt < CACHE_TTL) {
-    cache.usedAt = now
+  void dropStaleHistories(key)
 
-    return cache.plays
+  return {
+    key,
+    readPage: fetchPlaysPage,
+    getFirstPlayAt: getServerFirstPlayAt,
   }
-
-  if (cache && now - cache.fullyFetchedAt < HISTORY_FULL_REFRESH) {
-    let refreshSince = Math.max(
-      since,
-      cache.fetchedAt - HISTORY_REFRESH_OVERLAP,
-    )
-    let recentPlays: TracearrPlay[] = []
-
-    // A play resumed across `refreshSince` comes back with only its newer
-    // segments, so it's read again from where it started.
-    for (;;) {
-      const fetchedPlays = await fetchPlays(refreshSince)
-
-      if (!fetchedPlays) {
-        return cache.plays
-      }
-
-      const fetchedIds = new Set(fetchedPlays.map((play) => play.id))
-      const resumedSince = Math.min(
-        ...cache.plays
-          .filter(
-            (play) => play.startedAt < refreshSince && fetchedIds.has(play.id),
-          )
-          .map((play) => play.startedAt),
-      )
-
-      recentPlays = fetchedPlays
-
-      if (!Number.isFinite(resumedSince)) {
-        break
-      }
-
-      refreshSince = resumedSince
-    }
-
-    const plays = [
-      ...recentPlays,
-      ...cache.plays.filter((play) => play.startedAt < refreshSince),
-    ]
-
-    historyCaches.set(key, { ...cache, plays, fetchedAt: now, usedAt: now })
-
-    return plays
-  }
-
-  const plays = await fetchPlays(since)
-
-  if (!plays) {
-    return cache?.plays ?? null
-  }
-
-  historyCaches.set(key, {
-    plays,
-    fetchedAt: now,
-    fullyFetchedAt: now,
-    usedAt: now,
-  })
-
-  return plays
 }
 
-export async function getTracearrPlays(
-  since: string | Date,
-): Promise<TracearrPlay[]> {
+export async function getTracearrPlays(since: string | Date): Promise<Play[]> {
   const sinceTime = new Date(since).getTime()
 
   if (!Number.isFinite(sinceTime)) {
@@ -634,20 +632,7 @@ export async function getTracearrPlays(
     return []
   }
 
-  // Windows start at a whole UTC day, so requests for the same period share
-  // one cache.
-  const windowStart = new Date(sinceTime).setUTCHours(0, 0, 0, 0)
-  const run = historyQueue.then(() => loadPlays(windowStart))
-
-  historyQueue = run.catch(() => undefined)
-
-  for (const [key, cache] of historyCaches) {
-    if (Date.now() - cache.usedAt > HISTORY_CACHE_IDLE) {
-      historyCaches.delete(key)
-    }
-  }
-
-  return (await run) ?? []
+  return readPlays([getTracearrHistoryReader()], sinceTime)
 }
 
 function getStartedAt(record: TracearrHistoryRecord): number {
@@ -732,18 +717,25 @@ async function findFirstPlay(
 }
 
 // No user's first play is older than the server's, so it bounds every search
-const getServerFirstPlayAt = cached<number>(async () => {
-  const serverId = await getPlexServerId()
+const getServerFirstPlayAt = cached<number>(
+  'serverFirstPlayAt',
+  async () => {
+    const serverId = await getPlexServerId()
 
-  if (!serverId) {
-    return null
-  }
+    if (!serverId) {
+      return null
+    }
 
-  const firstPlay = await findFirstPlay({ server_id: serverId }, EARLIEST_PLAY)
-  const firstPlayAt = firstPlay ? getStartedAt(firstPlay) : NaN
+    const firstPlay = await findFirstPlay(
+      { server_id: serverId },
+      EARLIEST_PLAY,
+    )
+    const firstPlayAt = firstPlay ? getStartedAt(firstPlay) : NaN
 
-  return Number.isFinite(firstPlayAt) ? firstPlayAt : null
-}, FIRST_PLAY_CACHE_TTL)
+    return Number.isFinite(firstPlayAt) ? firstPlayAt : null
+  },
+  FIRST_PLAY_CACHE_TTL,
+)
 
 export async function getTracearrFirstPlay(
   plexId: string,
@@ -759,15 +751,15 @@ export async function getTracearrFirstPlay(
 
   const key = `${getCacheKey()}|${user.identityId}`
   const now = Date.now()
-  const cache = firstPlayCaches.get(key)
+  const cache = state.firstPlays.get(key)
 
   if (cache && now < cache.expiresAt) {
     return cache.firstPlay
   }
 
-  for (const [cacheKey, { expiresAt }] of firstPlayCaches) {
+  for (const [cacheKey, { expiresAt }] of state.firstPlays) {
     if (now >= expiresAt) {
-      firstPlayCaches.delete(cacheKey)
+      state.firstPlays.delete(cacheKey)
     }
   }
 
@@ -785,11 +777,12 @@ export async function getTracearrFirstPlay(
       ? {
           date: new Date(record.started_at).toISOString(),
           title: record.show_title || record.artist_name || record.media_title,
+          play: toPlay(record, getTracearrUrl()),
         }
       : null
 
   // The first play only changes once a user without plays starts watching
-  firstPlayCaches.set(key, {
+  state.firstPlays.set(key, {
     firstPlay,
     expiresAt: now + (firstPlay ? FIRST_PLAY_CACHE_TTL : CACHE_TTL),
   })
@@ -797,7 +790,7 @@ export async function getTracearrFirstPlay(
   return firstPlay
 }
 
-const getAllLibraries = cached<TracearrLibrary[]>(async () => {
+const getAllLibraries = cached<TracearrLibrary[]>('libraries', async () => {
   const res = await fetchTracearr<{ data: TracearrLibrary[] }>('libraries')
 
   return Array.isArray(res?.data) ? res.data : null
@@ -937,6 +930,15 @@ const CHANNEL_LAYOUTS: Record<number, string> = {
   8: '7.1',
 }
 
+// In Plex's form, as Tautulli sends them
+function toGuids({ imdb_id, tmdb_id, tvdb_id }: TracearrStream): string[] {
+  return [
+    imdb_id && `imdb://${imdb_id}`,
+    tmdb_id && `tmdb://${tmdb_id}`,
+    tvdb_id && `tvdb://${tvdb_id}`,
+  ].filter((guid): guid is string => !!guid)
+}
+
 function toSession(
   stream: TracearrStream,
   users: TracearrPlexUser[],
@@ -983,6 +985,7 @@ function toSession(
     grandparent_thumb: '',
     grandparent_title:
       (isEpisode ? stream.show_title : stream.artist_name) ?? '',
+    guids: toGuids(stream),
     media_type: stream.media_type,
     parent_rating_key: Number(stream.parent_rating_key) || undefined,
     parent_title: isEpisode
@@ -1046,34 +1049,38 @@ function toSession(
   }
 }
 
-const getStreams = cached<TautulliActivity>(async () => {
-  const [serverId, users] = await Promise.all([
-    getPlexServerId(),
-    getTracearrPlexUsers(),
-  ])
+const getStreams = cached<TautulliActivity>(
+  'streams',
+  async () => {
+    const [serverId, users] = await Promise.all([
+      getPlexServerId(),
+      getTracearrPlexUsers(),
+    ])
 
-  if (!serverId) {
-    return null
-  }
+    if (!serverId) {
+      return null
+    }
 
-  const res = await fetchTracearr<TracearrStreamsResponse>('streams', {
-    server_id: serverId,
-  })
+    const res = await fetchTracearr<TracearrStreamsResponse>('streams', {
+      server_id: serverId,
+    })
 
-  if (!res) {
-    return null
-  }
+    if (!res) {
+      return null
+    }
 
-  const baseUrl = getTracearrUrl()
-  const sessions = (res.data ?? [])
-    .filter((stream) => stream.server_id === serverId)
-    .map((stream) => toSession(stream, users, baseUrl))
+    const baseUrl = getTracearrUrl()
+    const sessions = (res.data ?? [])
+      .filter((stream) => stream.server_id === serverId)
+      .map((stream) => toSession(stream, users, baseUrl))
 
-  return {
-    sessions,
-    stream_count: sessions.length,
-  }
-}, ACTIVITY_CACHE_TTL)
+    return {
+      sessions,
+      stream_count: sessions.length,
+    }
+  },
+  ACTIVITY_CACHE_TTL,
+)
 
 export async function getTracearrActivity(): Promise<TautulliActivity | null> {
   return getStreams()

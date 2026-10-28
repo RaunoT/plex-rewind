@@ -10,6 +10,9 @@ type Props = {
   rows?: boolean
   settings: PublicSettings
   loggedInUserId?: string
+  isRanked?: boolean
+  // In place of the item statistics chosen in the settings
+  activeStats?: string[]
 }
 
 export default function MediaItems({
@@ -19,6 +22,8 @@ export default function MediaItems({
   rows,
   settings,
   loggedInUserId,
+  isRanked,
+  activeStats = settings.general.activeItemStatistics,
 }: Props) {
   return (
     <ul
@@ -34,9 +39,10 @@ export default function MediaItems({
           key={i}
           type={type}
           serverId={serverId}
-          activeStats={settings.general.activeItemStatistics}
+          activeStats={activeStats}
           settings={settings}
           loggedInUserId={loggedInUserId}
+          isRanked={isRanked}
         />
       ))}
     </ul>

@@ -2,8 +2,9 @@
 
 import { GlobalContext } from '@/app/_components/GlobalContextProvider'
 import Avatar from '@/components/Avatar'
-import anonymousSvg from '@/components/MediaItem/anonymous.svg'
-import placeholderSvg from '@/components/MediaItem/placeholder.svg'
+import ImageFallback from '@/components/ImageFallback'
+import TitleDetails from '@/components/MediaItem/TitleDetails'
+import PosterImage from '@/components/PosterImage'
 import SkeletonLine from '@/components/SkeletonLine'
 import { useMediaDetails } from '@/hooks/useMediaDetails'
 import { PublicSettings } from '@/types/settings'
@@ -20,26 +21,38 @@ import {
   formatDevice,
   formatDynamicRange,
   formatPercent,
-  formatRating,
   formatResolution,
   millisecondsToTimeString,
 } from '@/utils/formatting'
 import { ArrowTurnDownRightIcon } from '@heroicons/react/16/solid'
 import {
   ArrowPathIcon,
-  CalendarDaysIcon,
+  ArrowsRightLeftIcon,
+  CheckCircleIcon,
+  ChevronDownIcon,
+  CpuChipIcon,
   PauseIcon,
   PlayIcon,
-  StarIcon,
+  UserIcon,
 } from '@heroicons/react/24/outline'
 import clsx from 'clsx'
 import { capitalize, toUpper } from 'lodash'
 import { useSession } from 'next-auth/react'
 import { useLocale, useTranslations } from 'next-intl'
-import Image from 'next/image'
-import { ReactNode, useContext, useState } from 'react'
+import { ReactNode, useContext, useId, useState } from 'react'
 
 type DecisionKind = 'directPlay' | 'directStream' | 'transcode'
+
+// Green when the file plays as is, blue when only its container changes, and
+// Plex orange when the server converts it
+const DECISION_ICONS: Record<
+  DecisionKind,
+  { Icon: typeof CheckCircleIcon; className: string }
+> = {
+  directPlay: { Icon: CheckCircleIcon, className: 'text-success' },
+  directStream: { Icon: ArrowsRightLeftIcon, className: 'text-sky-400' },
+  transcode: { Icon: CpuChipIcon, className: 'text-plex' },
+}
 
 type ActivityItemProps = {
   session: TautulliSession
@@ -54,7 +67,7 @@ export default function ActivityItem({
   settings,
   serverId,
 }: ActivityItemProps) {
-  const { posterUrl, isPosterLoading, year, rating, isDetailsLoading } =
+  const { posterUrl, isPosterLoading, details, isDetailsLoading } =
     useMediaDetails(session, settings)
   const t = useTranslations('Activity')
   const tCommon = useTranslations('Common')
@@ -62,10 +75,12 @@ export default function ActivityItem({
   const { data: user } = useSession()
   const isCurrentUser = String(session.user_id) === user?.user.id
   const isAdmin = user?.user.isAdmin
-  const [failedPosterUrl, setFailedPosterUrl] = useState<string | null>(null)
   const {
-    activity: { isDetailsHidden },
+    activity: { isDetailsHidden, setIsDetailsHidden },
   } = useContext(GlobalContext)
+  // Each card opens the way the last one was left, and keeps its own state
+  const [isExpanded, setIsExpanded] = useState(!isDetailsHidden)
+  const detailsId = useId()
   const {
     audio_atmos,
     audio_channel_layout,
@@ -146,10 +161,19 @@ export default function ActivityItem({
   const isVideo = media_type === 'episode' || media_type === 'movie'
   const subtitle = [grandparent_title, parent_title].filter(Boolean).join(' · ')
   const eta = calculateETA(session.duration, session.view_offset, locale)
-  const device = formatDevice(product, player)
+  // The player's name is a stream detail, so it hides with them
+  const device = isExpanded ? formatDevice(product, player) : product || player
   // Only Tautulli reports buffering, and anything unexpected reads as paused
   const playbackState =
     state === 'playing' || state === 'buffering' ? state : 'paused'
+  const decisionKind = getDecisionKind(transcode_decision)
+  const decisionIcon = decisionKind && DECISION_ICONS[decisionKind]
+
+  function toggleDetails() {
+    setIsExpanded(!isExpanded)
+    // New cards, and the next visit, open the same way
+    setIsDetailsHidden(isExpanded)
+  }
 
   return (
     <li className='w-full py-6 first:pt-0 last:pb-0 sm:py-8'>
@@ -158,14 +182,9 @@ export default function ActivityItem({
         <div className='flex min-w-0 items-center gap-2 text-sm'>
           <div className='relative size-6 shrink-0 overflow-hidden rounded-full ring-1 ring-white/15'>
             {isAnonymous ? (
-              <Image
-                fill
-                className='object-cover object-top'
-                alt={t('anonymousAvatar')}
-                src={anonymousSvg}
-                sizes='3rem'
-                priority
-              />
+              <ImageFallback alt={t('anonymousAvatar')}>
+                <UserIcon className='size-[60cqw]' />
+              </ImageFallback>
             ) : (
               <Avatar
                 src={session.user_thumb}
@@ -190,44 +209,70 @@ export default function ActivityItem({
             <span className='truncate text-neutral-400'>{device}</span>
           )}
         </div>
-        <span className='icon-stat-wrapper shrink-0 text-xs sm:text-sm'>
-          {playbackState === 'playing' && <PlayIcon />}
-          {playbackState === 'buffering' && (
-            <ArrowPathIcon className='motion-safe:animate-spin' />
-          )}
-          {playbackState === 'paused' && <PauseIcon />}
-          {t(playbackState)}
-        </span>
+        <div className='flex shrink-0 items-center gap-2'>
+          {/* Only the icon on phones, so the device has room */}
+          <span className='icon-stat-wrapper text-xs max-sm:p-1 sm:text-sm'>
+            {playbackState === 'playing' && <PlayIcon />}
+            {playbackState === 'buffering' && (
+              <ArrowPathIcon className='motion-safe:animate-spin' />
+            )}
+            {playbackState === 'paused' && <PauseIcon />}
+            <span className='max-sm:sr-only'>{t(playbackState)}</span>
+          </span>
+          {/* How the stream gets there, which opens the rest. Its colour shows
+              when the details are worth a look. Without the text on phones,
+              and taps 10px above and below count too, for a 40px tap area. */}
+          <button
+            type='button'
+            className='icon-stat-wrapper focus-visible:focus-ring relative cursor-pointer pr-2 text-xs transition-colors after:absolute after:inset-x-0 after:-inset-y-2.5 hover:bg-white/10 max-sm:p-1 sm:text-sm'
+            aria-expanded={isExpanded}
+            aria-controls={detailsId}
+            onClick={toggleDetails}
+          >
+            {decisionIcon && (
+              <decisionIcon.Icon className={decisionIcon.className} />
+            )}
+            <span className='max-sm:sr-only'>
+              {capitalize(formatDecision(transcode_decision))}
+            </span>
+            <span className='sr-only'>{` (${t('streamDetails')})`}</span>
+            <ChevronDownIcon
+              className={clsx(
+                'transition-transform',
+                isExpanded && 'rotate-180',
+              )}
+            />
+          </button>
+        </div>
       </div>
 
-      {/* What is playing, beside its poster */}
-      <div className='flex gap-4'>
-        <div className={clsx('poster', { skeleton: isPosterLoading })}>
+      {/* What is playing, beside its poster. On phones the progress goes under
+          both, where the times fit on one line. */}
+      <div className='grid grid-cols-[auto_minmax(0,1fr)] gap-4 sm:grid-rows-[1fr_auto] sm:gap-y-0'>
+        <div
+          className={clsx('poster sm:row-span-2', {
+            skeleton: isPosterLoading,
+          })}
+        >
           {!isPosterLoading && (
-            <Image
-              fill
-              className='object-cover object-top'
+            <PosterImage
+              srcs={[posterUrl, details?.poster]}
+              type={media_type}
               alt={t('poster', { title: grandparent_title || title })}
-              src={
-                posterUrl && posterUrl !== failedPosterUrl
-                  ? posterUrl
-                  : placeholderSvg
-              }
               sizes='6rem'
-              onError={() => setFailedPosterUrl(posterUrl)}
               priority
             />
           )}
         </div>
 
-        <div className='flex min-w-0 flex-1 flex-col'>
+        <div className='min-w-0 self-center sm:self-start'>
           {subtitle && (
             <p className='truncate text-xs text-neutral-400 sm:text-sm'>
               {subtitle}
             </p>
           )}
           <h2
-            className='truncate text-base leading-snug font-semibold sm:text-lg'
+            className='mb-1.5 truncate text-base leading-snug font-medium sm:text-lg'
             title={title}
           >
             {serverId ? (
@@ -249,62 +294,50 @@ export default function ActivityItem({
           {/* The show's or movie's, like on the dashboard */}
           {isVideo &&
             (isDetailsLoading ? (
-              <SkeletonLine
-                className='mt-0.5 text-xs sm:text-sm'
-                width='w-24'
-              />
+              <SkeletonLine className='text-xs sm:text-sm' width='w-24' />
             ) : (
-              (year || rating) && (
-                <ul className='icon-stats-container mt-0.5 gap-x-3 text-neutral-300'>
-                  {year && (
-                    <li className='icon-stat-wrapper icon-stat-wrapper--clean'>
-                      <CalendarDaysIcon />
-                      <span className='sr-only'>{tCommon('year')}</span> {year}
-                    </li>
-                  )}
-                  {rating && (
-                    <li className='icon-stat-wrapper icon-stat-wrapper--clean'>
-                      <StarIcon />
-                      <span className='sr-only'>{tCommon('rating')}</span>{' '}
-                      {formatRating(rating, locale)}
-                    </li>
-                  )}
-                </ul>
+              details && (
+                <TitleDetails
+                  data={details}
+                  activeStats={settings.general.activeItemStatistics}
+                />
               )
             ))}
-
-          {session.duration && session.view_offset && (
-            <div className='mt-auto pt-3 text-xs text-neutral-400 tabular-nums'>
-              <div
-                className='h-1.5 overflow-hidden rounded-full bg-white/10'
-                aria-hidden='true'
-              >
-                <div
-                  className='h-full rounded-full bg-white'
-                  style={{ width: `${Number(session.progress_percent)}%` }}
-                />
-              </div>
-              <div className='mt-1.5 flex justify-between gap-3'>
-                <span>
-                  {millisecondsToTimeString(parseInt(session.view_offset))} /{' '}
-                  {millisecondsToTimeString(parseInt(session.duration))}
-                </span>
-                <span>
-                  {formatPercent(Number(session.progress_percent), locale)}
-                  {eta && ` · ${t('endsAt', { time: eta })}`}
-                </span>
-              </div>
-            </div>
-          )}
         </div>
+
+        {session.duration && session.view_offset && (
+          <div className='col-span-2 text-xs text-neutral-400 tabular-nums sm:col-span-1 sm:col-start-2 sm:pt-3'>
+            <div
+              className='h-1.5 overflow-hidden rounded-full bg-white/10'
+              aria-hidden='true'
+            >
+              <div
+                className='h-full rounded-full bg-white'
+                style={{ width: `${Number(session.progress_percent)}%` }}
+              />
+            </div>
+            {/* On narrow cards the end time goes on its own line, still
+                on the right, instead of breaking either half */}
+            <div className='mt-1.5 flex flex-wrap justify-between gap-x-3 whitespace-nowrap'>
+              <span>
+                {millisecondsToTimeString(parseInt(session.view_offset))} /{' '}
+                {millisecondsToTimeString(parseInt(session.duration))}
+              </span>
+              <span className='ml-auto'>
+                {formatPercent(Number(session.progress_percent), locale)}
+                {eta && ` · ${t('endsAt', { time: eta })}`}
+              </span>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Stream info: what is playing first, then how it gets there */}
-      {!isDetailsHidden && (
-        <ul className='mt-4 grid grid-cols-2 gap-x-4 gap-y-3 rounded-2xl bg-black/25 p-4 text-sm ring-1 ring-white/10 ring-inset sm:grid-cols-3'>
-          <Detail label={t('stream')}>
-            {capitalize(formatDecision(transcode_decision))}
-          </Detail>
+      {isExpanded && (
+        <ul
+          id={detailsId}
+          className='mt-4 flex flex-wrap gap-x-6 gap-y-3 rounded-2xl bg-black/25 p-4 text-sm ring-1 ring-white/10 ring-inset'
+        >
           {media_type !== 'track' && (
             <Detail
               label={t('video')}

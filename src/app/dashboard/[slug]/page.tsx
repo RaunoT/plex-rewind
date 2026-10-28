@@ -1,3 +1,4 @@
+import HistoryReading from '@/components/HistoryReading'
 import { authOptions } from '@/lib/auth'
 import { DashboardSearchParams } from '@/types/dashboard'
 import {
@@ -12,7 +13,11 @@ import getPeriod from '@/utils/getPeriod'
 import getSettings from '@/utils/getSettings'
 import { canViewFeature, getViewer } from '@/utils/helpers'
 import { toPublicSettings } from '@/utils/publicSettings'
-import { getLibraries, getServerId } from '@/utils/statsSource'
+import {
+  getHistoryProgress,
+  getLibraries,
+  getServerId,
+} from '@/utils/statsSource'
 import { kebabCase } from 'lodash'
 import { Metadata } from 'next'
 import { getServerSession } from 'next-auth'
@@ -74,6 +79,19 @@ async function DashboardContent({
 
   const loggedInUserId = session?.user.id
   const period = getPeriod(periodSp, settings)
+  const progress = await getHistoryProgress(period.string, [library])
+
+  if (progress) {
+    return (
+      <Dashboard
+        type={library.section_type}
+        settings={toPublicSettings(settings)}
+        toolbar={toolbar}
+        status={<HistoryReading progress={progress} isInCard />}
+      />
+    )
+  }
+
   const personalUserId = personalSp === 'true' ? loggedInUserId : undefined
   // Plays rank by default; the sort filter can switch to watch time
   const sortByPlays = sortBySp !== 'duration'

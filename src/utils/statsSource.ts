@@ -1,4 +1,5 @@
-import { Settings } from '@/types/settings'
+import { HistoryStatus } from '@/types/playHistory'
+import { Settings, StatisticsSource } from '@/types/settings'
 import { ServerMembership, StatsSource } from '@/types/statsSource'
 import {
   TautulliActivity,
@@ -9,6 +10,12 @@ import { kebabCase } from 'lodash'
 import { isTracearrReachable } from './fetchTracearr'
 import getSettings from './getSettings'
 import { isTracearrSource } from './helpers'
+import {
+  getReadProgress,
+  getReadStatus,
+  readAgain,
+  startReading,
+} from './playHistory'
 import tautulliSource, { isTautulliReachable } from './tautulliSource'
 import tracearrSource from './tracearrSource'
 
@@ -26,6 +33,61 @@ export async function isStatsSourceReachable(
   return isTracearrSource(settings)
     ? isTracearrReachable()
     : isTautulliReachable()
+}
+
+// The stats come from the source's play history, which is read once before a
+// period can be shown. Null when the period can be shown, otherwise how far
+// the read has got. Without libraries, every library's history counts.
+export async function getHistoryProgress(
+  since: string | Date,
+  libraries?: TautulliLibrary[],
+): Promise<HistoryStatus | null> {
+  const sinceTime = new Date(since).getTime()
+
+  if (!Number.isFinite(sinceTime)) {
+    return null
+  }
+
+  const readers = await getStatsSource().getHistoryReaders(libraries)
+
+  return getReadProgress(readers, sinceTime)
+}
+
+// So that pages find the history ready, instead of starting on it themselves
+export function startHistoryRead(settings: Settings = getSettings()): void {
+  if (!settings.connection.complete) {
+    return
+  }
+
+  getStatsSource(settings)
+    .getHistoryReaders()
+    .then(startReading)
+    .catch((error) => {
+      console.error('[HISTORY] - Unable to start reading the history!', error)
+    })
+}
+
+// Each source keeps its history, so the one asked for can be another than
+// the saved one, as long as its connection is saved too.
+function getHistorySource(source?: StatisticsSource): StatsSource {
+  if (!source) {
+    return getStatsSource()
+  }
+
+  return source === 'tracearr' ? tracearrSource : tautulliSource
+}
+
+export async function getHistoryStatus(
+  source?: StatisticsSource,
+): Promise<HistoryStatus> {
+  return getReadStatus(await getHistorySource(source).getHistoryReaders())
+}
+
+// Reads the whole history again, or on from where it stopped
+export async function readHistoryAgain(
+  source?: StatisticsSource,
+): Promise<void> {
+  await readAgain(await getHistorySource(source).getHistoryReaders())
 }
 
 export async function getServerId(): Promise<string> {

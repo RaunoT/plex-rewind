@@ -1,8 +1,11 @@
 import clsx from 'clsx'
-import { ReactNode } from 'react'
+import { ComponentType, ReactNode, SVGProps } from 'react'
 
 type Props = {
-  title: string
+  // Says at a glance what kind of message it is
+  icon: ComponentType<SVGProps<SVGSVGElement>>
+  // Without one, the description says it all
+  title?: string
   description?: ReactNode
   action?: ReactNode
   // Only one h1 per page, so pages with their own title pass h2
@@ -13,6 +16,7 @@ type Props = {
 
 // Error, empty and offline states share this, so they all read the same way
 export default function StatusMessage({
+  icon: Icon,
   title,
   description,
   action,
@@ -27,10 +31,19 @@ export default function StatusMessage({
           !isInCard && 'glass-sheet animate-fade-in',
         )}
       >
-        <Heading className='text-2xl font-semibold tracking-tight'>
-          {title}
-        </Heading>
-        {description && <p className='mt-2 text-neutral-300'>{description}</p>}
+        <div className='mb-4 flex size-12 items-center justify-center rounded-full bg-white/5 text-neutral-300 ring-1 ring-white/10 ring-inset'>
+          <Icon className='size-6' aria-hidden='true' />
+        </div>
+        {title && (
+          <Heading className='text-2xl font-semibold tracking-tight'>
+            {title}
+          </Heading>
+        )}
+        {description && (
+          <p className={clsx('text-neutral-300', title && 'mt-2')}>
+            {description}
+          </p>
+        )}
         {action && (
           <div className='mt-8 flex w-full flex-col items-center gap-3'>
             {action}

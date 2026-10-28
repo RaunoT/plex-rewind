@@ -14,7 +14,12 @@ export default function DashboardNavContent({
 }: DashboardNavProps) {
   const pathname = usePathname()
   const searchParams = useSearchParams()
-  const params = searchParams.toString()
+  const params = new URLSearchParams(searchParams.toString())
+
+  // The filters carry over, but another list starts from its first rows
+  params.delete('limit')
+
+  const query = params.size ? `?${params}` : ''
   const t = useTranslations('DashboardNavContent')
 
   if (isMenu) {
@@ -23,7 +28,7 @@ export default function DashboardNavContent({
         label={t('label')}
         items={[
           ...libraries.map((library) => ({
-            href: `/dashboard/${kebabCase(library.section_name)}${params ? '?' + params : ''}`,
+            href: `/dashboard/${kebabCase(library.section_name)}${query}`,
             label: library.section_name,
             isCurrent:
               pathname === `/dashboard/${kebabCase(library.section_name)}`,
@@ -31,7 +36,7 @@ export default function DashboardNavContent({
           ...(isUsersPageActive
             ? [
                 {
-                  href: `/dashboard/users${params ? '?' + params : ''}`,
+                  href: `/dashboard/users${query}`,
                   label: t('users'),
                   isCurrent: pathname === '/dashboard/users',
                 },
@@ -48,7 +53,7 @@ export default function DashboardNavContent({
         {libraries.map((library) => (
           <li key={library.section_id}>
             <Link
-              href={`/dashboard/${kebabCase(library.section_name)}${params ? '?' + params : ''}`}
+              href={`/dashboard/${kebabCase(library.section_name)}${query}`}
               className='nav-link'
               aria-current={
                 pathname === `/dashboard/${kebabCase(library.section_name)}` &&
@@ -62,7 +67,7 @@ export default function DashboardNavContent({
         {isUsersPageActive && (
           <li>
             <Link
-              href={`/dashboard/users${params ? '?' + params : ''}`}
+              href={`/dashboard/users${query}`}
               className='nav-link'
               aria-current={pathname === '/dashboard/users' && 'page'}
             >

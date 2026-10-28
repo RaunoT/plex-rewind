@@ -21,7 +21,10 @@ export default function getPeriod(
   }
 
   function getAllTimePeriod() {
-    const startDate = new Date(settings.dashboard.startDate)
+    // Without a start date, all time reaches back past the first play
+    const startDate = settings.dashboard.startDate
+      ? new Date(settings.dashboard.startDate)
+      : new Date(0)
     const daysAgo = Math.ceil(
       (Date.now() - startDate.getTime()) / (24 * 60 * 60 * 1000),
     )

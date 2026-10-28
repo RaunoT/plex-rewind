@@ -20,7 +20,7 @@
     "mostListened": "Am meisten gehört",
     "emptyTitle": "Hier gibt es noch nichts zu sehen",
     "emptyDescription": "Hier ist noch nichts für dich dabei. Schau später wieder vorbei.",
-    "emptyAdminDescription": "Aktiviere Rewind, Aktivität oder das Dashboard in den Einstellungen und wähle mindestens eine Bibliothek aus.",
+    "emptyAdminDescription": "Aktiviere Rewind, Aktivität oder das Dashboard in den Einstellungen und wähle mindestens eine Bibliothek aus",
     "openSettings": "Einstellungen öffnen"
   },
   "Activity": {
@@ -28,7 +28,6 @@
     "poster": "Poster von {title}",
     "anonymousAvatar": "Anonymer Avatar",
     "anonymous": "Anonym #{number}",
-    "stream": "Stream",
     "container": "Container",
     "quality": "Qualität",
     "video": "Video",
@@ -37,7 +36,7 @@
     "location": "Standort",
     "bandwidth": "Bandbreite",
     "streamDetails": "Stream-Details",
-    "noActivity": "Keine aktiven Streams.",
+    "noActivity": "Keine aktiven Streams",
     "loadError": "Aktivität konnte nicht geladen werden",
     "playing": "Läuft",
     "paused": "Pausiert",
@@ -53,7 +52,7 @@
   },
   "Dashboard": {
     "sizePartial": "{size} (teilweise)",
-    "noActivity": "Keine Aktivität in dieser Zeitspanne.",
+    "noActivity": "Keine Aktivität in dieser Zeitspanne",
     "showMore": "Mehr anzeigen",
     "title": "Dashboard",
     "usersTitle": "Benutzer",
@@ -83,8 +82,13 @@
     "title": "Oh oh... da ist etwas schiefgelaufen!",
     "cta": "Erneut versuchen",
     "sourceUnreachable": "{source} ist nicht erreichbar",
-    "sourceUnreachableDescription": "Prüfe, ob {source} läuft und von Plex Rewind aus erreichbar ist, und versuche es dann erneut.",
+    "sourceUnreachableDescription": "Prüfe, ob {source} läuft und von Plex Rewind aus erreichbar ist, und versuche es dann erneut",
     "connectionSettings": "Verbindungseinstellungen prüfen"
+  },
+  "History": {
+    "syncingTitle": "Wiedergabeverlauf wird synchronisiert",
+    "syncingDescription": "Der Wiedergabeverlauf von {source} wird einmal synchronisiert, was ein paar Minuten dauern kann. {count, plural, =0 {Es hat gerade begonnen.} one {Bisher # Wiedergabe, zurück bis {date}.} other {Bisher # Wiedergaben, zurück bis {date}.}} Diese Seite aktualisiert sich von selbst.",
+    "syncingShort": "Wiedergabeverlauf wird synchronisiert…"
   },
   "PlexDeeplink": {
     "available": "Verfügbar",
@@ -99,8 +103,7 @@
   },
   "NotFound": {
     "title": "404",
-    "description": "Die angefragte Seite wurde nicht gefunden.",
-    "cta": "Bitte von vorne beginnen."
+    "cta": "Bitte von vorne beginnen"
   },
   "AppProvider": {
     "updateAvailable": "Aktualisierung verfügbar",
@@ -117,9 +120,9 @@
   "Settings": {
     "title": "Einstellungen",
     "getStarted": "Lass uns loslegen!",
-    "updateAvailable": "Aktualisierung verfügbar",
     "saved": "Einstellungen gespeichert!",
     "savedChooseLibraries": "Einstellungen gespeichert! Wähle deine Bibliotheken unter Allgemein.",
+    "savedLibrariesActive": "Einstellungen gespeichert! Alle Bibliotheken sind aktiv, das kannst du unter Allgemein ändern.",
     "genericError": "Etwas ist schiefgelaufen. Versuche es noch einmal.",
     "save": "Speichern",
     "continue": "Weiter",
@@ -134,8 +137,8 @@
     "unexpectedResponse": "Unerwartete Antwort (HTTP {status}).",
     "certificateError": "HTTPS-Zertifikatsfehler. Prüfe, ob die URL zu einem gültigen Zertifikat passt.",
     "invalidField": "Prüfe {field, select, tautulliUrl {die Tautulli-URL} tautulliApiKey {den Tautulli-API-Schlüssel} tracearrUrl {die Tracearr-URL} tracearrApiKey {den Tracearr-API-Schlüssel} plexUrl {die Plex-URL} seerrUrl {die Seerr-URL} seerrApiKey {den Seerr-API-Schlüssel} googleAnalyticsId {die Google-Analytics-ID} other {die Einstellungen}}.",
-    "buyMeACoffee": "Kaffee spenden",
     "becomeASponsor": "Sponsor werden",
+    "buyMeABeer": "Bier spenden",
     "reportAnIssue": "Problem melden",
     "Nav": {
       "label": "Navigation",
@@ -154,8 +157,23 @@
       "source": "Quelle",
       "server": "Server",
       "chooseServer": "Server auswählen",
-      "seerrUrlDescription": "Anfrage-Links öffnen sich im Browser der Benutzer. Nutze daher eine Adresse, die sie erreichen können, keine reine Adresse im lokalen Netzwerk.",
-      "optionalService": "{service} (optional)"
+      "optionalService": "{service} (optional)",
+      "history": "Wiedergabeverlauf",
+      "historyDescription": "Neue Wiedergaben werden automatisch hinzugefügt",
+      "historySyncing": "Verlauf wird synchronisiert…",
+      "historyComplete": "Aktuell",
+      "historyResyncing": "Der gesamte Verlauf wird im Hintergrund neu synchronisiert",
+      "historySaveFailed": "Der Verlauf konnte nicht im config-Ordner gespeichert werden und wird nach einem Neustart erneut synchronisiert.",
+      "sync": "Verlauf synchronisieren",
+      "resync": "Neu synchronisieren",
+      "continueSync": "Synchronisierung fortsetzen",
+      "historyFailed": "{source} antwortet nicht mehr. Neuer Versuch in einer Minute.",
+      "historyPaused": "Pausiert",
+      "historyNotSynced": "Noch nicht synchronisiert",
+      "historyPlaysSoFar": "{count, plural, =0 {Noch keine Wiedergaben} one {Bisher # Wiedergabe, zurück bis {date}} other {Bisher # Wiedergaben, zurück bis {date}}}",
+      "historyPlaysSince": "{count, plural, =0 {Noch keine Wiedergaben} one {# Wiedergabe seit {date}} other {# Wiedergaben seit {date}}}",
+      "historyRereadPlays": "{count, plural, one {Bisher # Wiedergabe} other {Bisher # Wiedergaben}}",
+      "retry": "Erneut versuchen"
     },
     "Dashboard": {
       "title": "Dashboard Einstellungen",
@@ -163,10 +181,10 @@
       "startDateError": "Prüfe das Startdatum.",
       "usersPage": "Benutzerseite",
       "statistics": "Statistiken",
-      "totalStatistics": "Gesamtstatistik",
+      "totals": "Gesamtwerte",
       "customPeriod": "benutzerdefinierter Zeitraum",
-      "inDays": "In Tagen. Dashboard und Startseite öffnen mit diesem Zeitraum.",
-      "startDateHelperText": "Beginn des Zeitraums „Gesamte Zeit“."
+      "inDays": "Ersetzt den 30-Tage-Zeitraum",
+      "startDateHelperText": "Eigener Beginn für „Gesamte Zeit“"
     },
     "Activity": {
       "title": "Aktivität Einstellungen"
@@ -180,28 +198,25 @@
       "moveUp": "{name} nach oben verschieben",
       "moveDown": "{name} nach unten verschieben",
       "movedTo": "{name} an Position {position} von {total} verschoben",
-      "noLibrariesMessage1": "Mindestens eine Bibliothek in Plex erstellen um fortzufahren.",
-      "noLibrariesMessage2": "Plex Rewind benötigt mindestens eine Bibliothek um zu funktionieren.",
+      "noLibrariesMessage1": "Mindestens eine Bibliothek in Plex erstellen um fortzufahren",
+      "noLibrariesMessage2": "Plex Rewind benötigt mindestens eine Bibliothek um zu funktionieren",
       "media": "Medien",
       "tmdbOnlyPosters": "Nur TMDB Poster",
-      "tmdbOnlyPostersDescription": "Plex-Poster für Filme und Serien ignorieren.",
       "externalLinks": "Externe Links",
+      "externalLinksDescription": "Wird die Bewertung einer Seite angezeigt, verlinkt stattdessen die Bewertung dorthin",
       "itemStatistics": "Artikelstatistiken",
-      "itemStatisticsDescription": "Wird bei jedem Titel und Benutzer in den Listen von Dashboard und Rewind angezeigt.",
       "privacy": "Datenschutz",
       "excludedUsers": "Ausgeschlossene Benutzer",
-      "excludedUsersDescription": "Mit Tautulli enthalten die beliebtesten Filme, Serien und Künstler weiterhin ihre Wiedergaben.",
       "outsideAccess": "Zugang von Außen zulassen",
-      "outsideAccessDescription": "Jeder kann die Statistiken deines Servers ohne Anmeldung sehen.",
-      "anonymize": "Anonymisieren",
-      "anonymizeDescription": "Namen anderer Benutzer verbergen, auch vor Admins. Auf der Aktivitätsseite werden auch IP-Adressen und Standorte verborgen.",
+      "outsideAccessDescription": "Zugriff ohne Anmeldung erlauben",
+      "anonymizeUsers": "Benutzer anonymisieren",
       "analytics": "Analytik"
     },
     "Rewind": {
       "title": "Rewind Einstellungen",
       "cards": "Stories",
       "librariesSizeAndCountCard": "Bibliotheksgröße und -inhalt",
-      "startDateHelperText": "Standardmäßig die letzten 365 Tage."
+      "startDateHelperText": "Standardmäßig vor 365 Tagen"
     }
   },
   "LocaleSelect": {
@@ -216,7 +231,6 @@
     "adminOnly": "Nur für Admins",
     "status": "Status",
     "year": "Jahr",
-    "rating": "Bewertung",
     "ratingBy": "{provider}-Bewertung",
     "rottenTomatoesCritics": "Rotten-Tomatoes-Kritikerwertung",
     "rottenTomatoesAudience": "Rotten-Tomatoes-Publikumswertung",

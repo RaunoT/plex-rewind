@@ -5,7 +5,6 @@ import { DEFAULT_SETTINGS } from './constants'
 import {
   canViewFeature,
   checkRequiredSettings,
-  daysBetween,
   getHomeTiles,
   getRewindStartDate,
   getSettingsPage,
@@ -88,31 +87,6 @@ describe('setup state', () => {
     settings.activity = { ...settings.activity, complete: false }
 
     expect(isPostUpdateMissingSettings(settings)).toBe(true)
-  })
-})
-
-describe('daysBetween', () => {
-  beforeEach(() => {
-    vi.useFakeTimers()
-    vi.setSystemTime(new Date('2026-03-10T12:00:00Z'))
-  })
-
-  afterEach(() => {
-    vi.useRealTimers()
-  })
-
-  it('counts whole days up to now, rounding up', () => {
-    expect(daysBetween('2026-03-01')).toBe(10)
-    expect(daysBetween('2026-03-10')).toBe(1)
-  })
-
-  it('counts up to an explicit end date', () => {
-    expect(daysBetween('2026-01-01', '2026-01-31')).toBe(30)
-  })
-
-  it('never returns less than one day', () => {
-    expect(daysBetween('2026-04-01')).toBe(1)
-    expect(daysBetween('not a date')).toBe(1)
   })
 })
 

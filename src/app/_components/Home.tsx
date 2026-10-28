@@ -1,6 +1,7 @@
 'use client'
 
 import plexSvg from '@/assets/plex.svg'
+import Avatar from '@/components/Avatar'
 import Loader from '@/components/Loader'
 import usePlexAuth from '@/hooks/usePlexAuth'
 import { PublicSettings } from '@/types/settings'
@@ -31,15 +32,14 @@ export default function Home({ settings, missingSetting, siteUrl }: Props) {
   return (
     <div className='glass-sheet animate-fade-in flex w-full max-w-sm flex-col items-center text-center'>
       {session?.user?.image && (
-        <div className='animate-fade-up relative mb-5 size-20 rounded-full shadow-xl ring-1 shadow-black/40 ring-white/20'>
-          <Image
+        <div className='animate-fade-up relative mb-5 size-20 overflow-hidden rounded-full shadow-xl ring-1 shadow-black/40 ring-white/20'>
+          <Avatar
             src={session.user.image}
+            name={session.user.name ?? ''}
             alt={tCommon('profilePictureAlt', {
               name: session.user.name ?? '',
             })}
-            className='rounded-full object-cover'
             sizes='10rem'
-            fill
             priority
           />
         </div>

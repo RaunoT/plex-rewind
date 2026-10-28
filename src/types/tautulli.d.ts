@@ -25,17 +25,24 @@ export type TautulliUser = {
   shared_libraries: string[]
 }
 
-export type TautulliItem = {
-  rows: TautulliItemRow[]
-  stat_id: string
-}
-
-export type TautulliGraph = {
-  categories: string[]
-  series: {
-    name: string
-    data: number[]
-  }[]
+// A grouped get_history row: one play with the sessions it was resumed in
+export type TautulliHistoryRow = {
+  reference_id: number
+  // When the play started, and when its last session started
+  started: number
+  date: number
+  // In seconds, without pauses
+  play_duration: number | null
+  duration: number | null
+  media_type: string
+  title: string
+  grandparent_title: string
+  year: number | string | null
+  thumb: string
+  rating_key: number | string | null
+  grandparent_rating_key: number | string | null
+  user_id: number
+  user_thumb: string
 }
 
 export type TautulliItemRow = {
@@ -46,6 +53,8 @@ export type TautulliItemRow = {
   users_watched: number | undefined
   rating_key: number
   thumb: string
+  // TMDB's, for when the source can't serve its own
+  tmdb_poster?: string | null
   is_deleted: boolean
   rating: string | null
   // IMDb's from Radarr or Sonarr, Rotten Tomatoes' from its own search
@@ -83,9 +92,14 @@ export type TautulliSession = {
   container: string
   duration?: string
   friendly_name: string
+  // Plex's IDs for the show of an episode, like `tmdb://61575`. Only
+  // Tautulli has them.
+  grandparent_guids?: string[]
   grandparent_rating_key?: number
   grandparent_thumb: string
   grandparent_title: string
+  // Plex's IDs for the item itself, so an episode's own
+  guids?: string[]
   ip_address?: string
   ip_address_public?: string
   location?: string

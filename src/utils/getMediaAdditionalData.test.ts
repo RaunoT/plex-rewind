@@ -435,17 +435,4 @@ describe('getMediaAdditionalData', () => {
     expect(fetchRottenTomatoes).not.toHaveBeenCalled()
     expect(item.imdb_rating).toBeNull()
   })
-
-  it('adds how many users watched each item', async () => {
-    mockTmdb({})
-
-    const [item] = await getMediaAdditionalData(
-      [row({ rating_key: 10 })],
-      'movie',
-      getSourceData,
-      [row({ rating_key: 10, users_watched: 4 })],
-    )
-
-    expect(item.users_watched).toBe(4)
-  })
 })

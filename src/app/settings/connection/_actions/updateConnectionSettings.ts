@@ -17,7 +17,9 @@ import {
 import { maskApiKeys, restoreApiKeys } from '@/utils/connectionSecrets'
 import { selectPlexServer } from '@/utils/fetchTracearr'
 import getSettings from '@/utils/getSettings'
+import { getReachableLibraries, startHistoryRead } from '@/utils/statsSource'
 import { normalizeUrl } from '@/utils/url'
+import { kebabCase } from 'lodash'
 import { getTranslations } from 'next-intl/server'
 import { z } from 'zod'
 import updateSettings from '../../_actions/updateSettings'
@@ -278,13 +280,13 @@ async function testAndSave(
     previousSettings.general.complete &&
     schema.safeParse(data).success
 
-  // Libraries are matched by name, which differs between the sources. General
-  // is marked incomplete first, so a failed write never leaves the new source
-  // saved with the old source's libraries still counted as set up.
+  // Libraries are matched by name, which differs between the sources, so the
+  // old source's are cleared. General is marked incomplete first, so a failed
+  // write never leaves the new source saved with the old libraries set up.
   if (isSourceSwitch) {
     const generalResult = await updateSettings(
       generalSchema,
-      { ...previousSettings.general, complete: false },
+      { ...previousSettings.general, activeLibraries: [], complete: false },
       'general',
     )
 
@@ -295,7 +297,51 @@ async function testAndSave(
 
   const result = await updateSettings(schema, data, 'connection')
 
-  return isSourceSwitch && result.status === 'success'
-    ? { ...result, message: t('savedChooseLibraries') }
-    : result
+  if (result.status !== 'success') {
+    return result
+  }
+
+  startHistoryRead()
+
+  if (!isSourceSwitch) {
+    return result
+  }
+
+  // While General is incomplete, the result leads there to pick libraries
+  return (
+    (await activateAllLibraries(data, t)) ?? {
+      ...result,
+      message: t('savedChooseLibraries'),
+    }
+  )
+}
+
+// The new source starts with every library on, like a first setup, so a
+// switch doesn't need General saved again. Null when its libraries can't be
+// read, which leaves picking them to General.
+async function activateAllLibraries(
+  data: ConnectionSettings,
+  t: Awaited<ReturnType<typeof getTranslations<'Settings'>>>,
+) {
+  const libraries = await getReachableLibraries(false)
+
+  if (!libraries?.length) {
+    return null
+  }
+
+  const result = await updateSettings(
+    generalSchema,
+    {
+      ...getSettings().general,
+      activeLibraries: libraries.map((library) =>
+        kebabCase(library.section_name),
+      ),
+      complete: true,
+    },
+    'general',
+  )
+
+  return result.status === 'success'
+    ? { message: t('savedLibrariesActive'), status: 'success', fields: data }
+    : null
 }

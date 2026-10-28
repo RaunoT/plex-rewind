@@ -14,14 +14,13 @@ type UserRequestCounts =
 export default async function getUsersTop(
   loggedInUserId: string,
   after: string,
-  period?: number,
   numberOfUsers = DASHBOARD_PAGE_SIZE,
   withFirstPlay = false,
 ): Promise<TopItems | null> {
   const settings = getSettings()
   const source = getStatsSource(settings)
   const libraries = await getLibraries()
-  const users = await source.getTopUsers({ since: after, period, libraries })
+  const users = await source.getTopUsers({ since: after, libraries })
 
   if (!users) {
     return null
@@ -69,24 +68,18 @@ export default async function getUsersTop(
   // Anonymizing hides the first plays of other users, so they aren't looked up
   const isFirstPlayShown = (user: TautulliItemRow) =>
     !settings.general.isAnonymized || String(user.user_id) === loggedInUserId
-  const [usersPlaysCounts, firstPlays] = await Promise.all([
-    source.getPlaysCounts(listedUsers, after, libraries),
-    withFirstPlay
-      ? Promise.all(
-          listedUsers.map((user) =>
-            isFirstPlayShown(user)
-              ? source.getFirstPlay(String(user.user_id))
-              : null,
-          ),
-        )
-      : [],
-  ])
+  const firstPlays = withFirstPlay
+    ? await Promise.all(
+        listedUsers.map((user) =>
+          isFirstPlayShown(user)
+            ? source.getFirstPlay(String(user.user_id))
+            : null,
+        ),
+      )
+    : []
 
   listedUsers.map((user, i) => {
     user.requests = usersRequestsCounts[i]?.requests || 0
-    user.movies_plays_count = usersPlaysCounts[i].movies_plays_count
-    user.shows_plays_count = usersPlaysCounts[i].shows_plays_count
-    user.audio_plays_count = usersPlaysCounts[i].audio_plays_count
     user.first_played_at = firstPlays[i]?.date
   })
 

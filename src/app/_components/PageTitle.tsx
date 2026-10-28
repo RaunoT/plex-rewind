@@ -31,6 +31,9 @@ export default function PageTitle({
 }: Props) {
   const t = useTranslations('Home')
   const hasVisibleNavWithSidebar = children && !isNavInSidebar
+  // On large screens the controls are in the sidebar or the page corner, so
+  // without a back link or title the first row is empty
+  const isTopRowEmptyOnLarge = noBack && (!title || isTitleHidden)
 
   return (
     <header
@@ -40,7 +43,12 @@ export default function PageTitle({
         !hasVisibleNavWithSidebar && 'lg:group-data-[sidebar]/app:mb-0',
       )}
     >
-      <div className='grid grid-cols-[1fr_auto] items-center gap-3 lg:group-data-[sidebar]/app:gap-y-0 @4xl:grid-cols-[1fr_auto_1fr]'>
+      <div
+        className={clsx(
+          'grid grid-cols-[1fr_auto] items-center gap-3 lg:group-data-[sidebar]/app:gap-y-0 @4xl:grid-cols-[1fr_auto_1fr]',
+          isTopRowEmptyOnLarge && 'lg:gap-y-0',
+        )}
+      >
         <div className='flex min-w-0 items-center gap-3'>
           {!noBack && (
             <Link
@@ -67,12 +75,8 @@ export default function PageTitle({
           )}
           {titleMenu && <div className='min-w-0 lg:hidden'>{titleMenu}</div>}
         </div>
-        <HeaderControls
-          className={clsx(
-            'col-start-2 row-start-1 justify-self-end @4xl:col-start-3',
-            hiddenWithSidebar,
-          )}
-        />
+        {/* On large screens they're in the sidebar or the page corner */}
+        <HeaderControls className='col-start-2 row-start-1 justify-self-end lg:hidden @4xl:col-start-3' />
         {children && (
           <div
             className={clsx(

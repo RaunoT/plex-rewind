@@ -72,3 +72,38 @@ export function getExternalLinks(
     },
   )
 }
+
+type RatedItem = Pick<
+  TautulliItemRow,
+  | 'rating'
+  | 'imdb_rating'
+  | 'rotten_tomatoes_rating'
+  | 'rotten_tomatoes_audience_rating'
+>
+
+// Sites whose rating the item shows, so a link to them would only repeat it
+export function getRatedSites(
+  item: RatedItem,
+  activeStats: string[],
+): ExternalLink[] {
+  const sites: ExternalLink[] = []
+
+  if (activeStats.includes('tmdbRating') && item.rating) {
+    sites.push('tmdb')
+  }
+
+  if (activeStats.includes('imdbRating') && item.imdb_rating) {
+    sites.push('imdb')
+  }
+
+  if (
+    (activeStats.includes('rottenTomatoesRating') &&
+      item.rotten_tomatoes_rating != null) ||
+    (activeStats.includes('rottenTomatoesAudienceRating') &&
+      item.rotten_tomatoes_audience_rating != null)
+  ) {
+    sites.push('rottenTomatoes')
+  }
+
+  return sites
+}

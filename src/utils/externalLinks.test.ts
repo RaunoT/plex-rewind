@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { EXTERNAL_LINKS } from './constants'
-import { getExternalLinks } from './externalLinks'
+import { getExternalLinks, getRatedSites } from './externalLinks'
 
 const movie = {
   title: 'Dune: Part Two',
@@ -127,5 +127,35 @@ describe('getExternalLinks', () => {
         isSearch: false,
       },
     ])
+  })
+})
+
+describe('getRatedSites', () => {
+  const ratings = {
+    rating: '8.1',
+    imdb_rating: '8.4',
+    rotten_tomatoes_rating: 92,
+    rotten_tomatoes_audience_rating: 95,
+  }
+
+  it('lists the sites whose rating is shown', () => {
+    expect(
+      getRatedSites(ratings, ['tmdbRating', 'imdbRating', 'year']),
+    ).toEqual(['tmdb', 'imdb'])
+  })
+
+  it('counts either Rotten Tomatoes score', () => {
+    expect(getRatedSites(ratings, ['rottenTomatoesAudienceRating'])).toEqual([
+      'rottenTomatoes',
+    ])
+  })
+
+  it('leaves out sites without a rating for the item', () => {
+    expect(
+      getRatedSites(
+        { ...ratings, imdb_rating: null, rotten_tomatoes_rating: null },
+        ['imdbRating', 'rottenTomatoesRating'],
+      ),
+    ).toEqual([])
   })
 })

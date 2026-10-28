@@ -1,6 +1,10 @@
 import { authOptions } from '@/lib/auth'
 import '@/styles/globals.css'
-import { getSiteUrl, META_DESCRIPTION } from '@/utils/constants'
+import {
+  ACTIVITY_DETAILS_COOKIE_NAME,
+  getSiteUrl,
+  META_DESCRIPTION,
+} from '@/utils/constants'
 import getSettings from '@/utils/getSettings'
 import getVersion from '@/utils/getVersion'
 import {
@@ -16,7 +20,7 @@ import { Metadata, Viewport } from 'next'
 import { getServerSession } from 'next-auth'
 import { NextIntlClientProvider } from 'next-intl'
 import { getLocale } from 'next-intl/server'
-import { headers } from 'next/headers'
+import { cookies, headers } from 'next/headers'
 import { ReactNode } from 'react'
 import AppProvider from './_components/AppProvider'
 import GoogleAnalytics from './_components/GoogleAnalytics'
@@ -78,6 +82,9 @@ export default async function RootLayout({ children }: Props) {
   // Set by the proxy. Reading it also keeps every page dynamically rendered,
   // which the nonce needs: a static page would have none.
   const nonce = (await headers()).get('x-nonce') ?? undefined
+  const detailsCookie = (await cookies()).get(
+    ACTIVITY_DETAILS_COOKIE_NAME,
+  )?.value
   // For the sidebar, which lists the libraries only while the dashboard is on.
   // Not awaited, so a slow source doesn't hold up every page.
   const libraries =
@@ -110,6 +117,9 @@ export default async function RootLayout({ children }: Props) {
                 libraries={libraries}
                 settings={toPublicSettings(settings)}
                 canBrowse={!!session || settings.general.isOutsideAccess}
+                isActivityDetailsHidden={
+                  detailsCookie ? detailsCookie !== 'shown' : undefined
+                }
               >
                 {children}
               </AppProvider>

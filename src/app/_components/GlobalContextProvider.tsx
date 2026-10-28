@@ -1,7 +1,10 @@
 'use client'
 
 import { DashboardSearchParams } from '@/types/dashboard'
-import { DASHBOARD_PERIOD_COOKIE_NAME } from '@/utils/constants'
+import {
+  ACTIVITY_DETAILS_COOKIE_NAME,
+  DASHBOARD_PERIOD_COOKIE_NAME,
+} from '@/utils/constants'
 import { createContext, ReactNode, useEffect, useState } from 'react'
 
 type GlobalContextProps = {
@@ -36,6 +39,8 @@ export const GlobalContext = createContext<GlobalContextProps>({
 
 type Props = {
   children: ReactNode
+  // From the cookie, so the first render matches the server's
+  isDetailsHidden?: boolean
 }
 
 export function readStorage(key: string): string | undefined {
@@ -52,14 +57,19 @@ function writeStorage(key: string, value?: string) {
   } catch {}
 }
 
-export default function GlobalContextProvider({ children }: Props) {
+export default function GlobalContextProvider({
+  children,
+  isDetailsHidden: savedIsDetailsHidden,
+}: Props) {
   const [isPersonal, setIsPersonal] =
     useState<DashboardSearchParams['personal']>(undefined)
   const [period, setPeriod] =
     useState<DashboardSearchParams['period']>(undefined)
   const [sortBy, setSortBy] =
     useState<DashboardSearchParams['sortBy']>(undefined)
-  const [isDetailsHidden, setIsDetailsHidden] = useState<boolean>(true)
+  const [isDetailsHidden, setIsDetailsHidden] = useState<boolean>(
+    savedIsDetailsHidden ?? true,
+  )
   const [isHydrated, setIsHydrated] = useState<boolean>(false)
 
   useEffect(() => {
@@ -86,15 +96,19 @@ export default function GlobalContextProvider({ children }: Props) {
             ? 'duration'
             : undefined),
       )
-      // Hidden by default, so only showing them is worth restoring
-      setIsDetailsHidden(
-        (prev) =>
-          prev && localStorage.getItem('activityDetailsHidden') !== 'false',
-      )
+
+      // Saved only in the browser before the cookie. Hidden by default, so
+      // only showing them is worth restoring.
+      if (savedIsDetailsHidden === undefined) {
+        setIsDetailsHidden(
+          (prev) =>
+            prev && localStorage.getItem('activityDetailsHidden') !== 'false',
+        )
+      }
     } catch {}
 
     setIsHydrated(true)
-  }, [])
+  }, [savedIsDetailsHidden])
 
   useEffect(() => {
     if (isHydrated) {
@@ -117,7 +131,7 @@ export default function GlobalContextProvider({ children }: Props) {
 
   useEffect(() => {
     if (isHydrated) {
-      writeStorage('activityDetailsHidden', isDetailsHidden ? 'true' : 'false')
+      document.cookie = `${ACTIVITY_DETAILS_COOKIE_NAME}=${isDetailsHidden ? 'hidden' : 'shown'}; path=/; max-age=31536000; samesite=lax`
     }
   }, [isHydrated, isDetailsHidden])
 

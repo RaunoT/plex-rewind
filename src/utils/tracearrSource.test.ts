@@ -1,3 +1,4 @@
+import { Play } from '@/types/playHistory'
 import { TautulliItemRow, TautulliLibrary } from '@/types/tautulli'
 import { cloneDeep } from 'lodash'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
@@ -7,7 +8,6 @@ import {
   getTracearrPlexUsers,
   getTracearrUser,
   isTracearrMediaDeleted,
-  TracearrPlay,
 } from './fetchTracearr'
 import getSettings from './getSettings'
 import tracearrSource, { getTracearrMediaData } from './tracearrSource'
@@ -36,7 +36,7 @@ function library(type: TautulliLibrary['section_type']): TautulliLibrary {
 
 const LIBRARIES = [library('movie'), library('show'), library('artist')]
 
-function play(overrides: Partial<TracearrPlay>): TracearrPlay {
+function play(overrides: Partial<Play>): Play {
   return {
     id: 'play',
     startedAt: new Date('2026-02-01').getTime(),
@@ -137,7 +137,7 @@ describe('getTopItems', () => {
 })
 
 describe('getTopMediaItems', () => {
-  async function getTop(plays: TracearrPlay[]) {
+  async function getTop(plays: Play[]) {
     vi.mocked(getTracearrPlays).mockResolvedValue(plays)
 
     return tracearrSource.getTopMediaItems('1', LIBRARIES, '2026-01-01')

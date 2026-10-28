@@ -63,6 +63,8 @@ services:
 
 > _NOTE: If you run into authentication issues, try setting `NEXTAUTH_URL` and `NEXT_PUBLIC_SITE_URL` to your external Docker IP, instead of localhost. For example `http://192.168.1.1:8383`._
 
+> _NOTE: Plex Rewind builds its statistics from the play history, which it reads once and saves to `config/play-history.json.gz`. After that, only the newest plays are read again, even across restarts. The read starts when Plex Rewind starts, and its progress is shown in the connection settings. Tautulli is read 5,000 plays at a time, which usually takes seconds. Tracearr is read 100 plays at a time, one request after another, and allows 240 requests a minute by default, so the first read of 100,000 plays takes about 5 minutes. For Tracearr histories over 50,000 plays, set its API rate limit (Settings → Data → API, restart required) to 1,200. A higher value doesn't make it faster, as each request waits for the previous one, and on modest hardware 600 puts less load on Tracearr._
+
 For those that need it, a simple status page is also available at `/api/status`.
 
 ## Translations
@@ -73,7 +75,7 @@ To help translate the application to your language, create a new `<language-code
 
 ## Donate
 
-If you like this project and wish to support it, you can do so with a one-time donation via [PayPal](https://paypal.me/raunot) or a recurring one on [Patreon](https://www.patreon.com/PlexRewind) or [GitHub Sponsors](https://github.com/sponsors/RaunoT) (preferred). Thank you! ❤️
+If you like this project and wish to support it, you can do so on [GitHub Sponsors](https://github.com/sponsors/RaunoT) (preferred) or [Buy Me a Coffee](https://buymeacoffee.com/fr9lzfrhdh). Thank you! ❤️
 
 ### Supporters
 

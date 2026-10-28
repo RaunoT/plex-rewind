@@ -3,6 +3,7 @@
 import StatusMessage from '@/components/StatusMessage'
 import '@/styles/globals.css'
 import { DEFAULT_LOCALE, LOCALE_COOKIE_NAME, LOCALES } from '@/utils/constants'
+import { ExclamationTriangleIcon } from '@heroicons/react/24/outline'
 import {
   AbstractIntlMessages,
   NextIntlClientProvider,
@@ -48,6 +49,7 @@ function ErrorContent({ error, reset }: Props) {
   return (
     <main className='flex min-h-dvh flex-col px-4 py-6'>
       <StatusMessage
+        icon={ExclamationTriangleIcon}
         title={t('title')}
         as='h1'
         action={
