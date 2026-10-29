@@ -409,6 +409,46 @@ describe('while Tautulli is down', () => {
       friendly_name: 'User 7',
     })
   })
+
+  describe('item lookups', () => {
+    const item = { rating_key: 10 } as TautulliItemRow
+    const media = {
+      ids: { imdb: 'tt5753856', tmdb: 70523, tvdb: 334824 },
+      year: 2017,
+    }
+
+    it("saves the item's IDs and year", async () => {
+      fetchMock.mockResolvedValue(
+        tautulliData({
+          year: '2017',
+          guids: ['imdb://tt5753856', 'tmdb://70523', 'tvdb://334824'],
+        }),
+      )
+
+      await getTautulliMediaData(item)
+
+      expect(saveSnapshot).toHaveBeenCalledWith(`${KEY}|media|10`, media)
+    })
+
+    it('does not save the IDs of a deleted item', async () => {
+      fetchMock.mockResolvedValue(tautulliData({}))
+
+      await getTautulliMediaData(item)
+
+      expect(saveSnapshot).not.toHaveBeenCalled()
+    })
+
+    it("returns the item's saved IDs and year", async () => {
+      fetchMock.mockResolvedValue(null)
+      useSnapshot({ [`${KEY}|media|10`]: media })
+
+      await expect(getTautulliMediaData(item)).resolves.toEqual({
+        thumb: '',
+        isDeleted: false,
+        ...media,
+      })
+    })
+  })
 })
 
 describe('getServerUser', () => {

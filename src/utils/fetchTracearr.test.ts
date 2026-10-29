@@ -336,6 +336,52 @@ describe('while Tracearr is down', () => {
 
     expect(libraries.map((library) => library.count)).toEqual(['3'])
   })
+
+  describe('item lookups', () => {
+    const media = {
+      ids: { imdb: 'tt5753856', tmdb: 70523, tvdb: 334824 },
+      year: 2017,
+    }
+
+    it("saves the item's IDs and year", async () => {
+      route({
+        servers: () => ({ data: [plexServer('s1')] }),
+        'media/m1': () => ({
+          id: 'm1',
+          year: 2017,
+          imdb_id: 'tt5753856',
+          tmdb_id: 70523,
+          tvdb_id: 334824,
+          availability: [{ server_id: 's1', removed_at: null }],
+        }),
+      })
+
+      const { getTracearrMedia } = await load('s1')
+      const { saveSnapshot } = await import('./sourceSnapshot')
+
+      await getTracearrMedia('m1')
+
+      expect(saveSnapshot).toHaveBeenCalledWith(`${KEY}|media|m1`, media)
+    })
+
+    it("returns the item's saved IDs and year", async () => {
+      fetchMock.mockRejectedValue(new TypeError('fetch failed'))
+
+      const { getTracearrMedia } = await load('s1')
+      const { getSnapshot } = await import('./sourceSnapshot')
+
+      vi.mocked(getSnapshot).mockResolvedValue(media)
+
+      await expect(getTracearrMedia('m1')).resolves.toEqual({
+        isDeleted: false,
+        ...media,
+      })
+      expect(getSnapshot).toHaveBeenCalledWith(
+        `${KEY}|media|m1`,
+        expect.any(Function),
+      )
+    })
+  })
 })
 
 describe('getTracearrUser', () => {
