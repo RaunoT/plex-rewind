@@ -8,6 +8,7 @@ import {
   secondsToTime,
 } from '@/utils/formatting'
 import {
+  getLibrariesDurationByType,
   getLibrariesTotalDuration,
   getPlaybackHabits,
   getRequestsTotals,
@@ -99,6 +100,7 @@ async function RewindContent({ userId }: { userId?: string }) {
     userTotalDuration,
     librariesTotalSize,
     librariesTotalDuration,
+    librariesDurationByType,
     serverId,
     usersTop,
     habits,
@@ -110,6 +112,7 @@ async function RewindContent({ userId }: { userId?: string }) {
     getUserTotalDuration(user.id, libraries),
     getlibrariesTotalSize(libraries),
     getLibrariesTotalDuration(libraries),
+    getLibrariesDurationByType(libraries),
     getServerId(),
     getUsersTop(user.id, startDate),
     getPlaybackHabits(user.id),
@@ -120,11 +123,24 @@ async function RewindContent({ userId }: { userId?: string }) {
   const firstPlayItem = firstPlay?.play
     ? await getStatsSource(settings).getPlayItem(firstPlay.play)
     : null
+  const isUserExcluded = settings.general.excludedUsers.includes(user.id)
   const share = getUserShare(
     userTotalDuration,
     librariesTotalDuration,
-    settings.general.excludedUsers.includes(user.id),
+    isUserExcluded,
   )
+
+  // The server's totals leave excluded users out, so an excluded user's own
+  // time is added back, as in the share above
+  function getServerDuration(type: 'shows' | 'movies' | 'audio') {
+    const duration = librariesDurationByType[type]
+
+    return duration === null
+      ? null
+      : duration +
+          (isUserExcluded ? (topMediaStats[type].durationValue ?? 0) : 0)
+  }
+
   const userRewind: UserRewind = {
     duration: {
       user: secondsToTime(userTotalDuration, t),
@@ -140,17 +156,23 @@ async function RewindContent({ userId }: { userId?: string }) {
       top: topMediaItems.shows,
       count: topMediaStats.shows.count,
       duration: topMediaStats.shows.duration,
+      duration_value: topMediaStats.shows.durationValue,
+      server_duration_value: getServerDuration('shows'),
     },
     movies: {
       top: topMediaItems.movies,
       count: topMediaStats.movies.count,
       duration: topMediaStats.movies.duration,
+      duration_value: topMediaStats.movies.durationValue,
+      server_duration_value: getServerDuration('movies'),
     },
     people,
     audio: {
       top: topMediaItems.audio,
       count: topMediaStats.audio.count,
       duration: topMediaStats.audio.duration,
+      duration_value: topMediaStats.audio.durationValue,
+      server_duration_value: getServerDuration('audio'),
     },
     habits: habits,
     firstPlay: firstPlay && {

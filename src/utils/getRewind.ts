@@ -25,6 +25,7 @@ export async function getTopMediaStats(
     return {
       count,
       duration: duration === null ? '' : secondsToTime(duration, t),
+      durationValue: duration,
     }
   }
 
@@ -48,6 +49,31 @@ export async function getLibrariesTotalDuration(libraries: TautulliLibrary[]) {
     since: getRewindStartDate(settings),
     libraries,
   })
+}
+
+// Every user's time on each media type, null without a library of the type
+export async function getLibrariesDurationByType(libraries: TautulliLibrary[]) {
+  const settings = getSettings()
+  const source = getStatsSource(settings)
+  const since = getRewindStartDate(settings)
+
+  async function getDuration(sectionType: string) {
+    const typeLibraries = libraries.filter(
+      (library) => library.section_type === sectionType,
+    )
+
+    return typeLibraries.length
+      ? source.getTotalDuration({ since, libraries: typeLibraries })
+      : null
+  }
+
+  const [shows, movies, audio] = await Promise.all([
+    getDuration('show'),
+    getDuration('movie'),
+    getDuration('artist'),
+  ])
+
+  return { shows, movies, audio }
 }
 
 export async function getUserTotalDuration(

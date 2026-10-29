@@ -2,6 +2,7 @@
 
 import { UserRewind } from '@/types/rewind'
 import { PublicSettings } from '@/types/settings'
+import { getRewindBreakdown } from '@/utils/helpers'
 import { FC } from 'react'
 import Stories from './Stories'
 import StoryAudio from './Stories/Audio'
@@ -71,9 +72,11 @@ export default function RewindStories({ userRewind, settings }: Props) {
   const hasAudioLibraries = userRewind.libraries.some(
     (library) => library.section_type === 'artist',
   )
+  // Longer with the breakdown by media type, which the story adds for 2+ types
+  const hasBreakdown = getRewindBreakdown(userRewind).length > 1
   const stories = [
     createStory('welcome', StoryWelcome, 7000),
-    createStory('total', StoryTotal, 8000),
+    createStory('total', StoryTotal, hasBreakdown ? 11000 : 8000),
     ...(userRewind.usersTop && userRewind.usersTop.length > 1
       ? [createStory('users_top', StoryUsersTop, 9000)]
       : []),

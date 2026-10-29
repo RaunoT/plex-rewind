@@ -293,7 +293,13 @@
     "Total": {
       "duration": "Hai passato in <total>totale</total> <duration>{durationValue}</duration> su <plex>{serverName}!</plex>",
       "percentage": "È il <percentage>{percentageValue}</percentage> del tempo di visualizzazione di tutti gli utenti, che in totale ammonta a <duration>{durationValue}</duration>.",
-      "noData": "Non hai riprodotto niente su <plex>{serverName}</plex> <emoji>😫</emoji>"
+      "noData": "Non hai riprodotto niente su <plex>{serverName}</plex> <emoji>😫</emoji>",
+      "breakdown": "Ecco come hai trascorso questo tempo:",
+      "shows": "Serie TV",
+      "movies": "Film",
+      "audio": "Musica",
+      "you": "Tu",
+      "allUsers": "Tutti gli utenti"
     },
     "Users": {
       "top": "Ecco come te la sei cavata rispetto agli altri <users>utenti</users>"
