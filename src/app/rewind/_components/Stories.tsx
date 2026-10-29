@@ -1,5 +1,9 @@
 'use client'
 
+import {
+  readStorage,
+  writeStorage,
+} from '@/app/_components/GlobalContextProvider'
 import { trackEvent } from '@/utils/analytics'
 import { REWIND_CONTROLS_ID } from '@/utils/constants'
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/outline'
@@ -186,9 +190,11 @@ export default function Stories({ stories }: Props) {
   }, [])
   const restart = useCallback(() => goTo(0), [goTo])
   const dismissIntro = useCallback(() => {
-    localStorage.setItem(INTRO_SEEN_KEY, 'true')
+    // Still dismissed when storage is blocked, it just shows again next time
+    writeStorage(INTRO_SEEN_KEY, 'true')
+    // The slide can only take focus once it's no longer inert
+    shouldRestoreFocusRef.current = true
     setIsIntroShown(false)
-    slideRef.current?.focus({ preventScroll: true })
   }, [])
   // Returns whether a hold was in progress
   const endHold = useCallback(() => {
@@ -288,8 +294,7 @@ export default function Stories({ stories }: Props) {
     setControlsSlot(document.getElementById(REWIND_CONTROLS_ID))
 
     setIsIntroShown(
-      window.matchMedia(TOUCH_QUERY).matches &&
-        !localStorage.getItem(INTRO_SEEN_KEY),
+      window.matchMedia(TOUCH_QUERY).matches && !readStorage(INTRO_SEEN_KEY),
     )
   }, [])
 
@@ -349,7 +354,7 @@ export default function Stories({ stories }: Props) {
       shouldRestoreFocusRef.current = false
       slideRef.current?.focus({ preventScroll: true })
     }
-  }, [currentIndex])
+  }, [currentIndex, isIntroShown])
 
   useEffect(
     () => () => {
@@ -384,7 +389,10 @@ export default function Stories({ stories }: Props) {
         aria-label={t('label')}
       >
         {/* Progress bar */}
-        <div className='absolute -top-4 -right-0.5 -left-0.5 z-20 flex'>
+        <div
+          className='absolute -top-4 -right-0.5 -left-0.5 z-20 flex'
+          inert={!!isIntroShown}
+        >
           {stories.map((_, index) => (
             <button
               key={index}
@@ -417,6 +425,7 @@ export default function Stories({ stories }: Props) {
             total: stories.length,
           })}
           tabIndex={-1}
+          inert={!!isIntroShown}
           className='relative w-full flex-1 pt-8 outline-none select-none [-webkit-touch-callout:none] sm:flex sm:flex-col sm:justify-center'
           onPointerDown={handlePointerDown}
           onPointerUp={handlePointerUp}
@@ -434,6 +443,12 @@ export default function Stories({ stories }: Props) {
             aria-modal='true'
             aria-labelledby={introTitleId}
             className='absolute -inset-5 z-30 flex flex-col rounded-3xl bg-black/80 backdrop-blur-sm'
+            onKeyDown={(e) => {
+              // "Got it" is its only control, so focus stays on it
+              if (e.key === 'Tab') {
+                e.preventDefault()
+              }
+            }}
           >
             <h2
               id={introTitleId}
@@ -476,7 +491,7 @@ export default function Stories({ stories }: Props) {
 
       {controlsSlot &&
         createPortal(
-          <div className='icon-button-group'>
+          <div className='icon-button-group' inert={!!isIntroShown}>
             <button
               className='icon-button'
               onClick={goToPrev}
