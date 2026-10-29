@@ -35,10 +35,6 @@ export const LIBRARY_PLAY_TYPES: Record<TautulliMediaType, PlayMediaType> = {
   artist: 'track',
 }
 
-// How far into an item a play has to get to count as one. Shorter plays still
-// add their watch time.
-export const MIN_PLAY_PERCENT = 50
-
 export const EMPTY_ROW: TautulliItemRow = {
   title: '',
   year: null,
@@ -136,11 +132,14 @@ function getDuration(plays: Play[]): number {
   return Math.round(sumBy(plays, 'durationMs') / 1000)
 }
 
-// A play the source has no percent complete for counts
-export function isCountedPlay(play: Play): boolean {
-  return (
-    play.percentComplete === null || play.percentComplete >= MIN_PLAY_PERCENT
-  )
+// Plays short of the percent in the settings still add their watch time. A
+// play the source has no percent complete for counts.
+export function isCountedPlay(play: Play, minPercent: number): boolean {
+  return play.percentComplete === null || play.percentComplete >= minPercent
+}
+
+function getMinPlayPercent(): number {
+  return getSettings().general.minPlayPercent
 }
 
 function getMediaId(play: Play): string | null {
@@ -199,7 +198,7 @@ function groupPlays(plays: Play[]): Play[][] {
 // play with a rating key and a poster points at the current library item.
 // Without one, the rating key matters more than the poster, as it's what the
 // Plex link needs, and the poster can come from any play.
-function toItemRow(plays: Play[]): TautulliItemRow {
+function toItemRow(plays: Play[], minPercent: number): TautulliItemRow {
   const newestFirst = orderBy(plays, 'startedAt', 'desc')
   const play =
     newestFirst.find((play) => getRatingKey(play) && play.thumb) ??
@@ -212,7 +211,7 @@ function toItemRow(plays: Play[]): TautulliItemRow {
     track: play.artistName,
   }
   const ratingKey = Number(getRatingKey(play)) || 0
-  const countedPlays = plays.filter(isCountedPlay)
+  const countedPlays = plays.filter((play) => isCountedPlay(play, minPercent))
 
   return {
     ...EMPTY_ROW,
@@ -246,10 +245,11 @@ const COMPARE_ITEMS: Record<
 function rankItems(
   plays: Play[],
   count: number,
+  minPercent: number,
   sortBy: TopItemsSort = 'duration',
 ): TautulliItemRow[] {
   return groupPlays(plays)
-    .map(toItemRow)
+    .map((group) => toItemRow(group, minPercent))
     .filter((item) => sortBy === 'duration' || item.total_plays > 0)
     .sort(COMPARE_ITEMS[sortBy])
     .slice(0, count)
@@ -315,7 +315,7 @@ export function createPlayStats(provider: PlaysProvider): PlayStats {
       libraries: [library],
     })
     // The extra item only tells whether the ranking goes on.
-    const topItems = rankItems(plays, count + 1, sortBy)
+    const topItems = rankItems(plays, count + 1, getMinPlayPercent(), sortBy)
     const items = topItems.slice(0, count).map((item) => ({
       ...item,
       // Don't show how many users watched the item on personal dashboard
@@ -338,6 +338,7 @@ export function createPlayStats(provider: PlaysProvider): PlayStats {
     since: string,
   ): Promise<MediaStats> {
     const plays = await getPlays({ since, userId, libraries })
+    const minPercent = getMinPlayPercent()
     const mediaTypes = libraries.map(
       (library) => LIBRARY_PLAY_TYPES[library.section_type],
     )
@@ -346,7 +347,8 @@ export function createPlayStats(provider: PlaysProvider): PlayStats {
       const typePlays = plays.filter((play) => play.mediaType === mediaType)
 
       return {
-        count: typePlays.filter(isCountedPlay).length,
+        count: typePlays.filter((play) => isCountedPlay(play, minPercent))
+          .length,
         duration: mediaTypes.includes(mediaType)
           ? getDuration(typePlays)
           : null,
@@ -366,11 +368,13 @@ export function createPlayStats(provider: PlaysProvider): PlayStats {
     since: string,
   ): Promise<TopMediaItems> {
     const plays = await getPlays({ since, userId, libraries })
+    const minPercent = getMinPlayPercent()
 
     function getTop(mediaType: PlayMediaType) {
       const items = rankItems(
         plays.filter((play) => play.mediaType === mediaType),
         5,
+        minPercent,
       ).map((item) => ({ ...item, users_watched: undefined }))
 
       return addAdditionalData(items, mediaType)
@@ -391,11 +395,12 @@ export function createPlayStats(provider: PlaysProvider): PlayStats {
     since: string,
   ): Promise<TopPeople> {
     const plays = await getPlays({ since, userId, libraries })
+    const minPercent = getMinPlayPercent()
 
     function getTitles(mediaType: PlayMediaType) {
       return groupPlays(
         plays.filter((play) => play.mediaType === mediaType),
-      ).map(toItemRow)
+      ).map((group) => toItemRow(group, minPercent))
     }
 
     return findTopPeople(
@@ -428,6 +433,7 @@ export function createPlayStats(provider: PlaysProvider): PlayStats {
         .filter((play) => play.avatar)
         .map((play) => [play.identityId, play.avatar]),
     )
+    const minPercent = getMinPlayPercent()
 
     // Each title once, with everyone's time on it
     function getTitles(
@@ -437,7 +443,7 @@ export function createPlayStats(provider: PlaysProvider): PlayStats {
       return groupPlays(
         plays.filter((play) => play.mediaType === mediaType),
       ).map((group) => ({
-        item: toItemRow(group),
+        item: toItemRow(group, minPercent),
         type,
         durations: mapValues(groupBy(group, 'identityId'), getDuration),
       }))
@@ -466,10 +472,13 @@ export function createPlayStats(provider: PlaysProvider): PlayStats {
     since: string,
   ): Promise<PlaysByTime> {
     const plays = await getPlays({ since, userId })
+    const minPercent = getMinPlayPercent()
     const hourly = Array<number>(24).fill(0)
     const daily = Array<number>(7).fill(0)
 
-    for (const play of plays.filter(isCountedPlay)) {
+    for (const play of plays.filter((play) =>
+      isCountedPlay(play, minPercent),
+    )) {
       const startedAt = new Date(play.startedAt)
 
       hourly[startedAt.getHours()]++
@@ -490,6 +499,7 @@ export function createPlayStats(provider: PlaysProvider): PlayStats {
     const usersByIdentity = new Map(
       users.map((user) => [user.identityId, user]),
     )
+    const minPercent = getMinPlayPercent()
 
     return Object.entries(groupBy(plays, 'identityId'))
       .flatMap(([identityId, userPlays]) => {
@@ -499,7 +509,9 @@ export function createPlayStats(provider: PlaysProvider): PlayStats {
           return []
         }
 
-        const countedPlays = userPlays.filter(isCountedPlay)
+        const countedPlays = userPlays.filter((play) =>
+          isCountedPlay(play, minPercent),
+        )
         const playsByType = countBy(countedPlays, 'mediaType')
 
         return [
@@ -536,7 +548,12 @@ export function createPlayStats(provider: PlaysProvider): PlayStats {
       group.some((other) => other.id === play.id),
     ) ?? [play]
     const [item] = await addAdditionalData(
-      [{ ...toItemRow(itemPlays), users_watched: undefined }],
+      [
+        {
+          ...toItemRow(itemPlays, getMinPlayPercent()),
+          users_watched: undefined,
+        },
+      ],
       play.mediaType,
     )
 

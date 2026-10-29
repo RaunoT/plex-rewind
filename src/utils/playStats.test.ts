@@ -9,7 +9,6 @@ import {
   filterPlays,
   getExcludedIdentityIds,
   isCountedPlay,
-  MIN_PLAY_PERCENT,
   StatsUser,
 } from './playStats'
 
@@ -241,7 +240,7 @@ describe('getTopItems', () => {
   })
 })
 
-describe('plays short of half the item', () => {
+describe('plays short of the percent in the settings', () => {
   // Alien was given up on once and watched once, Heat only given up on
   const history = [
     play('alien given up', '2026-03-01T20:00:00Z', {
@@ -253,7 +252,7 @@ describe('plays short of half the item', () => {
       title: 'Alien',
       identityId: 'bob',
       durationMs: 30 * 60 * 1000,
-      percentComplete: MIN_PLAY_PERCENT,
+      percentComplete: 50,
     }),
     play('heat given up', '2026-03-03T20:00:00Z', {
       title: 'Heat',
@@ -263,9 +262,9 @@ describe('plays short of half the item', () => {
   ]
   const movies = { section_type: 'movie' } as TautulliLibrary
 
-  function getStats() {
+  function getStats(minPlayPercent = 50) {
     vi.mocked(getSettings).mockReturnValue({
-      general: { excludedUsers: [] },
+      general: { excludedUsers: [], minPlayPercent },
     } as unknown as ReturnType<typeof getSettings>)
 
     return createPlayStats({
@@ -275,16 +274,32 @@ describe('plays short of half the item', () => {
     })
   }
 
-  it('count as plays only from half the item, or when unknown', () => {
+  it('count as plays only from the percent, or when unknown', () => {
     expect(
-      isCountedPlay(play('half', '2026-03-01', { percentComplete: 50 })),
+      isCountedPlay(play('half', '2026-03-01', { percentComplete: 50 }), 50),
     ).toBe(true)
     expect(
-      isCountedPlay(play('less', '2026-03-01', { percentComplete: 49 })),
+      isCountedPlay(play('less', '2026-03-01', { percentComplete: 49 }), 50),
     ).toBe(false)
     expect(
-      isCountedPlay(play('unknown', '2026-03-01', { percentComplete: null })),
+      isCountedPlay(
+        play('unknown', '2026-03-01', { percentComplete: null }),
+        50,
+      ),
     ).toBe(true)
+  })
+
+  it('count every play with the percent at 0', async () => {
+    const { items } = await getStats(0).getTopItems(movies, {
+      period: 3650,
+      sortBy: 'plays',
+      count: 5,
+    })
+
+    expect(items.map((item) => [item.title, item.total_plays])).toEqual([
+      ['Alien', 2],
+      ['Heat', 1],
+    ])
   })
 
   it('add their watch time to an item, but not a play or a user', async () => {

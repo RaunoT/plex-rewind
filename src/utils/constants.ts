@@ -82,6 +82,7 @@ export const DEFAULT_SETTINGS: Settings = {
       'users',
       'requests',
     ],
+    minPlayPercent: 50,
     googleAnalyticsId: '',
     isOutsideAccess: false,
     isAnonymized: false,

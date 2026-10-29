@@ -32,6 +32,8 @@ export type GeneralSettings = {
   activeExternalLinks: ExternalLink[]
   // Shown for each title and user in the dashboard and Rewind lists
   activeItemStatistics: ItemStatistics
+  // How far into an item, in percent, a play has to get to count as one
+  minPlayPercent: number
   googleAnalyticsId: string
   isOutsideAccess: boolean
   isAnonymized: boolean
