@@ -6,6 +6,7 @@ import RewindStat from '../RewindStat'
 
 export default function StoryShows({ userRewind, settings }: RewindStory) {
   const t = useTranslations('Rewind.Shows')
+  const tCommon = useTranslations('Rewind.Common')
 
   return (
     <>
@@ -28,6 +29,17 @@ export default function StoryShows({ userRewind, settings }: RewindStory) {
                 plex: (chunks) => chunks,
               })}
             </p>
+
+            {userRewind.shows.percentage && (
+              <p className='mt-2'>
+                {tCommon.rich('percentage', {
+                  percentageValue: userRewind.shows.percentage,
+                  percentage: (chunks) => (
+                    <span className='rewind-stat'>{chunks}</span>
+                  ),
+                })}
+              </p>
+            )}
           </RewindStat>
 
           <RewindStat renderDelay={3} scaleDelay={3}>

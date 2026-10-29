@@ -124,6 +124,7 @@ describe('hasRewindPlays', () => {
     duration: '0 mins',
     duration_value: 0,
     server_duration_value: 0,
+    percentage: '',
     top: [],
   }
 
@@ -150,6 +151,7 @@ describe('getRewindBreakdown', () => {
     duration: '0 mins',
     duration_value: 0,
     server_duration_value: 0,
+    percentage: '',
     top: [],
   }
 

@@ -280,7 +280,8 @@
       "topMovies": "Ecco {count, plural, one {il tuo <top>film più visto</top>} other {la tua <top>top # dei film</top>}}",
       "topDirectors": "Ecco {count, plural, one {il tuo <top>regista più visto</top>} other {la tua <top>top # dei registi</top>}}",
       "topMovieActors": "Ecco {count, plural, one {il tuo <top>attore di film più visto</top>} other {la tua <top>top # degli attori di film</top>}}",
-      "topArtists": "Ecco {count, plural, one {il tuo <top>artista più ascoltato</top>} other {la tua <top>top # degli artisti</top>}}"
+      "topArtists": "Ecco {count, plural, one {il tuo <top>artista più ascoltato</top>} other {la tua <top>top # degli artisti</top>}}",
+      "percentage": "È il <percentage>{percentageValue}</percentage> del tuo tempo di riproduzione totale."
     },
     "Welcome": {
       "welcome": "Ti diamo il benvenuto nel tuo <rewind>{serverName} Rewind</rewind>, <user>{userValue}!</user>",
