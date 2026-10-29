@@ -62,11 +62,14 @@ export default function StoryFirstPlay({ userRewind, settings }: RewindStory) {
                 rows
                 settings={settings}
                 isRanked={false}
-                // Its year and ratings. Play counts would only say it's played.
+                // Its year, ratings and the user's all-time watch time and
+                // plays. Without those totals, they'd only count this play.
                 activeStats={settings.general.activeItemStatistics.filter(
                   (stat) =>
                     stat === 'year' ||
-                    (RATING_STATISTICS as readonly string[]).includes(stat),
+                    (RATING_STATISTICS as readonly string[]).includes(stat) ||
+                    (firstPlay.item?.hasTotals &&
+                      (stat === 'duration' || stat === 'plays')),
                 )}
               />
             </div>

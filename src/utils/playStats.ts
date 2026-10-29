@@ -436,8 +436,25 @@ export function createPlayStats(provider: PlaysProvider): PlayStats {
       .sort((a, b) => b.total_duration - a.total_duration)
   }
 
-  async function getPlayItem(play: Play): Promise<TautulliItemRow> {
-    const [item] = await addAdditionalData([toItemRow([play])], play.mediaType)
+  async function getPlayItem(
+    play: Play,
+    userId?: string,
+  ): Promise<TautulliItemRow> {
+    const userPlays = userId
+      ? (await getPlays({ since: new Date(0), userId })).filter(
+          (other) => other.mediaType === play.mediaType,
+        )
+      : []
+    const plays = userPlays.some((other) => other.id === play.id)
+      ? userPlays
+      : [play, ...userPlays]
+    const itemPlays = groupPlays(plays).find((group) =>
+      group.some((other) => other.id === play.id),
+    ) ?? [play]
+    const [item] = await addAdditionalData(
+      [{ ...toItemRow(itemPlays), users_watched: undefined }],
+      play.mediaType,
+    )
 
     return item
   }

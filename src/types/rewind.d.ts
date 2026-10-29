@@ -65,6 +65,8 @@ export type UserRewind = {
     item: {
       data: TautulliItemRow
       type: 'movie' | 'show' | 'artist'
+      // Whether its watch time and plays are the user's all-time ones
+      hasTotals: boolean
     } | null
   } | null
   user: RewindUser

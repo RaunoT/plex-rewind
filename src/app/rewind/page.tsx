@@ -30,6 +30,7 @@ import { toPublicSettings } from '@/utils/publicSettings'
 import {
   getActiveUsers,
   getHistoryProgress,
+  getHistoryStatus,
   getLibraries,
   getServerId,
   getStatsSource,
@@ -119,9 +120,14 @@ async function RewindContent({ userId }: { userId?: string }) {
     getStatsSource(settings).getFirstPlay(user.id),
     getTopPeople(user.id, libraries),
   ])
-  // The card for the first play needs its poster and ratings looked up
+  // The card for the first play needs its poster and ratings looked up. Its
+  // all-time watch time and plays wait for the whole history to be read.
+  const hasFirstPlayTotals = (await getHistoryStatus()).isComplete
   const firstPlayItem = firstPlay?.play
-    ? await getStatsSource(settings).getPlayItem(firstPlay.play)
+    ? await getStatsSource(settings).getPlayItem(
+        firstPlay.play,
+        hasFirstPlayTotals ? user.id : undefined,
+      )
     : null
   const isUserExcluded = settings.general.excludedUsers.includes(user.id)
   const share = getUserShare(
@@ -187,6 +193,7 @@ async function RewindContent({ userId }: { userId?: string }) {
           ? {
               data: firstPlayItem,
               type: ITEM_TYPES[firstPlay.play.mediaType],
+              hasTotals: hasFirstPlayTotals,
             }
           : null,
     },
