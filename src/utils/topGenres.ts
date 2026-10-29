@@ -99,18 +99,18 @@ export function rankGenres(
   titles: GenredTitle[],
   identityId: string,
 ): TopGenre[] {
-  const watched = titles.filter(
-    (title) => title.durations[identityId] && title.genres.length,
-  )
+  const watched = titles.filter((title) => title.durations[identityId])
+  const genred = watched.filter((title) => title.genres.length)
 
-  if (watched.length < MIN_TITLES) {
+  if (genred.length < MIN_TITLES) {
     return []
   }
 
+  // The shares are of all the time on the type, titles without genres too
   const total = sumBy(watched, (title) => title.durations[identityId])
   const genres = new Map<string, { name: string; duration: number }>()
 
-  for (const title of watched) {
+  for (const title of genred) {
     for (const [key, name] of uniqueGenres(title.genres)) {
       const genre = genres.get(key) ?? { name, duration: 0 }
 

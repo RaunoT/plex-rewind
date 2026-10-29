@@ -176,6 +176,20 @@ describe('rankGenres', () => {
     expect(genres[0]).toMatchObject({ duration: 110 })
   })
 
+  it('takes the shares of all the time, titles without genres too', () => {
+    expect(
+      rankGenres(
+        [
+          genred('Heat', { a: 100 }, ['Drama']),
+          genred('Up', { a: 100 }, ['Drama']),
+          genred('Alien', { a: 100 }, ['Drama']),
+          genred('Home video', { a: 900 }, []),
+        ],
+        'a',
+      ),
+    ).toEqual([{ name: 'Drama', duration: 300, share: 0.25 }])
+  })
+
   it('needs three titles with genres', () => {
     expect(
       rankGenres(
