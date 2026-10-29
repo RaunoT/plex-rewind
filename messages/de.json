@@ -269,10 +269,12 @@
       "goToStory": "Gehe zu Story {index}",
       "previous": "Zurück",
       "next": "Weiter",
-      "pause": "Pausieren",
-      "resume": "Fortsetzen",
       "label": "Rewind-Stories",
-      "storyPosition": "Story {current} von {total}"
+      "storyPosition": "Story {current} von {total}",
+      "introTitle": "So navigierst du",
+      "introBack": "Tippe auf die linke Seite, um zurückzugehen",
+      "introForward": "Tippe auf die rechte Seite, um weiterzugehen",
+      "introDismiss": "Verstanden"
     },
     "Common": {
       "topShows": "{count, plural, one {Hier ist deine <top>meistgesehene Serie</top>} other {Hier sind deine <top>Top # Serien</top>}}",

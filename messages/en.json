@@ -269,10 +269,12 @@
       "goToStory": "Go to story {index}",
       "previous": "Previous",
       "next": "Next",
-      "pause": "Pause",
-      "resume": "Resume",
       "label": "Rewind stories",
-      "storyPosition": "Story {current} of {total}"
+      "storyPosition": "Story {current} of {total}",
+      "introTitle": "How to get around",
+      "introBack": "Tap the left side to go back",
+      "introForward": "Tap the right side to go forward",
+      "introDismiss": "Got it"
     },
     "Common": {
       "topShows": "Here's your <top>top {count, plural, one {TV show} other {# TV shows}}</top>",
