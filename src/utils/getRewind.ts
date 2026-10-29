@@ -3,7 +3,7 @@ import { getLocale, getTranslations } from 'next-intl/server'
 import { fetchSeerrStats } from './fetchSeerr'
 import { formatPercent, secondsToTime } from './formatting'
 import getSettings from './getSettings'
-import { getRewindStartDate } from './helpers'
+import { getAverage, getDifference, getRewindStartDate } from './helpers'
 import { LibrariesSize } from './librariesSize'
 import { getStatsSource } from './statsSource'
 
@@ -52,15 +52,6 @@ export async function getlibrariesTotalSize(
   libraries: TautulliLibrary[],
 ): Promise<LibrariesSize> {
   return getStatsSource().getLibrariesSize(libraries)
-}
-
-export async function getLibrariesTotalDuration(libraries: TautulliLibrary[]) {
-  const settings = getSettings()
-
-  return getStatsSource(settings).getTotalDuration({
-    since: getRewindStartDate(settings),
-    libraries,
-  })
 }
 
 // Every user's time on each media type, null without a library of the type
@@ -127,6 +118,18 @@ export async function getTopPeople(
   )
 }
 
+// Anonymizing hides who the match would name, so it isn't looked for
+export async function getGenres(userId: string, libraries: TautulliLibrary[]) {
+  const settings = getSettings()
+
+  return getStatsSource(settings).getGenres(
+    userId,
+    libraries,
+    getRewindStartDate(settings),
+    !settings.general.isAnonymized,
+  )
+}
+
 function peakIndex(totals: number[]): number | null {
   if (!totals.length) {
     return null
@@ -168,19 +171,43 @@ function countRequests(requests: { type: string }[]) {
 }
 
 export async function getRequestsTotals(userId: string) {
-  const startDate = getRewindStartDate(getSettings())
+  const settings = getSettings()
+  const startDate = getRewindStartDate(settings)
   const requests = await fetchSeerrStats('request', startDate)
 
   if (!requests) {
     return null
   }
 
-  return {
-    ...countRequests(requests),
-    user: countRequests(
-      requests.filter(
-        (request) => request.requestedBy.plexId === Number(userId),
+  const isOwn = (request: (typeof requests)[number]) =>
+    request.requestedBy.plexId === Number(userId)
+  // Like the server's time, every user's requests leave excluded users out,
+  // unless the rewind is one of theirs
+  const counted = requests.filter(
+    (request) =>
+      isOwn(request) ||
+      !settings.general.excludedUsers.includes(
+        String(request.requestedBy.plexId),
       ),
-    ),
+  )
+  const counts = countRequests(counted)
+  const user = countRequests(requests.filter(isOwn))
+  // Seerr users without Plex have no Plex id, so they're told apart by their
+  // Seerr one
+  const requesters = new Set(counted.map((request) => request.requestedBy.id))
+  const average = getAverage(counts.total, requesters.size)
+  // Compared with the rounded average the story shows, so they agree
+  const averageCount = average === null ? null : Math.round(average)
+
+  return {
+    ...counts,
+    user,
+    average:
+      averageCount === null
+        ? null
+        : {
+            count: averageCount,
+            difference: getDifference(user.total, averageCount),
+          },
   }
 }

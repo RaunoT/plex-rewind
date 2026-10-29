@@ -11,7 +11,7 @@ import {
 } from '@/utils/getDashboard'
 import getPeriod from '@/utils/getPeriod'
 import getSettings from '@/utils/getSettings'
-import { canViewFeature, getViewer } from '@/utils/helpers'
+import { canViewFeature, getDashboardSort, getViewer } from '@/utils/helpers'
 import { toPublicSettings } from '@/utils/publicSettings'
 import {
   getHistoryProgress,
@@ -93,8 +93,8 @@ async function DashboardContent({
   }
 
   const personalUserId = personalSp === 'true' ? loggedInUserId : undefined
-  // Plays rank by default; the sort filter can switch to watch time
-  const sortByPlays = sortBySp !== 'duration'
+  // Plays rank by default; the sort filter can switch to watch time or users
+  const sortBy = getDashboardSort(sortBySp) ?? 'plays'
   const [
     { items, hasMore },
     totalDuration,
@@ -105,7 +105,7 @@ async function DashboardContent({
     getItems(library, {
       period: period.daysAgo,
       userId: personalUserId,
-      sortByPlays,
+      sortBy,
       count: limit,
     }),
     getTotalDuration(library, period.string, settings, personalUserId),

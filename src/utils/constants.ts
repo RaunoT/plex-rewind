@@ -175,10 +175,6 @@ export const RATING_STATISTICS = [
   'rottenTomatoesAudienceRating',
 ] as const
 
-export type Locale = (typeof LOCALES)[number]
-
-// Where the rewind layout lets the story player put its controls
-export const REWIND_CONTROLS_ID = 'rewind-controls'
 export const REWIND_MUSIC_MAX_BYTES = 10 * 1024 * 1024
 // What a Rewind track may be, by file extension, and the type it's served as
 export const REWIND_MUSIC_TYPES: Record<string, string> = {
@@ -191,6 +187,8 @@ export const REWIND_MUSIC_TYPES: Record<string, string> = {
   wav: 'audio/wav',
   flac: 'audio/flac',
 }
+
+export type Locale = (typeof LOCALES)[number]
 export const LOCALES = ['en', 'et', 'fr', 'de', 'it', 'es']
 export const DEFAULT_LOCALE: Locale = 'en'
 export const LOCALE_COOKIE_NAME = 'locale'

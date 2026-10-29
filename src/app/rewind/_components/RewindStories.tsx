@@ -2,7 +2,6 @@
 
 import { UserRewind } from '@/types/rewind'
 import { PublicSettings } from '@/types/settings'
-import { getRewindBreakdown } from '@/utils/helpers'
 import { FC } from 'react'
 import Snow from './Snow'
 import Stories from './Stories'
@@ -16,11 +15,14 @@ import StoryLibraries from './Stories/Libraries'
 import StoryMovies from './Stories/Movies'
 import StoryMoviesActors from './Stories/MoviesActors'
 import StoryMoviesDirectors from './Stories/MoviesDirectors'
+import StoryMoviesGenres from './Stories/MoviesGenres'
 import StoryMoviesTop from './Stories/MoviesTop'
 import StoryRequests from './Stories/Requests'
 import StoryShows from './Stories/Shows'
 import StoryShowsActors from './Stories/ShowsActors'
+import StoryShowsGenres from './Stories/ShowsGenres'
 import StoryShowsTop from './Stories/ShowsTop'
+import StoryTasteMatch from './Stories/TasteMatch'
 import StoryTotal from './Stories/Total'
 import StoryUsersTop from './Stories/UsersTop'
 import StoryWelcome from './Stories/Welcome'
@@ -45,20 +47,17 @@ type Props = {
 }
 
 // Where the top show's and top movie's theme songs play
-const SHOW_STORIES = ['shows', 'shows_top', 'shows_actors']
+const SHOW_STORIES = ['shows', 'shows_top', 'shows_actors', 'shows_genres']
 const MOVIE_STORIES = [
   'movies',
   'movies_top',
   'movies_directors',
   'movies_actors',
+  'movies_genres',
 ]
 
 export default function RewindStories({ userRewind, settings, music }: Props) {
-  function createStory(
-    id: string,
-    Component: FC<StoryComponent>,
-    duration: number,
-  ) {
+  function createStory(id: string, Component: FC<StoryComponent>) {
     // The track also stands in for a title without a theme song
     const themes = SHOW_STORIES.includes(id)
       ? music.showThemes
@@ -73,7 +72,6 @@ export default function RewindStories({ userRewind, settings, music }: Props) {
       component: () => (
         <Component userRewind={userRewind} settings={settings} />
       ),
-      duration,
       music: sources.filter((url) => url !== null),
     }
   }
@@ -90,87 +88,66 @@ export default function RewindStories({ userRewind, settings, music }: Props) {
   const hasAudioLibraries = userRewind.libraries.some(
     (library) => library.section_type === 'artist',
   )
-  // Longer with the breakdown by media type, which the story adds for 2+ types
-  const hasBreakdown = getRewindBreakdown(userRewind).length > 1
   const stories = [
-    createStory('welcome', StoryWelcome, 7000),
-    createStory('total', StoryTotal, hasBreakdown ? 11000 : 8000),
+    createStory('welcome', StoryWelcome),
+    createStory('total', StoryTotal),
     ...(userRewind.usersTop && userRewind.usersTop.length > 1
-      ? [createStory('users_top', StoryUsersTop, 9000)]
+      ? [createStory('users_top', StoryUsersTop)]
       : []),
     ...(userRewind.libraries_total_size && isLibrariesSizeAndCountActive
-      ? [createStory('libraries', StoryLibraries, 9000)]
+      ? [createStory('libraries', StoryLibraries)]
       : []),
     ...(isSeerrActive && userRewind.requests
-      ? [
-          createStory(
-            'requests',
-            StoryRequests,
-            userRewind.requests.user.total
-              ? 12000
-              : userRewind.requests.total
-                ? 9000
-                : 4000,
-          ),
-        ]
+      ? [createStory('requests', StoryRequests)]
       : []),
     ...(userRewind.duration.user && hasShowLibraries && userRewind.shows.top[0]
-      ? [
-          createStory(
-            'shows',
-            StoryShows,
-            userRewind.shows.count ? 10000 : 4000,
-          ),
-        ]
+      ? [createStory('shows', StoryShows)]
       : []),
     ...(userRewind.shows.top.length > 1 && hasShowLibraries
-      ? [createStory('shows_top', StoryShowsTop, 8000)]
+      ? [createStory('shows_top', StoryShowsTop)]
       : []),
     ...(userRewind.people.showActors.length && hasShowLibraries
-      ? [createStory('shows_actors', StoryShowsActors, 8000)]
+      ? [createStory('shows_actors', StoryShowsActors)]
+      : []),
+    ...(userRewind.genres.shows.length && hasShowLibraries
+      ? [createStory('shows_genres', StoryShowsGenres)]
       : []),
     ...(userRewind.duration.user &&
     hasMovieLibraries &&
     userRewind.movies.top[0]
-      ? [
-          createStory(
-            'movies',
-            StoryMovies,
-            userRewind.movies.count ? 10000 : 4000,
-          ),
-        ]
+      ? [createStory('movies', StoryMovies)]
       : []),
     ...(userRewind.movies.top.length > 1 && hasMovieLibraries
-      ? [createStory('movies_top', StoryMoviesTop, 8000)]
+      ? [createStory('movies_top', StoryMoviesTop)]
       : []),
     ...(userRewind.people.directors.length && hasMovieLibraries
-      ? [createStory('movies_directors', StoryMoviesDirectors, 8000)]
+      ? [createStory('movies_directors', StoryMoviesDirectors)]
       : []),
     ...(userRewind.people.movieActors.length && hasMovieLibraries
-      ? [createStory('movies_actors', StoryMoviesActors, 8000)]
+      ? [createStory('movies_actors', StoryMoviesActors)]
+      : []),
+    ...(userRewind.genres.movies.length && hasMovieLibraries
+      ? [createStory('movies_genres', StoryMoviesGenres)]
       : []),
     ...(userRewind.duration.user && hasAudioLibraries && userRewind.audio.top[0]
-      ? [
-          createStory(
-            'audio',
-            StoryAudio,
-            userRewind.audio.count ? 10000 : 4000,
-          ),
-        ]
+      ? [createStory('audio', StoryAudio)]
       : []),
     ...(userRewind.audio.top.length > 1 && hasAudioLibraries
-      ? [createStory('audio_top', StoryAudioTop, 8000)]
+      ? [createStory('audio_top', StoryAudioTop)]
+      : []),
+    ...(userRewind.genres.match
+      ? [createStory('taste_match', StoryTasteMatch)]
       : []),
     ...(userRewind.habits.peakDayIndex !== null
-      ? [createStory('habits_day', StoryHabitsDay, 10000)]
+      ? [createStory('habits_day', StoryHabitsDay)]
       : []),
     ...(userRewind.habits.peakHour !== null
-      ? [createStory('habits_hour', StoryHabitsHour, 10000)]
+      ? [createStory('habits_hour', StoryHabitsHour)]
       : []),
     ...(userRewind.firstPlay
-      ? [createStory('first_play', StoryFirstPlay, 10000)]
+      ? [createStory('first_play', StoryFirstPlay)]
       : []),
-    createStory('goodbye', StoryGoodbye, 11000),
+    createStory('goodbye', StoryGoodbye),
   ]
 
   return (

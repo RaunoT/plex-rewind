@@ -82,10 +82,6 @@
   @apply animate-pulse rounded-full bg-white/10;
 }
 
-@utility skeleton--no-animate {
-  @apply animate-none;
-}
-
 /* prettier-ignore */
 @utility animation-delay-* {
   animation-delay: --value(integer)ms;

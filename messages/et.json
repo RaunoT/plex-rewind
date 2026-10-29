@@ -72,7 +72,8 @@
     "sortByLabel": "Sorteerimisalus",
     "sort": "Sorteerimine",
     "byDuration": "Vaatamisaja järgi",
-    "byPlays": "Mängimiste järgi"
+    "byPlays": "Mängimiste järgi",
+    "byUsers": "Kasutajate arvu järgi"
   },
   "DashboardNavContent": {
     "label": "Edetabeli navigatsioon",
@@ -298,11 +299,18 @@
     "Common": {
       "topShows": "Siin on sinu <top>{count, plural, one {enim vaadatud seriaal} other {# enim vaadatud seriaali}}</top>",
       "topShowActors": "Siin on sinu <top>{count, plural, one {enim vaadatud seriaalinäitleja} other {# enim vaadatud seriaalinäitlejat}}</top>",
+      "topShowGenres": "Siin on sinu <top>{count, plural, one {enim vaadatud seriaaližanr} other {# enim vaadatud seriaaližanrit}}</top>",
       "topMovies": "Siin on sinu <top>{count, plural, one {enim vaadatud film} other {# enim vaadatud filmi}}</top>",
       "topDirectors": "Siin on sinu <top>{count, plural, one {enim vaadatud režissöör} other {# enim vaadatud režissööri}}</top>",
       "topMovieActors": "Siin on sinu <top>{count, plural, one {enim vaadatud filminäitleja} other {# enim vaadatud filminäitlejat}}</top>",
+      "topMovieGenres": "Siin on sinu <top>{count, plural, one {enim vaadatud filmižanr} other {# enim vaadatud filmižanrit}}</top>",
       "topArtists": "Siin on sinu <top>{count, plural, one {enim kuulatud esitaja} other {# enim kuulatud esitajat}}</top>",
-      "percentage": "See on <percentage>{percentageValue}</percentage> kogu sinu esitusajast."
+      "percentage": "See on <percentage>{percentageValue}</percentage> kogu sinu esitusajast.",
+      "shows": "Seriaalid",
+      "movies": "Filmid",
+      "audio": "Muusika",
+      "you": "Sina",
+      "allUsers": "Kõik kasutajad"
     },
     "Welcome": {
       "welcome": "Tere tulemast oma <rewind>{serverName} Rewind'i</rewind>, <user>{userValue}!</user>",
@@ -314,14 +322,12 @@
     },
     "Total": {
       "duration": "<total>Kokku</total> kulutasid sa <duration>{durationValue}</duration> <plex>{serverName}'is!</plex>",
-      "percentage": "See on <percentage>{percentageValue}</percentage> kõigi kasutajate vaatamisajast, mis oli kokku <duration>{durationValue}</duration>.",
+      "averageMore": "See on <difference>{percent, number, percent} rohkem</difference> kui keskmisel kasutajal, kes vaatas <duration>{durationValue}</duration>.",
+      "averageTimes": "See on <difference>{times, number}× rohkem</difference> kui keskmisel kasutajal, kes vaatas <duration>{durationValue}</duration>.",
+      "averageLess": "See on <difference>{percent, number, percent} vähem</difference> kui keskmisel kasutajal, kes vaatas <duration>{durationValue}</duration>.",
+      "averageSame": "See on <difference>umbes sama palju</difference> kui keskmisel kasutajal, kes vaatas <duration>{durationValue}</duration>.",
       "noData": "Sa ei mänginud midagi <plex>{serverName}'ist</plex> <emoji>😫</emoji>",
-      "breakdown": "Nii jagunes sinu aeg:",
-      "shows": "Seriaalid",
-      "movies": "Filmid",
-      "audio": "Muusika",
-      "you": "Sina",
-      "allUsers": "Kõik kasutajad"
+      "breakdown": "Nii jagunes sinu aeg:"
     },
     "Users": {
       "top": "Siin oled sa võrdluses teiste <users>kasutajatega</users>"
@@ -351,11 +357,13 @@
       "noData": "Ühtegi <requests>tellimust</requests> pole tehtud <emoji>😲</emoji>",
       "noUserData": "Sa ei teinud ühtegi <requests>tellimust</requests>. Tellimusi saad teha aadressil <requestLink>{requestLinkValue}</requestLink>.",
       "count": "Sa tegid <count>{countValue, number}</count> <requests>{countValue, plural, one {tellimuse} other {tellimust}}</requests>",
+      "averageMore": "See on <difference>{percent, number, percent} rohkem</difference> kui keskmisel kasutajal, kes tegi <count>{countValue, plural, one {# tellimuse} other {# tellimust}}</count>.",
+      "averageTimes": "See on <difference>{times, number}× rohkem</difference> kui keskmisel kasutajal, kes tegi <count>{countValue, plural, one {# tellimuse} other {# tellimust}}</count>.",
+      "averageLess": "See on <difference>{percent, number, percent} vähem</difference> kui keskmisel kasutajal, kes tegi <count>{countValue, plural, one {# tellimuse} other {# tellimust}}</count>.",
+      "averageSame": "See on <difference>umbes sama palju</difference> kui keskmisel kasutajal, kes tegi <count>{countValue, plural, one {# tellimuse} other {# tellimust}}</count>.",
       "countTotal": "Kokku tehti samal perioodil <count>{countValue, plural, one {# tellimus} other {# tellimust}}</count>.",
       "userBreakdown": "Siin on sinu tellimuste jaotus:",
-      "breakdown": "Siin on täpsem jaotus:",
-      "movies": "{count, plural, one {film} other {filmi}}",
-      "shows": "{count, plural, one {seriaal} other {seriaali}}"
+      "breakdown": "Siin on täpsem jaotus:"
     },
     "Movies": {
       "duration": "<duration>{durationValue}</duration> kulus sul <movies>filmidele</movies>",
@@ -370,6 +378,11 @@
       "more": "teised",
       "seeMore": "Näita rohkem",
       "seeLess": "Näita vähem"
+    },
+    "TasteMatch": {
+      "closest": "<plex>{serverName}'i</plex> kasutajatest on sinu maitsele kõige lähemal <user>{userValue}</user>",
+      "score": "Teie žanrid kattuvad <score>{scoreValue}</score> ulatuses",
+      "genres": "Teie mõlema lemmikud on <genres>{genresValue}</genres>"
     },
     "Habits": {
       "day": "Sinu lemmik vaatamispäev oli <day>{dayValue}</day>",

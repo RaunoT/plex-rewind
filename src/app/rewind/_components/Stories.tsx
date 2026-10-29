@@ -6,7 +6,6 @@ import {
 } from '@/app/_components/GlobalContextProvider'
 import useStoryMusic from '@/hooks/useStoryMusic'
 import { trackEvent } from '@/utils/analytics'
-import { REWIND_CONTROLS_ID } from '@/utils/constants'
 import {
   ChevronLeftIcon,
   ChevronRightIcon,
@@ -28,21 +27,18 @@ import {
   useState,
   useSyncExternalStore,
 } from 'react'
-import { createPortal } from 'react-dom'
 
-type StoryClock = {
-  // Milliseconds since the story started
-  elapsed: number
-  isPaused: boolean
-  registerReveal: (at: number) => () => void
+type StoryStep = {
+  // The latest statement shown, by its step in the story
+  step: number
+  registerStep: (step: number) => () => void
 }
 
-// One clock per story that each statement reads to know what to show, so the
-// controls can step from statement to statement
-export const StoryClockContext = createContext<StoryClock>({
-  elapsed: 0,
-  isPaused: false,
-  registerReveal: () => () => {},
+// The story's current step, which each statement reads to know whether to
+// show, so the controls can step from statement to statement
+export const StoryStepContext = createContext<StoryStep>({
+  step: 0,
+  registerStep: () => () => {},
 })
 
 // Lets the last story offer to start over
@@ -53,7 +49,6 @@ type Story = {
   id: string
   type: 'component'
   component: () => ReactNode
-  duration: number
   // What plays during the story, in order of preference
   music?: string[]
 }
@@ -66,12 +61,12 @@ type Props = {
   }
 }
 
-const HOLD_THRESHOLD = 200 // ms to distinguish tap from hold
-const DEFAULT_DURATION = 5000
-const TICK = 100
 const INTRO_SEEN_KEY = 'rewindIntroSeen'
 const SOUND_KEY = 'rewindSound'
 const NO_MUSIC: string[] = []
+// A longer press or a drag doesn't count as a tap
+const TAP_MAX_DURATION = 500
+const TAP_MAX_DISTANCE = 10
 // Without a cursor or arrow keys, the tap areas aren't obvious
 const TOUCH_QUERY = '(hover: none) and (pointer: coarse)'
 // Anything that already owns Space/arrow keys or taps must not drive the stories
@@ -106,7 +101,7 @@ function getIsHidden() {
   return document.hidden
 }
 
-// Counts as hidden until hydrated so the progress never runs unattended
+// Counts as hidden until hydrated, so nothing plays before then
 function getServerIsHidden() {
   return true
 }
@@ -116,13 +111,11 @@ export default function Stories({ stories }: Props) {
   const [currentIndex, setCurrentIndex] = useState(0)
   // Unknown until mounted, so the first story waits for it
   const [isIntroShown, setIsIntroShown] = useState<boolean | null>(null)
-  const [isHolding, setIsHolding] = useState(false)
   const [isSoundOn, setIsSoundOn] = useState(false)
   const [announcement, setAnnouncement] = useState('')
-  const [controlsSlot, setControlsSlot] = useState<HTMLElement | null>(null)
-  const [elapsed, setElapsed] = useState(0)
-  // When each statement of the current story appears
-  const [reveals, setReveals] = useState<number[]>([])
+  const [step, setStep] = useState(0)
+  // The steps of the current story's statements
+  const [steps, setSteps] = useState<number[]>([])
   const isHidden = useSyncExternalStore(
     subscribeToVisibility,
     getIsHidden,
@@ -131,17 +124,18 @@ export default function Stories({ stories }: Props) {
   const introTitleId = useId()
   const slideRef = useRef<HTMLDivElement>(null)
   const introButtonRef = useRef<HTMLButtonElement>(null)
-  const holdTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
-  const isHoldingRef = useRef(false)
   const shouldRestoreFocusRef = useRef(false)
   const shouldSeekToEndRef = useRef(false)
   const trackedIndexRef = useRef<number | null>(null)
   const hasTrackedCompleteRef = useRef(false)
+  const tapStartRef = useRef<{
+    pointerId: number
+    x: number
+    y: number
+    time: number
+  } | null>(null)
   const currentStory = stories[currentIndex]
   const currentStoryId = currentStory?.id
-  const duration = currentStory?.duration || DEFAULT_DURATION
-  const isPaused = isHolding || isHidden || isIntroShown !== false
-  const isFinished = elapsed >= duration
   const musicUrls = useMemo(
     () => [...new Set(stories.flatMap((story) => story.music ?? []))],
     [stories],
@@ -149,18 +143,21 @@ export default function Stories({ stories }: Props) {
   const muteBlockedSound = useCallback(() => setIsSoundOn(false), [])
   const { unlock: unlockMusic } = useStoryMusic({
     sources: currentStory?.music ?? NO_MUSIC,
-    isPlaying: isSoundOn && !isPaused,
+    isPlaying: isSoundOn && !isHidden && isIntroShown === false,
     onBlocked: muteBlockedSound,
   })
-  const revealPoints = useMemo(
-    () => [...new Set(reveals)].sort((a, b) => a - b),
-    [reveals],
+  // A statement that is left out leaves a gap in the steps, which is skipped
+  const storySteps = useMemo(
+    () => [...new Set(steps)].sort((a, b) => a - b),
+    [steps],
   )
-  const nextReveal = revealPoints.find((at) => at > elapsed)
-  const shownReveals = revealPoints.filter((at) => at <= elapsed)
-  const canGoBack = currentIndex > 0 || shownReveals.length > 1
+  const nextStep = storySteps.find((other) => other > step)
+  const shownSteps = storySteps.filter((other) => other <= step)
+  // Fills as the story's statements are stepped through
+  const progress = storySteps.length ? shownSteps.length / storySteps.length : 0
+  const canGoBack = currentIndex > 0 || shownSteps.length > 1
   const canGoForward =
-    currentIndex < stories.length - 1 || nextReveal !== undefined
+    currentIndex < stories.length - 1 || nextStep !== undefined
   const goTo = useCallback(
     (index: number, isAtEnd = false) => {
       if (index < 0 || index >= stories.length || index === currentIndex) {
@@ -174,7 +171,7 @@ export default function Stories({ stories }: Props) {
 
       // Going back lands on the previous story's last statement
       shouldSeekToEndRef.current = isAtEnd
-      setElapsed(0)
+      setStep(0)
       setCurrentIndex(index)
       setAnnouncement(
         t('storyPosition', { current: index + 1, total: stories.length }),
@@ -183,26 +180,26 @@ export default function Stories({ stories }: Props) {
     [currentIndex, stories.length, t],
   )
   const goToNext = useCallback(() => {
-    if (nextReveal !== undefined) {
-      setElapsed(nextReveal)
+    if (nextStep !== undefined) {
+      setStep(nextStep)
     } else {
       goTo(currentIndex + 1)
     }
-  }, [goTo, currentIndex, nextReveal])
+  }, [goTo, currentIndex, nextStep])
   // Hides the latest statement, or goes back a story from the first one
   const goToPrev = useCallback(() => {
-    if (shownReveals.length > 1) {
-      setElapsed(shownReveals[shownReveals.length - 2])
+    if (shownSteps.length > 1) {
+      setStep(shownSteps[shownSteps.length - 2])
     } else {
       goTo(currentIndex - 1, true)
     }
-  }, [goTo, currentIndex, shownReveals])
-  const registerReveal = useCallback((at: number) => {
-    setReveals((prev) => [...prev, at])
+  }, [goTo, currentIndex, shownSteps])
+  const registerStep = useCallback((statementStep: number) => {
+    setSteps((prev) => [...prev, statementStep])
 
     return () =>
-      setReveals((prev) => {
-        const index = prev.indexOf(at)
+      setSteps((prev) => {
+        const index = prev.indexOf(statementStep)
 
         return index === -1
           ? prev
@@ -227,53 +224,34 @@ export default function Stories({ stories }: Props) {
     setIsSoundOn(isOn)
     writeStorage(SOUND_KEY, isOn ? 'true' : '')
   }, [isSoundOn, unlockMusic, musicUrls])
-  // Returns whether a hold was in progress
-  const endHold = useCallback(() => {
-    if (holdTimerRef.current) {
-      clearTimeout(holdTimerRef.current)
-      holdTimerRef.current = null
-    }
-
-    if (isHoldingRef.current) {
-      isHoldingRef.current = false
-      setIsHolding(false)
-
-      return true
-    }
-
-    return false
+  const handlePointerDown = useCallback((e: PointerEvent<HTMLDivElement>) => {
+    tapStartRef.current =
+      !e.isPrimary ||
+      (e.pointerType === 'mouse' && e.button !== 0) ||
+      isInteractiveTarget(e.target)
+        ? null
+        : {
+            pointerId: e.pointerId,
+            x: e.clientX,
+            y: e.clientY,
+            time: e.timeStamp,
+          }
   }, [])
-  const handlePointerDown = useCallback(
-    (e: PointerEvent<HTMLDivElement>) => {
-      if (!e.isPrimary || (e.pointerType === 'mouse' && e.button !== 0)) {
-        return
-      }
-
-      if (isInteractiveTarget(e.target)) {
-        return
-      }
-
-      endHold()
-      holdTimerRef.current = setTimeout(() => {
-        holdTimerRef.current = null
-        isHoldingRef.current = true
-        setIsHolding(true)
-      }, HOLD_THRESHOLD)
-    },
-    [endHold],
-  )
+  // Only a tap that started on the slide steps the story
   const handlePointerUp = useCallback(
     (e: PointerEvent<HTMLDivElement>) => {
-      if (!e.isPrimary) {
-        return
-      }
+      const tapStart = tapStartRef.current
 
-      // A hold only pauses, it never navigates
-      if (endHold()) {
-        return
-      }
+      tapStartRef.current = null
 
-      if (isInteractiveTarget(e.target)) {
+      if (
+        !tapStart ||
+        tapStart.pointerId !== e.pointerId ||
+        e.timeStamp - tapStart.time > TAP_MAX_DURATION ||
+        Math.hypot(e.clientX - tapStart.x, e.clientY - tapStart.y) >
+          TAP_MAX_DISTANCE ||
+        isInteractiveTarget(e.target)
+      ) {
         return
       }
 
@@ -287,43 +265,19 @@ export default function Stories({ stories }: Props) {
         goToNext()
       }
     },
-    [endHold, goToNext, goToPrev],
+    [goToNext, goToPrev],
   )
-  const handlePointerAbort = useCallback(() => {
-    endHold()
-  }, [endHold])
-
-  useEffect(() => {
-    if (isPaused || isFinished) {
-      return
-    }
-
-    let last = performance.now()
-
-    const interval = setInterval(() => {
-      const now = performance.now()
-      const delta = now - last
-
-      last = now
-      setElapsed((prev) => Math.min(prev + delta, duration))
-    }, TICK)
-
-    return () => clearInterval(interval)
-  }, [isPaused, isFinished, duration])
 
   useEffect(() => {
     // The new story's statements have registered by now
     if (shouldSeekToEndRef.current) {
       shouldSeekToEndRef.current = false
-      setElapsed(Math.max(0, ...reveals))
+      setStep(Math.max(0, ...steps))
     }
-  }, [reveals])
+  }, [steps])
 
   useEffect(() => {
-    // Rendered by the layout, next to the admin's user select
     // eslint-disable-next-line react-hooks/set-state-in-effect
-    setControlsSlot(document.getElementById(REWIND_CONTROLS_ID))
-
     setIsIntroShown(
       window.matchMedia(TOUCH_QUERY).matches && !readStorage(INTRO_SEEN_KEY),
     )
@@ -389,21 +343,12 @@ export default function Stories({ stories }: Props) {
     }
   }, [currentIndex, isIntroShown])
 
-  useEffect(
-    () => () => {
-      if (holdTimerRef.current) {
-        clearTimeout(holdTimerRef.current)
-      }
-    },
-    [],
-  )
-
-  const clock = useMemo(
-    () => ({ elapsed, isPaused, registerReveal }),
-    [elapsed, isPaused, registerReveal],
+  const storyStep = useMemo(
+    () => ({ step, registerStep }),
+    [step, registerStep],
   )
   // Only re-created when the slide or stories change, so the active slide
-  // doesn't re-render as the clock ticks; its statements read the clock
+  // doesn't re-render on each step; its statements read the step
   const slide = useMemo(
     () =>
       currentStory ? (
@@ -417,7 +362,7 @@ export default function Stories({ stories }: Props) {
   return (
     <MotionConfig reducedMotion='user'>
       <section
-        className='relative flex flex-1'
+        className='relative flex flex-1 flex-col'
         aria-roledescription='carousel'
         aria-label={t('label')}
       >
@@ -439,8 +384,8 @@ export default function Stories({ stories }: Props) {
                   <span className='link-dark block h-full w-full bg-white' />
                 ) : index === currentIndex ? (
                   <span
-                    className='link-dark block h-full w-full origin-left bg-white transition-transform duration-100 ease-linear'
-                    style={{ transform: `scaleX(${elapsed / duration})` }}
+                    className='link-dark block h-full w-full origin-left bg-white transition-transform duration-300 ease-out'
+                    style={{ transform: `scaleX(${progress})` }}
                   />
                 ) : null}
               </span>
@@ -448,7 +393,7 @@ export default function Stories({ stories }: Props) {
           ))}
         </div>
 
-        {/* Story content with tap/hold navigation */}
+        {/* Story content with tap navigation */}
         <div
           ref={slideRef}
           role='group'
@@ -462,11 +407,12 @@ export default function Stories({ stories }: Props) {
           className='relative w-full flex-1 pt-8 outline-none select-none [-webkit-touch-callout:none] sm:flex sm:flex-col sm:justify-center'
           onPointerDown={handlePointerDown}
           onPointerUp={handlePointerUp}
-          onPointerLeave={handlePointerAbort}
-          onPointerCancel={handlePointerAbort}
+          onPointerCancel={() => {
+            tapStartRef.current = null
+          }}
         >
           <StoryRestartContext value={restart}>
-            <StoryClockContext value={clock}>{slide}</StoryClockContext>
+            <StoryStepContext value={storyStep}>{slide}</StoryStepContext>
           </StoryRestartContext>
         </div>
 
@@ -517,51 +463,47 @@ export default function Stories({ stories }: Props) {
           </div>
         )}
 
+        <div className='mt-4 flex justify-center gap-2' inert={!!isIntroShown}>
+          <div className='icon-button-group'>
+            <button
+              className='icon-button'
+              onClick={goToPrev}
+              disabled={!canGoBack}
+              aria-label={t('previous')}
+            >
+              <ChevronLeftIcon className='size-5' />
+            </button>
+            <button
+              className='icon-button'
+              onClick={goToNext}
+              disabled={!canGoForward}
+              aria-label={t('next')}
+            >
+              <ChevronRightIcon className='size-5' />
+            </button>
+          </div>
+          {musicUrls.length > 0 && (
+            <div className='icon-button-group'>
+              <button
+                className='icon-button'
+                onClick={toggleSound}
+                aria-pressed={isSoundOn}
+                aria-label={t('sound')}
+              >
+                {isSoundOn ? (
+                  <SpeakerWaveIcon className='size-5' />
+                ) : (
+                  <SpeakerXMarkIcon className='size-5' />
+                )}
+              </button>
+            </div>
+          )}
+        </div>
+
         <div className='sr-only' aria-live='polite' aria-atomic='true'>
           {announcement}
         </div>
       </section>
-
-      {controlsSlot &&
-        createPortal(
-          <div className='flex gap-2' inert={!!isIntroShown}>
-            <div className='icon-button-group'>
-              <button
-                className='icon-button'
-                onClick={goToPrev}
-                disabled={!canGoBack}
-                aria-label={t('previous')}
-              >
-                <ChevronLeftIcon className='size-5' />
-              </button>
-              <button
-                className='icon-button'
-                onClick={goToNext}
-                disabled={!canGoForward}
-                aria-label={t('next')}
-              >
-                <ChevronRightIcon className='size-5' />
-              </button>
-            </div>
-            {musicUrls.length > 0 && (
-              <div className='icon-button-group'>
-                <button
-                  className='icon-button'
-                  onClick={toggleSound}
-                  aria-pressed={isSoundOn}
-                  aria-label={t('sound')}
-                >
-                  {isSoundOn ? (
-                    <SpeakerWaveIcon className='size-5' />
-                  ) : (
-                    <SpeakerXMarkIcon className='size-5' />
-                  )}
-                </button>
-              </div>
-            )}
-          </div>,
-          controlsSlot,
-        )}
     </MotionConfig>
   )
 }

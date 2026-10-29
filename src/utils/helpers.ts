@@ -1,3 +1,4 @@
+import { DashboardSearchParams } from '@/types/dashboard'
 import { UserRewind } from '@/types/rewind'
 import { Settings, StatisticsSource } from '@/types/settings'
 import { TautulliLibrary } from '@/types/tautulli'
@@ -131,11 +132,23 @@ export function hasRewindPlays({
 
 export type RewindBreakdownItem = {
   type: 'show' | 'movie' | 'artist'
-  duration: string
-  // Of the time across the listed types, from 0 to 1
-  share: number
-  // The same for every user, null without any time on the server
+  // The user's time or count, shown next to the type
+  value: string
+  // Of the user's total across the listed types, from 0 to 1, null when only
+  // every user's is split
+  share: number | null
+  // The same for every user, null without any on the server
   serverShare: number | null
+}
+
+function sortBreakdown<T extends Omit<RewindBreakdownItem, 'value'>>(
+  items: T[],
+): T[] {
+  return items.sort(
+    (a, b) =>
+      (b.share ?? 0) - (a.share ?? 0) ||
+      (b.serverShare ?? 0) - (a.serverShare ?? 0),
+  )
 }
 
 // The user's time split by media type next to every user's, most played by
@@ -161,34 +174,51 @@ export function getRewindBreakdown({
     return []
   }
 
-  return types
-    .map((item) => ({
+  return sortBreakdown(
+    types.map((item) => ({
       type: item.type,
-      duration: item.duration,
+      value: item.duration,
       share: (item.duration_value ?? 0) / total,
       serverShare: serverTotal
         ? (item.server_duration_value ?? 0) / serverTotal
         : null,
-    }))
-    .sort(
-      (a, b) =>
-        b.share - a.share || (b.serverShare ?? 0) - (a.serverShare ?? 0),
-    )
+    })),
+  )
 }
 
-// The server's total leaves excluded users out, so an excluded user's own
-// rewind adds their time back to it. The percentage is null without a total.
-export function getUserShare(
-  userDuration: number,
-  serverDuration: number,
-  isUserExcluded: boolean,
-): { total: number; percentage: number | null } {
-  const total = serverDuration + (isUserExcluded ? userDuration : 0)
+// The user's requests split by type next to every user's, like the breakdown
+// of the time. Without requests of the user's own, only every user's are split.
+export function getRequestsBreakdown(
+  requests: NonNullable<UserRewind['requests']>,
+): (Omit<RewindBreakdownItem, 'value' | 'type'> & {
+  type: 'movie' | 'show'
+  count: number
+})[] {
+  const { user } = requests
+  const types = [
+    { type: 'movie' as const, count: requests.movies, userCount: user.movies },
+    { type: 'show' as const, count: requests.shows, userCount: user.shows },
+  ].filter((item) => item.count)
 
-  return {
-    total,
-    percentage: total > 0 ? Math.round((userDuration * 100) / total) : null,
-  }
+  return sortBreakdown(
+    types.map((item) => ({
+      type: item.type,
+      count: user.total ? item.userCount : item.count,
+      share: user.total ? item.userCount / user.total : null,
+      serverShare: item.count / requests.total,
+    })),
+  )
+}
+
+// Of everyone who has a value, the user included. Null with nobody else to
+// compare with.
+export function getAverage(total: number, count: number): number | null {
+  return count < 2 || total <= 0 ? null : total / count
+}
+
+// In percent, positive above the average and negative below it
+export function getDifference(value: number, average: number): number {
+  return Math.round(((value - average) * 100) / average)
 }
 
 export function isInitialSetup(settings: Settings): boolean {
@@ -210,4 +240,11 @@ export function sortByLabel<T extends { label: string }>(
   const collator = new Intl.Collator(locale)
 
   return [...items].sort((a, b) => collator.compare(a.label, b.label))
+}
+
+// Plays are the default, so the URL and the saved filters only keep the others
+export function getDashboardSort(
+  value?: string | null,
+): DashboardSearchParams['sortBy'] {
+  return value === 'duration' || value === 'users' ? value : undefined
 }

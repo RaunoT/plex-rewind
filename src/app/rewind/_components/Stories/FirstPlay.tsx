@@ -15,7 +15,7 @@ export default function StoryFirstPlay({ userRewind, settings }: RewindStory) {
 
   return (
     <>
-      <RewindStat scaleDelay={3}>
+      <RewindStat>
         <p>
           {t.rich('since', {
             serverName: settings.general.serverName || 'Plex',
@@ -32,7 +32,7 @@ export default function StoryFirstPlay({ userRewind, settings }: RewindStory) {
       </RewindStat>
 
       {firstPlay.timeSince && (
-        <RewindStat renderDelay={3} scaleDelay={3}>
+        <RewindStat step={1}>
           <p>
             {t.rich('timeSince', {
               timeSinceValue: firstPlay.timeSince,
@@ -45,7 +45,7 @@ export default function StoryFirstPlay({ userRewind, settings }: RewindStory) {
       )}
 
       {firstPlay.title && (
-        <RewindStat renderDelay={6} loaderDelay={3} noScale>
+        <RewindStat step={2} noScale>
           <p className={firstPlay.item ? 'mb-2' : undefined}>
             {t.rich('title', {
               titleValue: firstPlay.title,

@@ -21,7 +21,10 @@ type SeerrRequestItem = {
   createdAt: string
   type: string
   requestedBy: {
-    plexId: number
+    // Seerr's own
+    id: number
+    // Null for Seerr users without Plex
+    plexId: number | null
   }
 }
 

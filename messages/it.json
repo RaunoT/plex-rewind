@@ -72,7 +72,8 @@
     "sortByLabel": "Ordina per",
     "sort": "Ordina",
     "byDuration": "Per tempo di visualizzazione",
-    "byPlays": "Per riproduzioni"
+    "byPlays": "Per riproduzioni",
+    "byUsers": "Per utenti"
   },
   "DashboardNavContent": {
     "label": "Navigazione della dashboard",
@@ -296,13 +297,20 @@
       "introDismiss": "Ho capito"
     },
     "Common": {
-      "topShows": "Ecco la tua <top>{count, plural, one {serie TV più vista} other {top # delle serie TV}}</top>",
-      "topShowActors": "Ecco {count, plural, one {il tuo <top>attore di serie TV più visto</top>} other {la tua <top>top # degli attori di serie TV</top>}}",
+      "topShows": "Ecco la tua <top>{count, plural, one {serie più vista} other {top # delle serie}}</top>",
+      "topShowActors": "Ecco {count, plural, one {il tuo <top>attore di serie più visto</top>} other {la tua <top>top # degli attori di serie</top>}}",
+      "topShowGenres": "Ecco {count, plural, one {il tuo <top>genere di serie più visto</top>} other {la tua <top>top # dei generi di serie</top>}}",
       "topMovies": "Ecco {count, plural, one {il tuo <top>film più visto</top>} other {la tua <top>top # dei film</top>}}",
       "topDirectors": "Ecco {count, plural, one {il tuo <top>regista più visto</top>} other {la tua <top>top # dei registi</top>}}",
       "topMovieActors": "Ecco {count, plural, one {il tuo <top>attore di film più visto</top>} other {la tua <top>top # degli attori di film</top>}}",
+      "topMovieGenres": "Ecco {count, plural, one {il tuo <top>genere di film più visto</top>} other {la tua <top>top # dei generi di film</top>}}",
       "topArtists": "Ecco {count, plural, one {il tuo <top>artista più ascoltato</top>} other {la tua <top>top # degli artisti</top>}}",
-      "percentage": "È il <percentage>{percentageValue}</percentage> del tuo tempo di riproduzione totale."
+      "percentage": "È il <percentage>{percentageValue}</percentage> del tuo tempo di riproduzione totale.",
+      "shows": "Serie",
+      "movies": "Film",
+      "audio": "Musica",
+      "you": "Tu",
+      "allUsers": "Tutti gli utenti"
     },
     "Welcome": {
       "welcome": "Ti diamo il benvenuto nel tuo <rewind>{serverName} Rewind</rewind>, <user>{userValue}!</user>",
@@ -314,14 +322,12 @@
     },
     "Total": {
       "duration": "Hai passato in <total>totale</total> <duration>{durationValue}</duration> su <plex>{serverName}!</plex>",
-      "percentage": "È il <percentage>{percentageValue}</percentage> del tempo di visualizzazione di tutti gli utenti, che in totale ammonta a <duration>{durationValue}</duration>.",
+      "averageMore": "È il <difference>{percent, number, percent} in più</difference> dell'utente medio, che ha guardato <duration>{durationValue}</duration>.",
+      "averageTimes": "È <difference>{times, number}× tanto</difference> quanto l'utente medio, che ha guardato <duration>{durationValue}</duration>.",
+      "averageLess": "È il <difference>{percent, number, percent} in meno</difference> dell'utente medio, che ha guardato <duration>{durationValue}</duration>.",
+      "averageSame": "È <difference>più o meno quanto</difference> l'utente medio, che ha guardato <duration>{durationValue}</duration>.",
       "noData": "Non hai riprodotto niente su <plex>{serverName}</plex> <emoji>😫</emoji>",
-      "breakdown": "Ecco come hai trascorso questo tempo:",
-      "shows": "Serie TV",
-      "movies": "Film",
-      "audio": "Musica",
-      "you": "Tu",
-      "allUsers": "Tutti gli utenti"
+      "breakdown": "Ecco come hai trascorso questo tempo:"
     },
     "Users": {
       "top": "Ecco come te la sei cavata rispetto agli altri <users>utenti</users>"
@@ -342,20 +348,22 @@
       "tracks": "{count, plural, one {brano} other {brani}}"
     },
     "Shows": {
-      "duration": "Hai dedicato <duration>{durationValue}</duration> alle <library>serie TV</library> su <plex>{serverName}.</plex>",
+      "duration": "Hai dedicato <duration>{durationValue}</duration> alle <library>serie</library> su <plex>{serverName}.</plex>",
       "count": "Hai guardato <count>{countValue, number}</count> <episodes>{countValue, plural, one {episodio} other {episodi}}</episodes> in tutto!",
       "favorite": "La tua preferita è stata",
-      "noData": "Non hai guardato nessuna <shows>serie TV</shows> su <plex>{serverName}</plex> <emoji>😥</emoji>"
+      "noData": "Non hai guardato nessuna <shows>serie</shows> su <plex>{serverName}</plex> <emoji>😥</emoji>"
     },
     "Requests": {
       "noData": "Non ci sono state <requests>richieste</requests> <emoji>😲</emoji>",
       "noUserData": "Non hai fatto nessuna <requests>richiesta</requests>. Puoi farne tramite <requestLink>{requestLinkValue}</requestLink>.",
       "count": "Hai fatto <count>{countValue, number}</count> <requests>{countValue, plural, one {richiesta} other {richieste}}</requests>",
+      "averageMore": "Sono il <difference>{percent, number, percent} in più</difference> dell'utente medio, che ha fatto <count>{countValue, plural, one {# richiesta} other {# richieste}}</count>.",
+      "averageTimes": "Sono <difference>{times, number}× tante</difference> quante quelle dell'utente medio, che ha fatto <count>{countValue, plural, one {# richiesta} other {# richieste}}</count>.",
+      "averageLess": "Sono il <difference>{percent, number, percent} in meno</difference> dell'utente medio, che ha fatto <count>{countValue, plural, one {# richiesta} other {# richieste}}</count>.",
+      "averageSame": "Sono <difference>più o meno quante</difference> quelle dell'utente medio, che ha fatto <count>{countValue, plural, one {# richiesta} other {# richieste}}</count>.",
       "countTotal": "In tutto {countValue, plural, one {c'è stata} other {ci sono state}} <count>{countValue, plural, one {# richiesta} other {# richieste}}</count> nello stesso periodo.",
       "userBreakdown": "Ecco cosa hai chiesto:",
-      "breakdown": "Ecco il dettaglio:",
-      "movies": "{count, plural, one {film} other {film}}",
-      "shows": "{count, plural, one {serie TV} other {serie TV}}"
+      "breakdown": "Ecco il dettaglio:"
     },
     "Movies": {
       "duration": "Hai passato <duration>{durationValue}</duration> a guardare <movies>film</movies>",
@@ -365,11 +373,16 @@
     },
     "People": {
       "movies": "{count, plural, one {# film} other {# film}}",
-      "shows": "{count, plural, one {# serie TV} other {# serie TV}}",
+      "shows": "{count, plural, one {# serie} other {# serie}}",
       "together": "Insieme a {names}",
       "more": "altri",
       "seeMore": "Mostra altro",
       "seeLess": "Mostra meno"
+    },
+    "TasteMatch": {
+      "closest": "Tra tutti su <plex>{serverName}</plex>, <user>{userValue}</user> è chi condivide di più i tuoi gusti",
+      "score": "I vostri generi corrispondono al <score>{scoreValue}</score>",
+      "genres": "Amate entrambi <genres>{genresValue}</genres>"
     },
     "Habits": {
       "day": "Il giorno in cui hai guardato di più è stato <day>{dayValue}</day>",
@@ -393,12 +406,12 @@
       "backToHome": "Torna alla home",
       "journey": {
         "movies": "Dai tuoi <movies>film</movies> preferiti, è stato un viaggio da ricordare.",
-        "shows": "Dalle <shows>serie TV</shows> più divertenti, è stato un viaggio da ricordare.",
+        "shows": "Dalle <shows>serie</shows> più divertenti, è stato un viaggio da ricordare.",
         "audio": "Dai tuoi <tracks>brani</tracks> più memorabili, è stato un viaggio da ricordare.",
-        "moviesShows": "Dai tuoi <movies>film</movies> preferiti alle <shows>serie TV</shows> più divertenti, è stato un viaggio da ricordare.",
+        "moviesShows": "Dai tuoi <movies>film</movies> preferiti alle <shows>serie</shows> più divertenti, è stato un viaggio da ricordare.",
         "moviesAudio": "Dai tuoi <movies>film</movies> preferiti ai <tracks>brani</tracks> più memorabili, è stato un viaggio da ricordare.",
-        "showsAudio": "Dalle <shows>serie TV</shows> più divertenti ai <tracks>brani</tracks> più memorabili, è stato un viaggio da ricordare.",
-        "moviesShowsAudio": "Dai tuoi <movies>film</movies> preferiti alle <shows>serie TV</shows> più divertenti e ai <tracks>brani</tracks> più memorabili, è stato un viaggio da ricordare.",
+        "showsAudio": "Dalle <shows>serie</shows> più divertenti ai <tracks>brani</tracks> più memorabili, è stato un viaggio da ricordare.",
+        "moviesShowsAudio": "Dai tuoi <movies>film</movies> preferiti alle <shows>serie</shows> più divertenti e ai <tracks>brani</tracks> più memorabili, è stato un viaggio da ricordare.",
         "none": "È stato un viaggio da ricordare."
       }
     }
@@ -411,7 +424,7 @@
     "statUsers": "{count, plural, one {# utente} other {# utenti}}",
     "statRequests": "{count, plural, one {# richiesta} other {# richieste}}",
     "statSince": "Da {date}",
-    "labelShows": "Serie TV",
+    "labelShows": "Serie",
     "labelMovies": "Film",
     "labelAudio": "Musica",
     "you": "(tu)",

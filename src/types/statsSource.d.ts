@@ -53,11 +53,43 @@ export type TopPeople = {
   showActors: TopPerson[]
 }
 
+// A genre, ranked by how long a user spent on its movies or shows
+export type TopGenre = {
+  name: string
+  // Of the user's time on the media type, from 0 to 1. A title counts toward
+  // each of its genres, so the shares can add up to more than 1.
+  share: number
+}
+
+// Another user whose genres are the most like the user's
+export type TasteMatch = {
+  userId: string
+  name: string
+  image: string | null
+  // How alike their genres are, from 0 to 1
+  score: number
+  // The genres that make them alike, the most alike first
+  genres: string[]
+}
+
+// Music has no genres to look up, so only movies and shows rank them.
+export type Genres = {
+  movies: TopGenre[]
+  shows: TopGenre[]
+  // Null when it wasn't asked for, or nobody else watched enough to compare
+  match: TasteMatch | null
+}
+
+// `users` counts who played an item. A tie in users falls back to plays, and a
+// tie in plays to watch time.
+export type TopItemsSort = 'duration' | 'plays' | 'users'
+
 export type TopItemsQuery = {
   // In days
   period: number
   userId?: string
-  sortByPlays?: boolean
+  // Watch time when left out
+  sortBy?: TopItemsSort
   count: number
 }
 
@@ -126,6 +158,14 @@ export type StatsSource = {
     libraries: TautulliLibrary[],
     since: string,
   ) => Promise<TopPeople>
+  // The match compares the user with everyone else, which costs a lookup of
+  // their most watched titles.
+  getGenres: (
+    userId: string,
+    libraries: TautulliLibrary[],
+    since: string,
+    withMatch: boolean,
+  ) => Promise<Genres>
   getPlaysByTime: (userId: string, since: string) => Promise<PlaysByTime>
   // Null when the user has no plays or the source couldn't be asked
   getFirstPlay: (userId: string) => Promise<FirstPlay | null>

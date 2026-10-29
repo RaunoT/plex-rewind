@@ -132,11 +132,13 @@ function loadSettings(key: string): Settings {
   }
 
   const savedSettings = saved as Partial<Settings>
-  const settings = dropSortFilterSetting(
-    dropMdblistApiKey(
-      migrateRatingStatistic(
-        mergeWithDefaults(
-          moveItemStatistics(renameOverseerrSettings(savedSettings)),
+  const settings = renameTracearrShowsLibrary(
+    dropSortFilterSetting(
+      dropMdblistApiKey(
+        migrateRatingStatistic(
+          mergeWithDefaults(
+            moveItemStatistics(renameOverseerrSettings(savedSettings)),
+          ),
         ),
       ),
     ),
@@ -317,6 +319,18 @@ function dropSortFilterSetting(settings: Settings): Settings {
   }
 
   delete dashboard.isSortByPlaysActive
+
+  return settings
+}
+
+// Tracearr's shows library was named "TV Shows", and libraries are saved by
+// the slug of their name
+function renameTracearrShowsLibrary(settings: Settings): Settings {
+  if (settings.connection.statisticsSource === 'tracearr') {
+    settings.general.activeLibraries = settings.general.activeLibraries.map(
+      (library) => (library === 'tv-shows' ? 'shows' : library),
+    )
+  }
 
   return settings
 }

@@ -1,11 +1,13 @@
 import { Play, PlayMediaType } from '@/types/playHistory'
 import {
   DurationQuery,
+  Genres,
   MediaStats,
   PlaysByTime,
   StatsSource,
   TopItems,
   TopItemsQuery,
+  TopItemsSort,
   TopMediaItems,
   TopPeople,
   TopUsersQuery,
@@ -15,11 +17,13 @@ import {
   TautulliLibrary,
   TautulliMediaType,
 } from '@/types/tautulli'
-import { countBy, groupBy, orderBy, sumBy, uniqBy } from 'lodash'
+import { countBy, groupBy, mapValues, orderBy, sumBy, uniqBy } from 'lodash'
 import getMediaAdditionalData, {
   SourceMediaData,
+  TmdbMediaType,
 } from './getMediaAdditionalData'
 import getSettings from './getSettings'
+import { getTopGenres, MatchCandidate, WatchedTitle } from './topGenres'
 import { getTopPeople as findTopPeople } from './topPeople'
 
 export const PLAY_MEDIA_TYPES: PlayMediaType[] = ['movie', 'episode', 'track']
@@ -82,6 +86,7 @@ export type PlayStats = Pick<
   | 'getMediaStats'
   | 'getTopMediaItems'
   | 'getTopPeople'
+  | 'getGenres'
   | 'getPlaysByTime'
   | 'getPlayItem'
 >
@@ -213,18 +218,26 @@ function toItemRow(plays: Play[]): TautulliItemRow {
   }
 }
 
+const COMPARE_ITEMS: Record<
+  TopItemsSort,
+  (a: TautulliItemRow, b: TautulliItemRow) => number
+> = {
+  duration: (a, b) => b.total_duration - a.total_duration,
+  plays: (a, b) =>
+    b.total_plays - a.total_plays || COMPARE_ITEMS.duration(a, b),
+  users: (a, b) =>
+    (b.users_watched ?? 0) - (a.users_watched ?? 0) ||
+    COMPARE_ITEMS.plays(a, b),
+}
+
 function rankItems(
   plays: Play[],
   count: number,
-  sortByPlays = false,
+  sortBy: TopItemsSort = 'duration',
 ): TautulliItemRow[] {
   return groupPlays(plays)
     .map(toItemRow)
-    .sort((a, b) =>
-      sortByPlays
-        ? b.total_plays - a.total_plays || b.total_duration - a.total_duration
-        : b.total_duration - a.total_duration,
-    )
+    .sort(COMPARE_ITEMS[sortBy])
     .slice(0, count)
 }
 
@@ -279,7 +292,7 @@ export function createPlayStats(provider: PlaysProvider): PlayStats {
 
   async function getTopItems(
     library: TautulliLibrary,
-    { period, userId, sortByPlays, count }: TopItemsQuery,
+    { period, userId, sortBy, count }: TopItemsQuery,
   ): Promise<TopItems> {
     const mediaType = LIBRARY_PLAY_TYPES[library.section_type]
     const plays = await getPlays({
@@ -288,7 +301,7 @@ export function createPlayStats(provider: PlaysProvider): PlayStats {
       libraries: [library],
     })
     // The extra item only tells whether the ranking goes on.
-    const topItems = rankItems(plays, count + 1, sortByPlays)
+    const topItems = rankItems(plays, count + 1, sortBy)
     const items = topItems.slice(0, count).map((item) => ({
       ...item,
       // Don't show how many users watched the item on personal dashboard
@@ -373,6 +386,62 @@ export function createPlayStats(provider: PlaysProvider): PlayStats {
 
     return findTopPeople(
       { movies: getTitles('movie'), shows: getTitles('episode') },
+      provider.getMediaData,
+    )
+  }
+
+  async function getGenres(
+    userId: string,
+    libraries: TautulliLibrary[],
+    since: string,
+    withMatch: boolean,
+  ): Promise<Genres> {
+    const [userPlays, serverPlays, users] = await Promise.all([
+      getPlays({ since, userId, libraries }),
+      withMatch ? getPlays({ since, libraries }) : [],
+      withMatch ? provider.getUsers() : [],
+    ])
+    const identityId = userPlays[0]?.identityId
+
+    if (!identityId) {
+      return { movies: [], shows: [], match: null }
+    }
+
+    // An excluded user's own plays aren't among everyone's.
+    const plays = uniqBy([...userPlays, ...serverPlays], 'id')
+    const avatars = new Map(
+      serverPlays
+        .filter((play) => play.avatar)
+        .map((play) => [play.identityId, play.avatar]),
+    )
+
+    // Each title once, with everyone's time on it
+    function getTitles(
+      mediaType: PlayMediaType,
+      type: TmdbMediaType,
+    ): WatchedTitle[] {
+      return groupPlays(
+        plays.filter((play) => play.mediaType === mediaType),
+      ).map((group) => ({
+        item: toItemRow(group),
+        type,
+        durations: mapValues(groupBy(group, 'identityId'), getDuration),
+      }))
+    }
+
+    const candidates: MatchCandidate[] = users
+      .filter((user) => user.identityId !== identityId)
+      .map((user) => ({
+        identityId: user.identityId,
+        userId: user.plexId,
+        name: user.friendlyName,
+        image: avatars.get(user.identityId) || null,
+      }))
+
+    return getTopGenres(
+      [...getTitles('movie', 'movie'), ...getTitles('episode', 'tv')],
+      identityId,
+      withMatch ? candidates : null,
       provider.getMediaData,
     )
   }
@@ -466,6 +535,7 @@ export function createPlayStats(provider: PlaysProvider): PlayStats {
     getMediaStats,
     getTopMediaItems,
     getTopPeople,
+    getGenres,
     getPlaysByTime,
     getPlayItem,
   }

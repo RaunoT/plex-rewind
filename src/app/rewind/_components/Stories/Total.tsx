@@ -1,26 +1,24 @@
 import { RewindStory } from '@/types/rewind'
 import { getRewindBreakdown, hasRewindPlays } from '@/utils/helpers'
-import { ChartPieIcon, ClockIcon } from '@heroicons/react/24/outline'
+import { ClockIcon } from '@heroicons/react/24/outline'
 import { useTranslations } from 'next-intl'
+import { getAverageMessage } from '../averageMessage'
 import RewindBreakdown from '../RewindBreakdown'
 import RewindStat from '../RewindStat'
 
 export default function StoryTotal({ userRewind, settings }: RewindStory) {
   const t = useTranslations('Rewind.Total')
-  const percentage = userRewind.duration.user_percentage_value
-  // Not shown without a server total, or if the user's and the server's
-  // totals, which are read separately, don't add up.
-  const hasPercentage = percentage !== null && percentage <= 100
+  const { average } = userRewind.duration
+  const averageMessage = average && getAverageMessage(average.difference)
   // A single type would only repeat the total
   const breakdown = getRewindBreakdown(userRewind)
   const hasBreakdown = breakdown.length > 1
-  const stepDelay = hasBreakdown ? 3 : 4
 
   return (
     <>
       {hasRewindPlays(userRewind) ? (
         <>
-          <RewindStat scaleDelay={stepDelay}>
+          <RewindStat>
             <p>
               {t.rich('duration', {
                 durationValue: userRewind.duration.user,
@@ -38,19 +36,15 @@ export default function StoryTotal({ userRewind, settings }: RewindStory) {
             </p>
           </RewindStat>
 
-          {hasPercentage && (
-            <RewindStat
-              renderDelay={stepDelay}
-              scaleDelay={stepDelay}
-              noScale={!hasBreakdown}
-            >
+          {average && averageMessage && (
+            <RewindStat step={1}>
               <p>
-                {t.rich('percentage', {
-                  durationValue: userRewind.duration.total,
-                  percentageValue: userRewind.duration.user_percentage,
-                  percentage: (chunks) => (
+                {t.rich(averageMessage.key, {
+                  ...averageMessage.values,
+                  durationValue: average.duration,
+                  difference: (chunks) => (
                     <span className='rewind-cat'>
-                      {chunks} <ChartPieIcon />
+                      {chunks} <averageMessage.Icon />
                     </span>
                   ),
                   duration: (chunks) => (
@@ -62,12 +56,7 @@ export default function StoryTotal({ userRewind, settings }: RewindStory) {
           )}
 
           {hasBreakdown && (
-            <RewindStat
-              renderDelay={hasPercentage ? stepDelay * 2 : stepDelay}
-              // Waits for the percentage, which has its own loader until then
-              loaderDelay={hasPercentage ? stepDelay : 0}
-              noScale
-            >
+            <RewindStat step={2} noScale>
               <p>{t('breakdown')}</p>
               <RewindBreakdown items={breakdown} />
             </RewindStat>

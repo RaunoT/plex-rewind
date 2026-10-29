@@ -72,7 +72,8 @@
     "sortByLabel": "Sort by",
     "sort": "Sort",
     "byDuration": "By watch time",
-    "byPlays": "By plays"
+    "byPlays": "By plays",
+    "byUsers": "By users"
   },
   "DashboardNavContent": {
     "label": "Dashboard navigation",
@@ -296,13 +297,20 @@
       "introDismiss": "Got it"
     },
     "Common": {
-      "topShows": "Here's your <top>top {count, plural, one {TV show} other {# TV shows}}</top>",
-      "topShowActors": "Here's your <top>top {count, plural, one {TV actor} other {# TV actors}}</top>",
+      "topShows": "Here's your <top>top {count, plural, one {show} other {# shows}}</top>",
+      "topShowActors": "Here's your <top>top {count, plural, one {show actor} other {# show actors}}</top>",
+      "topShowGenres": "Here's your <top>top {count, plural, one {show genre} other {# show genres}}</top>",
       "topMovies": "Here's your <top>top {count, plural, one {movie} other {# movies}}</top>",
       "topDirectors": "Here's your <top>top {count, plural, one {director} other {# directors}}</top>",
       "topMovieActors": "Here's your <top>top {count, plural, one {movie actor} other {# movie actors}}</top>",
+      "topMovieGenres": "Here's your <top>top {count, plural, one {movie genre} other {# movie genres}}</top>",
       "topArtists": "Here's your <top>top {count, plural, one {artist} other {# artists}}</top>",
-      "percentage": "That's <percentage>{percentageValue}</percentage> of your total playtime."
+      "percentage": "That's <percentage>{percentageValue}</percentage> of your total playtime.",
+      "shows": "Shows",
+      "movies": "Movies",
+      "audio": "Music",
+      "you": "You",
+      "allUsers": "All users"
     },
     "Welcome": {
       "welcome": "Welcome to your <rewind>{serverName} Rewind</rewind>, <user>{userValue}!</user>",
@@ -314,14 +322,12 @@
     },
     "Total": {
       "duration": "You spent a <total>total</total> of <duration>{durationValue}</duration> on <plex>{serverName}!</plex>",
-      "percentage": "That's <percentage>{percentageValue}</percentage> of all watch time, which came to <duration>{durationValue}</duration> across all users.",
+      "averageMore": "That's <difference>{percent, number, percent} more</difference> than the average user, who watched <duration>{durationValue}</duration>.",
+      "averageTimes": "That's <difference>{times, number}× as much</difference> as the average user, who watched <duration>{durationValue}</duration>.",
+      "averageLess": "That's <difference>{percent, number, percent} less</difference> than the average user, who watched <duration>{durationValue}</duration>.",
+      "averageSame": "That's <difference>about the same</difference> as the average user, who watched <duration>{durationValue}</duration>.",
       "noData": "You haven't played anything on <plex>{serverName}</plex> <emoji>😫</emoji>",
-      "breakdown": "Here's where all that time went:",
-      "shows": "TV shows",
-      "movies": "Movies",
-      "audio": "Music",
-      "you": "You",
-      "allUsers": "All users"
+      "breakdown": "Here's where all that time went:"
     },
     "Users": {
       "top": "Here's how you compared to other <users>users</users>"
@@ -342,20 +348,22 @@
       "tracks": "{count, plural, one {track} other {tracks}}"
     },
     "Shows": {
-      "duration": "<library>TV shows</library> took up <duration>{durationValue}</duration> of your time on <plex>{serverName}.</plex>",
+      "duration": "<library>Shows</library> took up <duration>{durationValue}</duration> of your time on <plex>{serverName}.</plex>",
       "count": "You watched <count>{countValue, number}</count> <episodes>{countValue, plural, one {episode} other {episodes}}</episodes> in total!",
       "favorite": "Your favorite was",
-      "noData": "You didn't watch any <shows>TV shows</shows> on <plex>{serverName}</plex> <emoji>😥</emoji>"
+      "noData": "You didn't watch any <shows>shows</shows> on <plex>{serverName}</plex> <emoji>😥</emoji>"
     },
     "Requests": {
       "noData": "There weren't any <requests>requests</requests> <emoji>😲</emoji>",
       "noUserData": "You didn't make any <requests>requests</requests>. You can make them via <requestLink>{requestLinkValue}</requestLink>.",
       "count": "You made <count>{countValue, number}</count> <requests>{countValue, plural, one {request} other {requests}}</requests>",
+      "averageMore": "That's <difference>{percent, number, percent} more</difference> than the average user, who made <count>{countValue, plural, one {# request} other {# requests}}</count>.",
+      "averageTimes": "That's <difference>{times, number}× as many</difference> as the average user, who made <count>{countValue, plural, one {# request} other {# requests}}</count>.",
+      "averageLess": "That's <difference>{percent, number, percent} fewer</difference> than the average user, who made <count>{countValue, plural, one {# request} other {# requests}}</count>.",
+      "averageSame": "That's <difference>about the same</difference> as the average user, who made <count>{countValue, plural, one {# request} other {# requests}}</count>.",
       "countTotal": "Altogether there {countValue, plural, one {was} other {were}} <count>{countValue, plural, one {# request} other {# requests}}</count> during the same period.",
       "userBreakdown": "Here's what you asked for:",
-      "breakdown": "Here's the breakdown:",
-      "movies": "{count, plural, one {movie} other {movies}}",
-      "shows": "{count, plural, one {TV show} other {TV shows}}"
+      "breakdown": "Here's the breakdown:"
     },
     "Movies": {
       "duration": "<duration>{durationValue}</duration> of your time was spent watching <movies>movies</movies>",
@@ -365,11 +373,16 @@
     },
     "People": {
       "movies": "{count, plural, one {# movie} other {# movies}}",
-      "shows": "{count, plural, one {# TV show} other {# TV shows}}",
+      "shows": "{count, plural, one {# show} other {# shows}}",
       "together": "Together with {names}",
       "more": "more",
       "seeMore": "See more",
       "seeLess": "See less"
+    },
+    "TasteMatch": {
+      "closest": "Of everyone on <plex>{serverName}</plex>, <user>{userValue}</user> shares your taste the most",
+      "score": "Your genres are a <score>{scoreValue}</score> match",
+      "genres": "You both love <genres>{genresValue}</genres>"
     },
     "Habits": {
       "day": "Your favorite day to watch was <day>{dayValue}</day>",
@@ -393,12 +406,12 @@
       "backToHome": "Back to home",
       "journey": {
         "movies": "From your favorite <movies>movies</movies>, it's been a journey to remember.",
-        "shows": "From the most entertaining <shows>TV shows</shows>, it's been a journey to remember.",
+        "shows": "From the most entertaining <shows>shows</shows>, it's been a journey to remember.",
         "audio": "From your most memorable <tracks>tracks</tracks>, it's been a journey to remember.",
-        "moviesShows": "From your favorite <movies>movies</movies> to the most entertaining <shows>TV shows</shows>, it's been a journey to remember.",
+        "moviesShows": "From your favorite <movies>movies</movies> to the most entertaining <shows>shows</shows>, it's been a journey to remember.",
         "moviesAudio": "From your favorite <movies>movies</movies> to the most memorable <tracks>tracks</tracks>, it's been a journey to remember.",
-        "showsAudio": "From the most entertaining <shows>TV shows</shows> to the most memorable <tracks>tracks</tracks>, it's been a journey to remember.",
-        "moviesShowsAudio": "From your favorite <movies>movies</movies> to the most entertaining <shows>TV shows</shows> and memorable <tracks>tracks</tracks>, it's been a journey to remember.",
+        "showsAudio": "From the most entertaining <shows>shows</shows> to the most memorable <tracks>tracks</tracks>, it's been a journey to remember.",
+        "moviesShowsAudio": "From your favorite <movies>movies</movies> to the most entertaining <shows>shows</shows> and memorable <tracks>tracks</tracks>, it's been a journey to remember.",
         "none": "It's been a journey to remember."
       }
     }
@@ -411,7 +424,7 @@
     "statUsers": "{count, plural, one {# user} other {# users}}",
     "statRequests": "{count, plural, one {# request} other {# requests}}",
     "statSince": "Since {date}",
-    "labelShows": "TV shows",
+    "labelShows": "Shows",
     "labelMovies": "Movies",
     "labelAudio": "Music",
     "you": "(you)",
