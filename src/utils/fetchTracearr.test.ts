@@ -499,9 +499,11 @@ describe('malformed responses', () => {
       'media/m1': () => ({ id: 'm1' }),
     })
 
-    const { isTracearrMediaDeleted } = await load()
+    const { getTracearrMedia } = await load()
 
-    await expect(isTracearrMediaDeleted('m1')).resolves.toBe(false)
+    await expect(getTracearrMedia('m1')).resolves.toMatchObject({
+      isDeleted: false,
+    })
   })
 
   it('does not mark media as deleted when availability is not a list', async () => {
@@ -510,9 +512,11 @@ describe('malformed responses', () => {
       'media/m1': () => ({ id: 'm1', availability: {} }),
     })
 
-    const { isTracearrMediaDeleted } = await load()
+    const { getTracearrMedia } = await load()
 
-    await expect(isTracearrMediaDeleted('m1')).resolves.toBe(false)
+    await expect(getTracearrMedia('m1')).resolves.toMatchObject({
+      isDeleted: false,
+    })
   })
 
   it('marks media as deleted once it is removed everywhere', async () => {
@@ -524,9 +528,33 @@ describe('malformed responses', () => {
       }),
     })
 
-    const { isTracearrMediaDeleted } = await load()
+    const { getTracearrMedia } = await load()
 
-    await expect(isTracearrMediaDeleted('m1')).resolves.toBe(true)
+    await expect(getTracearrMedia('m1')).resolves.toMatchObject({
+      isDeleted: true,
+    })
+  })
+
+  it("reads the item's own IDs and year", async () => {
+    route({
+      servers: () => ({ data: [plexServer('s1')] }),
+      'media/m1': () => ({
+        id: 'm1',
+        year: 2017,
+        imdb_id: 'tt5753856',
+        tmdb_id: 70523,
+        tvdb_id: 334824,
+        availability: [{ server_id: 's1', removed_at: null }],
+      }),
+    })
+
+    const { getTracearrMedia } = await load()
+
+    await expect(getTracearrMedia('m1')).resolves.toEqual({
+      isDeleted: false,
+      ids: { imdb: 'tt5753856', tmdb: 70523, tvdb: 334824 },
+      year: 2017,
+    })
   })
 })
 

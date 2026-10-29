@@ -10,10 +10,20 @@ import getSettings from './getSettings'
 
 type TmdbMediaType = 'movie' | 'tv'
 
+export type MediaIds = {
+  imdb: string | null
+  tmdb: number | null
+  tvdb: number | null
+}
+
 // What the statistics source knows about an item
 export type SourceMediaData = {
   thumb: string
   isDeleted: boolean
+  // A show's plays only carry its episodes' IDs, and its title alone can find
+  // another show on TMDB.
+  ids?: MediaIds
+  year?: number | null
 }
 
 type TmdbSearch = {
@@ -26,6 +36,20 @@ type TmdbDetails = {
   poster_path?: string | null
   // Only TV shows have a TVDB ID on TMDB
   external_ids?: { imdb_id?: string | null; tvdb_id?: number | null }
+}
+
+// Plex's IDs for an item, like `tmdb://61575`
+export function parseGuids(guids: string[] = []): MediaIds {
+  const find = (pattern: RegExp) =>
+    guids.map((guid) => guid.match(pattern)?.[1]).find(Boolean) ?? null
+  const tmdb = find(/^tmdb:\/\/(\d+)$/)
+  const tvdb = find(/^tvdb:\/\/(\d+)$/)
+
+  return {
+    imdb: find(/^imdb:\/\/(tt\d+)$/),
+    tmdb: tmdb ? Number(tmdb) : null,
+    tvdb: tvdb ? Number(tvdb) : null,
+  }
 }
 
 export function getTmdbSearchParams(
@@ -67,6 +91,20 @@ async function searchTmdbId(
   return retry?.results?.[0]?.id
 }
 
+// The item's own IDs and year come first, then the source's.
+function withSourceData(
+  item: TautulliItemRow,
+  source: SourceMediaData,
+): TautulliItemRow {
+  return {
+    ...item,
+    year: item.year || source.year || null,
+    tmdb_id: item.tmdb_id || source.ids?.tmdb || null,
+    imdb_id: item.imdb_id || source.ids?.imdb || null,
+    tvdb_id: item.tvdb_id || source.ids?.tvdb || null,
+  }
+}
+
 async function getTmdbData(item: TautulliItemRow, type: TmdbMediaType) {
   const tmdbId = item.tmdb_id || (await searchTmdbId(item, type))
 
@@ -99,11 +137,10 @@ export default async function getMediaAdditionalData(
     statistics.includes('rottenTomatoesAudienceRating') ||
     settings.general.activeExternalLinks.includes('rottenTomatoes')
   const additionalData = await Promise.all(
-    media.map(async (item) => {
-      const [source, { tmdbId, details }] = await Promise.all([
-        getSourceData(item),
-        getTmdbData(item, type),
-      ])
+    media.map(async (row) => {
+      const source = await getSourceData(row)
+      const item = withSourceData(row, source)
+      const { tmdbId, details } = await getTmdbData(item, type)
       const imdbId = item.imdb_id || details?.external_ids?.imdb_id || null
       const tvdbId = item.tvdb_id || details?.external_ids?.tvdb_id || null
       const year =
@@ -125,7 +162,7 @@ export default async function getMediaAdditionalData(
         (isPostersTmdbOnly && tmdbPoster) || source.thumb || tmdbPoster || ''
 
       return {
-        year: Number(details?.first_air_date?.slice(0, 4)) || null,
+        year,
         is_deleted: source.isDeleted,
         rating: details?.vote_average ? details.vote_average.toFixed(1) : null,
         imdb_rating: externalRatings.imdb,

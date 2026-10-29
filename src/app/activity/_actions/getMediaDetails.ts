@@ -4,7 +4,10 @@ import { TitleDetailsData } from '@/components/MediaItem/TitleDetails'
 import { authOptions } from '@/lib/auth'
 import { TautulliItemRow } from '@/types/tautulli'
 import fetchTmdb from '@/utils/fetchTmdb'
-import getMediaAdditionalData from '@/utils/getMediaAdditionalData'
+import getMediaAdditionalData, {
+  MediaIds,
+  parseGuids,
+} from '@/utils/getMediaAdditionalData'
 import getSettings from '@/utils/getSettings'
 import { canViewFeature, getViewer } from '@/utils/helpers'
 import { getServerSession } from 'next-auth'
@@ -23,12 +26,6 @@ type MediaQuery = {
   episodeGuids?: string[]
 }
 
-type Ids = {
-  imdb: string | null
-  tmdb: number | null
-  tvdb: number | null
-}
-
 type TmdbFind = {
   tv_episode_results?: { show_id: number }[]
 }
@@ -41,21 +38,8 @@ function isGuidList(value: unknown): value is string[] {
   )
 }
 
-function parseGuids(guids: string[] = []): Ids {
-  const find = (pattern: RegExp) =>
-    guids.map((guid) => guid.match(pattern)?.[1]).find(Boolean) ?? null
-  const tmdb = find(/^tmdb:\/\/(\d+)$/)
-  const tvdb = find(/^tvdb:\/\/(\d+)$/)
-
-  return {
-    imdb: find(/^imdb:\/\/(tt\d+)$/),
-    tmdb: tmdb ? Number(tmdb) : null,
-    tvdb: tvdb ? Number(tvdb) : null,
-  }
-}
-
 // TMDB finds an episode by its TVDB or IMDb ID, along with its show
-async function findShowId({ imdb, tvdb }: Ids): Promise<number | null> {
+async function findShowId({ imdb, tvdb }: MediaIds): Promise<number | null> {
   const lookups: { id: string; source: string }[] = []
 
   if (tvdb) {

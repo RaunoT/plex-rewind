@@ -6,12 +6,13 @@ import {
   TautulliHistoryRow,
   TautulliItemRow,
   TautulliLibrary,
+  TautulliMetadata,
   TautulliUser,
 } from '@/types/tautulli'
 import { getServerSession } from 'next-auth'
 import { cache } from 'react'
 import fetchTautulli from './fetchTautulli'
-import { SourceMediaData } from './getMediaAdditionalData'
+import { parseGuids, SourceMediaData } from './getMediaAdditionalData'
 import getSettings from './getSettings'
 import { LibrariesSize, sumLibrariesSize } from './librariesSize'
 import { createPlayStats, EMPTY_ROW, StatsUser } from './playStats'
@@ -182,7 +183,7 @@ async function getActivity(): Promise<TautulliActivity | null> {
 export async function getTautulliMediaData(
   item: TautulliItemRow,
 ): Promise<SourceMediaData> {
-  const res = await fetchTautulli<TautulliItemRow>(
+  const res = await fetchTautulli<TautulliMetadata>(
     'get_metadata',
     { rating_key: item.rating_key },
     true,
@@ -192,6 +193,8 @@ export async function getTautulliMediaData(
   return {
     thumb: metadata?.thumb || '',
     isDeleted: metadata ? Object.keys(metadata).length === 0 : false,
+    ids: parseGuids(Array.isArray(metadata?.guids) ? metadata.guids : []),
+    year: Number(metadata?.year) || null,
   }
 }
 

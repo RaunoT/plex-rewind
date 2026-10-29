@@ -4,20 +4,20 @@ import { cloneDeep } from 'lodash'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { DEFAULT_SETTINGS } from './constants'
 import {
+  getTracearrMedia,
   getTracearrPlays,
   getTracearrPlexUsers,
   getTracearrUser,
-  isTracearrMediaDeleted,
 } from './fetchTracearr'
 import getSettings from './getSettings'
 import tracearrSource, { getTracearrMediaData } from './tracearrSource'
 
 vi.mock('./fetchTracearr', async (importOriginal) => ({
   ...(await importOriginal<typeof import('./fetchTracearr')>()),
+  getTracearrMedia: vi.fn(),
   getTracearrPlays: vi.fn(),
   getTracearrPlexUsers: vi.fn(),
   getTracearrUser: vi.fn(),
-  isTracearrMediaDeleted: vi.fn(),
 }))
 vi.mock('./getSettings', () => ({ default: vi.fn() }))
 vi.mock('./fetchTmdb', () => ({ default: vi.fn() }))
@@ -75,16 +75,27 @@ beforeEach(() => {
 })
 
 describe('getTracearrMediaData', () => {
-  it('keeps the poster of the play and asks Tracearr if it was removed', async () => {
-    vi.mocked(isTracearrMediaDeleted).mockResolvedValue(true)
+  it('keeps the poster of the play and asks Tracearr for the rest', async () => {
+    const ids = { imdb: 'tt5753856', tmdb: 70523, tvdb: 334824 }
+
+    vi.mocked(getTracearrMedia).mockResolvedValue({
+      isDeleted: true,
+      ids,
+      year: 2017,
+    })
 
     const data = await getTracearrMediaData({
       thumb: 'http://tracearr/poster',
       media_id: 'm1',
     } as TautulliItemRow)
 
-    expect(isTracearrMediaDeleted).toHaveBeenCalledWith('m1')
-    expect(data).toEqual({ thumb: 'http://tracearr/poster', isDeleted: true })
+    expect(getTracearrMedia).toHaveBeenCalledWith('m1')
+    expect(data).toEqual({
+      thumb: 'http://tracearr/poster',
+      isDeleted: true,
+      ids,
+      year: 2017,
+    })
   })
 })
 
