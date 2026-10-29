@@ -293,7 +293,13 @@
     "Total": {
       "duration": "<total>Kokku</total> kulutasid sa <duration>{durationValue}</duration> <plex>{serverName}'is!</plex>",
       "percentage": "See on <percentage>{percentageValue}</percentage> kõigi kasutajate vaatamisajast, mis oli kokku <duration>{durationValue}</duration>.",
-      "noData": "Sa ei mänginud midagi <plex>{serverName}'ist</plex> <emoji>😫</emoji>"
+      "noData": "Sa ei mänginud midagi <plex>{serverName}'ist</plex> <emoji>😫</emoji>",
+      "breakdown": "Nii jagunes sinu aeg:",
+      "shows": "Seriaalid",
+      "movies": "Filmid",
+      "audio": "Muusika",
+      "you": "Sina",
+      "allUsers": "Kõik kasutajad"
     },
     "Users": {
       "top": "Siin oled sa võrdluses teiste <users>kasutajatega</users>"

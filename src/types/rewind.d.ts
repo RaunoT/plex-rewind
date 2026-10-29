@@ -12,6 +12,10 @@ export type RewindUser = {
 type LibraryRewind = {
   count: number
   duration: string
+  // In seconds, null without a library of the type
+  duration_value: number | null
+  // Every user's time on the type, in seconds
+  server_duration_value: number | null
   top: TautulliItemRow[]
 }
 
