@@ -36,6 +36,11 @@ export type UserRewind = {
   requests?:
     | (RequestCounts & {
         user: RequestCounts
+        // Among the users who made requests, null without anyone else
+        average: {
+          count: number
+          difference: number
+        } | null
       })
     | null
   server_id: string
@@ -53,9 +58,11 @@ export type UserRewind = {
   }
   duration: {
     user: string
-    user_percentage: string
-    user_percentage_value: number | null
-    total: string
+    // Null without anyone else to compare with
+    average: {
+      duration: string
+      difference: number
+    } | null
   }
   // Formatted on the server, null without any play
   firstPlay: {

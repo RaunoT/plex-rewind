@@ -76,7 +76,7 @@ function hourlyRequests(count: number, now = Date.now()) {
   return Array.from({ length: count }, (_, i) => ({
     createdAt: new Date(now - i * HOUR).toISOString(),
     type: i % 2 ? 'tv' : 'movie',
-    requestedBy: { plexId: 1 },
+    requestedBy: { id: 1, plexId: 1 },
   }))
 }
 

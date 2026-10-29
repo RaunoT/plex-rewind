@@ -5,11 +5,13 @@ import { DEFAULT_SETTINGS } from './constants'
 import {
   canViewFeature,
   checkRequiredSettings,
+  getAverage,
+  getDifference,
   getHomeTiles,
+  getRequestsBreakdown,
   getRewindBreakdown,
   getRewindStartDate,
   getSettingsPage,
-  getUserShare,
   hasRewindPlays,
   isInitialSetup,
   isPostUpdateMissingSettings,
@@ -173,8 +175,8 @@ describe('getRewindBreakdown', () => {
         audio: none,
       }),
     ).toEqual([
-      { type: 'movie', duration: '3 hrs', share: 0.75, serverShare: 0.25 },
-      { type: 'show', duration: '1 hr', share: 0.25, serverShare: 0.75 },
+      { type: 'movie', value: '3 hrs', share: 0.75, serverShare: 0.25 },
+      { type: 'show', value: '1 hr', share: 0.25, serverShare: 0.75 },
     ])
   })
 
@@ -191,8 +193,8 @@ describe('getRewindBreakdown', () => {
         audio: { ...none, server_duration_value: 3600 },
       }),
     ).toEqual([
-      { type: 'show', duration: '1 hr', share: 1, serverShare: 0.5 },
-      { type: 'artist', duration: '0 mins', share: 0, serverShare: 0.5 },
+      { type: 'show', value: '1 hr', share: 1, serverShare: 0.5 },
+      { type: 'artist', value: '0 mins', share: 0, serverShare: 0.5 },
     ])
   })
 
@@ -209,7 +211,7 @@ describe('getRewindBreakdown', () => {
         audio: { ...none, duration: '5 mins', duration_value: 300 },
       }),
     ).toEqual([
-      { type: 'artist', duration: '5 mins', share: 1, serverShare: null },
+      { type: 'artist', value: '5 mins', share: 1, serverShare: null },
     ])
   })
 
@@ -224,25 +226,62 @@ describe('getRewindBreakdown', () => {
   })
 })
 
-describe('getUserShare', () => {
-  it('compares the user with the server total', () => {
-    expect(getUserShare(300, 1000, false)).toEqual({
-      total: 1000,
-      percentage: 30,
-    })
+describe('getRequestsBreakdown', () => {
+  const requests = {
+    total: 10,
+    movies: 6,
+    shows: 4,
+    user: { total: 4, movies: 1, shows: 3 },
+    average: null,
+  }
+
+  it("splits the user's and every user's requests by type", () => {
+    expect(getRequestsBreakdown(requests)).toEqual([
+      { type: 'show', count: 3, share: 0.75, serverShare: 0.4 },
+      { type: 'movie', count: 1, share: 0.25, serverShare: 0.6 },
+    ])
   })
 
-  it('adds an excluded user back into the server total', () => {
-    // The server total of 700 leaves out the user's own 300.
-    expect(getUserShare(300, 700, true)).toEqual({
-      total: 1000,
-      percentage: 30,
-    })
+  it("only splits every user's requests without the user's own", () => {
+    expect(
+      getRequestsBreakdown({
+        ...requests,
+        user: { total: 0, movies: 0, shows: 0 },
+      }),
+    ).toEqual([
+      { type: 'movie', count: 6, share: null, serverShare: 0.6 },
+      { type: 'show', count: 4, share: null, serverShare: 0.4 },
+    ])
   })
 
-  it('has no percentage without a server total', () => {
-    expect(getUserShare(0, 0, false).percentage).toBeNull()
-    expect(getUserShare(0, 0, true).percentage).toBeNull()
+  it('leaves out types nobody requested', () => {
+    expect(
+      getRequestsBreakdown({
+        ...requests,
+        total: 6,
+        shows: 0,
+        user: { total: 1, movies: 1, shows: 0 },
+      }),
+    ).toEqual([{ type: 'movie', count: 1, share: 1, serverShare: 1 }])
+  })
+})
+
+describe('getAverage', () => {
+  it('splits the total between everyone', () => {
+    expect(getAverage(1000, 4)).toBe(250)
+  })
+
+  it('has nothing to compare with a single user or no total', () => {
+    expect(getAverage(1000, 1)).toBeNull()
+    expect(getAverage(0, 3)).toBeNull()
+  })
+})
+
+describe('getDifference', () => {
+  it('is positive above the average and negative below it', () => {
+    expect(getDifference(500, 250)).toBe(100)
+    expect(getDifference(100, 250)).toBe(-60)
+    expect(getDifference(250, 250)).toBe(0)
   })
 })
 

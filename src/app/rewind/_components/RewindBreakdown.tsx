@@ -16,12 +16,15 @@ const LABEL_KEYS = {
 } as const
 
 export default function RewindBreakdown({ items }: Props) {
-  const t = useTranslations('Rewind.Total')
-  const hasServerShares = items.some((item) => item.serverShare !== null)
+  const t = useTranslations('Rewind.Common')
+  // Says whose bar is whose when there are both
+  const hasLegend =
+    items.some((item) => item.share !== null) &&
+    items.some((item) => item.serverShare !== null)
 
   return (
     <div className='mt-4 not-italic'>
-      {hasServerShares && (
+      {hasLegend && (
         <div className='mb-4 flex flex-wrap gap-x-4 text-base font-normal tracking-normal text-neutral-400'>
           <span className='flex items-center gap-1.5'>
             <span className='bg-plex size-2.5 rounded-full' />
@@ -45,14 +48,16 @@ export default function RewindBreakdown({ items }: Props) {
                   {t(LABEL_KEYS[item.type])}
                   <Icon />
                 </span>
-                <span className='font-semibold'>{item.duration}</span>
+                <span className='font-semibold'>{item.value}</span>
               </div>
-              <ShareBar
-                share={item.share}
-                label={t('you')}
-                delay={index * 0.15}
-                isUser
-              />
+              {item.share !== null && (
+                <ShareBar
+                  share={item.share}
+                  label={t('you')}
+                  delay={index * 0.15}
+                  isUser
+                />
+              )}
               {item.serverShare !== null && (
                 <ShareBar
                   share={item.serverShare}

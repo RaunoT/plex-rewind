@@ -217,7 +217,7 @@ describe('getUsersTop with Tautulli', () => {
   it('lists as many users as asked for', async () => {
     mockTautulli({}, rankedPlays([700, 600, 500, 400, 300, 200, 100]))
 
-    const usersTop = await getUsersTop('7', '2026-03-01', 10)
+    const usersTop = await getUsersTop('7', '2026-03-01', { numberOfUsers: 10 })
 
     expect(usersTop?.items).toHaveLength(7)
     expect(usersTop?.hasMore).toBe(false)
@@ -259,7 +259,9 @@ describe('getUsersTop with Tautulli', () => {
   it('adds each listed users first play when asked', async () => {
     mockTautulli({})
 
-    const users = (await getUsersTop('1', '2026-03-01', undefined, true))?.items
+    const users = (
+      await getUsersTop('1', '2026-03-01', { withFirstPlay: true })
+    )?.items
 
     expect(users?.map((user) => user.first_played_at)).toEqual([
       '2021-03-15T00:00:00.000Z',
@@ -283,7 +285,9 @@ describe('getUsersTop with Tautulli', () => {
     })
     mockTautulli({})
 
-    const users = (await getUsersTop('1', '2026-03-01', undefined, true))?.items
+    const users = (
+      await getUsersTop('1', '2026-03-01', { withFirstPlay: true })
+    )?.items
 
     expect(users?.[0].first_played_at).toBe('2021-03-15T00:00:00.000Z')
     expect(users?.[1].first_played_at).toBeUndefined()

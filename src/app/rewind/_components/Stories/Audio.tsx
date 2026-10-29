@@ -2,17 +2,17 @@ import MediaItems from '@/components/MediaItem/MediaItems'
 import { RewindStory } from '@/types/rewind'
 import { MusicalNoteIcon } from '@heroicons/react/24/outline'
 import { useTranslations } from 'next-intl'
+import PlaytimeShare from '../PlaytimeShare'
 import RewindStat from '../RewindStat'
 
 export default function StoryAudio({ userRewind, settings }: RewindStory) {
   const t = useTranslations('Rewind.Audio')
-  const tCommon = useTranslations('Rewind.Common')
 
   return (
     <>
       {userRewind.audio.duration ? (
         <>
-          <RewindStat scaleDelay={3}>
+          <RewindStat>
             <p>
               {t.rich('duration', {
                 durationValue: userRewind.audio.duration,
@@ -27,20 +27,11 @@ export default function StoryAudio({ userRewind, settings }: RewindStory) {
                 ),
               })}
             </p>
-
-            {userRewind.audio.percentage && (
-              <p className='mt-2'>
-                {tCommon.rich('percentage', {
-                  percentageValue: userRewind.audio.percentage,
-                  percentage: (chunks) => (
-                    <span className='rewind-stat'>{chunks}</span>
-                  ),
-                })}
-              </p>
-            )}
           </RewindStat>
 
-          <RewindStat renderDelay={3} scaleDelay={3}>
+          <PlaytimeShare percentage={userRewind.audio.percentage} step={1} />
+
+          <RewindStat step={2}>
             <p>
               {t.rich('count', {
                 countValue: userRewind.audio.count,
@@ -54,7 +45,7 @@ export default function StoryAudio({ userRewind, settings }: RewindStory) {
             </p>
           </RewindStat>
 
-          <RewindStat renderDelay={6} loaderDelay={3} noScale>
+          <RewindStat step={3} noScale>
             <p className='mb-2'>
               {t('favorite')}&nbsp;
               <span className='rewind-cat'>

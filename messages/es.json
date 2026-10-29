@@ -281,14 +281,17 @@
       "topShows": "Aquí tienes tu <top>{count, plural, one {serie favorita} other {top # de series}}</top>",
       "topShowActors": "Aquí tienes tu <top>{count, plural, one {actor de series favorito} other {top # de actores de series}}</top>",
       "topShowGenres": "Aquí tienes tu <top>{count, plural, one {género de series favorito} other {top # de géneros de series}}</top>",
-      "showGenresShare": "La parte de tu tiempo en series que ocupó cada género",
       "topMovies": "Aquí tienes tu <top>{count, plural, one {película favorita} other {top # de películas}}</top>",
       "topDirectors": "Aquí tienes tu <top>{count, plural, one {director favorito} other {top # de directores}}</top>",
       "topMovieActors": "Aquí tienes tu <top>{count, plural, one {actor de cine favorito} other {top # de actores de cine}}</top>",
       "topMovieGenres": "Aquí tienes tu <top>{count, plural, one {género de cine favorito} other {top # de géneros de cine}}</top>",
-      "movieGenresShare": "La parte de tu tiempo en películas que ocupó cada género",
       "topArtists": "Aquí tienes tu <top>{count, plural, one {artista favorito} other {top # de artistas}}</top>",
-      "percentage": "Eso es el <percentage>{percentageValue}</percentage> de tu tiempo total de reproducción."
+      "percentage": "Eso es el <percentage>{percentageValue}</percentage> de tu tiempo total de reproducción.",
+      "shows": "Series",
+      "movies": "Películas",
+      "audio": "Música",
+      "you": "Tú",
+      "allUsers": "Todos los usuarios"
     },
     "Welcome": {
       "welcome": "¡Te damos la bienvenida a tu <rewind>{serverName} Rewind</rewind>, <user>{userValue}!</user>",
@@ -300,14 +303,12 @@
     },
     "Total": {
       "duration": "¡Pasaste un <total>total</total> de <duration>{durationValue}</duration> en <plex>{serverName}!</plex>",
-      "percentage": "Eso es el <percentage>{percentageValue}</percentage> de todo el tiempo de visualización, que sumó <duration>{durationValue}</duration> entre todos los usuarios.",
+      "averageMore": "Eso es un <difference>{percent, number, percent} más</difference> que el usuario medio, que vio <duration>{durationValue}</duration>.",
+      "averageTimes": "Eso es <difference>{times, number}× más</difference> que el usuario medio, que vio <duration>{durationValue}</duration>.",
+      "averageLess": "Eso es un <difference>{percent, number, percent} menos</difference> que el usuario medio, que vio <duration>{durationValue}</duration>.",
+      "averageSame": "Eso es <difference>más o menos lo mismo</difference> que el usuario medio, que vio <duration>{durationValue}</duration>.",
       "noData": "No has reproducido nada en <plex>{serverName}</plex> <emoji>😫</emoji>",
-      "breakdown": "Así repartiste ese tiempo:",
-      "shows": "Series",
-      "movies": "Películas",
-      "audio": "Música",
-      "you": "Tú",
-      "allUsers": "Todos los usuarios"
+      "breakdown": "Así repartiste ese tiempo:"
     },
     "Users": {
       "top": "Así te comparas con otros <users>usuarios</users>"
@@ -337,11 +338,13 @@
       "noData": "No hubo ninguna <requests>solicitud</requests> <emoji>😲</emoji>",
       "noUserData": "No hiciste ninguna <requests>solicitud</requests>. Puedes hacerlas a través de <requestLink>{requestLinkValue}</requestLink>.",
       "count": "Hiciste <count>{countValue, number}</count> <requests>{countValue, plural, one {solicitud} other {solicitudes}}</requests>",
+      "averageMore": "Son un <difference>{percent, number, percent} más</difference> que el usuario medio, que hizo <count>{countValue, plural, one {# solicitud} other {# solicitudes}}</count>.",
+      "averageTimes": "Son <difference>{times, number}× más</difference> que el usuario medio, que hizo <count>{countValue, plural, one {# solicitud} other {# solicitudes}}</count>.",
+      "averageLess": "Son un <difference>{percent, number, percent} menos</difference> que el usuario medio, que hizo <count>{countValue, plural, one {# solicitud} other {# solicitudes}}</count>.",
+      "averageSame": "Son <difference>más o menos las mismas</difference> que el usuario medio, que hizo <count>{countValue, plural, one {# solicitud} other {# solicitudes}}</count>.",
       "countTotal": "En total, hubo <count>{countValue, plural, one {# solicitud} other {# solicitudes}}</count> en el mismo periodo.",
       "userBreakdown": "Esto es lo que pediste:",
-      "breakdown": "Este es el desglose:",
-      "movies": "{count, plural, one {película} other {películas}}",
-      "shows": "{count, plural, one {serie} other {series}}"
+      "breakdown": "Este es el desglose:"
     },
     "Movies": {
       "duration": "Pasaste <duration>{durationValue}</duration> de tu tiempo viendo <movies>películas</movies>",
