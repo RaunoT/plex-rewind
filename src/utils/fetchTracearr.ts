@@ -23,6 +23,7 @@ import {
 import { minBy, sumBy } from 'lodash'
 import { unstable_rethrow } from 'next/navigation'
 import qs from 'qs'
+import { SourceMediaData } from './getMediaAdditionalData'
 import getSettings from './getSettings'
 import { LibrariesSize, sumLibrariesSize } from './librariesSize'
 import {
@@ -898,11 +899,12 @@ export async function getTracearrLibrariesSize(
   )
 }
 
-export async function isTracearrMediaDeleted(
+// Whether the item was removed from the Plex server, and its IDs
+export async function getTracearrMedia(
   mediaId?: string | null,
-): Promise<boolean> {
+): Promise<Omit<SourceMediaData, 'thumb'>> {
   if (!mediaId) {
-    return false
+    return { isDeleted: false }
   }
 
   const [media, serverId] = await Promise.all([
@@ -913,9 +915,16 @@ export async function isTracearrMediaDeleted(
     ? media.availability.filter((item) => item.server_id === serverId)
     : []
 
-  return (
-    availability.length > 0 && availability.every((item) => item.removed_at)
-  )
+  return {
+    isDeleted:
+      availability.length > 0 && availability.every((item) => item.removed_at),
+    ids: {
+      imdb: media?.imdb_id || null,
+      tmdb: media?.tmdb_id || null,
+      tvdb: media?.tvdb_id || null,
+    },
+    year: media?.year || null,
+  }
 }
 
 const DECISIONS = {

@@ -82,6 +82,14 @@ export type TautulliItemRow = {
   media_id?: string | null
 }
 
+// get_metadata's, which is empty for an item Plex no longer has
+export type TautulliMetadata = {
+  thumb?: string
+  year?: number | string | null
+  // Plex's IDs, like `tmdb://61575`
+  guids?: string[]
+}
+
 export type TautulliSession = {
   // Tautulli sends 0 or 1, Tracearr a boolean
   audio_atmos?: number | boolean

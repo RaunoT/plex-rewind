@@ -156,6 +156,10 @@ export type TracearrStreamsResponse = {
 
 export type TracearrMedia = {
   id: string
+  year: number | null
+  imdb_id: string | null
+  tmdb_id: number | null
+  tvdb_id: number | null
   availability: {
     server_id: string
     removed_at: string | null

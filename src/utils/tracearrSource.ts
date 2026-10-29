@@ -6,11 +6,11 @@ import {
   getTracearrHistoryReader,
   getTracearrLibraries,
   getTracearrLibrariesSize,
+  getTracearrMedia,
   getTracearrPlays,
   getTracearrPlexUsers,
   getTracearrUser,
   getTracearrUsers,
-  isTracearrMediaDeleted,
 } from './fetchTracearr'
 import { SourceMediaData } from './getMediaAdditionalData'
 import getSettings from './getSettings'
@@ -82,7 +82,7 @@ export async function getTracearrMediaData(
 ): Promise<SourceMediaData> {
   return {
     thumb: item.thumb,
-    isDeleted: await isTracearrMediaDeleted(item.media_id),
+    ...(await getTracearrMedia(item.media_id)),
   }
 }
 

@@ -20,7 +20,8 @@ vi.mock('./tautulliHistory', async (importOriginal) => ({
   getTautulliHistoryReaders: vi.fn(() => []),
 }))
 // The item lookups have tests of their own
-vi.mock('./getMediaAdditionalData', () => ({
+vi.mock('./getMediaAdditionalData', async (importOriginal) => ({
+  ...(await importOriginal<typeof import('./getMediaAdditionalData')>()),
   default: vi.fn(async (items: unknown) => items),
 }))
 
@@ -59,12 +60,28 @@ describe('getTautulliMediaData', () => {
     await expect(getTautulliMediaData(item)).resolves.toEqual({
       thumb: '/plex/thumb',
       isDeleted: false,
+      ids: { imdb: null, tmdb: null, tvdb: null },
+      year: null,
     })
     expect(fetchMock).toHaveBeenCalledWith(
       'get_metadata',
       { rating_key: 10 },
       true,
     )
+  })
+
+  it("reads the item's IDs and year from the metadata", async () => {
+    fetchMock.mockResolvedValue(
+      tautulliData({
+        year: '2017',
+        guids: ['imdb://tt5753856', 'tmdb://70523', 'tvdb://334824'],
+      }),
+    )
+
+    const data = await getTautulliMediaData(item)
+
+    expect(data.ids).toEqual({ imdb: 'tt5753856', tmdb: 70523, tvdb: 334824 })
+    expect(data.year).toBe(2017)
   })
 
   it('marks an item Tautulli no longer has as deleted', async () => {
