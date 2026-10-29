@@ -129,6 +129,53 @@ export function hasRewindPlays({
   return shows.count + movies.count + audio.count > 0
 }
 
+export type RewindBreakdownItem = {
+  type: 'show' | 'movie' | 'artist'
+  duration: string
+  // Of the time across the listed types, from 0 to 1
+  share: number
+  // The same for every user, null without any time on the server
+  serverShare: number | null
+}
+
+// The user's time split by media type next to every user's, most played by
+// the user first. Types nobody played are left out, and without any time of
+// the user's own there is nothing to split.
+export function getRewindBreakdown({
+  shows,
+  movies,
+  audio,
+}: Pick<UserRewind, 'shows' | 'movies' | 'audio'>): RewindBreakdownItem[] {
+  const types = [
+    { type: 'show' as const, ...shows },
+    { type: 'movie' as const, ...movies },
+    { type: 'artist' as const, ...audio },
+  ].filter((item) => item.duration_value || item.server_duration_value)
+  const total = types.reduce((sum, item) => sum + (item.duration_value ?? 0), 0)
+  const serverTotal = types.reduce(
+    (sum, item) => sum + (item.server_duration_value ?? 0),
+    0,
+  )
+
+  if (!total) {
+    return []
+  }
+
+  return types
+    .map((item) => ({
+      type: item.type,
+      duration: item.duration,
+      share: (item.duration_value ?? 0) / total,
+      serverShare: serverTotal
+        ? (item.server_duration_value ?? 0) / serverTotal
+        : null,
+    }))
+    .sort(
+      (a, b) =>
+        b.share - a.share || (b.serverShare ?? 0) - (a.serverShare ?? 0),
+    )
+}
+
 // The server's total leaves excluded users out, so an excluded user's own
 // rewind adds their time back to it. The percentage is null without a total.
 export function getUserShare(

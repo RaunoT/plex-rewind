@@ -8,12 +8,19 @@ import fetchRottenTomatoes from './fetchRottenTomatoes'
 import fetchTmdb from './fetchTmdb'
 import getSettings from './getSettings'
 
-type TmdbMediaType = 'movie' | 'tv'
+export type TmdbMediaType = 'movie' | 'tv'
 
 export type MediaIds = {
   imdb: string | null
   tmdb: number | null
   tvdb: number | null
+}
+
+// A movie's or show's directors and actors by name, the actors in billing
+// order. Shows have a director per episode, so theirs aren't used.
+export type Credits = {
+  directors: string[]
+  actors: string[]
 }
 
 // What the statistics source knows about an item
@@ -24,6 +31,8 @@ export type SourceMediaData = {
   // another show on TMDB.
   ids?: MediaIds
   year?: number | null
+  // Only Tautulli knows them, and only for items still on the server
+  credits?: Credits
 }
 
 // What's saved of it to stand in while the source is down
@@ -71,7 +80,7 @@ export function getTmdbSearchParams(
     : { query: title, first_air_date_year: year }
 }
 
-async function searchTmdbId(
+export async function searchTmdbId(
   item: TautulliItemRow,
   type: TmdbMediaType,
 ): Promise<number | undefined> {

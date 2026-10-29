@@ -6,6 +6,7 @@ import {
   canViewFeature,
   checkRequiredSettings,
   getHomeTiles,
+  getRewindBreakdown,
   getRewindStartDate,
   getSettingsPage,
   getUserShare,
@@ -118,7 +119,13 @@ describe('getRewindStartDate', () => {
 })
 
 describe('hasRewindPlays', () => {
-  const none = { count: 0, duration: '0 mins', top: [] }
+  const none = {
+    count: 0,
+    duration: '0 mins',
+    duration_value: 0,
+    server_duration_value: 0,
+    top: [],
+  }
 
   it('is false when nothing was played', () => {
     expect(hasRewindPlays({ shows: none, movies: none, audio: none })).toBe(
@@ -134,6 +141,84 @@ describe('hasRewindPlays', () => {
         audio: { ...none, count: 3 },
       }),
     ).toBe(true)
+  })
+})
+
+describe('getRewindBreakdown', () => {
+  const none = {
+    count: 0,
+    duration: '0 mins',
+    duration_value: 0,
+    server_duration_value: 0,
+    top: [],
+  }
+
+  it("splits the user's and every user's time by media type", () => {
+    expect(
+      getRewindBreakdown({
+        shows: {
+          ...none,
+          duration: '1 hr',
+          duration_value: 3600,
+          server_duration_value: 30000,
+        },
+        movies: {
+          ...none,
+          duration: '3 hrs',
+          duration_value: 10800,
+          server_duration_value: 10000,
+        },
+        audio: none,
+      }),
+    ).toEqual([
+      { type: 'movie', duration: '3 hrs', share: 0.75, serverShare: 0.25 },
+      { type: 'show', duration: '1 hr', share: 0.25, serverShare: 0.75 },
+    ])
+  })
+
+  it('keeps a type only other users played', () => {
+    expect(
+      getRewindBreakdown({
+        shows: {
+          ...none,
+          duration: '1 hr',
+          duration_value: 3600,
+          server_duration_value: 3600,
+        },
+        movies: none,
+        audio: { ...none, server_duration_value: 3600 },
+      }),
+    ).toEqual([
+      { type: 'show', duration: '1 hr', share: 1, serverShare: 0.5 },
+      { type: 'artist', duration: '0 mins', share: 0, serverShare: 0.5 },
+    ])
+  })
+
+  it('leaves out types without a library', () => {
+    expect(
+      getRewindBreakdown({
+        shows: {
+          ...none,
+          duration: '',
+          duration_value: null,
+          server_duration_value: null,
+        },
+        movies: none,
+        audio: { ...none, duration: '5 mins', duration_value: 300 },
+      }),
+    ).toEqual([
+      { type: 'artist', duration: '5 mins', share: 1, serverShare: null },
+    ])
+  })
+
+  it('is empty when the user played nothing', () => {
+    expect(
+      getRewindBreakdown({
+        shows: { ...none, server_duration_value: 3600 },
+        movies: { ...none, server_duration_value: 3600 },
+        audio: none,
+      }),
+    ).toEqual([])
   })
 })
 
