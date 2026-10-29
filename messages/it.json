@@ -276,7 +276,10 @@
     },
     "Common": {
       "topShows": "Ecco la tua <top>{count, plural, one {serie TV più vista} other {top # delle serie TV}}</top>",
+      "topShowActors": "Ecco {count, plural, one {il tuo <top>attore di serie TV più visto</top>} other {la tua <top>top # degli attori di serie TV</top>}}",
       "topMovies": "Ecco {count, plural, one {il tuo <top>film più visto</top>} other {la tua <top>top # dei film</top>}}",
+      "topDirectors": "Ecco {count, plural, one {il tuo <top>regista più visto</top>} other {la tua <top>top # dei registi</top>}}",
+      "topMovieActors": "Ecco {count, plural, one {il tuo <top>attore di film più visto</top>} other {la tua <top>top # degli attori di film</top>}}",
       "topArtists": "Ecco {count, plural, one {il tuo <top>artista più ascoltato</top>} other {la tua <top>top # degli artisti</top>}}"
     },
     "Welcome": {
@@ -330,6 +333,14 @@
       "count": "Hai guardato <count>{countValue, number}</count> <movies>{countValue, plural, one {film} other {film}}</movies> in tutto!",
       "favorite": "Il tuo preferito è stato",
       "noData": "Non hai guardato nessun <movies>film</movies> su <plex>{serverName}</plex> <emoji>😵‍💫</emoji>"
+    },
+    "People": {
+      "movies": "{count, plural, one {# film} other {# film}}",
+      "shows": "{count, plural, one {# serie TV} other {# serie TV}}",
+      "together": "Insieme a {names}",
+      "more": "altri",
+      "seeMore": "Mostra altro",
+      "seeLess": "Mostra meno"
     },
     "Habits": {
       "day": "Il giorno in cui hai guardato di più è stato <day>{dayValue}</day>",

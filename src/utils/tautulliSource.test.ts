@@ -69,6 +69,7 @@ describe('getTautulliMediaData', () => {
       isDeleted: false,
       ids: { imdb: null, tmdb: null, tvdb: null },
       year: null,
+      credits: { directors: [], actors: [] },
     })
     expect(fetchMock).toHaveBeenCalledWith(
       'get_metadata',
@@ -91,12 +92,30 @@ describe('getTautulliMediaData', () => {
     expect(data.year).toBe(2017)
   })
 
+  it("reads the movie's directors and actors from the metadata", async () => {
+    fetchMock.mockResolvedValue(
+      tautulliData({
+        directors: ['Christopher Nolan'],
+        actors: ['Christian Bale', 'Heath Ledger'],
+      }),
+    )
+
+    const data = await getTautulliMediaData(item)
+
+    expect(data.credits).toEqual({
+      directors: ['Christopher Nolan'],
+      actors: ['Christian Bale', 'Heath Ledger'],
+    })
+  })
+
   it('marks an item Tautulli no longer has as deleted', async () => {
     fetchMock.mockResolvedValue(tautulliData({}))
 
     const data = await getTautulliMediaData(item)
 
     expect(data.isDeleted).toBe(true)
+    // So TMDB's credits stand in
+    expect(data.credits).toBeUndefined()
   })
 
   it('does not mark an item deleted when the lookup fails', async () => {

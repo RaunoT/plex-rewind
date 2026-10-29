@@ -12,9 +12,12 @@ import StoryHabitsDay from './Stories/HabitsDay'
 import StoryHabitsHour from './Stories/HabitsHour'
 import StoryLibraries from './Stories/Libraries'
 import StoryMovies from './Stories/Movies'
+import StoryMoviesActors from './Stories/MoviesActors'
+import StoryMoviesDirectors from './Stories/MoviesDirectors'
 import StoryMoviesTop from './Stories/MoviesTop'
 import StoryRequests from './Stories/Requests'
 import StoryShows from './Stories/Shows'
+import StoryShowsActors from './Stories/ShowsActors'
 import StoryShowsTop from './Stories/ShowsTop'
 import StoryTotal from './Stories/Total'
 import StoryUsersTop from './Stories/UsersTop'
@@ -98,6 +101,9 @@ export default function RewindStories({ userRewind, settings }: Props) {
     ...(userRewind.shows.top.length > 1 && hasShowLibraries
       ? [createStory('shows_top', StoryShowsTop, 8000)]
       : []),
+    ...(userRewind.people.showActors.length && hasShowLibraries
+      ? [createStory('shows_actors', StoryShowsActors, 8000)]
+      : []),
     ...(userRewind.duration.user &&
     hasMovieLibraries &&
     userRewind.movies.top[0]
@@ -111,6 +117,12 @@ export default function RewindStories({ userRewind, settings }: Props) {
       : []),
     ...(userRewind.movies.top.length > 1 && hasMovieLibraries
       ? [createStory('movies_top', StoryMoviesTop, 8000)]
+      : []),
+    ...(userRewind.people.directors.length && hasMovieLibraries
+      ? [createStory('movies_directors', StoryMoviesDirectors, 8000)]
+      : []),
+    ...(userRewind.people.movieActors.length && hasMovieLibraries
+      ? [createStory('movies_actors', StoryMoviesActors, 8000)]
       : []),
     ...(userRewind.duration.user && hasAudioLibraries && userRewind.audio.top[0]
       ? [

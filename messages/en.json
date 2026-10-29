@@ -276,7 +276,10 @@
     },
     "Common": {
       "topShows": "Here's your <top>top {count, plural, one {TV show} other {# TV shows}}</top>",
+      "topShowActors": "Here's your <top>top {count, plural, one {TV actor} other {# TV actors}}</top>",
       "topMovies": "Here's your <top>top {count, plural, one {movie} other {# movies}}</top>",
+      "topDirectors": "Here's your <top>top {count, plural, one {director} other {# directors}}</top>",
+      "topMovieActors": "Here's your <top>top {count, plural, one {movie actor} other {# movie actors}}</top>",
       "topArtists": "Here's your <top>top {count, plural, one {artist} other {# artists}}</top>"
     },
     "Welcome": {
@@ -330,6 +333,14 @@
       "count": "You watched <count>{countValue, number}</count> <movies>{countValue, plural, one {movie} other {movies}}</movies> in total!",
       "favorite": "Your favorite was",
       "noData": "You didn't watch any <movies>movies</movies> on <plex>{serverName}</plex> <emoji>😵‍💫</emoji>"
+    },
+    "People": {
+      "movies": "{count, plural, one {# movie} other {# movies}}",
+      "shows": "{count, plural, one {# TV show} other {# TV shows}}",
+      "together": "Together with {names}",
+      "more": "more",
+      "seeMore": "See more",
+      "seeLess": "See less"
     },
     "Habits": {
       "day": "Your favorite day to watch was <day>{dayValue}</day>",
