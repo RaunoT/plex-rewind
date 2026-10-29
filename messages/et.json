@@ -280,7 +280,8 @@
       "topMovies": "Siin on sinu <top>{count, plural, one {enim vaadatud film} other {# enim vaadatud filmi}}</top>",
       "topDirectors": "Siin on sinu <top>{count, plural, one {enim vaadatud režissöör} other {# enim vaadatud režissööri}}</top>",
       "topMovieActors": "Siin on sinu <top>{count, plural, one {enim vaadatud filminäitleja} other {# enim vaadatud filminäitlejat}}</top>",
-      "topArtists": "Siin on sinu <top>{count, plural, one {enim kuulatud esitaja} other {# enim kuulatud esitajat}}</top>"
+      "topArtists": "Siin on sinu <top>{count, plural, one {enim kuulatud esitaja} other {# enim kuulatud esitajat}}</top>",
+      "percentage": "See on <percentage>{percentageValue}</percentage> kogu sinu esitusajast."
     },
     "Welcome": {
       "welcome": "Tere tulemast oma <rewind>{serverName} Rewind'i</rewind>, <user>{userValue}!</user>",

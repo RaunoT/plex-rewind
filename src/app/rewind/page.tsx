@@ -158,6 +158,7 @@ async function RewindContent({ userId }: { userId?: string }) {
       duration: topMediaStats.shows.duration,
       duration_value: topMediaStats.shows.durationValue,
       server_duration_value: getServerDuration('shows'),
+      percentage: topMediaStats.shows.percentage,
     },
     movies: {
       top: topMediaItems.movies,
@@ -165,6 +166,7 @@ async function RewindContent({ userId }: { userId?: string }) {
       duration: topMediaStats.movies.duration,
       duration_value: topMediaStats.movies.durationValue,
       server_duration_value: getServerDuration('movies'),
+      percentage: topMediaStats.movies.percentage,
     },
     people,
     audio: {
@@ -173,6 +175,7 @@ async function RewindContent({ userId }: { userId?: string }) {
       duration: topMediaStats.audio.duration,
       duration_value: topMediaStats.audio.durationValue,
       server_duration_value: getServerDuration('audio'),
+      percentage: topMediaStats.audio.percentage,
     },
     habits: habits,
     firstPlay: firstPlay && {

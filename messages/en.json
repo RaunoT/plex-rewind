@@ -280,7 +280,8 @@
       "topMovies": "Here's your <top>top {count, plural, one {movie} other {# movies}}</top>",
       "topDirectors": "Here's your <top>top {count, plural, one {director} other {# directors}}</top>",
       "topMovieActors": "Here's your <top>top {count, plural, one {movie actor} other {# movie actors}}</top>",
-      "topArtists": "Here's your <top>top {count, plural, one {artist} other {# artists}}</top>"
+      "topArtists": "Here's your <top>top {count, plural, one {artist} other {# artists}}</top>",
+      "percentage": "That's <percentage>{percentageValue}</percentage> of your total playtime."
     },
     "Welcome": {
       "welcome": "Welcome to your <rewind>{serverName} Rewind</rewind>, <user>{userValue}!</user>",
