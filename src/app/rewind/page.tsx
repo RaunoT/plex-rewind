@@ -8,6 +8,7 @@ import {
   secondsToTime,
 } from '@/utils/formatting'
 import {
+  getGenres,
   getLibrariesDurationByType,
   getLibrariesTotalDuration,
   getPlaybackHabits,
@@ -107,6 +108,7 @@ async function RewindContent({ userId }: { userId?: string }) {
     habits,
     firstPlay,
     people,
+    genres,
   ] = await Promise.all([
     getTopMediaItems(user.id, libraries),
     getTopMediaStats(user.id, libraries),
@@ -119,6 +121,7 @@ async function RewindContent({ userId }: { userId?: string }) {
     getPlaybackHabits(user.id),
     getStatsSource(settings).getFirstPlay(user.id),
     getTopPeople(user.id, libraries),
+    getGenres(user.id, libraries),
   ])
   // The card for the first play needs its poster and ratings looked up. Its
   // all-time watch time and plays wait for the whole history to be read.
@@ -175,6 +178,7 @@ async function RewindContent({ userId }: { userId?: string }) {
       percentage: topMediaStats.movies.percentage,
     },
     people,
+    genres,
     audio: {
       top: topMediaItems.audio,
       count: topMediaStats.audio.count,

@@ -1,6 +1,7 @@
 import { Play, PlayMediaType } from '@/types/playHistory'
 import {
   DurationQuery,
+  Genres,
   MediaStats,
   PlaysByTime,
   StatsSource,
@@ -15,11 +16,13 @@ import {
   TautulliLibrary,
   TautulliMediaType,
 } from '@/types/tautulli'
-import { countBy, groupBy, orderBy, sumBy, uniqBy } from 'lodash'
+import { countBy, groupBy, mapValues, orderBy, sumBy, uniqBy } from 'lodash'
 import getMediaAdditionalData, {
   SourceMediaData,
+  TmdbMediaType,
 } from './getMediaAdditionalData'
 import getSettings from './getSettings'
+import { getTopGenres, MatchCandidate, WatchedTitle } from './topGenres'
 import { getTopPeople as findTopPeople } from './topPeople'
 
 export const PLAY_MEDIA_TYPES: PlayMediaType[] = ['movie', 'episode', 'track']
@@ -82,6 +85,7 @@ export type PlayStats = Pick<
   | 'getMediaStats'
   | 'getTopMediaItems'
   | 'getTopPeople'
+  | 'getGenres'
   | 'getPlaysByTime'
   | 'getPlayItem'
 >
@@ -377,6 +381,62 @@ export function createPlayStats(provider: PlaysProvider): PlayStats {
     )
   }
 
+  async function getGenres(
+    userId: string,
+    libraries: TautulliLibrary[],
+    since: string,
+    withMatch: boolean,
+  ): Promise<Genres> {
+    const [userPlays, serverPlays, users] = await Promise.all([
+      getPlays({ since, userId, libraries }),
+      withMatch ? getPlays({ since, libraries }) : [],
+      withMatch ? provider.getUsers() : [],
+    ])
+    const identityId = userPlays[0]?.identityId
+
+    if (!identityId) {
+      return { movies: [], shows: [], match: null }
+    }
+
+    // An excluded user's own plays aren't among everyone's.
+    const plays = uniqBy([...userPlays, ...serverPlays], 'id')
+    const avatars = new Map(
+      serverPlays
+        .filter((play) => play.avatar)
+        .map((play) => [play.identityId, play.avatar]),
+    )
+
+    // Each title once, with everyone's time on it
+    function getTitles(
+      mediaType: PlayMediaType,
+      type: TmdbMediaType,
+    ): WatchedTitle[] {
+      return groupPlays(
+        plays.filter((play) => play.mediaType === mediaType),
+      ).map((group) => ({
+        item: toItemRow(group),
+        type,
+        durations: mapValues(groupBy(group, 'identityId'), getDuration),
+      }))
+    }
+
+    const candidates: MatchCandidate[] = users
+      .filter((user) => user.identityId !== identityId)
+      .map((user) => ({
+        identityId: user.identityId,
+        userId: user.plexId,
+        name: user.friendlyName,
+        image: avatars.get(user.identityId) || null,
+      }))
+
+    return getTopGenres(
+      [...getTitles('movie', 'movie'), ...getTitles('episode', 'tv')],
+      identityId,
+      withMatch ? candidates : null,
+      provider.getMediaData,
+    )
+  }
+
   // Hours and days are in the Plex Rewind server's timezone.
   async function getPlaysByTime(
     userId: string,
@@ -466,6 +526,7 @@ export function createPlayStats(provider: PlaysProvider): PlayStats {
     getMediaStats,
     getTopMediaItems,
     getTopPeople,
+    getGenres,
     getPlaysByTime,
     getPlayItem,
   }

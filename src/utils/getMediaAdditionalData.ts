@@ -33,6 +33,7 @@ export type SourceMediaData = {
   year?: number | null
   // Only Tautulli knows them, and only for items still on the server
   credits?: Credits
+  genres?: string[]
 }
 
 // What's saved of it to stand in while the source is down
@@ -46,8 +47,19 @@ type TmdbDetails = {
   vote_average?: number
   first_air_date?: string
   poster_path?: string | null
+  genres?: { name: string }[]
   // Only TV shows have a TVDB ID on TMDB
   external_ids?: { imdb_id?: string | null; tvdb_id?: number | null }
+}
+
+// The ratings, posters and genres share one request per title.
+export function fetchTmdbDetails(
+  type: TmdbMediaType,
+  tmdbId: number,
+): Promise<TmdbDetails | null> {
+  return fetchTmdb<TmdbDetails>(`${type}/${tmdbId}`, {
+    append_to_response: 'external_ids',
+  })
 }
 
 // Plex's IDs for an item, like `tmdb://61575`
@@ -125,9 +137,7 @@ async function getTmdbData(item: TautulliItemRow, type: TmdbMediaType) {
   }
 
   // Tautulli doesn't return rating for removed items, so we're using TMDB
-  const details = await fetchTmdb<TmdbDetails>(`${type}/${tmdbId}`, {
-    append_to_response: 'external_ids',
-  })
+  const details = await fetchTmdbDetails(type, tmdbId)
 
   return { tmdbId, details }
 }

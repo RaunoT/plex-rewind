@@ -279,9 +279,13 @@
     "Common": {
       "topShows": "Here's your <top>top {count, plural, one {TV show} other {# TV shows}}</top>",
       "topShowActors": "Here's your <top>top {count, plural, one {TV actor} other {# TV actors}}</top>",
+      "topShowGenres": "Here's your <top>top {count, plural, one {show genre} other {# show genres}}</top>",
+      "showGenresShare": "Each genre's share of your time on shows",
       "topMovies": "Here's your <top>top {count, plural, one {movie} other {# movies}}</top>",
       "topDirectors": "Here's your <top>top {count, plural, one {director} other {# directors}}</top>",
       "topMovieActors": "Here's your <top>top {count, plural, one {movie actor} other {# movie actors}}</top>",
+      "topMovieGenres": "Here's your <top>top {count, plural, one {movie genre} other {# movie genres}}</top>",
+      "movieGenresShare": "Each genre's share of your time on movies",
       "topArtists": "Here's your <top>top {count, plural, one {artist} other {# artists}}</top>",
       "percentage": "That's <percentage>{percentageValue}</percentage> of your total playtime."
     },
@@ -351,6 +355,11 @@
       "more": "more",
       "seeMore": "See more",
       "seeLess": "See less"
+    },
+    "TasteMatch": {
+      "closest": "Of everyone on <plex>{serverName}</plex>, <user>{userValue}</user> shares your taste the most",
+      "score": "Your genres are a <score>{scoreValue}</score> match",
+      "genres": "You both love <genres>{genresValue}</genres>"
     },
     "Habits": {
       "day": "Your favorite day to watch was <day>{dayValue}</day>",

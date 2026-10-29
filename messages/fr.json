@@ -279,9 +279,13 @@
     "Common": {
       "topShows": "Voici votre <top>{count, plural, one {série la plus regardée} other {top # des séries}}</top>",
       "topShowActors": "Voici votre <top>{count, plural, one {acteur de série le plus regardé} other {top # des acteurs de séries}}</top>",
+      "topShowGenres": "Voici votre <top>{count, plural, one {genre de série le plus regardé} other {top # des genres de séries}}</top>",
+      "showGenresShare": "La part de chaque genre dans votre temps passé devant des séries",
       "topMovies": "Voici votre <top>{count, plural, one {film le plus regardé} other {top # des films}}</top>",
       "topDirectors": "Voici votre <top>{count, plural, one {réalisateur le plus regardé} other {top # des réalisateurs}}</top>",
       "topMovieActors": "Voici votre <top>{count, plural, one {acteur de film le plus regardé} other {top # des acteurs de films}}</top>",
+      "topMovieGenres": "Voici votre <top>{count, plural, one {genre de film le plus regardé} other {top # des genres de films}}</top>",
+      "movieGenresShare": "La part de chaque genre dans votre temps passé devant des films",
       "topArtists": "Voici votre <top>{count, plural, one {artiste le plus écouté} other {top # des artistes}}</top>",
       "percentage": "Cela représente <percentage>{percentageValue}</percentage> de votre temps de lecture total."
     },
@@ -351,6 +355,11 @@
       "more": "d'autres",
       "seeMore": "Voir plus",
       "seeLess": "Voir moins"
+    },
+    "TasteMatch": {
+      "closest": "Sur <plex>{serverName}</plex>, c'est <user>{userValue}</user> qui partage le plus vos goûts",
+      "score": "Vos genres correspondent à <score>{scoreValue}</score>",
+      "genres": "Vous adorez tous les deux <genres>{genresValue}</genres>"
     },
     "Habits": {
       "day": "Votre jour préféré pour regarder était le <day>{dayValue}</day>",
