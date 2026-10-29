@@ -4,7 +4,7 @@ import { useTranslations } from 'next-intl'
 import RewindStat from '../RewindStat'
 import TopPeople from '../TopPeople'
 
-export default function StoryMoviesActors({ userRewind }: RewindStory) {
+export default function StoryMoviesActors({ userRewind, pause }: RewindStory) {
   const t = useTranslations('Rewind.Common')
   const actors = userRewind.people.movieActors
 
@@ -23,7 +23,7 @@ export default function StoryMoviesActors({ userRewind }: RewindStory) {
       </p>
 
       <div className='text-base leading-normal font-normal tracking-normal'>
-        <TopPeople people={actors} type='movie' />
+        <TopPeople people={actors} type='movie' onExpand={pause} />
       </div>
     </RewindStat>
   )

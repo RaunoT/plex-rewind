@@ -338,7 +338,9 @@
       "movies": "{count, plural, one {# film} other {# filmi}}",
       "shows": "{count, plural, one {# seriaal} other {# seriaali}}",
       "together": "Samas koosseisus: {names}",
-      "more": "teised"
+      "more": "teised",
+      "seeMore": "Näita rohkem",
+      "seeLess": "Näita vähem"
     },
     "Habits": {
       "day": "Sinu lemmik vaatamispäev oli <day>{dayValue}</day>",
