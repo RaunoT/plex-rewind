@@ -5,6 +5,7 @@ import {
   readStorage,
 } from '@/app/_components/GlobalContextProvider'
 import { DashboardSearchParams } from '@/types/dashboard'
+import { getDashboardSort } from '@/utils/helpers'
 import { useTranslations } from 'next-intl'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { ChangeEvent, useCallback, useContext, useEffect, useId } from 'react'
@@ -18,6 +19,14 @@ type Props = {
 // Back and Forward keep working.
 let hasRestoredSavedFilters = false
 
+// Every title on a personal dashboard has the same one user
+function getAvailableSort(
+  personal: DashboardSearchParams['personal'],
+  sort: DashboardSearchParams['sortBy'],
+): DashboardSearchParams['sortBy'] {
+  return personal === 'true' && sort === 'users' ? undefined : sort
+}
+
 export default function DashboardFilters({ personalFilter }: Props) {
   const id = useId()
   const router = useRouter()
@@ -25,8 +34,10 @@ export default function DashboardFilters({ personalFilter }: Props) {
   const searchParams = useSearchParams()
   const isPersonal: DashboardSearchParams['personal'] =
     searchParams.get('personal') === 'true' ? 'true' : undefined
-  const sortBy: DashboardSearchParams['sortBy'] =
-    searchParams.get('sortBy') === 'duration' ? 'duration' : undefined
+  const sortBy = getAvailableSort(
+    isPersonal,
+    getDashboardSort(searchParams.get('sortBy')),
+  )
   const hasUrlFilters =
     searchParams.has('personal') || searchParams.has('sortBy')
   const {
@@ -51,8 +62,10 @@ export default function DashboardFilters({ personalFilter }: Props) {
         params.delete('personal')
       }
 
-      if (sort === 'duration') {
-        params.set('sortBy', 'duration')
+      const availableSort = getAvailableSort(personal, sort)
+
+      if (availableSort) {
+        params.set('sortBy', availableSort)
       } else {
         params.delete('sortBy')
       }
@@ -69,12 +82,7 @@ export default function DashboardFilters({ personalFilter }: Props) {
   }
 
   function handleSortChange(e: ChangeEvent<HTMLSelectElement>) {
-    router.push(
-      getUrl(
-        isPersonal,
-        e.target.value === 'duration' ? 'duration' : undefined,
-      ),
-    )
+    router.push(getUrl(isPersonal, getDashboardSort(e.target.value)))
   }
 
   useEffect(() => {
@@ -85,8 +93,7 @@ export default function DashboardFilters({ personalFilter }: Props) {
         personalFilter && readStorage('dashboardPersonal') === 'true'
           ? 'true'
           : undefined
-      const savedSort =
-        readStorage('dashboardSort') === 'duration' ? 'duration' : undefined
+      const savedSort = getDashboardSort(readStorage('dashboardSort'))
 
       if (!hasUrlFilters && (savedPersonal || savedSort)) {
         router.replace(getUrl(savedPersonal, savedSort))
@@ -133,13 +140,14 @@ export default function DashboardFilters({ personalFilter }: Props) {
           <select
             id={`${id}-sort`}
             className='input input--small'
-            value={sortBy === 'duration' ? 'duration' : ''}
+            value={sortBy ?? ''}
             onChange={handleSortChange}
             aria-label={t('sortByLabel')}
           >
             <option disabled>{t('sort')}</option>
             <option value=''>{t('byPlays')}</option>
             <option value='duration'>{t('byDuration')}</option>
+            {!isPersonal && <option value='users'>{t('byUsers')}</option>}
           </select>
         </div>
       </div>

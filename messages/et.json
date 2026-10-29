@@ -72,7 +72,8 @@
     "sortByLabel": "Sorteerimisalus",
     "sort": "Sorteerimine",
     "byDuration": "Vaatamisaja järgi",
-    "byPlays": "Mängimiste järgi"
+    "byPlays": "Mängimiste järgi",
+    "byUsers": "Kasutajate arvu järgi"
   },
   "DashboardNavContent": {
     "label": "Edetabeli navigatsioon",

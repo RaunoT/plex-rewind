@@ -7,6 +7,7 @@ import {
   StatsSource,
   TopItems,
   TopItemsQuery,
+  TopItemsSort,
   TopMediaItems,
   TopPeople,
   TopUsersQuery,
@@ -217,18 +218,26 @@ function toItemRow(plays: Play[]): TautulliItemRow {
   }
 }
 
+const COMPARE_ITEMS: Record<
+  TopItemsSort,
+  (a: TautulliItemRow, b: TautulliItemRow) => number
+> = {
+  duration: (a, b) => b.total_duration - a.total_duration,
+  plays: (a, b) =>
+    b.total_plays - a.total_plays || COMPARE_ITEMS.duration(a, b),
+  users: (a, b) =>
+    (b.users_watched ?? 0) - (a.users_watched ?? 0) ||
+    COMPARE_ITEMS.plays(a, b),
+}
+
 function rankItems(
   plays: Play[],
   count: number,
-  sortByPlays = false,
+  sortBy: TopItemsSort = 'duration',
 ): TautulliItemRow[] {
   return groupPlays(plays)
     .map(toItemRow)
-    .sort((a, b) =>
-      sortByPlays
-        ? b.total_plays - a.total_plays || b.total_duration - a.total_duration
-        : b.total_duration - a.total_duration,
-    )
+    .sort(COMPARE_ITEMS[sortBy])
     .slice(0, count)
 }
 
@@ -283,7 +292,7 @@ export function createPlayStats(provider: PlaysProvider): PlayStats {
 
   async function getTopItems(
     library: TautulliLibrary,
-    { period, userId, sortByPlays, count }: TopItemsQuery,
+    { period, userId, sortBy, count }: TopItemsQuery,
   ): Promise<TopItems> {
     const mediaType = LIBRARY_PLAY_TYPES[library.section_type]
     const plays = await getPlays({
@@ -292,7 +301,7 @@ export function createPlayStats(provider: PlaysProvider): PlayStats {
       libraries: [library],
     })
     // The extra item only tells whether the ranking goes on.
-    const topItems = rankItems(plays, count + 1, sortByPlays)
+    const topItems = rankItems(plays, count + 1, sortBy)
     const items = topItems.slice(0, count).map((item) => ({
       ...item,
       // Don't show how many users watched the item on personal dashboard

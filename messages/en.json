@@ -72,7 +72,8 @@
     "sortByLabel": "Sort by",
     "sort": "Sort",
     "byDuration": "By watch time",
-    "byPlays": "By plays"
+    "byPlays": "By plays",
+    "byUsers": "By users"
   },
   "DashboardNavContent": {
     "label": "Dashboard navigation",
