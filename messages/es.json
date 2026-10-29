@@ -269,10 +269,12 @@
       "goToStory": "Ir a la historia {index}",
       "previous": "Anterior",
       "next": "Siguiente",
-      "pause": "Pausar",
-      "resume": "Reanudar",
       "label": "Historias de Rewind",
-      "storyPosition": "Historia {current} de {total}"
+      "storyPosition": "Historia {current} de {total}",
+      "introTitle": "Cómo moverte",
+      "introBack": "Toca el lado izquierdo para volver atrás",
+      "introForward": "Toca el lado derecho para avanzar",
+      "introDismiss": "Entendido"
     },
     "Common": {
       "topShows": "Aquí tienes tu <top>{count, plural, one {serie favorita} other {top # de series}}</top>",

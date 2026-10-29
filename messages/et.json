@@ -269,10 +269,12 @@
       "goToStory": "Mine loole {index}",
       "previous": "Eelmine",
       "next": "Järgmine",
-      "pause": "Peata",
-      "resume": "Jätka",
       "label": "Rewind'i lood",
-      "storyPosition": "{current}. lugu {total}-st"
+      "storyPosition": "{current}. lugu {total}-st",
+      "introTitle": "Kuidas liikuda",
+      "introBack": "Tagasi minemiseks puuduta vasakut poolt",
+      "introForward": "Edasi minemiseks puuduta paremat poolt",
+      "introDismiss": "Selge"
     },
     "Common": {
       "topShows": "Siin on sinu <top>{count, plural, one {enim vaadatud seriaal} other {# enim vaadatud seriaali}}</top>",
