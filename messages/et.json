@@ -330,6 +330,7 @@
       "noUserData": "Sa ei teinud ühtegi <requests>tellimust</requests>. Tellimusi saad teha aadressil <requestLink>{requestLinkValue}</requestLink>.",
       "count": "Sa tegid <count>{countValue, number}</count> <requests>{countValue, plural, one {tellimuse} other {tellimust}}</requests>",
       "countTotal": "Kokku tehti samal perioodil <count>{countValue, plural, one {# tellimus} other {# tellimust}}</count>.",
+      "userBreakdown": "Siin on sinu tellimuste jaotus:",
       "breakdown": "Siin on täpsem jaotus:",
       "movies": "{count, plural, one {film} other {filmi}}",
       "shows": "{count, plural, one {seriaal} other {seriaali}}"

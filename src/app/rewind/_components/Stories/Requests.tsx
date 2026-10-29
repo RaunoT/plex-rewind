@@ -4,8 +4,35 @@ import { useTranslations } from 'next-intl'
 import RewindStat from '../RewindStat'
 import StatListItem from '../StatListItem'
 
+function RequestsBreakdown({
+  movies,
+  shows,
+}: {
+  movies: number
+  shows: number
+}) {
+  const t = useTranslations('Rewind.Requests')
+
+  return (
+    <ul className='mt-2'>
+      <StatListItem
+        count={movies}
+        name={t('movies', { count: movies })}
+        icon={<MEDIA_ICONS.movie />}
+      />
+      <StatListItem
+        count={shows}
+        name={t('shows', { count: shows })}
+        icon={<MEDIA_ICONS.show />}
+      />
+    </ul>
+  )
+}
+
 export default function StoryRequests({ userRewind, settings }: RewindStory) {
   const t = useTranslations('Rewind.Requests')
+  // The user's own breakdown pushes the server totals back
+  const delay = userRewind.requests?.user.total ? 3 : 0
 
   return (
     userRewind.requests && (
@@ -26,7 +53,7 @@ export default function StoryRequests({ userRewind, settings }: RewindStory) {
           </RewindStat>
         ) : (
           <>
-            {userRewind.requests.user == 0 ? (
+            {userRewind.requests.user.total == 0 ? (
               <RewindStat scaleDelay={3}>
                 <p>
                   {t.rich('noUserData', {
@@ -52,25 +79,39 @@ export default function StoryRequests({ userRewind, settings }: RewindStory) {
                 </p>
               </RewindStat>
             ) : (
-              <RewindStat scaleDelay={3}>
-                <p>
-                  {t.rich('count', {
-                    countValue: userRewind.requests.user,
-                    count: (chunks) => (
-                      <span className='rewind-cat'>{chunks}</span>
-                    ),
-                    requests: (chunks) => (
-                      <span className='rewind-cat'>
-                        {chunks}
-                        <STAT_ICONS.requests />
-                      </span>
-                    ),
-                  })}
-                </p>
-              </RewindStat>
+              <>
+                <RewindStat scaleDelay={3}>
+                  <p>
+                    {t.rich('count', {
+                      countValue: userRewind.requests.user.total,
+                      count: (chunks) => (
+                        <span className='rewind-cat'>{chunks}</span>
+                      ),
+                      requests: (chunks) => (
+                        <span className='rewind-cat'>
+                          {chunks}
+                          <STAT_ICONS.requests />
+                        </span>
+                      ),
+                    })}
+                  </p>
+                </RewindStat>
+
+                <RewindStat renderDelay={3} scaleDelay={3}>
+                  <p>{t('userBreakdown')}</p>
+                  <RequestsBreakdown
+                    movies={userRewind.requests.user.movies}
+                    shows={userRewind.requests.user.shows}
+                  />
+                </RewindStat>
+              </>
             )}
 
-            <RewindStat renderDelay={3} scaleDelay={3}>
+            <RewindStat
+              renderDelay={3 + delay}
+              scaleDelay={3}
+              loaderDelay={delay}
+            >
               <p>
                 {t.rich('countTotal', {
                   countValue: userRewind.requests.total,
@@ -90,20 +131,12 @@ export default function StoryRequests({ userRewind, settings }: RewindStory) {
               </p>
             </RewindStat>
 
-            <RewindStat renderDelay={6} noScale loaderDelay={3}>
+            <RewindStat renderDelay={6 + delay} noScale loaderDelay={3 + delay}>
               <p>{t('breakdown')}</p>
-              <ul className='mt-2'>
-                <StatListItem
-                  count={userRewind.requests.movies}
-                  name={t('movies', { count: userRewind.requests.movies })}
-                  icon={<MEDIA_ICONS.movie />}
-                />
-                <StatListItem
-                  count={userRewind.requests.shows}
-                  name={t('shows', { count: userRewind.requests.shows })}
-                  icon={<MEDIA_ICONS.show />}
-                />
-              </ul>
+              <RequestsBreakdown
+                movies={userRewind.requests.movies}
+                shows={userRewind.requests.shows}
+              />
             </RewindStat>
           </>
         )}

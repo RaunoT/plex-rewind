@@ -88,7 +88,11 @@ export default function RewindStories({ userRewind, settings }: Props) {
           createStory(
             'requests',
             StoryRequests,
-            userRewind.requests.total ? 9000 : 4000,
+            userRewind.requests.user.total
+              ? 12000
+              : userRewind.requests.total
+                ? 9000
+                : 4000,
           ),
         ]
       : []),
