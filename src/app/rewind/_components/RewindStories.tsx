@@ -15,11 +15,14 @@ import StoryLibraries from './Stories/Libraries'
 import StoryMovies from './Stories/Movies'
 import StoryMoviesActors from './Stories/MoviesActors'
 import StoryMoviesDirectors from './Stories/MoviesDirectors'
+import StoryMoviesGenres from './Stories/MoviesGenres'
 import StoryMoviesTop from './Stories/MoviesTop'
 import StoryRequests from './Stories/Requests'
 import StoryShows from './Stories/Shows'
 import StoryShowsActors from './Stories/ShowsActors'
+import StoryShowsGenres from './Stories/ShowsGenres'
 import StoryShowsTop from './Stories/ShowsTop'
+import StoryTasteMatch from './Stories/TasteMatch'
 import StoryTotal from './Stories/Total'
 import StoryUsersTop from './Stories/UsersTop'
 import StoryWelcome from './Stories/Welcome'
@@ -101,6 +104,9 @@ export default function RewindStories({ userRewind, settings }: Props) {
     ...(userRewind.people.showActors.length && hasShowLibraries
       ? [createStory('shows_actors', StoryShowsActors, 8000)]
       : []),
+    ...(userRewind.genres.shows.length && hasShowLibraries
+      ? [createStory('shows_genres', StoryShowsGenres, 8000)]
+      : []),
     ...(userRewind.duration.user &&
     hasMovieLibraries &&
     userRewind.movies.top[0]
@@ -121,6 +127,9 @@ export default function RewindStories({ userRewind, settings }: Props) {
     ...(userRewind.people.movieActors.length && hasMovieLibraries
       ? [createStory('movies_actors', StoryMoviesActors, 8000)]
       : []),
+    ...(userRewind.genres.movies.length && hasMovieLibraries
+      ? [createStory('movies_genres', StoryMoviesGenres, 8000)]
+      : []),
     ...(userRewind.duration.user && hasAudioLibraries && userRewind.audio.top[0]
       ? [
           createStory(
@@ -132,6 +141,15 @@ export default function RewindStories({ userRewind, settings }: Props) {
       : []),
     ...(userRewind.audio.top.length > 1 && hasAudioLibraries
       ? [createStory('audio_top', StoryAudioTop, 8000)]
+      : []),
+    ...(userRewind.genres.match
+      ? [
+          createStory(
+            'taste_match',
+            StoryTasteMatch,
+            userRewind.genres.match.genres.length ? 10000 : 7000,
+          ),
+        ]
       : []),
     ...(userRewind.habits.peakDayIndex !== null
       ? [createStory('habits_day', StoryHabitsDay, 10000)]

@@ -280,9 +280,13 @@
     "Common": {
       "topShows": "Siin on sinu <top>{count, plural, one {enim vaadatud seriaal} other {# enim vaadatud seriaali}}</top>",
       "topShowActors": "Siin on sinu <top>{count, plural, one {enim vaadatud seriaalinäitleja} other {# enim vaadatud seriaalinäitlejat}}</top>",
+      "topShowGenres": "Siin on sinu <top>{count, plural, one {enim vaadatud seriaaližanr} other {# enim vaadatud seriaaližanrit}}</top>",
+      "showGenresShare": "Iga žanri osa ajast, mille seriaalidele kulutasid",
       "topMovies": "Siin on sinu <top>{count, plural, one {enim vaadatud film} other {# enim vaadatud filmi}}</top>",
       "topDirectors": "Siin on sinu <top>{count, plural, one {enim vaadatud režissöör} other {# enim vaadatud režissööri}}</top>",
       "topMovieActors": "Siin on sinu <top>{count, plural, one {enim vaadatud filminäitleja} other {# enim vaadatud filminäitlejat}}</top>",
+      "topMovieGenres": "Siin on sinu <top>{count, plural, one {enim vaadatud filmižanr} other {# enim vaadatud filmižanrit}}</top>",
+      "movieGenresShare": "Iga žanri osa ajast, mille filmidele kulutasid",
       "topArtists": "Siin on sinu <top>{count, plural, one {enim kuulatud esitaja} other {# enim kuulatud esitajat}}</top>",
       "percentage": "See on <percentage>{percentageValue}</percentage> kogu sinu esitusajast."
     },
@@ -352,6 +356,11 @@
       "more": "teised",
       "seeMore": "Näita rohkem",
       "seeLess": "Näita vähem"
+    },
+    "TasteMatch": {
+      "closest": "<plex>{serverName}'i</plex> kasutajatest on sinu maitsele kõige lähemal <user>{userValue}</user>",
+      "score": "Teie žanrid kattuvad <score>{scoreValue}</score> ulatuses",
+      "genres": "Teie mõlema lemmikud on <genres>{genresValue}</genres>"
     },
     "Habits": {
       "day": "Sinu lemmik vaatamispäev oli <day>{dayValue}</day>",

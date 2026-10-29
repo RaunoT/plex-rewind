@@ -318,6 +318,7 @@ export async function getTautulliMediaData(
         directors: toNames(metadata.directors),
         actors: toNames(metadata.actors),
       },
+      genres: toNames(metadata.genres),
     }),
   }
 }

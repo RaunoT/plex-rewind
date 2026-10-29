@@ -280,9 +280,13 @@
     "Common": {
       "topShows": "{count, plural, one {Hier ist deine <top>meistgesehene Serie</top>} other {Hier sind deine <top>Top # Serien</top>}}",
       "topShowActors": "{count, plural, one {Hier ist dein <top>meistgesehener Serienschauspieler</top>} other {Hier sind deine <top>Top # Serienschauspieler</top>}}",
+      "topShowGenres": "{count, plural, one {Hier ist dein <top>meistgesehenes Seriengenre</top>} other {Hier sind deine <top>Top # Seriengenres</top>}}",
+      "showGenresShare": "Anteil jedes Genres an deiner Zeit mit Serien",
       "topMovies": "{count, plural, one {Hier ist dein <top>meistgesehener Film</top>} other {Hier sind deine <top>Top # Filme</top>}}",
       "topDirectors": "{count, plural, one {Hier ist dein <top>meistgesehener Regisseur</top>} other {Hier sind deine <top>Top # Regisseure</top>}}",
       "topMovieActors": "{count, plural, one {Hier ist dein <top>meistgesehener Filmschauspieler</top>} other {Hier sind deine <top>Top # Filmschauspieler</top>}}",
+      "topMovieGenres": "{count, plural, one {Hier ist dein <top>meistgesehenes Filmgenre</top>} other {Hier sind deine <top>Top # Filmgenres</top>}}",
+      "movieGenresShare": "Anteil jedes Genres an deiner Zeit mit Filmen",
       "topArtists": "{count, plural, one {Hier ist dein <top>meistgehörter Künstler</top>} other {Hier sind deine <top>Top # Künstler</top>}}",
       "percentage": "Das sind <percentage>{percentageValue}</percentage> deiner gesamten Wiedergabezeit."
     },
@@ -352,6 +356,11 @@
       "more": "anderen",
       "seeMore": "Mehr anzeigen",
       "seeLess": "Weniger anzeigen"
+    },
+    "TasteMatch": {
+      "closest": "Von allen auf <plex>{serverName}</plex> teilt <user>{userValue}</user> deinen Geschmack am meisten",
+      "score": "Eure Genres stimmen zu <score>{scoreValue}</score> überein",
+      "genres": "Ihr beide liebt <genres>{genresValue}</genres>"
     },
     "Habits": {
       "day": "Dein liebster Tag zum Schauen war <day>{dayValue}</day>",

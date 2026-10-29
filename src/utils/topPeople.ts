@@ -14,9 +14,11 @@ const BILLED_ACTORS = 10
 const TOP_PEOPLE = 5
 // With one title each, everyone ties and the ranking says nothing.
 const MIN_TITLES = 2
+
 // A year of movies and shows can be hundreds of lookups, which TMDB
 // rate-limits.
-const LOOKUP_CONCURRENCY = 8
+export const LOOKUP_CONCURRENCY = 8
+
 // Someone TMDB has no picture of would otherwise cost a lookup per title.
 const PORTRAIT_TITLES = 3
 const TMDB_PROFILE_URL = 'https://image.tmdb.org/t/p/w185'
@@ -121,7 +123,7 @@ export async function getCredits(
   return tmdbId ? getTmdbCredits(item, type, tmdbId) : null
 }
 
-async function mapWithLimit<T, R>(
+export async function mapWithLimit<T, R>(
   items: T[],
   limit: number,
   fn: (item: T) => Promise<R>,

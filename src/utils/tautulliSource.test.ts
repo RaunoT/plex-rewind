@@ -70,6 +70,7 @@ describe('getTautulliMediaData', () => {
       ids: { imdb: null, tmdb: null, tvdb: null },
       year: null,
       credits: { directors: [], actors: [] },
+      genres: [],
     })
     expect(fetchMock).toHaveBeenCalledWith(
       'get_metadata',
@@ -108,14 +109,23 @@ describe('getTautulliMediaData', () => {
     })
   })
 
+  it("reads the item's genres from the metadata", async () => {
+    fetchMock.mockResolvedValue(tautulliData({ genres: ['Action', 'Crime'] }))
+
+    const data = await getTautulliMediaData(item)
+
+    expect(data.genres).toEqual(['Action', 'Crime'])
+  })
+
   it('marks an item Tautulli no longer has as deleted', async () => {
     fetchMock.mockResolvedValue(tautulliData({}))
 
     const data = await getTautulliMediaData(item)
 
     expect(data.isDeleted).toBe(true)
-    // So TMDB's credits stand in
+    // So TMDB's credits and genres stand in
     expect(data.credits).toBeUndefined()
+    expect(data.genres).toBeUndefined()
   })
 
   it('does not mark an item deleted when the lookup fails', async () => {

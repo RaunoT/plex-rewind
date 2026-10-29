@@ -280,9 +280,13 @@
     "Common": {
       "topShows": "Aquí tienes tu <top>{count, plural, one {serie favorita} other {top # de series}}</top>",
       "topShowActors": "Aquí tienes tu <top>{count, plural, one {actor de series favorito} other {top # de actores de series}}</top>",
+      "topShowGenres": "Aquí tienes tu <top>{count, plural, one {género de series favorito} other {top # de géneros de series}}</top>",
+      "showGenresShare": "La parte de tu tiempo en series que ocupó cada género",
       "topMovies": "Aquí tienes tu <top>{count, plural, one {película favorita} other {top # de películas}}</top>",
       "topDirectors": "Aquí tienes tu <top>{count, plural, one {director favorito} other {top # de directores}}</top>",
       "topMovieActors": "Aquí tienes tu <top>{count, plural, one {actor de cine favorito} other {top # de actores de cine}}</top>",
+      "topMovieGenres": "Aquí tienes tu <top>{count, plural, one {género de cine favorito} other {top # de géneros de cine}}</top>",
+      "movieGenresShare": "La parte de tu tiempo en películas que ocupó cada género",
       "topArtists": "Aquí tienes tu <top>{count, plural, one {artista favorito} other {top # de artistas}}</top>",
       "percentage": "Eso es el <percentage>{percentageValue}</percentage> de tu tiempo total de reproducción."
     },
@@ -352,6 +356,11 @@
       "more": "otros",
       "seeMore": "Ver más",
       "seeLess": "Ver menos"
+    },
+    "TasteMatch": {
+      "closest": "De todos en <plex>{serverName}</plex>, <user>{userValue}</user> es quien más comparte tus gustos",
+      "score": "Tienen un <score>{scoreValue}</score> de afinidad en géneros",
+      "genres": "A ambos les encantan <genres>{genresValue}</genres>"
     },
     "Habits": {
       "day": "Tu día favorito para ver contenido fue el <day>{dayValue}</day>",

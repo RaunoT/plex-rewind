@@ -127,6 +127,18 @@ export async function getTopPeople(
   )
 }
 
+// Anonymizing hides who the match would name, so it isn't looked for
+export async function getGenres(userId: string, libraries: TautulliLibrary[]) {
+  const settings = getSettings()
+
+  return getStatsSource(settings).getGenres(
+    userId,
+    libraries,
+    getRewindStartDate(settings),
+    !settings.general.isAnonymized,
+  )
+}
+
 function peakIndex(totals: number[]): number | null {
   if (!totals.length) {
     return null

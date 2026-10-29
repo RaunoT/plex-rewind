@@ -91,6 +91,7 @@ export type TautulliMetadata = {
   // Names, the actors in billing order
   directors?: string[]
   actors?: string[]
+  genres?: string[]
 }
 
 export type TautulliSession = {
