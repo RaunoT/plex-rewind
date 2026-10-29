@@ -426,10 +426,9 @@ export function createPlayStats(provider: PlaysProvider): PlayStats {
     const plays = userPlays.some((other) => other.id === play.id)
       ? userPlays
       : [play, ...userPlays]
-    const itemPlays =
-      groupPlays(plays).find((group) =>
-        group.some((other) => other.id === play.id),
-      ) ?? [play]
+    const itemPlays = groupPlays(plays).find((group) =>
+      group.some((other) => other.id === play.id),
+    ) ?? [play]
     const [item] = await addAdditionalData(
       [{ ...toItemRow(itemPlays), users_watched: undefined }],
       play.mediaType,
