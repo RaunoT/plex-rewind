@@ -149,10 +149,10 @@ describe('rankGenres', () => {
     )
 
     expect(genres).toEqual([
-      { name: 'Drama', duration: 400, share: 0.8 },
-      { name: 'Crime', duration: 300, share: 0.6 },
-      { name: 'Animation', duration: 100, share: 0.2 },
-      { name: 'Horror', duration: 100, share: 0.2 },
+      { name: 'Drama', share: 0.8 },
+      { name: 'Crime', share: 0.6 },
+      { name: 'Animation', share: 0.2 },
+      { name: 'Horror', share: 0.2 },
     ])
   })
 
@@ -173,7 +173,8 @@ describe('rankGenres', () => {
       'Mystery',
       'Thriller',
     ])
-    expect(genres[0]).toMatchObject({ duration: 110 })
+    // A title counts once toward a genre it lists twice
+    expect(genres[0].share).toBeCloseTo(110 / 150)
   })
 
   it('takes the shares of all the time, titles without genres too', () => {
@@ -187,7 +188,7 @@ describe('rankGenres', () => {
         ],
         'a',
       ),
-    ).toEqual([{ name: 'Drama', duration: 300, share: 0.25 }])
+    ).toEqual([{ name: 'Drama', share: 0.25 }])
   })
 
   it('needs three titles with genres', () => {
@@ -356,7 +357,7 @@ describe('getTopGenres', () => {
     await expect(
       getTopGenres(titles, 'a', null, getSourceData),
     ).resolves.toEqual({
-      movies: [{ name: 'Drama', duration: 300, share: 1 }],
+      movies: [{ name: 'Drama', share: 1 }],
       shows: [],
       match: null,
     })

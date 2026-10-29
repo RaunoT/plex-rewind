@@ -284,14 +284,17 @@
       "topShows": "Here's your <top>top {count, plural, one {show} other {# shows}}</top>",
       "topShowActors": "Here's your <top>top {count, plural, one {show actor} other {# show actors}}</top>",
       "topShowGenres": "Here's your <top>top {count, plural, one {show genre} other {# show genres}}</top>",
-      "showGenresShare": "Each genre's share of your time on shows",
       "topMovies": "Here's your <top>top {count, plural, one {movie} other {# movies}}</top>",
       "topDirectors": "Here's your <top>top {count, plural, one {director} other {# directors}}</top>",
       "topMovieActors": "Here's your <top>top {count, plural, one {movie actor} other {# movie actors}}</top>",
       "topMovieGenres": "Here's your <top>top {count, plural, one {movie genre} other {# movie genres}}</top>",
-      "movieGenresShare": "Each genre's share of your time on movies",
       "topArtists": "Here's your <top>top {count, plural, one {artist} other {# artists}}</top>",
-      "percentage": "That's <percentage>{percentageValue}</percentage> of your total playtime."
+      "percentage": "That's <percentage>{percentageValue}</percentage> of your total playtime.",
+      "shows": "Shows",
+      "movies": "Movies",
+      "audio": "Music",
+      "you": "You",
+      "allUsers": "All users"
     },
     "Welcome": {
       "welcome": "Welcome to your <rewind>{serverName} Rewind</rewind>, <user>{userValue}!</user>",
@@ -303,14 +306,12 @@
     },
     "Total": {
       "duration": "You spent a <total>total</total> of <duration>{durationValue}</duration> on <plex>{serverName}!</plex>",
-      "percentage": "That's <percentage>{percentageValue}</percentage> of all watch time, which came to <duration>{durationValue}</duration> across all users.",
+      "averageMore": "That's <difference>{percent, number, percent} more</difference> than the average user, who watched <duration>{durationValue}</duration>.",
+      "averageTimes": "That's <difference>{times, number}× as much</difference> as the average user, who watched <duration>{durationValue}</duration>.",
+      "averageLess": "That's <difference>{percent, number, percent} less</difference> than the average user, who watched <duration>{durationValue}</duration>.",
+      "averageSame": "That's <difference>about the same</difference> as the average user, who watched <duration>{durationValue}</duration>.",
       "noData": "You haven't played anything on <plex>{serverName}</plex> <emoji>😫</emoji>",
-      "breakdown": "Here's where all that time went:",
-      "shows": "Shows",
-      "movies": "Movies",
-      "audio": "Music",
-      "you": "You",
-      "allUsers": "All users"
+      "breakdown": "Here's where all that time went:"
     },
     "Users": {
       "top": "Here's how you compared to other <users>users</users>"
@@ -340,11 +341,13 @@
       "noData": "There weren't any <requests>requests</requests> <emoji>😲</emoji>",
       "noUserData": "You didn't make any <requests>requests</requests>. You can make them via <requestLink>{requestLinkValue}</requestLink>.",
       "count": "You made <count>{countValue, number}</count> <requests>{countValue, plural, one {request} other {requests}}</requests>",
+      "averageMore": "That's <difference>{percent, number, percent} more</difference> than the average user, who made <count>{countValue, plural, one {# request} other {# requests}}</count>.",
+      "averageTimes": "That's <difference>{times, number}× as many</difference> as the average user, who made <count>{countValue, plural, one {# request} other {# requests}}</count>.",
+      "averageLess": "That's <difference>{percent, number, percent} fewer</difference> than the average user, who made <count>{countValue, plural, one {# request} other {# requests}}</count>.",
+      "averageSame": "That's <difference>about the same</difference> as the average user, who made <count>{countValue, plural, one {# request} other {# requests}}</count>.",
       "countTotal": "Altogether there {countValue, plural, one {was} other {were}} <count>{countValue, plural, one {# request} other {# requests}}</count> during the same period.",
       "userBreakdown": "Here's what you asked for:",
-      "breakdown": "Here's the breakdown:",
-      "movies": "{count, plural, one {movie} other {movies}}",
-      "shows": "{count, plural, one {show} other {shows}}"
+      "breakdown": "Here's the breakdown:"
     },
     "Movies": {
       "duration": "<duration>{durationValue}</duration> of your time was spent watching <movies>movies</movies>",

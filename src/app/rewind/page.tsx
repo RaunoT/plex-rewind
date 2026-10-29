@@ -3,14 +3,12 @@ import { authOptions } from '@/lib/auth'
 import { RewindUser, UserRewind } from '@/types/rewind'
 import {
   formatMonthYear,
-  formatPercent,
   formatTimeSince,
   secondsToTime,
 } from '@/utils/formatting'
 import {
   getGenres,
   getLibrariesDurationByType,
-  getLibrariesTotalDuration,
   getPlaybackHabits,
   getRequestsTotals,
   getTopMediaItems,
@@ -23,8 +21,9 @@ import getSettings from '@/utils/getSettings'
 import getUsersTop from '@/utils/getUsersTop'
 import {
   canViewFeature,
+  getAverage,
+  getDifference,
   getRewindStartDate,
-  getUserShare,
   getViewer,
 } from '@/utils/helpers'
 import { toPublicSettings } from '@/utils/publicSettings'
@@ -36,6 +35,7 @@ import {
   getServerId,
   getStatsSource,
 } from '@/utils/statsSource'
+import { sumBy } from 'lodash'
 import { Metadata } from 'next'
 import { getServerSession } from 'next-auth'
 import { getLocale, getTranslations } from 'next-intl/server'
@@ -96,12 +96,16 @@ async function RewindContent({ userId }: { userId?: string }) {
 
   const t = await getTranslations()
   const locale = await getLocale()
+  // Ranked once, for both the users' top and the average user
+  const viewersRequest = getStatsSource(settings).getTopUsers({
+    since: startDate,
+    libraries,
+  })
   const [
     topMediaItems,
     topMediaStats,
     userTotalDuration,
     librariesTotalSize,
-    librariesTotalDuration,
     librariesDurationByType,
     serverId,
     usersTop,
@@ -109,19 +113,20 @@ async function RewindContent({ userId }: { userId?: string }) {
     firstPlay,
     people,
     genres,
+    viewers,
   ] = await Promise.all([
     getTopMediaItems(user.id, libraries),
     getTopMediaStats(user.id, libraries),
     getUserTotalDuration(user.id, libraries),
     getlibrariesTotalSize(libraries),
-    getLibrariesTotalDuration(libraries),
     getLibrariesDurationByType(libraries),
     getServerId(),
-    getUsersTop(user.id, startDate),
+    viewersRequest.then((users) => getUsersTop(user.id, startDate, { users })),
     getPlaybackHabits(user.id),
     getStatsSource(settings).getFirstPlay(user.id),
     getTopPeople(user.id, libraries),
     getGenres(user.id, libraries),
+    viewersRequest,
   ])
   // The card for the first play needs its poster and ratings looked up. Its
   // all-time watch time and plays wait for the whole history to be read.
@@ -133,14 +138,19 @@ async function RewindContent({ userId }: { userId?: string }) {
       )
     : null
   const isUserExcluded = settings.general.excludedUsers.includes(user.id)
-  const share = getUserShare(
-    userTotalDuration,
-    librariesTotalDuration,
-    isUserExcluded,
-  )
-
   // The server's totals leave excluded users out, so an excluded user's own
-  // time is added back, as in the share above
+  // time is added back, here and in the totals by type
+  const isUserAddedBack = isUserExcluded && userTotalDuration > 0
+  // From the ranked users' own time, so plays nobody can be matched to aren't
+  // spread over the users who can
+  const averageDuration =
+    viewers &&
+    getAverage(
+      sumBy(viewers, 'total_duration') +
+        (isUserAddedBack ? userTotalDuration : 0),
+      viewers.length + (isUserAddedBack ? 1 : 0),
+    )
+
   function getServerDuration(type: 'shows' | 'movies' | 'audio') {
     const duration = librariesDurationByType[type]
 
@@ -153,12 +163,12 @@ async function RewindContent({ userId }: { userId?: string }) {
   const userRewind: UserRewind = {
     duration: {
       user: secondsToTime(userTotalDuration, t),
-      user_percentage:
-        share.percentage === null
-          ? ''
-          : formatPercent(share.percentage, locale),
-      user_percentage_value: share.percentage,
-      total: secondsToTime(share.total, t),
+      average: averageDuration
+        ? {
+            duration: secondsToTime(averageDuration, t),
+            difference: getDifference(userTotalDuration, averageDuration),
+          }
+        : null,
     },
     usersTop: usersTop?.items ?? null,
     shows: {

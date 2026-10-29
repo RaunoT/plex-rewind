@@ -2,7 +2,6 @@
 
 import { UserRewind } from '@/types/rewind'
 import { PublicSettings } from '@/types/settings'
-import { getRewindBreakdown } from '@/utils/helpers'
 import { FC } from 'react'
 import Stories from './Stories'
 import StoryAudio from './Stories/Audio'
@@ -38,18 +37,13 @@ type Props = {
 }
 
 export default function RewindStories({ userRewind, settings }: Props) {
-  function createStory(
-    id: string,
-    Component: FC<StoryComponent>,
-    duration: number,
-  ) {
+  function createStory(id: string, Component: FC<StoryComponent>) {
     return {
       id,
       type: 'component' as const,
       component: () => (
         <Component userRewind={userRewind} settings={settings} />
       ),
-      duration,
     }
   }
 
@@ -65,102 +59,66 @@ export default function RewindStories({ userRewind, settings }: Props) {
   const hasAudioLibraries = userRewind.libraries.some(
     (library) => library.section_type === 'artist',
   )
-  // Longer with the breakdown by media type, which the story adds for 2+ types
-  const hasBreakdown = getRewindBreakdown(userRewind).length > 1
   const stories = [
-    createStory('welcome', StoryWelcome, 7000),
-    createStory('total', StoryTotal, hasBreakdown ? 11000 : 8000),
+    createStory('welcome', StoryWelcome),
+    createStory('total', StoryTotal),
     ...(userRewind.usersTop && userRewind.usersTop.length > 1
-      ? [createStory('users_top', StoryUsersTop, 9000)]
+      ? [createStory('users_top', StoryUsersTop)]
       : []),
     ...(userRewind.libraries_total_size && isLibrariesSizeAndCountActive
-      ? [createStory('libraries', StoryLibraries, 9000)]
+      ? [createStory('libraries', StoryLibraries)]
       : []),
     ...(isSeerrActive && userRewind.requests
-      ? [
-          createStory(
-            'requests',
-            StoryRequests,
-            userRewind.requests.user.total
-              ? 12000
-              : userRewind.requests.total
-                ? 9000
-                : 4000,
-          ),
-        ]
+      ? [createStory('requests', StoryRequests)]
       : []),
     ...(userRewind.duration.user && hasShowLibraries && userRewind.shows.top[0]
-      ? [
-          createStory(
-            'shows',
-            StoryShows,
-            userRewind.shows.duration ? 10000 : 4000,
-          ),
-        ]
+      ? [createStory('shows', StoryShows)]
       : []),
     ...(userRewind.shows.top.length > 1 && hasShowLibraries
-      ? [createStory('shows_top', StoryShowsTop, 8000)]
+      ? [createStory('shows_top', StoryShowsTop)]
       : []),
     ...(userRewind.people.showActors.length && hasShowLibraries
-      ? [createStory('shows_actors', StoryShowsActors, 8000)]
+      ? [createStory('shows_actors', StoryShowsActors)]
       : []),
     ...(userRewind.genres.shows.length && hasShowLibraries
-      ? [createStory('shows_genres', StoryShowsGenres, 8000)]
+      ? [createStory('shows_genres', StoryShowsGenres)]
       : []),
     ...(userRewind.duration.user &&
     hasMovieLibraries &&
     userRewind.movies.top[0]
-      ? [
-          createStory(
-            'movies',
-            StoryMovies,
-            userRewind.movies.duration ? 10000 : 4000,
-          ),
-        ]
+      ? [createStory('movies', StoryMovies)]
       : []),
     ...(userRewind.movies.top.length > 1 && hasMovieLibraries
-      ? [createStory('movies_top', StoryMoviesTop, 8000)]
+      ? [createStory('movies_top', StoryMoviesTop)]
       : []),
     ...(userRewind.people.directors.length && hasMovieLibraries
-      ? [createStory('movies_directors', StoryMoviesDirectors, 8000)]
+      ? [createStory('movies_directors', StoryMoviesDirectors)]
       : []),
     ...(userRewind.people.movieActors.length && hasMovieLibraries
-      ? [createStory('movies_actors', StoryMoviesActors, 8000)]
+      ? [createStory('movies_actors', StoryMoviesActors)]
       : []),
     ...(userRewind.genres.movies.length && hasMovieLibraries
-      ? [createStory('movies_genres', StoryMoviesGenres, 8000)]
+      ? [createStory('movies_genres', StoryMoviesGenres)]
       : []),
     ...(userRewind.duration.user && hasAudioLibraries && userRewind.audio.top[0]
-      ? [
-          createStory(
-            'audio',
-            StoryAudio,
-            userRewind.audio.duration ? 10000 : 4000,
-          ),
-        ]
+      ? [createStory('audio', StoryAudio)]
       : []),
     ...(userRewind.audio.top.length > 1 && hasAudioLibraries
-      ? [createStory('audio_top', StoryAudioTop, 8000)]
+      ? [createStory('audio_top', StoryAudioTop)]
       : []),
     ...(userRewind.genres.match
-      ? [
-          createStory(
-            'taste_match',
-            StoryTasteMatch,
-            userRewind.genres.match.genres.length ? 10000 : 7000,
-          ),
-        ]
+      ? [createStory('taste_match', StoryTasteMatch)]
       : []),
     ...(userRewind.habits.peakDayIndex !== null
-      ? [createStory('habits_day', StoryHabitsDay, 10000)]
+      ? [createStory('habits_day', StoryHabitsDay)]
       : []),
     ...(userRewind.habits.peakHour !== null
-      ? [createStory('habits_hour', StoryHabitsHour, 10000)]
+      ? [createStory('habits_hour', StoryHabitsHour)]
       : []),
     ...(userRewind.firstPlay
-      ? [createStory('first_play', StoryFirstPlay, 10000)]
+      ? [createStory('first_play', StoryFirstPlay)]
       : []),
-    createStory('goodbye', StoryGoodbye, 11000),
+    createStory('goodbye', StoryGoodbye),
   ]
 
   return <Stories stories={stories} />

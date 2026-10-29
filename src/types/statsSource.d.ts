@@ -56,8 +56,6 @@ export type TopPeople = {
 // A genre, ranked by how long a user spent on its movies or shows
 export type TopGenre = {
   name: string
-  // In seconds
-  duration: number
   // Of the user's time on the media type, from 0 to 1. A title counts toward
   // each of its genres, so the shares can add up to more than 1.
   share: number

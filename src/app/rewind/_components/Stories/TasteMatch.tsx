@@ -17,7 +17,7 @@ export default function StoryTasteMatch({ userRewind, settings }: RewindStory) {
 
   return (
     <>
-      <RewindStat scaleDelay={3}>
+      <RewindStat>
         <div className='relative mb-4 size-16 overflow-hidden rounded-full shadow-lg ring-1 shadow-black/40 ring-white/10 sm:size-20'>
           <Avatar src={match.image} name={match.name} sizes='5rem' priority />
         </div>
@@ -36,7 +36,7 @@ export default function StoryTasteMatch({ userRewind, settings }: RewindStory) {
         </p>
       </RewindStat>
 
-      <RewindStat renderDelay={3} scaleDelay={3} noScale={!hasGenres}>
+      <RewindStat step={1}>
         <p>
           {t.rich('score', {
             scoreValue: format.number(match.score, { style: 'percent' }),
@@ -46,7 +46,7 @@ export default function StoryTasteMatch({ userRewind, settings }: RewindStory) {
       </RewindStat>
 
       {hasGenres && (
-        <RewindStat renderDelay={6} noScale>
+        <RewindStat step={2} noScale>
           <p>
             {t.rich('genres', {
               genresValue: format.list(match.genres, { type: 'conjunction' }),

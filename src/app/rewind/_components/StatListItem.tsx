@@ -20,7 +20,7 @@ export default function StatListItem({ count, name, icon, library }: Props) {
         </div>
       )}
       <span className='font-semibold'>{count.toLocaleString(locale)}</span>
-      <span className='mx-2 text-neutral-600'>•</span>
+      <span className='mx-2 text-neutral-400'>•</span>
       <span className='rewind-cat'>
         {name}
         {icon}

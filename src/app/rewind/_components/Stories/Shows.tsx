@@ -2,17 +2,17 @@ import { MEDIA_ICONS } from '@/components/icons'
 import MediaItems from '@/components/MediaItem/MediaItems'
 import { RewindStory } from '@/types/rewind'
 import { useTranslations } from 'next-intl'
+import PlaytimeShare from '../PlaytimeShare'
 import RewindStat from '../RewindStat'
 
 export default function StoryShows({ userRewind, settings }: RewindStory) {
   const t = useTranslations('Rewind.Shows')
-  const tCommon = useTranslations('Rewind.Common')
 
   return (
     <>
       {userRewind.shows.duration ? (
         <>
-          <RewindStat scaleDelay={3}>
+          <RewindStat>
             <p>
               {t.rich('duration', {
                 library: (chunks) => (
@@ -29,22 +29,13 @@ export default function StoryShows({ userRewind, settings }: RewindStory) {
                 plex: (chunks) => chunks,
               })}
             </p>
-
-            {userRewind.shows.percentage && (
-              <p className='mt-2'>
-                {tCommon.rich('percentage', {
-                  percentageValue: userRewind.shows.percentage,
-                  percentage: (chunks) => (
-                    <span className='rewind-stat'>{chunks}</span>
-                  ),
-                })}
-              </p>
-            )}
           </RewindStat>
+
+          <PlaytimeShare percentage={userRewind.shows.percentage} step={1} />
 
           {/* The watch time can be from plays that don't count */}
           {userRewind.shows.count > 0 && (
-            <RewindStat renderDelay={3} scaleDelay={3}>
+            <RewindStat step={2}>
               <p>
                 {t.rich('count', {
                   countValue: userRewind.shows.count,
@@ -59,7 +50,7 @@ export default function StoryShows({ userRewind, settings }: RewindStory) {
             </RewindStat>
           )}
 
-          <RewindStat renderDelay={6} loaderDelay={3} noScale>
+          <RewindStat step={3} noScale>
             <p className='mb-2'>
               {t('favorite')}{' '}
               <span className='rewind-cat'>

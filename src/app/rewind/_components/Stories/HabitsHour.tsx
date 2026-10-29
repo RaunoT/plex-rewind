@@ -44,7 +44,7 @@ export default function StoryHabitsHour({ userRewind }: RewindStory) {
 
   return (
     <>
-      <RewindStat scaleDelay={3}>
+      <RewindStat>
         <p>
           {t.rich('hour', {
             hourValue: peakHourLabel,
@@ -58,7 +58,7 @@ export default function StoryHabitsHour({ userRewind }: RewindStory) {
         </p>
       </RewindStat>
 
-      <RewindStat renderDelay={3} noScale className='pt-4'>
+      <RewindStat step={1} noScale className='pt-4'>
         <RewindBarChart
           data={hourly}
           labels={labels}

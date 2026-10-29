@@ -15,8 +15,13 @@ vi.mock('./fetchSeerr', () => ({ fetchSeerrStats: vi.fn() }))
 vi.mock('./getSettings', () => ({ default: vi.fn() }))
 vi.mock('./statsSource', () => ({ getStatsSource: vi.fn() }))
 
-function request(type: string, plexId: number) {
-  return { createdAt: '2026-06-01T00:00:00Z', type, requestedBy: { plexId } }
+// Seerr users without Plex have no Plex id
+function request(type: string, plexId: number | null, id = plexId ?? 0) {
+  return {
+    createdAt: '2026-06-01T00:00:00Z',
+    type,
+    requestedBy: { id, plexId },
+  }
 }
 
 beforeEach(() => {
@@ -39,8 +44,47 @@ describe('getRequestsTotals', () => {
       movies: 2,
       shows: 1,
       user: { total: 2, movies: 1, shows: 1 },
+      // 3 requests from 2 users average 1.5, which shows as 2
+      average: { count: 2, difference: 0 },
     })
     expect(fetchSeerrStats).toHaveBeenCalledWith('request', '2026-01-01')
+  })
+
+  it('tells apart the Seerr users without Plex', async () => {
+    vi.mocked(fetchSeerrStats).mockResolvedValue([
+      request('movie', 1),
+      request('movie', 1),
+      request('movie', null, 10),
+      request('movie', null, 11),
+    ])
+
+    const totals = await getRequestsTotals('1')
+
+    // 4 requests from 3 users
+    expect(totals?.average).toEqual({ count: 1, difference: 100 })
+  })
+
+  it("leaves excluded users out of every user's requests", async () => {
+    const settings = cloneDeep(DEFAULT_SETTINGS)
+
+    settings.rewind.startDate = '2026-01-01'
+    settings.general.excludedUsers = ['1', '3']
+    vi.mocked(getSettings).mockReturnValue(settings)
+    vi.mocked(fetchSeerrStats).mockResolvedValue([
+      request('movie', 1),
+      request('movie', 2),
+      request('tv', 3),
+      request('tv', 3),
+    ])
+
+    // Excluded too, but the rewind is theirs
+    await expect(getRequestsTotals('1')).resolves.toEqual({
+      total: 2,
+      movies: 2,
+      shows: 0,
+      user: { total: 1, movies: 1, shows: 0 },
+      average: { count: 1, difference: 0 },
+    })
   })
 
   it('counts zero requests when there were none', async () => {
@@ -51,6 +95,7 @@ describe('getRequestsTotals', () => {
       movies: 0,
       shows: 0,
       user: { total: 0, movies: 0, shows: 0 },
+      average: null,
     })
   })
 
