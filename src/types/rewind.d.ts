@@ -9,6 +9,12 @@ export type RewindUser = {
   isAdmin: boolean
 }
 
+type RequestCounts = {
+  total: number
+  movies: number
+  shows: number
+}
+
 type LibraryRewind = {
   count: number
   duration: string
@@ -25,12 +31,11 @@ export type UserRewind = {
   libraries_total_size: number
   libraries_size_is_partial: boolean
   // Null when Seerr couldn't be read
-  requests?: {
-    total: number
-    movies: number
-    shows: number
-    user: number
-  } | null
+  requests?:
+    | (RequestCounts & {
+        user: RequestCounts
+      })
+    | null
   server_id: string
   shows: LibraryRewind
   movies: LibraryRewind

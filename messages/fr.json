@@ -330,6 +330,7 @@
       "noUserData": "Vous n'avez fait aucune <requests>demande</requests>. Vous pouvez en faire via <requestLink>{requestLinkValue}</requestLink>.",
       "count": "Vous avez fait <count>{countValue, number}</count> <requests>{countValue, plural, one {demande} other {demandes}}</requests>",
       "countTotal": "Au total, il y a eu <count>{countValue, plural, one {# demande} other {# demandes}}</count> pendant la même période.",
+      "userBreakdown": "Voici ce que vous avez demandé :",
       "breakdown": "Voici la répartition :",
       "movies": "{count, plural, one {film} other {films}}",
       "shows": "{count, plural, one {série} other {séries}}"

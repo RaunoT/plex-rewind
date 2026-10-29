@@ -33,7 +33,7 @@ describe('getRequestsTotals', () => {
       total: 3,
       movies: 2,
       shows: 1,
-      user: 2,
+      user: { total: 2, movies: 1, shows: 1 },
     })
     expect(fetchSeerrStats).toHaveBeenCalledWith('request', '2026-01-01')
   })
@@ -45,7 +45,7 @@ describe('getRequestsTotals', () => {
       total: 0,
       movies: 0,
       shows: 0,
-      user: 0,
+      user: { total: 0, movies: 0, shows: 0 },
     })
   })
 

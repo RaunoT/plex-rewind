@@ -147,6 +147,14 @@ export async function getPlaybackHabits(userId: string) {
   }
 }
 
+function countRequests(requests: { type: string }[]) {
+  return {
+    total: requests.length,
+    movies: requests.filter((request) => request.type === 'movie').length,
+    shows: requests.filter((request) => request.type === 'tv').length,
+  }
+}
+
 export async function getRequestsTotals(userId: string) {
   const startDate = getRewindStartDate(getSettings())
   const requests = await fetchSeerrStats('request', startDate)
@@ -156,11 +164,11 @@ export async function getRequestsTotals(userId: string) {
   }
 
   return {
-    total: requests.length,
-    movies: requests.filter((request) => request.type === 'movie').length,
-    shows: requests.filter((request) => request.type === 'tv').length,
-    user: requests.filter(
-      (request) => request.requestedBy.plexId === Number(userId),
-    ).length,
+    ...countRequests(requests),
+    user: countRequests(
+      requests.filter(
+        (request) => request.requestedBy.plexId === Number(userId),
+      ),
+    ),
   }
 }
