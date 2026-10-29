@@ -83,7 +83,9 @@
     "cta": "Réessayer",
     "sourceUnreachable": "Impossible de joindre {source}",
     "sourceUnreachableDescription": "Vérifiez que {source} est démarré et accessible depuis Plex Rewind, puis réessayez",
-    "connectionSettings": "Vérifier les paramètres de connexion"
+    "connectionSettings": "Vérifier les paramètres de connexion",
+    "sourceOutage": "Impossible de joindre {source}. Les statistiques ont été mises à jour pour la dernière fois {time} et ne sont peut-être plus à jour.",
+    "sourceOutageNoTime": "Impossible de joindre {source}, les statistiques ne sont donc peut-être plus à jour."
   },
   "History": {
     "syncingTitle": "Synchronisation de l'historique",

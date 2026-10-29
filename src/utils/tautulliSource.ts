@@ -8,6 +8,7 @@ import {
   TautulliLibrary,
   TautulliUser,
 } from '@/types/tautulli'
+import { pick } from 'lodash'
 import { getServerSession } from 'next-auth'
 import { cache } from 'react'
 import fetchTautulli from './fetchTautulli'
@@ -16,7 +17,15 @@ import getSettings from './getSettings'
 import { LibrariesSize, sumLibrariesSize } from './librariesSize'
 import { createPlayStats, EMPTY_ROW, StatsUser } from './playStats'
 import {
+  getSnapshot,
+  isListOf,
+  isString,
+  isStringList,
+  saveSnapshot,
+} from './sourceSnapshot'
+import {
   getTautulliHistoryReaders,
+  getTautulliKey,
   getTautulliPlays,
   toTautulliPlay,
 } from './tautulliHistory'
@@ -30,8 +39,43 @@ const fetchUsers = cache(() => fetchTautulli<TautulliUser[]>('get_users'))
 const fetchUser = cache((userId: string) =>
   fetchTautulli<TautulliUser>('get_user', { user_id: userId }),
 )
+// What the stats need, saved for while Tautulli is down. get_users also
+// returns each user's email and Plex token, which stay out.
+const LIBRARY_FIELDS = [
+  'section_name',
+  'section_id',
+  'count',
+  'parent_count',
+  'child_count',
+  'section_type',
+  'is_active',
+] as const satisfies readonly (keyof TautulliLibrary)[]
+const USER_FIELDS = [
+  'is_admin',
+  'is_restricted',
+  'is_active',
+  'user_id',
+  'friendly_name',
+  'thumb',
+  'user_thumb',
+  'username',
+] as const satisfies readonly (keyof TautulliUser)[]
 
+// The saved ID stands in while Tautulli is down
 async function getServerId(): Promise<string> {
+  const key = `${getTautulliKey()}|serverId`
+  const serverId = await fetchServerId()
+
+  if (!serverId) {
+    return (await getSnapshot(key, isString)) ?? ''
+  }
+
+  void saveSnapshot(key, serverId)
+
+  return serverId
+}
+
+async function fetchServerId(): Promise<string | null> {
   const settings = getSettings()
 
   let plexUrl: URL
@@ -41,7 +85,7 @@ async function getServerId(): Promise<string> {
   } catch {
     console.error('[PLEX] - The Plex URL is not configured correctly!')
 
-    return ''
+    return null
   }
 
   const plexHost = plexUrl.hostname
@@ -63,14 +107,34 @@ async function getServerId(): Promise<string> {
       `[TAUTULLI] - Couldn't find server ID for Plex server with hostname ${plexUrl} and port ${plexPort}`,
     )
 
-    return ''
+    return null
   }
 }
 
-async function getLibraries(): Promise<TautulliLibrary[]> {
+// Every library, whoever is signed in, as the histories are read in the
+// background and shared between users. Not only the active ones, so the read
+// starts before the libraries are picked, and picking one doesn't start another.
+// The saved ones stand in while Tautulli is down.
+async function getAllLibraries(): Promise<TautulliLibrary[] | null> {
+  const key = `${getTautulliKey()}|libraries`
   const libraries = (await fetchLibraries())?.response?.data
 
   if (!Array.isArray(libraries)) {
+    return getSnapshot(key, isListOf<TautulliLibrary>)
+  }
+
+  void saveSnapshot(
+    key,
+    libraries.map((library) => pick(library, LIBRARY_FIELDS)),
+  )
+
+  return libraries
+}
+
+async function getLibraries(): Promise<TautulliLibrary[]> {
+  const libraries = await getAllLibraries()
+
+  if (!libraries) {
     console.warn('[TAUTULLI] - No libraries found!')
 
     return []
@@ -101,19 +165,33 @@ async function filterBySharedLibraries(
     return []
   }
 
-  const userDataResponse = await fetchUser(userId)
+  const sharedLibraries = await getSharedLibraries(userId)
 
-  if (!userDataResponse) {
+  if (!sharedLibraries) {
     console.warn(`[TAUTULLI] - Could not fetch user data for user ID ${userId}`)
 
     return []
   }
 
   return libraries.filter((library) =>
-    userDataResponse.response.data?.shared_libraries?.includes(
-      library.section_id,
-    ),
+    sharedLibraries.includes(library.section_id),
   )
+}
+
+// The saved ones stand in while Tautulli is down
+async function getSharedLibraries(userId: string): Promise<string[] | null> {
+  const key = `${getTautulliKey()}|sharedLibraries|${userId}`
+  const userDataResponse = await fetchUser(userId)
+
+  if (!userDataResponse) {
+    return getSnapshot(key, isStringList)
+  }
+
+  const sharedLibraries = userDataResponse.response.data?.shared_libraries ?? []
+
+  void saveSnapshot(key, sharedLibraries)
+
+  return sharedLibraries
 }
 
 async function getLibrariesSize(
@@ -142,13 +220,30 @@ async function getLibrariesSize(
   )
 }
 
-async function getUsers(): Promise<TautulliUser[]> {
-  const usersRes = await fetchUsers()
-  const users = usersRes?.response?.data
+// Includes inactive users. The saved ones stand in while Tautulli is down,
+// without their emails.
+async function getAllUsers(): Promise<TautulliUser[] | null> {
+  const key = `${getTautulliKey()}|users`
+  const users = (await fetchUsers())?.response?.data
 
   if (!Array.isArray(users)) {
-    return []
+    return getSnapshot(key, isListOf<TautulliUser>)
   }
+
+  void saveSnapshot(
+    key,
+    users.map((user) => ({
+      ...pick(user, USER_FIELDS),
+      email: '',
+      shared_libraries: [],
+    })),
+  )
+
+  return users
+}
+
+async function getUsers(): Promise<TautulliUser[]> {
+  const users = (await getAllUsers()) ?? []
 
   return users.filter((user) => user.is_active && user.username !== 'Local')
 }
@@ -195,8 +290,11 @@ export async function getTautulliMediaData(
   }
 }
 
+// While Tautulli is down, the user comes from the saved list
 async function getInactiveUser(id: string): Promise<TautulliItemRow | null> {
-  const user = (await fetchUser(id))?.response?.data
+  const user =
+    (await fetchUser(id))?.response?.data ??
+    (await getAllUsers())?.find((user) => String(user.user_id) === id)
 
   // Without a user ID the play counts would be for the whole server.
   if (user?.user_id == null) {
@@ -233,21 +331,12 @@ async function getFirstPlay(userId: string): Promise<FirstPlay | null> {
   }
 }
 
-// Every library, whoever is signed in, as the histories are read in the
-// background and shared between users. Not only the active ones, so the read
-// starts before the libraries are picked, and picking one doesn't start another.
-async function getAllLibraries(): Promise<TautulliLibrary[]> {
-  const libraries = (await fetchLibraries())?.response?.data
-
-  return Array.isArray(libraries) ? libraries : []
-}
-
 // Inactive users stay in, like in Tautulli's own rankings, so their plays can
 // still be left out when they're excluded.
 async function getStatsUsers(): Promise<StatsUser[]> {
-  const users = (await fetchUsers())?.response?.data
+  const users = await getAllUsers()
 
-  if (!Array.isArray(users)) {
+  if (!users) {
     return []
   }
 
@@ -261,7 +350,7 @@ async function getStatsUsers(): Promise<StatsUser[]> {
 
 const playStats = createPlayStats({
   getPlays: async (since, libraries) =>
-    getTautulliPlays(since, libraries ?? (await getAllLibraries())),
+    getTautulliPlays(since, libraries ?? (await getAllLibraries()) ?? []),
   getUsers: getStatsUsers,
   getMediaData: getTautulliMediaData,
 })
@@ -276,7 +365,8 @@ const tautulliSource: StatsSource = {
   getInactiveUser,
   getFirstPlay,
   getHistoryReaders: async (libraries) =>
-    getTautulliHistoryReaders(libraries ?? (await getAllLibraries())),
+    getTautulliHistoryReaders(libraries ?? (await getAllLibraries()) ?? []),
+  getSnapshotKey: getTautulliKey,
 }
 
 export default tautulliSource

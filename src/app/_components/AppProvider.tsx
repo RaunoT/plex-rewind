@@ -16,6 +16,7 @@ import HeaderControls, {
   SETTINGS_RETURN_KEY,
 } from './HeaderControls'
 import Sidebar from './Sidebar'
+import SourceOutageNotice from './SourceOutageNotice'
 
 type Props = {
   children: ReactNode
@@ -30,6 +31,8 @@ type Props = {
 }
 
 const SIDEBAR_ROUTES = ['/dashboard', '/rewind', '/activity', '/settings']
+// Their pages keep to a narrower column, which the notice lines up with
+const NARROW_ROUTES = ['/rewind', '/activity', '/settings']
 const queryClient = new QueryClient()
 
 export default function AppProvider({
@@ -97,6 +100,14 @@ export default function AppProvider({
               {/* The sidebar, or a page's header on smaller screens, shows these controls instead */}
               <HeaderControls className='absolute top-4 right-4 z-10 max-lg:group-has-[[data-page-header]]/main:hidden lg:group-data-[sidebar]/app:hidden' />
 
+              {hasSidebar && (
+                <SourceOutageNotice
+                  source={settings.connection.statisticsSource}
+                  isNarrow={NARROW_ROUTES.some((route) =>
+                    pathname.startsWith(route),
+                  )}
+                />
+              )}
               {children}
             </main>
           </div>

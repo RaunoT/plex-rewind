@@ -105,4 +105,6 @@ export type StatsSource = {
   // The play histories the stats are read from. Without libraries, those of
   // every library, whoever is signed in.
   getHistoryReaders: (libraries?: TautulliLibrary[]) => Promise<HistoryReader[]>
+  // What the source's answers are saved under, to stand in while it's down
+  getSnapshotKey: () => string
 }

@@ -4,11 +4,14 @@ import { getServerSession } from 'next-auth'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { DEFAULT_SETTINGS } from './constants'
 import getSettings from './getSettings'
+import { getUpdatedAt } from './playHistory'
+import { getSnapshot, hasSnapshot } from './sourceSnapshot'
 import {
   getHistoryProgress,
   getLibraries,
   getReachableLibraries,
   getServerId,
+  getSourceOutage,
   getStatsSource,
   getUsers,
   isStatsSourceReachable,
@@ -20,6 +23,22 @@ import tracearrSource from './tracearrSource'
 vi.mock('@/lib/auth', () => ({ authOptions: {} }))
 vi.mock('next-auth', () => ({ getServerSession: vi.fn() }))
 vi.mock('./getSettings', () => ({ default: vi.fn() }))
+// A failed request would otherwise skip the host in the tests after it
+vi.mock('./hostBackoff', async (importOriginal) => ({
+  ...(await importOriginal<typeof import('./hostBackoff')>()),
+  isHostDown: vi.fn(),
+  markHostDown: vi.fn(),
+}))
+vi.mock('./playHistory', async (importOriginal) => ({
+  ...(await importOriginal<typeof import('./playHistory')>()),
+  getUpdatedAt: vi.fn(),
+}))
+vi.mock('./sourceSnapshot', async (importOriginal) => ({
+  ...(await importOriginal<typeof import('./sourceSnapshot')>()),
+  getSnapshot: vi.fn(),
+  hasSnapshot: vi.fn(),
+  saveSnapshot: vi.fn(),
+}))
 
 const fetchMock = vi.fn()
 
@@ -45,6 +64,9 @@ beforeEach(() => {
   vi.spyOn(console, 'error').mockImplementation(() => {})
   vi.spyOn(console, 'warn').mockImplementation(() => {})
   vi.mocked(getSettings).mockReturnValue(testSettings())
+  vi.mocked(getSnapshot).mockReset()
+  vi.mocked(hasSnapshot).mockReset()
+  vi.mocked(getUpdatedAt).mockReset()
 })
 
 afterEach(() => {
@@ -232,6 +254,19 @@ describe('getReachableLibraries', () => {
     await expect(getReachableLibraries()).resolves.toBeNull()
   })
 
+  it('returns the saved libraries while the source is down', async () => {
+    fetchMock.mockResolvedValue(new Response('nope', { status: 500 }))
+    vi.mocked(hasSnapshot).mockResolvedValue(true)
+    vi.mocked(getSnapshot).mockResolvedValue(libraries)
+
+    await expect(getReachableLibraries()).resolves.toEqual([libraries[0]])
+    expect(hasSnapshot).toHaveBeenCalledWith('tautulli|http://tautulli:8181')
+    expect(getSnapshot).toHaveBeenCalledWith(
+      'tautulli|http://tautulli:8181|libraries',
+      expect.any(Function),
+    )
+  })
+
   describe('with Tracearr', () => {
     function useTracearr(url: string, libraries: () => Response) {
       const settings = testSettings()
@@ -287,6 +322,62 @@ describe('getReachableLibraries', () => {
   })
 })
 
+describe('getSourceOutage', () => {
+  const libraries = [
+    { section_id: '1', section_name: 'Movies', section_type: 'movie' },
+    { section_id: '2', section_name: 'Music', section_type: 'artist' },
+  ]
+
+  beforeEach(() => {
+    const settings = testSettings()
+
+    settings.connection.complete = true
+    vi.mocked(getSettings).mockReturnValue(settings)
+  })
+
+  it('is null while the source answers', async () => {
+    fetchMock.mockImplementation(async () => tautulliResponse(libraries))
+    vi.mocked(hasSnapshot).mockResolvedValue(true)
+
+    await expect(getSourceOutage()).resolves.toBeNull()
+  })
+
+  it('is null when nothing was saved to stand in for the source', async () => {
+    fetchMock.mockResolvedValue(new Response('nope', { status: 500 }))
+    vi.mocked(hasSnapshot).mockResolvedValue(false)
+
+    await expect(getSourceOutage()).resolves.toBeNull()
+  })
+
+  it('says when the saved plays were last brought up to date', async () => {
+    const updatedAt = Date.parse('2026-10-28T18:22:00.000Z')
+
+    fetchMock.mockResolvedValue(new Response('nope', { status: 500 }))
+    vi.mocked(hasSnapshot).mockResolvedValue(true)
+    vi.mocked(getSnapshot).mockResolvedValue(libraries)
+    vi.mocked(getUpdatedAt).mockResolvedValue(updatedAt)
+
+    await expect(getSourceOutage()).resolves.toEqual({ updatedAt })
+
+    const [readers] = vi.mocked(getUpdatedAt).mock.calls[0]
+
+    // Every saved library's history, not only the active ones
+    expect(readers.map((reader) => reader.key)).toEqual([
+      'tautulli|http://tautulli:8181|1',
+      'tautulli|http://tautulli:8181|2',
+    ])
+  })
+
+  it('asks nothing until the connection is saved', async () => {
+    const settings = testSettings()
+
+    settings.connection.complete = false
+
+    await expect(getSourceOutage(settings)).resolves.toBeNull()
+    expect(fetchMock).not.toHaveBeenCalled()
+  })
+})
+
 describe('getServerId', () => {
   it('returns the identifier Tautulli reports', async () => {
     fetchMock.mockResolvedValue(tautulliResponse({ identifier: 'abc' }))
@@ -298,6 +389,17 @@ describe('getServerId', () => {
     fetchMock.mockResolvedValue(new Response('<html></html>'))
 
     await expect(getServerId()).resolves.toBe('')
+  })
+
+  it('returns the saved identifier while Tautulli is down', async () => {
+    fetchMock.mockResolvedValue(new Response('nope', { status: 500 }))
+    vi.mocked(getSnapshot).mockResolvedValue('abc')
+
+    await expect(getServerId()).resolves.toBe('abc')
+    expect(getSnapshot).toHaveBeenCalledWith(
+      'tautulli|http://tautulli:8181|serverId',
+      expect.any(Function),
+    )
   })
 
   it('returns an empty string for an invalid Plex URL', async () => {

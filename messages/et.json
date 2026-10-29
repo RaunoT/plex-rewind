@@ -83,7 +83,9 @@
     "cta": "Proovi uuesti",
     "sourceUnreachable": "{source} pole kättesaadav",
     "sourceUnreachableDescription": "Veendu, et {source} töötab ja Plex Rewind saab sellega ühendust, ning proovi uuesti",
-    "connectionSettings": "Kontrolli ühenduse seadeid"
+    "connectionSettings": "Kontrolli ühenduse seadeid",
+    "sourceOutage": "{source} pole kättesaadav. Statistikat uuendati viimati {time} ja see võib olla aegunud.",
+    "sourceOutageNoTime": "{source} pole kättesaadav, seega võib statistika olla aegunud."
   },
   "History": {
     "syncingTitle": "Esitusajaloo sünkroonimine",

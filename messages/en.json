@@ -83,7 +83,9 @@
     "cta": "Try again",
     "sourceUnreachable": "Couldn't reach {source}",
     "sourceUnreachableDescription": "Check that {source} is running and reachable from Plex Rewind, then try again",
-    "connectionSettings": "Check connection settings"
+    "connectionSettings": "Check connection settings",
+    "sourceOutage": "Couldn't reach {source}. The stats were last updated {time} and may be out of date.",
+    "sourceOutageNoTime": "Couldn't reach {source}, so the stats may be out of date."
   },
   "History": {
     "syncingTitle": "Syncing the play history",

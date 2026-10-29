@@ -17,6 +17,7 @@ import {
 import { maskApiKeys, restoreApiKeys } from '@/utils/connectionSecrets'
 import { selectPlexServer } from '@/utils/fetchTracearr'
 import getSettings from '@/utils/getSettings'
+import { isGatewayError, markHostUp } from '@/utils/hostBackoff'
 import { getReachableLibraries, startHistoryRead } from '@/utils/statsSource'
 import { normalizeUrl } from '@/utils/url'
 import { kebabCase } from 'lodash'
@@ -62,7 +63,14 @@ async function testRequest(
   init?: RequestInit,
 ): Promise<TestResult> {
   try {
-    return { response: await fetch(url, { ...init, cache: 'no-store' }) }
+    const response = await fetch(url, { ...init, cache: 'no-store' })
+
+    // The host answers again, so its requests needn't wait for the next check
+    if (!isGatewayError(response.status)) {
+      markHostUp(url)
+    }
+
+    return { response }
   } catch (error) {
     console.error(`[CONFIG] - Error testing ${service} connection!`, error)
 

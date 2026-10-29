@@ -1,5 +1,6 @@
 import { Settings } from '@/types/settings'
 import getSettings from '@/utils/getSettings'
+import { isGatewayError, isHostDown, markHostDown } from '@/utils/hostBackoff'
 import { getUpstreamImageUrl, isAllowedRedirect } from '@/utils/imageUpstream'
 
 const UPSTREAM_TIMEOUT = 15 * 1000
@@ -79,8 +80,16 @@ export async function GET(request: Request) {
     return new Response('[IMAGE PROXY] - Image not allowed', { status: 400 })
   }
 
+  if (isHostDown(upstreamUrl)) {
+    return new Response('[IMAGE PROXY] - The image host is down', {
+      status: 503,
+    })
+  }
+
+  let image: UpstreamImage | null = null
+
   try {
-    const image = await fetchImage(
+    image = await fetchImage(
       upstreamUrl,
       settings,
       AbortSignal.timeout(UPSTREAM_TIMEOUT),
@@ -105,6 +114,10 @@ export async function GET(request: Request) {
       !contentType.startsWith('image/') ||
       contentLength > MAX_IMAGE_BYTES
     ) {
+      if (isGatewayError(response.status)) {
+        markHostDown(url)
+      }
+
       return new Response('[IMAGE PROXY] - Failed to fetch the image', {
         status: response.ok ? 502 : response.status,
       })
@@ -118,6 +131,11 @@ export async function GET(request: Request) {
       },
     })
   } catch (error) {
+    // Without an answer at all, it's the host that's down
+    if (!image) {
+      markHostDown(upstreamUrl)
+    }
+
     console.error('[IMAGE PROXY] - Error fetching the image!', error)
 
     return new Response('[IMAGE PROXY] - An error occurred', { status: 500 })

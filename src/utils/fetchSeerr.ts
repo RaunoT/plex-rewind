@@ -1,4 +1,5 @@
 import getSettings from './getSettings'
+import { isGatewayError, isHostDown, markHostDown } from './hostBackoff'
 
 type SeerrResponse<T> = {
   pageInfo: {
@@ -54,8 +55,14 @@ export default async function fetchSeerr<T>(
   })
   const apiUrl = `${seerrUrl}/api/v1/${endpoint}?${queryParams.toString()}`
 
+  if (isHostDown(apiUrl)) {
+    return null
+  }
+
+  let res: Response | undefined
+
   try {
-    const res = await fetch(apiUrl, {
+    res = await fetch(apiUrl, {
       headers: {
         'X-API-KEY': apiKey,
       },
@@ -66,6 +73,10 @@ export default async function fetchSeerr<T>(
     })
 
     if (!res.ok) {
+      if (isGatewayError(res.status)) {
+        markHostDown(apiUrl)
+      }
+
       console.error(
         `[SEERR] - API request failed! The endpoint was '${endpoint}'.\n`,
         res.status,
@@ -77,6 +88,11 @@ export default async function fetchSeerr<T>(
 
     return await res.json()
   } catch (error) {
+    // Without an answer at all, it's the host that's down
+    if (!res) {
+      markHostDown(apiUrl)
+    }
+
     if (error instanceof Error && error.name === 'TimeoutError') {
       console.error(
         `[SEERR] - API request timed out after ${REQUEST_TIMEOUT_MS / 1000}s! The endpoint was '${endpoint}'.`,

@@ -6,6 +6,18 @@ import { DEFAULT_SETTINGS } from './constants'
 import type { PlaysSnapshot } from './playHistoryFile'
 
 vi.mock('./getSettings', () => ({ default: vi.fn() }))
+// A failed request would otherwise skip Tracearr until it's checked again
+vi.mock('./hostBackoff', async (importOriginal) => ({
+  ...(await importOriginal<typeof import('./hostBackoff')>()),
+  isHostDown: vi.fn(),
+  markHostDown: vi.fn(),
+}))
+vi.mock('./sourceSnapshot', async (importOriginal) => ({
+  ...(await importOriginal<typeof import('./sourceSnapshot')>()),
+  getSnapshot: vi.fn(),
+  hasSnapshot: vi.fn(),
+  saveSnapshot: vi.fn(),
+}))
 vi.mock('./playHistoryFile', () => ({
   getHistoryFilePath: () => '/app/config/play-history.json.gz',
   readHistoryFile: vi.fn(async () => new Map()),
@@ -79,12 +91,21 @@ async function load(savedServerId = '') {
   return import('./fetchTracearr')
 }
 
-beforeEach(() => {
+beforeEach(async () => {
   // The module keeps its state on globalThis, which outlives resetModules
   delete (globalThis as { plexRewindTracearr?: unknown }).plexRewindTracearr
   delete (globalThis as { plexRewindPlayHistory?: unknown })
     .plexRewindPlayHistory
   vi.resetModules()
+
+  // Mocked modules outlive resetModules too, so a test's answers would leak
+  const backoff = await import('./hostBackoff')
+  const snapshot = await import('./sourceSnapshot')
+
+  vi.mocked(backoff.isHostDown).mockReset()
+  vi.mocked(backoff.markHostDown).mockReset()
+  vi.mocked(snapshot.getSnapshot).mockReset()
+  vi.mocked(snapshot.saveSnapshot).mockReset()
   vi.stubGlobal('fetch', fetchMock)
   vi.spyOn(console, 'error').mockImplementation(() => {})
   vi.spyOn(console, 'warn').mockImplementation(() => {})
@@ -193,6 +214,127 @@ describe('users', () => {
 
     expect(users).toHaveLength(1)
     expect(users[0].plexId).toBe('42')
+  })
+})
+
+describe('while Tracearr is down', () => {
+  const KEY = 'tracearr|http://tracearr:3000|s1'
+  const savedUser = {
+    identityId: 'u1',
+    plexId: '42',
+    username: 'jane',
+    friendlyName: 'Jane',
+    email: '',
+    isAdmin: false,
+  }
+
+  it('skips its requests', async () => {
+    const { getTracearrPlexUsers } = await load('s1')
+    const { isHostDown } = await import('./hostBackoff')
+
+    vi.mocked(isHostDown).mockReturnValue(true)
+
+    await getTracearrPlexUsers()
+
+    expect(fetchMock).not.toHaveBeenCalled()
+  })
+
+  it('is marked down when it does not answer, or its proxy says so', async () => {
+    fetchMock.mockRejectedValueOnce(new TypeError('fetch failed'))
+    fetchMock.mockResolvedValueOnce(new Response('', { status: 504 }))
+
+    const { default: fetchTracearr } = await load('s1')
+    const { markHostDown } = await import('./hostBackoff')
+
+    await fetchTracearr('servers')
+    await fetchTracearr('libraries')
+
+    expect(vi.mocked(markHostDown).mock.calls).toEqual([
+      ['http://tracearr:3000/api/v2/public/servers'],
+      ['http://tracearr:3000/api/v2/public/libraries'],
+    ])
+  })
+
+  it('saves the users without their emails', async () => {
+    route({
+      servers: () => ({ data: [plexServer('s1')] }),
+      users: () => ({
+        data: [user('s1')],
+        meta: { nextCursor: null, pageSize: 100 },
+      }),
+    })
+
+    const { getTracearrPlexUsers } = await load('s1')
+    const { saveSnapshot } = await import('./sourceSnapshot')
+    const users = await getTracearrPlexUsers()
+
+    expect(users[0].email).toBe('jane@example.com')
+    expect(saveSnapshot).toHaveBeenCalledWith(`${KEY}|users`, [savedUser])
+  })
+
+  it('lists the saved users', async () => {
+    fetchMock.mockRejectedValue(new TypeError('fetch failed'))
+
+    const { getTracearrPlexUsers } = await load('s1')
+    const { getSnapshot } = await import('./sourceSnapshot')
+
+    vi.mocked(getSnapshot).mockResolvedValue([savedUser])
+
+    await expect(getTracearrPlexUsers()).resolves.toEqual([savedUser])
+    expect(getSnapshot).toHaveBeenCalledWith(
+      `${KEY}|users`,
+      expect.any(Function),
+    )
+  })
+
+  it('does not check membership against the saved users', async () => {
+    fetchMock.mockRejectedValue(new TypeError('fetch failed'))
+
+    const { getTracearrUser } = await load('s1')
+    const { getSnapshot } = await import('./sourceSnapshot')
+
+    vi.mocked(getSnapshot).mockResolvedValue([savedUser])
+
+    await expect(getTracearrUser('42')).resolves.toBeNull()
+  })
+
+  it('shows the saved libraries, and saves the ones it reads', async () => {
+    const rollup = {
+      server_id: 's1',
+      server_type: 'plex',
+      library_id: 'l1',
+      item_count: 3,
+      movie_count: 3,
+      episode_count: 0,
+      show_count: 0,
+      track_count: 0,
+      total_file_size: 1,
+    }
+
+    route({
+      servers: () => ({ data: [plexServer('s1')] }),
+      libraries: () => ({ data: [{ ...rollup, name: 'Films' }] }),
+    })
+
+    const { getTracearrLibraries } = await load('s1')
+    const { getSnapshot, saveSnapshot } = await import('./sourceSnapshot')
+
+    await getTracearrLibraries()
+
+    // Only the fields the rollups are read from
+    expect(saveSnapshot).toHaveBeenCalledWith(`${KEY}|libraries`, [rollup])
+
+    fetchMock.mockReset()
+    fetchMock.mockRejectedValue(new TypeError('fetch failed'))
+    vi.mocked(getSnapshot).mockResolvedValue([rollup])
+
+    // The cached rollups expire, and the saved ones take over
+    vi.useFakeTimers({ toFake: ['Date'] })
+    vi.advanceTimersByTime(10 * 60 * 1000)
+
+    const libraries = await getTracearrLibraries()
+
+    expect(libraries.map((library) => library.count)).toEqual(['3'])
   })
 })
 

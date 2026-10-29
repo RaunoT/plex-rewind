@@ -21,6 +21,12 @@ vi.mock('./fetchTracearr', async (importOriginal) => ({
 }))
 vi.mock('./getSettings', () => ({ default: vi.fn() }))
 vi.mock('./fetchTmdb', () => ({ default: vi.fn() }))
+vi.mock('./sourceSnapshot', async (importOriginal) => ({
+  ...(await importOriginal<typeof import('./sourceSnapshot')>()),
+  getSnapshot: vi.fn(),
+  hasSnapshot: vi.fn(),
+  saveSnapshot: vi.fn(),
+}))
 
 function library(type: TautulliLibrary['section_type']): TautulliLibrary {
   return {

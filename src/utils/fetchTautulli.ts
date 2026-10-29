@@ -1,5 +1,6 @@
 import qs from 'qs'
 import getSettings from './getSettings'
+import { isGatewayError, isHostDown, markHostDown } from './hostBackoff'
 
 type TautulliResponse<T> = {
   response: {
@@ -38,8 +39,14 @@ export default async function fetchTautulli<T>(
 
   const apiUrl = `${tautulliUrl}/api/v2?apikey=${apiKey}`
 
+  if (isHostDown(apiUrl)) {
+    return null
+  }
+
+  let res: Response | undefined
+
   try {
-    const res = await fetch(`${apiUrl}&cmd=${query}&${qs.stringify(params)}`, {
+    res = await fetch(`${apiUrl}&cmd=${query}&${qs.stringify(params)}`, {
       next: {
         revalidate: cache ? 3600 : 0,
       },
@@ -47,6 +54,10 @@ export default async function fetchTautulli<T>(
     })
 
     if (!res.ok) {
+      if (isGatewayError(res.status)) {
+        markHostDown(apiUrl)
+      }
+
       console.error(
         `[TAUTULLI] - API request failed! The query was '${query}'.\n`,
         res.status,
@@ -69,6 +80,11 @@ export default async function fetchTautulli<T>(
 
     return data
   } catch (error) {
+    // Without an answer at all, it's the host that's down
+    if (!res) {
+      markHostDown(apiUrl)
+    }
+
     if (error instanceof Error && error.name === 'TimeoutError') {
       console.error(
         `[TAUTULLI] - API request timed out after ${REQUEST_TIMEOUT_MS / 1000}s! The query was '${query}'.`,
