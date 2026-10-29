@@ -143,12 +143,16 @@ async function mapWithLimit<T, R>(
   return results
 }
 
-// People match by name, as Tautulli only gives names.
+// People match by name, as Tautulli only gives names. Ties go to the higher
+// billed, so a cast that's always together is led by its lead.
 export function rankPeople(
   titles: CreditedTitle[],
   role: Role,
 ): RankedPerson[] {
-  const people = new Map<string, { name: string; titles: CreditedTitle[] }>()
+  const people = new Map<
+    string,
+    { name: string; titles: CreditedTitle[]; billing: number }
+  >()
 
   for (const title of titles) {
     const names =
@@ -158,43 +162,72 @@ export function rankPeople(
     // A name can be credited twice on one title, as two roles or jobs.
     const keys = new Set<string>()
 
-    for (const name of names) {
+    names.forEach((name, billing) => {
       const key = toKey(name)
 
       if (!key || keys.has(key)) {
-        continue
+        return
       }
 
       keys.add(key)
 
-      const person = people.get(key) ?? { name: name.trim(), titles: [] }
+      const person = people.get(key) ?? {
+        name: name.trim(),
+        titles: [],
+        billing,
+      }
 
       person.titles.push(title)
+      person.billing = Math.min(person.billing, billing)
       people.set(key, person)
+    })
+  }
+
+  const ranked = [...people.values()]
+    .filter((person) => person.titles.length >= MIN_TITLES)
+    .map((person) => ({
+      ...person,
+      duration: sumBy(person.titles, (title) => title.item.total_duration),
+    }))
+    .sort(
+      (a, b) =>
+        b.titles.length - a.titles.length ||
+        b.duration - a.duration ||
+        a.billing - b.billing,
+    )
+  const shown: typeof ranked = []
+
+  // Someone whose titles are all listed for a person above says nothing new,
+  // like the rest of a cast that's always together, so the next one shows.
+  for (const person of ranked) {
+    if (shown.length === TOP_PEOPLE) {
+      break
+    }
+
+    const isRepeat = shown.some((above) =>
+      person.titles.every((title) => above.titles.includes(title)),
+    )
+
+    if (!isRepeat) {
+      shown.push(person)
     }
   }
 
-  return [...people.values()]
-    .filter((person) => person.titles.length >= MIN_TITLES)
-    .map((person) => {
-      const titles = orderBy(
-        person.titles,
-        (title) => title.item.total_duration,
-        'desc',
-      )
+  return shown.map((person) => {
+    const titles = orderBy(
+      person.titles,
+      (title) => title.item.total_duration,
+      'desc',
+    )
 
-      return {
-        name: person.name,
-        count: titles.length,
-        duration: sumBy(titles, (title) => title.item.total_duration),
-        titles: titles.map((title) => title.item.title),
-        tmdbIds: titles.flatMap((title) =>
-          title.tmdbId ? [title.tmdbId] : [],
-        ),
-      }
-    })
-    .sort((a, b) => b.count - a.count || b.duration - a.duration)
-    .slice(0, TOP_PEOPLE)
+    return {
+      name: person.name,
+      count: titles.length,
+      duration: person.duration,
+      titles: titles.map((title) => title.item.title),
+      tmdbIds: titles.flatMap((title) => (title.tmdbId ? [title.tmdbId] : [])),
+    }
+  })
 }
 
 // From TMDB's credits of a title they're in, which the ranking has usually

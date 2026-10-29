@@ -97,16 +97,71 @@ describe('rankPeople', () => {
   })
 
   it('lists at most five people', () => {
-    const names = ['A', 'B', 'C', 'D', 'E', 'F']
     const actors = rankPeople(
-      [
-        credited('One', 100, { actors: names }),
-        credited('Two', 100, { actors: names }),
-      ],
+      ['A', 'B', 'C', 'D', 'E', 'F'].flatMap((name) => [
+        credited(`${name} one`, 100, { actors: [name] }),
+        credited(`${name} two`, 100, { actors: [name] }),
+      ]),
       'actors',
     )
 
     expect(actors.map((actor) => actor.name)).toEqual(['A', 'B', 'C', 'D', 'E'])
+  })
+
+  it('leaves out a cast that is always together, keeping its lead', () => {
+    const actors = rankPeople(
+      [
+        credited('Chamber of Secrets', 100, {
+          actors: [
+            'Kenneth Branagh',
+            'Rupert Grint',
+            'Emma Watson',
+            'Daniel Radcliffe',
+          ],
+        }),
+        credited("Sorcerer's Stone", 100, {
+          actors: ['Daniel Radcliffe', 'Rupert Grint', 'Emma Watson'],
+        }),
+        credited('Cast Away', 100, { actors: ['Tom Hanks'] }),
+        credited('Apollo 13', 100, { actors: ['Tom Hanks'] }),
+      ],
+      'actors',
+    )
+
+    expect(actors.map((actor) => actor.name)).toEqual([
+      'Daniel Radcliffe',
+      'Tom Hanks',
+    ])
+  })
+
+  it('keeps someone who shares only some titles with a person above', () => {
+    const actors = rankPeople(
+      [
+        credited('Big', 300, { actors: ['Tom Hanks'] }),
+        credited('Cast Away', 200, { actors: ['Tom Hanks'] }),
+        credited("You've Got Mail", 100, { actors: ['Tom Hanks', 'Meg Ryan'] }),
+        credited('When Harry Met Sally', 100, { actors: ['Meg Ryan'] }),
+        credited('Sleepless in Seattle', 50, { actors: ['Meg Ryan'] }),
+      ],
+      'actors',
+    )
+
+    expect(actors.map((actor) => actor.name)).toEqual(['Tom Hanks', 'Meg Ryan'])
+  })
+
+  it('leaves out someone whose titles are all listed above', () => {
+    const actors = rankPeople(
+      [
+        credited('Sleepless in Seattle', 300, {
+          actors: ['Tom Hanks', 'Meg Ryan'],
+        }),
+        credited("You've Got Mail", 200, { actors: ['Tom Hanks', 'Meg Ryan'] }),
+        credited('Cast Away', 100, { actors: ['Tom Hanks'] }),
+      ],
+      'actors',
+    )
+
+    expect(actors.map((actor) => actor.name)).toEqual(['Tom Hanks'])
   })
 
   it('only counts the top-billed actors', () => {
@@ -294,56 +349,63 @@ describe('getTopPeople', () => {
   })
 
   it('ranks movie and show actors apart, without show directors', async () => {
-    getSourceData.mockImplementation(async (item) =>
-      item.title.startsWith('Movie')
-        ? {
-            thumb: '',
-            isDeleted: false,
-            credits: { directors: [], actors: ['Bob Odenkirk', 'Movie Star'] },
-          }
-        : {
-            thumb: '',
-            isDeleted: false,
-            credits: {
-              directors: ['Vince Gilligan'],
-              actors: ['Bob Odenkirk', 'Aaron Paul'],
-            },
-          },
-    )
+    const casts: Record<string, string[]> = {
+      'Movie one': ['Movie Star', 'Bob Odenkirk'],
+      'Movie two': ['Movie Star'],
+      'Breaking Bad': ['Aaron Paul', 'Bob Odenkirk'],
+      'Better Call Saul': ['Bob Odenkirk'],
+    }
+
+    getSourceData.mockImplementation(async (item) => ({
+      thumb: '',
+      isDeleted: false,
+      credits: {
+        directors: item.title.startsWith('Movie') ? [] : ['Vince Gilligan'],
+        actors: casts[item.title],
+      },
+    }))
     mockTmdb({})
 
     const people = await getTopPeople(
       {
         movies: [title('Movie one', 100), title('Movie two', 100)],
-        shows: [title('Breaking Bad', 100), title('El Camino', 100)],
+        shows: [title('Breaking Bad', 100), title('Better Call Saul', 100)],
       },
       getSourceData,
     )
 
-    expect(people.directors.map(({ name }) => name)).toEqual([])
-    expect(people.movieActors.map(({ name }) => name)).toEqual([
-      'Bob Odenkirk',
-      'Movie Star',
-    ])
-    expect(people.showActors.map(({ name }) => name)).toEqual([
-      'Bob Odenkirk',
-      'Aaron Paul',
-    ])
+    // One movie and one show each, which don't add up
+    expect(people.directors).toEqual([])
+    expect(people.movieActors.map(({ name }) => name)).toEqual(['Movie Star'])
+    expect(people.showActors.map(({ name }) => name)).toEqual(['Bob Odenkirk'])
   })
 
   it("adds each person's portrait from TMDB's credits of their titles", async () => {
-    const cast = [
-      { name: 'Leonardo DiCaprio', order: 0, profile_path: '/leo.jpg' },
-      { name: 'Joseph Gordon-Levitt', order: 1, profile_path: null },
-    ]
+    const leo = {
+      name: 'Leonardo DiCaprio',
+      order: 0,
+      profile_path: '/leo.jpg',
+    }
+    const joseph = {
+      name: 'Joseph Gordon-Levitt',
+      order: 1,
+      profile_path: null,
+    }
 
-    mockTmdb({ 'movie/1/credits': { cast }, 'movie/2/credits': { cast } })
+    mockTmdb({
+      'movie/1/credits': { cast: [leo, joseph] },
+      'movie/2/credits': { cast: [leo] },
+      'movie/3/credits': { cast: [leo, joseph] },
+      'movie/4/credits': { cast: [joseph] },
+    })
 
     const { movieActors } = await getTopPeople(
       {
         movies: [
           title('One', 200, { tmdb_id: 1 }),
           title('Two', 100, { tmdb_id: 2 }),
+          title('Three', 100, { tmdb_id: 3 }),
+          title('Four', 50, { tmdb_id: 4 }),
         ],
         shows: [],
       },
