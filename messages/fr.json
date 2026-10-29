@@ -306,6 +306,7 @@
     },
     "Audio": {
       "duration": "Vous avez écouté <duration>{durationValue}</duration> de <audio>musique</audio>",
+      "percentage": "Cela représente <percentage>{percentageValue}</percentage> de votre temps total.",
       "count": "Vous avez écouté <count>{countValue, number}</count> <tracks>{countValue, plural, one {morceau} other {morceaux}}</tracks> au total !",
       "favorite": "Votre favori était",
       "noData": "Vous n'avez écouté aucune <audio>musique</audio> sur <from>{serverName}</from>"
@@ -321,6 +322,7 @@
     },
     "Shows": {
       "duration": "Les <library>séries</library> ont occupé <duration>{durationValue}</duration> de votre temps sur <plex>{serverName}.</plex>",
+      "percentage": "Cela représente <percentage>{percentageValue}</percentage> de votre temps total.",
       "count": "Vous avez regardé <count>{countValue, number}</count> <episodes>{countValue, plural, one {épisode} other {épisodes}}</episodes> au total !",
       "favorite": "Votre favori était",
       "noData": "Vous n'avez regardé aucune <shows>série</shows> sur <plex>{serverName}</plex> <emoji>😥</emoji>"
@@ -337,6 +339,7 @@
     },
     "Movies": {
       "duration": "Vous avez passé <duration>{durationValue}</duration> à regarder des <movies>films</movies>",
+      "percentage": "Cela représente <percentage>{percentageValue}</percentage> de votre temps total.",
       "count": "Vous avez regardé <count>{countValue, number}</count> <movies>{countValue, plural, one {film} other {films}}</movies> au total !",
       "favorite": "Votre favori était",
       "noData": "Vous n'avez regardé aucun <movies>film</movies> sur <plex>{serverName}</plex> <emoji>😵‍💫</emoji>"

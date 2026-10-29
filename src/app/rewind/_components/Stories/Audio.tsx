@@ -26,6 +26,16 @@ export default function StoryAudio({ userRewind, settings }: RewindStory) {
                 ),
               })}
             </p>
+            {userRewind.audio.percentage && (
+              <p className='mt-2'>
+                {t.rich('percentage', {
+                  percentageValue: userRewind.audio.percentage,
+                  percentage: (chunks) => (
+                    <span className='rewind-stat'>{chunks}</span>
+                  ),
+                })}
+              </p>
+            )}
           </RewindStat>
 
           <RewindStat renderDelay={3} scaleDelay={3}>

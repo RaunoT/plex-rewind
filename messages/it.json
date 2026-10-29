@@ -306,6 +306,7 @@
     },
     "Audio": {
       "duration": "Hai ascoltato <duration>{durationValue}</duration> di <audio>musica</audio>",
+      "percentage": "È il <percentage>{percentageValue}</percentage> del tuo tempo totale.",
       "count": "Hai ascoltato <count>{countValue, number}</count> <tracks>{countValue, plural, one {brano} other {brani}}</tracks> in tutto!",
       "favorite": "Il tuo preferito è stato",
       "noData": "Non hai ascoltato <audio>musica</audio> su <from>{serverName}</from>"
@@ -321,6 +322,7 @@
     },
     "Shows": {
       "duration": "Hai dedicato <duration>{durationValue}</duration> alle <library>serie TV</library> su <plex>{serverName}.</plex>",
+      "percentage": "È il <percentage>{percentageValue}</percentage> del tuo tempo totale.",
       "count": "Hai guardato <count>{countValue, number}</count> <episodes>{countValue, plural, one {episodio} other {episodi}}</episodes> in tutto!",
       "favorite": "La tua preferita è stata",
       "noData": "Non hai guardato nessuna <shows>serie TV</shows> su <plex>{serverName}</plex> <emoji>😥</emoji>"
@@ -337,6 +339,7 @@
     },
     "Movies": {
       "duration": "Hai passato <duration>{durationValue}</duration> a guardare <movies>film</movies>",
+      "percentage": "È il <percentage>{percentageValue}</percentage> del tuo tempo totale.",
       "count": "Hai guardato <count>{countValue, number}</count> <movies>{countValue, plural, one {film} other {film}}</movies> in tutto!",
       "favorite": "Il tuo preferito è stato",
       "noData": "Non hai guardato nessun <movies>film</movies> su <plex>{serverName}</plex> <emoji>😵‍💫</emoji>"

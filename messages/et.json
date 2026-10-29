@@ -306,6 +306,7 @@
     },
     "Audio": {
       "duration": "Sa kuulasid <duration>{durationValue}</duration> <audio>muusikat</audio>",
+      "percentage": "See on <percentage>{percentageValue}</percentage> sinu koguajast.",
       "count": "Kokku kuulasid sa <count>{countValue, number}</count> <tracks>{countValue, plural, one {loo} other {lugu}}!</tracks>",
       "favorite": "Sinu lemmik oli",
       "noData": "Sa ei kuulanud <audio>muusikat</audio> <from>{serverName}'ist</from>"
@@ -321,6 +322,7 @@
     },
     "Shows": {
       "duration": "<library>Seriaalid</library> võtsid <duration>{durationValue}</duration> sinu ajast <plex>{serverName}'is.</plex>",
+      "percentage": "See on <percentage>{percentageValue}</percentage> sinu koguajast.",
       "count": "Sa vaatasid kokku <count>{countValue, number}</count> <episodes>{countValue, plural, one {episoodi} other {episoodi}}</episodes>",
       "favorite": "Sinu lemmik oli",
       "noData": "Sa ei vaadanud ühtegi <shows>seriaali</shows> <plex>{serverName}'ist</plex> <emoji>😥</emoji>"
@@ -337,6 +339,7 @@
     },
     "Movies": {
       "duration": "<duration>{durationValue}</duration> kulus sul <movies>filmidele</movies>",
+      "percentage": "See on <percentage>{percentageValue}</percentage> sinu koguajast.",
       "count": "Vaatasid <count>{countValue, number}</count> <movies>{countValue, plural, one {filmi} other {filmi}}</movies>",
       "favorite": "Sinu lemmik oli",
       "noData": "Sa ei vaadanud ühtegi <movies>filmi</movies> <plex>{serverName}'ist</plex> <emoji>😵‍💫</emoji>"

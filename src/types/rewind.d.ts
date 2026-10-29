@@ -22,6 +22,8 @@ type LibraryRewind = {
   duration_value: number | null
   // Every user's time on the type, in seconds
   server_duration_value: number | null
+  // Of the user's total watch time, null when it isn't shown
+  percentage: string | null
   top: TautulliItemRow[]
 }
 

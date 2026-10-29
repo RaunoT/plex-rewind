@@ -28,6 +28,16 @@ export default function StoryShows({ userRewind, settings }: RewindStory) {
                 plex: (chunks) => chunks,
               })}
             </p>
+            {userRewind.shows.percentage && (
+              <p className='mt-2'>
+                {t.rich('percentage', {
+                  percentageValue: userRewind.shows.percentage,
+                  percentage: (chunks) => (
+                    <span className='rewind-stat'>{chunks}</span>
+                  ),
+                })}
+              </p>
+            )}
           </RewindStat>
 
           <RewindStat renderDelay={3} scaleDelay={3}>

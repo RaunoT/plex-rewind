@@ -22,6 +22,7 @@ import getSettings from '@/utils/getSettings'
 import getUsersTop from '@/utils/getUsersTop'
 import {
   canViewFeature,
+  getLibraryShare,
   getRewindStartDate,
   getUserShare,
   getViewer,
@@ -141,6 +142,12 @@ async function RewindContent({ userId }: { userId?: string }) {
           (isUserExcluded ? (topMediaStats[type].durationValue ?? 0) : 0)
   }
 
+  function formatLibraryShare(seconds: number | null) {
+    const percentage = getLibraryShare(seconds, userTotalDuration)
+
+    return percentage === null ? null : formatPercent(percentage, locale)
+  }
+
   const userRewind: UserRewind = {
     duration: {
       user: secondsToTime(userTotalDuration, t),
@@ -158,6 +165,7 @@ async function RewindContent({ userId }: { userId?: string }) {
       duration: topMediaStats.shows.duration,
       duration_value: topMediaStats.shows.durationValue,
       server_duration_value: getServerDuration('shows'),
+      percentage: formatLibraryShare(topMediaStats.shows.durationValue),
     },
     movies: {
       top: topMediaItems.movies,
@@ -165,6 +173,7 @@ async function RewindContent({ userId }: { userId?: string }) {
       duration: topMediaStats.movies.duration,
       duration_value: topMediaStats.movies.durationValue,
       server_duration_value: getServerDuration('movies'),
+      percentage: formatLibraryShare(topMediaStats.movies.durationValue),
     },
     people,
     audio: {
@@ -173,6 +182,7 @@ async function RewindContent({ userId }: { userId?: string }) {
       duration: topMediaStats.audio.duration,
       duration_value: topMediaStats.audio.durationValue,
       server_duration_value: getServerDuration('audio'),
+      percentage: formatLibraryShare(topMediaStats.audio.durationValue),
     },
     habits: habits,
     firstPlay: firstPlay && {
