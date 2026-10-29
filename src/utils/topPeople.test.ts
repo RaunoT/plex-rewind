@@ -476,4 +476,38 @@ describe('getTopPeople', () => {
 
     expect(showActors[0].image).toBe('https://image.tmdb.org/t/p/w185/lh.jpg')
   })
+
+  it('stops asking TMDB once it stops answering', async () => {
+    const { default: realFetchTmdb } =
+      await vi.importActual<typeof import('./fetchTmdb')>('./fetchTmdb')
+    const fetchMock = vi
+      .fn()
+      .mockRejectedValue(
+        new DOMException('The operation timed out.', 'TimeoutError'),
+      )
+    const movies = Array.from({ length: 200 }, (_, i) =>
+      title(`Movie ${i}`, 100, { tmdb_id: i + 1 }),
+    )
+
+    vi.mocked(fetchTmdb).mockImplementation(realFetchTmdb)
+    vi.stubGlobal('fetch', fetchMock)
+    vi.spyOn(console, 'error').mockImplementation(() => {})
+    vi.spyOn(console, 'warn').mockImplementation(() => {})
+
+    try {
+      await expect(
+        getTopPeople({ movies, shows: [] }, getSourceData),
+      ).resolves.toEqual({ directors: [], movieActors: [], showActors: [] })
+      // Only the lookups already under way when it stopped answering, rather
+      // than a timeout for every batch
+      expect(fetchMock).toHaveBeenCalledTimes(8)
+    } finally {
+      vi.unstubAllGlobals()
+      vi.restoreAllMocks()
+      // The backoff keeps its state on globalThis
+      ;(
+        globalThis as { plexRewindDownServices?: Map<string, unknown> }
+      ).plexRewindDownServices?.clear()
+    }
+  })
 })
