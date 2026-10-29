@@ -11,6 +11,10 @@ function weekday(index: number, formatter: Intl.DateTimeFormat) {
   return formatter.format(new Date(Date.UTC(2024, 0, 7 + index)))
 }
 
+// Plays are counted by Date.getDay(), which starts on Sunday, but the chart
+// starts the week on Monday.
+const WEEK = [1, 2, 3, 4, 5, 6, 0]
+
 export default function StoryHabitsDay({ userRewind }: RewindStory) {
   const t = useTranslations('Rewind.Habits')
   const tCommon = useTranslations('Common')
@@ -30,9 +34,8 @@ export default function StoryHabitsDay({ userRewind }: RewindStory) {
     return null
   }
 
-  const labels = Array.from({ length: 7 }, (_, index) =>
-    weekday(index, shortFormatter),
-  )
+  const labels = WEEK.map((day) => weekday(day, shortFormatter))
+  const data = WEEK.map((day) => daily[day])
   const peakDay = weekday(peakDayIndex, longFormatter)
 
   return (
@@ -53,9 +56,9 @@ export default function StoryHabitsDay({ userRewind }: RewindStory) {
 
       <RewindStat renderDelay={3} noScale className='pt-4'>
         <RewindBarChart
-          data={daily}
+          data={data}
           labels={labels}
-          peakIndex={peakDayIndex}
+          peakIndex={WEEK.indexOf(peakDayIndex)}
           axisLabel={tCommon('plays')}
           ariaLabel={t('dayChart', {
             dayValue: peakDay,
