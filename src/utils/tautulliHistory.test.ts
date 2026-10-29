@@ -88,10 +88,19 @@ describe('toTautulliPlay', () => {
     })
   })
 
-  it('has no percent complete when Tautulli gives 0', () => {
-    expect(toTautulliPlay(row({ percent_complete: 0 }))?.percentComplete).toBe(
-      null,
+  it('keeps 0% for a play that barely started', () => {
+    const play = toTautulliPlay(row({ percent_complete: 0, play_duration: 40 }))
+
+    expect(play?.percentComplete).toBe(0)
+  })
+
+  it('has no percent complete for an item Tautulli has no length for', () => {
+    // A whole track, which Tautulli has no length for
+    const track = toTautulliPlay(
+      row({ percent_complete: 0, play_duration: 200 }),
     )
+
+    expect(track?.percentComplete).toBe(null)
     expect(
       toTautulliPlay(row({ percent_complete: null }))?.percentComplete,
     ).toBe(null)

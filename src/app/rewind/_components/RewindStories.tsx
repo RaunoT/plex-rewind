@@ -94,7 +94,7 @@ export default function RewindStories({ userRewind, settings }: Props) {
           createStory(
             'shows',
             StoryShows,
-            userRewind.shows.count ? 10000 : 4000,
+            userRewind.shows.duration ? 10000 : 4000,
           ),
         ]
       : []),
@@ -114,7 +114,7 @@ export default function RewindStories({ userRewind, settings }: Props) {
           createStory(
             'movies',
             StoryMovies,
-            userRewind.movies.count ? 10000 : 4000,
+            userRewind.movies.duration ? 10000 : 4000,
           ),
         ]
       : []),
@@ -135,7 +135,7 @@ export default function RewindStories({ userRewind, settings }: Props) {
           createStory(
             'audio',
             StoryAudio,
-            userRewind.audio.count ? 10000 : 4000,
+            userRewind.audio.duration ? 10000 : 4000,
           ),
         ]
       : []),

@@ -40,19 +40,22 @@ export default function StoryAudio({ userRewind, settings }: RewindStory) {
             )}
           </RewindStat>
 
-          <RewindStat renderDelay={3} scaleDelay={3}>
-            <p>
-              {t.rich('count', {
-                countValue: userRewind.audio.count,
-                count: (chunks) => (
-                  <span className='rewind-stat'>{chunks}</span>
-                ),
-                tracks: (chunks) => (
-                  <span className='rewind-cat'>{chunks}</span>
-                ),
-              })}
-            </p>
-          </RewindStat>
+          {/* The watch time can be from plays that don't count */}
+          {userRewind.audio.count > 0 && (
+            <RewindStat renderDelay={3} scaleDelay={3}>
+              <p>
+                {t.rich('count', {
+                  countValue: userRewind.audio.count,
+                  count: (chunks) => (
+                    <span className='rewind-stat'>{chunks}</span>
+                  ),
+                  tracks: (chunks) => (
+                    <span className='rewind-cat'>{chunks}</span>
+                  ),
+                })}
+              </p>
+            </RewindStat>
+          )}
 
           <RewindStat renderDelay={6} loaderDelay={3} noScale>
             <p className='mb-2'>

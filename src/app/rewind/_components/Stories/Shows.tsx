@@ -42,19 +42,22 @@ export default function StoryShows({ userRewind, settings }: RewindStory) {
             )}
           </RewindStat>
 
-          <RewindStat renderDelay={3} scaleDelay={3}>
-            <p>
-              {t.rich('count', {
-                countValue: userRewind.shows.count,
-                count: (chunks) => (
-                  <span className='rewind-stat'>{chunks}</span>
-                ),
-                episodes: (chunks) => (
-                  <span className='rewind-cat'>{chunks}</span>
-                ),
-              })}
-            </p>
-          </RewindStat>
+          {/* The watch time can be from plays that don't count */}
+          {userRewind.shows.count > 0 && (
+            <RewindStat renderDelay={3} scaleDelay={3}>
+              <p>
+                {t.rich('count', {
+                  countValue: userRewind.shows.count,
+                  count: (chunks) => (
+                    <span className='rewind-stat'>{chunks}</span>
+                  ),
+                  episodes: (chunks) => (
+                    <span className='rewind-cat'>{chunks}</span>
+                  ),
+                })}
+              </p>
+            </RewindStat>
+          )}
 
           <RewindStat renderDelay={6} loaderDelay={3} noScale>
             <p className='mb-2'>
