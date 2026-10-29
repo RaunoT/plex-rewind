@@ -86,6 +86,7 @@ type TracearrMediaFields = {
 export type TracearrHistoryRecord = TracearrMediaFields & {
   id: string
   duration_ms: number | null
+  percent_complete: number | null
   started_at: string
   user: {
     id: string

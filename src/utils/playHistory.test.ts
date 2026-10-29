@@ -21,6 +21,7 @@ function play(id: string, hoursAgo: number, overrides: Partial<Play> = {}) {
     startedAt: now - hoursAgo * HOUR,
     mediaType: 'movie',
     durationMs: 60_000,
+    percentComplete: null,
     title: id,
     showTitle: null,
     artistName: null,

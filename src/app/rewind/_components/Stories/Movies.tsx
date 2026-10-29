@@ -31,19 +31,22 @@ export default function StoryMovies({ userRewind, settings }: RewindStory) {
 
           <PlaytimeShare percentage={userRewind.movies.percentage} step={1} />
 
-          <RewindStat step={2}>
-            <p>
-              {t.rich('count', {
-                countValue: userRewind.movies.count,
-                count: (chunks) => (
-                  <span className='rewind-stat'>{chunks}</span>
-                ),
-                movies: (chunks) => (
-                  <span className='rewind-cat'>{chunks}</span>
-                ),
-              })}
-            </p>
-          </RewindStat>
+          {/* The watch time can be from plays that don't count */}
+          {userRewind.movies.count > 0 && (
+            <RewindStat step={2}>
+              <p>
+                {t.rich('count', {
+                  countValue: userRewind.movies.count,
+                  count: (chunks) => (
+                    <span className='rewind-stat'>{chunks}</span>
+                  ),
+                  movies: (chunks) => (
+                    <span className='rewind-cat'>{chunks}</span>
+                  ),
+                })}
+              </p>
+            </RewindStat>
+          )}
 
           <RewindStat step={3} noScale>
             <p className='mb-2'>

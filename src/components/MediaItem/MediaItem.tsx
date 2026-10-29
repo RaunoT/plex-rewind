@@ -187,10 +187,12 @@ export default function MediaItem({
                     )}
                   </>
                 ) : (
-                  <li className={STAT_PILL}>
-                    <MediaIcon type={type} />
-                    <span>{t('statPlays', { count: data.total_plays })}</span>
-                  </li>
+                  data.total_plays > 0 && (
+                    <li className={STAT_PILL}>
+                      <MediaIcon type={type} />
+                      <span>{t('statPlays', { count: data.total_plays })}</span>
+                    </li>
+                  )
                 ))}
               {/* Users watched */}
               {activeStats.includes('users') && !!data.users_watched && (

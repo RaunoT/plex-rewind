@@ -23,9 +23,27 @@ const firstPlays = new Map<
   string,
   { firstPlayAt: number | null; expiresAt: number }
 >()
+const UNKNOWN_LENGTH_PLAY_MS = 60 * 1000
 
 function toKey(value: number | string | null | undefined): string | null {
   return value ? String(value) : null
+}
+
+// Tautulli gives 0 both for a play that barely started and for an item it has
+// no length for. Staying under half a percent for a minute takes an item over
+// three hours long, so a play at 0% that long has no known length.
+function getPercentComplete(
+  row: TautulliHistoryRow,
+  durationMs: number,
+): number | null {
+  if (
+    row.percent_complete === null ||
+    (row.percent_complete === 0 && durationMs >= UNKNOWN_LENGTH_PLAY_MS)
+  ) {
+    return null
+  }
+
+  return row.percent_complete
 }
 
 export function toTautulliPlay(row: TautulliHistoryRow): Play | null {
@@ -37,6 +55,7 @@ export function toTautulliPlay(row: TautulliHistoryRow): Play | null {
 
   const grandparentRatingKey = toKey(row.grandparent_rating_key)
   const parentTitle = mediaType === 'movie' ? null : row.grandparent_title
+  const durationMs = (row.play_duration ?? row.duration ?? 0) * 1000
 
   return {
     // The same for every session of the play, unlike `id`
@@ -44,7 +63,8 @@ export function toTautulliPlay(row: TautulliHistoryRow): Play | null {
     startedAt: row.started * 1000,
     ...(row.date !== row.started && { orderedAt: row.date * 1000 }),
     mediaType,
-    durationMs: (row.play_duration ?? row.duration ?? 0) * 1000,
+    durationMs,
+    percentComplete: getPercentComplete(row, durationMs),
     title: row.title,
     showTitle: mediaType === 'episode' ? parentTitle || null : null,
     artistName: mediaType === 'track' ? parentTitle || null : null,

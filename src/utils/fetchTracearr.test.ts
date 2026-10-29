@@ -1000,6 +1000,7 @@ describe('getTracearrPlays', () => {
       show_title: null,
       artist_name: null,
       duration_ms: 60_000,
+      percent_complete: 80,
       poster_url: null,
       user: { id: 'u1', avatar_url: null },
     }
@@ -1075,6 +1076,7 @@ describe('getTracearrPlays', () => {
     const yearPlays = await getTracearrPlays(yearAgo)
 
     expect(yearPlays).toHaveLength(1460)
+    expect(yearPlays[0].percentComplete).toBe(80)
     expect(yearPlays.every((play) => play.startedAt >= yearAgo.getTime())).toBe(
       true,
     )
@@ -1498,6 +1500,7 @@ describe('getTracearrPlays', () => {
         startedAt,
         mediaType: 'movie',
         durationMs: 60_000,
+        percentComplete: null,
         title: 'Dune',
         showTitle: null,
         artistName: null,
