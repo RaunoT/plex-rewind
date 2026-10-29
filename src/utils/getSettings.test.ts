@@ -221,6 +221,35 @@ describe('getSettings', () => {
     expect(readSavedSettings().general.activeItemStatistics).toEqual(expected)
   })
 
+  it('renames the active Tracearr shows library from its old name', async () => {
+    const saved = cloneDeep(DEFAULT_SETTINGS)
+
+    saved.connection.statisticsSource = 'tracearr'
+    saved.general.activeLibraries = ['movies', 'tv-shows', 'music']
+    fs.writeFileSync(settingsPath, JSON.stringify(saved))
+
+    const { default: getSettings } = await loadModule()
+    const expected = ['movies', 'shows', 'music']
+
+    expect(getSettings().general.activeLibraries).toEqual(expected)
+    expect(readSavedSettings().general.activeLibraries).toEqual(expected)
+  })
+
+  it('keeps a Tautulli library named TV Shows', async () => {
+    const saved = cloneDeep(DEFAULT_SETTINGS)
+
+    saved.connection.statisticsSource = 'tautulli'
+    saved.general.activeLibraries = ['movies', 'tv-shows']
+    fs.writeFileSync(settingsPath, JSON.stringify(saved))
+
+    const { default: getSettings } = await loadModule()
+
+    expect(getSettings().general.activeLibraries).toEqual([
+      'movies',
+      'tv-shows',
+    ])
+  })
+
   it('returns a copy that callers can change freely', async () => {
     const { default: getSettings } = await loadModule()
     const first = getSettings()
