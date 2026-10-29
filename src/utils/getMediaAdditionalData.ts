@@ -26,6 +26,9 @@ export type SourceMediaData = {
   year?: number | null
 }
 
+// What's saved of it to stand in while the source is down
+export type SavedMediaData = Pick<SourceMediaData, 'ids' | 'year'>
+
 type TmdbSearch = {
   results?: { id: number }[]
 }

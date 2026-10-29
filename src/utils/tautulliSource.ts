@@ -13,13 +13,18 @@ import { pick } from 'lodash'
 import { getServerSession } from 'next-auth'
 import { cache } from 'react'
 import fetchTautulli from './fetchTautulli'
-import { parseGuids, SourceMediaData } from './getMediaAdditionalData'
+import {
+  parseGuids,
+  SavedMediaData,
+  SourceMediaData,
+} from './getMediaAdditionalData'
 import getSettings from './getSettings'
 import { LibrariesSize, sumLibrariesSize } from './librariesSize'
 import { createPlayStats, EMPTY_ROW, StatsUser } from './playStats'
 import {
   getSnapshot,
   isListOf,
+  isObject,
   isString,
   isStringList,
   saveSnapshot,
@@ -275,9 +280,12 @@ async function getActivity(): Promise<TautulliActivity | null> {
   return res?.response?.data ?? null
 }
 
+// The saved IDs and year stand in while Tautulli is down, so a show isn't
+// looked up by its title alone
 export async function getTautulliMediaData(
   item: TautulliItemRow,
 ): Promise<SourceMediaData> {
+  const key = `${getTautulliKey()}|media|${item.rating_key}`
   const res = await fetchTautulli<TautulliMetadata>(
     'get_metadata',
     { rating_key: item.rating_key },
@@ -285,12 +293,23 @@ export async function getTautulliMediaData(
   )
   const metadata = res?.response?.data
 
-  return {
-    thumb: metadata?.thumb || '',
-    isDeleted: metadata ? Object.keys(metadata).length === 0 : false,
-    ids: parseGuids(Array.isArray(metadata?.guids) ? metadata.guids : []),
-    year: Number(metadata?.year) || null,
+  if (!metadata) {
+    const saved = await getSnapshot(key, isObject<SavedMediaData>)
+
+    return { thumb: '', isDeleted: false, ids: saved?.ids, year: saved?.year }
   }
+
+  const isDeleted = Object.keys(metadata).length === 0
+  const media: SavedMediaData = {
+    ids: parseGuids(Array.isArray(metadata.guids) ? metadata.guids : []),
+    year: Number(metadata.year) || null,
+  }
+
+  if (!isDeleted) {
+    void saveSnapshot(key, media)
+  }
+
+  return { thumb: metadata.thumb || '', isDeleted, ...media }
 }
 
 // While Tautulli is down, the user comes from the saved list

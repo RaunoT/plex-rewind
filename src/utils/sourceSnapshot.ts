@@ -158,6 +158,10 @@ export async function hasSnapshot(keyPrefix: string): Promise<boolean> {
   return [...answers.keys()].some((key) => key.startsWith(`${keyPrefix}|`))
 }
 
+export function isObject<T>(answer: unknown): answer is T {
+  return isPlainObject(answer)
+}
+
 export function isListOf<T>(answer: unknown): answer is T[] {
   return Array.isArray(answer) && answer.every(isPlainObject)
 }

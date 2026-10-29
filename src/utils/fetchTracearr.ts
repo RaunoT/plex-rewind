@@ -23,7 +23,7 @@ import {
 import { minBy, pick, sumBy } from 'lodash'
 import { unstable_rethrow } from 'next/navigation'
 import qs from 'qs'
-import { SourceMediaData } from './getMediaAdditionalData'
+import { SavedMediaData, SourceMediaData } from './getMediaAdditionalData'
 import getSettings from './getSettings'
 import { isGatewayError, isHostDown, markHostDown } from './hostBackoff'
 import { LibrariesSize, sumLibrariesSize } from './librariesSize'
@@ -35,7 +35,7 @@ import {
   readPlays,
 } from './playHistory'
 import { PLAY_MEDIA_TYPES } from './playStats'
-import { getSnapshot, isListOf, saveSnapshot } from './sourceSnapshot'
+import { getSnapshot, isListOf, isObject, saveSnapshot } from './sourceSnapshot'
 
 type QueryParams = {
   [key: string]: string | number | undefined
@@ -950,7 +950,9 @@ export async function getTracearrLibrariesSize(
   )
 }
 
-// Whether the item was removed from the Plex server, and its IDs
+// Whether the item was removed from the Plex server, and its IDs. The saved IDs
+// and year stand in while Tracearr is down, so a show isn't looked up by its
+// title alone.
 export async function getTracearrMedia(
   mediaId?: string | null,
 ): Promise<Omit<SourceMediaData, 'thumb'>> {
@@ -958,23 +960,36 @@ export async function getTracearrMedia(
     return { isDeleted: false }
   }
 
+  const key = `${getTracearrKey()}|media|${mediaId}`
   const [media, serverId] = await Promise.all([
     fetchTracearr<TracearrMedia>(`media/${mediaId}`),
     getPlexServerId(),
   ])
-  const availability = Array.isArray(media?.availability)
+
+  if (!media) {
+    const saved = await getSnapshot(key, isObject<SavedMediaData>)
+
+    return { isDeleted: false, ids: saved?.ids, year: saved?.year }
+  }
+
+  const availability = Array.isArray(media.availability)
     ? media.availability.filter((item) => item.server_id === serverId)
     : []
+  const mediaData: SavedMediaData = {
+    ids: {
+      imdb: media.imdb_id || null,
+      tmdb: media.tmdb_id || null,
+      tvdb: media.tvdb_id || null,
+    },
+    year: media.year || null,
+  }
+
+  void saveSnapshot(key, mediaData)
 
   return {
     isDeleted:
       availability.length > 0 && availability.every((item) => item.removed_at),
-    ids: {
-      imdb: media?.imdb_id || null,
-      tmdb: media?.tmdb_id || null,
-      tvdb: media?.tvdb_id || null,
-    },
-    year: media?.year || null,
+    ...mediaData,
   }
 }
 
