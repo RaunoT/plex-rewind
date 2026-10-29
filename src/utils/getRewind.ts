@@ -1,7 +1,7 @@
 import { TautulliLibrary, TautulliMediaReturnType } from '@/types/tautulli'
-import { getTranslations } from 'next-intl/server'
+import { getLocale, getTranslations } from 'next-intl/server'
 import { fetchSeerrStats } from './fetchSeerr'
-import { secondsToTime } from './formatting'
+import { formatPercent, secondsToTime } from './formatting'
 import getSettings from './getSettings'
 import { getRewindStartDate } from './helpers'
 import { LibrariesSize } from './librariesSize'
@@ -12,11 +12,17 @@ export async function getTopMediaStats(
   libraries: TautulliLibrary[],
 ) {
   const t = await getTranslations()
+  const locale = await getLocale()
   const settings = getSettings()
   const stats = await getStatsSource(settings).getMediaStats(
     userId,
     libraries,
     getRewindStartDate(settings),
+  )
+  // Shares of the user's own playtime, so they add up across the libraries
+  const totalDuration = Object.values(stats).reduce(
+    (sum, { duration }) => sum + (duration ?? 0),
+    0,
   )
 
   function formatStats(type: TautulliMediaReturnType) {
@@ -26,6 +32,10 @@ export async function getTopMediaStats(
       count,
       duration: duration === null ? '' : secondsToTime(duration, t),
       durationValue: duration,
+      percentage:
+        duration === null || !totalDuration
+          ? ''
+          : formatPercent(Math.round((duration * 100) / totalDuration), locale),
     }
   }
 

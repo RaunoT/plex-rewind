@@ -269,10 +269,12 @@
       "goToStory": "Go to story {index}",
       "previous": "Previous",
       "next": "Next",
-      "pause": "Pause",
-      "resume": "Resume",
       "label": "Rewind stories",
-      "storyPosition": "Story {current} of {total}"
+      "storyPosition": "Story {current} of {total}",
+      "introTitle": "How to get around",
+      "introBack": "Tap the left side to go back",
+      "introForward": "Tap the right side to go forward",
+      "introDismiss": "Got it"
     },
     "Common": {
       "topShows": "Here's your <top>top {count, plural, one {TV show} other {# TV shows}}</top>",
@@ -280,7 +282,8 @@
       "topMovies": "Here's your <top>top {count, plural, one {movie} other {# movies}}</top>",
       "topDirectors": "Here's your <top>top {count, plural, one {director} other {# directors}}</top>",
       "topMovieActors": "Here's your <top>top {count, plural, one {movie actor} other {# movie actors}}</top>",
-      "topArtists": "Here's your <top>top {count, plural, one {artist} other {# artists}}</top>"
+      "topArtists": "Here's your <top>top {count, plural, one {artist} other {# artists}}</top>",
+      "percentage": "That's <percentage>{percentageValue}</percentage> of your total playtime."
     },
     "Welcome": {
       "welcome": "Welcome to your <rewind>{serverName} Rewind</rewind>, <user>{userValue}!</user>",
@@ -306,7 +309,6 @@
     },
     "Audio": {
       "duration": "You spent <duration>{durationValue}</duration> listening to <audio>music</audio>",
-      "percentage": "That's <percentage>{percentageValue}</percentage> of your total time.",
       "count": "You listened to <count>{countValue, number}</count> <tracks>{countValue, plural, one {track} other {tracks}}</tracks> in total!",
       "favorite": "Your favorite was",
       "noData": "You didn't listen to any <audio>music</audio> on <from>{serverName}</from>"
@@ -322,7 +324,6 @@
     },
     "Shows": {
       "duration": "<library>TV shows</library> took up <duration>{durationValue}</duration> of your time on <plex>{serverName}.</plex>",
-      "percentage": "That's <percentage>{percentageValue}</percentage> of your total time.",
       "count": "You watched <count>{countValue, number}</count> <episodes>{countValue, plural, one {episode} other {episodes}}</episodes> in total!",
       "favorite": "Your favorite was",
       "noData": "You didn't watch any <shows>TV shows</shows> on <plex>{serverName}</plex> <emoji>😥</emoji>"
@@ -339,7 +340,6 @@
     },
     "Movies": {
       "duration": "<duration>{durationValue}</duration> of your time was spent watching <movies>movies</movies>",
-      "percentage": "That's <percentage>{percentageValue}</percentage> of your total time.",
       "count": "You watched <count>{countValue, number}</count> <movies>{countValue, plural, one {movie} other {movies}}</movies> in total!",
       "favorite": "Your favorite was",
       "noData": "You didn't watch any <movies>movies</movies> on <plex>{serverName}</plex> <emoji>😵‍💫</emoji>"

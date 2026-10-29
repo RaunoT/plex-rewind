@@ -1,13 +1,12 @@
 'use client'
 
+import {
+  readStorage,
+  writeStorage,
+} from '@/app/_components/GlobalContextProvider'
 import { trackEvent } from '@/utils/analytics'
 import { REWIND_CONTROLS_ID } from '@/utils/constants'
-import {
-  ChevronLeftIcon,
-  ChevronRightIcon,
-  PauseIcon,
-  PlayIcon,
-} from '@heroicons/react/24/outline'
+import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/outline'
 import { MotionConfig } from 'motion/react'
 import { useTranslations } from 'next-intl'
 import {
@@ -17,17 +16,13 @@ import {
   ReactNode,
   useCallback,
   useEffect,
+  useId,
   useMemo,
   useRef,
   useState,
   useSyncExternalStore,
 } from 'react'
 import { createPortal } from 'react-dom'
-
-type StoryProps = {
-  pause: () => void
-  resume: () => void
-}
 
 type StoryClock = {
   // Milliseconds since the story started
@@ -51,7 +46,7 @@ type Story = {
   // Names the story in analytics
   id: string
   type: 'component'
-  component: (props: StoryProps) => ReactNode
+  component: () => ReactNode
   duration: number
 }
 
@@ -66,6 +61,9 @@ type Props = {
 const HOLD_THRESHOLD = 200 // ms to distinguish tap from hold
 const DEFAULT_DURATION = 5000
 const TICK = 100
+const INTRO_SEEN_KEY = 'rewindIntroSeen'
+// Without a cursor or arrow keys, the tap areas aren't obvious
+const TOUCH_QUERY = '(hover: none) and (pointer: coarse)'
 // Anything that already owns Space/arrow keys or taps must not drive the stories
 const INTERACTIVE_SELECTOR = [
   'button',
@@ -106,7 +104,8 @@ function getServerIsHidden() {
 export default function Stories({ stories }: Props) {
   const t = useTranslations('Rewind.Stories')
   const [currentIndex, setCurrentIndex] = useState(0)
-  const [isManuallyPaused, setIsManuallyPaused] = useState(false)
+  // Unknown until mounted, so the first story waits for it
+  const [isIntroShown, setIsIntroShown] = useState<boolean | null>(null)
   const [isHolding, setIsHolding] = useState(false)
   const [announcement, setAnnouncement] = useState('')
   const [controlsSlot, setControlsSlot] = useState<HTMLElement | null>(null)
@@ -118,7 +117,9 @@ export default function Stories({ stories }: Props) {
     getIsHidden,
     getServerIsHidden,
   )
+  const introTitleId = useId()
   const slideRef = useRef<HTMLDivElement>(null)
+  const introButtonRef = useRef<HTMLButtonElement>(null)
   const holdTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const isHoldingRef = useRef(false)
   const shouldRestoreFocusRef = useRef(false)
@@ -128,7 +129,7 @@ export default function Stories({ stories }: Props) {
   const currentStory = stories[currentIndex]
   const currentStoryId = currentStory?.id
   const duration = currentStory?.duration || DEFAULT_DURATION
-  const isPaused = isManuallyPaused || isHolding || isHidden
+  const isPaused = isHolding || isHidden || isIntroShown !== false
   const isFinished = elapsed >= duration
   const revealPoints = useMemo(
     () => [...new Set(reveals)].sort((a, b) => a - b),
@@ -140,7 +141,7 @@ export default function Stories({ stories }: Props) {
   const canGoForward =
     currentIndex < stories.length - 1 || nextReveal !== undefined
   const goTo = useCallback(
-    (index: number, isManual: boolean, isAtEnd = false) => {
+    (index: number, isAtEnd = false) => {
       if (index < 0 || index >= stories.length || index === currentIndex) {
         return
       }
@@ -155,9 +156,7 @@ export default function Stories({ stories }: Props) {
       setElapsed(0)
       setCurrentIndex(index)
       setAnnouncement(
-        isManual
-          ? t('storyPosition', { current: index + 1, total: stories.length })
-          : '',
+        t('storyPosition', { current: index + 1, total: stories.length }),
       )
     },
     [currentIndex, stories.length, t],
@@ -166,7 +165,7 @@ export default function Stories({ stories }: Props) {
     if (nextReveal !== undefined) {
       setElapsed(nextReveal)
     } else {
-      goTo(currentIndex + 1, true)
+      goTo(currentIndex + 1)
     }
   }, [goTo, currentIndex, nextReveal])
   // Hides the latest statement, or goes back a story from the first one
@@ -174,7 +173,7 @@ export default function Stories({ stories }: Props) {
     if (shownReveals.length > 1) {
       setElapsed(shownReveals[shownReveals.length - 2])
     } else {
-      goTo(currentIndex - 1, true, true)
+      goTo(currentIndex - 1, true)
     }
   }, [goTo, currentIndex, shownReveals])
   const registerReveal = useCallback((at: number) => {
@@ -189,25 +188,14 @@ export default function Stories({ stories }: Props) {
           : [...prev.slice(0, index), ...prev.slice(index + 1)]
       })
   }, [])
-  const goToIndex = useCallback((index: number) => goTo(index, true), [goTo])
-  const advance = useCallback(
-    () => goTo(currentIndex + 1, false),
-    [goTo, currentIndex],
-  )
-  const pause = useCallback(() => {
-    setIsManuallyPaused(true)
+  const restart = useCallback(() => goTo(0), [goTo])
+  const dismissIntro = useCallback(() => {
+    // Still dismissed when storage is blocked, it just shows again next time
+    writeStorage(INTRO_SEEN_KEY, 'true')
+    // The slide can only take focus once it's no longer inert
+    shouldRestoreFocusRef.current = true
+    setIsIntroShown(false)
   }, [])
-  const resume = useCallback(() => {
-    setIsManuallyPaused(false)
-  }, [])
-  const togglePause = useCallback(() => {
-    setIsManuallyPaused((prev) => !prev)
-  }, [])
-  // Plays from the first story again, even if the last one was paused
-  const restart = useCallback(() => {
-    setIsManuallyPaused(false)
-    goTo(0, true)
-  }, [goTo])
   // Returns whether a hold was in progress
   const endHold = useCallback(() => {
     if (holdTimerRef.current) {
@@ -293,13 +281,6 @@ export default function Stories({ stories }: Props) {
   }, [isPaused, isFinished, duration])
 
   useEffect(() => {
-    if (isFinished) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      advance()
-    }
-  }, [isFinished, advance])
-
-  useEffect(() => {
     // The new story's statements have registered by now
     if (shouldSeekToEndRef.current) {
       shouldSeekToEndRef.current = false
@@ -311,7 +292,17 @@ export default function Stories({ stories }: Props) {
     // Rendered by the layout, next to the admin's user select
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setControlsSlot(document.getElementById(REWIND_CONTROLS_ID))
+
+    setIsIntroShown(
+      window.matchMedia(TOUCH_QUERY).matches && !readStorage(INTRO_SEEN_KEY),
+    )
   }, [])
+
+  useEffect(() => {
+    if (isIntroShown) {
+      introButtonRef.current?.focus({ preventScroll: true })
+    }
+  }, [isIntroShown])
 
   useEffect(() => {
     function handleKeyDown(e: KeyboardEvent) {
@@ -330,19 +321,13 @@ export default function Stories({ stories }: Props) {
         goToPrev()
       } else if (e.key === 'ArrowRight') {
         goToNext()
-      } else if (e.key === ' ') {
-        e.preventDefault()
-
-        if (!e.repeat) {
-          togglePause()
-        }
       }
     }
 
     window.addEventListener('keydown', handleKeyDown)
 
     return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [goToNext, goToPrev, togglePause])
+  }, [goToNext, goToPrev])
 
   useEffect(() => {
     // The refs keep Strict Mode's second run, or a re-render, from counting
@@ -369,7 +354,7 @@ export default function Stories({ stories }: Props) {
       shouldRestoreFocusRef.current = false
       slideRef.current?.focus({ preventScroll: true })
     }
-  }, [currentIndex])
+  }, [currentIndex, isIntroShown])
 
   useEffect(
     () => () => {
@@ -380,7 +365,6 @@ export default function Stories({ stories }: Props) {
     [],
   )
 
-  const storyProps = useMemo(() => ({ pause, resume }), [pause, resume])
   const clock = useMemo(
     () => ({ elapsed, isPaused, registerReveal }),
     [elapsed, isPaused, registerReveal],
@@ -390,11 +374,9 @@ export default function Stories({ stories }: Props) {
   const slide = useMemo(
     () =>
       currentStory ? (
-        <Fragment key={currentIndex}>
-          {currentStory.component(storyProps)}
-        </Fragment>
+        <Fragment key={currentIndex}>{currentStory.component()}</Fragment>
       ) : null,
-    [currentIndex, currentStory, storyProps],
+    [currentIndex, currentStory],
   )
 
   if (!currentStory) return null
@@ -407,12 +389,15 @@ export default function Stories({ stories }: Props) {
         aria-label={t('label')}
       >
         {/* Progress bar */}
-        <div className='absolute -top-4 -right-0.5 -left-0.5 z-20 flex'>
+        <div
+          className='absolute -top-4 -right-0.5 -left-0.5 z-20 flex'
+          inert={!!isIntroShown}
+        >
           {stories.map((_, index) => (
             <button
               key={index}
               className='group flex-1 cursor-pointer overflow-hidden px-0.5 py-4'
-              onClick={() => goToIndex(index)}
+              onClick={() => goTo(index)}
               aria-label={t('goToStory', { index: index + 1 })}
               aria-current={index === currentIndex ? 'step' : undefined}
             >
@@ -440,6 +425,7 @@ export default function Stories({ stories }: Props) {
             total: stories.length,
           })}
           tabIndex={-1}
+          inert={!!isIntroShown}
           className='relative w-full flex-1 pt-8 outline-none select-none [-webkit-touch-callout:none] sm:flex sm:flex-col sm:justify-center'
           onPointerDown={handlePointerDown}
           onPointerUp={handlePointerUp}
@@ -451,6 +437,53 @@ export default function Stories({ stories }: Props) {
           </StoryRestartContext>
         </div>
 
+        {isIntroShown && (
+          <div
+            role='dialog'
+            aria-modal='true'
+            aria-labelledby={introTitleId}
+            className='absolute -inset-5 z-30 flex flex-col rounded-3xl bg-black/80 backdrop-blur-sm'
+            onKeyDown={(e) => {
+              // "Got it" is its only control, so focus stays on it
+              if (e.key === 'Tab') {
+                e.preventDefault()
+              }
+            }}
+          >
+            <h2
+              id={introTitleId}
+              className='px-6 pt-12 text-center text-2xl font-semibold text-white'
+            >
+              {t('introTitle')}
+            </h2>
+            {/* Matches the slide's tap areas: the left third goes back */}
+            <div className='flex flex-1 px-5 text-center text-neutral-200'>
+              <div className='flex w-1/3 flex-col items-center justify-center gap-3 border-r border-dashed border-white/30 px-2'>
+                <span className='flex size-12 items-center justify-center rounded-full bg-white/10'>
+                  <ChevronLeftIcon className='size-6' />
+                </span>
+                {t('introBack')}
+              </div>
+              <div className='flex flex-1 flex-col items-center justify-center gap-3 px-2'>
+                <span className='flex size-12 items-center justify-center rounded-full bg-white/10'>
+                  <ChevronRightIcon className='size-6' />
+                </span>
+                {t('introForward')}
+              </div>
+            </div>
+            <div className='flex justify-center px-6 pb-12'>
+              <button
+                ref={introButtonRef}
+                type='button'
+                className='button'
+                onClick={dismissIntro}
+              >
+                {t('introDismiss')}
+              </button>
+            </div>
+          </div>
+        )}
+
         <div className='sr-only' aria-live='polite' aria-atomic='true'>
           {announcement}
         </div>
@@ -458,7 +491,7 @@ export default function Stories({ stories }: Props) {
 
       {controlsSlot &&
         createPortal(
-          <div className='icon-button-group'>
+          <div className='icon-button-group' inert={!!isIntroShown}>
             <button
               className='icon-button'
               onClick={goToPrev}
@@ -466,17 +499,6 @@ export default function Stories({ stories }: Props) {
               aria-label={t('previous')}
             >
               <ChevronLeftIcon className='size-5' />
-            </button>
-            <button
-              className='icon-button'
-              onClick={togglePause}
-              aria-label={isManuallyPaused ? t('resume') : t('pause')}
-            >
-              {isManuallyPaused ? (
-                <PlayIcon className='size-5' />
-              ) : (
-                <PauseIcon className='size-5' />
-              )}
             </button>
             <button
               className='icon-button'

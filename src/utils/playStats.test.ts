@@ -1,6 +1,18 @@
 import { Play, PlayMediaType } from '@/types/playHistory'
-import { describe, expect, it } from 'vitest'
-import { filterPlays, getExcludedIdentityIds, StatsUser } from './playStats'
+import { TautulliItemRow } from '@/types/tautulli'
+import { describe, expect, it, vi } from 'vitest'
+import getSettings from './getSettings'
+import {
+  createPlayStats,
+  filterPlays,
+  getExcludedIdentityIds,
+  StatsUser,
+} from './playStats'
+
+vi.mock('./getSettings', () => ({ default: vi.fn() }))
+vi.mock('./getMediaAdditionalData', () => ({
+  default: async (items: TautulliItemRow[]) => items,
+}))
 
 function play(
   id: string,
@@ -108,5 +120,69 @@ describe('getExcludedIdentityIds', () => {
   it('ignores IDs that are not known users', () => {
     expect(getExcludedIdentityIds(users, ['99'])).toEqual([])
     expect(getExcludedIdentityIds(users, [])).toEqual([])
+  })
+})
+
+describe('getPlayItem', () => {
+  const firstPlay = play('first', '2020-01-01T20:00:00Z', {
+    title: 'Alien',
+    year: 1979,
+    durationMs: 6000_000,
+    mediaId: 'alien',
+  })
+  const history = [
+    firstPlay,
+    play('again', '2024-05-01T20:00:00Z', {
+      title: 'Alien',
+      year: 1979,
+      durationMs: 3000_000,
+      mediaId: 'alien',
+    }),
+    play('other movie', '2024-06-01T20:00:00Z', {
+      title: 'Aliens',
+      year: 1986,
+      mediaId: 'aliens',
+    }),
+    play('other user', '2024-07-01T20:00:00Z', {
+      title: 'Alien',
+      year: 1979,
+      mediaId: 'alien',
+      identityId: 'bob',
+    }),
+  ]
+
+  function getPlayItem(plays: Play[], userId?: string) {
+    vi.mocked(getSettings).mockReturnValue({
+      general: { excludedUsers: [] },
+    } as unknown as ReturnType<typeof getSettings>)
+
+    return createPlayStats({
+      getPlays: async () => plays,
+      getUsers: async () => [user('1', 'alice'), user('2', 'bob')],
+      getMediaData: async () => ({ thumb: '', isDeleted: false }),
+    }).getPlayItem(firstPlay, userId)
+  }
+
+  it("counts the user's plays of the item since their first play", async () => {
+    const item = await getPlayItem(history, '1')
+
+    expect(item.title).toBe('Alien')
+    expect(item.total_plays).toBe(2)
+    expect(item.total_duration).toBe(9000)
+    expect(item.users_watched).toBeUndefined()
+  })
+
+  it('counts the first play when the history leaves it out', async () => {
+    const item = await getPlayItem(history.slice(1), '1')
+
+    expect(item.total_plays).toBe(2)
+    expect(item.total_duration).toBe(9000)
+  })
+
+  it('counts only the first play without a user', async () => {
+    const item = await getPlayItem(history)
+
+    expect(item.total_plays).toBe(1)
+    expect(item.total_duration).toBe(6000)
   })
 })

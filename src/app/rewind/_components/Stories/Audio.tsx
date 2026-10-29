@@ -6,6 +6,7 @@ import RewindStat from '../RewindStat'
 
 export default function StoryAudio({ userRewind, settings }: RewindStory) {
   const t = useTranslations('Rewind.Audio')
+  const tCommon = useTranslations('Rewind.Common')
 
   return (
     <>
@@ -26,9 +27,10 @@ export default function StoryAudio({ userRewind, settings }: RewindStory) {
                 ),
               })}
             </p>
+
             {userRewind.audio.percentage && (
               <p className='mt-2'>
-                {t.rich('percentage', {
+                {tCommon.rich('percentage', {
                   percentageValue: userRewind.audio.percentage,
                   percentage: (chunks) => (
                     <span className='rewind-stat'>{chunks}</span>

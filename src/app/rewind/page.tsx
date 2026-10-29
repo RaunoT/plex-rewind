@@ -22,7 +22,6 @@ import getSettings from '@/utils/getSettings'
 import getUsersTop from '@/utils/getUsersTop'
 import {
   canViewFeature,
-  getLibraryShare,
   getRewindStartDate,
   getUserShare,
   getViewer,
@@ -31,6 +30,7 @@ import { toPublicSettings } from '@/utils/publicSettings'
 import {
   getActiveUsers,
   getHistoryProgress,
+  getHistoryStatus,
   getLibraries,
   getServerId,
   getStatsSource,
@@ -120,9 +120,14 @@ async function RewindContent({ userId }: { userId?: string }) {
     getStatsSource(settings).getFirstPlay(user.id),
     getTopPeople(user.id, libraries),
   ])
-  // The card for the first play needs its poster and ratings looked up
+  // The card for the first play needs its poster and ratings looked up. Its
+  // all-time watch time and plays wait for the whole history to be read.
+  const hasFirstPlayTotals = (await getHistoryStatus()).isComplete
   const firstPlayItem = firstPlay?.play
-    ? await getStatsSource(settings).getPlayItem(firstPlay.play)
+    ? await getStatsSource(settings).getPlayItem(
+        firstPlay.play,
+        hasFirstPlayTotals ? user.id : undefined,
+      )
     : null
   const isUserExcluded = settings.general.excludedUsers.includes(user.id)
   const share = getUserShare(
@@ -142,12 +147,6 @@ async function RewindContent({ userId }: { userId?: string }) {
           (isUserExcluded ? (topMediaStats[type].durationValue ?? 0) : 0)
   }
 
-  function formatLibraryShare(seconds: number | null) {
-    const percentage = getLibraryShare(seconds, userTotalDuration)
-
-    return percentage === null ? null : formatPercent(percentage, locale)
-  }
-
   const userRewind: UserRewind = {
     duration: {
       user: secondsToTime(userTotalDuration, t),
@@ -165,7 +164,7 @@ async function RewindContent({ userId }: { userId?: string }) {
       duration: topMediaStats.shows.duration,
       duration_value: topMediaStats.shows.durationValue,
       server_duration_value: getServerDuration('shows'),
-      percentage: formatLibraryShare(topMediaStats.shows.durationValue),
+      percentage: topMediaStats.shows.percentage,
     },
     movies: {
       top: topMediaItems.movies,
@@ -173,7 +172,7 @@ async function RewindContent({ userId }: { userId?: string }) {
       duration: topMediaStats.movies.duration,
       duration_value: topMediaStats.movies.durationValue,
       server_duration_value: getServerDuration('movies'),
-      percentage: formatLibraryShare(topMediaStats.movies.durationValue),
+      percentage: topMediaStats.movies.percentage,
     },
     people,
     audio: {
@@ -182,7 +181,7 @@ async function RewindContent({ userId }: { userId?: string }) {
       duration: topMediaStats.audio.duration,
       duration_value: topMediaStats.audio.durationValue,
       server_duration_value: getServerDuration('audio'),
-      percentage: formatLibraryShare(topMediaStats.audio.durationValue),
+      percentage: topMediaStats.audio.percentage,
     },
     habits: habits,
     firstPlay: firstPlay && {
@@ -194,6 +193,7 @@ async function RewindContent({ userId }: { userId?: string }) {
           ? {
               data: firstPlayItem,
               type: ITEM_TYPES[firstPlay.play.mediaType],
+              hasTotals: hasFirstPlayTotals,
             }
           : null,
     },

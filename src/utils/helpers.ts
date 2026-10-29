@@ -191,21 +191,6 @@ export function getUserShare(
   }
 }
 
-// A library's part of the user's own watch time. Null when it rounds to
-// nothing, or if the totals, which are read separately, don't add up.
-export function getLibraryShare(
-  libraryDuration: number | null,
-  userDuration: number,
-): number | null {
-  if (!libraryDuration || userDuration <= 0) {
-    return null
-  }
-
-  const percentage = Math.round((libraryDuration * 100) / userDuration)
-
-  return percentage > 0 && percentage <= 100 ? percentage : null
-}
-
 export function isInitialSetup(settings: Settings): boolean {
   // Initial setup is when setupComplete is false, meaning the app has never been fully configured
   return !settings.setupComplete

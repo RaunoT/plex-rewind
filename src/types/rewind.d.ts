@@ -22,8 +22,8 @@ type LibraryRewind = {
   duration_value: number | null
   // Every user's time on the type, in seconds
   server_duration_value: number | null
-  // Of the user's total watch time, null when it isn't shown
-  percentage: string | null
+  // Of the user's total playtime, empty without any
+  percentage: string
   top: TautulliItemRow[]
 }
 
@@ -65,6 +65,8 @@ export type UserRewind = {
     item: {
       data: TautulliItemRow
       type: 'movie' | 'show' | 'artist'
+      // Whether its watch time and plays are the user's all-time ones
+      hasTotals: boolean
     } | null
   } | null
   user: RewindUser
@@ -72,7 +74,5 @@ export type UserRewind = {
 
 export type RewindStory = {
   userRewind: UserRewind
-  pause?: () => void
-  resume?: () => void
   settings: PublicSettings
 }

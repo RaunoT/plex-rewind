@@ -269,10 +269,12 @@
       "goToStory": "Gehe zu Story {index}",
       "previous": "Zurück",
       "next": "Weiter",
-      "pause": "Pausieren",
-      "resume": "Fortsetzen",
       "label": "Rewind-Stories",
-      "storyPosition": "Story {current} von {total}"
+      "storyPosition": "Story {current} von {total}",
+      "introTitle": "So navigierst du",
+      "introBack": "Tippe auf die linke Seite, um zurückzugehen",
+      "introForward": "Tippe auf die rechte Seite, um weiterzugehen",
+      "introDismiss": "Verstanden"
     },
     "Common": {
       "topShows": "{count, plural, one {Hier ist deine <top>meistgesehene Serie</top>} other {Hier sind deine <top>Top # Serien</top>}}",
@@ -280,7 +282,8 @@
       "topMovies": "{count, plural, one {Hier ist dein <top>meistgesehener Film</top>} other {Hier sind deine <top>Top # Filme</top>}}",
       "topDirectors": "{count, plural, one {Hier ist dein <top>meistgesehener Regisseur</top>} other {Hier sind deine <top>Top # Regisseure</top>}}",
       "topMovieActors": "{count, plural, one {Hier ist dein <top>meistgesehener Filmschauspieler</top>} other {Hier sind deine <top>Top # Filmschauspieler</top>}}",
-      "topArtists": "{count, plural, one {Hier ist dein <top>meistgehörter Künstler</top>} other {Hier sind deine <top>Top # Künstler</top>}}"
+      "topArtists": "{count, plural, one {Hier ist dein <top>meistgehörter Künstler</top>} other {Hier sind deine <top>Top # Künstler</top>}}",
+      "percentage": "Das sind <percentage>{percentageValue}</percentage> deiner gesamten Wiedergabezeit."
     },
     "Welcome": {
       "welcome": "Willkommen zu deinem <rewind>{serverName} Rewind</rewind>, <user>{userValue}!</user>",
@@ -306,7 +309,6 @@
     },
     "Audio": {
       "duration": "Du hast <duration>{durationValue}</duration> <audio>Musik</audio> gehört.",
-      "percentage": "Das sind <percentage>{percentageValue}</percentage> deiner gesamten Zeit.",
       "count": "Du hast insgesamt <count>{countValue, number}</count> <tracks>{countValue, plural, one {Titel} other {Titel}}</tracks> angehört!",
       "favorite": "Dein Lieblingstitel war",
       "noData": "Du hast keine <audio>Musik</audio> auf {serverName} <from>gehört</from>"
@@ -322,7 +324,6 @@
     },
     "Shows": {
       "duration": "<library>Serien</library> haben <duration>{durationValue}</duration> deiner Zeit auf <plex>{serverName}</plex> eingenommen.",
-      "percentage": "Das sind <percentage>{percentageValue}</percentage> deiner gesamten Zeit.",
       "count": "Du hast insgesamt <count>{countValue, number}</count> <episodes>{countValue, plural, one {Episode} other {Episoden}}</episodes> geschaut!",
       "favorite": "Deine Lieblingsserie war",
       "noData": "Du hast keine <shows>Serien</shows> auf <plex>{serverName}</plex> geschaut <emoji>😥</emoji>"
@@ -339,7 +340,6 @@
     },
     "Movies": {
       "duration": "<duration>{durationValue}</duration> deiner Zeit hast du mit <movies>Filmen</movies> verbracht.",
-      "percentage": "Das sind <percentage>{percentageValue}</percentage> deiner gesamten Zeit.",
       "count": "Du hast <count>{countValue, number}</count> <movies>{countValue, plural, one {Film} other {Filme}}</movies> gesehen!",
       "favorite": "Dein Lieblingsfilm war",
       "noData": "Du hast keine <movies>Filme</movies> auf <plex>{serverName}</plex> gesehen <emoji>😵‍💫</emoji>"

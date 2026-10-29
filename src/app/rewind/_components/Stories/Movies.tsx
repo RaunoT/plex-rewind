@@ -6,6 +6,7 @@ import RewindStat from '../RewindStat'
 
 export default function StoryMovies({ userRewind, settings }: RewindStory) {
   const t = useTranslations('Rewind.Movies')
+  const tCommon = useTranslations('Rewind.Common')
 
   return (
     <>
@@ -26,9 +27,10 @@ export default function StoryMovies({ userRewind, settings }: RewindStory) {
                 ),
               })}
             </p>
+
             {userRewind.movies.percentage && (
               <p className='mt-2'>
-                {t.rich('percentage', {
+                {tCommon.rich('percentage', {
                   percentageValue: userRewind.movies.percentage,
                   percentage: (chunks) => (
                     <span className='rewind-stat'>{chunks}</span>

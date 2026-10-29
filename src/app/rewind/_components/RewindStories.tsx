@@ -24,15 +24,10 @@ import StoryTotal from './Stories/Total'
 import StoryUsersTop from './Stories/UsersTop'
 import StoryWelcome from './Stories/Welcome'
 
-type Story = {
-  pause: () => void
-  resume: () => void
-}
-
 type StoryComponent = {
   userRewind: UserRewind
   settings: PublicSettings
-} & Story
+}
 
 type Props = {
   userRewind: UserRewind
@@ -48,13 +43,8 @@ export default function RewindStories({ userRewind, settings }: Props) {
     return {
       id,
       type: 'component' as const,
-      component: (story: Story) => (
-        <Component
-          userRewind={userRewind}
-          pause={story.pause}
-          resume={story.resume}
-          settings={settings}
-        />
+      component: () => (
+        <Component userRewind={userRewind} settings={settings} />
       ),
       duration,
     }

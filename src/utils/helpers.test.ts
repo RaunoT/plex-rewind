@@ -6,7 +6,6 @@ import {
   canViewFeature,
   checkRequiredSettings,
   getHomeTiles,
-  getLibraryShare,
   getRewindBreakdown,
   getRewindStartDate,
   getSettingsPage,
@@ -125,7 +124,7 @@ describe('hasRewindPlays', () => {
     duration: '0 mins',
     duration_value: 0,
     server_duration_value: 0,
-    percentage: null,
+    percentage: '',
     top: [],
   }
 
@@ -152,7 +151,7 @@ describe('getRewindBreakdown', () => {
     duration: '0 mins',
     duration_value: 0,
     server_duration_value: 0,
-    percentage: null,
+    percentage: '',
     top: [],
   }
 
@@ -244,27 +243,6 @@ describe('getUserShare', () => {
   it('has no percentage without a server total', () => {
     expect(getUserShare(0, 0, false).percentage).toBeNull()
     expect(getUserShare(0, 0, true).percentage).toBeNull()
-  })
-})
-
-describe('getLibraryShare', () => {
-  it("compares a library with the user's total", () => {
-    expect(getLibraryShare(450, 1000)).toBe(45)
-    expect(getLibraryShare(1000, 1000)).toBe(100)
-  })
-
-  it('has no percentage without plays to compare', () => {
-    expect(getLibraryShare(null, 1000)).toBeNull()
-    expect(getLibraryShare(0, 1000)).toBeNull()
-    expect(getLibraryShare(300, 0)).toBeNull()
-  })
-
-  it('has no percentage when it rounds to nothing', () => {
-    expect(getLibraryShare(4, 1000)).toBeNull()
-  })
-
-  it("has no percentage when the totals don't add up", () => {
-    expect(getLibraryShare(1200, 1000)).toBeNull()
   })
 })
 
