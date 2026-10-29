@@ -195,21 +195,23 @@ export function rankPeople(
         b.duration - a.duration ||
         a.billing - b.billing,
     )
-  const shown: typeof ranked = []
+  const shown: ((typeof ranked)[number] & { together: string[] })[] = []
 
   // Someone whose titles are all listed for a person above says nothing new,
-  // like the rest of a cast that's always together, so the next one shows.
+  // so the next one shows. When they're in every one of that person's titles,
+  // like the rest of a cast that's always together, they're named with them,
+  // even from below the top people.
   for (const person of ranked) {
-    if (shown.length === TOP_PEOPLE) {
-      break
-    }
-
-    const isRepeat = shown.some((above) =>
+    const above = shown.find((above) =>
       person.titles.every((title) => above.titles.includes(title)),
     )
 
-    if (!isRepeat) {
-      shown.push(person)
+    if (above) {
+      if (person.titles.length === above.titles.length) {
+        above.together.push(person.name)
+      }
+    } else if (shown.length < TOP_PEOPLE) {
+      shown.push({ ...person, together: [] })
     }
   }
 
@@ -225,6 +227,7 @@ export function rankPeople(
       count: titles.length,
       duration: person.duration,
       titles: titles.map((title) => title.item.title),
+      together: person.together,
       tmdbIds: titles.flatMap((title) => (title.tmdbId ? [title.tmdbId] : [])),
     }
   })

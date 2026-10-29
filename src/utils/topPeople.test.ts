@@ -72,6 +72,7 @@ describe('rankPeople', () => {
         count: 3,
         duration: 450,
         titles: ['Tenet', 'Inception', 'Oppenheimer'],
+        together: [],
         tmdbIds: [577922, 27205],
       },
       {
@@ -79,6 +80,7 @@ describe('rankPeople', () => {
         count: 2,
         duration: 450,
         titles: ['Arrival', 'Dune'],
+        together: [],
         tmdbIds: [],
       },
     ])
@@ -108,7 +110,29 @@ describe('rankPeople', () => {
     expect(actors.map((actor) => actor.name)).toEqual(['A', 'B', 'C', 'D', 'E'])
   })
 
-  it('leaves out a cast that is always together, keeping its lead', () => {
+  it('names a repeat ranked below the top five with the person above', () => {
+    const actors = rankPeople(
+      ['A', 'B', 'C', 'D', 'E', 'F'].flatMap((name) => [
+        credited(`${name} one`, 100, {
+          actors: name === 'A' ? ['A', 'Sidekick'] : [name],
+        }),
+        credited(`${name} two`, 100, {
+          actors: name === 'A' ? ['A', 'Sidekick'] : [name],
+        }),
+      ]),
+      'actors',
+    )
+
+    expect(actors.map(({ name, together }) => ({ name, together }))).toEqual([
+      { name: 'A', together: ['Sidekick'] },
+      { name: 'B', together: [] },
+      { name: 'C', together: [] },
+      { name: 'D', together: [] },
+      { name: 'E', together: [] },
+    ])
+  })
+
+  it('names a cast that is always together with its lead', () => {
     const actors = rankPeople(
       [
         credited('Chamber of Secrets', 100, {
@@ -128,9 +152,9 @@ describe('rankPeople', () => {
       'actors',
     )
 
-    expect(actors.map((actor) => actor.name)).toEqual([
-      'Daniel Radcliffe',
-      'Tom Hanks',
+    expect(actors.map(({ name, together }) => ({ name, together }))).toEqual([
+      { name: 'Daniel Radcliffe', together: ['Rupert Grint', 'Emma Watson'] },
+      { name: 'Tom Hanks', together: [] },
     ])
   })
 
@@ -146,10 +170,13 @@ describe('rankPeople', () => {
       'actors',
     )
 
-    expect(actors.map((actor) => actor.name)).toEqual(['Tom Hanks', 'Meg Ryan'])
+    expect(actors.map(({ name, together }) => ({ name, together }))).toEqual([
+      { name: 'Tom Hanks', together: [] },
+      { name: 'Meg Ryan', together: [] },
+    ])
   })
 
-  it('leaves out someone whose titles are all listed above', () => {
+  it('leaves out someone in only some titles above, without naming them', () => {
     const actors = rankPeople(
       [
         credited('Sleepless in Seattle', 300, {
@@ -161,7 +188,9 @@ describe('rankPeople', () => {
       'actors',
     )
 
-    expect(actors.map((actor) => actor.name)).toEqual(['Tom Hanks'])
+    expect(actors.map(({ name, together }) => ({ name, together }))).toEqual([
+      { name: 'Tom Hanks', together: [] },
+    ])
   })
 
   it('only counts the top-billed actors', () => {
@@ -194,6 +223,7 @@ describe('rankPeople', () => {
         count: 2,
         duration: 200,
         titles: ['One', 'Two'],
+        together: [],
         tmdbIds: [],
       },
     ])
@@ -343,6 +373,7 @@ describe('getTopPeople', () => {
         count: 2,
         duration: 300,
         titles: ['Tenet', 'Inception'],
+        together: [],
         image: null,
       },
     ])

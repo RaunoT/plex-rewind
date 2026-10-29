@@ -39,6 +39,9 @@ export type TopPerson = {
   duration: number
   // The most watched first
   titles: string[]
+  // Who's in exactly the same titles, like the rest of a cast that's always
+  // together, the best ranked first
+  together: string[]
   // TMDB's portrait, null when it has none
   image: string | null
 }

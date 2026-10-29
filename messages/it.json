@@ -336,7 +336,9 @@
     },
     "People": {
       "movies": "{count, plural, one {# film} other {# film}}",
-      "shows": "{count, plural, one {# serie TV} other {# serie TV}}"
+      "shows": "{count, plural, one {# serie TV} other {# serie TV}}",
+      "together": "Insieme a {names}",
+      "more": "altri"
     },
     "Habits": {
       "day": "Il giorno in cui hai guardato di più è stato <day>{dayValue}</day>",

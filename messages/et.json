@@ -336,7 +336,9 @@
     },
     "People": {
       "movies": "{count, plural, one {# film} other {# filmi}}",
-      "shows": "{count, plural, one {# seriaal} other {# seriaali}}"
+      "shows": "{count, plural, one {# seriaal} other {# seriaali}}",
+      "together": "Samas koosseisus: {names}",
+      "more": "teised"
     },
     "Habits": {
       "day": "Sinu lemmik vaatamispäev oli <day>{dayValue}</day>",

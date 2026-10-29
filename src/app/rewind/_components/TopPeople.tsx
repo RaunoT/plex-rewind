@@ -6,6 +6,7 @@ import Rank from '@/components/MediaItem/Rank'
 import { TopPerson } from '@/types/statsSource'
 import { secondsToTime } from '@/utils/formatting'
 import { slideDown } from '@/utils/motion'
+import clsx from 'clsx'
 import { motion } from 'motion/react'
 import { useFormatter, useTranslations } from 'next-intl'
 
@@ -15,12 +16,25 @@ type Props = {
   type: 'movie' | 'show'
 }
 
+// The names that fit on a line before "and more"
+const TOGETHER_NAMES = 2
+
 // Ranked like the top movies, with the person's portrait as the poster
 export default function TopPeople({ people, type }: Props) {
   const translations = useTranslations()
   const t = useTranslations('Rewind.People')
   const format = useFormatter()
   const TypeIcon = MEDIA_ICONS[type]
+
+  // Only the top-billed are named, and the cast goes on past them, so the
+  // list always ends in "and more" rather than a count.
+  function formatTogether(names: string[]) {
+    return t('together', {
+      names: format.list([...names.slice(0, TOGETHER_NAMES), t('more')], {
+        type: 'conjunction',
+      }),
+    })
+  }
 
   return (
     <ol className='mt-4 flex flex-col text-white sm:mt-5'>
@@ -44,7 +58,19 @@ export default function TopPeople({ people, type }: Props) {
             <h2 className='truncate leading-snug font-medium sm:text-lg'>
               {person.name}
             </h2>
-            <p className='mb-2 line-clamp-2 text-sm text-neutral-400'>
+            {person.together.length > 0 && (
+              <p className='truncate text-sm text-neutral-300'>
+                {formatTogether(person.together)}
+              </p>
+            )}
+            {/* A line shorter beside the names, so the row stays as tall as
+                the portrait */}
+            <p
+              className={clsx(
+                'mb-2 text-sm text-neutral-400',
+                person.together.length ? 'line-clamp-1' : 'line-clamp-2',
+              )}
+            >
               {format.list(person.titles, { type: 'unit' })}
             </p>
             <ul className='icon-stats-container'>
