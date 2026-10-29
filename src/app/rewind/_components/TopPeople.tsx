@@ -14,8 +14,6 @@ type Props = {
   people: TopPerson[]
   // What the titles they're counted by are
   type: 'movie' | 'show'
-  // Called when the full list of a person's titles opens, to pause the story
-  onExpand?: () => void
 }
 
 type RowProps = Omit<Props, 'people'> & {
@@ -91,7 +89,7 @@ function findCut(
   }
 }
 
-function PersonRow({ person, i, type, onExpand }: RowProps) {
+function PersonRow({ person, i, type }: RowProps) {
   const translations = useTranslations()
   const t = useTranslations('Rewind.People')
   const format = useFormatter()
@@ -150,14 +148,6 @@ function PersonRow({ person, i, type, onExpand }: RowProps) {
     })
   }
 
-  function toggleTitles() {
-    if (!isExpanded) {
-      onExpand?.()
-    }
-
-    setIsExpanded(!isExpanded)
-  }
-
   return (
     <motion.li
       className='flex items-center gap-3 py-2.5 not-first:border-t not-first:border-white/10 first:pt-0 last:pb-0 motion-reduce:transform-none! motion-reduce:opacity-100! sm:gap-4'
@@ -198,7 +188,7 @@ function PersonRow({ person, i, type, onExpand }: RowProps) {
                 className='link underline decoration-white/30 underline-offset-2'
                 aria-expanded={isExpanded}
                 aria-controls={titlesId}
-                onClick={toggleTitles}
+                onClick={() => setIsExpanded(!isExpanded)}
               >
                 {isExpanded ? t('seeLess') : seeMore}
               </button>
