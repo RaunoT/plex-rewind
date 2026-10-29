@@ -50,6 +50,19 @@ export default withAuth(
     const settings = readSettings()
     const missingSetting = settings ? checkRequiredSettings(settings) : null
 
+    // Tracearr's shows library was named "TV Shows", so old links still lead
+    // to it
+    if (
+      pathname === '/dashboard/tv-shows' &&
+      settings?.connection.statisticsSource === 'tracearr'
+    ) {
+      const url = req.nextUrl.clone()
+
+      url.pathname = '/dashboard/shows'
+
+      return NextResponse.redirect(url)
+    }
+
     if (missingSetting && settings) {
       const isSettingsPage = pathname.includes('settings')
       const isAdmin = req.nextauth?.token?.isAdmin

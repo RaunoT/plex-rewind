@@ -89,7 +89,7 @@ const EARLIEST_PLAY = Date.UTC(2008, 0, 1)
 const PLEX_OWNER_ACCOUNT_ID = '1'
 const LIBRARY_NAMES: Record<TautulliMediaType, string> = {
   movie: 'Movies',
-  show: 'TV Shows',
+  show: 'Shows',
   artist: 'Music',
 }
 // What the rollups are read from, which is all a snapshot keeps of them
