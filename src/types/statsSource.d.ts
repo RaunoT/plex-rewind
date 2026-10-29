@@ -100,8 +100,10 @@ export type StatsSource = {
   getPlaysByTime: (userId: string, since: string) => Promise<PlaysByTime>
   // Null when the user has no plays or the source couldn't be asked
   getFirstPlay: (userId: string) => Promise<FirstPlay | null>
-  // A play's movie, show or artist as a row, with its poster and ratings
-  getPlayItem: (play: Play) => Promise<TautulliItemRow>
+  // A play's movie, show or artist as a row, with its poster and ratings. With
+  // a user, the row counts every play of it the user has, which waits for the
+  // whole history to be read. Without one, only this play.
+  getPlayItem: (play: Play, userId?: string) => Promise<TautulliItemRow>
   // The play histories the stats are read from. Without libraries, those of
   // every library, whoever is signed in.
   getHistoryReaders: (libraries?: TautulliLibrary[]) => Promise<HistoryReader[]>
