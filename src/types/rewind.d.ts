@@ -22,7 +22,7 @@ type LibraryRewind = {
   duration_value: number | null
   // Every user's time on the type, in seconds
   server_duration_value: number | null
-  // Of the user's total playtime, empty without any
+  // Of the user's total playtime, empty when it rounds to 0%
   percentage: string
   top: TautulliItemRow[]
 }

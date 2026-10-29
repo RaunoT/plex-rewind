@@ -27,15 +27,17 @@ export async function getTopMediaStats(
 
   function formatStats(type: TautulliMediaReturnType) {
     const { count, duration } = stats[type]
+    const percentage =
+      duration && totalDuration
+        ? Math.round((duration * 100) / totalDuration)
+        : 0
 
     return {
       count,
       duration: duration === null ? '' : secondsToTime(duration, t),
       durationValue: duration,
-      percentage:
-        duration === null || !totalDuration
-          ? ''
-          : formatPercent(Math.round((duration * 100) / totalDuration), locale),
+      // "0%" would read as if nothing was played
+      percentage: percentage > 0 ? formatPercent(percentage, locale) : '',
     }
   }
 
