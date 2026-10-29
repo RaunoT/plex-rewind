@@ -178,7 +178,7 @@ async function LibraryTile({
     : (
         await getItems(library, {
           period: daysAgo,
-          sortByPlays: true,
+          sortBy: 'plays',
           count: 1,
         })
       ).items

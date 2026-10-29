@@ -72,7 +72,8 @@
     "sortByLabel": "Ordina per",
     "sort": "Ordina",
     "byDuration": "Per tempo di visualizzazione",
-    "byPlays": "Per riproduzioni"
+    "byPlays": "Per riproduzioni",
+    "byUsers": "Per utenti"
   },
   "DashboardNavContent": {
     "label": "Navigazione della dashboard",
