@@ -20,11 +20,12 @@ import {
   TracearrStreamsResponse,
   TracearrUser,
 } from '@/types/tracearr'
-import { minBy, sumBy } from 'lodash'
+import { minBy, pick, sumBy } from 'lodash'
 import { unstable_rethrow } from 'next/navigation'
 import qs from 'qs'
 import { SourceMediaData } from './getMediaAdditionalData'
 import getSettings from './getSettings'
+import { isGatewayError, isHostDown, markHostDown } from './hostBackoff'
 import { LibrariesSize, sumLibrariesSize } from './librariesSize'
 import {
   dropStaleHistories,
@@ -34,6 +35,7 @@ import {
   readPlays,
 } from './playHistory'
 import { PLAY_MEDIA_TYPES } from './playStats'
+import { getSnapshot, isListOf, saveSnapshot } from './sourceSnapshot'
 
 type QueryParams = {
   [key: string]: string | number | undefined
@@ -90,6 +92,18 @@ const LIBRARY_NAMES: Record<TautulliMediaType, string> = {
   show: 'TV Shows',
   artist: 'Music',
 }
+// What the rollups are read from, which is all a snapshot keeps of them
+const ROLLUP_FIELDS = [
+  'server_id',
+  'server_type',
+  'library_id',
+  'item_count',
+  'movie_count',
+  'episode_count',
+  'show_count',
+  'track_count',
+  'total_file_size',
+] as const satisfies readonly (keyof TracearrLibrary)[]
 // Next.js can bundle this file into more than one chunk, and each copy would
 // otherwise read the history and spend the rate limit on its own.
 const globalForTracearr = globalThis as unknown as {
@@ -107,9 +121,9 @@ export function getTracearrUrl(settings: Settings = getSettings()): string {
   return settings.connection.tracearrUrl.replace(/\/+$/, '')
 }
 
-// Tracearr's history of the Plex server. Without the API key, so a new key
-// keeps the plays read with the old one.
-function getHistoryKey(): string {
+// Tracearr's history of the Plex server, and its snapshot. Without the API
+// key, so a new key keeps what was read with the old one.
+export function getTracearrKey(): string {
   const settings = getSettings()
 
   return `tracearr|${getTracearrUrl(settings)}|${settings.connection.tracearrServerId}`
@@ -244,13 +258,19 @@ export default async function fetchTracearr<T>(
   const query = qs.stringify(params)
   const url = `${tracearrUrl}/api/v2/public/${path}${query ? `?${query}` : ''}`
 
+  if (isHostDown(tracearrUrl)) {
+    return null
+  }
+
   for (let attempt = 0; ; attempt++) {
     if (paced) {
       await waitForRateLimit()
     }
 
+    let res: Response | undefined
+
     try {
-      const res = await fetch(url, {
+      res = await fetch(url, {
         headers: {
           Authorization: `Bearer ${apiKey}`,
         },
@@ -276,6 +296,10 @@ export default async function fetchTracearr<T>(
       }
 
       if (!res.ok) {
+        if (isGatewayError(res.status)) {
+          markHostDown(tracearrUrl)
+        }
+
         console.error(
           `[TRACEARR] - API request failed! The path was '${path}'.\n`,
           res.status,
@@ -289,6 +313,12 @@ export default async function fetchTracearr<T>(
     } catch (error) {
       // Next.js marks a route dynamic by throwing from fetch while rendering.
       unstable_rethrow(error)
+
+      // Without an answer at all, it's the host that's down
+      if (!res) {
+        markHostDown(tracearrUrl)
+      }
+
       console.error(
         `[TRACEARR] - Error fetching from API! The path was '${path}'.\n`,
         error,
@@ -482,9 +512,22 @@ const getPlexUsers = cached<PlexUsers>('users', async () => {
   return { users, isComplete: pages.isComplete }
 })
 
-// A list that stopped early is still good for the stats, which count who it has
+// A list that stopped early is still good for the stats, which count who it
+// has. While Tracearr is down, the saved list stands in, without the emails.
 export async function getTracearrPlexUsers(): Promise<TracearrPlexUser[]> {
-  return (await getPlexUsers())?.users ?? []
+  const key = `${getTracearrKey()}|users`
+  const list = await getPlexUsers()
+
+  if (!list) {
+    return (await getSnapshot(key, isListOf<TracearrPlexUser>)) ?? []
+  }
+
+  void saveSnapshot(
+    key,
+    list.users.map((user) => ({ ...user, email: '' })),
+  )
+
+  return list.users
 }
 
 // Null when Tracearr couldn't be asked, or when the list stopped early and the
@@ -507,7 +550,7 @@ export async function getTracearrUser(
 function getCachedAvatars(): Map<string, string> {
   const avatars = new Map<string, string>()
 
-  for (const play of getStoredPlays(getHistoryKey())) {
+  for (const play of getStoredPlays(getTracearrKey())) {
     if (play.avatar && !avatars.has(play.identityId)) {
       avatars.set(play.identityId, play.avatar)
     }
@@ -613,7 +656,7 @@ async function fetchPlaysPage(cursor?: string): Promise<PlaysPage | null> {
 
 // Tracearr's history of the Plex server, read into the shared play store
 export function getTracearrHistoryReader(): HistoryReader {
-  const key = getHistoryKey()
+  const key = getTracearrKey()
 
   void dropStaleHistories(key)
 
@@ -797,17 +840,25 @@ const getAllLibraries = cached<TracearrLibrary[]>('libraries', async () => {
   return Array.isArray(res?.data) ? res.data : null
 })
 
+// The saved rollups stand in while Tracearr is down
 async function getLibraryRollups(): Promise<TracearrLibrary[] | null> {
+  const key = `${getTracearrKey()}|libraries`
   const [libraries, serverId] = await Promise.all([
     getAllLibraries(),
     getPlexServerId(),
   ])
 
   if (!libraries || !serverId) {
-    return null
+    return getSnapshot(key, isListOf<TracearrLibrary>)
   }
 
-  return libraries.filter((library) => library.server_id === serverId)
+  const rollups = libraries
+    .filter((library) => library.server_id === serverId)
+    .map((library) => pick(library, ROLLUP_FIELDS))
+
+  void saveSnapshot(key, rollups)
+
+  return rollups
 }
 
 // Built from the same two lists as the libraries, so whether Tracearr counts as

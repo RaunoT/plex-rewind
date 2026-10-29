@@ -4,6 +4,7 @@
   --color-plex: #e5a00d;
   --color-danger: var(--color-red-300);
   --color-success: var(--color-green-400);
+  --color-warning: var(--color-amber-300);
 }
 
 @layer base {

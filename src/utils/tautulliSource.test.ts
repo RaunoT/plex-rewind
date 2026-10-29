@@ -2,10 +2,12 @@ import { Play } from '@/types/playHistory'
 import { Settings } from '@/types/settings'
 import { TautulliItemRow, TautulliLibrary } from '@/types/tautulli'
 import { cloneDeep } from 'lodash'
+import { getServerSession } from 'next-auth'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { DEFAULT_SETTINGS } from './constants'
 import fetchTautulli from './fetchTautulli'
 import getSettings from './getSettings'
+import { getSnapshot, saveSnapshot } from './sourceSnapshot'
 import { getTautulliPlays } from './tautulliHistory'
 import tautulliSource, { getTautulliMediaData } from './tautulliSource'
 
@@ -13,6 +15,11 @@ vi.mock('@/lib/auth', () => ({ authOptions: {} }))
 vi.mock('next-auth', () => ({ getServerSession: vi.fn() }))
 vi.mock('./fetchTautulli', () => ({ default: vi.fn() }))
 vi.mock('./getSettings', () => ({ default: vi.fn() }))
+vi.mock('./sourceSnapshot', async (importOriginal) => ({
+  ...(await importOriginal<typeof import('./sourceSnapshot')>()),
+  getSnapshot: vi.fn(),
+  saveSnapshot: vi.fn(),
+}))
 // The first play is made into a play the real way
 vi.mock('./tautulliHistory', async (importOriginal) => ({
   ...(await importOriginal<typeof import('./tautulliHistory')>()),
@@ -279,6 +286,128 @@ describe('getInactiveUser', () => {
     fetchMock.mockResolvedValue(tautulliData({}))
 
     await expect(tautulliSource.getInactiveUser('8')).resolves.toBeNull()
+  })
+})
+
+describe('while Tautulli is down', () => {
+  const KEY = 'tautulli|http://tautulli:8181'
+  const users = ['1', '3', '7'].map((id) => ({
+    user_id: Number(id),
+    username: `user${id}`,
+    friendly_name: `User ${id}`,
+    user_thumb: '',
+    is_active: 1,
+  }))
+
+  function useSnapshot(answers: Record<string, unknown>) {
+    vi.mocked(getSnapshot).mockImplementation(
+      async (key: string) => (answers[key] ?? null) as never,
+    )
+  }
+
+  beforeEach(() => {
+    const settings: Settings = cloneDeep(DEFAULT_SETTINGS)
+
+    settings.connection.tautulliUrl = 'http://tautulli:8181'
+    settings.general.excludedUsers = ['3']
+    settings.general.isOutsideAccess = true
+    vi.mocked(getSettings).mockReturnValue(settings)
+  })
+
+  it('saves the users without their emails or tokens', async () => {
+    fetchMock.mockResolvedValue(
+      tautulliData([
+        {
+          ...users[0],
+          email: 'user1@example.com',
+          server_token: 'secret',
+          shared_libraries: ['1'],
+        },
+      ]),
+    )
+
+    await tautulliSource.getUsers()
+
+    expect(saveSnapshot).toHaveBeenCalledWith(`${KEY}|users`, [
+      { ...users[0], email: '', shared_libraries: [] },
+    ])
+  })
+
+  it('lists the saved users', async () => {
+    fetchMock.mockResolvedValue(null)
+    useSnapshot({ [`${KEY}|users`]: users })
+
+    const result = await tautulliSource.getUsers()
+
+    expect(result.map((user) => user.user_id)).toEqual([1, 3, 7])
+  })
+
+  it('still leaves out the plays of excluded users', async () => {
+    vi.mocked(getTautulliPlays).mockResolvedValue([
+      play('1', { durationMs: 60 * 60 * 1000 }),
+      play('3'),
+    ])
+    fetchMock.mockResolvedValue(null)
+    useSnapshot({ [`${KEY}|users`]: users })
+
+    const total = await tautulliSource.getTotalDuration({
+      since: '2026-01-01',
+      libraries: [library('1', 'movie')],
+    })
+
+    expect(total).toBe(3600)
+  })
+
+  it('counts no plays when the users are unknown and some are excluded', async () => {
+    vi.mocked(getTautulliPlays).mockResolvedValue([play('1'), play('3')])
+    fetchMock.mockResolvedValue(null)
+
+    const total = await tautulliSource.getTotalDuration({
+      since: '2026-01-01',
+      libraries: [library('1', 'movie')],
+    })
+
+    expect(total).toBe(0)
+  })
+
+  it('returns the saved libraries', async () => {
+    fetchMock.mockResolvedValue(null)
+    useSnapshot({
+      [`${KEY}|libraries`]: [library('1', 'movie'), library('2', 'show')],
+    })
+
+    await expect(tautulliSource.getLibraries()).resolves.toEqual([
+      library('1', 'movie'),
+      library('2', 'show'),
+    ])
+  })
+
+  it('returns only the libraries that were shared with the signed-in user', async () => {
+    const settings = vi.mocked(getSettings)()
+
+    settings.general.isOutsideAccess = false
+    settings.setupComplete = true
+    vi.mocked(getServerSession).mockResolvedValue({ user: { id: '7' } })
+    fetchMock.mockResolvedValue(null)
+    useSnapshot({
+      [`${KEY}|libraries`]: [library('1', 'movie'), library('2', 'show')],
+      [`${KEY}|sharedLibraries|7`]: ['2'],
+    })
+
+    await expect(tautulliSource.getLibraries()).resolves.toEqual([
+      library('2', 'show'),
+    ])
+  })
+
+  it('finds an inactive user in the saved users', async () => {
+    fetchMock.mockResolvedValue(null)
+    useSnapshot({ [`${KEY}|users`]: users })
+
+    await expect(tautulliSource.getInactiveUser('7')).resolves.toMatchObject({
+      user_id: 7,
+      user: 'user7',
+      friendly_name: 'User 7',
+    })
   })
 })
 

@@ -83,7 +83,9 @@
     "cta": "Erneut versuchen",
     "sourceUnreachable": "{source} ist nicht erreichbar",
     "sourceUnreachableDescription": "Prüfe, ob {source} läuft und von Plex Rewind aus erreichbar ist, und versuche es dann erneut",
-    "connectionSettings": "Verbindungseinstellungen prüfen"
+    "connectionSettings": "Verbindungseinstellungen prüfen",
+    "sourceOutage": "{source} ist nicht erreichbar. Die Statistiken wurden zuletzt {time} aktualisiert und sind möglicherweise veraltet.",
+    "sourceOutageNoTime": "{source} ist nicht erreichbar, daher sind die Statistiken möglicherweise veraltet."
   },
   "History": {
     "syncingTitle": "Wiedergabeverlauf wird synchronisiert",

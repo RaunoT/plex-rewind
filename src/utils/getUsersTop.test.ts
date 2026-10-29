@@ -18,6 +18,12 @@ vi.mock('./fetchSeerr', () => ({
   fetchSeerrUserId: vi.fn(),
 }))
 vi.mock('./getSettings', () => ({ default: vi.fn() }))
+vi.mock('./sourceSnapshot', async (importOriginal) => ({
+  ...(await importOriginal<typeof import('./sourceSnapshot')>()),
+  getSnapshot: vi.fn(),
+  hasSnapshot: vi.fn(),
+  saveSnapshot: vi.fn(),
+}))
 vi.mock('./statsSource', async (importOriginal) => ({
   ...(await importOriginal<typeof import('./statsSource')>()),
   getLibraries: vi.fn(),

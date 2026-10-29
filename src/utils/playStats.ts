@@ -244,6 +244,11 @@ export function createPlayStats(provider: PlaysProvider): PlayStats {
       return []
     }
 
+    // Without the users, the excluded users' plays can't be left out
+    if (!userId && excludedUsers.length && !users.length) {
+      return []
+    }
+
     return filterPlays(plays, {
       since,
       identityId,

@@ -638,6 +638,19 @@ async function getStatus(stores: PlayStore[]): Promise<HistoryStatus> {
   }
 }
 
+// When the newest plays of every history were last read, null before any were.
+// Read only from what's in memory or saved, so it doesn't wait on the source.
+export async function getUpdatedAt(
+  readers: HistoryReader[],
+): Promise<number | null> {
+  const stores = await Promise.all(readers.map(getStore))
+  const times = stores
+    .filter((store) => store.readTo !== Infinity)
+    .map((store) => store.toppedUpAt)
+
+  return times.length ? Math.min(...times) : null
+}
+
 export async function getReadStatus(
   readers: HistoryReader[],
 ): Promise<HistoryStatus> {

@@ -132,13 +132,18 @@ async function getFirstPlayAt(sectionId: string): Promise<number | null> {
   return firstPlayAt
 }
 
+// What Tautulli's histories and snapshot are saved under. Without the API key,
+// so a new key keeps what was read with the old one.
+export function getTautulliKey(): string {
+  return `tautulli|${getSettings().connection.tautulliUrl}`
+}
+
 // One history per library, as Tautulli's rows don't say which library they're
 // from. Libraries of other types, such as photos, have no plays to read.
 export function getTautulliHistoryReaders(
   libraries: TautulliLibrary[],
 ): HistoryReader[] {
-  // Without the API key, so a new key keeps the plays read with the old one
-  const keyPrefix = `tautulli|${getSettings().connection.tautulliUrl}|`
+  const keyPrefix = `${getTautulliKey()}|`
 
   void dropStaleHistories(keyPrefix)
 
