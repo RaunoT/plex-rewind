@@ -45,7 +45,7 @@ export default function StoryFirstPlay({ userRewind, settings }: RewindStory) {
       )}
 
       {firstPlay.title && (
-        <RewindStat renderDelay={6} loaderDelay={3} noScale>
+        <RewindStat renderDelay={6} noScale>
           <p className={firstPlay.item ? 'mb-2' : undefined}>
             {t.rich('title', {
               titleValue: firstPlay.title,

@@ -5,7 +5,6 @@ import {
   writeStorage,
 } from '@/app/_components/GlobalContextProvider'
 import { trackEvent } from '@/utils/analytics'
-import { REWIND_CONTROLS_ID } from '@/utils/constants'
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/outline'
 import { MotionConfig } from 'motion/react'
 import { useTranslations } from 'next-intl'
@@ -20,14 +19,11 @@ import {
   useMemo,
   useRef,
   useState,
-  useSyncExternalStore,
 } from 'react'
-import { createPortal } from 'react-dom'
 
 type StoryClock = {
-  // Milliseconds since the story started
+  // Milliseconds into the story, moved only by the controls
   elapsed: number
-  isPaused: boolean
   registerReveal: (at: number) => () => void
 }
 
@@ -35,7 +31,6 @@ type StoryClock = {
 // controls can step from statement to statement
 export const StoryClockContext = createContext<StoryClock>({
   elapsed: 0,
-  isPaused: false,
   registerReveal: () => () => {},
 })
 
@@ -47,7 +42,6 @@ type Story = {
   id: string
   type: 'component'
   component: () => ReactNode
-  duration: number
 }
 
 type Props = {
@@ -58,9 +52,6 @@ type Props = {
   }
 }
 
-const HOLD_THRESHOLD = 200 // ms to distinguish tap from hold
-const DEFAULT_DURATION = 5000
-const TICK = 100
 const INTRO_SEEN_KEY = 'rewindIntroSeen'
 // Without a cursor or arrow keys, the tap areas aren't obvious
 const TOUCH_QUERY = '(hover: none) and (pointer: coarse)'
@@ -86,57 +77,34 @@ function isInteractiveTarget(target: EventTarget | null) {
   return target instanceof Element && !!target.closest(INTERACTIVE_SELECTOR)
 }
 
-function subscribeToVisibility(onChange: () => void) {
-  document.addEventListener('visibilitychange', onChange)
-
-  return () => document.removeEventListener('visibilitychange', onChange)
-}
-
-function getIsHidden() {
-  return document.hidden
-}
-
-// Counts as hidden until hydrated so the progress never runs unattended
-function getServerIsHidden() {
-  return true
-}
-
 export default function Stories({ stories }: Props) {
   const t = useTranslations('Rewind.Stories')
   const [currentIndex, setCurrentIndex] = useState(0)
   // Unknown until mounted, so the first story waits for it
   const [isIntroShown, setIsIntroShown] = useState<boolean | null>(null)
-  const [isHolding, setIsHolding] = useState(false)
   const [announcement, setAnnouncement] = useState('')
-  const [controlsSlot, setControlsSlot] = useState<HTMLElement | null>(null)
   const [elapsed, setElapsed] = useState(0)
   // When each statement of the current story appears
   const [reveals, setReveals] = useState<number[]>([])
-  const isHidden = useSyncExternalStore(
-    subscribeToVisibility,
-    getIsHidden,
-    getServerIsHidden,
-  )
   const introTitleId = useId()
   const slideRef = useRef<HTMLDivElement>(null)
   const introButtonRef = useRef<HTMLButtonElement>(null)
-  const holdTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
-  const isHoldingRef = useRef(false)
   const shouldRestoreFocusRef = useRef(false)
   const shouldSeekToEndRef = useRef(false)
   const trackedIndexRef = useRef<number | null>(null)
   const hasTrackedCompleteRef = useRef(false)
   const currentStory = stories[currentIndex]
   const currentStoryId = currentStory?.id
-  const duration = currentStory?.duration || DEFAULT_DURATION
-  const isPaused = isHolding || isHidden || isIntroShown !== false
-  const isFinished = elapsed >= duration
   const revealPoints = useMemo(
     () => [...new Set(reveals)].sort((a, b) => a - b),
     [reveals],
   )
   const nextReveal = revealPoints.find((at) => at > elapsed)
   const shownReveals = revealPoints.filter((at) => at <= elapsed)
+  // Fills as the story's statements are stepped through
+  const progress = revealPoints.length
+    ? shownReveals.length / revealPoints.length
+    : 0
   const canGoBack = currentIndex > 0 || shownReveals.length > 1
   const canGoForward =
     currentIndex < stories.length - 1 || nextReveal !== undefined
@@ -196,53 +164,13 @@ export default function Stories({ stories }: Props) {
     shouldRestoreFocusRef.current = true
     setIsIntroShown(false)
   }, [])
-  // Returns whether a hold was in progress
-  const endHold = useCallback(() => {
-    if (holdTimerRef.current) {
-      clearTimeout(holdTimerRef.current)
-      holdTimerRef.current = null
-    }
-
-    if (isHoldingRef.current) {
-      isHoldingRef.current = false
-      setIsHolding(false)
-
-      return true
-    }
-
-    return false
-  }, [])
-  const handlePointerDown = useCallback(
-    (e: PointerEvent<HTMLDivElement>) => {
-      if (!e.isPrimary || (e.pointerType === 'mouse' && e.button !== 0)) {
-        return
-      }
-
-      if (isInteractiveTarget(e.target)) {
-        return
-      }
-
-      endHold()
-      holdTimerRef.current = setTimeout(() => {
-        holdTimerRef.current = null
-        isHoldingRef.current = true
-        setIsHolding(true)
-      }, HOLD_THRESHOLD)
-    },
-    [endHold],
-  )
   const handlePointerUp = useCallback(
     (e: PointerEvent<HTMLDivElement>) => {
-      if (!e.isPrimary) {
-        return
-      }
-
-      // A hold only pauses, it never navigates
-      if (endHold()) {
-        return
-      }
-
-      if (isInteractiveTarget(e.target)) {
+      if (
+        !e.isPrimary ||
+        (e.pointerType === 'mouse' && e.button !== 0) ||
+        isInteractiveTarget(e.target)
+      ) {
         return
       }
 
@@ -256,29 +184,8 @@ export default function Stories({ stories }: Props) {
         goToNext()
       }
     },
-    [endHold, goToNext, goToPrev],
+    [goToNext, goToPrev],
   )
-  const handlePointerAbort = useCallback(() => {
-    endHold()
-  }, [endHold])
-
-  useEffect(() => {
-    if (isPaused || isFinished) {
-      return
-    }
-
-    let last = performance.now()
-
-    const interval = setInterval(() => {
-      const now = performance.now()
-      const delta = now - last
-
-      last = now
-      setElapsed((prev) => Math.min(prev + delta, duration))
-    }, TICK)
-
-    return () => clearInterval(interval)
-  }, [isPaused, isFinished, duration])
 
   useEffect(() => {
     // The new story's statements have registered by now
@@ -289,10 +196,7 @@ export default function Stories({ stories }: Props) {
   }, [reveals])
 
   useEffect(() => {
-    // Rendered by the layout, next to the admin's user select
     // eslint-disable-next-line react-hooks/set-state-in-effect
-    setControlsSlot(document.getElementById(REWIND_CONTROLS_ID))
-
     setIsIntroShown(
       window.matchMedia(TOUCH_QUERY).matches && !readStorage(INTRO_SEEN_KEY),
     )
@@ -356,18 +260,9 @@ export default function Stories({ stories }: Props) {
     }
   }, [currentIndex, isIntroShown])
 
-  useEffect(
-    () => () => {
-      if (holdTimerRef.current) {
-        clearTimeout(holdTimerRef.current)
-      }
-    },
-    [],
-  )
-
   const clock = useMemo(
-    () => ({ elapsed, isPaused, registerReveal }),
-    [elapsed, isPaused, registerReveal],
+    () => ({ elapsed, registerReveal }),
+    [elapsed, registerReveal],
   )
   // Only re-created when the slide or stories change, so the active slide
   // doesn't re-render as the clock ticks; its statements read the clock
@@ -384,7 +279,7 @@ export default function Stories({ stories }: Props) {
   return (
     <MotionConfig reducedMotion='user'>
       <section
-        className='relative flex flex-1'
+        className='relative flex flex-1 flex-col'
         aria-roledescription='carousel'
         aria-label={t('label')}
       >
@@ -406,8 +301,8 @@ export default function Stories({ stories }: Props) {
                   <span className='link-dark block h-full w-full bg-white' />
                 ) : index === currentIndex ? (
                   <span
-                    className='link-dark block h-full w-full origin-left bg-white transition-transform duration-100 ease-linear'
-                    style={{ transform: `scaleX(${elapsed / duration})` }}
+                    className='link-dark block h-full w-full origin-left bg-white transition-transform duration-300 ease-out'
+                    style={{ transform: `scaleX(${progress})` }}
                   />
                 ) : null}
               </span>
@@ -415,7 +310,7 @@ export default function Stories({ stories }: Props) {
           ))}
         </div>
 
-        {/* Story content with tap/hold navigation */}
+        {/* Story content with tap navigation */}
         <div
           ref={slideRef}
           role='group'
@@ -427,10 +322,7 @@ export default function Stories({ stories }: Props) {
           tabIndex={-1}
           inert={!!isIntroShown}
           className='relative w-full flex-1 pt-8 outline-none select-none [-webkit-touch-callout:none] sm:flex sm:flex-col sm:justify-center'
-          onPointerDown={handlePointerDown}
           onPointerUp={handlePointerUp}
-          onPointerLeave={handlePointerAbort}
-          onPointerCancel={handlePointerAbort}
         >
           <StoryRestartContext value={restart}>
             <StoryClockContext value={clock}>{slide}</StoryClockContext>
@@ -484,14 +376,8 @@ export default function Stories({ stories }: Props) {
           </div>
         )}
 
-        <div className='sr-only' aria-live='polite' aria-atomic='true'>
-          {announcement}
-        </div>
-      </section>
-
-      {controlsSlot &&
-        createPortal(
-          <div className='icon-button-group' inert={!!isIntroShown}>
+        <div className='mt-4 flex justify-center' inert={!!isIntroShown}>
+          <div className='icon-button-group'>
             <button
               className='icon-button'
               onClick={goToPrev}
@@ -508,9 +394,13 @@ export default function Stories({ stories }: Props) {
             >
               <ChevronRightIcon className='size-5' />
             </button>
-          </div>,
-          controlsSlot,
-        )}
+          </div>
+        </div>
+
+        <div className='sr-only' aria-live='polite' aria-atomic='true'>
+          {announcement}
+        </div>
+      </section>
     </MotionConfig>
   )
 }

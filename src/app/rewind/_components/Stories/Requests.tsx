@@ -1,38 +1,24 @@
-import { MEDIA_ICONS, STAT_ICONS } from '@/components/icons'
+import { STAT_ICONS } from '@/components/icons'
 import { RewindStory } from '@/types/rewind'
-import { useTranslations } from 'next-intl'
+import { getRequestsBreakdown } from '@/utils/helpers'
+import { useFormatter, useTranslations } from 'next-intl'
+import { getAverageMessage } from '../averageMessage'
+import RewindBreakdown from '../RewindBreakdown'
 import RewindStat from '../RewindStat'
-import StatListItem from '../StatListItem'
-
-function RequestsBreakdown({
-  movies,
-  shows,
-}: {
-  movies: number
-  shows: number
-}) {
-  const t = useTranslations('Rewind.Requests')
-
-  return (
-    <ul className='mt-2'>
-      <StatListItem
-        count={movies}
-        name={t('movies', { count: movies })}
-        icon={<MEDIA_ICONS.movie />}
-      />
-      <StatListItem
-        count={shows}
-        name={t('shows', { count: shows })}
-        icon={<MEDIA_ICONS.show />}
-      />
-    </ul>
-  )
-}
 
 export default function StoryRequests({ userRewind, settings }: RewindStory) {
   const t = useTranslations('Rewind.Requests')
-  // The user's own breakdown pushes the server totals back
-  const delay = userRewind.requests?.user.total ? 3 : 0
+  const format = useFormatter()
+  const average = userRewind.requests?.average
+  const averageMessage = average && getAverageMessage(average.difference)
+  const breakdown = userRewind.requests
+    ? getRequestsBreakdown(userRewind.requests).map(({ count, ...item }) => ({
+        ...item,
+        value: format.number(count),
+      }))
+    : []
+  // A single type would only repeat the count
+  const hasBreakdown = breakdown.length > 1
 
   return (
     userRewind.requests && (
@@ -54,30 +40,57 @@ export default function StoryRequests({ userRewind, settings }: RewindStory) {
         ) : (
           <>
             {userRewind.requests.user.total == 0 ? (
-              <RewindStat scaleDelay={3}>
-                <p>
-                  {t.rich('noUserData', {
-                    requests: (chunks) => (
-                      <span className='rewind-cat'>
-                        {chunks}
-                        <STAT_ICONS.requests />
-                      </span>
-                    ),
-                    requestLink: (chunks) => (
-                      <a
-                        className='link relative z-10'
-                        href={settings.connection.seerrUrl}
-                        target='_blank'
-                        rel='noopener noreferrer'
-                      >
-                        {chunks}
-                      </a>
-                    ),
-                    requestLinkValue:
-                      settings.connection.seerrUrl.split('//').pop() ?? '',
-                  })}
-                </p>
-              </RewindStat>
+              <>
+                <RewindStat scaleDelay={3}>
+                  <p>
+                    {t.rich('noUserData', {
+                      requests: (chunks) => (
+                        <span className='rewind-cat'>
+                          {chunks}
+                          <STAT_ICONS.requests />
+                        </span>
+                      ),
+                      requestLink: (chunks) => (
+                        <a
+                          className='link relative z-10'
+                          href={settings.connection.seerrUrl}
+                          target='_blank'
+                          rel='noopener noreferrer'
+                        >
+                          {chunks}
+                        </a>
+                      ),
+                      requestLinkValue:
+                        settings.connection.seerrUrl.split('//').pop() ?? '',
+                    })}
+                  </p>
+                </RewindStat>
+
+                <RewindStat
+                  renderDelay={3}
+                  scaleDelay={3}
+                  noScale={!hasBreakdown}
+                >
+                  <p>
+                    {t.rich('countTotal', {
+                      countValue: userRewind.requests.total,
+                      count: (chunks) => (
+                        <span className='rewind-cat'>
+                          {chunks}
+                          <STAT_ICONS.requests />
+                        </span>
+                      ),
+                    })}
+                  </p>
+                </RewindStat>
+
+                {hasBreakdown && (
+                  <RewindStat renderDelay={6} noScale>
+                    <p>{t('breakdown')}</p>
+                    <RewindBreakdown items={breakdown} />
+                  </RewindStat>
+                )}
+              </>
             ) : (
               <>
                 <RewindStat scaleDelay={3}>
@@ -97,47 +110,37 @@ export default function StoryRequests({ userRewind, settings }: RewindStory) {
                   </p>
                 </RewindStat>
 
-                <RewindStat renderDelay={3} scaleDelay={3}>
-                  <p>{t('userBreakdown')}</p>
-                  <RequestsBreakdown
-                    movies={userRewind.requests.user.movies}
-                    shows={userRewind.requests.user.shows}
-                  />
-                </RewindStat>
+                {average && averageMessage && (
+                  <RewindStat
+                    renderDelay={3}
+                    scaleDelay={3}
+                    noScale={!hasBreakdown}
+                  >
+                    <p>
+                      {t.rich(averageMessage.key, {
+                        ...averageMessage.values,
+                        countValue: average.count,
+                        difference: (chunks) => (
+                          <span className='rewind-cat'>
+                            {chunks} <averageMessage.Icon />
+                          </span>
+                        ),
+                        count: (chunks) => (
+                          <span className='rewind-stat'>{chunks}</span>
+                        ),
+                      })}
+                    </p>
+                  </RewindStat>
+                )}
+
+                {hasBreakdown && (
+                  <RewindStat renderDelay={average ? 6 : 3} noScale>
+                    <p>{t('userBreakdown')}</p>
+                    <RewindBreakdown items={breakdown} />
+                  </RewindStat>
+                )}
               </>
             )}
-
-            <RewindStat
-              renderDelay={3 + delay}
-              scaleDelay={3}
-              loaderDelay={delay}
-            >
-              <p>
-                {t.rich('countTotal', {
-                  countValue: userRewind.requests.total,
-                  count: (chunks) => (
-                    <span className='rewind-cat'>
-                      {chunks}
-                      <STAT_ICONS.requests />
-                    </span>
-                  ),
-                  requests: (chunks) => (
-                    <span className='rewind-cat'>
-                      {chunks}
-                      <STAT_ICONS.requests />
-                    </span>
-                  ),
-                })}
-              </p>
-            </RewindStat>
-
-            <RewindStat renderDelay={6 + delay} noScale loaderDelay={3 + delay}>
-              <p>{t('breakdown')}</p>
-              <RequestsBreakdown
-                movies={userRewind.requests.movies}
-                shows={userRewind.requests.shows}
-              />
-            </RewindStat>
           </>
         )}
       </>

@@ -3,7 +3,7 @@ import { getLocale, getTranslations } from 'next-intl/server'
 import { fetchSeerrStats } from './fetchSeerr'
 import { formatPercent, secondsToTime } from './formatting'
 import getSettings from './getSettings'
-import { getRewindStartDate } from './helpers'
+import { compareWithAverage, getRewindStartDate } from './helpers'
 import { LibrariesSize } from './librariesSize'
 import { getStatsSource } from './statsSource'
 
@@ -187,12 +187,21 @@ export async function getRequestsTotals(userId: string) {
     return null
   }
 
+  const counts = countRequests(requests)
+  const user = countRequests(
+    requests.filter((request) => request.requestedBy.plexId === Number(userId)),
+  )
+  const requesters = new Set(
+    requests.map((request) => request.requestedBy.plexId),
+  ).size
+  const average = compareWithAverage(user.total, counts.total, requesters)
+
   return {
-    ...countRequests(requests),
-    user: countRequests(
-      requests.filter(
-        (request) => request.requestedBy.plexId === Number(userId),
-      ),
-    ),
+    ...counts,
+    user,
+    average: average && {
+      count: Math.round(average.average),
+      difference: average.difference,
+    },
   }
 }

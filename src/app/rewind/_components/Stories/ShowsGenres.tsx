@@ -21,9 +21,6 @@ export default function StoryShowsGenres({ userRewind }: RewindStory) {
           count: genres.length,
         })}
       </p>
-      <p className='mt-2 text-base font-normal tracking-normal text-neutral-400'>
-        {t('showGenresShare')}
-      </p>
 
       <TopGenres genres={genres} />
     </RewindStat>

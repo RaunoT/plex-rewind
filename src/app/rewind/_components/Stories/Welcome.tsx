@@ -69,7 +69,7 @@ export default function StoryWelcome({ userRewind, settings }: RewindStory) {
         </p>
       </RewindStat>
 
-      <RewindStat renderDelay={4} loaderDelay={2} noScale>
+      <RewindStat renderDelay={4} noScale>
         <p>{t('letsGetStarted')}</p>
       </RewindStat>
     </>

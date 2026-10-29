@@ -7,6 +7,8 @@ import RewindStat from '../RewindStat'
 export default function StoryShows({ userRewind, settings }: RewindStory) {
   const t = useTranslations('Rewind.Shows')
   const tCommon = useTranslations('Rewind.Common')
+  // The share of the user's playtime pushes the rest back
+  const delay = userRewind.shows.percentage ? 3 : 0
 
   return (
     <>
@@ -29,9 +31,11 @@ export default function StoryShows({ userRewind, settings }: RewindStory) {
                 plex: (chunks) => chunks,
               })}
             </p>
+          </RewindStat>
 
-            {userRewind.shows.percentage && (
-              <p className='mt-2'>
+          {userRewind.shows.percentage && (
+            <RewindStat renderDelay={3} scaleDelay={3}>
+              <p>
                 {tCommon.rich('percentage', {
                   percentageValue: userRewind.shows.percentage,
                   percentage: (chunks) => (
@@ -39,10 +43,10 @@ export default function StoryShows({ userRewind, settings }: RewindStory) {
                   ),
                 })}
               </p>
-            )}
-          </RewindStat>
+            </RewindStat>
+          )}
 
-          <RewindStat renderDelay={3} scaleDelay={3}>
+          <RewindStat renderDelay={3 + delay} scaleDelay={3}>
             <p>
               {t.rich('count', {
                 countValue: userRewind.shows.count,
@@ -56,7 +60,7 @@ export default function StoryShows({ userRewind, settings }: RewindStory) {
             </p>
           </RewindStat>
 
-          <RewindStat renderDelay={6} loaderDelay={3} noScale>
+          <RewindStat renderDelay={6 + delay} noScale>
             <p className='mb-2'>
               {t('favorite')}{' '}
               <span className='rewind-cat'>

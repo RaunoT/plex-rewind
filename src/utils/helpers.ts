@@ -132,11 +132,23 @@ export function hasRewindPlays({
 
 export type RewindBreakdownItem = {
   type: 'show' | 'movie' | 'artist'
-  duration: string
-  // Of the time across the listed types, from 0 to 1
-  share: number
-  // The same for every user, null without any time on the server
+  // The user's time or count, shown next to the type
+  value: string
+  // Of the user's total across the listed types, from 0 to 1, null when only
+  // every user's is split
+  share: number | null
+  // The same for every user, null without any on the server
   serverShare: number | null
+}
+
+function sortBreakdown<T extends Omit<RewindBreakdownItem, 'value'>>(
+  items: T[],
+): T[] {
+  return items.sort(
+    (a, b) =>
+      (b.share ?? 0) - (a.share ?? 0) ||
+      (b.serverShare ?? 0) - (a.serverShare ?? 0),
+  )
 }
 
 // The user's time split by media type next to every user's, most played by
@@ -162,33 +174,64 @@ export function getRewindBreakdown({
     return []
   }
 
-  return types
-    .map((item) => ({
+  return sortBreakdown(
+    types.map((item) => ({
       type: item.type,
-      duration: item.duration,
+      value: item.duration,
       share: (item.duration_value ?? 0) / total,
       serverShare: serverTotal
         ? (item.server_duration_value ?? 0) / serverTotal
         : null,
-    }))
-    .sort(
-      (a, b) =>
-        b.share - a.share || (b.serverShare ?? 0) - (a.serverShare ?? 0),
-    )
+    })),
+  )
 }
 
-// The server's total leaves excluded users out, so an excluded user's own
-// rewind adds their time back to it. The percentage is null without a total.
-export function getUserShare(
-  userDuration: number,
-  serverDuration: number,
-  isUserExcluded: boolean,
-): { total: number; percentage: number | null } {
-  const total = serverDuration + (isUserExcluded ? userDuration : 0)
+// The user's requests split by type next to every user's, like the breakdown
+// of the time. Without requests of the user's own, only every user's are split.
+export function getRequestsBreakdown(
+  requests: NonNullable<UserRewind['requests']>,
+): (Omit<RewindBreakdownItem, 'value' | 'type'> & {
+  type: 'movie' | 'show'
+  count: number
+})[] {
+  const { user } = requests
+  const types = [
+    { type: 'movie' as const, count: requests.movies, userCount: user.movies },
+    { type: 'show' as const, count: requests.shows, userCount: user.shows },
+  ].filter((item) => item.count)
+
+  return sortBreakdown(
+    types.map((item) => ({
+      type: item.type,
+      count: user.total ? item.userCount : item.count,
+      share: user.total ? item.userCount / user.total : null,
+      serverShare: item.count / requests.total,
+    })),
+  )
+}
+
+export type AverageComparison = {
+  average: number
+  // Percent above (positive) or below (negative) the average
+  difference: number
+}
+
+// Compares a user's value with the average of everyone who has one, the user
+// included. Null with nobody else to compare with.
+export function compareWithAverage(
+  value: number,
+  total: number,
+  count: number,
+): AverageComparison | null {
+  if (count < 2 || total <= 0) {
+    return null
+  }
+
+  const average = total / count
 
   return {
-    total,
-    percentage: total > 0 ? Math.round((userDuration * 100) / total) : null,
+    average,
+    difference: Math.round(((value - average) * 100) / average),
   }
 }
 

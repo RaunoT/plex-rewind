@@ -39,6 +39,8 @@ describe('getRequestsTotals', () => {
       movies: 2,
       shows: 1,
       user: { total: 2, movies: 1, shows: 1 },
+      // 3 requests from 2 users
+      average: { count: 2, difference: 33 },
     })
     expect(fetchSeerrStats).toHaveBeenCalledWith('request', '2026-01-01')
   })
@@ -51,6 +53,7 @@ describe('getRequestsTotals', () => {
       movies: 0,
       shows: 0,
       user: { total: 0, movies: 0, shows: 0 },
+      average: null,
     })
   })
 

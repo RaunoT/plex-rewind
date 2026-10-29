@@ -7,6 +7,8 @@ import RewindStat from '../RewindStat'
 export default function StoryAudio({ userRewind, settings }: RewindStory) {
   const t = useTranslations('Rewind.Audio')
   const tCommon = useTranslations('Rewind.Common')
+  // The share of the user's playtime pushes the rest back
+  const delay = userRewind.audio.percentage ? 3 : 0
 
   return (
     <>
@@ -27,9 +29,11 @@ export default function StoryAudio({ userRewind, settings }: RewindStory) {
                 ),
               })}
             </p>
+          </RewindStat>
 
-            {userRewind.audio.percentage && (
-              <p className='mt-2'>
+          {userRewind.audio.percentage && (
+            <RewindStat renderDelay={3} scaleDelay={3}>
+              <p>
                 {tCommon.rich('percentage', {
                   percentageValue: userRewind.audio.percentage,
                   percentage: (chunks) => (
@@ -37,10 +41,10 @@ export default function StoryAudio({ userRewind, settings }: RewindStory) {
                   ),
                 })}
               </p>
-            )}
-          </RewindStat>
+            </RewindStat>
+          )}
 
-          <RewindStat renderDelay={3} scaleDelay={3}>
+          <RewindStat renderDelay={3 + delay} scaleDelay={3}>
             <p>
               {t.rich('count', {
                 countValue: userRewind.audio.count,
@@ -54,7 +58,7 @@ export default function StoryAudio({ userRewind, settings }: RewindStory) {
             </p>
           </RewindStat>
 
-          <RewindStat renderDelay={6} loaderDelay={3} noScale>
+          <RewindStat renderDelay={6 + delay} noScale>
             <p className='mb-2'>
               {t('favorite')}&nbsp;
               <span className='rewind-cat'>

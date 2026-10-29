@@ -101,7 +101,7 @@ export default function StoryGoodbye({ userRewind, settings }: RewindStory) {
           <p>{t('sorry')}</p>
         )}
       </RewindStat>
-      <RewindStat renderDelay={6} scaleDelay={3} loaderDelay={2}>
+      <RewindStat renderDelay={6} scaleDelay={3}>
         <p>
           {hasPlays ? t('weWillBeBack') : t('weWillBeHere')}{' '}
           {t.rich('insightsAndStats', {
@@ -111,7 +111,7 @@ export default function StoryGoodbye({ userRewind, settings }: RewindStory) {
           })}
         </p>
       </RewindStat>
-      <RewindStat renderDelay={9} loaderDelay={6} noScale>
+      <RewindStat renderDelay={9} noScale>
         <p>
           {t.rich('untilThen', {
             serverName: settings.general.serverName || 'Plex',
