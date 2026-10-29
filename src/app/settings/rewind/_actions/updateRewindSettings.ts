@@ -19,6 +19,8 @@ export default async function saveRewindSettings(
     isActive: z.boolean(),
     isAdminOnly: z.boolean().optional(),
     isLibrariesSizeAndCountActive: z.boolean().optional(),
+    isThemeMusicActive: z.boolean().optional(),
+    isSnowActive: z.boolean().optional(),
     startDate: z.string().optional(),
     complete: z.boolean(),
   })
@@ -32,6 +34,8 @@ export default async function saveRewindSettings(
     data.isAdminOnly = formData.get('isAdminOnly') === 'on'
     data.isLibrariesSizeAndCountActive =
       formData.get('isLibrariesSizeAndCountActive') === 'on'
+    data.isThemeMusicActive = formData.get('isThemeMusicActive') === 'on'
+    data.isSnowActive = formData.get('isSnowActive') === 'on'
     data.startDate = formData.get('startDate') as string
   }
 

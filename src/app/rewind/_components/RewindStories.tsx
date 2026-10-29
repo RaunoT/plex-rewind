@@ -4,6 +4,7 @@ import { UserRewind } from '@/types/rewind'
 import { PublicSettings } from '@/types/settings'
 import { getRewindBreakdown } from '@/utils/helpers'
 import { FC } from 'react'
+import Snow from './Snow'
 import Stories from './Stories'
 import StoryAudio from './Stories/Audio'
 import StoryAudioTop from './Stories/AudioTop'
@@ -29,17 +30,33 @@ type StoryComponent = {
   settings: PublicSettings
 }
 
+export type RewindMusicUrls = {
+  // The top show's theme song
+  theme: string | null
+  // The admin's own track
+  track: string | null
+}
+
 type Props = {
   userRewind: UserRewind
   settings: PublicSettings
+  music: RewindMusicUrls
 }
 
-export default function RewindStories({ userRewind, settings }: Props) {
+// Where the top show's theme song plays
+const SHOW_STORIES = ['shows', 'shows_top', 'shows_actors']
+
+export default function RewindStories({ userRewind, settings, music }: Props) {
   function createStory(
     id: string,
     Component: FC<StoryComponent>,
     duration: number,
   ) {
+    // The track also stands in for a show without a theme song
+    const sources = SHOW_STORIES.includes(id)
+      ? [music.theme, music.track]
+      : [music.track]
+
     return {
       id,
       type: 'component' as const,
@@ -47,6 +64,7 @@ export default function RewindStories({ userRewind, settings }: Props) {
         <Component userRewind={userRewind} settings={settings} />
       ),
       duration,
+      music: sources.filter((url) => url !== null),
     }
   }
 
@@ -145,5 +163,10 @@ export default function RewindStories({ userRewind, settings }: Props) {
     createStory('goodbye', StoryGoodbye, 11000),
   ]
 
-  return <Stories stories={stories} />
+  return (
+    <>
+      {settings.rewind.isSnowActive && <Snow />}
+      <Stories stories={stories} />
+    </>
+  )
 }

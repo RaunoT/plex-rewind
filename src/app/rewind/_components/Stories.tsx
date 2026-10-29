@@ -4,9 +4,15 @@ import {
   readStorage,
   writeStorage,
 } from '@/app/_components/GlobalContextProvider'
+import useStoryMusic from '@/hooks/useStoryMusic'
 import { trackEvent } from '@/utils/analytics'
 import { REWIND_CONTROLS_ID } from '@/utils/constants'
-import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/outline'
+import {
+  ChevronLeftIcon,
+  ChevronRightIcon,
+  SpeakerWaveIcon,
+  SpeakerXMarkIcon,
+} from '@heroicons/react/24/outline'
 import { MotionConfig } from 'motion/react'
 import { useTranslations } from 'next-intl'
 import {
@@ -48,6 +54,8 @@ type Story = {
   type: 'component'
   component: () => ReactNode
   duration: number
+  // What plays during the story, in order of preference
+  music?: string[]
 }
 
 type Props = {
@@ -62,6 +70,8 @@ const HOLD_THRESHOLD = 200 // ms to distinguish tap from hold
 const DEFAULT_DURATION = 5000
 const TICK = 100
 const INTRO_SEEN_KEY = 'rewindIntroSeen'
+const SOUND_KEY = 'rewindSound'
+const NO_MUSIC: string[] = []
 // Without a cursor or arrow keys, the tap areas aren't obvious
 const TOUCH_QUERY = '(hover: none) and (pointer: coarse)'
 // Anything that already owns Space/arrow keys or taps must not drive the stories
@@ -107,6 +117,7 @@ export default function Stories({ stories }: Props) {
   // Unknown until mounted, so the first story waits for it
   const [isIntroShown, setIsIntroShown] = useState<boolean | null>(null)
   const [isHolding, setIsHolding] = useState(false)
+  const [isSoundOn, setIsSoundOn] = useState(false)
   const [announcement, setAnnouncement] = useState('')
   const [controlsSlot, setControlsSlot] = useState<HTMLElement | null>(null)
   const [elapsed, setElapsed] = useState(0)
@@ -131,6 +142,16 @@ export default function Stories({ stories }: Props) {
   const duration = currentStory?.duration || DEFAULT_DURATION
   const isPaused = isHolding || isHidden || isIntroShown !== false
   const isFinished = elapsed >= duration
+  const musicUrls = useMemo(
+    () => [...new Set(stories.flatMap((story) => story.music ?? []))],
+    [stories],
+  )
+  const muteBlockedSound = useCallback(() => setIsSoundOn(false), [])
+  const { unlock: unlockMusic } = useStoryMusic({
+    sources: currentStory?.music ?? NO_MUSIC,
+    isPlaying: isSoundOn && !isPaused,
+    onBlocked: muteBlockedSound,
+  })
   const revealPoints = useMemo(
     () => [...new Set(reveals)].sort((a, b) => a - b),
     [reveals],
@@ -196,6 +217,16 @@ export default function Stories({ stories }: Props) {
     shouldRestoreFocusRef.current = true
     setIsIntroShown(false)
   }, [])
+  const toggleSound = useCallback(() => {
+    const isOn = !isSoundOn
+
+    if (isOn) {
+      unlockMusic(musicUrls)
+    }
+
+    setIsSoundOn(isOn)
+    writeStorage(SOUND_KEY, isOn ? 'true' : '')
+  }, [isSoundOn, unlockMusic, musicUrls])
   // Returns whether a hold was in progress
   const endHold = useCallback(() => {
     if (holdTimerRef.current) {
@@ -296,6 +327,8 @@ export default function Stories({ stories }: Props) {
     setIsIntroShown(
       window.matchMedia(TOUCH_QUERY).matches && !readStorage(INTRO_SEEN_KEY),
     )
+    // Browsers that need a click first turn it off again
+    setIsSoundOn(!!readStorage(SOUND_KEY))
   }, [])
 
   useEffect(() => {
@@ -491,23 +524,41 @@ export default function Stories({ stories }: Props) {
 
       {controlsSlot &&
         createPortal(
-          <div className='icon-button-group' inert={!!isIntroShown}>
-            <button
-              className='icon-button'
-              onClick={goToPrev}
-              disabled={!canGoBack}
-              aria-label={t('previous')}
-            >
-              <ChevronLeftIcon className='size-5' />
-            </button>
-            <button
-              className='icon-button'
-              onClick={goToNext}
-              disabled={!canGoForward}
-              aria-label={t('next')}
-            >
-              <ChevronRightIcon className='size-5' />
-            </button>
+          <div className='flex gap-2' inert={!!isIntroShown}>
+            <div className='icon-button-group'>
+              <button
+                className='icon-button'
+                onClick={goToPrev}
+                disabled={!canGoBack}
+                aria-label={t('previous')}
+              >
+                <ChevronLeftIcon className='size-5' />
+              </button>
+              <button
+                className='icon-button'
+                onClick={goToNext}
+                disabled={!canGoForward}
+                aria-label={t('next')}
+              >
+                <ChevronRightIcon className='size-5' />
+              </button>
+            </div>
+            {musicUrls.length > 0 && (
+              <div className='icon-button-group'>
+                <button
+                  className='icon-button'
+                  onClick={toggleSound}
+                  aria-pressed={isSoundOn}
+                  aria-label={t('sound')}
+                >
+                  {isSoundOn ? (
+                    <SpeakerWaveIcon className='size-5' />
+                  ) : (
+                    <SpeakerXMarkIcon className='size-5' />
+                  )}
+                </button>
+              </div>
+            )}
           </div>,
           controlsSlot,
         )}

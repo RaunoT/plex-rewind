@@ -38,10 +38,23 @@ export type GeneralSettings = {
   complete: boolean
 }
 
+// A track the admin uploaded, kept in the config directory
+export type RewindMusic = {
+  name: string
+  type: string
+  size: number
+  // When it was uploaded, which also tells browsers a new track isn't cached
+  updatedAt: number
+}
+
 export type RewindSettings = {
   isActive: boolean
   isAdminOnly: boolean
   isLibrariesSizeAndCountActive: boolean
+  // The viewer's top show's theme song plays during the show stories
+  isThemeMusicActive: boolean
+  music: RewindMusic | null
+  isSnowActive: boolean
   startDate?: string
   complete: boolean
 }

@@ -91,6 +91,9 @@ export const DEFAULT_SETTINGS: Settings = {
     isActive: true,
     isAdminOnly: false,
     isLibrariesSizeAndCountActive: true,
+    isThemeMusicActive: false,
+    music: null,
+    isSnowActive: false,
     startDate: '',
     complete: false,
   },
@@ -175,6 +178,18 @@ export type Locale = (typeof LOCALES)[number]
 
 // Where the rewind layout lets the story player put its controls
 export const REWIND_CONTROLS_ID = 'rewind-controls'
+export const REWIND_MUSIC_MAX_BYTES = 10 * 1024 * 1024
+// What a Rewind track may be, by file extension, and the type it's served as
+export const REWIND_MUSIC_TYPES: Record<string, string> = {
+  mp3: 'audio/mpeg',
+  m4a: 'audio/mp4',
+  aac: 'audio/aac',
+  ogg: 'audio/ogg',
+  oga: 'audio/ogg',
+  opus: 'audio/ogg',
+  wav: 'audio/wav',
+  flac: 'audio/flac',
+}
 export const LOCALES = ['en', 'et', 'fr', 'de', 'it', 'es']
 export const DEFAULT_LOCALE: Locale = 'en'
 export const LOCALE_COOKIE_NAME = 'locale'

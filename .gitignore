@@ -47,6 +47,7 @@ config/settings.json
 config/settings-backup.json
 config/*-history.json.gz*
 config/source-snapshot.json*
+config/rewind-music*
 
 # claude
 .claude

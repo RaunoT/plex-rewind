@@ -27,6 +27,7 @@ import {
   getViewer,
 } from '@/utils/helpers'
 import { toPublicSettings } from '@/utils/publicSettings'
+import { getMusicUrl, getThemeSongUrl } from '@/utils/rewindMusic'
 import {
   getActiveUsers,
   getHistoryProgress,
@@ -216,6 +217,12 @@ async function RewindContent({ userId }: { userId?: string }) {
     <RewindStories
       userRewind={userRewind}
       settings={toPublicSettings(settings)}
+      music={{
+        theme: settings.rewind.isThemeMusicActive
+          ? getThemeSongUrl(topMediaItems.shows[0]?.tvdb_id)
+          : null,
+        track: getMusicUrl(settings),
+      }}
     />
   )
 }
