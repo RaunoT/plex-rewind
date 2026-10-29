@@ -309,7 +309,23 @@ export async function getTautulliMediaData(
     void saveSnapshot(key, media)
   }
 
-  return { thumb: metadata.thumb || '', isDeleted, ...media }
+  return {
+    thumb: metadata.thumb || '',
+    isDeleted,
+    ...media,
+    ...(!isDeleted && {
+      credits: {
+        directors: toNames(metadata.directors),
+        actors: toNames(metadata.actors),
+      },
+    }),
+  }
+}
+
+function toNames(names: unknown): string[] {
+  return Array.isArray(names)
+    ? names.filter((name): name is string => typeof name === 'string')
+    : []
 }
 
 // While Tautulli is down, the user comes from the saved list

@@ -278,7 +278,10 @@
     },
     "Common": {
       "topShows": "Aquí tienes tu <top>{count, plural, one {serie favorita} other {top # de series}}</top>",
+      "topShowActors": "Aquí tienes tu <top>{count, plural, one {actor de series favorito} other {top # de actores de series}}</top>",
       "topMovies": "Aquí tienes tu <top>{count, plural, one {película favorita} other {top # de películas}}</top>",
+      "topDirectors": "Aquí tienes tu <top>{count, plural, one {director favorito} other {top # de directores}}</top>",
+      "topMovieActors": "Aquí tienes tu <top>{count, plural, one {actor de cine favorito} other {top # de actores de cine}}</top>",
       "topArtists": "Aquí tienes tu <top>{count, plural, one {artista favorito} other {top # de artistas}}</top>"
     },
     "Welcome": {
@@ -292,7 +295,13 @@
     "Total": {
       "duration": "¡Pasaste un <total>total</total> de <duration>{durationValue}</duration> en <plex>{serverName}!</plex>",
       "percentage": "Eso es el <percentage>{percentageValue}</percentage> de todo el tiempo de visualización, que sumó <duration>{durationValue}</duration> entre todos los usuarios.",
-      "noData": "No has reproducido nada en <plex>{serverName}</plex> <emoji>😫</emoji>"
+      "noData": "No has reproducido nada en <plex>{serverName}</plex> <emoji>😫</emoji>",
+      "breakdown": "Así repartiste ese tiempo:",
+      "shows": "Series",
+      "movies": "Películas",
+      "audio": "Música",
+      "you": "Tú",
+      "allUsers": "Todos los usuarios"
     },
     "Users": {
       "top": "Así te comparas con otros <users>usuarios</users>"
@@ -323,6 +332,7 @@
       "noUserData": "No hiciste ninguna <requests>solicitud</requests>. Puedes hacerlas a través de <requestLink>{requestLinkValue}</requestLink>.",
       "count": "Hiciste <count>{countValue, number}</count> <requests>{countValue, plural, one {solicitud} other {solicitudes}}</requests>",
       "countTotal": "En total, hubo <count>{countValue, plural, one {# solicitud} other {# solicitudes}}</count> en el mismo periodo.",
+      "userBreakdown": "Esto es lo que pediste:",
       "breakdown": "Este es el desglose:",
       "movies": "{count, plural, one {película} other {películas}}",
       "shows": "{count, plural, one {serie} other {series}}"
@@ -332,6 +342,14 @@
       "count": "¡Viste <count>{countValue, number}</count> <movies>{countValue, plural, one {película} other {películas}}</movies> en total!",
       "favorite": "Lo que más viste fue",
       "noData": "No viste ninguna <movies>película</movies> en <plex>{serverName}</plex> <emoji>😵‍💫</emoji>"
+    },
+    "People": {
+      "movies": "{count, plural, one {# película} other {# películas}}",
+      "shows": "{count, plural, one {# serie} other {# series}}",
+      "together": "Junto a {names}",
+      "more": "otros",
+      "seeMore": "Ver más",
+      "seeLess": "Ver menos"
     },
     "Habits": {
       "day": "Tu día favorito para ver contenido fue el <day>{dayValue}</day>",

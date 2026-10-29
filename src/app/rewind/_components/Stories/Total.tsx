@@ -1,7 +1,8 @@
 import { RewindStory } from '@/types/rewind'
-import { hasRewindPlays } from '@/utils/helpers'
+import { getRewindBreakdown, hasRewindPlays } from '@/utils/helpers'
 import { ChartPieIcon, ClockIcon } from '@heroicons/react/24/outline'
 import { useTranslations } from 'next-intl'
+import RewindBreakdown from '../RewindBreakdown'
 import RewindStat from '../RewindStat'
 
 export default function StoryTotal({ userRewind, settings }: RewindStory) {
@@ -10,12 +11,16 @@ export default function StoryTotal({ userRewind, settings }: RewindStory) {
   // Not shown without a server total, or if the user's and the server's
   // totals, which are read separately, don't add up.
   const hasPercentage = percentage !== null && percentage <= 100
+  // A single type would only repeat the total
+  const breakdown = getRewindBreakdown(userRewind)
+  const hasBreakdown = breakdown.length > 1
+  const stepDelay = hasBreakdown ? 3 : 4
 
   return (
     <>
       {hasRewindPlays(userRewind) ? (
         <>
-          <RewindStat scaleDelay={4}>
+          <RewindStat scaleDelay={stepDelay}>
             <p>
               {t.rich('duration', {
                 durationValue: userRewind.duration.user,
@@ -34,7 +39,11 @@ export default function StoryTotal({ userRewind, settings }: RewindStory) {
           </RewindStat>
 
           {hasPercentage && (
-            <RewindStat renderDelay={4} noScale>
+            <RewindStat
+              renderDelay={stepDelay}
+              scaleDelay={stepDelay}
+              noScale={!hasBreakdown}
+            >
               <p>
                 {t.rich('percentage', {
                   durationValue: userRewind.duration.total,
@@ -49,6 +58,18 @@ export default function StoryTotal({ userRewind, settings }: RewindStory) {
                   ),
                 })}
               </p>
+            </RewindStat>
+          )}
+
+          {hasBreakdown && (
+            <RewindStat
+              renderDelay={hasPercentage ? stepDelay * 2 : stepDelay}
+              // Waits for the percentage, which has its own loader until then
+              loaderDelay={hasPercentage ? stepDelay : 0}
+              noScale
+            >
+              <p>{t('breakdown')}</p>
+              <RewindBreakdown items={breakdown} />
             </RewindStat>
           )}
         </>

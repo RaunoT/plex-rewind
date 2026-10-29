@@ -25,6 +25,7 @@ export async function getTopMediaStats(
     return {
       count,
       duration: duration === null ? '' : secondsToTime(duration, t),
+      durationValue: duration,
     }
   }
 
@@ -50,6 +51,31 @@ export async function getLibrariesTotalDuration(libraries: TautulliLibrary[]) {
   })
 }
 
+// Every user's time on each media type, null without a library of the type
+export async function getLibrariesDurationByType(libraries: TautulliLibrary[]) {
+  const settings = getSettings()
+  const source = getStatsSource(settings)
+  const since = getRewindStartDate(settings)
+
+  async function getDuration(sectionType: string) {
+    const typeLibraries = libraries.filter(
+      (library) => library.section_type === sectionType,
+    )
+
+    return typeLibraries.length
+      ? source.getTotalDuration({ since, libraries: typeLibraries })
+      : null
+  }
+
+  const [shows, movies, audio] = await Promise.all([
+    getDuration('show'),
+    getDuration('movie'),
+    getDuration('artist'),
+  ])
+
+  return { shows, movies, audio }
+}
+
 export async function getUserTotalDuration(
   userId: string,
   libraries: TautulliLibrary[],
@@ -70,6 +96,19 @@ export async function getTopMediaItems(
   const settings = getSettings()
 
   return getStatsSource(settings).getTopMediaItems(
+    userId,
+    libraries,
+    getRewindStartDate(settings),
+  )
+}
+
+export async function getTopPeople(
+  userId: string,
+  libraries: TautulliLibrary[],
+) {
+  const settings = getSettings()
+
+  return getStatsSource(settings).getTopPeople(
     userId,
     libraries,
     getRewindStartDate(settings),
@@ -108,6 +147,14 @@ export async function getPlaybackHabits(userId: string) {
   }
 }
 
+function countRequests(requests: { type: string }[]) {
+  return {
+    total: requests.length,
+    movies: requests.filter((request) => request.type === 'movie').length,
+    shows: requests.filter((request) => request.type === 'tv').length,
+  }
+}
+
 export async function getRequestsTotals(userId: string) {
   const startDate = getRewindStartDate(getSettings())
   const requests = await fetchSeerrStats('request', startDate)
@@ -117,11 +164,11 @@ export async function getRequestsTotals(userId: string) {
   }
 
   return {
-    total: requests.length,
-    movies: requests.filter((request) => request.type === 'movie').length,
-    shows: requests.filter((request) => request.type === 'tv').length,
-    user: requests.filter(
-      (request) => request.requestedBy.plexId === Number(userId),
-    ).length,
+    ...countRequests(requests),
+    user: countRequests(
+      requests.filter(
+        (request) => request.requestedBy.plexId === Number(userId),
+      ),
+    ),
   }
 }

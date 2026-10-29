@@ -88,6 +88,9 @@ export type TautulliMetadata = {
   year?: number | string | null
   // Plex's IDs, like `tmdb://61575`
   guids?: string[]
+  // Names, the actors in billing order
+  directors?: string[]
+  actors?: string[]
 }
 
 export type TautulliSession = {
