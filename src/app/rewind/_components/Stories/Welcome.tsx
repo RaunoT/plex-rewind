@@ -40,7 +40,7 @@ export default function StoryWelcome({ userRewind, settings }: RewindStory) {
         </p>
       </RewindStat>
 
-      <RewindStat renderDelay={2} scaleDelay={2} noScale>
+      <RewindStat step={1} noScale>
         <p>
           {t('takeYouThrough')}{' '}
           {isDefaultPeriod
@@ -69,7 +69,7 @@ export default function StoryWelcome({ userRewind, settings }: RewindStory) {
         </p>
       </RewindStat>
 
-      <RewindStat renderDelay={4} noScale>
+      <RewindStat step={2} noScale>
         <p>{t('letsGetStarted')}</p>
       </RewindStat>
     </>

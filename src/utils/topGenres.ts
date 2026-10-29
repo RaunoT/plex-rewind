@@ -121,7 +121,7 @@ export function rankGenres(
 
   return orderBy([...genres.values()], ['duration', 'name'], ['desc', 'asc'])
     .slice(0, TOP_GENRES)
-    .map((genre) => ({ ...genre, share: genre.duration / total }))
+    .map(({ name, duration }) => ({ name, share: duration / total }))
 }
 
 function getMostWatched<T extends WatchedTitle>(

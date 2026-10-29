@@ -21,17 +21,17 @@ import {
   useState,
 } from 'react'
 
-type StoryClock = {
-  // Milliseconds into the story, moved only by the controls
-  elapsed: number
-  registerReveal: (at: number) => () => void
+type StoryStep = {
+  // The latest statement shown, by its step in the story
+  step: number
+  registerStep: (step: number) => () => void
 }
 
-// One clock per story that each statement reads to know what to show, so the
-// controls can step from statement to statement
-export const StoryClockContext = createContext<StoryClock>({
-  elapsed: 0,
-  registerReveal: () => () => {},
+// The story's current step, which each statement reads to know whether to
+// show, so the controls can step from statement to statement
+export const StoryStepContext = createContext<StoryStep>({
+  step: 0,
+  registerStep: () => () => {},
 })
 
 // Lets the last story offer to start over
@@ -53,6 +53,9 @@ type Props = {
 }
 
 const INTRO_SEEN_KEY = 'rewindIntroSeen'
+// A longer press or a drag doesn't count as a tap
+const TAP_MAX_DURATION = 500
+const TAP_MAX_DISTANCE = 10
 // Without a cursor or arrow keys, the tap areas aren't obvious
 const TOUCH_QUERY = '(hover: none) and (pointer: coarse)'
 // Anything that already owns Space/arrow keys or taps must not drive the stories
@@ -83,9 +86,9 @@ export default function Stories({ stories }: Props) {
   // Unknown until mounted, so the first story waits for it
   const [isIntroShown, setIsIntroShown] = useState<boolean | null>(null)
   const [announcement, setAnnouncement] = useState('')
-  const [elapsed, setElapsed] = useState(0)
-  // When each statement of the current story appears
-  const [reveals, setReveals] = useState<number[]>([])
+  const [step, setStep] = useState(0)
+  // The steps of the current story's statements
+  const [steps, setSteps] = useState<number[]>([])
   const introTitleId = useId()
   const slideRef = useRef<HTMLDivElement>(null)
   const introButtonRef = useRef<HTMLButtonElement>(null)
@@ -93,21 +96,26 @@ export default function Stories({ stories }: Props) {
   const shouldSeekToEndRef = useRef(false)
   const trackedIndexRef = useRef<number | null>(null)
   const hasTrackedCompleteRef = useRef(false)
+  const tapStartRef = useRef<{
+    pointerId: number
+    x: number
+    y: number
+    time: number
+  } | null>(null)
   const currentStory = stories[currentIndex]
   const currentStoryId = currentStory?.id
-  const revealPoints = useMemo(
-    () => [...new Set(reveals)].sort((a, b) => a - b),
-    [reveals],
+  // A statement that is left out leaves a gap in the steps, which is skipped
+  const storySteps = useMemo(
+    () => [...new Set(steps)].sort((a, b) => a - b),
+    [steps],
   )
-  const nextReveal = revealPoints.find((at) => at > elapsed)
-  const shownReveals = revealPoints.filter((at) => at <= elapsed)
+  const nextStep = storySteps.find((other) => other > step)
+  const shownSteps = storySteps.filter((other) => other <= step)
   // Fills as the story's statements are stepped through
-  const progress = revealPoints.length
-    ? shownReveals.length / revealPoints.length
-    : 0
-  const canGoBack = currentIndex > 0 || shownReveals.length > 1
+  const progress = storySteps.length ? shownSteps.length / storySteps.length : 0
+  const canGoBack = currentIndex > 0 || shownSteps.length > 1
   const canGoForward =
-    currentIndex < stories.length - 1 || nextReveal !== undefined
+    currentIndex < stories.length - 1 || nextStep !== undefined
   const goTo = useCallback(
     (index: number, isAtEnd = false) => {
       if (index < 0 || index >= stories.length || index === currentIndex) {
@@ -121,7 +129,7 @@ export default function Stories({ stories }: Props) {
 
       // Going back lands on the previous story's last statement
       shouldSeekToEndRef.current = isAtEnd
-      setElapsed(0)
+      setStep(0)
       setCurrentIndex(index)
       setAnnouncement(
         t('storyPosition', { current: index + 1, total: stories.length }),
@@ -130,26 +138,26 @@ export default function Stories({ stories }: Props) {
     [currentIndex, stories.length, t],
   )
   const goToNext = useCallback(() => {
-    if (nextReveal !== undefined) {
-      setElapsed(nextReveal)
+    if (nextStep !== undefined) {
+      setStep(nextStep)
     } else {
       goTo(currentIndex + 1)
     }
-  }, [goTo, currentIndex, nextReveal])
+  }, [goTo, currentIndex, nextStep])
   // Hides the latest statement, or goes back a story from the first one
   const goToPrev = useCallback(() => {
-    if (shownReveals.length > 1) {
-      setElapsed(shownReveals[shownReveals.length - 2])
+    if (shownSteps.length > 1) {
+      setStep(shownSteps[shownSteps.length - 2])
     } else {
       goTo(currentIndex - 1, true)
     }
-  }, [goTo, currentIndex, shownReveals])
-  const registerReveal = useCallback((at: number) => {
-    setReveals((prev) => [...prev, at])
+  }, [goTo, currentIndex, shownSteps])
+  const registerStep = useCallback((statementStep: number) => {
+    setSteps((prev) => [...prev, statementStep])
 
     return () =>
-      setReveals((prev) => {
-        const index = prev.indexOf(at)
+      setSteps((prev) => {
+        const index = prev.indexOf(statementStep)
 
         return index === -1
           ? prev
@@ -164,11 +172,32 @@ export default function Stories({ stories }: Props) {
     shouldRestoreFocusRef.current = true
     setIsIntroShown(false)
   }, [])
+  const handlePointerDown = useCallback((e: PointerEvent<HTMLDivElement>) => {
+    tapStartRef.current =
+      !e.isPrimary ||
+      (e.pointerType === 'mouse' && e.button !== 0) ||
+      isInteractiveTarget(e.target)
+        ? null
+        : {
+            pointerId: e.pointerId,
+            x: e.clientX,
+            y: e.clientY,
+            time: e.timeStamp,
+          }
+  }, [])
+  // Only a tap that started on the slide steps the story
   const handlePointerUp = useCallback(
     (e: PointerEvent<HTMLDivElement>) => {
+      const tapStart = tapStartRef.current
+
+      tapStartRef.current = null
+
       if (
-        !e.isPrimary ||
-        (e.pointerType === 'mouse' && e.button !== 0) ||
+        !tapStart ||
+        tapStart.pointerId !== e.pointerId ||
+        e.timeStamp - tapStart.time > TAP_MAX_DURATION ||
+        Math.hypot(e.clientX - tapStart.x, e.clientY - tapStart.y) >
+          TAP_MAX_DISTANCE ||
         isInteractiveTarget(e.target)
       ) {
         return
@@ -191,9 +220,9 @@ export default function Stories({ stories }: Props) {
     // The new story's statements have registered by now
     if (shouldSeekToEndRef.current) {
       shouldSeekToEndRef.current = false
-      setElapsed(Math.max(0, ...reveals))
+      setStep(Math.max(0, ...steps))
     }
-  }, [reveals])
+  }, [steps])
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
@@ -260,12 +289,12 @@ export default function Stories({ stories }: Props) {
     }
   }, [currentIndex, isIntroShown])
 
-  const clock = useMemo(
-    () => ({ elapsed, registerReveal }),
-    [elapsed, registerReveal],
+  const storyStep = useMemo(
+    () => ({ step, registerStep }),
+    [step, registerStep],
   )
   // Only re-created when the slide or stories change, so the active slide
-  // doesn't re-render as the clock ticks; its statements read the clock
+  // doesn't re-render on each step; its statements read the step
   const slide = useMemo(
     () =>
       currentStory ? (
@@ -322,10 +351,14 @@ export default function Stories({ stories }: Props) {
           tabIndex={-1}
           inert={!!isIntroShown}
           className='relative w-full flex-1 pt-8 outline-none select-none [-webkit-touch-callout:none] sm:flex sm:flex-col sm:justify-center'
+          onPointerDown={handlePointerDown}
           onPointerUp={handlePointerUp}
+          onPointerCancel={() => {
+            tapStartRef.current = null
+          }}
         >
           <StoryRestartContext value={restart}>
-            <StoryClockContext value={clock}>{slide}</StoryClockContext>
+            <StoryStepContext value={storyStep}>{slide}</StoryStepContext>
           </StoryRestartContext>
         </div>
 

@@ -5,7 +5,8 @@ import { DEFAULT_SETTINGS } from './constants'
 import {
   canViewFeature,
   checkRequiredSettings,
-  compareWithAverage,
+  getAverage,
+  getDifference,
   getHomeTiles,
   getRequestsBreakdown,
   getRewindBreakdown,
@@ -265,25 +266,22 @@ describe('getRequestsBreakdown', () => {
   })
 })
 
-describe('compareWithAverage', () => {
-  it('is positive above the average', () => {
-    // 4 users share 1000, so the average is 250
-    expect(compareWithAverage(500, 1000, 4)).toEqual({
-      average: 250,
-      difference: 100,
-    })
-  })
-
-  it('is negative below the average', () => {
-    expect(compareWithAverage(100, 1000, 4)).toEqual({
-      average: 250,
-      difference: -60,
-    })
+describe('getAverage', () => {
+  it('splits the total between everyone', () => {
+    expect(getAverage(1000, 4)).toBe(250)
   })
 
   it('has nothing to compare with a single user or no total', () => {
-    expect(compareWithAverage(1000, 1000, 1)).toBeNull()
-    expect(compareWithAverage(0, 0, 3)).toBeNull()
+    expect(getAverage(1000, 1)).toBeNull()
+    expect(getAverage(0, 3)).toBeNull()
+  })
+})
+
+describe('getDifference', () => {
+  it('is positive above the average and negative below it', () => {
+    expect(getDifference(500, 250)).toBe(100)
+    expect(getDifference(100, 250)).toBe(-60)
+    expect(getDifference(250, 250)).toBe(0)
   })
 })
 

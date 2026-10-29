@@ -33,7 +33,7 @@ function library(type: TautulliLibrary['section_type']): TautulliLibrary {
 }
 
 function request(type: string) {
-  return { createdAt: '2026-10-01', type, requestedBy: { plexId: 1 } }
+  return { createdAt: '2026-10-01', type, requestedBy: { id: 1, plexId: 1 } }
 }
 
 function settings(overrides: Partial<Settings['connection']> = {}) {

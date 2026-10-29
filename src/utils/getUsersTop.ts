@@ -11,16 +11,31 @@ type UserRequestCounts =
     }
   | undefined
 
+type Options = {
+  numberOfUsers?: number
+  withFirstPlay?: boolean
+  // The ranked users, when the caller has already read them
+  users?: TautulliItemRow[] | null
+}
+
 export default async function getUsersTop(
   loggedInUserId: string,
   after: string,
-  numberOfUsers = DASHBOARD_PAGE_SIZE,
-  withFirstPlay = false,
+  {
+    numberOfUsers = DASHBOARD_PAGE_SIZE,
+    withFirstPlay = false,
+    ...options
+  }: Options = {},
 ): Promise<TopItems | null> {
   const settings = getSettings()
   const source = getStatsSource(settings)
-  const libraries = await getLibraries()
-  const users = await source.getTopUsers({ since: after, libraries })
+  const users =
+    options.users === undefined
+      ? await source.getTopUsers({
+          since: after,
+          libraries: await getLibraries(),
+        })
+      : options.users
 
   if (!users) {
     return null

@@ -40,7 +40,7 @@ export default function StoryHabitsDay({ userRewind }: RewindStory) {
 
   return (
     <>
-      <RewindStat scaleDelay={3}>
+      <RewindStat>
         <p>
           {t.rich('day', {
             dayValue: peakDay,
@@ -54,7 +54,7 @@ export default function StoryHabitsDay({ userRewind }: RewindStory) {
         </p>
       </RewindStat>
 
-      <RewindStat renderDelay={3} noScale className='pt-4'>
+      <RewindStat step={1} noScale className='pt-4'>
         <RewindBarChart
           data={data}
           labels={labels}

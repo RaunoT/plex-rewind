@@ -18,7 +18,7 @@ export default function StoryTotal({ userRewind, settings }: RewindStory) {
     <>
       {hasRewindPlays(userRewind) ? (
         <>
-          <RewindStat scaleDelay={3}>
+          <RewindStat>
             <p>
               {t.rich('duration', {
                 durationValue: userRewind.duration.user,
@@ -37,7 +37,7 @@ export default function StoryTotal({ userRewind, settings }: RewindStory) {
           </RewindStat>
 
           {average && averageMessage && (
-            <RewindStat renderDelay={3} scaleDelay={3} noScale={!hasBreakdown}>
+            <RewindStat step={1}>
               <p>
                 {t.rich(averageMessage.key, {
                   ...averageMessage.values,
@@ -56,7 +56,7 @@ export default function StoryTotal({ userRewind, settings }: RewindStory) {
           )}
 
           {hasBreakdown && (
-            <RewindStat renderDelay={average ? 6 : 3} noScale>
+            <RewindStat step={2} noScale>
               <p>{t('breakdown')}</p>
               <RewindBreakdown items={breakdown} />
             </RewindStat>

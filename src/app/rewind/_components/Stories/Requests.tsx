@@ -19,6 +19,22 @@ export default function StoryRequests({ userRewind, settings }: RewindStory) {
     : []
   // A single type would only repeat the count
   const hasBreakdown = breakdown.length > 1
+  // Also stands in for the comparison when there's nobody to compare with
+  const totalStat = userRewind.requests && (
+    <RewindStat step={1}>
+      <p>
+        {t.rich('countTotal', {
+          countValue: userRewind.requests.total,
+          count: (chunks) => (
+            <span className='rewind-cat'>
+              {chunks}
+              <STAT_ICONS.requests />
+            </span>
+          ),
+        })}
+      </p>
+    </RewindStat>
+  )
 
   return (
     userRewind.requests && (
@@ -41,7 +57,7 @@ export default function StoryRequests({ userRewind, settings }: RewindStory) {
           <>
             {userRewind.requests.user.total == 0 ? (
               <>
-                <RewindStat scaleDelay={3}>
+                <RewindStat>
                   <p>
                     {t.rich('noUserData', {
                       requests: (chunks) => (
@@ -66,26 +82,10 @@ export default function StoryRequests({ userRewind, settings }: RewindStory) {
                   </p>
                 </RewindStat>
 
-                <RewindStat
-                  renderDelay={3}
-                  scaleDelay={3}
-                  noScale={!hasBreakdown}
-                >
-                  <p>
-                    {t.rich('countTotal', {
-                      countValue: userRewind.requests.total,
-                      count: (chunks) => (
-                        <span className='rewind-cat'>
-                          {chunks}
-                          <STAT_ICONS.requests />
-                        </span>
-                      ),
-                    })}
-                  </p>
-                </RewindStat>
+                {totalStat}
 
                 {hasBreakdown && (
-                  <RewindStat renderDelay={6} noScale>
+                  <RewindStat step={2} noScale>
                     <p>{t('breakdown')}</p>
                     <RewindBreakdown items={breakdown} />
                   </RewindStat>
@@ -93,7 +93,7 @@ export default function StoryRequests({ userRewind, settings }: RewindStory) {
               </>
             ) : (
               <>
-                <RewindStat scaleDelay={3}>
+                <RewindStat>
                   <p>
                     {t.rich('count', {
                       countValue: userRewind.requests.user.total,
@@ -110,12 +110,8 @@ export default function StoryRequests({ userRewind, settings }: RewindStory) {
                   </p>
                 </RewindStat>
 
-                {average && averageMessage && (
-                  <RewindStat
-                    renderDelay={3}
-                    scaleDelay={3}
-                    noScale={!hasBreakdown}
-                  >
+                {average && averageMessage ? (
+                  <RewindStat step={1}>
                     <p>
                       {t.rich(averageMessage.key, {
                         ...averageMessage.values,
@@ -131,10 +127,12 @@ export default function StoryRequests({ userRewind, settings }: RewindStory) {
                       })}
                     </p>
                   </RewindStat>
+                ) : (
+                  totalStat
                 )}
 
                 {hasBreakdown && (
-                  <RewindStat renderDelay={average ? 6 : 3} noScale>
+                  <RewindStat step={2} noScale>
                     <p>{t('userBreakdown')}</p>
                     <RewindBreakdown items={breakdown} />
                   </RewindStat>

@@ -210,29 +210,15 @@ export function getRequestsBreakdown(
   )
 }
 
-export type AverageComparison = {
-  average: number
-  // Percent above (positive) or below (negative) the average
-  difference: number
+// Of everyone who has a value, the user included. Null with nobody else to
+// compare with.
+export function getAverage(total: number, count: number): number | null {
+  return count < 2 || total <= 0 ? null : total / count
 }
 
-// Compares a user's value with the average of everyone who has one, the user
-// included. Null with nobody else to compare with.
-export function compareWithAverage(
-  value: number,
-  total: number,
-  count: number,
-): AverageComparison | null {
-  if (count < 2 || total <= 0) {
-    return null
-  }
-
-  const average = total / count
-
-  return {
-    average,
-    difference: Math.round(((value - average) * 100) / average),
-  }
+// In percent, positive above the average and negative below it
+export function getDifference(value: number, average: number): number {
+  return Math.round(((value - average) * 100) / average)
 }
 
 export function isInitialSetup(settings: Settings): boolean {

@@ -5,15 +5,15 @@ import { animateRewindStat, instantTransition } from '@/utils/motion'
 import clsx from 'clsx'
 import { motion } from 'motion/react'
 import { ReactNode, useContext, useEffect } from 'react'
-import { StoryClockContext } from './Stories'
+import { StoryStepContext } from './Stories'
 
 type Props = {
   children: ReactNode
   className?: string
-  // Seconds from the start of the story
-  renderDelay?: number
-  scaleDelay?: number
-  hideAfter?: number
+  // Its place in the story, from 0. Statements with the same step show
+  // together, and a gap is skipped.
+  step?: number
+  // Keeps its size when a later statement shows
   noScale?: boolean
   isAnimated?: boolean
 }
@@ -21,24 +21,18 @@ type Props = {
 export default function RewindStat({
   children,
   className,
-  renderDelay = 0,
-  scaleDelay = 0,
-  hideAfter = 0,
+  step = 0,
   noScale = false,
   isAnimated = true,
 }: Props) {
-  const { elapsed, registerReveal } = useContext(StoryClockContext)
+  const { step: storyStep, registerStep } = useContext(StoryStepContext)
   const shouldReduceMotion = usePrefersReducedMotion()
-  const seconds = elapsed / 1000
-  const isShown = seconds >= renderDelay && !(hideAfter && seconds >= hideAfter)
-  const isScaledDown =
-    !noScale && !!scaleDelay && seconds >= renderDelay + scaleDelay
+  const isShown = storyStep >= step
+  // Makes room for the statements after it
+  const isScaledDown = !noScale && storyStep > step
 
   // So the story controls can step to this statement
-  useEffect(
-    () => registerReveal(renderDelay * 1000),
-    [registerReveal, renderDelay],
-  )
+  useEffect(() => registerStep(step), [registerStep, step])
 
   return isShown ? (
     <motion.div
