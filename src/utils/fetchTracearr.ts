@@ -257,7 +257,7 @@ export default async function fetchTracearr<T>(
   const query = qs.stringify(params)
   const url = `${tracearrUrl}/api/v2/public/${path}${query ? `?${query}` : ''}`
 
-  if (isHostDown(url)) {
+  if (isHostDown(tracearrUrl)) {
     return null
   }
 
@@ -296,7 +296,7 @@ export default async function fetchTracearr<T>(
 
       if (!res.ok) {
         if (isGatewayError(res.status)) {
-          markHostDown(url)
+          markHostDown(tracearrUrl)
         }
 
         console.error(
@@ -315,7 +315,7 @@ export default async function fetchTracearr<T>(
 
       // Without an answer at all, it's the host that's down
       if (!res) {
-        markHostDown(url)
+        markHostDown(tracearrUrl)
       }
 
       console.error(

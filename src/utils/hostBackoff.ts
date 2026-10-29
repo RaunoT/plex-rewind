@@ -1,10 +1,12 @@
-// While a host can't be reached, its requests are skipped instead of each
-// waiting out its timeout. It's checked again in the background, so no page
-// waits on that either.
+// While a service can't be reached, its requests are skipped instead of each
+// waiting out its timeout. A service goes by its base URL, such as
+// `https://proxy.example/tautulli`, so two behind one proxy are told apart.
 
-type DownHost = {
+type DownService = {
   checkAt: number
-  isChecking: boolean
+  // Whether its base URL is asked in the background if it's back. Otherwise
+  // the next request once a check is due goes through to find out.
+  canProbe: boolean
 }
 
 const CHECK_INTERVAL = 30 * 1000
@@ -13,53 +15,50 @@ const CHECK_TIMEOUT = 10 * 1000
 const GATEWAY_ERRORS = [502, 503, 504]
 // Next.js can bundle this file into more than one chunk, and each copy would
 // otherwise wait out the timeout on its own.
-const globalForHosts = globalThis as unknown as {
-  plexRewindDownHosts?: Map<string, DownHost>
+const globalForServices = globalThis as unknown as {
+  plexRewindDownServices?: Map<string, DownService>
 }
-const downHosts = (globalForHosts.plexRewindDownHosts ??= new Map())
+const downServices = (globalForServices.plexRewindDownServices ??= new Map())
 
-function getOrigin(url: string): string | null {
-  try {
-    return new URL(url).origin
-  } catch {
-    return null
-  }
+function toKey(baseUrl: string): string {
+  return baseUrl.replace(/\/+$/, '')
 }
 
 export function isGatewayError(status: number): boolean {
   return GATEWAY_ERRORS.includes(status)
 }
 
-export function markHostDown(url: string): void {
-  const origin = getOrigin(url)
+// Its base URL, not the root of its host, is asked whether it's back, as the
+// root can belong to another service.
+export function markHostDown(baseUrl: string, { probe = true } = {}): void {
+  const key = toKey(baseUrl)
+  const checkAt = Date.now() + CHECK_INTERVAL
+  const service = downServices.get(key)
 
-  if (!origin || downHosts.has(origin)) {
+  if (service) {
+    service.checkAt = checkAt
+
     return
   }
 
   console.warn(
-    `[NETWORK] - ${origin} can't be reached! Its requests are skipped until it answers again.`,
+    `[NETWORK] - ${key} can't be reached! Its requests are skipped until it answers again.`,
   )
-  downHosts.set(origin, {
-    checkAt: Date.now() + CHECK_INTERVAL,
-    isChecking: false,
-  })
+  downServices.set(key, { checkAt, canProbe: probe })
 }
 
-export function markHostUp(url: string): void {
-  const origin = getOrigin(url)
+export function markHostUp(baseUrl: string): void {
+  const key = toKey(baseUrl)
 
-  if (origin && downHosts.delete(origin)) {
-    console.log(`[NETWORK] - ${origin} answers again.`)
+  if (downServices.delete(key)) {
+    console.log(`[NETWORK] - ${key} answers again.`)
   }
 }
 
-// Any answer but a gateway error means the host is back
-async function checkHost(origin: string, host: DownHost): Promise<void> {
-  host.isChecking = true
-
+// Any answer but a gateway error means the service is back
+async function checkHost(key: string, service: DownService): Promise<void> {
   try {
-    const res = await fetch(origin, {
+    const res = await fetch(key, {
       method: 'HEAD',
       redirect: 'manual',
       cache: 'no-store',
@@ -67,28 +66,38 @@ async function checkHost(origin: string, host: DownHost): Promise<void> {
     })
 
     if (!isGatewayError(res.status)) {
-      markHostUp(origin)
+      markHostUp(key)
     }
   } catch {
     // Still down
   } finally {
-    host.isChecking = false
-    host.checkAt = Date.now() + CHECK_INTERVAL
+    service.checkAt = Date.now() + CHECK_INTERVAL
   }
 }
 
-// True while the host is down, so the request can be skipped
-export function isHostDown(url: string): boolean {
-  const origin = getOrigin(url)
-  const host = origin ? downHosts.get(origin) : undefined
+// True while the service is down, so the request can be skipped. Once a check
+// is due, the service is asked in the background, or this request goes
+// through to find out.
+export function isHostDown(baseUrl: string): boolean {
+  const key = toKey(baseUrl)
+  const service = downServices.get(key)
+  const now = Date.now()
 
-  if (!origin || !host) {
+  if (!service) {
     return false
   }
 
-  if (!host.isChecking && Date.now() >= host.checkAt) {
-    void checkHost(origin, host)
+  if (now < service.checkAt) {
+    return true
   }
+
+  service.checkAt = now + CHECK_INTERVAL
+
+  if (!service.canProbe) {
+    return false
+  }
+
+  void checkHost(key, service)
 
   return true
 }

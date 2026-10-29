@@ -250,8 +250,8 @@ describe('while Tracearr is down', () => {
     await fetchTracearr('libraries')
 
     expect(vi.mocked(markHostDown).mock.calls).toEqual([
-      ['http://tracearr:3000/api/v2/public/servers'],
-      ['http://tracearr:3000/api/v2/public/libraries'],
+      ['http://tracearr:3000'],
+      ['http://tracearr:3000'],
     ])
   })
 

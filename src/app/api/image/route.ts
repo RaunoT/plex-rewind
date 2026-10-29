@@ -1,6 +1,6 @@
 import { Settings } from '@/types/settings'
 import getSettings from '@/utils/getSettings'
-import { isGatewayError, isHostDown, markHostDown } from '@/utils/hostBackoff'
+import { isHostDown, markHostDown, markHostUp } from '@/utils/hostBackoff'
 import { getUpstreamImageUrl, isAllowedRedirect } from '@/utils/imageUpstream'
 
 const UPSTREAM_TIMEOUT = 15 * 1000
@@ -80,7 +80,11 @@ export async function GET(request: Request) {
     return new Response('[IMAGE PROXY] - Image not allowed', { status: 400 })
   }
 
-  if (isHostDown(upstreamUrl)) {
+  // Kept apart from the API on the same host, which an image failing says
+  // nothing about
+  const imageHost = `${new URL(upstreamUrl).origin} (images)`
+
+  if (isHostDown(imageHost)) {
     return new Response('[IMAGE PROXY] - The image host is down', {
       status: 503,
     })
@@ -99,6 +103,8 @@ export async function GET(request: Request) {
       return new Response('[IMAGE PROXY] - Image not allowed', { status: 400 })
     }
 
+    markHostUp(imageHost)
+
     const { response, url } = image
     const contentType = response.headers.get('content-type') || ''
     const contentLength = Number(response.headers.get('content-length'))
@@ -114,10 +120,6 @@ export async function GET(request: Request) {
       !contentType.startsWith('image/') ||
       contentLength > MAX_IMAGE_BYTES
     ) {
-      if (isGatewayError(response.status)) {
-        markHostDown(url)
-      }
-
       return new Response('[IMAGE PROXY] - Failed to fetch the image', {
         status: response.ok ? 502 : response.status,
       })
@@ -131,9 +133,10 @@ export async function GET(request: Request) {
       },
     })
   } catch (error) {
-    // Without an answer at all, it's the host that's down
+    // Only a host that doesn't answer at all, as a gateway error can be about
+    // one image. Its root isn't asked whether it's back: the next image tries.
     if (!image) {
-      markHostDown(upstreamUrl)
+      markHostDown(imageHost, { probe: false })
     }
 
     console.error('[IMAGE PROXY] - Error fetching the image!', error)

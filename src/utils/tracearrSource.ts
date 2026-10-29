@@ -30,7 +30,7 @@ const PLEX_IDENTITY_TIMEOUT_MS = 10_000
 async function fetchServerId(plexUrl: string): Promise<string | null> {
   const url = `${plexUrl}/identity`
 
-  if (isHostDown(url)) {
+  if (isHostDown(plexUrl)) {
     return null
   }
 
@@ -49,7 +49,7 @@ async function fetchServerId(plexUrl: string): Promise<string | null> {
 
     if (!res.ok) {
       if (isGatewayError(res.status)) {
-        markHostDown(url)
+        markHostDown(plexUrl)
       }
 
       console.error(
@@ -66,7 +66,7 @@ async function fetchServerId(plexUrl: string): Promise<string | null> {
     return data?.MediaContainer?.machineIdentifier || null
   } catch (error) {
     if (!res) {
-      markHostDown(url)
+      markHostDown(plexUrl)
     }
 
     if (error instanceof Error && error.name === 'TimeoutError') {

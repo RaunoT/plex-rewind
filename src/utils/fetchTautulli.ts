@@ -39,7 +39,7 @@ export default async function fetchTautulli<T>(
 
   const apiUrl = `${tautulliUrl}/api/v2?apikey=${apiKey}`
 
-  if (isHostDown(apiUrl)) {
+  if (isHostDown(tautulliUrl)) {
     return null
   }
 
@@ -55,7 +55,7 @@ export default async function fetchTautulli<T>(
 
     if (!res.ok) {
       if (isGatewayError(res.status)) {
-        markHostDown(apiUrl)
+        markHostDown(tautulliUrl)
       }
 
       console.error(
@@ -82,7 +82,7 @@ export default async function fetchTautulli<T>(
   } catch (error) {
     // Without an answer at all, it's the host that's down
     if (!res) {
-      markHostDown(apiUrl)
+      markHostDown(tautulliUrl)
     }
 
     if (error instanceof Error && error.name === 'TimeoutError') {

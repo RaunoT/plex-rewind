@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 const fetchMock = vi.fn()
-const SERVERS_URL = 'http://tracearr:3000/api/v2/public/servers'
+const TAUTULLI = 'https://proxy.example/tautulli'
 
 async function load() {
   return import('./hostBackoff')
@@ -14,7 +14,8 @@ function flush() {
 
 beforeEach(() => {
   // The module keeps its state on globalThis, which outlives resetModules
-  delete (globalThis as { plexRewindDownHosts?: unknown }).plexRewindDownHosts
+  delete (globalThis as { plexRewindDownServices?: unknown })
+    .plexRewindDownServices
   vi.resetModules()
   vi.useFakeTimers({ toFake: ['Date'] })
   vi.stubGlobal('fetch', fetchMock)
@@ -30,97 +31,117 @@ afterEach(() => {
 })
 
 describe('hostBackoff', () => {
-  it('skips every request to a host that is down, and only that host', async () => {
+  it('skips a service that is down, and only that service', async () => {
     const { isHostDown, markHostDown } = await load()
 
-    expect(isHostDown(SERVERS_URL)).toBe(false)
+    expect(isHostDown(TAUTULLI)).toBe(false)
 
-    markHostDown(SERVERS_URL)
+    markHostDown(TAUTULLI)
 
-    expect(isHostDown('http://tracearr:3000/api/v2/public/libraries')).toBe(
-      true,
-    )
-    expect(isHostDown('http://tautulli:8181/api/v2')).toBe(false)
+    expect(isHostDown(`${TAUTULLI}/`)).toBe(true)
+    // Another service behind the same proxy
+    expect(isHostDown('https://proxy.example/seerr')).toBe(false)
+    expect(isHostDown('https://proxy.example')).toBe(false)
     expect(fetchMock).not.toHaveBeenCalled()
   })
 
-  it('checks the host again in the background after a while', async () => {
+  it('asks the service itself in the background whether it is back', async () => {
     fetchMock.mockResolvedValue(new Response(null, { status: 401 }))
 
     const { isHostDown, markHostDown } = await load()
 
-    markHostDown(SERVERS_URL)
+    markHostDown(TAUTULLI)
     vi.advanceTimersByTime(29 * 1000)
 
-    expect(isHostDown(SERVERS_URL)).toBe(true)
+    expect(isHostDown(TAUTULLI)).toBe(true)
     expect(fetchMock).not.toHaveBeenCalled()
 
     vi.advanceTimersByTime(1000)
 
     // The request that finds the check due doesn't wait for it
-    expect(isHostDown(SERVERS_URL)).toBe(true)
+    expect(isHostDown(TAUTULLI)).toBe(true)
     expect(fetchMock).toHaveBeenCalledWith(
-      'http://tracearr:3000',
+      TAUTULLI,
       expect.objectContaining({ method: 'HEAD' }),
     )
 
     await flush()
 
     // Any answer but a gateway error means it's back
-    expect(isHostDown(SERVERS_URL)).toBe(false)
+    expect(isHostDown(TAUTULLI)).toBe(false)
   })
 
-  it('stays down while the host does not answer, or its proxy says so', async () => {
+  it('stays down while the service does not answer, or its proxy says so', async () => {
     fetchMock
       .mockRejectedValueOnce(new TypeError('fetch failed'))
       .mockResolvedValueOnce(new Response(null, { status: 502 }))
 
     const { isHostDown, markHostDown } = await load()
 
-    markHostDown(SERVERS_URL)
+    markHostDown(TAUTULLI)
 
     for (let check = 0; check < 2; check++) {
       vi.advanceTimersByTime(30 * 1000)
-      isHostDown(SERVERS_URL)
+      isHostDown(TAUTULLI)
       await flush()
     }
 
     expect(fetchMock).toHaveBeenCalledTimes(2)
-    expect(isHostDown(SERVERS_URL)).toBe(true)
+    expect(isHostDown(TAUTULLI)).toBe(true)
   })
 
-  it('checks a host only once at a time', async () => {
+  it('is not kept down by another service at the root of its host', async () => {
+    fetchMock.mockImplementation(async (url: string) =>
+      url === TAUTULLI
+        ? new Response(null, { status: 303 })
+        : new Response(null, { status: 503 }),
+    )
+
+    const { isHostDown, markHostDown } = await load()
+
+    markHostDown(TAUTULLI)
+    vi.advanceTimersByTime(30 * 1000)
+    isHostDown(TAUTULLI)
+    await flush()
+
+    expect(isHostDown(TAUTULLI)).toBe(false)
+  })
+
+  it('checks once per while', async () => {
     fetchMock.mockReturnValue(new Promise(() => {}))
 
     const { isHostDown, markHostDown } = await load()
 
-    markHostDown(SERVERS_URL)
+    markHostDown(TAUTULLI)
     vi.advanceTimersByTime(30 * 1000)
-    isHostDown(SERVERS_URL)
-    vi.advanceTimersByTime(30 * 1000)
-    isHostDown(SERVERS_URL)
+    isHostDown(TAUTULLI)
+    vi.advanceTimersByTime(10 * 1000)
+    isHostDown(TAUTULLI)
 
     expect(fetchMock).toHaveBeenCalledTimes(1)
   })
 
-  it('takes requests again once the host is marked up', async () => {
+  it('lets the next request find out when the service is not to be asked', async () => {
     const { isHostDown, markHostDown, markHostUp } = await load()
+    const images = 'https://tracearr.example (images)'
 
-    markHostDown(SERVERS_URL)
-    markHostUp('http://tracearr:3000/')
+    markHostDown(images, { probe: false })
 
-    expect(isHostDown(SERVERS_URL)).toBe(false)
+    expect(isHostDown(images)).toBe(true)
+
+    vi.advanceTimersByTime(30 * 1000)
+
+    // One request goes through, and the others wait for what it finds
+    expect(isHostDown(images)).toBe(false)
+    expect(isHostDown(images)).toBe(true)
+
+    markHostUp(images)
+
+    expect(isHostDown(images)).toBe(false)
+    expect(fetchMock).not.toHaveBeenCalled()
   })
 
-  it('ignores a SERVERS_URL it cannot read', async () => {
-    const { isHostDown, markHostDown } = await load()
-
-    markHostDown('not a url')
-
-    expect(isHostDown('not a url')).toBe(false)
-  })
-
-  it('counts only gateway errors as the host being down', async () => {
+  it('counts only gateway errors as the service being down', async () => {
     const { isGatewayError } = await load()
 
     expect([502, 503, 504].every(isGatewayError)).toBe(true)

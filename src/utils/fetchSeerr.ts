@@ -55,7 +55,7 @@ export default async function fetchSeerr<T>(
   })
   const apiUrl = `${seerrUrl}/api/v1/${endpoint}?${queryParams.toString()}`
 
-  if (isHostDown(apiUrl)) {
+  if (isHostDown(seerrUrl)) {
     return null
   }
 
@@ -74,7 +74,7 @@ export default async function fetchSeerr<T>(
 
     if (!res.ok) {
       if (isGatewayError(res.status)) {
-        markHostDown(apiUrl)
+        markHostDown(seerrUrl)
       }
 
       console.error(
@@ -90,7 +90,7 @@ export default async function fetchSeerr<T>(
   } catch (error) {
     // Without an answer at all, it's the host that's down
     if (!res) {
-      markHostDown(apiUrl)
+      markHostDown(seerrUrl)
     }
 
     if (error instanceof Error && error.name === 'TimeoutError') {

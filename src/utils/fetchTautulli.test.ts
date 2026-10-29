@@ -118,10 +118,11 @@ describe('fetchTautulli', () => {
     await fetchTautulli('get_activity')
     await fetchTautulli('get_activity')
 
-    expect(markHostDown).toHaveBeenCalledTimes(2)
-    expect(vi.mocked(markHostDown).mock.calls[0][0]).toMatch(
-      /^http:\/\/tautulli:8181\//,
-    )
+    // By its URL, which is also what's asked whether it's back
+    expect(vi.mocked(markHostDown).mock.calls).toEqual([
+      ['http://tautulli:8181'],
+      ['http://tautulli:8181'],
+    ])
   })
 
   it('does not mark Tautulli down for an error it answers with', async () => {
