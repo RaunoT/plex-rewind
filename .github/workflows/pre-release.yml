@@ -172,3 +172,39 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: pnpm exec semantic-release
+
+  # GITHUB_TOKEN can open the PR: it starts no pull_request workflows, but the
+  # main ruleset's required checks come from this run on the same commit.
+  release-pr:
+    name: Open release PR
+    needs: [version, pre-release]
+    if: needs.version.outputs.tag
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - name: Open or update the release PR
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+          VERSION: ${{ needs.version.outputs.tag }}
+        run: |
+          changes=$(gh api "repos/$GH_REPO/compare/main...develop" \
+            --jq '.commits[] | select(.parents | length == 1) | "- " + (.commit.message | split("\n")[0])')
+
+          if [ -z "$changes" ]; then
+            echo 'develop has no changes that main does not.'
+            exit 0
+          fi
+
+          # A 5.5.0-develop.3 pre-release ships from main as 5.5.0.
+          title="chore: release ${VERSION%%-*}"
+          body=$(printf 'Opened by the Pre-release workflow, which rewrites this description after each pre-release.\n\n%s\n' "$changes")
+          number=$(gh pr list --base main --head develop --state open --json number --jq '.[0].number // empty')
+
+          if [ -n "$number" ]; then
+            gh api --method PATCH "repos/$GH_REPO/pulls/$number" -f title="$title" -f body="$body" --silent
+          else
+            gh pr create --base main --head develop --title "$title" --body "$body"
+          fi
