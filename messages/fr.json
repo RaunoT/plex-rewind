@@ -72,7 +72,8 @@
     "sortByLabel": "Trier par",
     "sort": "Trier",
     "byDuration": "Par durée de visionnage",
-    "byPlays": "Par lectures"
+    "byPlays": "Par lectures",
+    "byUsers": "Par utilisateurs"
   },
   "DashboardNavContent": {
     "label": "Navigation du tableau de bord",

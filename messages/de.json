@@ -72,7 +72,8 @@
     "sortByLabel": "Sortieren nach",
     "sort": "Sortieren",
     "byDuration": "Nach Wiedergabezeit",
-    "byPlays": "Nach Anzahl der Wiedergaben"
+    "byPlays": "Nach Anzahl der Wiedergaben",
+    "byUsers": "Nach Anzahl der Benutzer"
   },
   "DashboardNavContent": {
     "label": "Dashboard Navigation",

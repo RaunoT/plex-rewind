@@ -1,5 +1,6 @@
 import { Play, PlayMediaType } from '@/types/playHistory'
-import { TautulliItemRow } from '@/types/tautulli'
+import { TopItemsSort } from '@/types/statsSource'
+import { TautulliItemRow, TautulliLibrary } from '@/types/tautulli'
 import { describe, expect, it, vi } from 'vitest'
 import getSettings from './getSettings'
 import {
@@ -184,5 +185,54 @@ describe('getPlayItem', () => {
 
     expect(item.total_plays).toBe(1)
     expect(item.total_duration).toBe(6000)
+  })
+})
+
+describe('getTopItems', () => {
+  // Dune has the most watch time, Heat the most plays and Alien the most users
+  const history = [
+    play('dune', '2026-03-01T20:00:00Z', {
+      title: 'Dune',
+      durationMs: 9000_000,
+    }),
+    ...['1', '2', '3'].map((id) =>
+      play(`heat ${id}`, '2026-03-02T20:00:00Z', { title: 'Heat' }),
+    ),
+    ...['alice', 'bob'].map((identityId) =>
+      play(`alien ${identityId}`, '2026-03-03T20:00:00Z', {
+        title: 'Alien',
+        identityId,
+      }),
+    ),
+  ]
+
+  async function rank(sortBy?: TopItemsSort) {
+    vi.mocked(getSettings).mockReturnValue({
+      general: { excludedUsers: [] },
+    } as unknown as ReturnType<typeof getSettings>)
+
+    const { items } = await createPlayStats({
+      getPlays: async () => history,
+      getUsers: async () => [],
+      getMediaData: async () => ({ thumb: '', isDeleted: false }),
+    }).getTopItems({ section_type: 'movie' } as TautulliLibrary, {
+      period: 3650,
+      sortBy,
+      count: 5,
+    })
+
+    return items.map((item) => item.title)
+  }
+
+  it('ranks by watch time by default', async () => {
+    expect(await rank()).toEqual(['Dune', 'Heat', 'Alien'])
+  })
+
+  it('ranks by plays', async () => {
+    expect(await rank('plays')).toEqual(['Heat', 'Alien', 'Dune'])
+  })
+
+  it('ranks by users, then by plays', async () => {
+    expect(await rank('users')).toEqual(['Alien', 'Heat', 'Dune'])
   })
 })

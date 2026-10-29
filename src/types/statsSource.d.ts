@@ -53,11 +53,16 @@ export type TopPeople = {
   showActors: TopPerson[]
 }
 
+// `users` counts who played an item. A tie in users falls back to plays, and a
+// tie in plays to watch time.
+export type TopItemsSort = 'duration' | 'plays' | 'users'
+
 export type TopItemsQuery = {
   // In days
   period: number
   userId?: string
-  sortByPlays?: boolean
+  // Watch time when left out
+  sortBy?: TopItemsSort
   count: number
 }
 

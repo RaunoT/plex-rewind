@@ -1,3 +1,4 @@
+import { DashboardSearchParams } from '@/types/dashboard'
 import { UserRewind } from '@/types/rewind'
 import { Settings, StatisticsSource } from '@/types/settings'
 import { TautulliLibrary } from '@/types/tautulli'
@@ -210,4 +211,11 @@ export function sortByLabel<T extends { label: string }>(
   const collator = new Intl.Collator(locale)
 
   return [...items].sort((a, b) => collator.compare(a.label, b.label))
+}
+
+// Plays are the default, so the URL and the saved filters only keep the others
+export function getDashboardSort(
+  value?: string | null,
+): DashboardSearchParams['sortBy'] {
+  return value === 'duration' || value === 'users' ? value : undefined
 }

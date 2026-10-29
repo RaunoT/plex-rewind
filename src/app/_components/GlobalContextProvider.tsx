@@ -5,6 +5,7 @@ import {
   ACTIVITY_DETAILS_COOKIE_NAME,
   DASHBOARD_PERIOD_COOKIE_NAME,
 } from '@/utils/constants'
+import { getDashboardSort } from '@/utils/helpers'
 import { createContext, ReactNode, useEffect, useState } from 'react'
 
 type GlobalContextProps = {
@@ -80,9 +81,7 @@ export default function GlobalContextProvider({
     const savedPeriod = readStorage(
       'dashboardPeriod',
     ) as DashboardSearchParams['period']
-    // Plays became the default, so only watch time is worth restoring
-    const savedSortBy =
-      readStorage('dashboardSort') === 'duration' ? 'duration' : undefined
+    const savedSortBy = getDashboardSort(readStorage('dashboardSort'))
 
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setIsPersonal((prev) => prev ?? savedIsPersonal)
