@@ -76,6 +76,19 @@ export async function getTopMediaItems(
   )
 }
 
+export async function getTopMoviePeople(
+  userId: string,
+  libraries: TautulliLibrary[],
+) {
+  const settings = getSettings()
+
+  return getStatsSource(settings).getTopMoviePeople(
+    userId,
+    libraries,
+    getRewindStartDate(settings),
+  )
+}
+
 function peakIndex(totals: number[]): number | null {
   if (!totals.length) {
     return null

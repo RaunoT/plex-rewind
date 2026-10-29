@@ -25,8 +25,9 @@ import TitleDetails from './TitleDetails'
 // A viewing stat: a pill from sm up, plain text on phones
 const STAT_PILL =
   'icon-stat-wrapper max-sm:bg-transparent max-sm:p-0 max-sm:ring-0'
+
 // Gold, silver and bronze for the top three
-const RANK_COLORS = [
+export const RANK_COLORS = [
   'bg-linear-to-b from-yellow-200 to-yellow-500 bg-clip-text text-transparent',
   'bg-linear-to-b from-white to-neutral-300 bg-clip-text text-transparent',
   'bg-linear-to-b from-orange-300 to-orange-600 bg-clip-text text-transparent',

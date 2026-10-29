@@ -12,6 +12,8 @@ import StoryHabitsDay from './Stories/HabitsDay'
 import StoryHabitsHour from './Stories/HabitsHour'
 import StoryLibraries from './Stories/Libraries'
 import StoryMovies from './Stories/Movies'
+import StoryMoviesActors from './Stories/MoviesActors'
+import StoryMoviesDirectors from './Stories/MoviesDirectors'
 import StoryMoviesTop from './Stories/MoviesTop'
 import StoryRequests from './Stories/Requests'
 import StoryShows from './Stories/Shows'
@@ -111,6 +113,12 @@ export default function RewindStories({ userRewind, settings }: Props) {
       : []),
     ...(userRewind.movies.top.length > 1 && hasMovieLibraries
       ? [createStory('movies_top', StoryMoviesTop, 8000)]
+      : []),
+    ...(userRewind.moviePeople.directors.length && hasMovieLibraries
+      ? [createStory('movies_directors', StoryMoviesDirectors, 8000)]
+      : []),
+    ...(userRewind.moviePeople.actors.length && hasMovieLibraries
+      ? [createStory('movies_actors', StoryMoviesActors, 8000)]
       : []),
     ...(userRewind.duration.user && hasAudioLibraries && userRewind.audio.top[0]
       ? [

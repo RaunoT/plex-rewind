@@ -16,6 +16,12 @@ export type MediaIds = {
   tvdb: number | null
 }
 
+// A movie's directors and actors by name, the actors in billing order
+export type MovieCredits = {
+  directors: string[]
+  actors: string[]
+}
+
 // What the statistics source knows about an item
 export type SourceMediaData = {
   thumb: string
@@ -24,6 +30,8 @@ export type SourceMediaData = {
   // another show on TMDB.
   ids?: MediaIds
   year?: number | null
+  // Only Tautulli knows them, and only for items still on the server
+  credits?: MovieCredits
 }
 
 // What's saved of it to stand in while the source is down
@@ -71,7 +79,7 @@ export function getTmdbSearchParams(
     : { query: title, first_air_date_year: year }
 }
 
-async function searchTmdbId(
+export async function searchTmdbId(
   item: TautulliItemRow,
   type: TmdbMediaType,
 ): Promise<number | undefined> {

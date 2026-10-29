@@ -1,4 +1,5 @@
 import { PublicSettings } from './settings'
+import { TopMoviePeople } from './statsSource'
 import { TautulliItemRow, TautulliLibrary } from './tautulli'
 
 export type RewindUser = {
@@ -29,6 +30,7 @@ export type UserRewind = {
   server_id: string
   shows: LibraryRewind
   movies: LibraryRewind
+  moviePeople: TopMoviePeople
   audio: LibraryRewind
   habits: {
     peakHour: number | null

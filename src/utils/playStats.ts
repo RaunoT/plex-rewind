@@ -7,6 +7,7 @@ import {
   TopItems,
   TopItemsQuery,
   TopMediaItems,
+  TopMoviePeople,
   TopUsersQuery,
 } from '@/types/statsSource'
 import {
@@ -19,6 +20,7 @@ import getMediaAdditionalData, {
   SourceMediaData,
 } from './getMediaAdditionalData'
 import getSettings from './getSettings'
+import { getTopPeople } from './moviePeople'
 
 export const PLAY_MEDIA_TYPES: PlayMediaType[] = ['movie', 'episode', 'track']
 
@@ -79,6 +81,7 @@ export type PlayStats = Pick<
   | 'getTopUsers'
   | 'getMediaStats'
   | 'getTopMediaItems'
+  | 'getTopMoviePeople'
   | 'getPlaysByTime'
   | 'getPlayItem'
 >
@@ -355,6 +358,19 @@ export function createPlayStats(provider: PlaysProvider): PlayStats {
     return { shows, movies, audio }
   }
 
+  async function getTopMoviePeople(
+    userId: string,
+    libraries: TautulliLibrary[],
+    since: string,
+  ): Promise<TopMoviePeople> {
+    const plays = await getPlays({ since, userId, libraries })
+    const movies = groupPlays(
+      plays.filter((play) => play.mediaType === 'movie'),
+    ).map(toItemRow)
+
+    return getTopPeople(movies, provider.getMediaData)
+  }
+
   // Hours and days are in the Plex Rewind server's timezone.
   async function getPlaysByTime(
     userId: string,
@@ -426,6 +442,7 @@ export function createPlayStats(provider: PlaysProvider): PlayStats {
     getTopUsers,
     getMediaStats,
     getTopMediaItems,
+    getTopMoviePeople,
     getPlaysByTime,
     getPlayItem,
   }
