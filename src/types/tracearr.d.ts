@@ -86,6 +86,7 @@ type TracearrMediaFields = {
 export type TracearrHistoryRecord = TracearrMediaFields & {
   id: string
   duration_ms: number | null
+  percent_complete: number | null
   started_at: string
   user: {
     id: string
@@ -156,6 +157,10 @@ export type TracearrStreamsResponse = {
 
 export type TracearrMedia = {
   id: string
+  year: number | null
+  imdb_id: string | null
+  tmdb_id: number | null
+  tvdb_id: number | null
   availability: {
     server_id: string
     removed_at: string | null

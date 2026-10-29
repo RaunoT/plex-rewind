@@ -39,7 +39,7 @@ export default function StoryLibraries({ userRewind, settings }: RewindStory) {
 
   return (
     <>
-      <RewindStat scaleDelay={3}>
+      <RewindStat>
         <p>
           {t.rich('filesize', {
             filesize: (chunks) => (
@@ -75,7 +75,7 @@ export default function StoryLibraries({ userRewind, settings }: RewindStory) {
       </RewindStat>
 
       {libraryItems.length > 0 && (
-        <RewindStat renderDelay={3} noScale>
+        <RewindStat step={1} noScale>
           <p>{t('libraries')}</p>
           <ul className='mt-2'>
             {libraryItems.map((item) => (

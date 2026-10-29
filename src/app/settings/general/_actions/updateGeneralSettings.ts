@@ -12,24 +12,9 @@ import {
   GOOGLE_ANALYTICS_ID_PATTERN,
   ITEM_STATISTICS,
 } from '@/utils/constants'
+import { getTranslations } from 'next-intl/server'
 import { z } from 'zod'
 import updateSettings from '../../_actions/updateSettings'
-
-const schema = z.object({
-  serverName: z.string(),
-  activeLibraries: z.array(z.string()),
-  excludedUsers: z.array(z.string()),
-  isPostersTmdbOnly: z.boolean(),
-  activeExternalLinks: z.array(z.enum(EXTERNAL_LINKS)),
-  activeItemStatistics: z.array(z.enum(ITEM_STATISTICS)),
-  googleAnalyticsId: z
-    .string()
-    .regex(GOOGLE_ANALYTICS_ID_PATTERN)
-    .or(z.literal('')),
-  isOutsideAccess: z.boolean(),
-  isAnonymized: z.boolean(),
-  complete: z.boolean(),
-})
 
 export default async function saveGeneralSettings(
   prevState: SettingsFormInitialState<GeneralSettings>,
@@ -41,6 +26,31 @@ export default async function saveGeneralSettings(
     return denied
   }
 
+  const t = await getTranslations('Settings.General')
+  const schema = z.object({
+    serverName: z.string(),
+    activeLibraries: z.array(z.string()),
+    excludedUsers: z.array(z.string()),
+    isPostersTmdbOnly: z.boolean(),
+    activeExternalLinks: z.array(z.enum(EXTERNAL_LINKS)),
+    activeItemStatistics: z.array(z.enum(ITEM_STATISTICS)),
+    minPlayPercent: z.custom<number>(
+      (value) =>
+        typeof value === 'number' &&
+        Number.isInteger(value) &&
+        value >= 0 &&
+        value <= 100,
+      { message: t('minPlayPercentError') },
+    ),
+    googleAnalyticsId: z
+      .string()
+      .regex(GOOGLE_ANALYTICS_ID_PATTERN)
+      .or(z.literal('')),
+    isOutsideAccess: z.boolean(),
+    isAnonymized: z.boolean(),
+    complete: z.boolean(),
+  })
+  const minPlayPercent = formData.get('minPlayPercent')
   const data = {
     serverName: formData.get('serverName') as string,
     activeLibraries: formData.getAll('activeLibraries') as string[],
@@ -52,6 +62,8 @@ export default async function saveGeneralSettings(
     activeItemStatistics: formData.getAll(
       'activeItemStatistics',
     ) as ItemStatistics,
+    // An empty field fails instead of saving 0
+    minPlayPercent: minPlayPercent ? Number(minPlayPercent) : NaN,
     googleAnalyticsId: (
       (formData.get('googleAnalyticsId') as string) ?? ''
     ).trim(),

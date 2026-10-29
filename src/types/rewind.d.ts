@@ -1,4 +1,5 @@
 import { PublicSettings } from './settings'
+import { Genres, TopPeople } from './statsSource'
 import { TautulliItemRow, TautulliLibrary } from './tautulli'
 
 export type RewindUser = {
@@ -8,9 +9,21 @@ export type RewindUser = {
   isAdmin: boolean
 }
 
+type RequestCounts = {
+  total: number
+  movies: number
+  shows: number
+}
+
 type LibraryRewind = {
   count: number
   duration: string
+  // In seconds, null without a library of the type
+  duration_value: number | null
+  // Every user's time on the type, in seconds
+  server_duration_value: number | null
+  // Of the user's total playtime, empty when it rounds to 0%
+  percentage: string
   top: TautulliItemRow[]
 }
 
@@ -20,15 +33,21 @@ export type UserRewind = {
   libraries_total_size: number
   libraries_size_is_partial: boolean
   // Null when Seerr couldn't be read
-  requests?: {
-    total: number
-    movies: number
-    shows: number
-    user: number
-  } | null
+  requests?:
+    | (RequestCounts & {
+        user: RequestCounts
+        // Among the users who made requests, null without anyone else
+        average: {
+          count: number
+          difference: number
+        } | null
+      })
+    | null
   server_id: string
   shows: LibraryRewind
   movies: LibraryRewind
+  people: TopPeople
+  genres: Genres
   audio: LibraryRewind
   habits: {
     peakHour: number | null
@@ -39,9 +58,11 @@ export type UserRewind = {
   }
   duration: {
     user: string
-    user_percentage: string
-    user_percentage_value: number | null
-    total: string
+    // Null without anyone else to compare with
+    average: {
+      duration: string
+      difference: number
+    } | null
   }
   // Formatted on the server, null without any play
   firstPlay: {
@@ -52,6 +73,8 @@ export type UserRewind = {
     item: {
       data: TautulliItemRow
       type: 'movie' | 'show' | 'artist'
+      // Whether its watch time and plays are the user's all-time ones
+      hasTotals: boolean
     } | null
   } | null
   user: RewindUser
@@ -59,7 +82,5 @@ export type UserRewind = {
 
 export type RewindStory = {
   userRewind: UserRewind
-  pause?: () => void
-  resume?: () => void
   settings: PublicSettings
 }

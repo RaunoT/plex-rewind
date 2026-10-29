@@ -8,7 +8,9 @@ import zlib from 'zlib'
 
 const gzip = promisify(zlib.gzip)
 const gunzip = promisify(zlib.gunzip)
-const VERSION = 1
+const VERSION = 2
+// Its plays have no percent complete, so its histories are read again
+const PREVIOUS_VERSION = 1
 
 export type PlaysSnapshot = {
   plays: Play[]
@@ -19,7 +21,8 @@ export type PlaysSnapshot = {
   rebuildAt: number
 }
 
-type SavedPlay = Omit<Play, 'avatar'>
+type SavedPlay = Omit<Play, 'avatar' | 'percentComplete'> &
+  Partial<Pick<Play, 'percentComplete'>>
 
 type SavedHistory = {
   // The source, its URL and the part of its history, but no API key
@@ -48,13 +51,15 @@ function isSavedPlay(play: unknown): play is SavedPlay {
     return false
   }
 
-  const { id, startedAt, orderedAt, identityId } = play as Partial<SavedPlay>
+  const { id, startedAt, orderedAt, identityId, percentComplete } =
+    play as Partial<SavedPlay>
 
   return (
     typeof id === 'string' &&
     typeof identityId === 'string' &&
     Number.isFinite(startedAt) &&
-    (orderedAt === undefined || Number.isFinite(orderedAt))
+    (orderedAt === undefined || Number.isFinite(orderedAt)) &&
+    (percentComplete == null || Number.isFinite(percentComplete))
   )
 }
 
@@ -86,7 +91,7 @@ function isHistoryFile(file: unknown): file is HistoryFile {
   const { version, histories } = file as Partial<HistoryFile>
 
   return (
-    version === VERSION &&
+    (version === VERSION || version === PREVIOUS_VERSION) &&
     Array.isArray(histories) &&
     histories.every(isSavedHistory)
   )
@@ -98,17 +103,23 @@ function getErrorCode(error: unknown): string | undefined {
     : undefined
 }
 
-function toSnapshot(history: SavedHistory): PlaysSnapshot {
+// A history from the previous version answers until it's read again, which
+// starts right away.
+function toSnapshot(history: SavedHistory, version: number): PlaysSnapshot {
   return {
     plays: history.plays.map((play) => {
       const avatar = history.avatars[play.identityId]
 
-      return { ...play, avatar: typeof avatar === 'string' ? avatar : '' }
+      return {
+        ...play,
+        percentComplete: play.percentComplete ?? null,
+        avatar: typeof avatar === 'string' ? avatar : '',
+      }
     }),
     readTo: history.readTo ?? -Infinity,
     cursor: history.cursor,
     toppedUpAt: history.toppedUpAt,
-    rebuildAt: history.rebuildAt,
+    rebuildAt: version === VERSION ? history.rebuildAt : 0,
   }
 }
 
@@ -141,7 +152,10 @@ export async function readHistoryFile(): Promise<Map<string, PlaysSnapshot>> {
   }
 
   return new Map(
-    file.histories.map((history) => [history.key, toSnapshot(history)]),
+    file.histories.map((history) => [
+      history.key,
+      toSnapshot(history, file.version),
+    ]),
   )
 }
 

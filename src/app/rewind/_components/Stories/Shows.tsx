@@ -2,6 +2,7 @@ import { MEDIA_ICONS } from '@/components/icons'
 import MediaItems from '@/components/MediaItem/MediaItems'
 import { RewindStory } from '@/types/rewind'
 import { useTranslations } from 'next-intl'
+import PlaytimeShare from '../PlaytimeShare'
 import RewindStat from '../RewindStat'
 
 export default function StoryShows({ userRewind, settings }: RewindStory) {
@@ -11,7 +12,7 @@ export default function StoryShows({ userRewind, settings }: RewindStory) {
     <>
       {userRewind.shows.duration ? (
         <>
-          <RewindStat scaleDelay={3}>
+          <RewindStat>
             <p>
               {t.rich('duration', {
                 library: (chunks) => (
@@ -30,21 +31,26 @@ export default function StoryShows({ userRewind, settings }: RewindStory) {
             </p>
           </RewindStat>
 
-          <RewindStat renderDelay={3} scaleDelay={3}>
-            <p>
-              {t.rich('count', {
-                countValue: userRewind.shows.count,
-                count: (chunks) => (
-                  <span className='rewind-stat'>{chunks}</span>
-                ),
-                episodes: (chunks) => (
-                  <span className='rewind-cat'>{chunks}</span>
-                ),
-              })}
-            </p>
-          </RewindStat>
+          <PlaytimeShare percentage={userRewind.shows.percentage} step={1} />
 
-          <RewindStat renderDelay={6} loaderDelay={3} noScale>
+          {/* The watch time can be from plays that don't count */}
+          {userRewind.shows.count > 0 && (
+            <RewindStat step={2}>
+              <p>
+                {t.rich('count', {
+                  countValue: userRewind.shows.count,
+                  count: (chunks) => (
+                    <span className='rewind-stat'>{chunks}</span>
+                  ),
+                  episodes: (chunks) => (
+                    <span className='rewind-cat'>{chunks}</span>
+                  ),
+                })}
+              </p>
+            </RewindStat>
+          )}
+
+          <RewindStat step={3} noScale>
             <p className='mb-2'>
               {t('favorite')}{' '}
               <span className='rewind-cat'>

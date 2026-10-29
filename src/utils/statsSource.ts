@@ -13,9 +13,11 @@ import { isTracearrSource } from './helpers'
 import {
   getReadProgress,
   getReadStatus,
+  getUpdatedAt,
   readAgain,
   startReading,
 } from './playHistory'
+import { hasSnapshot } from './sourceSnapshot'
 import tautulliSource, { isTautulliReachable } from './tautulliSource'
 import tracearrSource from './tracearrSource'
 
@@ -108,16 +110,45 @@ export async function getLibraries(
     : libraries
 }
 
-// Null when the source can't be reached, which an empty list can't show
+// Null when the source can't be reached and nothing was saved to stand in for
+// it, which an empty list can't show
 export async function getReachableLibraries(
   excludeInactive = true,
 ): Promise<TautulliLibrary[] | null> {
-  const [libraries, isReachable] = await Promise.all([
+  const [libraries, isReachable, hasSaved] = await Promise.all([
     getLibraries(excludeInactive),
     isStatsSourceReachable(),
+    hasSnapshot(getStatsSource().getSnapshotKey()),
   ])
 
-  return isReachable ? libraries : null
+  return isReachable || hasSaved ? libraries : null
+}
+
+// While the source can't be reached, the stats come from what was saved
+export type SourceOutage = {
+  // When the saved plays were last brought up to date, null without any
+  updatedAt: number | null
+}
+
+// Null while the source answers, or when nothing was saved to stand in for it
+export async function getSourceOutage(
+  settings: Settings = getSettings(),
+): Promise<SourceOutage | null> {
+  if (!settings.connection.complete) {
+    return null
+  }
+
+  const source = getStatsSource(settings)
+  const [isReachable, hasSaved] = await Promise.all([
+    isStatsSourceReachable(settings),
+    hasSnapshot(source.getSnapshotKey()),
+  ])
+
+  if (isReachable || !hasSaved) {
+    return null
+  }
+
+  return { updatedAt: await getUpdatedAt(await source.getHistoryReaders()) }
 }
 
 // Includes excluded users, so that the settings can list them.

@@ -4,8 +4,14 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { DEFAULT_SETTINGS } from './constants'
 import fetchTautulli from './fetchTautulli'
 import getSettings from './getSettings'
+import { isHostDown, markHostDown } from './hostBackoff'
 
 vi.mock('./getSettings', () => ({ default: vi.fn() }))
+vi.mock('./hostBackoff', async (importOriginal) => ({
+  ...(await importOriginal<typeof import('./hostBackoff')>()),
+  isHostDown: vi.fn(),
+  markHostDown: vi.fn(),
+}))
 
 const fetchMock = vi.fn()
 
@@ -35,6 +41,8 @@ beforeEach(() => {
   vi.spyOn(console, 'error').mockImplementation(() => {})
   vi.spyOn(console, 'warn').mockImplementation(() => {})
   vi.mocked(getSettings).mockReturnValue(testSettings())
+  vi.mocked(isHostDown).mockReset()
+  vi.mocked(markHostDown).mockReset()
 })
 
 afterEach(() => {
@@ -101,6 +109,37 @@ describe('fetchTautulli', () => {
     fetchMock.mockRejectedValue(new TypeError('fetch failed'))
 
     await expect(fetchTautulli('get_activity')).resolves.toBeNull()
+  })
+
+  it('marks Tautulli down when it does not answer, or its proxy says so', async () => {
+    fetchMock.mockRejectedValueOnce(new TypeError('fetch failed'))
+    fetchMock.mockResolvedValueOnce(new Response('', { status: 502 }))
+
+    await fetchTautulli('get_activity')
+    await fetchTautulli('get_activity')
+
+    // By its URL, which is also what's asked whether it's back
+    expect(vi.mocked(markHostDown).mock.calls).toEqual([
+      ['http://tautulli:8181'],
+      ['http://tautulli:8181'],
+    ])
+  })
+
+  it('does not mark Tautulli down for an error it answers with', async () => {
+    fetchMock.mockResolvedValueOnce(new Response('', { status: 401 }))
+    fetchMock.mockResolvedValueOnce(Response.json({ unexpected: true }))
+
+    await fetchTautulli('get_activity')
+    await fetchTautulli('get_activity')
+
+    expect(markHostDown).not.toHaveBeenCalled()
+  })
+
+  it('skips the request while Tautulli is down', async () => {
+    vi.mocked(isHostDown).mockReturnValue(true)
+
+    await expect(fetchTautulli('get_activity')).resolves.toBeNull()
+    expect(fetchMock).not.toHaveBeenCalled()
   })
 
   it('skips the request when Tautulli is not configured', async () => {

@@ -5,6 +5,7 @@ import {
   ACTIVITY_DETAILS_COOKIE_NAME,
   DASHBOARD_PERIOD_COOKIE_NAME,
 } from '@/utils/constants'
+import { getDashboardSort } from '@/utils/helpers'
 import { createContext, ReactNode, useEffect, useState } from 'react'
 
 type GlobalContextProps = {
@@ -51,7 +52,7 @@ export function readStorage(key: string): string | undefined {
   }
 }
 
-function writeStorage(key: string, value?: string) {
+export function writeStorage(key: string, value?: string) {
   try {
     localStorage.setItem(key, value || '')
   } catch {}
@@ -73,39 +74,27 @@ export default function GlobalContextProvider({
   const [isHydrated, setIsHydrated] = useState<boolean>(false)
 
   useEffect(() => {
-    try {
-      // Read after mount so the first client render matches the server HTML
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setIsPersonal(
-        (prev) =>
-          prev ??
-          ((localStorage.getItem('dashboardPersonal') ||
-            undefined) as DashboardSearchParams['personal']),
-      )
-      setPeriod(
-        (prev) =>
-          prev ??
-          ((localStorage.getItem('dashboardPeriod') ||
-            undefined) as DashboardSearchParams['period']),
-      )
-      // Plays became the default, so only watch time is worth restoring
-      setSortBy(
-        (prev) =>
-          prev ??
-          (localStorage.getItem('dashboardSort') === 'duration'
-            ? 'duration'
-            : undefined),
-      )
+    // Read after mount so the first client render matches the server HTML
+    const savedIsPersonal = readStorage(
+      'dashboardPersonal',
+    ) as DashboardSearchParams['personal']
+    const savedPeriod = readStorage(
+      'dashboardPeriod',
+    ) as DashboardSearchParams['period']
+    const savedSortBy = getDashboardSort(readStorage('dashboardSort'))
 
-      // Saved only in the browser before the cookie. Hidden by default, so
-      // only showing them is worth restoring.
-      if (savedIsDetailsHidden === undefined) {
-        setIsDetailsHidden(
-          (prev) =>
-            prev && localStorage.getItem('activityDetailsHidden') !== 'false',
-        )
-      }
-    } catch {}
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setIsPersonal((prev) => prev ?? savedIsPersonal)
+    setPeriod((prev) => prev ?? savedPeriod)
+    setSortBy((prev) => prev ?? savedSortBy)
+
+    // Saved only in the browser before the cookie. Hidden by default, so
+    // only showing them is worth restoring.
+    if (savedIsDetailsHidden === undefined) {
+      const isDetailsShown = readStorage('activityDetailsHidden') === 'false'
+
+      setIsDetailsHidden((prev) => prev && !isDetailsShown)
+    }
 
     setIsHydrated(true)
   }, [savedIsDetailsHidden])

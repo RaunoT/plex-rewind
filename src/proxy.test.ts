@@ -122,4 +122,23 @@ describe('proxy', () => {
 
     expect(getServerUser).toHaveBeenCalledTimes(1)
   })
+
+  it('sends old links to the Tracearr shows library to its new name', async () => {
+    const settings: Settings = cloneDeep(DEFAULT_SETTINGS)
+
+    settings.connection.statisticsSource = 'tracearr'
+    vi.mocked(getSettings).mockReturnValue(settings)
+
+    const res = await request('', '/dashboard/tv-shows?period=7days')
+
+    expect(res?.headers.get('location')).toBe(
+      'http://localhost:3000/dashboard/shows?period=7days',
+    )
+  })
+
+  it('leaves the TV Shows library of other sources alone', async () => {
+    const res = await request('', '/dashboard/tv-shows')
+
+    expect(res?.headers.get('location')).not.toContain('/dashboard/shows')
+  })
 })

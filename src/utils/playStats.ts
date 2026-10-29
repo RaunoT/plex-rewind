@@ -1,12 +1,15 @@
 import { Play, PlayMediaType } from '@/types/playHistory'
 import {
   DurationQuery,
+  Genres,
   MediaStats,
   PlaysByTime,
   StatsSource,
   TopItems,
   TopItemsQuery,
+  TopItemsSort,
   TopMediaItems,
+  TopPeople,
   TopUsersQuery,
 } from '@/types/statsSource'
 import {
@@ -14,11 +17,14 @@ import {
   TautulliLibrary,
   TautulliMediaType,
 } from '@/types/tautulli'
-import { countBy, groupBy, orderBy, sumBy, uniqBy } from 'lodash'
+import { countBy, groupBy, mapValues, orderBy, sumBy, uniqBy } from 'lodash'
 import getMediaAdditionalData, {
   SourceMediaData,
+  TmdbMediaType,
 } from './getMediaAdditionalData'
 import getSettings from './getSettings'
+import { getTopGenres, MatchCandidate, WatchedTitle } from './topGenres'
+import { getTopPeople as findTopPeople } from './topPeople'
 
 export const PLAY_MEDIA_TYPES: PlayMediaType[] = ['movie', 'episode', 'track']
 
@@ -79,6 +85,8 @@ export type PlayStats = Pick<
   | 'getTopUsers'
   | 'getMediaStats'
   | 'getTopMediaItems'
+  | 'getTopPeople'
+  | 'getGenres'
   | 'getPlaysByTime'
   | 'getPlayItem'
 >
@@ -122,6 +130,16 @@ export function getExcludedIdentityIds(
 
 function getDuration(plays: Play[]): number {
   return Math.round(sumBy(plays, 'durationMs') / 1000)
+}
+
+// Plays short of the percent in the settings still add their watch time. A
+// play the source has no percent complete for counts.
+export function isCountedPlay(play: Play, minPercent: number): boolean {
+  return play.percentComplete === null || play.percentComplete >= minPercent
+}
+
+function getMinPlayPercent(): number {
+  return getSettings().general.minPlayPercent
 }
 
 function getMediaId(play: Play): string | null {
@@ -180,7 +198,7 @@ function groupPlays(plays: Play[]): Play[][] {
 // play with a rating key and a poster points at the current library item.
 // Without one, the rating key matters more than the poster, as it's what the
 // Plex link needs, and the poster can come from any play.
-function toItemRow(plays: Play[]): TautulliItemRow {
+function toItemRow(plays: Play[], minPercent: number): TautulliItemRow {
   const newestFirst = orderBy(plays, 'startedAt', 'desc')
   const play =
     newestFirst.find((play) => getRatingKey(play) && play.thumb) ??
@@ -193,14 +211,15 @@ function toItemRow(plays: Play[]): TautulliItemRow {
     track: play.artistName,
   }
   const ratingKey = Number(getRatingKey(play)) || 0
+  const countedPlays = plays.filter((play) => isCountedPlay(play, minPercent))
 
   return {
     ...EMPTY_ROW,
     title: titleByType[play.mediaType] || play.title,
     year: isMovie ? play.year : null,
-    total_plays: plays.length,
+    total_plays: countedPlays.length,
     total_duration: getDuration(plays),
-    users_watched: uniqBy(plays, 'identityId').length,
+    users_watched: uniqBy(countedPlays, 'identityId').length,
     rating_key: ratingKey,
     grandparent_rating_key: ratingKey,
     thumb: play.thumb || newestFirst.find((play) => play.thumb)?.thumb || '',
@@ -210,18 +229,29 @@ function toItemRow(plays: Play[]): TautulliItemRow {
   }
 }
 
+const COMPARE_ITEMS: Record<
+  TopItemsSort,
+  (a: TautulliItemRow, b: TautulliItemRow) => number
+> = {
+  duration: (a, b) => b.total_duration - a.total_duration,
+  plays: (a, b) =>
+    b.total_plays - a.total_plays || COMPARE_ITEMS.duration(a, b),
+  users: (a, b) =>
+    (b.users_watched ?? 0) - (a.users_watched ?? 0) ||
+    COMPARE_ITEMS.plays(a, b),
+}
+
+// Only the watch time ranks an item none of whose plays count
 function rankItems(
   plays: Play[],
   count: number,
-  sortByPlays = false,
+  minPercent: number,
+  sortBy: TopItemsSort = 'duration',
 ): TautulliItemRow[] {
   return groupPlays(plays)
-    .map(toItemRow)
-    .sort((a, b) =>
-      sortByPlays
-        ? b.total_plays - a.total_plays || b.total_duration - a.total_duration
-        : b.total_duration - a.total_duration,
-    )
+    .map((group) => toItemRow(group, minPercent))
+    .filter((item) => sortBy === 'duration' || item.total_plays > 0)
+    .sort(COMPARE_ITEMS[sortBy])
     .slice(0, count)
 }
 
@@ -241,6 +271,11 @@ export function createPlayStats(provider: PlaysProvider): PlayStats {
     const identityId = users.find((user) => user.plexId === userId)?.identityId
 
     if (userId && !identityId) {
+      return []
+    }
+
+    // Without the users, the excluded users' plays can't be left out
+    if (!userId && excludedUsers.length && !users.length) {
       return []
     }
 
@@ -271,7 +306,7 @@ export function createPlayStats(provider: PlaysProvider): PlayStats {
 
   async function getTopItems(
     library: TautulliLibrary,
-    { period, userId, sortByPlays, count }: TopItemsQuery,
+    { period, userId, sortBy, count }: TopItemsQuery,
   ): Promise<TopItems> {
     const mediaType = LIBRARY_PLAY_TYPES[library.section_type]
     const plays = await getPlays({
@@ -280,7 +315,7 @@ export function createPlayStats(provider: PlaysProvider): PlayStats {
       libraries: [library],
     })
     // The extra item only tells whether the ranking goes on.
-    const topItems = rankItems(plays, count + 1, sortByPlays)
+    const topItems = rankItems(plays, count + 1, getMinPlayPercent(), sortBy)
     const items = topItems.slice(0, count).map((item) => ({
       ...item,
       // Don't show how many users watched the item on personal dashboard
@@ -303,6 +338,7 @@ export function createPlayStats(provider: PlaysProvider): PlayStats {
     since: string,
   ): Promise<MediaStats> {
     const plays = await getPlays({ since, userId, libraries })
+    const minPercent = getMinPlayPercent()
     const mediaTypes = libraries.map(
       (library) => LIBRARY_PLAY_TYPES[library.section_type],
     )
@@ -311,7 +347,8 @@ export function createPlayStats(provider: PlaysProvider): PlayStats {
       const typePlays = plays.filter((play) => play.mediaType === mediaType)
 
       return {
-        count: typePlays.length,
+        count: typePlays.filter((play) => isCountedPlay(play, minPercent))
+          .length,
         duration: mediaTypes.includes(mediaType)
           ? getDuration(typePlays)
           : null,
@@ -331,11 +368,13 @@ export function createPlayStats(provider: PlaysProvider): PlayStats {
     since: string,
   ): Promise<TopMediaItems> {
     const plays = await getPlays({ since, userId, libraries })
+    const minPercent = getMinPlayPercent()
 
     function getTop(mediaType: PlayMediaType) {
       const items = rankItems(
         plays.filter((play) => play.mediaType === mediaType),
         5,
+        minPercent,
       ).map((item) => ({ ...item, users_watched: undefined }))
 
       return addAdditionalData(items, mediaType)
@@ -350,16 +389,96 @@ export function createPlayStats(provider: PlaysProvider): PlayStats {
     return { shows, movies, audio }
   }
 
+  async function getTopPeople(
+    userId: string,
+    libraries: TautulliLibrary[],
+    since: string,
+  ): Promise<TopPeople> {
+    const plays = await getPlays({ since, userId, libraries })
+    const minPercent = getMinPlayPercent()
+
+    function getTitles(mediaType: PlayMediaType) {
+      return groupPlays(
+        plays.filter((play) => play.mediaType === mediaType),
+      ).map((group) => toItemRow(group, minPercent))
+    }
+
+    return findTopPeople(
+      { movies: getTitles('movie'), shows: getTitles('episode') },
+      provider.getMediaData,
+    )
+  }
+
+  async function getGenres(
+    userId: string,
+    libraries: TautulliLibrary[],
+    since: string,
+    withMatch: boolean,
+  ): Promise<Genres> {
+    const [userPlays, serverPlays, users] = await Promise.all([
+      getPlays({ since, userId, libraries }),
+      withMatch ? getPlays({ since, libraries }) : [],
+      withMatch ? provider.getUsers() : [],
+    ])
+    const identityId = userPlays[0]?.identityId
+
+    if (!identityId) {
+      return { movies: [], shows: [], match: null }
+    }
+
+    // An excluded user's own plays aren't among everyone's.
+    const plays = uniqBy([...userPlays, ...serverPlays], 'id')
+    const avatars = new Map(
+      serverPlays
+        .filter((play) => play.avatar)
+        .map((play) => [play.identityId, play.avatar]),
+    )
+    const minPercent = getMinPlayPercent()
+
+    // Each title once, with everyone's time on it
+    function getTitles(
+      mediaType: PlayMediaType,
+      type: TmdbMediaType,
+    ): WatchedTitle[] {
+      return groupPlays(
+        plays.filter((play) => play.mediaType === mediaType),
+      ).map((group) => ({
+        item: toItemRow(group, minPercent),
+        type,
+        durations: mapValues(groupBy(group, 'identityId'), getDuration),
+      }))
+    }
+
+    const candidates: MatchCandidate[] = users
+      .filter((user) => user.identityId !== identityId)
+      .map((user) => ({
+        identityId: user.identityId,
+        userId: user.plexId,
+        name: user.friendlyName,
+        image: avatars.get(user.identityId) || null,
+      }))
+
+    return getTopGenres(
+      [...getTitles('movie', 'movie'), ...getTitles('episode', 'tv')],
+      identityId,
+      withMatch ? candidates : null,
+      provider.getMediaData,
+    )
+  }
+
   // Hours and days are in the Plex Rewind server's timezone.
   async function getPlaysByTime(
     userId: string,
     since: string,
   ): Promise<PlaysByTime> {
     const plays = await getPlays({ since, userId })
+    const minPercent = getMinPlayPercent()
     const hourly = Array<number>(24).fill(0)
     const daily = Array<number>(7).fill(0)
 
-    for (const play of plays) {
+    for (const play of plays.filter((play) =>
+      isCountedPlay(play, minPercent),
+    )) {
       const startedAt = new Date(play.startedAt)
 
       hourly[startedAt.getHours()]++
@@ -380,6 +499,7 @@ export function createPlayStats(provider: PlaysProvider): PlayStats {
     const usersByIdentity = new Map(
       users.map((user) => [user.identityId, user]),
     )
+    const minPercent = getMinPlayPercent()
 
     return Object.entries(groupBy(plays, 'identityId'))
       .flatMap(([identityId, userPlays]) => {
@@ -389,7 +509,10 @@ export function createPlayStats(provider: PlaysProvider): PlayStats {
           return []
         }
 
-        const playsByType = countBy(userPlays, 'mediaType')
+        const countedPlays = userPlays.filter((play) =>
+          isCountedPlay(play, minPercent),
+        )
+        const playsByType = countBy(countedPlays, 'mediaType')
 
         return [
           {
@@ -398,7 +521,7 @@ export function createPlayStats(provider: PlaysProvider): PlayStats {
             friendly_name: user.friendlyName,
             user_thumb: userPlays.find((play) => play.avatar)?.avatar ?? '',
             user_id: Number(user.plexId),
-            total_plays: userPlays.length,
+            total_plays: countedPlays.length,
             total_duration: getDuration(userPlays),
             movies_plays_count: playsByType.movie ?? 0,
             shows_plays_count: playsByType.episode ?? 0,
@@ -409,8 +532,30 @@ export function createPlayStats(provider: PlaysProvider): PlayStats {
       .sort((a, b) => b.total_duration - a.total_duration)
   }
 
-  async function getPlayItem(play: Play): Promise<TautulliItemRow> {
-    const [item] = await addAdditionalData([toItemRow([play])], play.mediaType)
+  async function getPlayItem(
+    play: Play,
+    userId?: string,
+  ): Promise<TautulliItemRow> {
+    const userPlays = userId
+      ? (await getPlays({ since: new Date(0), userId })).filter(
+          (other) => other.mediaType === play.mediaType,
+        )
+      : []
+    const plays = userPlays.some((other) => other.id === play.id)
+      ? userPlays
+      : [play, ...userPlays]
+    const itemPlays = groupPlays(plays).find((group) =>
+      group.some((other) => other.id === play.id),
+    ) ?? [play]
+    const [item] = await addAdditionalData(
+      [
+        {
+          ...toItemRow(itemPlays, getMinPlayPercent()),
+          users_watched: undefined,
+        },
+      ],
+      play.mediaType,
+    )
 
     return item
   }
@@ -421,6 +566,8 @@ export function createPlayStats(provider: PlaysProvider): PlayStats {
     getTopUsers,
     getMediaStats,
     getTopMediaItems,
+    getTopPeople,
+    getGenres,
     getPlaysByTime,
     getPlayItem,
   }

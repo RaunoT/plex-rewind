@@ -1,17 +1,27 @@
 import { cloneDeep } from 'lodash'
+import { getLocale, getTranslations } from 'next-intl/server'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { DEFAULT_SETTINGS } from './constants'
 import { fetchSeerrStats } from './fetchSeerr'
-import { getRequestsTotals } from './getRewind'
+import { getRequestsTotals, getTopMediaStats } from './getRewind'
 import getSettings from './getSettings'
+import { getStatsSource } from './statsSource'
 
-vi.mock('next-intl/server', () => ({ getTranslations: vi.fn() }))
+vi.mock('next-intl/server', () => ({
+  getLocale: vi.fn(),
+  getTranslations: vi.fn(),
+}))
 vi.mock('./fetchSeerr', () => ({ fetchSeerrStats: vi.fn() }))
 vi.mock('./getSettings', () => ({ default: vi.fn() }))
 vi.mock('./statsSource', () => ({ getStatsSource: vi.fn() }))
 
-function request(type: string, plexId: number) {
-  return { createdAt: '2026-06-01T00:00:00Z', type, requestedBy: { plexId } }
+// Seerr users without Plex have no Plex id
+function request(type: string, plexId: number | null, id = plexId ?? 0) {
+  return {
+    createdAt: '2026-06-01T00:00:00Z',
+    type,
+    requestedBy: { id, plexId },
+  }
 }
 
 beforeEach(() => {
@@ -33,9 +43,48 @@ describe('getRequestsTotals', () => {
       total: 3,
       movies: 2,
       shows: 1,
-      user: 2,
+      user: { total: 2, movies: 1, shows: 1 },
+      // 3 requests from 2 users average 1.5, which shows as 2
+      average: { count: 2, difference: 0 },
     })
     expect(fetchSeerrStats).toHaveBeenCalledWith('request', '2026-01-01')
+  })
+
+  it('tells apart the Seerr users without Plex', async () => {
+    vi.mocked(fetchSeerrStats).mockResolvedValue([
+      request('movie', 1),
+      request('movie', 1),
+      request('movie', null, 10),
+      request('movie', null, 11),
+    ])
+
+    const totals = await getRequestsTotals('1')
+
+    // 4 requests from 3 users
+    expect(totals?.average).toEqual({ count: 1, difference: 100 })
+  })
+
+  it("leaves excluded users out of every user's requests", async () => {
+    const settings = cloneDeep(DEFAULT_SETTINGS)
+
+    settings.rewind.startDate = '2026-01-01'
+    settings.general.excludedUsers = ['1', '3']
+    vi.mocked(getSettings).mockReturnValue(settings)
+    vi.mocked(fetchSeerrStats).mockResolvedValue([
+      request('movie', 1),
+      request('movie', 2),
+      request('tv', 3),
+      request('tv', 3),
+    ])
+
+    // Excluded too, but the rewind is theirs
+    await expect(getRequestsTotals('1')).resolves.toEqual({
+      total: 2,
+      movies: 2,
+      shows: 0,
+      user: { total: 1, movies: 1, shows: 0 },
+      average: { count: 1, difference: 0 },
+    })
   })
 
   it('counts zero requests when there were none', async () => {
@@ -45,7 +94,8 @@ describe('getRequestsTotals', () => {
       total: 0,
       movies: 0,
       shows: 0,
-      user: 0,
+      user: { total: 0, movies: 0, shows: 0 },
+      average: null,
     })
   })
 
@@ -53,5 +103,65 @@ describe('getRequestsTotals', () => {
     vi.mocked(fetchSeerrStats).mockResolvedValue(null)
 
     await expect(getRequestsTotals('1')).resolves.toBeNull()
+  })
+})
+
+describe('getTopMediaStats', () => {
+  function mockMediaStats(
+    shows: number | null,
+    movies: number | null,
+    audio: number | null,
+  ) {
+    vi.mocked(getStatsSource).mockReturnValue({
+      getMediaStats: vi.fn().mockResolvedValue({
+        shows: { count: 1, duration: shows },
+        movies: { count: 1, duration: movies },
+        audio: { count: 1, duration: audio },
+      }),
+    } as unknown as ReturnType<typeof getStatsSource>)
+  }
+
+  beforeEach(() => {
+    vi.mocked(getLocale).mockResolvedValue('en')
+    vi.mocked(getTranslations).mockResolvedValue(
+      vi.fn() as unknown as Awaited<ReturnType<typeof getTranslations>>,
+    )
+  })
+
+  it("gives each library's share of the user's playtime", async () => {
+    mockMediaStats(600, 300, 100)
+
+    const stats = await getTopMediaStats('1', [])
+
+    expect(stats.shows.percentage).toBe('60%')
+    expect(stats.movies.percentage).toBe('30%')
+    expect(stats.audio.percentage).toBe('10%')
+  })
+
+  it('leaves the share out for a missing library', async () => {
+    mockMediaStats(300, 100, null)
+
+    const stats = await getTopMediaStats('1', [])
+
+    expect(stats.shows.percentage).toBe('75%')
+    expect(stats.audio.percentage).toBe('')
+  })
+
+  it('leaves the share out when it rounds to 0%', async () => {
+    mockMediaStats(999, 0, 1)
+
+    const stats = await getTopMediaStats('1', [])
+
+    expect(stats.shows.percentage).toBe('100%')
+    expect(stats.movies.percentage).toBe('')
+    expect(stats.audio.percentage).toBe('')
+  })
+
+  it('leaves the shares out without any playtime', async () => {
+    mockMediaStats(0, 0, 0)
+
+    const stats = await getTopMediaStats('1', [])
+
+    expect(stats.shows.percentage).toBe('')
   })
 })

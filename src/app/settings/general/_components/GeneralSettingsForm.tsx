@@ -293,6 +293,23 @@ export default function GeneralSettingsForm({
                 <span className='label-wrapper'>{t('itemStatistics')}</span>
               </Label>
             </CheckboxGroup>
+            <label className='input-wrapper'>
+              <input
+                key={`min-play-percent-${generalSettings.minPlayPercent}`}
+                type='number'
+                className='input'
+                name='minPlayPercent'
+                defaultValue={generalSettings.minPlayPercent}
+                placeholder='50'
+                min='0'
+                max='100'
+                required
+              />
+              <span className='label'>
+                <span className='label-wrapper'>{t('minPlayPercent')}</span>
+                <small>{t('minPlayPercentDescription')}</small>
+              </span>
+            </label>
           </section>
           <section className='group-settings group'>
             <h2 className='heading-settings'>{t('privacy')}</h2>

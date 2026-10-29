@@ -19,18 +19,13 @@ import { useLocale, useTranslations } from 'next-intl'
 import { useRef } from 'react'
 import MediaItemTitle from './MediaItemTitle'
 import PlexDeeplink from './PlexDeeplink'
+import Rank from './Rank'
 import SiteLogo from './SiteLogo'
 import TitleDetails from './TitleDetails'
 
 // A viewing stat: a pill from sm up, plain text on phones
 const STAT_PILL =
   'icon-stat-wrapper max-sm:bg-transparent max-sm:p-0 max-sm:ring-0'
-// Gold, silver and bronze for the top three
-const RANK_COLORS = [
-  'bg-linear-to-b from-yellow-200 to-yellow-500 bg-clip-text text-transparent',
-  'bg-linear-to-b from-white to-neutral-300 bg-clip-text text-transparent',
-  'bg-linear-to-b from-orange-300 to-orange-600 bg-clip-text text-transparent',
-]
 
 type Props = {
   data: TautulliItemRow
@@ -101,17 +96,7 @@ export default function MediaItem({
           isRanked && 'max-sm:pt-1 max-sm:pl-1',
         )}
       >
-        {isRanked && (
-          <span className='text-center text-2xl leading-none font-bold tracking-tight tabular-nums max-sm:absolute max-sm:top-0 max-sm:left-0 max-sm:z-10 max-sm:flex max-sm:size-6 max-sm:items-center max-sm:justify-center max-sm:rounded-full max-sm:border max-sm:border-white/15 max-sm:bg-neutral-900 max-sm:text-xs sm:w-8'>
-            <span
-              className={
-                RANK_COLORS[rank] || 'text-neutral-500 max-sm:text-neutral-300'
-              }
-            >
-              {rank + 1}
-            </span>
-          </span>
-        )}
+        {isRanked && <Rank rank={rank} />}
         <div className='poster max-sm:w-12'>
           {!isUsers ? (
             <PosterImage
@@ -202,10 +187,12 @@ export default function MediaItem({
                     )}
                   </>
                 ) : (
-                  <li className={STAT_PILL}>
-                    <MediaIcon type={type} />
-                    <span>{t('statPlays', { count: data.total_plays })}</span>
-                  </li>
+                  data.total_plays > 0 && (
+                    <li className={STAT_PILL}>
+                      <MediaIcon type={type} />
+                      <span>{t('statPlays', { count: data.total_plays })}</span>
+                    </li>
+                  )
                 ))}
               {/* Users watched */}
               {activeStats.includes('users') && !!data.users_watched && (

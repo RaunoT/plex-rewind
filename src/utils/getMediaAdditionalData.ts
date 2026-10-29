@@ -8,13 +8,36 @@ import fetchRottenTomatoes from './fetchRottenTomatoes'
 import fetchTmdb from './fetchTmdb'
 import getSettings from './getSettings'
 
-type TmdbMediaType = 'movie' | 'tv'
+export type TmdbMediaType = 'movie' | 'tv'
+
+export type MediaIds = {
+  imdb: string | null
+  tmdb: number | null
+  tvdb: number | null
+}
+
+// A movie's or show's directors and actors by name, the actors in billing
+// order. Shows have a director per episode, so theirs aren't used.
+export type Credits = {
+  directors: string[]
+  actors: string[]
+}
 
 // What the statistics source knows about an item
 export type SourceMediaData = {
   thumb: string
   isDeleted: boolean
+  // A show's plays only carry its episodes' IDs, and its title alone can find
+  // another show on TMDB.
+  ids?: MediaIds
+  year?: number | null
+  // Only Tautulli knows them, and only for items still on the server
+  credits?: Credits
+  genres?: string[]
 }
+
+// What's saved of it to stand in while the source is down
+export type SavedMediaData = Pick<SourceMediaData, 'ids' | 'year'>
 
 type TmdbSearch = {
   results?: { id: number }[]
@@ -24,8 +47,33 @@ type TmdbDetails = {
   vote_average?: number
   first_air_date?: string
   poster_path?: string | null
+  genres?: { name: string }[]
   // Only TV shows have a TVDB ID on TMDB
   external_ids?: { imdb_id?: string | null; tvdb_id?: number | null }
+}
+
+// The ratings, posters and genres share one request per title.
+export function fetchTmdbDetails(
+  type: TmdbMediaType,
+  tmdbId: number,
+): Promise<TmdbDetails | null> {
+  return fetchTmdb<TmdbDetails>(`${type}/${tmdbId}`, {
+    append_to_response: 'external_ids',
+  })
+}
+
+// Plex's IDs for an item, like `tmdb://61575`
+export function parseGuids(guids: string[] = []): MediaIds {
+  const find = (pattern: RegExp) =>
+    guids.map((guid) => guid.match(pattern)?.[1]).find(Boolean) ?? null
+  const tmdb = find(/^tmdb:\/\/(\d+)$/)
+  const tvdb = find(/^tvdb:\/\/(\d+)$/)
+
+  return {
+    imdb: find(/^imdb:\/\/(tt\d+)$/),
+    tmdb: tmdb ? Number(tmdb) : null,
+    tvdb: tvdb ? Number(tvdb) : null,
+  }
 }
 
 export function getTmdbSearchParams(
@@ -44,7 +92,7 @@ export function getTmdbSearchParams(
     : { query: title, first_air_date_year: year }
 }
 
-async function searchTmdbId(
+export async function searchTmdbId(
   item: TautulliItemRow,
   type: TmdbMediaType,
 ): Promise<number | undefined> {
@@ -67,6 +115,20 @@ async function searchTmdbId(
   return retry?.results?.[0]?.id
 }
 
+// The item's own IDs and year come first, then the source's.
+function withSourceData(
+  item: TautulliItemRow,
+  source: SourceMediaData,
+): TautulliItemRow {
+  return {
+    ...item,
+    year: item.year || source.year || null,
+    tmdb_id: item.tmdb_id || source.ids?.tmdb || null,
+    imdb_id: item.imdb_id || source.ids?.imdb || null,
+    tvdb_id: item.tvdb_id || source.ids?.tvdb || null,
+  }
+}
+
 async function getTmdbData(item: TautulliItemRow, type: TmdbMediaType) {
   const tmdbId = item.tmdb_id || (await searchTmdbId(item, type))
 
@@ -75,9 +137,7 @@ async function getTmdbData(item: TautulliItemRow, type: TmdbMediaType) {
   }
 
   // Tautulli doesn't return rating for removed items, so we're using TMDB
-  const details = await fetchTmdb<TmdbDetails>(`${type}/${tmdbId}`, {
-    append_to_response: 'external_ids',
-  })
+  const details = await fetchTmdbDetails(type, tmdbId)
 
   return { tmdbId, details }
 }
@@ -99,11 +159,10 @@ export default async function getMediaAdditionalData(
     statistics.includes('rottenTomatoesAudienceRating') ||
     settings.general.activeExternalLinks.includes('rottenTomatoes')
   const additionalData = await Promise.all(
-    media.map(async (item) => {
-      const [source, { tmdbId, details }] = await Promise.all([
-        getSourceData(item),
-        getTmdbData(item, type),
-      ])
+    media.map(async (row) => {
+      const source = await getSourceData(row)
+      const item = withSourceData(row, source)
+      const { tmdbId, details } = await getTmdbData(item, type)
       const imdbId = item.imdb_id || details?.external_ids?.imdb_id || null
       const tvdbId = item.tvdb_id || details?.external_ids?.tvdb_id || null
       const year =
@@ -125,7 +184,7 @@ export default async function getMediaAdditionalData(
         (isPostersTmdbOnly && tmdbPoster) || source.thumb || tmdbPoster || ''
 
       return {
-        year: Number(details?.first_air_date?.slice(0, 4)) || null,
+        year,
         is_deleted: source.isDeleted,
         rating: details?.vote_average ? details.vote_average.toFixed(1) : null,
         imdb_rating: externalRatings.imdb,

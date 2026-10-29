@@ -1,20 +1,19 @@
 'use client'
 
 import usePrefersReducedMotion from '@/hooks/usePrefersReducedMotion'
-import { animateRewindStat, fadeIn, instantTransition } from '@/utils/motion'
+import { animateRewindStat, instantTransition } from '@/utils/motion'
 import clsx from 'clsx'
 import { motion } from 'motion/react'
 import { ReactNode, useContext, useEffect } from 'react'
-import { StoryClockContext } from './Stories'
+import { StoryStepContext } from './Stories'
 
 type Props = {
   children: ReactNode
   className?: string
-  // Seconds from the start of the story
-  renderDelay?: number
-  loaderDelay?: number
-  scaleDelay?: number
-  hideAfter?: number
+  // Its place in the story, from 0. Statements with the same step show
+  // together, and a gap is skipped.
+  step?: number
+  // Keeps its size when a later statement shows
   noScale?: boolean
   isAnimated?: boolean
 }
@@ -22,27 +21,18 @@ type Props = {
 export default function RewindStat({
   children,
   className,
-  renderDelay = 0,
-  loaderDelay = 0,
-  scaleDelay = 0,
-  hideAfter = 0,
+  step = 0,
   noScale = false,
   isAnimated = true,
 }: Props) {
-  const { elapsed, isPaused, registerReveal } = useContext(StoryClockContext)
+  const { step: storyStep, registerStep } = useContext(StoryStepContext)
   const shouldReduceMotion = usePrefersReducedMotion()
-  const seconds = elapsed / 1000
-  const isShown = seconds >= renderDelay && !(hideAfter && seconds >= hideAfter)
-  const isLoaderShown =
-    !isShown && seconds >= loaderDelay && seconds < renderDelay && !isPaused
-  const isScaledDown =
-    !noScale && !!scaleDelay && seconds >= renderDelay + scaleDelay
+  const isShown = storyStep >= step
+  // Makes room for the statements after it
+  const isScaledDown = !noScale && storyStep > step
 
   // So the story controls can step to this statement
-  useEffect(
-    () => registerReveal(renderDelay * 1000),
-    [registerReveal, renderDelay],
-  )
+  useEffect(() => registerStep(step), [registerStep, step])
 
   return isShown ? (
     <motion.div
@@ -58,22 +48,5 @@ export default function RewindStat({
     >
       <div>{children}</div>
     </motion.div>
-  ) : isLoaderShown ? (
-    <Loader shouldReduceMotion={shouldReduceMotion} />
   ) : null
-}
-
-function Loader({ shouldReduceMotion }: { shouldReduceMotion: boolean }) {
-  return (
-    <motion.div
-      className='skeleton skeleton--no-animate flex w-fit items-center gap-2 px-4 py-2'
-      variants={fadeIn}
-      initial={shouldReduceMotion ? false : 'hidden'}
-      animate='show'
-    >
-      <span className='size-1 animate-pulse rounded-full bg-white'></span>
-      <span className='animation-delay-300 size-1 animate-pulse rounded-full bg-white'></span>
-      <span className='animation-delay-700 size-1 animate-pulse rounded-full bg-white'></span>
-    </motion.div>
-  )
 }

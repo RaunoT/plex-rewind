@@ -1,6 +1,7 @@
 import { Settings } from '@/types/settings'
 import { DEFAULT_SETTINGS } from '@/utils/constants'
 import getSettings from '@/utils/getSettings'
+import { isHostDown } from '@/utils/hostBackoff'
 import { cloneDeep } from 'lodash'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { GET } from './route'
@@ -34,6 +35,14 @@ beforeEach(() => {
   vi.stubGlobal('fetch', fetchMock)
   vi.spyOn(console, 'warn').mockImplementation(() => {})
   vi.spyOn(console, 'error').mockImplementation(() => {})
+  vi.spyOn(console, 'log').mockImplementation(() => {})
+
+  const { plexRewindDownServices } = globalThis as {
+    plexRewindDownServices?: Map<string, unknown>
+  }
+
+  // A host a test left down would skip the next test's images
+  plexRewindDownServices?.clear()
 })
 
 afterEach(() => {
@@ -136,5 +145,54 @@ describe('GET /api/image', () => {
     const res = await GET(request({ img: '/library/metadata/1/thumb' }))
 
     expect(res.status).toBe(404)
+  })
+
+  describe('while an image host is down', () => {
+    beforeEach(() => {
+      vi.useFakeTimers({ toFake: ['Date'] })
+    })
+
+    afterEach(() => {
+      vi.useRealTimers()
+    })
+
+    it('skips its images without touching the API on the same host', async () => {
+      fetchMock.mockRejectedValueOnce(new TypeError('fetch failed'))
+
+      expect(
+        (await GET(request({ img: '/library/metadata/1/thumb' }))).status,
+      ).toBe(500)
+      expect(
+        (await GET(request({ img: '/library/metadata/2/thumb' }))).status,
+      ).toBe(503)
+      expect(fetchMock).toHaveBeenCalledTimes(1)
+      expect(isHostDown('http://tautulli:8181')).toBe(false)
+
+      // After a while, the next image tries again
+      vi.advanceTimersByTime(30 * 1000)
+      fetchMock.mockImplementation(async () => image())
+
+      expect(
+        (await GET(request({ img: '/library/metadata/2/thumb' }))).status,
+      ).toBe(200)
+      expect(
+        (await GET(request({ img: '/library/metadata/3/thumb' }))).status,
+      ).toBe(200)
+    })
+
+    it('does not skip anything after a gateway error, which can be about one image', async () => {
+      fetchMock.mockResolvedValueOnce(new Response('', { status: 502 }))
+
+      expect(
+        (await GET(request({ img: '/library/metadata/1/thumb' }))).status,
+      ).toBe(502)
+
+      fetchMock.mockResolvedValue(image())
+
+      expect(
+        (await GET(request({ img: '/library/metadata/2/thumb' }))).status,
+      ).toBe(200)
+      expect(isHostDown('http://tautulli:8181')).toBe(false)
+    })
   })
 })

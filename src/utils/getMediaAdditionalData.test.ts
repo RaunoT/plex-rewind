@@ -12,6 +12,7 @@ import fetchRottenTomatoes from './fetchRottenTomatoes'
 import fetchTmdb from './fetchTmdb'
 import getMediaAdditionalData, {
   getTmdbSearchParams,
+  parseGuids,
   SourceMediaData,
 } from './getMediaAdditionalData'
 import getSettings from './getSettings'
@@ -84,6 +85,23 @@ beforeEach(() => {
   vi.mocked(getMovieRatings).mockResolvedValue(NO_EXTERNAL_RATINGS)
   vi.mocked(getShowRatings).mockResolvedValue(NO_EXTERNAL_RATINGS)
   vi.mocked(fetchRottenTomatoes).mockResolvedValue(null)
+})
+
+describe('parseGuids', () => {
+  it("reads Plex's IDs", () => {
+    expect(
+      parseGuids(['imdb://tt5753856', 'tmdb://70523', 'tvdb://334824']),
+    ).toEqual({ imdb: 'tt5753856', tmdb: 70523, tvdb: 334824 })
+  })
+
+  it('leaves out the IDs it does not know', () => {
+    expect(parseGuids(['plex://show/5d9c0874', 'tmdb://abc'])).toEqual({
+      imdb: null,
+      tmdb: null,
+      tvdb: null,
+    })
+    expect(parseGuids()).toEqual({ imdb: null, tmdb: null, tvdb: null })
+  })
 })
 
 describe('getTmdbSearchParams', () => {
@@ -308,24 +326,64 @@ describe('getMediaAdditionalData', () => {
     expect(item.thumb).toBe('https://image.tmdb.org/t/p/w300//dune.jpg')
   })
 
-  it('reads the source alongside TMDB', async () => {
-    const calls: string[] = []
-
-    getSourceData.mockImplementation(async () => {
-      calls.push('source')
-      await new Promise((resolve) => setTimeout(resolve, 5))
-
-      return { thumb: '/plex/thumb', isDeleted: false }
+  it("looks a show up by the source's IDs instead of its title", async () => {
+    mockSourceData({
+      ids: { imdb: 'tt5753856', tmdb: 70523, tvdb: 334824 },
+      year: 2017,
     })
-    vi.mocked(fetchTmdb).mockImplementation(async (endpoint) => {
-      calls.push(endpoint)
-
-      return (endpoint === 'search/movie' ? { results: [] } : null) as never
+    mockTmdb({
+      'tv/70523': {
+        first_air_date: '2017-12-01',
+        external_ids: { imdb_id: 'tt0059978', tvdb_id: 73599 },
+      },
     })
 
-    await getMediaAdditionalData([row({ year: null })], 'movie', getSourceData)
+    const [item] = await getMediaAdditionalData(
+      [row({ title: 'Dark', year: null })],
+      'tv',
+      getSourceData,
+    )
 
-    expect(calls.slice(0, 2).sort()).toEqual(['search/movie', 'source'])
+    expect(tmdbEndpoints()).toEqual(['tv/70523'])
+    expect(item).toMatchObject({
+      year: 2017,
+      tmdb_id: 70523,
+      imdb_id: 'tt5753856',
+      tvdb_id: 334824,
+    })
+  })
+
+  it("searches with the source's year when it has no TMDB ID", async () => {
+    mockSourceData({
+      ids: { imdb: null, tmdb: null, tvdb: null },
+      year: 2017,
+    })
+    mockTmdb({ 'search/tv': { results: [{ id: 70523 }] } })
+
+    await getMediaAdditionalData(
+      [row({ title: 'Dark', year: null })],
+      'tv',
+      getSourceData,
+    )
+
+    expect(fetchTmdb).toHaveBeenNthCalledWith(1, 'search/tv', {
+      query: 'Dark',
+      first_air_date_year: 2017,
+    })
+  })
+
+  it("keeps the item's own IDs over the source's", async () => {
+    mockSourceData({ ids: { imdb: 'tt1', tmdb: 1, tvdb: null } })
+    mockTmdb({ 'movie/438631': {} })
+
+    const [item] = await getMediaAdditionalData(
+      [row({ tmdb_id: 438631, imdb_id: 'tt1160419' })],
+      'movie',
+      getSourceData,
+    )
+
+    expect(tmdbEndpoints()).toEqual(['movie/438631'])
+    expect(item.imdb_id).toBe('tt1160419')
   })
 
   it('marks an item the source no longer has as deleted', async () => {

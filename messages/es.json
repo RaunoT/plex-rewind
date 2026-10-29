@@ -72,7 +72,8 @@
     "sortByLabel": "Ordenar por",
     "sort": "Ordenar",
     "byDuration": "Por tiempo de visualización",
-    "byPlays": "Por reproducciones"
+    "byPlays": "Por reproducciones",
+    "byUsers": "Por usuarios"
   },
   "DashboardNavContent": {
     "label": "Navegación del panel",
@@ -83,7 +84,9 @@
     "cta": "Intentar de nuevo",
     "sourceUnreachable": "No se pudo conectar con {source}",
     "sourceUnreachableDescription": "Comprueba que {source} esté en marcha y sea accesible desde Plex Rewind, y vuelve a intentarlo",
-    "connectionSettings": "Revisar los ajustes de conexión"
+    "connectionSettings": "Revisar los ajustes de conexión",
+    "sourceOutage": "No se pudo conectar con {source}. Las estadísticas se actualizaron por última vez {time} y pueden estar desactualizadas.",
+    "sourceOutageNoTime": "No se pudo conectar con {source}, así que las estadísticas pueden estar desactualizadas."
   },
   "History": {
     "syncingTitle": "Sincronizando el historial",
@@ -205,6 +208,9 @@
       "externalLinks": "Enlaces externos",
       "externalLinksDescription": "Si se muestra la valoración de un sitio, es la valoración la que enlaza a él",
       "itemStatistics": "Estadísticas por elemento",
+      "minPlayPercent": "Contar como reproducción desde %",
+      "minPlayPercentDescription": "Las reproducciones más cortas solo suman tiempo de visualización",
+      "minPlayPercentError": "El umbral de reproducción debe ser un número entero entre 0 y 100.",
       "privacy": "Privacidad",
       "excludedUsers": "Usuarios excluidos",
       "outsideAccess": "Permitir acceso externo",
@@ -267,15 +273,28 @@
       "goToStory": "Ir a la historia {index}",
       "previous": "Anterior",
       "next": "Siguiente",
-      "pause": "Pausar",
-      "resume": "Reanudar",
       "label": "Historias de Rewind",
-      "storyPosition": "Historia {current} de {total}"
+      "storyPosition": "Historia {current} de {total}",
+      "introTitle": "Cómo moverte",
+      "introBack": "Toca el lado izquierdo para volver atrás",
+      "introForward": "Toca el lado derecho para avanzar",
+      "introDismiss": "Entendido"
     },
     "Common": {
       "topShows": "Aquí tienes tu <top>{count, plural, one {serie favorita} other {top # de series}}</top>",
+      "topShowActors": "Aquí tienes tu <top>{count, plural, one {actor de series favorito} other {top # de actores de series}}</top>",
+      "topShowGenres": "Aquí tienes tu <top>{count, plural, one {género de series favorito} other {top # de géneros de series}}</top>",
       "topMovies": "Aquí tienes tu <top>{count, plural, one {película favorita} other {top # de películas}}</top>",
-      "topArtists": "Aquí tienes tu <top>{count, plural, one {artista favorito} other {top # de artistas}}</top>"
+      "topDirectors": "Aquí tienes tu <top>{count, plural, one {director favorito} other {top # de directores}}</top>",
+      "topMovieActors": "Aquí tienes tu <top>{count, plural, one {actor de cine favorito} other {top # de actores de cine}}</top>",
+      "topMovieGenres": "Aquí tienes tu <top>{count, plural, one {género de cine favorito} other {top # de géneros de cine}}</top>",
+      "topArtists": "Aquí tienes tu <top>{count, plural, one {artista favorito} other {top # de artistas}}</top>",
+      "percentage": "Eso es el <percentage>{percentageValue}</percentage> de tu tiempo total de reproducción.",
+      "shows": "Series",
+      "movies": "Películas",
+      "audio": "Música",
+      "you": "Tú",
+      "allUsers": "Todos los usuarios"
     },
     "Welcome": {
       "welcome": "¡Te damos la bienvenida a tu <rewind>{serverName} Rewind</rewind>, <user>{userValue}!</user>",
@@ -287,8 +306,12 @@
     },
     "Total": {
       "duration": "¡Pasaste un <total>total</total> de <duration>{durationValue}</duration> en <plex>{serverName}!</plex>",
-      "percentage": "Eso es el <percentage>{percentageValue}</percentage> de todo el tiempo de visualización, que sumó <duration>{durationValue}</duration> entre todos los usuarios.",
-      "noData": "No has reproducido nada en <plex>{serverName}</plex> <emoji>😫</emoji>"
+      "averageMore": "Eso es un <difference>{percent, number, percent} más</difference> que el usuario medio, que vio <duration>{durationValue}</duration>.",
+      "averageTimes": "Eso es <difference>{times, number}× más</difference> que el usuario medio, que vio <duration>{durationValue}</duration>.",
+      "averageLess": "Eso es un <difference>{percent, number, percent} menos</difference> que el usuario medio, que vio <duration>{durationValue}</duration>.",
+      "averageSame": "Eso es <difference>más o menos lo mismo</difference> que el usuario medio, que vio <duration>{durationValue}</duration>.",
+      "noData": "No has reproducido nada en <plex>{serverName}</plex> <emoji>😫</emoji>",
+      "breakdown": "Así repartiste ese tiempo:"
     },
     "Users": {
       "top": "Así te comparas con otros <users>usuarios</users>"
@@ -318,16 +341,32 @@
       "noData": "No hubo ninguna <requests>solicitud</requests> <emoji>😲</emoji>",
       "noUserData": "No hiciste ninguna <requests>solicitud</requests>. Puedes hacerlas a través de <requestLink>{requestLinkValue}</requestLink>.",
       "count": "Hiciste <count>{countValue, number}</count> <requests>{countValue, plural, one {solicitud} other {solicitudes}}</requests>",
+      "averageMore": "Son un <difference>{percent, number, percent} más</difference> que el usuario medio, que hizo <count>{countValue, plural, one {# solicitud} other {# solicitudes}}</count>.",
+      "averageTimes": "Son <difference>{times, number}× más</difference> que el usuario medio, que hizo <count>{countValue, plural, one {# solicitud} other {# solicitudes}}</count>.",
+      "averageLess": "Son un <difference>{percent, number, percent} menos</difference> que el usuario medio, que hizo <count>{countValue, plural, one {# solicitud} other {# solicitudes}}</count>.",
+      "averageSame": "Son <difference>más o menos las mismas</difference> que el usuario medio, que hizo <count>{countValue, plural, one {# solicitud} other {# solicitudes}}</count>.",
       "countTotal": "En total, hubo <count>{countValue, plural, one {# solicitud} other {# solicitudes}}</count> en el mismo periodo.",
-      "breakdown": "Este es el desglose:",
-      "movies": "{count, plural, one {película} other {películas}}",
-      "shows": "{count, plural, one {serie} other {series}}"
+      "userBreakdown": "Esto es lo que pediste:",
+      "breakdown": "Este es el desglose:"
     },
     "Movies": {
       "duration": "Pasaste <duration>{durationValue}</duration> de tu tiempo viendo <movies>películas</movies>",
       "count": "¡Viste <count>{countValue, number}</count> <movies>{countValue, plural, one {película} other {películas}}</movies> en total!",
       "favorite": "Lo que más viste fue",
       "noData": "No viste ninguna <movies>película</movies> en <plex>{serverName}</plex> <emoji>😵‍💫</emoji>"
+    },
+    "People": {
+      "movies": "{count, plural, one {# película} other {# películas}}",
+      "shows": "{count, plural, one {# serie} other {# series}}",
+      "together": "Junto a {names}",
+      "more": "otros",
+      "seeMore": "Ver más",
+      "seeLess": "Ver menos"
+    },
+    "TasteMatch": {
+      "closest": "De todos en <plex>{serverName}</plex>, <user>{userValue}</user> es quien más comparte tus gustos",
+      "score": "Tienen un <score>{scoreValue}</score> de afinidad en géneros",
+      "genres": "A ambos les encantan <genres>{genresValue}</genres>"
     },
     "Habits": {
       "day": "Tu día favorito para ver contenido fue el <day>{dayValue}</day>",

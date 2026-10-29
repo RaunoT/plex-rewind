@@ -18,6 +18,12 @@ vi.mock('./fetchSeerr', () => ({
   fetchSeerrUserId: vi.fn(),
 }))
 vi.mock('./getSettings', () => ({ default: vi.fn() }))
+vi.mock('./sourceSnapshot', async (importOriginal) => ({
+  ...(await importOriginal<typeof import('./sourceSnapshot')>()),
+  getSnapshot: vi.fn(),
+  hasSnapshot: vi.fn(),
+  saveSnapshot: vi.fn(),
+}))
 vi.mock('./statsSource', async (importOriginal) => ({
   ...(await importOriginal<typeof import('./statsSource')>()),
   getLibraries: vi.fn(),
@@ -67,6 +73,7 @@ function play(userId: number, mediaType: PlayMediaType, seconds = 60): Play {
     startedAt: Date.parse('2026-03-05T20:00:00Z'),
     mediaType,
     durationMs: seconds * 1000,
+    percentComplete: null,
     title: `Title ${playCount}`,
     showTitle: mediaType === 'episode' ? 'Show' : null,
     artistName: null,
@@ -211,7 +218,7 @@ describe('getUsersTop with Tautulli', () => {
   it('lists as many users as asked for', async () => {
     mockTautulli({}, rankedPlays([700, 600, 500, 400, 300, 200, 100]))
 
-    const usersTop = await getUsersTop('7', '2026-03-01', 10)
+    const usersTop = await getUsersTop('7', '2026-03-01', { numberOfUsers: 10 })
 
     expect(usersTop?.items).toHaveLength(7)
     expect(usersTop?.hasMore).toBe(false)
@@ -253,7 +260,9 @@ describe('getUsersTop with Tautulli', () => {
   it('adds each listed users first play when asked', async () => {
     mockTautulli({})
 
-    const users = (await getUsersTop('1', '2026-03-01', undefined, true))?.items
+    const users = (
+      await getUsersTop('1', '2026-03-01', { withFirstPlay: true })
+    )?.items
 
     expect(users?.map((user) => user.first_played_at)).toEqual([
       '2021-03-15T00:00:00.000Z',
@@ -277,7 +286,9 @@ describe('getUsersTop with Tautulli', () => {
     })
     mockTautulli({})
 
-    const users = (await getUsersTop('1', '2026-03-01', undefined, true))?.items
+    const users = (
+      await getUsersTop('1', '2026-03-01', { withFirstPlay: true })
+    )?.items
 
     expect(users?.[0].first_played_at).toBe('2021-03-15T00:00:00.000Z')
     expect(users?.[1].first_played_at).toBeUndefined()

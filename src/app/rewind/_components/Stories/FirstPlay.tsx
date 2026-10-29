@@ -15,7 +15,7 @@ export default function StoryFirstPlay({ userRewind, settings }: RewindStory) {
 
   return (
     <>
-      <RewindStat scaleDelay={3}>
+      <RewindStat>
         <p>
           {t.rich('since', {
             serverName: settings.general.serverName || 'Plex',
@@ -32,7 +32,7 @@ export default function StoryFirstPlay({ userRewind, settings }: RewindStory) {
       </RewindStat>
 
       {firstPlay.timeSince && (
-        <RewindStat renderDelay={3} scaleDelay={3}>
+        <RewindStat step={1}>
           <p>
             {t.rich('timeSince', {
               timeSinceValue: firstPlay.timeSince,
@@ -45,7 +45,7 @@ export default function StoryFirstPlay({ userRewind, settings }: RewindStory) {
       )}
 
       {firstPlay.title && (
-        <RewindStat renderDelay={6} loaderDelay={3} noScale>
+        <RewindStat step={2} noScale>
           <p className={firstPlay.item ? 'mb-2' : undefined}>
             {t.rich('title', {
               titleValue: firstPlay.title,
@@ -62,11 +62,14 @@ export default function StoryFirstPlay({ userRewind, settings }: RewindStory) {
                 rows
                 settings={settings}
                 isRanked={false}
-                // Its year and ratings. Play counts would only say it's played.
+                // Its year, ratings and the user's all-time watch time and
+                // plays. Without those totals, they'd only count this play.
                 activeStats={settings.general.activeItemStatistics.filter(
                   (stat) =>
                     stat === 'year' ||
-                    (RATING_STATISTICS as readonly string[]).includes(stat),
+                    (RATING_STATISTICS as readonly string[]).includes(stat) ||
+                    (firstPlay.item?.hasTotals &&
+                      (stat === 'duration' || stat === 'plays')),
                 )}
               />
             </div>

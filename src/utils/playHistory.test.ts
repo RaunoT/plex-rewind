@@ -21,6 +21,7 @@ function play(id: string, hoursAgo: number, overrides: Partial<Play> = {}) {
     startedAt: now - hoursAgo * HOUR,
     mediaType: 'movie',
     durationMs: 60_000,
+    percentComplete: null,
     title: id,
     showTitle: null,
     artistName: null,
@@ -206,5 +207,32 @@ describe('playHistory', () => {
       isComplete: true,
       isReading: false,
     })
+  })
+
+  it('says when the least recent history was last brought up to date', async () => {
+    const { getUpdatedAt, readHistoryFile } = await load()
+    const movies = reader(`${TAUTULLI_PREFIX}1`, () => [])
+    const shows = reader(`${TAUTULLI_PREFIX}2`, () => [])
+    const music = reader(`${TAUTULLI_PREFIX}3`, () => [])
+
+    vi.mocked(readHistoryFile).mockResolvedValue(
+      new Map([
+        [movies.reader.key, { ...snapshot([]), toppedUpAt: now - 2 * HOUR }],
+        [shows.reader.key, { ...snapshot([]), toppedUpAt: now - 5 * HOUR }],
+      ]),
+    )
+
+    // The music history was never read, so it's left out
+    await expect(
+      getUpdatedAt([movies.reader, shows.reader, music.reader]),
+    ).resolves.toBe(now - 5 * HOUR)
+    expect(movies.cursors).toEqual([])
+  })
+
+  it('has no time before any history was read', async () => {
+    const { getUpdatedAt } = await load()
+    const movies = reader(`${TAUTULLI_PREFIX}1`, () => [play('a', 1)])
+
+    await expect(getUpdatedAt([movies.reader])).resolves.toBeNull()
   })
 })

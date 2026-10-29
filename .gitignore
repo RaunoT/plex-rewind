@@ -46,6 +46,7 @@ public/swe-worker-*.js
 config/settings.json
 config/settings-backup.json
 config/*-history.json.gz*
+config/source-snapshot.json*
 
 # claude
 .claude

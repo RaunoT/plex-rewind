@@ -4,31 +4,40 @@ import {
   getTracearrActivity,
   getTracearrFirstPlay,
   getTracearrHistoryReader,
+  getTracearrKey,
   getTracearrLibraries,
   getTracearrLibrariesSize,
+  getTracearrMedia,
   getTracearrPlays,
   getTracearrPlexUsers,
   getTracearrUser,
   getTracearrUsers,
-  isTracearrMediaDeleted,
 } from './fetchTracearr'
 import { SourceMediaData } from './getMediaAdditionalData'
 import getSettings from './getSettings'
+import { isGatewayError, isHostDown, markHostDown } from './hostBackoff'
 import {
   createPlayStats,
   EMPTY_ROW,
   filterPlays,
   LIBRARY_PLAY_TYPES,
 } from './playStats'
+import { getSnapshot, isString, saveSnapshot } from './sourceSnapshot'
 
 const PLEX_IDENTITY_TIMEOUT_MS = 10_000
 
 // Plex answers /identity without a token.
-async function getServerId(): Promise<string> {
-  const plexUrl = getSettings().connection.plexUrl
+async function fetchServerId(plexUrl: string): Promise<string | null> {
+  const url = `${plexUrl}/identity`
+
+  if (isHostDown(plexUrl)) {
+    return null
+  }
+
+  let res: Response | undefined
 
   try {
-    const res = await fetch(`${plexUrl}/identity`, {
+    res = await fetch(url, {
       headers: {
         Accept: 'application/json',
       },
@@ -39,19 +48,27 @@ async function getServerId(): Promise<string> {
     })
 
     if (!res.ok) {
+      if (isGatewayError(res.status)) {
+        markHostDown(plexUrl)
+      }
+
       console.error(
         `[PLEX] - Couldn't get server ID from ${plexUrl}!`,
         res.status,
         res.statusText,
       )
 
-      return ''
+      return null
     }
 
     const data = await res.json()
 
-    return data?.MediaContainer?.machineIdentifier ?? ''
+    return data?.MediaContainer?.machineIdentifier || null
   } catch (error) {
+    if (!res) {
+      markHostDown(plexUrl)
+    }
+
     if (error instanceof Error && error.name === 'TimeoutError') {
       console.error(
         `[PLEX] - Getting server ID from ${plexUrl} timed out after ${PLEX_IDENTITY_TIMEOUT_MS / 1000}s!`,
@@ -60,8 +77,23 @@ async function getServerId(): Promise<string> {
       console.error(`[PLEX] - Couldn't get server ID from ${plexUrl}!`, error)
     }
 
-    return ''
+    return null
   }
+}
+
+// The saved ID stands in while Plex is down
+async function getServerId(): Promise<string> {
+  const plexUrl = getSettings().connection.plexUrl
+  const key = `plex|${plexUrl}|serverId`
+  const serverId = await fetchServerId(plexUrl)
+
+  if (!serverId) {
+    return (await getSnapshot(key, isString)) ?? ''
+  }
+
+  void saveSnapshot(key, serverId)
+
+  return serverId
 }
 
 async function getServerUser(userId: string): Promise<ServerMembership> {
@@ -82,7 +114,7 @@ export async function getTracearrMediaData(
 ): Promise<SourceMediaData> {
   return {
     thumb: item.thumb,
-    isDeleted: await isTracearrMediaDeleted(item.media_id),
+    ...(await getTracearrMedia(item.media_id)),
   }
 }
 
@@ -125,6 +157,7 @@ const tracearrSource: StatsSource = {
   getInactiveUser: getTracearrInactiveUser,
   getFirstPlay: getTracearrFirstPlay,
   getHistoryReaders: async () => [getTracearrHistoryReader()],
+  getSnapshotKey: getTracearrKey,
 }
 
 export default tracearrSource

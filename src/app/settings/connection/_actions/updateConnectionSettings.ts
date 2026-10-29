@@ -17,6 +17,7 @@ import {
 import { maskApiKeys, restoreApiKeys } from '@/utils/connectionSecrets'
 import { selectPlexServer } from '@/utils/fetchTracearr'
 import getSettings from '@/utils/getSettings'
+import { isGatewayError, markHostUp } from '@/utils/hostBackoff'
 import { getReachableLibraries, startHistoryRead } from '@/utils/statsSource'
 import { normalizeUrl } from '@/utils/url'
 import { kebabCase } from 'lodash'
@@ -58,11 +59,22 @@ type TestResult =
 
 async function testRequest(
   service: string,
-  url: string,
+  baseUrl: string,
+  path: string,
   init?: RequestInit,
 ): Promise<TestResult> {
   try {
-    return { response: await fetch(url, { ...init, cache: 'no-store' }) }
+    const response = await fetch(`${baseUrl}${path}`, {
+      ...init,
+      cache: 'no-store',
+    })
+
+    // The service answers again, so its requests needn't wait for a check
+    if (!isGatewayError(response.status)) {
+      markHostUp(baseUrl)
+    }
+
+    return { response }
   } catch (error) {
     console.error(`[CONFIG] - Error testing ${service} connection!`, error)
 
@@ -145,7 +157,8 @@ async function testAndSave(
     if (data.statisticsSource === 'tracearr') {
       const { response, error } = await testRequest(
         'Tracearr',
-        `${data.tracearrUrl}/api/v2/public/servers`,
+        data.tracearrUrl,
+        '/api/v2/public/servers',
         { headers: { Authorization: `Bearer ${data.tracearrApiKey}` } },
       )
 
@@ -194,7 +207,8 @@ async function testAndSave(
     } else {
       const { response, error } = await testRequest(
         'Tautulli',
-        `${data.tautulliUrl}/api/v2?apikey=${data.tautulliApiKey}&cmd=status`,
+        data.tautulliUrl,
+        `/api/v2?apikey=${data.tautulliApiKey}&cmd=status`,
       )
 
       if (error) {
@@ -225,7 +239,8 @@ async function testAndSave(
     if (data.seerrUrl && data.seerrApiKey) {
       const { response, error } = await testRequest(
         'Seerr',
-        `${data.seerrUrl}/api/v1/user`,
+        data.seerrUrl,
+        '/api/v1/user',
         { headers: { 'X-API-KEY': data.seerrApiKey } },
       )
 
@@ -242,9 +257,13 @@ async function testAndSave(
 
     // Any answer means the server is reachable.
     try {
-      await fetch(data.plexUrl, {
+      const response = await fetch(data.plexUrl, {
         cache: 'no-store',
       })
+
+      if (!isGatewayError(response.status)) {
+        markHostUp(data.plexUrl)
+      }
     } catch (error) {
       const plexError = getFetchError(error)
 

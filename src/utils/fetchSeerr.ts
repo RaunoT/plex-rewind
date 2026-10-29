@@ -1,4 +1,5 @@
 import getSettings from './getSettings'
+import { isGatewayError, isHostDown, markHostDown } from './hostBackoff'
 
 type SeerrResponse<T> = {
   pageInfo: {
@@ -20,7 +21,10 @@ type SeerrRequestItem = {
   createdAt: string
   type: string
   requestedBy: {
-    plexId: number
+    // Seerr's own
+    id: number
+    // Null for Seerr users without Plex
+    plexId: number | null
   }
 }
 
@@ -54,8 +58,14 @@ export default async function fetchSeerr<T>(
   })
   const apiUrl = `${seerrUrl}/api/v1/${endpoint}?${queryParams.toString()}`
 
+  if (isHostDown(seerrUrl)) {
+    return null
+  }
+
+  let res: Response | undefined
+
   try {
-    const res = await fetch(apiUrl, {
+    res = await fetch(apiUrl, {
       headers: {
         'X-API-KEY': apiKey,
       },
@@ -66,6 +76,10 @@ export default async function fetchSeerr<T>(
     })
 
     if (!res.ok) {
+      if (isGatewayError(res.status)) {
+        markHostDown(seerrUrl)
+      }
+
       console.error(
         `[SEERR] - API request failed! The endpoint was '${endpoint}'.\n`,
         res.status,
@@ -77,6 +91,11 @@ export default async function fetchSeerr<T>(
 
     return await res.json()
   } catch (error) {
+    // Without an answer at all, it's the host that's down
+    if (!res) {
+      markHostDown(seerrUrl)
+    }
+
     if (error instanceof Error && error.name === 'TimeoutError') {
       console.error(
         `[SEERR] - API request timed out after ${REQUEST_TIMEOUT_MS / 1000}s! The endpoint was '${endpoint}'.`,

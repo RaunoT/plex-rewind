@@ -12,6 +12,13 @@ Contributor setup is in [CONTRIBUTING.md](CONTRIBUTING.md). Use pnpm (pinned in 
 - `pnpm commit`: guided Conventional Commits prompt (commitizen).
 - `pnpm test`: Vitest unit tests, kept next to the code they test as `*.test.ts`.
 
+## Checking UI changes
+
+- A git worktree starts without `.env.local` and the files in `config/`. Copy them from the main checkout if they are missing, or the proxy redirects to the setup pages.
+- Run `pnpm dev` and check the change in a browser before finishing. When port 3000 is taken, Next uses the next free port.
+- Plex login returns to `NEXT_PUBLIC_SITE_URL` (`http://localhost:3000` by default). Cookies are not scoped by port, so with the same `.env.local` a login on 3000 also works on the other ports.
+- End with how to check the change: the URL paths to open, what to click and any settings it needs.
+
 ## Branches and commits
 
 - Open PRs against `develop`, never `main`.

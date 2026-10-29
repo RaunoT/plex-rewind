@@ -34,6 +34,7 @@ export type TautulliHistoryRow = {
   // In seconds, without pauses
   play_duration: number | null
   duration: number | null
+  percent_complete: number | null
   media_type: string
   title: string
   grandparent_title: string
@@ -80,6 +81,18 @@ export type TautulliItemRow = {
   first_played_at?: string
   grandparent_rating_key?: number
   media_id?: string | null
+}
+
+// get_metadata's, which is empty for an item Plex no longer has
+export type TautulliMetadata = {
+  thumb?: string
+  year?: number | string | null
+  // Plex's IDs, like `tmdb://61575`
+  guids?: string[]
+  // Names, the actors in billing order
+  directors?: string[]
+  actors?: string[]
+  genres?: string[]
 }
 
 export type TautulliSession = {
