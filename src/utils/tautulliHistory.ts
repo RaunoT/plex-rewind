@@ -45,6 +45,8 @@ export function toTautulliPlay(row: TautulliHistoryRow): Play | null {
     ...(row.date !== row.started && { orderedAt: row.date * 1000 }),
     mediaType,
     durationMs: (row.play_duration ?? row.duration ?? 0) * 1000,
+    // Tautulli gives 0 when it doesn't know how long the item is
+    percentComplete: row.percent_complete || null,
     title: row.title,
     showTitle: mediaType === 'episode' ? parentTitle || null : null,
     artistName: mediaType === 'track' ? parentTitle || null : null,

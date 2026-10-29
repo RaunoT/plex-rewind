@@ -35,6 +35,10 @@ export const LIBRARY_PLAY_TYPES: Record<TautulliMediaType, PlayMediaType> = {
   artist: 'track',
 }
 
+// How far into an item a play has to get to count as one. Shorter plays still
+// add their watch time.
+export const MIN_PLAY_PERCENT = 50
+
 export const EMPTY_ROW: TautulliItemRow = {
   title: '',
   year: null,
@@ -132,6 +136,13 @@ function getDuration(plays: Play[]): number {
   return Math.round(sumBy(plays, 'durationMs') / 1000)
 }
 
+// A play the source has no percent complete for counts
+export function isCountedPlay(play: Play): boolean {
+  return (
+    play.percentComplete === null || play.percentComplete >= MIN_PLAY_PERCENT
+  )
+}
+
 function getMediaId(play: Play): string | null {
   switch (play.mediaType) {
     case 'movie':
@@ -201,14 +212,15 @@ function toItemRow(plays: Play[]): TautulliItemRow {
     track: play.artistName,
   }
   const ratingKey = Number(getRatingKey(play)) || 0
+  const countedPlays = plays.filter(isCountedPlay)
 
   return {
     ...EMPTY_ROW,
     title: titleByType[play.mediaType] || play.title,
     year: isMovie ? play.year : null,
-    total_plays: plays.length,
+    total_plays: countedPlays.length,
     total_duration: getDuration(plays),
-    users_watched: uniqBy(plays, 'identityId').length,
+    users_watched: uniqBy(countedPlays, 'identityId').length,
     rating_key: ratingKey,
     grandparent_rating_key: ratingKey,
     thumb: play.thumb || newestFirst.find((play) => play.thumb)?.thumb || '',
@@ -230,6 +242,7 @@ const COMPARE_ITEMS: Record<
     COMPARE_ITEMS.plays(a, b),
 }
 
+// Only the watch time ranks an item none of whose plays count
 function rankItems(
   plays: Play[],
   count: number,
@@ -237,6 +250,7 @@ function rankItems(
 ): TautulliItemRow[] {
   return groupPlays(plays)
     .map(toItemRow)
+    .filter((item) => sortBy === 'duration' || item.total_plays > 0)
     .sort(COMPARE_ITEMS[sortBy])
     .slice(0, count)
 }
@@ -332,7 +346,7 @@ export function createPlayStats(provider: PlaysProvider): PlayStats {
       const typePlays = plays.filter((play) => play.mediaType === mediaType)
 
       return {
-        count: typePlays.length,
+        count: typePlays.filter(isCountedPlay).length,
         duration: mediaTypes.includes(mediaType)
           ? getDuration(typePlays)
           : null,
@@ -455,7 +469,7 @@ export function createPlayStats(provider: PlaysProvider): PlayStats {
     const hourly = Array<number>(24).fill(0)
     const daily = Array<number>(7).fill(0)
 
-    for (const play of plays) {
+    for (const play of plays.filter(isCountedPlay)) {
       const startedAt = new Date(play.startedAt)
 
       hourly[startedAt.getHours()]++
@@ -485,7 +499,8 @@ export function createPlayStats(provider: PlaysProvider): PlayStats {
           return []
         }
 
-        const playsByType = countBy(userPlays, 'mediaType')
+        const countedPlays = userPlays.filter(isCountedPlay)
+        const playsByType = countBy(countedPlays, 'mediaType')
 
         return [
           {
@@ -494,7 +509,7 @@ export function createPlayStats(provider: PlaysProvider): PlayStats {
             friendly_name: user.friendlyName,
             user_thumb: userPlays.find((play) => play.avatar)?.avatar ?? '',
             user_id: Number(user.plexId),
-            total_plays: userPlays.length,
+            total_plays: countedPlays.length,
             total_duration: getDuration(userPlays),
             movies_plays_count: playsByType.movie ?? 0,
             shows_plays_count: playsByType.episode ?? 0,

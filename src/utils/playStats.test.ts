@@ -1,12 +1,15 @@
 import { Play, PlayMediaType } from '@/types/playHistory'
 import { TopItemsSort } from '@/types/statsSource'
 import { TautulliItemRow, TautulliLibrary } from '@/types/tautulli'
+import { sum } from 'lodash'
 import { describe, expect, it, vi } from 'vitest'
 import getSettings from './getSettings'
 import {
   createPlayStats,
   filterPlays,
   getExcludedIdentityIds,
+  isCountedPlay,
+  MIN_PLAY_PERCENT,
   StatsUser,
 } from './playStats'
 
@@ -25,6 +28,7 @@ function play(
     startedAt: new Date(startedAt).getTime(),
     mediaType: 'movie' as PlayMediaType,
     durationMs: 1000,
+    percentComplete: null,
     title: id,
     showTitle: null,
     artistName: null,
@@ -234,5 +238,114 @@ describe('getTopItems', () => {
 
   it('ranks by users, then by plays', async () => {
     expect(await rank('users')).toEqual(['Alien', 'Heat', 'Dune'])
+  })
+})
+
+describe('plays short of half the item', () => {
+  // Alien was given up on once and watched once, Heat only given up on
+  const history = [
+    play('alien given up', '2026-03-01T20:00:00Z', {
+      title: 'Alien',
+      durationMs: 10 * 60 * 1000,
+      percentComplete: 30,
+    }),
+    play('alien', '2026-03-02T20:00:00Z', {
+      title: 'Alien',
+      identityId: 'bob',
+      durationMs: 30 * 60 * 1000,
+      percentComplete: MIN_PLAY_PERCENT,
+    }),
+    play('heat given up', '2026-03-03T20:00:00Z', {
+      title: 'Heat',
+      durationMs: 90 * 60 * 1000,
+      percentComplete: 40,
+    }),
+  ]
+  const movies = { section_type: 'movie' } as TautulliLibrary
+
+  function getStats() {
+    vi.mocked(getSettings).mockReturnValue({
+      general: { excludedUsers: [] },
+    } as unknown as ReturnType<typeof getSettings>)
+
+    return createPlayStats({
+      getPlays: async () => history,
+      getUsers: async () => [user('1', 'alice'), user('2', 'bob')],
+      getMediaData: async () => ({ thumb: '', isDeleted: false }),
+    })
+  }
+
+  it('count as plays only from half the item, or when unknown', () => {
+    expect(
+      isCountedPlay(play('half', '2026-03-01', { percentComplete: 50 })),
+    ).toBe(true)
+    expect(
+      isCountedPlay(play('less', '2026-03-01', { percentComplete: 49 })),
+    ).toBe(false)
+    expect(
+      isCountedPlay(play('unknown', '2026-03-01', { percentComplete: null })),
+    ).toBe(true)
+  })
+
+  it('add their watch time to an item, but not a play or a user', async () => {
+    const { items } = await getStats().getTopItems(movies, {
+      period: 3650,
+      sortBy: 'plays',
+      count: 5,
+    })
+
+    expect(items).toEqual([
+      expect.objectContaining({
+        title: 'Alien',
+        total_plays: 1,
+        total_duration: 40 * 60,
+        users_watched: 1,
+      }),
+    ])
+  })
+
+  it('keep an item without a counted play in the watch time ranking', async () => {
+    const { items } = await getStats().getTopItems(movies, {
+      period: 3650,
+      sortBy: 'duration',
+      count: 5,
+    })
+
+    expect(items.map((item) => [item.title, item.total_plays])).toEqual([
+      ['Heat', 0],
+      ['Alien', 1],
+    ])
+  })
+
+  it('add watch time to the media stats, but not a play', async () => {
+    const stats = await getStats().getMediaStats('1', [movies], '2026-01-01')
+
+    expect(stats.movies).toEqual({ count: 0, duration: 100 * 60 })
+  })
+
+  it('add watch time to the top users, but not a play', async () => {
+    const users = await getStats().getTopUsers({
+      since: '2026-01-01',
+      libraries: [movies],
+    })
+
+    expect(
+      users?.map((item) => [
+        item.user,
+        item.total_plays,
+        item.movies_plays_count,
+        item.total_duration,
+      ]),
+    ).toEqual([
+      ['alice', 0, 0, 100 * 60],
+      ['bob', 1, 1, 30 * 60],
+    ])
+  })
+
+  it('are left out of the hours and days', async () => {
+    const { hourly, daily } = await getStats().getPlaysByTime('2', '2026-01-01')
+
+    expect(sum(hourly)).toBe(1)
+    expect(sum(daily)).toBe(1)
   })
 })

@@ -1,5 +1,6 @@
 import { Play } from '@/types/playHistory'
 import fs from 'fs'
+import { omit } from 'lodash'
 import os from 'os'
 import path from 'path'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
@@ -22,6 +23,7 @@ function play(overrides: Partial<Play>): Play {
     startedAt: Date.parse('2026-10-01T20:00:00.000Z'),
     mediaType: 'movie',
     durationMs: 60_000,
+    percentComplete: null,
     title: 'Dune',
     showTitle: null,
     artistName: null,
@@ -161,7 +163,7 @@ describe('playHistoryFile', () => {
 
     const file = readFile() as { histories: { plays: object[] }[] }
 
-    writeFile({ ...file, version: 2 })
+    writeFile({ ...file, version: 3 })
 
     await expect(readHistoryFile()).resolves.toEqual(new Map())
 
@@ -179,6 +181,28 @@ describe('playHistoryFile', () => {
     expect(console.warn).toHaveBeenCalledWith(
       expect.stringContaining("isn't valid"),
     )
+  })
+
+  it('reads a history from the previous version again soon', async () => {
+    await writeHistoryFile([[KEY, snapshot]])
+
+    const file = readFile() as { histories: { plays: object[] }[] }
+
+    writeFile({
+      version: 1,
+      histories: file.histories.map((history) => ({
+        ...history,
+        plays: history.plays.map((item) => omit(item, 'percentComplete')),
+      })),
+    })
+
+    const history = (await readHistoryFile()).get(KEY)
+
+    expect(history?.plays).toHaveLength(snapshot.plays.length)
+    expect(history?.plays.every((item) => item.percentComplete === null)).toBe(
+      true,
+    )
+    expect(history?.rebuildAt).toBe(0)
   })
 
   it('fails to save without a config directory', async () => {

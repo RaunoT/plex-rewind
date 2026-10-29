@@ -144,6 +144,7 @@ function play(userId: string, overrides: Partial<Play> = {}): Play {
     startedAt: Date.parse('2026-02-01T20:00:00Z'),
     mediaType: 'movie',
     durationMs: 30 * 60 * 1000,
+    percentComplete: null,
     title: 'Dune',
     showTitle: null,
     artistName: null,

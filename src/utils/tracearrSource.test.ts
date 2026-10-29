@@ -48,6 +48,7 @@ function play(overrides: Partial<Play>): Play {
     startedAt: new Date('2026-02-01').getTime(),
     mediaType: 'movie',
     durationMs: 60_000,
+    percentComplete: null,
     title: 'Dune',
     showTitle: null,
     artistName: null,

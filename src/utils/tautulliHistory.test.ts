@@ -20,6 +20,7 @@ function row(overrides: Partial<TautulliHistoryRow> = {}): TautulliHistoryRow {
     date: started,
     play_duration: 3600,
     duration: 4000,
+    percent_complete: 90,
     media_type: 'movie',
     title: 'Dune',
     grandparent_title: '',
@@ -70,6 +71,7 @@ describe('toTautulliPlay', () => {
       startedAt: started * 1000,
       mediaType: 'movie',
       durationMs: 3600 * 1000,
+      percentComplete: 90,
       title: 'Dune',
       showTitle: null,
       artistName: null,
@@ -84,6 +86,15 @@ describe('toTautulliPlay', () => {
       identityId: '42',
       avatar: 'https://plex.tv/users/42/avatar',
     })
+  })
+
+  it('has no percent complete when Tautulli gives 0', () => {
+    expect(toTautulliPlay(row({ percent_complete: 0 }))?.percentComplete).toBe(
+      null,
+    )
+    expect(
+      toTautulliPlay(row({ percent_complete: null }))?.percentComplete,
+    ).toBe(null)
   })
 
   it('orders a resumed play by its last session', () => {

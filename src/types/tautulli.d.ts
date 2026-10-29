@@ -34,6 +34,7 @@ export type TautulliHistoryRow = {
   // In seconds, without pauses
   play_duration: number | null
   duration: number | null
+  percent_complete: number | null
   media_type: string
   title: string
   grandparent_title: string
