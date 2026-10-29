@@ -8,7 +8,7 @@ import fetchRottenTomatoes from './fetchRottenTomatoes'
 import fetchTmdb from './fetchTmdb'
 import getSettings from './getSettings'
 
-type TmdbMediaType = 'movie' | 'tv'
+export type TmdbMediaType = 'movie' | 'tv'
 
 export type MediaIds = {
   imdb: string | null
@@ -16,8 +16,9 @@ export type MediaIds = {
   tvdb: number | null
 }
 
-// A movie's directors and actors by name, the actors in billing order
-export type MovieCredits = {
+// A movie's or show's directors and actors by name, the actors in billing
+// order. Shows have a director per episode, so theirs aren't used.
+export type Credits = {
   directors: string[]
   actors: string[]
 }
@@ -31,7 +32,7 @@ export type SourceMediaData = {
   ids?: MediaIds
   year?: number | null
   // Only Tautulli knows them, and only for items still on the server
-  credits?: MovieCredits
+  credits?: Credits
 }
 
 // What's saved of it to stand in while the source is down

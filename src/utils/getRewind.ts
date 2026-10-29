@@ -76,13 +76,13 @@ export async function getTopMediaItems(
   )
 }
 
-export async function getTopMoviePeople(
+export async function getTopPeople(
   userId: string,
   libraries: TautulliLibrary[],
 ) {
   const settings = getSettings()
 
-  return getStatsSource(settings).getTopMoviePeople(
+  return getStatsSource(settings).getTopPeople(
     userId,
     libraries,
     getRewindStartDate(settings),

@@ -1,7 +1,8 @@
 'use client'
 
+import Avatar from '@/components/Avatar'
 import { MEDIA_ICONS, STAT_ICONS } from '@/components/icons'
-import { RANK_COLORS } from '@/components/MediaItem/MediaItem'
+import Rank from '@/components/MediaItem/Rank'
 import { TopPerson } from '@/types/statsSource'
 import { secondsToTime } from '@/utils/formatting'
 import { slideDown } from '@/utils/motion'
@@ -10,13 +11,16 @@ import { useFormatter, useTranslations } from 'next-intl'
 
 type Props = {
   people: TopPerson[]
+  // What the titles they're counted by are
+  type: 'movie' | 'show'
 }
 
-// Ranked like the top movies, with the movies watched in place of a poster
-export default function TopPeople({ people }: Props) {
+// Ranked like the top movies, with the person's portrait as the poster
+export default function TopPeople({ people, type }: Props) {
   const translations = useTranslations()
   const t = useTranslations('Rewind.People')
   const format = useFormatter()
+  const TypeIcon = MEDIA_ICONS[type]
 
   return (
     <ol className='mt-4 flex flex-col text-white sm:mt-5'>
@@ -29,11 +33,13 @@ export default function TopPeople({ people }: Props) {
           animate='show'
           transition={{ delay: i * 0.075 }}
         >
-          <span className='w-6 shrink-0 text-center text-2xl leading-none font-bold tracking-tight tabular-nums sm:w-8'>
-            <span className={RANK_COLORS[i] || 'text-neutral-500'}>
-              {i + 1}
-            </span>
-          </span>
+          {/* The portrait moves in by the rank badge's overhang on phones */}
+          <div className='relative flex shrink-0 items-center gap-3 max-sm:pt-1 max-sm:pl-1 sm:gap-4'>
+            <Rank rank={i} />
+            <div className='poster max-sm:w-12'>
+              <Avatar src={person.image} name={person.name} sizes='10rem' />
+            </div>
+          </div>
           <div className='min-w-0 flex-1'>
             <h2 className='truncate leading-snug font-medium sm:text-lg'>
               {person.name}
@@ -43,8 +49,10 @@ export default function TopPeople({ people }: Props) {
             </p>
             <ul className='icon-stats-container'>
               <li className='icon-stat-wrapper'>
-                <MEDIA_ICONS.movie />
-                {t('movies', { count: person.count })}
+                <TypeIcon />
+                {t(type === 'movie' ? 'movies' : 'shows', {
+                  count: person.count,
+                })}
               </li>
               <li className='icon-stat-wrapper'>
                 <STAT_ICONS.duration />

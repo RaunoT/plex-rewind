@@ -6,7 +6,7 @@ import TopPeople from '../TopPeople'
 
 export default function StoryMoviesDirectors({ userRewind }: RewindStory) {
   const t = useTranslations('Rewind.Common')
-  const directors = userRewind.moviePeople.directors
+  const directors = userRewind.people.directors
 
   return (
     <RewindStat noScale>
@@ -23,7 +23,7 @@ export default function StoryMoviesDirectors({ userRewind }: RewindStory) {
       </p>
 
       <div className='text-base leading-normal font-normal tracking-normal'>
-        <TopPeople people={directors} />
+        <TopPeople people={directors} type='movie' />
       </div>
     </RewindStat>
   )

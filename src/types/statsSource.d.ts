@@ -29,20 +29,25 @@ export type MediaStats = Record<
 
 export type TopMediaItems = Record<TautulliMediaReturnType, TautulliItemRow[]>
 
-// A director or actor, ranked by how many of their movies a user watched
+// A director or actor, ranked by how many of their movies or shows a user
+// watched
 export type TopPerson = {
   name: string
-  // Each movie counts once, however often it was watched
+  // Each movie or show counts once, however often it was watched
   count: number
   // In seconds
   duration: number
   // The most watched first
   titles: string[]
+  // TMDB's portrait, null when it has none
+  image: string | null
 }
 
-export type TopMoviePeople = {
+// Shows have a director per episode, so only movies rank directors.
+export type TopPeople = {
   directors: TopPerson[]
-  actors: TopPerson[]
+  movieActors: TopPerson[]
+  showActors: TopPerson[]
 }
 
 export type TopItemsQuery = {
@@ -113,11 +118,11 @@ export type StatsSource = {
     libraries: TautulliLibrary[],
     since: string,
   ) => Promise<TopMediaItems>
-  getTopMoviePeople: (
+  getTopPeople: (
     userId: string,
     libraries: TautulliLibrary[],
     since: string,
-  ) => Promise<TopMoviePeople>
+  ) => Promise<TopPeople>
   getPlaysByTime: (userId: string, since: string) => Promise<PlaysByTime>
   // Null when the user has no plays or the source couldn't be asked
   getFirstPlay: (userId: string) => Promise<FirstPlay | null>

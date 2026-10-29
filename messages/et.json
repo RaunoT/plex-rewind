@@ -276,9 +276,10 @@
     },
     "Common": {
       "topShows": "Siin on sinu <top>{count, plural, one {enim vaadatud seriaal} other {# enim vaadatud seriaali}}</top>",
+      "topShowActors": "Siin on sinu <top>{count, plural, one {enim vaadatud seriaalinäitleja} other {# enim vaadatud seriaalinäitlejat}}</top>",
       "topMovies": "Siin on sinu <top>{count, plural, one {enim vaadatud film} other {# enim vaadatud filmi}}</top>",
       "topDirectors": "Siin on sinu <top>{count, plural, one {enim vaadatud režissöör} other {# enim vaadatud režissööri}}</top>",
-      "topActors": "Siin on sinu <top>{count, plural, one {enim vaadatud näitleja} other {# enim vaadatud näitlejat}}</top>",
+      "topMovieActors": "Siin on sinu <top>{count, plural, one {enim vaadatud filminäitleja} other {# enim vaadatud filminäitlejat}}</top>",
       "topArtists": "Siin on sinu <top>{count, plural, one {enim kuulatud esitaja} other {# enim kuulatud esitajat}}</top>"
     },
     "Welcome": {
@@ -334,7 +335,8 @@
       "noData": "Sa ei vaadanud ühtegi <movies>filmi</movies> <plex>{serverName}'ist</plex> <emoji>😵‍💫</emoji>"
     },
     "People": {
-      "movies": "{count, plural, one {# film} other {# filmi}}"
+      "movies": "{count, plural, one {# film} other {# filmi}}",
+      "shows": "{count, plural, one {# seriaal} other {# seriaali}}"
     },
     "Habits": {
       "day": "Sinu lemmik vaatamispäev oli <day>{dayValue}</day>",

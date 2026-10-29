@@ -6,12 +6,12 @@ import TopPeople from '../TopPeople'
 
 export default function StoryMoviesActors({ userRewind }: RewindStory) {
   const t = useTranslations('Rewind.Common')
-  const actors = userRewind.moviePeople.actors
+  const actors = userRewind.people.movieActors
 
   return (
     <RewindStat noScale>
       <p className='mb-2'>
-        {t.rich('topActors', {
+        {t.rich('topMovieActors', {
           top: (chunks) => (
             <span className='rewind-cat'>
               {chunks}
@@ -23,7 +23,7 @@ export default function StoryMoviesActors({ userRewind }: RewindStory) {
       </p>
 
       <div className='text-base leading-normal font-normal tracking-normal'>
-        <TopPeople people={actors} />
+        <TopPeople people={actors} type='movie' />
       </div>
     </RewindStat>
   )

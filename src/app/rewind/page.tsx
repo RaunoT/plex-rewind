@@ -13,7 +13,7 @@ import {
   getRequestsTotals,
   getTopMediaItems,
   getTopMediaStats,
-  getTopMoviePeople,
+  getTopPeople,
   getUserTotalDuration,
   getlibrariesTotalSize,
 } from '@/utils/getRewind'
@@ -103,7 +103,7 @@ async function RewindContent({ userId }: { userId?: string }) {
     usersTop,
     habits,
     firstPlay,
-    moviePeople,
+    people,
   ] = await Promise.all([
     getTopMediaItems(user.id, libraries),
     getTopMediaStats(user.id, libraries),
@@ -114,7 +114,7 @@ async function RewindContent({ userId }: { userId?: string }) {
     getUsersTop(user.id, startDate),
     getPlaybackHabits(user.id),
     getStatsSource(settings).getFirstPlay(user.id),
-    getTopMoviePeople(user.id, libraries),
+    getTopPeople(user.id, libraries),
   ])
   // The card for the first play needs its poster and ratings looked up
   const firstPlayItem = firstPlay?.play
@@ -146,7 +146,7 @@ async function RewindContent({ userId }: { userId?: string }) {
       count: topMediaStats.movies.count,
       duration: topMediaStats.movies.duration,
     },
-    moviePeople,
+    people,
     audio: {
       top: topMediaItems.audio,
       count: topMediaStats.audio.count,
