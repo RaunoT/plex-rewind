@@ -102,6 +102,16 @@ describe('getTopMediaStats', () => {
     expect(stats.audio.percentage).toBe('')
   })
 
+  it('leaves the share out when it rounds to 0%', async () => {
+    mockMediaStats(999, 0, 1)
+
+    const stats = await getTopMediaStats('1', [])
+
+    expect(stats.shows.percentage).toBe('100%')
+    expect(stats.movies.percentage).toBe('')
+    expect(stats.audio.percentage).toBe('')
+  })
+
   it('leaves the shares out without any playtime', async () => {
     mockMediaStats(0, 0, 0)
 
