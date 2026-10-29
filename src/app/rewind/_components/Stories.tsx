@@ -286,7 +286,7 @@ export default function Stories({ stories }: Props) {
     // Rendered by the layout, next to the admin's user select
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setControlsSlot(document.getElementById(REWIND_CONTROLS_ID))
-    // eslint-disable-next-line react-hooks/set-state-in-effect
+
     setIsIntroShown(
       window.matchMedia(TOUCH_QUERY).matches &&
         !localStorage.getItem(INTRO_SEEN_KEY),
@@ -369,9 +369,7 @@ export default function Stories({ stories }: Props) {
   const slide = useMemo(
     () =>
       currentStory ? (
-        <Fragment key={currentIndex}>
-          {currentStory.component()}
-        </Fragment>
+        <Fragment key={currentIndex}>{currentStory.component()}</Fragment>
       ) : null,
     [currentIndex, currentStory],
   )
