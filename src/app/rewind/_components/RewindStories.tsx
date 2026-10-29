@@ -31,8 +31,9 @@ type StoryComponent = {
 }
 
 export type RewindMusicUrls = {
-  // The top show's theme song
-  theme: string | null
+  // The top show's and top movie's theme songs, best first
+  showThemes: string[]
+  movieThemes: string[]
   // The admin's own track
   track: string | null
 }
@@ -43,8 +44,14 @@ type Props = {
   music: RewindMusicUrls
 }
 
-// Where the top show's theme song plays
+// Where the top show's and top movie's theme songs play
 const SHOW_STORIES = ['shows', 'shows_top', 'shows_actors']
+const MOVIE_STORIES = [
+  'movies',
+  'movies_top',
+  'movies_directors',
+  'movies_actors',
+]
 
 export default function RewindStories({ userRewind, settings, music }: Props) {
   function createStory(
@@ -52,10 +59,13 @@ export default function RewindStories({ userRewind, settings, music }: Props) {
     Component: FC<StoryComponent>,
     duration: number,
   ) {
-    // The track also stands in for a show without a theme song
-    const sources = SHOW_STORIES.includes(id)
-      ? [music.theme, music.track]
-      : [music.track]
+    // The track also stands in for a title without a theme song
+    const themes = SHOW_STORIES.includes(id)
+      ? music.showThemes
+      : MOVIE_STORIES.includes(id)
+        ? music.movieThemes
+        : []
+    const sources = [...themes, music.track]
 
     return {
       id,

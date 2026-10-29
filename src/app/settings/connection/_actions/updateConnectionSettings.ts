@@ -35,6 +35,7 @@ const baseSchema = z.object({
   seerrUrl: z.string().url().optional().or(z.literal('')),
   seerrApiKey: z.string().optional(),
   plexUrl: z.string().url(),
+  plexToken: z.string().optional(),
   complete: z.boolean(),
 })
 const schema = z.discriminatedUnion('statisticsSource', [
@@ -131,6 +132,7 @@ async function testAndSave(
     seerrUrl: normalizeUrl(formData.get('seerrUrl') as string),
     seerrApiKey: formData.get('seerrApiKey') as string,
     plexUrl: normalizeUrl(formData.get('plexUrl') as string),
+    plexToken: ((formData.get('plexToken') as string | null) ?? '').trim(),
     complete: true,
   }
   const t = await getTranslations('Settings')
@@ -141,7 +143,7 @@ async function testAndSave(
 
   if (needsKey) {
     return {
-      message: `${needsKey} - ${t('reenterApiKey')}`,
+      message: `${needsKey} - ${t(needsKey === 'Plex' ? 'reenterToken' : 'reenterApiKey')}`,
       status: 'error',
       fields: data,
     }
@@ -281,6 +283,33 @@ async function testAndSave(
         console.error('[CONFIG] - Error testing Plex connection!', error)
 
         return fail('Plex', plexError)
+      }
+    }
+
+    // A redirect isn't followed, as the token would go with it
+    if (data.plexToken) {
+      const { response, error } = await testRequest(
+        'Plex',
+        data.plexUrl,
+        '/library/sections',
+        {
+          headers: { 'X-Plex-Token': data.plexToken },
+          redirect: 'manual',
+        },
+      )
+
+      if (error) {
+        return fail('Plex', error)
+      }
+
+      if (response.status === 401 || response.status === 403) {
+        return fail('Plex', { key: 'invalidToken' })
+      }
+
+      const responseError = getResponseError('Plex', response)
+
+      if (responseError) {
+        return fail('Plex', responseError)
       }
     }
   } catch (error) {

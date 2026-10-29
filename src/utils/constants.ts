@@ -62,6 +62,7 @@ export const DEFAULT_SETTINGS: Settings = {
     tracearrApiKey: '',
     tracearrServerId: '',
     plexUrl: '',
+    plexToken: '',
     seerrUrl: '',
     seerrApiKey: '',
     complete: false,

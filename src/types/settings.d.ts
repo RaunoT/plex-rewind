@@ -18,6 +18,8 @@ export type ConnectionSettings = {
   seerrUrl?: string
   seerrApiKey?: string
   plexUrl: string
+  // Optional, lets Rewind play theme songs from the Plex library
+  plexToken?: string
   complete: boolean
 }
 
