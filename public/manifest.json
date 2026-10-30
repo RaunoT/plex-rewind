@@ -1,8 +1,8 @@
 {
   "id": "/",
-  "name": "Plex Rewind",
-  "short_name": "Plex Rewind",
-  "description": "Plex users' statistics and habits in a beautiful and organized manner",
+  "name": "Rewindarr",
+  "short_name": "Rewindarr",
+  "description": "Plex and Jellyfin users' statistics and habits in a beautiful and organized manner",
   "lang": "en",
   "icons": [
     {

@@ -39,9 +39,13 @@ on:
 permissions:
   contents: read
 
+# The images are also published under the names from before the rename to
+# Rewindarr, so existing installs keep getting updates.
 env:
-  GHCR_IMAGE: ghcr.io/raunot/plex-rewind
-  DOCKERHUB_IMAGE: raunoot/plex-rewind
+  GHCR_IMAGE: ghcr.io/raunot/rewindarr
+  GHCR_LEGACY_IMAGE: ghcr.io/raunot/plex-rewind
+  DOCKERHUB_IMAGE: raunoot/rewindarr
+  DOCKERHUB_LEGACY_IMAGE: raunoot/plex-rewind
 
 jobs:
   build:
@@ -74,7 +78,7 @@ jobs:
           load: true
           push: false
           platforms: ${{ matrix.platform }}
-          tags: plex-rewind:smoke
+          tags: rewindarr:smoke
           build-args: |
             NEXT_PUBLIC_VERSION_TAG=${{ inputs.version }}
           cache-from: type=gha,scope=${{ env.PLATFORM_PAIR }}
@@ -82,7 +86,7 @@ jobs:
           sbom: false
 
       - name: Smoke test image
-        run: bash .github/scripts/smoke-test.sh plex-rewind:smoke
+        run: bash .github/scripts/smoke-test.sh rewindarr:smoke
 
       - name: Log in to GitHub Container Registry
         uses: docker/login-action@81c6f93d4bc991e510b342a00b419b3bb4efc5c6 # v4.7.0
@@ -107,7 +111,9 @@ jobs:
           platforms: ${{ matrix.platform }}
           tags: |
             ${{ env.GHCR_IMAGE }}
+            ${{ env.GHCR_LEGACY_IMAGE }}
             ${{ inputs.dockerhub && env.DOCKERHUB_IMAGE || '' }}
+            ${{ inputs.dockerhub && env.DOCKERHUB_LEGACY_IMAGE || '' }}
           outputs: type=image,push-by-digest=true,name-canonical=true,push=true
           build-args: |
             NEXT_PUBLIC_VERSION_TAG=${{ inputs.version }}
@@ -181,8 +187,8 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4.4.1
 
-      # Every platform was pushed to each registry, so the GHCR digests can be
-      # tagged in both.
+      # Every platform was pushed to each image, so the GHCR digests can be
+      # tagged in all of them.
       - name: Create and push manifest list
         id: publish
         if: steps.head.outputs.moved != 'true'
@@ -191,10 +197,10 @@ jobs:
           TAGS: ${{ inputs.tags }}
           DOCKERHUB: ${{ inputs.dockerhub }}
         run: |
-          images=("$GHCR_IMAGE")
+          images=("$GHCR_IMAGE" "$GHCR_LEGACY_IMAGE")
 
           if [ "$DOCKERHUB" = 'true' ]; then
-            images+=("$DOCKERHUB_IMAGE")
+            images+=("$DOCKERHUB_IMAGE" "$DOCKERHUB_LEGACY_IMAGE")
           fi
 
           args=()
