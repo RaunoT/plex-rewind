@@ -32,7 +32,7 @@ import {
   getHistoryProgress,
   getHistoryStatus,
   getLibraries,
-  getServerId,
+  getMediaServer,
   getStatsSource,
 } from '@/utils/statsSource'
 import { sumBy } from 'lodash'
@@ -107,7 +107,7 @@ async function RewindContent({ userId }: { userId?: string }) {
     userTotalDuration,
     librariesTotalSize,
     librariesDurationByType,
-    serverId,
+    mediaServer,
     usersTop,
     habits,
     firstPlay,
@@ -120,7 +120,7 @@ async function RewindContent({ userId }: { userId?: string }) {
     getUserTotalDuration(user.id, libraries),
     getlibrariesTotalSize(libraries),
     getLibrariesDurationByType(libraries),
-    getServerId(),
+    getMediaServer(),
     viewersRequest.then((users) => getUsersTop(user.id, startDate, { users })),
     getPlaybackHabits(user.id),
     getStatsSource(settings).getFirstPlay(user.id),
@@ -214,7 +214,7 @@ async function RewindContent({ userId }: { userId?: string }) {
     libraries: libraries,
     libraries_total_size: librariesTotalSize.size,
     libraries_size_is_partial: librariesTotalSize.isPartial,
-    server_id: serverId,
+    media_server: mediaServer,
     user: user,
   }
   const isSeerrActive =

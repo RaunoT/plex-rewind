@@ -118,6 +118,7 @@ describe('getSettings', () => {
     const settings = getSettings()
 
     expect(settings.connection.plexUrl).toBe('http://plex:32400')
+    expect(settings.connection.mediaServerType).toBe('plex')
     expect(settings.connection.tautulliUrl).toBe('')
     expect(settings.dashboard).toEqual(DEFAULT_SETTINGS.dashboard)
     expect(readSavedSettings()).toEqual(settings)

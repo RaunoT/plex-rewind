@@ -1,5 +1,5 @@
 import { PublicSettings } from './settings'
-import { Genres, TopPeople } from './statsSource'
+import { Genres, MediaServer, TopPeople } from './statsSource'
 import { TautulliItemRow, TautulliLibrary } from './tautulli'
 
 export type RewindUser = {
@@ -43,7 +43,7 @@ export type UserRewind = {
         } | null
       })
     | null
-  server_id: string
+  media_server: MediaServer | null
   shows: LibraryRewind
   movies: LibraryRewind
   people: TopPeople

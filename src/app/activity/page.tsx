@@ -2,7 +2,7 @@ import { authOptions } from '@/lib/auth'
 import getSettings from '@/utils/getSettings'
 import { canViewFeature, getViewer } from '@/utils/helpers'
 import { toPublicSettings } from '@/utils/publicSettings'
-import { getServerId } from '@/utils/statsSource'
+import { getMediaServer } from '@/utils/statsSource'
 import { Metadata } from 'next'
 import { getServerSession } from 'next-auth'
 import { getTranslations } from 'next-intl/server'
@@ -29,9 +29,12 @@ export default async function ActivityPage() {
     return notFound()
   }
 
-  const serverId = await getServerId()
+  const mediaServer = await getMediaServer()
 
   return (
-    <Activities settings={toPublicSettings(settings)} serverId={serverId} />
+    <Activities
+      settings={toPublicSettings(settings)}
+      mediaServer={mediaServer}
+    />
   )
 }

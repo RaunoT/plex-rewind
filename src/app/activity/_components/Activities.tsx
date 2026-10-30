@@ -5,6 +5,8 @@ import SkeletonSized from '@/components/SkeletonSized'
 import SourceUnreachable from '@/components/SourceUnreachable'
 import StatusMessage from '@/components/StatusMessage'
 import { PublicSettings } from '@/types/settings'
+import { MediaServer } from '@/types/statsSource'
+import { APP_NAME } from '@/utils/constants'
 import { ExclamationTriangleIcon, MoonIcon } from '@heroicons/react/24/outline'
 import { useQuery } from '@tanstack/react-query'
 import { useTranslations } from 'next-intl'
@@ -15,10 +17,10 @@ import ActivityItem from './ActivityItem'
 
 type Props = {
   settings: PublicSettings
-  serverId?: string
+  mediaServer: MediaServer | null
 }
 
-export default function Activities({ settings, serverId }: Props) {
+export default function Activities({ settings, mediaServer }: Props) {
   const t = useTranslations('Activity')
   const errorT = useTranslations('Error')
   const { data, error, isLoading, refetch } = useQuery({
@@ -29,7 +31,7 @@ export default function Activities({ settings, serverId }: Props) {
   })
 
   useEffect(() => {
-    const baseTitle = settings.general.serverName || 'Plex Rewind'
+    const baseTitle = settings.general.serverName || APP_NAME
     const streamCount = data?.stream_count ?? 0
     const title =
       streamCount > 0 ? `(${streamCount}) ${t('title')}` : t('title')
@@ -77,7 +79,7 @@ export default function Activities({ settings, serverId }: Props) {
           session={session}
           index={index}
           settings={settings}
-          serverId={serverId}
+          mediaServer={mediaServer}
         />
       ))}
     </ul>

@@ -1,6 +1,6 @@
 import { HistoryStatus } from '@/types/playHistory'
 import { Settings, StatisticsSource } from '@/types/settings'
-import { ServerMembership, StatsSource } from '@/types/statsSource'
+import { MediaServer, ServerMembership, StatsSource } from '@/types/statsSource'
 import {
   TautulliActivity,
   TautulliLibrary,
@@ -92,8 +92,8 @@ export async function readHistoryAgain(
   await readAgain(await getHistorySource(source).getHistoryReaders())
 }
 
-export async function getServerId(): Promise<string> {
-  return getStatsSource().getServerId()
+export async function getMediaServer(): Promise<MediaServer | null> {
+  return getStatsSource().getMediaServer()
 }
 
 export async function getLibraries(

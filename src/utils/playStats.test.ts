@@ -10,6 +10,7 @@ import {
   getExcludedIdentityIds,
   isCountedPlay,
   StatsUser,
+  toSourceId,
 } from './playStats'
 
 vi.mock('./getSettings', () => ({ default: vi.fn() }))
@@ -45,10 +46,10 @@ function play(
   }
 }
 
-function user(plexId: string, identityId: string): StatsUser {
+function user(userId: string, identityId: string): StatsUser {
   return {
     identityId,
-    plexId,
+    userId,
     username: identityId,
     friendlyName: identityId,
   }
@@ -63,6 +64,14 @@ const plays = [
     identityId: 'carol',
   }),
 ]
+
+describe('toSourceId', () => {
+  it("keeps Plex's IDs numbers and Jellyfin's as they are", () => {
+    expect(toSourceId('12345')).toBe(12345)
+    expect(toSourceId('a1b2c3')).toBe('a1b2c3')
+    expect(toSourceId(null)).toBe(0)
+  })
+})
 
 describe('filterPlays', () => {
   it('keeps only plays from the exact start, not the whole UTC day', () => {

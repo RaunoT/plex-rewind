@@ -1,5 +1,5 @@
 import { Play, PlayMediaType } from '@/types/playHistory'
-import { Settings } from '@/types/settings'
+import { MediaServerType, Settings } from '@/types/settings'
 import { FirstPlay } from '@/types/statsSource'
 import {
   TautulliActivity,
@@ -13,12 +13,13 @@ import {
   TracearrHistoryRecord,
   TracearrLibrary,
   TracearrMedia,
-  TracearrPlexServer,
   TracearrServer,
+  TracearrServerOption,
   TracearrServersResponse,
   TracearrStream,
   TracearrStreamsResponse,
   TracearrUser,
+  TracearrUserAccount,
 } from '@/types/tracearr'
 import { minBy, pick, sumBy } from 'lodash'
 import { unstable_rethrow } from 'next/navigation'
@@ -27,6 +28,8 @@ import { SavedMediaData, SourceMediaData } from './getMediaAdditionalData'
 import getSettings from './getSettings'
 import { isGatewayError, isHostDown, markHostDown } from './hostBackoff'
 import { LibrariesSize, sumLibrariesSize } from './librariesSize'
+import { normalizeJellyfinId } from './mediaServer'
+import { isMediaServerType } from './mediaServerName'
 import {
   dropStaleHistories,
   getStoredPlays,
@@ -34,20 +37,28 @@ import {
   PlaysPage,
   readPlays,
 } from './playHistory'
-import { PLAY_MEDIA_TYPES } from './playStats'
+import { PLAY_MEDIA_TYPES, toSourceId } from './playStats'
 import { getSnapshot, isListOf, isObject, saveSnapshot } from './sourceSnapshot'
 
 type QueryParams = {
   [key: string]: string | number | undefined
 }
 
-export type TracearrPlexUser = {
+export type TracearrServerUser = {
   identityId: string
-  plexId: string
+  // The media server's own ID for the user, which they sign in with
+  userId: string
   username: string
   friendlyName: string
   email: string
-  isAdmin: boolean
+  // Null for Jellyfin, which Tracearr doesn't tell admins apart for
+  isAdmin: boolean | null
+}
+
+// Users saved before Jellyfin have their ID as `plexId`
+type SavedServerUser = Omit<TracearrServerUser, 'userId'> & {
+  userId?: string
+  plexId?: string
 }
 
 type CachedValue = {
@@ -121,7 +132,7 @@ export function getTracearrUrl(settings: Settings = getSettings()): string {
   return settings.connection.tracearrUrl.replace(/\/+$/, '')
 }
 
-// Tracearr's history of the Plex server, and its snapshot. Without the API
+// Tracearr's history of the media server, and its snapshot. Without the API
 // key, so a new key keeps what was read with the old one.
 export function getTracearrKey(): string {
   const settings = getSettings()
@@ -401,110 +412,147 @@ const getServers = cached<TracearrServer[]>('servers', async () => {
   return Array.isArray(res?.data) ? res.data : null
 })
 
-// Rewind is built around one Plex server, its owner and its deeplinks, so
-// every other server Tracearr tracks is left out. Without a saved choice, the
-// only Plex server is used.
-export function selectPlexServer(
+// Rewind is built around one media server, its users and its links, so every
+// other server Tracearr tracks is left out. Emby isn't supported. Without a
+// saved choice, the only server is used, of the type when one is given.
+export function selectServer(
   servers: TracearrServer[],
   serverId: string,
+  type?: MediaServerType,
 ): TracearrServer | undefined {
-  const plexServers = servers.filter((server) => server.server_type === 'plex')
+  const supported = servers.filter(
+    (server) =>
+      isMediaServerType(server.server_type) &&
+      (!type || server.server_type === type),
+  )
 
   if (serverId) {
-    return plexServers.find((server) => server.server_id === serverId)
+    return supported.find((server) => server.server_id === serverId)
   }
 
-  return plexServers.length === 1 ? plexServers[0] : undefined
+  return supported.length === 1 ? supported[0] : undefined
 }
 
-export async function getTracearrPlexServers(): Promise<TracearrPlexServer[]> {
-  const servers = (await getServers()) ?? []
-
+export function toServerOptions(
+  servers: TracearrServer[],
+): TracearrServerOption[] {
   return servers
-    .filter((server) => server.server_type === 'plex')
-    .map(({ server_id, server_name }) => ({ server_id, server_name }))
+    .filter((server) => isMediaServerType(server.server_type))
+    .map(({ server_id, server_name, server_type }) => ({
+      server_id,
+      server_name,
+      server_type: server_type as MediaServerType,
+    }))
 }
 
-async function getPlexServerId(): Promise<string | null> {
+export async function getTracearrServers(): Promise<TracearrServerOption[]> {
+  return toServerOptions((await getServers()) ?? [])
+}
+
+async function getSelectedServer(): Promise<TracearrServer | null> {
   const servers = await getServers()
 
   if (!servers) {
     return null
   }
 
-  const { tracearrServerId } = getSettings().connection
+  const { tracearrServerId, mediaServerType } = getSettings().connection
 
-  let server = selectPlexServer(servers, tracearrServerId)
+  let server = selectServer(servers, tracearrServerId)
 
-  if (!server && tracearrServerId) {
-    server = selectPlexServer(servers, '')
+  if (!server) {
+    // Settings saved before the choice was kept have no ID, and only ever
+    // used a Plex server
+    server = selectServer(servers, '', mediaServerType)
 
-    if (server && state.warnedMissingServerId !== tracearrServerId) {
+    if (
+      server &&
+      tracearrServerId &&
+      state.warnedMissingServerId !== tracearrServerId
+    ) {
       state.warnedMissingServerId = tracearrServerId
       console.warn(
-        `[TRACEARR] - The saved Plex server '${tracearrServerId}' no longer exists! Using '${server.server_name}' instead.`,
+        `[TRACEARR] - The saved server '${tracearrServerId}' no longer exists! Using '${server.server_name}' instead.`,
       )
     }
   }
 
   if (!server) {
     console.error(
-      '[TRACEARR] - No Plex server selected! Choose one in the connection settings.',
+      '[TRACEARR] - No server selected! Choose one in the connection settings.',
     )
 
     return null
   }
 
-  return server.server_id
+  return server
 }
 
-type PlexUsers = {
-  users: TracearrPlexUser[]
+async function getServerId(): Promise<string | null> {
+  return (await getSelectedServer())?.server_id ?? null
+}
+
+type ServerUsers = {
+  users: TracearrServerUser[]
   // False when paging stopped early, so a user may be on an unread page
   isComplete: boolean
 }
 
-const getPlexUsers = cached<PlexUsers>('users', async () => {
-  const [pages, serverId] = await Promise.all([
+// The owner's local Plex account ID isn't their plex.tv ID, which Tracearr only
+// knows from the Plex account they signed in with.
+function getPlexUserId(
+  user: TracearrUser,
+  accounts: TracearrUserAccount[],
+): string | undefined {
+  return (
+    user.plex_account_id ||
+    accounts.find(
+      (account) => account.external_user_id !== PLEX_OWNER_ACCOUNT_ID,
+    )?.external_user_id
+  )
+}
+
+const getServerUsers = cached<ServerUsers>('users', async () => {
+  const [pages, server] = await Promise.all([
     fetchPages<TracearrUser>('users'),
-    getPlexServerId(),
+    getSelectedServer(),
   ])
 
-  if (!pages || !serverId) {
+  if (!pages || !server) {
     return null
   }
 
+  const isPlex = server.server_type === 'plex'
   const users = pages.items.flatMap((user) => {
     const accounts = (user.accounts ?? []).filter(
-      (account) => account.server_id === serverId && !account.removed_at,
+      (account) =>
+        account.server_id === server.server_id && !account.removed_at,
     )
 
     if (!accounts.length) {
       return []
     }
 
-    // The owner's local account ID isn't their plex.tv ID, which Tracearr
-    // only knows from the Plex account they signed in with.
-    const plexId =
-      user.plex_account_id ||
-      accounts.find(
-        (account) => account.external_user_id !== PLEX_OWNER_ACCOUNT_ID,
-      )?.external_user_id
+    const userId = isPlex
+      ? getPlexUserId(user, accounts)
+      : normalizeJellyfinId(accounts[0].external_user_id)
 
-    if (!plexId) {
+    if (!userId) {
       return []
     }
 
     return [
       {
         identityId: user.id,
-        plexId,
+        userId,
         username: accounts[0].username,
         friendlyName: user.identity_name || user.username,
         email: user.email || '',
-        isAdmin: accounts.some(
-          (account) => account.external_user_id === PLEX_OWNER_ACCOUNT_ID,
-        ),
+        isAdmin: isPlex
+          ? accounts.some(
+              (account) => account.external_user_id === PLEX_OWNER_ACCOUNT_ID,
+            )
+          : null,
       },
     ]
   })
@@ -514,12 +562,17 @@ const getPlexUsers = cached<PlexUsers>('users', async () => {
 
 // A list that stopped early is still good for the stats, which count who it
 // has. While Tracearr is down, the saved list stands in, without the emails.
-export async function getTracearrPlexUsers(): Promise<TracearrPlexUser[]> {
+export async function getTracearrServerUsers(): Promise<TracearrServerUser[]> {
   const key = `${getTracearrKey()}|users`
-  const list = await getPlexUsers()
+  const list = await getServerUsers()
 
   if (!list) {
-    return (await getSnapshot(key, isListOf<TracearrPlexUser>)) ?? []
+    const saved = await getSnapshot(key, isListOf<SavedServerUser>)
+
+    return (saved ?? []).map(({ plexId, ...user }) => ({
+      ...user,
+      userId: user.userId ?? plexId ?? '',
+    }))
   }
 
   void saveSnapshot(
@@ -533,15 +586,15 @@ export async function getTracearrPlexUsers(): Promise<TracearrPlexUser[]> {
 // Null when Tracearr couldn't be asked, or when the list stopped early and the
 // user isn't in it. Undefined when the whole list doesn't have the user.
 export async function getTracearrUser(
-  plexId: string,
-): Promise<TracearrPlexUser | null | undefined> {
-  const list = await getPlexUsers()
+  userId: string,
+): Promise<TracearrServerUser | null | undefined> {
+  const list = await getServerUsers()
 
   if (!list) {
     return null
   }
 
-  const user = list.users.find((user) => user.plexId === plexId)
+  const user = list.users.find((user) => user.userId === userId)
 
   return user ?? (list.isComplete ? undefined : null)
 }
@@ -560,7 +613,7 @@ function getCachedAvatars(): Map<string, string> {
 }
 
 export async function getTracearrUsers(): Promise<TautulliUser[]> {
-  const users = await getTracearrPlexUsers()
+  const users = await getTracearrServerUsers()
   const avatars = getCachedAvatars()
 
   return users.map((user) => {
@@ -576,7 +629,7 @@ export async function getTracearrUsers(): Promise<TautulliUser[]> {
       is_admin: user.isAdmin ? 1 : 0,
       is_restricted: 0,
       is_active: 1,
-      user_id: user.plexId,
+      user_id: user.userId,
       friendly_name: user.friendlyName,
       thumb,
       user_thumb: avatar,
@@ -619,7 +672,7 @@ function toPlay(record: TracearrHistoryRecord, baseUrl: string): Play | null {
 // A page of the history, newest first. Without a window, Tracearr returns
 // every segment of a play, not only the ones inside the window.
 async function fetchPlaysPage(cursor?: string): Promise<PlaysPage | null> {
-  const serverId = await getPlexServerId()
+  const serverId = await getServerId()
 
   if (!serverId) {
     return null
@@ -655,7 +708,7 @@ async function fetchPlaysPage(cursor?: string): Promise<PlaysPage | null> {
   }
 }
 
-// Tracearr's history of the Plex server, read into the shared play store
+// Tracearr's history of the media server, read into the shared play store
 export function getTracearrHistoryReader(): HistoryReader {
   const key = getTracearrKey()
 
@@ -765,7 +818,7 @@ async function findFirstPlay(
 const getServerFirstPlayAt = cached<number>(
   'serverFirstPlayAt',
   async () => {
-    const serverId = await getPlexServerId()
+    const serverId = await getServerId()
 
     if (!serverId) {
       return null
@@ -783,11 +836,11 @@ const getServerFirstPlayAt = cached<number>(
 )
 
 export async function getTracearrFirstPlay(
-  plexId: string,
+  userId: string,
 ): Promise<FirstPlay | null> {
   const [user, serverId] = await Promise.all([
-    getTracearrUser(plexId),
-    getPlexServerId(),
+    getTracearrUser(userId),
+    getServerId(),
   ])
 
   if (!user || !serverId) {
@@ -846,7 +899,7 @@ async function getLibraryRollups(): Promise<TracearrLibrary[] | null> {
   const key = `${getTracearrKey()}|libraries`
   const [libraries, serverId] = await Promise.all([
     getAllLibraries(),
-    getPlexServerId(),
+    getServerId(),
   ])
 
   if (!libraries || !serverId) {
@@ -863,7 +916,7 @@ async function getLibraryRollups(): Promise<TracearrLibrary[] | null> {
 }
 
 // Built from the same two lists as the libraries, so whether Tracearr counts as
-// reachable never disagrees with the libraries shown. A missing Plex server
+// reachable never disagrees with the libraries shown. A missing server
 // choice is a setup problem, not an outage. Costs no extra call.
 export async function isTracearrReachable(): Promise<boolean> {
   const [libraries, servers] = await Promise.all([
@@ -891,7 +944,7 @@ function getLibraryType(library: TracearrLibrary): TautulliMediaType | null {
 }
 
 // Tracearr doesn't expose library names, so each media type becomes one
-// library that spans every Plex library of that type.
+// library that spans every library of that type on the server.
 export async function getTracearrLibraries(): Promise<TautulliLibrary[]> {
   const rollups = (await getLibraryRollups()) ?? []
   const allTypes = Object.keys(LIBRARY_NAMES) as TautulliMediaType[]
@@ -951,7 +1004,7 @@ export async function getTracearrLibrariesSize(
   )
 }
 
-// Whether the item was removed from the Plex server, and its IDs. The saved IDs
+// Whether the item was removed from the media server, and its IDs. The saved IDs
 // and year stand in while Tracearr is down, so a show isn't looked up by its
 // title alone.
 export async function getTracearrMedia(
@@ -964,7 +1017,7 @@ export async function getTracearrMedia(
   const key = `${getTracearrKey()}|media|${mediaId}`
   const [media, serverId] = await Promise.all([
     fetchTracearr<TracearrMedia>(`media/${mediaId}`),
-    getPlexServerId(),
+    getServerId(),
   ])
 
   if (!media) {
@@ -1017,7 +1070,7 @@ function toGuids({ imdb_id, tmdb_id, tvdb_id }: TracearrStream): string[] {
 
 function toSession(
   stream: TracearrStream,
-  users: TracearrPlexUser[],
+  users: TracearrServerUser[],
   baseUrl: string,
 ): TautulliSession {
   // Streams only carry a display name, which two users can share.
@@ -1056,14 +1109,15 @@ function toSession(
     container: sourceContainer ?? '',
     duration: durationMs ? String(durationMs) : undefined,
     friendly_name: stream.username,
-    grandparent_rating_key: Number(stream.grandparent_rating_key) || undefined,
+    grandparent_rating_key:
+      toSourceId(stream.grandparent_rating_key) || undefined,
     // Tracearr already resolves an episode's poster to the show's.
     grandparent_thumb: '',
     grandparent_title:
       (isEpisode ? stream.show_title : stream.artist_name) ?? '',
     guids: toGuids(stream),
     media_type: stream.media_type,
-    parent_rating_key: Number(stream.parent_rating_key) || undefined,
+    parent_rating_key: toSourceId(stream.parent_rating_key) || undefined,
     parent_title: isEpisode
       ? stream.season_number !== null
         ? `Season ${stream.season_number}`
@@ -1075,7 +1129,7 @@ function toSession(
       ? String(Math.round((stream.progress_ms * 100) / durationMs))
       : '0',
     quality_profile: '',
-    rating_key: Number(stream.rating_key) || 0,
+    rating_key: toSourceId(stream.rating_key),
     session_key: stream.id,
     state: stream.state,
     // Only stream details for a transcode, which drops Atmos unless it says
@@ -1112,7 +1166,7 @@ function toSession(
       : videoDecision === 'copy' || audioDecision === 'copy'
         ? 'copy'
         : 'direct play',
-    user_id: Number(user?.plexId) || 0,
+    user_id: toSourceId(user?.userId),
     user_thumb: toAbsoluteUrl(
       stream.user_avatar_url ?? stream.user_thumb,
       baseUrl,
@@ -1129,8 +1183,8 @@ const getStreams = cached<TautulliActivity>(
   'streams',
   async () => {
     const [serverId, users] = await Promise.all([
-      getPlexServerId(),
-      getTracearrPlexUsers(),
+      getServerId(),
+      getTracearrServerUsers(),
     ])
 
     if (!serverId) {

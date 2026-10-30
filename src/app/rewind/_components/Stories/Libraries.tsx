@@ -1,6 +1,7 @@
 import { MEDIA_ICONS, STAT_ICONS } from '@/components/icons'
 import { RewindStory } from '@/types/rewind'
 import { bytesToSize } from '@/utils/formatting'
+import { getMediaServerName } from '@/utils/mediaServerName'
 import { useTranslations } from 'next-intl'
 import { ComponentProps } from 'react'
 import RewindStat from '../RewindStat'
@@ -48,7 +49,9 @@ export default function StoryLibraries({ userRewind, settings }: RewindStory) {
                 <STAT_ICONS.size />
               </span>
             ),
-            serverName: settings.general.serverName || 'Plex',
+            serverName:
+              settings.general.serverName ||
+              getMediaServerName(settings.connection.mediaServerType),
             plex: (chunks) => chunks,
             size: (chunks) => (
               <span className='whitespace-nowrap'>

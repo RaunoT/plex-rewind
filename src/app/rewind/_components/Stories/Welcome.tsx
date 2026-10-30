@@ -2,6 +2,7 @@ import Avatar from '@/components/Avatar'
 import { RewindStory } from '@/types/rewind'
 import { formatMonthYear } from '@/utils/formatting'
 import { getRewindStartDate } from '@/utils/helpers'
+import { getMediaServerName } from '@/utils/mediaServerName'
 import { useLocale, useTranslations } from 'next-intl'
 import RewindStat from '../RewindStat'
 
@@ -32,7 +33,9 @@ export default function StoryWelcome({ userRewind, settings }: RewindStory) {
         </div>
         <p>
           {t.rich('welcome', {
-            serverName: settings.general.serverName || 'Plex',
+            serverName:
+              settings.general.serverName ||
+              getMediaServerName(settings.connection.mediaServerType),
             userValue: userRewind.user.name,
             rewind: (chunks) => chunks,
             user: (chunks) => <span className='rewind-cat'>{chunks}</span>,

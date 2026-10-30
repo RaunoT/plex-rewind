@@ -80,7 +80,10 @@ export default async function Overview({
         <div className='flex items-center gap-3'>
           {!session && (
             <Suspense>
-              <LoginButton siteUrl={getSiteUrl()} />
+              <LoginButton
+                siteUrl={getSiteUrl()}
+                mediaServerType={settings.connection.mediaServerType}
+              />
             </Suspense>
           )}
           <HeaderControls className='lg:group-data-[sidebar]/app:hidden' />

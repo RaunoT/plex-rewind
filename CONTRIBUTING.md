@@ -1,4 +1,4 @@
-# Contributing to Plex Rewind
+# Contributing to Rewindarr
 
 Any contributions are welcome and greatly appreciated!
 
@@ -15,7 +15,7 @@ Please follow the guidelines below.
   > Upon opening the project, a few extensions will be automatically recommended for install. These are highly recommended to install and will make development easier. You can find the list in `.vscode/extensions.json`.
 
 - [pnpm](https://pnpm.io) as a package manager. The version is pinned in `package.json`, so enabling it with `corepack enable pnpm` picks the right one.
-- A [Plex](https://plex.tv) server and either a [Tautulli](https://tautulli.com) or a [Tracearr](https://github.com/connorgallopo/Tracearr) instance, if you want to work with real data. [Seerr](https://seerr.dev) is optional. You enter their URLs and API keys under _Settings → Connection_ once the app is running.
+- A [Plex](https://plex.tv) or [Jellyfin](https://jellyfin.org) server and either a [Tautulli](https://tautulli.com) or a [Tracearr](https://github.com/connorgallopo/Tracearr) instance (Jellyfin needs Tracearr), if you want to work with real data. [Seerr](https://seerr.dev) is optional. You enter their URLs and API keys under _Settings → Connection_ once the app is running.
 
 ### Getting Started
 

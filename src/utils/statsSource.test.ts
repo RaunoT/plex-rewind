@@ -9,8 +9,8 @@ import { getSnapshot, hasSnapshot } from './sourceSnapshot'
 import {
   getHistoryProgress,
   getLibraries,
+  getMediaServer,
   getReachableLibraries,
-  getServerId,
   getSourceOutage,
   getStatsSource,
   getUsers,
@@ -378,37 +378,46 @@ describe('getSourceOutage', () => {
   })
 })
 
-describe('getServerId', () => {
-  it('returns the identifier Tautulli reports', async () => {
-    fetchMock.mockResolvedValue(tautulliResponse({ identifier: 'abc' }))
+describe('getMediaServer', () => {
+  const plex = (id: string) => ({ type: 'plex', id, url: '' })
 
-    await expect(getServerId()).resolves.toBe('abc')
+  it('returns the identifier Tautulli reports', async () => {
+    fetchMock.mockResolvedValue(
+      tautulliResponse({ machine_identifier: 'abc', version: '1' }),
+    )
+
+    await expect(getMediaServer()).resolves.toEqual(plex('abc'))
+
+    const [url] = fetchMock.mock.calls[0]
+
+    expect(new URL(url).searchParams.get('cmd')).toBe('get_server_identity')
   })
 
-  it('returns an empty string when Tautulli fails', async () => {
+  it('returns null when Tautulli fails', async () => {
     fetchMock.mockResolvedValue(new Response('<html></html>'))
 
-    await expect(getServerId()).resolves.toBe('')
+    await expect(getMediaServer()).resolves.toBeNull()
   })
 
   it('returns the saved identifier while Tautulli is down', async () => {
     fetchMock.mockResolvedValue(new Response('nope', { status: 500 }))
     vi.mocked(getSnapshot).mockResolvedValue('abc')
 
-    await expect(getServerId()).resolves.toBe('abc')
+    await expect(getMediaServer()).resolves.toEqual(plex('abc'))
     expect(getSnapshot).toHaveBeenCalledWith(
       'tautulli|http://tautulli:8181|serverId',
       expect.any(Function),
     )
   })
 
-  it('returns an empty string for an invalid Plex URL', async () => {
+  it("makes no links for Tracearr without the server's URL", async () => {
     const settings = testSettings()
 
+    settings.connection.statisticsSource = 'tracearr'
     settings.connection.plexUrl = ''
     vi.mocked(getSettings).mockReturnValue(settings)
 
-    await expect(getServerId()).resolves.toBe('')
+    await expect(getMediaServer()).resolves.toBeNull()
     expect(fetchMock).not.toHaveBeenCalled()
   })
 
@@ -419,11 +428,30 @@ describe('getServerId', () => {
     vi.mocked(getSettings).mockReturnValue(settings)
     fetchMock.mockResolvedValue(new Response('<html></html>'))
 
-    await expect(getServerId()).resolves.toBe('')
+    await expect(getMediaServer()).resolves.toBeNull()
 
     const [url, init] = fetchMock.mock.calls[0]
 
     expect(url).toBe('http://plex:32400/identity')
     expect(init.signal).toBeInstanceOf(AbortSignal)
+  })
+
+  it("asks Jellyfin for its ID, and links to Jellyfin's URL", async () => {
+    const settings = testSettings()
+
+    settings.connection.statisticsSource = 'tracearr'
+    settings.connection.mediaServerType = 'jellyfin'
+    settings.connection.jellyfinUrl = 'http://jellyfin:8096'
+    vi.mocked(getSettings).mockReturnValue(settings)
+    fetchMock.mockResolvedValue(Response.json({ Id: 'f00d' }))
+
+    await expect(getMediaServer()).resolves.toEqual({
+      type: 'jellyfin',
+      id: 'f00d',
+      url: 'http://jellyfin:8096',
+    })
+    expect(fetchMock.mock.calls[0][0]).toBe(
+      'http://jellyfin:8096/System/Info/Public',
+    )
   })
 })

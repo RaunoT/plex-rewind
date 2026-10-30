@@ -1,4 +1,5 @@
 import { Play } from '@/types/playHistory'
+import { MediaServerType } from '@/types/settings'
 import { LibrariesSize } from '@/utils/librariesSize'
 import { HistoryReader } from '@/utils/playHistory'
 import {
@@ -117,15 +118,25 @@ export type FirstPlay = {
 }
 
 // `unavailable` when the source couldn't be asked, which says nothing about
-// whether the user still belongs to the server
+// whether the user still belongs to the server. `isAdmin` is null when the
+// source can't tell, as Tracearr can't for Jellyfin.
 export type ServerMembership =
-  | { status: 'member'; isAdmin: boolean }
+  | { status: 'member'; isAdmin: boolean | null }
   | { status: 'notMember' }
   | { status: 'unavailable' }
 
+// What links that open an item in the media server need. Plex's go through
+// app.plex.tv, so only Jellyfin's use the URL.
+export type MediaServer = {
+  type: MediaServerType
+  id: string
+  url: string
+}
+
 // Each statistics source maps its data onto the Tautulli types.
 export type StatsSource = {
-  getServerId: () => Promise<string>
+  // Null when the links can't be made
+  getMediaServer: () => Promise<MediaServer | null>
   // Only the libraries the signed-in user can see
   getLibraries: () => Promise<TautulliLibrary[]>
   getLibrariesSize: (libraries: TautulliLibrary[]) => Promise<LibrariesSize>

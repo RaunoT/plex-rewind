@@ -1,25 +1,39 @@
 {
   "id": "/",
-  "name": "Plex Rewind",
-  "short_name": "Plex Rewind",
-  "description": "Plex users' statistics and habits in a beautiful and organized manner",
+  "name": "Rewindarr",
+  "short_name": "Rewindarr",
+  "description": "Plex and Jellyfin users' statistics and habits in a beautiful and organized manner",
   "lang": "en",
   "icons": [
     {
       "src": "/icon-192x192.png",
       "sizes": "192x192",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any"
     },
     {
       "src": "/icon-512x512.png",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-maskable-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
     },
     {
       "src": "/icon-maskable-512x512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
+    },
+    {
+      "src": "/icon-monochrome-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "monochrome"
     }
   ],
   "theme_color": "#000000",

@@ -1,4 +1,5 @@
 import { PublicSettings } from '@/types/settings'
+import { MediaServer } from '@/types/statsSource'
 import { TautulliItemRow } from '@/types/tautulli'
 import clsx from 'clsx'
 import MediaItem from './MediaItem'
@@ -6,7 +7,7 @@ import MediaItem from './MediaItem'
 type Props = {
   items: TautulliItemRow[]
   type: 'movie' | 'show' | 'artist' | 'users'
-  serverId: string
+  mediaServer: MediaServer | null
   rows?: boolean
   settings: PublicSettings
   loggedInUserId?: string
@@ -18,7 +19,7 @@ type Props = {
 export default function MediaItems({
   items,
   type,
-  serverId,
+  mediaServer,
   rows,
   settings,
   loggedInUserId,
@@ -38,7 +39,7 @@ export default function MediaItems({
           i={i}
           key={i}
           type={type}
-          serverId={serverId}
+          mediaServer={mediaServer}
           activeStats={activeStats}
           settings={settings}
           loggedInUserId={loggedInUserId}
