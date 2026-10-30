@@ -8,7 +8,7 @@
 [<img src="https://img.shields.io/github/v/release/RaunoT/rewindarr?include_prereleases&label=develop" alt="Rewindarr develop release">](https://github.com/RaunoT/rewindarr/releases)
 [![Rewindarr downloads](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2FRaunoT%2Frewindarr%2Fbadges%2Fdownloads.json)](https://github.com/RaunoT/rewindarr/pkgs/container/rewindarr)
 
-A rewind for your media server, inspired by the likes of [Spotify Wrapped](https://www.spotify.com/us/wrapped) and [Tautulli](https://tautulli.com).
+A rewind for your media server, inspired by the likes of [Spotify Wrapped](https://www.spotify.com/us/wrapped).
 
 Present [Plex](https://plex.tv) and [Jellyfin](https://jellyfin.org) user statistics and habits in a beautiful and organized manner, using data from [Tautulli](https://tautulli.com) or [Tracearr](https://github.com/connorgallopo/Tracearr), and [Seerr](https://seerr.dev). You can also disable the Rewind functionality and just use it as an easily sharable Dashboard for your users or vice versa!
 
