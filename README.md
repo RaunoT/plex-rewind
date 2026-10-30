@@ -1,13 +1,13 @@
 <img src="src/assets/rewindarr.svg" alt="" width="96" height="96">
 
-# Rewindarr
+# Rewindarr (formerly plex-rewind)
 
 [![Rewindarr release status](https://img.shields.io/github/actions/workflow/status/RaunoT/rewindarr/release.yml?label=Release)](https://github.com/RaunoT/rewindarr/actions/workflows/release.yml)
 [<img src="https://img.shields.io/github/v/release/RaunoT/rewindarr?label=latest" alt="Rewindarr latest release">](https://github.com/RaunoT/rewindarr/releases)
 [![Rewindarr pre-release status](https://img.shields.io/github/actions/workflow/status/RaunoT/rewindarr/pre-release.yml?include_prereleases=true&label=Pre-release)](https://github.com/RaunoT/rewindarr/actions/workflows/pre-release.yml)
 [<img src="https://img.shields.io/github/v/release/RaunoT/rewindarr?include_prereleases&label=develop" alt="Rewindarr develop release">](https://github.com/RaunoT/rewindarr/releases)
 
-A rewind for your media server, inspired by the likes of [Spotify Wrapped](https://www.spotify.com/us/wrapped) and [Tautulli](https://tautulli.com). Formerly Plex Rewind.
+A rewind for your media server, inspired by the likes of [Spotify Wrapped](https://www.spotify.com/us/wrapped) and [Tautulli](https://tautulli.com).
 
 Present [Plex](https://plex.tv) and [Jellyfin](https://jellyfin.org) user statistics and habits in a beautiful and organized manner - as a web application powered by [Next.js](https://nextjs.org) and [Tailwind.css](https://tailwindcss.com), using data from [Tautulli](https://tautulli.com) or [Tracearr](https://github.com/connorgallopo/Tracearr), and [Seerr](https://seerr.dev). You can also disable the Rewind functionality and just use it as an easily sharable Dashboard for your users or vice versa!
 
