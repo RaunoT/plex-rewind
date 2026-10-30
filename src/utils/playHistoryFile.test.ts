@@ -70,7 +70,7 @@ function writeFile(content: unknown) {
 }
 
 beforeEach(() => {
-  directory = fs.mkdtempSync(path.join(os.tmpdir(), 'plex-rewind-'))
+  directory = fs.mkdtempSync(path.join(os.tmpdir(), 'rewindarr-'))
   fs.mkdirSync(path.join(directory, 'config'))
   vi.spyOn(process, 'cwd').mockReturnValue(directory)
   vi.spyOn(console, 'warn').mockImplementation(() => {})

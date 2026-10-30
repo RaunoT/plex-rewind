@@ -70,7 +70,7 @@ function listBackups(): string[] {
 }
 
 beforeEach(() => {
-  directory = fs.mkdtempSync(path.join(os.tmpdir(), 'plex-rewind-settings-'))
+  directory = fs.mkdtempSync(path.join(os.tmpdir(), 'rewindarr-settings-'))
   settingsPath = path.join(directory, 'config/settings.json')
   editCount = 0
 

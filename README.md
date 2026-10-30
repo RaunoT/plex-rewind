@@ -2,10 +2,10 @@
 
 # Rewindarr
 
-[![Rewindarr release status](https://img.shields.io/github/actions/workflow/status/RaunoT/plex-rewind/release.yml?label=Release)](https://github.com/RaunoT/plex-rewind/actions/workflows/release.yml)
-[<img src="https://img.shields.io/github/v/release/raunot/plex-rewind?label=latest" alt="Rewindarr latest release">](https://github.com/RaunoT/plex-rewind/releases)
-[![Rewindarr pre-release status](https://img.shields.io/github/actions/workflow/status/RaunoT/plex-rewind/pre-release.yml?include_prereleases=true&label=Pre-release)](https://github.com/RaunoT/plex-rewind/actions/workflows/pre-release.yml)
-[<img src="https://img.shields.io/github/v/release/RaunoT/plex-rewind?include_prereleases&label=develop" alt="Rewindarr develop release">](https://github.com/RaunoT/plex-rewind/releases)
+[![Rewindarr release status](https://img.shields.io/github/actions/workflow/status/RaunoT/rewindarr/release.yml?label=Release)](https://github.com/RaunoT/rewindarr/actions/workflows/release.yml)
+[<img src="https://img.shields.io/github/v/release/RaunoT/rewindarr?label=latest" alt="Rewindarr latest release">](https://github.com/RaunoT/rewindarr/releases)
+[![Rewindarr pre-release status](https://img.shields.io/github/actions/workflow/status/RaunoT/rewindarr/pre-release.yml?include_prereleases=true&label=Pre-release)](https://github.com/RaunoT/rewindarr/actions/workflows/pre-release.yml)
+[<img src="https://img.shields.io/github/v/release/RaunoT/rewindarr?include_prereleases&label=develop" alt="Rewindarr develop release">](https://github.com/RaunoT/rewindarr/releases)
 
 A rewind for your media server, inspired by the likes of [Spotify Wrapped](https://www.spotify.com/us/wrapped) and [Tautulli](https://tautulli.com). Formerly Plex Rewind.
 
@@ -33,7 +33,7 @@ Present [Plex](https://plex.tv) and [Jellyfin](https://jellyfin.org) user statis
 - 🌐 Multi-language support - currently supporting English, Estonian, French, German, Italian and Spanish. See [translations](#translations) for more information.
 - ⭐ All of this and more - powered by [Next.js](https://nextjs.org).
 
-Keep an eye on the [issues page](https://github.com/RaunoT/plex-rewind/issues) to see what new features have already been requested or to make your own request!
+Keep an eye on the [issues page](https://github.com/RaunoT/rewindarr/issues) to see what new features have already been requested or to make your own request!
 
 ## Preview
 
@@ -96,10 +96,10 @@ If you like this project and wish to support it, you can do so on [GitHub Sponso
 
 ## Star History
 
-<a href="https://star-history.dera.page/#RaunoT/plex-rewind&type=date&legend=top-left">
+<a href="https://star-history.dera.page/#RaunoT/rewindarr&type=date&legend=top-left">
  <picture>
-   <source media="(prefers-color-scheme: dark)" srcset="https://star-history.dera.page/svg?repos=RaunoT/plex-rewind&type=date&theme=dark&legend=top-left" />
-   <source media="(prefers-color-scheme: light)" srcset="https://star-history.dera.page/svg?repos=RaunoT/plex-rewind&type=date&legend=top-left" />
-   <img alt="Star History Chart" src="https://star-history.dera.page/svg?repos=RaunoT/plex-rewind&type=date&legend=top-left" />
+   <source media="(prefers-color-scheme: dark)" srcset="https://star-history.dera.page/svg?repos=RaunoT/rewindarr&type=date&theme=dark&legend=top-left" />
+   <source media="(prefers-color-scheme: light)" srcset="https://star-history.dera.page/svg?repos=RaunoT/rewindarr&type=date&legend=top-left" />
+   <img alt="Star History Chart" src="https://star-history.dera.page/svg?repos=RaunoT/rewindarr&type=date&legend=top-left" />
  </picture>
 </a>

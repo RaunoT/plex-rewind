@@ -1,8 +1,8 @@
 blank_issues_enabled: false
 contact_links:
   - name: Question or setup help
-    url: https://github.com/RaunoT/plex-rewind#getting-started
+    url: https://github.com/RaunoT/rewindarr#getting-started
     about: Check the setup instructions in the README first, including the note on NEXTAUTH_URL and NEXT_PUBLIC_SITE_URL.
   - name: Security vulnerability
-    url: https://github.com/RaunoT/plex-rewind/security/advisories/new
+    url: https://github.com/RaunoT/rewindarr/security/advisories/new
     about: Report vulnerabilities privately. Please do not open a public issue.

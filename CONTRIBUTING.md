@@ -22,8 +22,8 @@ Please follow the guidelines below.
 1. [Fork](https://help.github.com/articles/fork-a-repo/) the repository to your own GitHub account and [clone](https://help.github.com/articles/cloning-a-repository/) it to your local device:
 
    ```bash
-   git clone https://github.com/YOUR_USERNAME/plex-rewind.git
-   cd plex-rewind
+   git clone https://github.com/YOUR_USERNAME/rewindarr.git
+   cd rewindarr
    ```
 
 2. Create `.env.local` file in the root of the project from the `.env.example` file:
@@ -57,7 +57,7 @@ Please follow the guidelines below.
 7. Should you need to update your fork, you can do so by rebasing from `upstream`. Add the remote once:
 
    ```bash
-   git remote add upstream https://github.com/RaunoT/plex-rewind.git
+   git remote add upstream https://github.com/RaunoT/rewindarr.git
    ```
 
    Then fetch and rebase whenever you need to:
@@ -85,9 +85,9 @@ The screenshots in `.github/screenshots` use made-up data, so they don't show an
 2. Run a second copy of the app, so your own settings stay untouched. Settings are read from the folder the app runs in, so a worktree gets its own:
 
    ```bash
-   git worktree add ../plex-rewind-screenshots
-   cp .env.local ../plex-rewind-screenshots/
-   cd ../plex-rewind-screenshots && pnpm install
+   git worktree add ../rewindarr-screenshots
+   cp .env.local ../rewindarr-screenshots/
+   cd ../rewindarr-screenshots && pnpm install
    ```
 
    Save this as `config/settings.json` there, then start it with `NEXTAUTH_URL=http://localhost:3001 pnpm dev -p 3001` and sign in:
@@ -135,7 +135,7 @@ pnpm build
 
 ### Code guidelines
 
-- If you are taking on an existing bug or feature ticket, please comment on the [issue](https://github.com/RaunoT/plex-rewind/issues) to avoid multiple people working on the same thing.
+- If you are taking on an existing bug or feature ticket, please comment on the [issue](https://github.com/RaunoT/rewindarr/issues) to avoid multiple people working on the same thing.
 
 - All commits must follow [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) rules. Run `pnpm commit` for a guided prompt, or write the message yourself. Besides the usual types (`feat`, `fix`, `docs`, `chore` and so on) there is a `ui` type for UI changes. A commit hook checks the message.
 

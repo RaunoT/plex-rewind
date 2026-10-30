@@ -66,7 +66,7 @@ export default async function SettingsLayout({ children }: Props) {
           {t('becomeASponsor')}
         </a>
         <a
-          href='https://github.com/RaunoT/plex-rewind/issues'
+          href='https://github.com/RaunoT/rewindarr/issues'
           target='_blank'
           className='link-light inline-flex items-center gap-2'
         >
