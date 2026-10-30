@@ -24,7 +24,7 @@ Present [Plex](https://plex.tv) and [Jellyfin](https://jellyfin.org) user statis
 - 📆 Rewind - allows your users view their statistics and habits for a (customizable) time period.
 - 👀 Dashboard - provides an easily glanceable overview of activity on your server for all your libraries, personalized or general.
 - ⚡ Activity - see what's happening on your server in real time.
-- 📊 Fuelled by data from [Tautulli](https://tautulli.com) or [Tracearr](https://github.com/connorgallopo/Tracearr) - the backbone responsible for the heavy lifting regarding statistics. Tracearr also brings Jellyfin support.
+- 📊 Fuelled by data from [Tautulli](https://tautulli.com) or [Tracearr](https://github.com/connorgallopo/Tracearr) - the backbone responsible for the heavy lifting regarding statistics.
 - 🔗 Integrates with [Seerr](https://seerr.dev) - show request breakdowns and totals and display request buttons next to deleted fan-favorite media items.
 - 🍅 Ratings from TMDB, IMDb and Rotten Tomatoes - each can be turned on or off.
 - 🔐 Log in with Plex or Jellyfin - secure login and session management with the account you already use for your media server.
