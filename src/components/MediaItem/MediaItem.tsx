@@ -241,7 +241,7 @@ export default function MediaItem({
                 )
               ) : (
                 mediaServer &&
-                deeplinkRatingKey && (
+                !!deeplinkRatingKey && (
                   <MediaServerDeeplink
                     title={data.title}
                     mediaServer={mediaServer}
