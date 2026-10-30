@@ -9,7 +9,7 @@
 
 A rewind for your media server, inspired by the likes of [Spotify Wrapped](https://www.spotify.com/us/wrapped) and [Tautulli](https://tautulli.com).
 
-Present [Plex](https://plex.tv) and [Jellyfin](https://jellyfin.org) user statistics and habits in a beautiful and organized manner - as a web application powered by [Next.js](https://nextjs.org) and [Tailwind.css](https://tailwindcss.com), using data from [Tautulli](https://tautulli.com) or [Tracearr](https://github.com/connorgallopo/Tracearr), and [Seerr](https://seerr.dev). You can also disable the Rewind functionality and just use it as an easily sharable Dashboard for your users or vice versa!
+Present [Plex](https://plex.tv) and [Jellyfin](https://jellyfin.org) user statistics and habits in a beautiful and organized manner, using data from [Tautulli](https://tautulli.com) or [Tracearr](https://github.com/connorgallopo/Tracearr), and [Seerr](https://seerr.dev). You can also disable the Rewind functionality and just use it as an easily sharable Dashboard for your users or vice versa!
 
 | Media server | Statistics from      |
 | ------------ | -------------------- |
