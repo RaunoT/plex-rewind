@@ -16,7 +16,7 @@ import { toPublicSettings } from '@/utils/publicSettings'
 import {
   getHistoryProgress,
   getLibraries,
-  getServerId,
+  getMediaServer,
 } from '@/utils/statsSource'
 import { kebabCase } from 'lodash'
 import { Metadata } from 'next'
@@ -100,7 +100,7 @@ async function DashboardContent({
     totalDuration,
     totalRequests,
     totalSize,
-    serverId,
+    mediaServer,
   ] = await Promise.all([
     getItems(library, {
       period: period.daysAgo,
@@ -111,7 +111,7 @@ async function DashboardContent({
     getTotalDuration(library, period.string, settings, personalUserId),
     getTotalRequests(period.string, settings, library, personalUserId),
     getTotalSize(library, settings),
-    getServerId(),
+    getMediaServer(),
   ])
   const isCountActive =
     settings.dashboard.activeTotalStatistics.includes('count')
@@ -129,7 +129,7 @@ async function DashboardContent({
       totalRequests={totalRequests}
       totalSize={totalSize}
       type={library.section_type}
-      serverId={serverId}
+      mediaServer={mediaServer}
       count={count}
       settings={toPublicSettings(settings)}
       loggedInUserId={loggedInUserId}

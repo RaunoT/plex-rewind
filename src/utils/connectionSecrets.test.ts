@@ -9,7 +9,7 @@ const saved: ConnectionSettings = {
   tautulliApiKey: 'tautulli-key',
   seerrUrl: 'http://seerr:5055',
   seerrApiKey: 'seerr-key',
-  plexUrl: 'http://plex:32400',
+  mediaServerUrl: 'http://plex:32400',
   complete: true,
 }
 

@@ -8,6 +8,9 @@ export type SettingsFormInitialState<T> = {
 
 export type StatisticsSource = 'tautulli' | 'tracearr'
 
+// Tautulli only tracks Plex. With Tracearr, it's the type of the chosen server.
+export type MediaServerType = 'plex' | 'jellyfin'
+
 export type ConnectionSettings = {
   statisticsSource: StatisticsSource
   tautulliUrl: string
@@ -17,7 +20,9 @@ export type ConnectionSettings = {
   tracearrServerId: string
   seerrUrl?: string
   seerrApiKey?: string
-  plexUrl: string
+  mediaServerType: MediaServerType
+  // For links that open an item in the media server, and Jellyfin's sign-in
+  mediaServerUrl: string
   complete: boolean
 }
 
@@ -91,7 +96,7 @@ export type Settings = {
 // What may be sent to the browser: no API keys or internal service URLs.
 export type PublicConnectionSettings = Pick<
   ConnectionSettings,
-  'statisticsSource' | 'complete'
+  'statisticsSource' | 'mediaServerType' | 'complete'
 > & {
   seerrUrl: string
   isSeerrActive: boolean

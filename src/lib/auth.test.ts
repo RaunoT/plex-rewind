@@ -1,12 +1,22 @@
+import { Settings } from '@/types/settings'
+import { cloneDeep } from 'lodash'
 import { getServerSession } from 'next-auth'
 import { encode, JWT } from 'next-auth/jwt'
 import { CredentialsConfig } from 'next-auth/providers/credentials'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { DEFAULT_SETTINGS } from '../utils/constants'
+import getSettings from '../utils/getSettings'
 import { getServerUser } from '../utils/statsSource'
-import { authOptions, authorizePlexUser, MAX_CACHED_CHECKS } from './auth'
+import {
+  authOptions,
+  authorizeJellyfinUser,
+  authorizePlexUser,
+  MAX_CACHED_CHECKS,
+} from './auth'
 import { LoginError, toLoginErrorCode } from './loginError'
 
 vi.mock('../utils/statsSource', () => ({ getServerUser: vi.fn() }))
+vi.mock('../utils/getSettings', () => ({ default: vi.fn() }))
 
 const fetchMock = vi.fn()
 const SECRET = 'test-secret'
@@ -88,6 +98,7 @@ beforeEach(() => {
     isAdmin: true,
   })
   fetchMock.mockResolvedValue(Response.json(PLEX_USER))
+  vi.mocked(getSettings).mockReturnValue(cloneDeep(DEFAULT_SETTINGS))
 })
 
 afterEach(() => {
@@ -168,6 +179,104 @@ describe('authorizePlexUser', () => {
   })
 })
 
+describe('authorizePlexUser with a Jellyfin server', () => {
+  it('fails with noAccess', async () => {
+    vi.mocked(getSettings).mockReturnValue(jellyfinSettings())
+
+    await expect(loginErrorCode(authorizePlexUser('token'))).resolves.toBe(
+      'noAccess',
+    )
+    expect(fetchMock).not.toHaveBeenCalled()
+  })
+})
+
+function jellyfinSettings(): Settings {
+  const settings = cloneDeep(DEFAULT_SETTINGS)
+
+  settings.connection.mediaServerType = 'jellyfin'
+  settings.connection.mediaServerUrl = 'http://jellyfin:8096'
+
+  return settings
+}
+
+describe('authorizeJellyfinUser', () => {
+  const JELLYFIN_USER = {
+    Id: 'EECCD007-2D56-4582-98FC-1EB02F4AC421',
+    Name: 'jane',
+    Policy: { IsAdministrator: true },
+  }
+
+  beforeEach(() => {
+    vi.mocked(getSettings).mockReturnValue(jellyfinSettings())
+    vi.mocked(getServerUser).mockResolvedValue({
+      status: 'member',
+      isAdmin: null,
+    })
+    fetchMock.mockImplementation(async (url: string) =>
+      url.endsWith('/Users/AuthenticateByName')
+        ? Response.json({ User: JELLYFIN_USER, AccessToken: 'jf-token' })
+        : new Response(null, { status: 204 }),
+    )
+  })
+
+  it('signs in with Jellyfin and ends the session it starts', async () => {
+    await authorizeJellyfinUser('jane', 'secret')
+
+    const [[signInUrl, signIn], [logOutUrl, logOut]] = fetchMock.mock.calls
+
+    expect(signInUrl).toBe('http://jellyfin:8096/Users/AuthenticateByName')
+    expect(JSON.parse(signIn.body)).toEqual({ Username: 'jane', Pw: 'secret' })
+    expect(signIn.headers.Authorization).toMatch(/^MediaBrowser Client=/)
+    expect(logOutUrl).toBe('http://jellyfin:8096/Sessions/Logout')
+    expect(logOut.headers.Authorization).toContain('Token="jf-token"')
+  })
+
+  it("returns the user by Jellyfin's ID, an admin by Jellyfin's word", async () => {
+    await expect(authorizeJellyfinUser('jane', 'secret')).resolves.toEqual({
+      id: 'eeccd0072d56458298fc1eb02f4ac421',
+      name: 'jane',
+      isAdmin: true,
+    })
+    expect(getServerUser).toHaveBeenCalledWith(
+      'eeccd0072d56458298fc1eb02f4ac421',
+      '',
+    )
+  })
+
+  it('fails with jellyfinCredentials for a wrong password', async () => {
+    fetchMock.mockResolvedValue(new Response(null, { status: 401 }))
+
+    await expect(
+      loginErrorCode(authorizeJellyfinUser('jane', 'wrong')),
+    ).resolves.toBe('jellyfinCredentials')
+  })
+
+  it('fails with jellyfinUnavailable when Jellyfin cannot be reached', async () => {
+    fetchMock.mockRejectedValue(new TypeError('fetch failed'))
+
+    await expect(
+      loginErrorCode(authorizeJellyfinUser('jane', 'secret')),
+    ).resolves.toBe('jellyfinUnavailable')
+  })
+
+  it('fails with noAccess for a user outside the server', async () => {
+    vi.mocked(getServerUser).mockResolvedValue({ status: 'notMember' })
+
+    await expect(
+      loginErrorCode(authorizeJellyfinUser('jane', 'secret')),
+    ).resolves.toBe('noAccess')
+  })
+
+  it('fails with noAccess when the server is Plex', async () => {
+    vi.mocked(getSettings).mockReturnValue(cloneDeep(DEFAULT_SETTINGS))
+
+    await expect(
+      loginErrorCode(authorizeJellyfinUser('jane', 'secret')),
+    ).resolves.toBe('noAccess')
+    expect(fetchMock).not.toHaveBeenCalled()
+  })
+})
+
 describe('authorize', () => {
   it('returns null without a token', async () => {
     await expect(authorize()).resolves.toBeNull()
@@ -225,6 +334,15 @@ describe('jwt', () => {
       checkedAt: Date.now(),
     })
     expect(getServerUser).toHaveBeenCalledWith(token.id, 'jane@example.com')
+  })
+
+  it("keeps the admin rights when the source can't tell", async () => {
+    vi.mocked(getServerUser).mockResolvedValue({
+      status: 'member',
+      isAdmin: null,
+    })
+
+    await expect(jwt(staleToken())).resolves.toMatchObject({ isAdmin: true })
   })
 
   it('ends the session of a user removed from the server', async () => {

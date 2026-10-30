@@ -58,10 +58,21 @@ export const EMPTY_ROW: TautulliItemRow = {
   rank: 0,
 }
 
+// Plex's IDs are numbers in the Tautulli types, and Jellyfin's are hex strings,
+// which are kept as they are. 0 stands for none, as in Tautulli's rows.
+export function toSourceId(id: string | null | undefined): number | string {
+  if (!id) {
+    return 0
+  }
+
+  return /^\d+$/.test(id) ? Number(id) : id
+}
+
 // A user the rankings can list
 export type StatsUser = {
   identityId: string
-  plexId: string
+  // The media server's ID for the user, which they sign in with
+  userId: string
   username: string
   friendlyName: string
 }
@@ -121,10 +132,10 @@ export function filterPlays(
 
 export function getExcludedIdentityIds(
   users: StatsUser[],
-  excludedPlexIds: string[],
+  excludedUserIds: string[],
 ): string[] {
   return users
-    .filter((user) => excludedPlexIds.includes(user.plexId))
+    .filter((user) => excludedUserIds.includes(user.userId))
     .map((user) => user.identityId)
 }
 
@@ -210,7 +221,7 @@ function toItemRow(plays: Play[], minPercent: number): TautulliItemRow {
     episode: play.showTitle,
     track: play.artistName,
   }
-  const ratingKey = Number(getRatingKey(play)) || 0
+  const ratingKey = toSourceId(getRatingKey(play))
   const countedPlays = plays.filter((play) => isCountedPlay(play, minPercent))
 
   return {
@@ -268,7 +279,7 @@ export function createPlayStats(provider: PlaysProvider): PlayStats {
       provider.getPlays(since, libraries),
       userId || excludedUsers.length ? provider.getUsers() : [],
     ])
-    const identityId = users.find((user) => user.plexId === userId)?.identityId
+    const identityId = users.find((user) => user.userId === userId)?.identityId
 
     if (userId && !identityId) {
       return []
@@ -453,7 +464,7 @@ export function createPlayStats(provider: PlaysProvider): PlayStats {
       .filter((user) => user.identityId !== identityId)
       .map((user) => ({
         identityId: user.identityId,
-        userId: user.plexId,
+        userId: user.userId,
         name: user.friendlyName,
         image: avatars.get(user.identityId) || null,
       }))
@@ -466,7 +477,7 @@ export function createPlayStats(provider: PlaysProvider): PlayStats {
     )
   }
 
-  // Hours and days are in the Plex Rewind server's timezone.
+  // Hours and days are in the Rewindarr server's timezone.
   async function getPlaysByTime(
     userId: string,
     since: string,
@@ -520,7 +531,7 @@ export function createPlayStats(provider: PlaysProvider): PlayStats {
             user: user.username,
             friendly_name: user.friendlyName,
             user_thumb: userPlays.find((play) => play.avatar)?.avatar ?? '',
-            user_id: Number(user.plexId),
+            user_id: toSourceId(user.userId),
             total_plays: countedPlays.length,
             total_duration: getDuration(userPlays),
             movies_plays_count: playsByType.movie ?? 0,

@@ -1,4 +1,4 @@
-import { ServerMembership, StatsSource } from '@/types/statsSource'
+import { MediaServer, ServerMembership, StatsSource } from '@/types/statsSource'
 import { TautulliItemRow } from '@/types/tautulli'
 import {
   getTracearrActivity,
@@ -9,91 +9,41 @@ import {
   getTracearrLibrariesSize,
   getTracearrMedia,
   getTracearrPlays,
-  getTracearrPlexUsers,
+  getTracearrServerUsers,
   getTracearrUser,
   getTracearrUsers,
 } from './fetchTracearr'
 import { SourceMediaData } from './getMediaAdditionalData'
 import getSettings from './getSettings'
-import { isGatewayError, isHostDown, markHostDown } from './hostBackoff'
+import { fetchMediaServerId } from './mediaServer'
 import {
   createPlayStats,
   EMPTY_ROW,
   filterPlays,
   LIBRARY_PLAY_TYPES,
+  toSourceId,
 } from './playStats'
 import { getSnapshot, isString, saveSnapshot } from './sourceSnapshot'
 
-const PLEX_IDENTITY_TIMEOUT_MS = 10_000
+// The saved ID stands in while the media server is down
+async function getMediaServer(): Promise<MediaServer | null> {
+  const { mediaServerType: type, mediaServerUrl: url } =
+    getSettings().connection
 
-// Plex answers /identity without a token.
-async function fetchServerId(plexUrl: string): Promise<string | null> {
-  const url = `${plexUrl}/identity`
-
-  if (isHostDown(plexUrl)) {
+  if (!url) {
     return null
   }
 
-  let res: Response | undefined
+  const key = `${type}|${url}|serverId`
+  const fetched = await fetchMediaServerId(type, url)
 
-  try {
-    res = await fetch(url, {
-      headers: {
-        Accept: 'application/json',
-      },
-      next: {
-        revalidate: 3600,
-      },
-      signal: AbortSignal.timeout(PLEX_IDENTITY_TIMEOUT_MS),
-    })
-
-    if (!res.ok) {
-      if (isGatewayError(res.status)) {
-        markHostDown(plexUrl)
-      }
-
-      console.error(
-        `[PLEX] - Couldn't get server ID from ${plexUrl}!`,
-        res.status,
-        res.statusText,
-      )
-
-      return null
-    }
-
-    const data = await res.json()
-
-    return data?.MediaContainer?.machineIdentifier || null
-  } catch (error) {
-    if (!res) {
-      markHostDown(plexUrl)
-    }
-
-    if (error instanceof Error && error.name === 'TimeoutError') {
-      console.error(
-        `[PLEX] - Getting server ID from ${plexUrl} timed out after ${PLEX_IDENTITY_TIMEOUT_MS / 1000}s!`,
-      )
-    } else {
-      console.error(`[PLEX] - Couldn't get server ID from ${plexUrl}!`, error)
-    }
-
-    return null
-  }
-}
-
-// The saved ID stands in while Plex is down
-async function getServerId(): Promise<string> {
-  const plexUrl = getSettings().connection.plexUrl
-  const key = `plex|${plexUrl}|serverId`
-  const serverId = await fetchServerId(plexUrl)
-
-  if (!serverId) {
-    return (await getSnapshot(key, isString)) ?? ''
+  if (fetched) {
+    void saveSnapshot(key, fetched)
   }
 
-  void saveSnapshot(key, serverId)
+  const serverId = fetched ?? (await getSnapshot(key, isString))
 
-  return serverId
+  return serverId ? { type, id: serverId, url } : null
 }
 
 async function getServerUser(userId: string): Promise<ServerMembership> {
@@ -119,21 +69,21 @@ export async function getTracearrMediaData(
 }
 
 async function getTracearrInactiveUser(
-  plexId: string,
+  userId: string,
 ): Promise<TautulliItemRow> {
   const users = await getTracearrUsers()
-  const user = users.find((user) => user.user_id === plexId)
+  const user = users.find((user) => user.user_id === userId)
 
   return {
     ...EMPTY_ROW,
     user: user?.username ?? '',
     friendly_name: user?.friendly_name ?? '',
     user_thumb: user?.user_thumb ?? '',
-    user_id: Number(plexId),
+    user_id: toSourceId(userId),
   }
 }
 
-// Tracearr's libraries each span every Plex library of a media type
+// Tracearr's libraries each span every library of a media type
 const playStats = createPlayStats({
   getPlays: async (since, libraries) =>
     filterPlays(await getTracearrPlays(since), {
@@ -142,12 +92,12 @@ const playStats = createPlayStats({
         (library) => LIBRARY_PLAY_TYPES[library.section_type],
       ),
     }),
-  getUsers: getTracearrPlexUsers,
+  getUsers: getTracearrServerUsers,
   getMediaData: getTracearrMediaData,
 })
 const tracearrSource: StatsSource = {
   ...playStats,
-  getServerId,
+  getMediaServer,
   // Tracearr doesn't know which libraries are shared with a user.
   getLibraries: getTracearrLibraries,
   getLibrariesSize: getTracearrLibrariesSize,

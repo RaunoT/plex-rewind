@@ -1,12 +1,41 @@
 'use client'
 
 import usePlexAuth from '@/hooks/usePlexAuth'
+import { MediaServerType } from '@/types/settings'
 import { useTranslations } from 'next-intl'
+import { useState } from 'react'
+import JellyfinLoginForm from './JellyfinLoginForm'
 import LoginWithPlexLabel from './LoginWithPlexLabel'
 
-export default function LoginButton({ siteUrl }: { siteUrl: string }) {
+type Props = {
+  siteUrl: string
+  mediaServerType: MediaServerType
+}
+
+export default function LoginButton({ siteUrl, mediaServerType }: Props) {
   const { isLoading, error, handleLogin } = usePlexAuth(siteUrl)
+  const [isFormOpen, setIsFormOpen] = useState<boolean>(false)
   const t = useTranslations('Home')
+
+  if (mediaServerType === 'jellyfin') {
+    return (
+      <div className='relative'>
+        <button
+          className='button button--jellyfin button-sm'
+          onClick={() => setIsFormOpen(!isFormOpen)}
+          aria-expanded={isFormOpen}
+        >
+          {t('loginWithJellyfin')}
+        </button>
+        {/* Below the button, so the header keeps its layout */}
+        {isFormOpen && (
+          <div className='glass absolute top-full right-0 z-10 mt-2 w-72 rounded-2xl p-4'>
+            <JellyfinLoginForm />
+          </div>
+        )}
+      </div>
+    )
+  }
 
   return (
     <div className='relative'>

@@ -2,6 +2,7 @@
 
 @theme {
   --color-plex: #e5a00d;
+  --color-jellyfin: #aa5cc3;
   --color-danger: var(--color-red-300);
   --color-success: var(--color-green-400);
   --color-warning: var(--color-amber-300);
@@ -180,6 +181,15 @@
         @apply bg-plex brightness-110;
       }
     }
+
+    /* Jellyfin's purple to blue */
+    &.button--jellyfin {
+      @apply from-jellyfin bg-linear-to-br to-[#00a4dc] font-bold text-white;
+
+      &:hover:not([disabled]) {
+        @apply brightness-110;
+      }
+    }
   }
 
   .button-card {
@@ -212,12 +222,6 @@
     &::after {
       @apply absolute inset-x-0 -inset-y-1 content-[''];
     }
-  }
-
-  /* Sized and set to the surrounding text so the logo's lowercase letters and
-     baseline line up with the font's */
-  .plex-logo {
-    @apply mr-[0.3em] inline h-[0.88em] w-auto align-[-0.164em];
   }
 
   /* Stories highlight the stats in Plex gold against near-white text */

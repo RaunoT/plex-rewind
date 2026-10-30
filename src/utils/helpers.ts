@@ -11,7 +11,6 @@ const SOURCE_REQUIRED_SETTINGS: Record<StatisticsSource, string[]> = {
   tracearr: ['connection.tracearrUrl', 'connection.tracearrApiKey'],
 }
 const REQUIRED_SETTINGS = [
-  'connection.plexUrl',
   'connection.complete',
   'general.complete',
   'rewind.complete',
@@ -89,8 +88,17 @@ export function checkRequiredSettings(settings: Settings): string | null {
   const sourceRequiredSettings = isTracearrSource(settings)
     ? SOURCE_REQUIRED_SETTINGS.tracearr
     : SOURCE_REQUIRED_SETTINGS.tautulli
+  // Plex's URL only adds links, but Jellyfin's is needed to sign in
+  const serverRequiredSettings =
+    settings.connection.mediaServerType === 'jellyfin'
+      ? ['connection.mediaServerUrl']
+      : []
 
-  for (const key of [...sourceRequiredSettings, ...REQUIRED_SETTINGS]) {
+  for (const key of [
+    ...sourceRequiredSettings,
+    ...serverRequiredSettings,
+    ...REQUIRED_SETTINGS,
+  ]) {
     const keys = key.split('.')
     // @ts-expect-error - TODO: we know this is safe, but should still look to resolve without exception
     const settingValue = keys.reduce((acc, curr) => acc && acc[curr], settings)

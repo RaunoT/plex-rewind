@@ -3,7 +3,9 @@ import { AuthOptions, User } from 'next-auth'
 import { JWT } from 'next-auth/jwt'
 import CredentialsProvider from 'next-auth/providers/credentials'
 import { PLEX_API_ENDPOINT } from '../utils/constants'
+import getSettings from '../utils/getSettings'
 import { getServerUser } from '../utils/statsSource'
+import { authenticateJellyfinUser } from './jellyfinAuth'
 import { LoginError } from './loginError'
 
 // Admin rights and server membership are re-checked this often, so changes
@@ -49,16 +51,10 @@ async function getPlexUser(authToken: string): Promise<PlexUser | null> {
   }
 }
 
-export async function authorizePlexUser(authToken: string): Promise<User> {
-  const plexUser = await getPlexUser(authToken)
-
-  if (!plexUser?.id) {
-    throw new LoginError('plexAccount')
-  }
-
-  // Tautulli and Tracearr compare IDs as strings.
-  const id = String(plexUser.id)
-  const serverUser = await getServerUser(id, plexUser.email)
+// Throws the reason a user can't sign in, for one the server doesn't have or
+// when the source can't be asked
+async function checkMembership(id: string, email: string) {
+  const serverUser = await getServerUser(id, email)
 
   if (serverUser.status === 'unavailable') {
     console.error(
@@ -76,12 +72,70 @@ export async function authorizePlexUser(authToken: string): Promise<User> {
 
   console.log(`[AUTH] - User ${id} logged in.`)
 
+  return serverUser
+}
+
+export async function authorizePlexUser(authToken: string): Promise<User> {
+  if (getSettings().connection.mediaServerType !== 'plex') {
+    throw new LoginError('noAccess')
+  }
+
+  const plexUser = await getPlexUser(authToken)
+
+  if (!plexUser?.id) {
+    throw new LoginError('plexAccount')
+  }
+
+  // Tautulli and Tracearr compare IDs as strings.
+  const id = String(plexUser.id)
+  const serverUser = await checkMembership(id, plexUser.email)
+
   return {
     id,
     name: plexUser.title,
     email: plexUser.email,
     image: plexUser.thumb,
-    isAdmin: serverUser.isAdmin,
+    isAdmin: !!serverUser.isAdmin,
+  }
+}
+
+export async function authorizeJellyfinUser(
+  username: string,
+  password: string,
+): Promise<User> {
+  const { mediaServerType, mediaServerUrl } = getSettings().connection
+
+  if (mediaServerType !== 'jellyfin' || !mediaServerUrl) {
+    throw new LoginError('noAccess')
+  }
+
+  const jellyfinUser = await authenticateJellyfinUser(
+    mediaServerUrl,
+    username,
+    password,
+  )
+  const serverUser = await checkMembership(jellyfinUser.id, '')
+
+  return {
+    id: jellyfinUser.id,
+    name: jellyfinUser.name,
+    // Tracearr can't tell Jellyfin's admins apart, so it's Jellyfin's word
+    isAdmin: serverUser.isAdmin ?? jellyfinUser.isAdmin,
+  }
+}
+
+// Other messages would reach the browser, so they stay in the log.
+async function authorize(signIn: () => Promise<User>): Promise<User> {
+  try {
+    return await signIn()
+  } catch (error) {
+    if (error instanceof LoginError) {
+      throw error
+    }
+
+    console.error('[AUTH] - Error signing in!', error)
+
+    throw new LoginError('unknown')
   }
 }
 
@@ -184,7 +238,8 @@ export async function recheckServerUser(token: JWT): Promise<JWT> {
     return token
   }
 
-  token.isAdmin = result.isAdmin
+  // A source that can't tell keeps what the user signed in with
+  token.isAdmin = result.isAdmin ?? token.isAdmin
   token.checkedAt = checkedAt
 
   return token
@@ -206,18 +261,25 @@ export const authOptions: AuthOptions = {
           return null
         }
 
-        try {
-          return await authorizePlexUser(credentials.authToken)
-        } catch (error) {
-          if (error instanceof LoginError) {
-            throw error
-          }
-
-          // Other messages would reach the browser, so they stay in the log.
-          console.error('[AUTH] - Error signing in!', error)
-
-          throw new LoginError('unknown')
+        return authorize(() => authorizePlexUser(credentials.authToken))
+      },
+    }),
+    CredentialsProvider({
+      id: 'jellyfin',
+      name: 'Jellyfin',
+      credentials: {
+        username: { label: 'username', type: 'text' },
+        password: { label: 'password', type: 'password' },
+      },
+      async authorize(credentials) {
+        if (!credentials?.username) {
+          return null
         }
+
+        // Jellyfin allows users without a password
+        return authorize(() =>
+          authorizeJellyfinUser(credentials.username, credentials.password),
+        )
       },
     }),
   ],

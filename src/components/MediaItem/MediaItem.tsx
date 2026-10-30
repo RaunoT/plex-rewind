@@ -5,6 +5,7 @@ import { MEDIA_ICONS, MediaIcon, STAT_ICONS } from '@/components/icons'
 import ImageFallback from '@/components/ImageFallback'
 import PosterImage from '@/components/PosterImage'
 import { PublicSettings } from '@/types/settings'
+import { MediaServer } from '@/types/statsSource'
 import { TautulliItemRow } from '@/types/tautulli'
 import { DASHBOARD_PAGE_SIZE, EXTERNAL_LINK_NAMES } from '@/utils/constants'
 import { getDeeplinkRatingKeyFromRow } from '@/utils/deeplink'
@@ -18,7 +19,7 @@ import { motion } from 'motion/react'
 import { useLocale, useTranslations } from 'next-intl'
 import { useRef } from 'react'
 import MediaItemTitle from './MediaItemTitle'
-import PlexDeeplink from './PlexDeeplink'
+import MediaServerDeeplink from './MediaServerDeeplink'
 import Rank from './Rank'
 import SiteLogo from './SiteLogo'
 import TitleDetails from './TitleDetails'
@@ -31,7 +32,7 @@ type Props = {
   data: TautulliItemRow
   i: number
   type: 'movie' | 'show' | 'artist' | 'users'
-  serverId: string
+  mediaServer: MediaServer | null
   activeStats: string[]
   settings: PublicSettings
   loggedInUserId?: string
@@ -43,7 +44,7 @@ export default function MediaItem({
   data,
   i,
   type,
-  serverId,
+  mediaServer,
   activeStats,
   settings,
   loggedInUserId,
@@ -53,6 +54,7 @@ export default function MediaItem({
   const t = useTranslations('MediaItem')
   const locale = useLocale()
   const isUsers = type === 'users'
+  const deeplinkRatingKey = getDeeplinkRatingKeyFromRow(data, type)
   const posterSrc = !data.thumb
     ? null
     : data.thumb.startsWith('https://image.tmdb.org')
@@ -238,11 +240,12 @@ export default function MediaItem({
                   </div>
                 )
               ) : (
-                serverId && (
-                  <PlexDeeplink
+                mediaServer &&
+                deeplinkRatingKey && (
+                  <MediaServerDeeplink
                     title={data.title}
-                    serverId={serverId}
-                    ratingKey={getDeeplinkRatingKeyFromRow(data, type)}
+                    mediaServer={mediaServer}
+                    ratingKey={deeplinkRatingKey}
                   />
                 )
               )}

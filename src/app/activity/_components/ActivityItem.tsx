@@ -8,6 +8,7 @@ import PosterImage from '@/components/PosterImage'
 import SkeletonLine from '@/components/SkeletonLine'
 import { useMediaDetails } from '@/hooks/useMediaDetails'
 import { PublicSettings } from '@/types/settings'
+import { MediaServer } from '@/types/statsSource'
 import { TautulliSession } from '@/types/tautulli'
 import {
   generateDeeplinkUrl,
@@ -58,14 +59,14 @@ type ActivityItemProps = {
   session: TautulliSession
   index: number
   settings: PublicSettings
-  serverId?: string
+  mediaServer: MediaServer | null
 }
 
 export default function ActivityItem({
   session,
   index,
   settings,
-  serverId,
+  mediaServer,
 }: ActivityItemProps) {
   const { posterUrl, isPosterLoading, details, isDetailsLoading } =
     useMediaDetails(session, settings)
@@ -74,6 +75,7 @@ export default function ActivityItem({
   const locale = useLocale()
   const { data: user } = useSession()
   const isCurrentUser = String(session.user_id) === user?.user.id
+  const deeplinkRatingKey = getDeeplinkRatingKeyFromSession(session)
   const isAdmin = user?.user.isAdmin
   const {
     activity: { isDetailsHidden, setIsDetailsHidden },
@@ -275,12 +277,9 @@ export default function ActivityItem({
             className='mb-1.5 truncate text-base leading-snug font-medium sm:text-lg'
             title={title}
           >
-            {serverId ? (
+            {mediaServer && deeplinkRatingKey ? (
               <a
-                href={generateDeeplinkUrl(
-                  getDeeplinkRatingKeyFromSession(session),
-                  serverId,
-                )}
+                href={generateDeeplinkUrl(deeplinkRatingKey, mediaServer)}
                 target='_blank'
                 rel='noopener noreferrer'
                 className='link-light'

@@ -1,3 +1,5 @@
+import { MediaServerType } from './settings'
+
 export type TracearrServerType = 'plex' | 'jellyfin' | 'emby'
 
 export type TracearrCursorPage<T> = {
@@ -23,10 +25,13 @@ export type TracearrServersResponse = {
   tracearr_version: string
 }
 
-export type TracearrPlexServer = Pick<
+// A server Rewindarr can use, to choose from in the settings
+export type TracearrServerOption = Pick<
   TracearrServer,
   'server_id' | 'server_name'
->
+> & {
+  server_type: MediaServerType
+}
 
 export type TracearrUserAccount = {
   server_id: string

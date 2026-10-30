@@ -1,5 +1,6 @@
 import MediaItems from '@/components/MediaItem/MediaItems'
 import { RewindStory } from '@/types/rewind'
+import { getMediaServerName } from '@/utils/mediaServerName'
 import { MusicalNoteIcon } from '@heroicons/react/24/outline'
 import { useTranslations } from 'next-intl'
 import PlaytimeShare from '../PlaytimeShare'
@@ -60,7 +61,7 @@ export default function StoryAudio({ userRewind, settings }: RewindStory) {
               <MediaItems
                 type='artist'
                 items={Array(userRewind.audio.top[0])}
-                serverId={userRewind.server_id}
+                mediaServer={userRewind.media_server}
                 rows
                 settings={settings}
               />
@@ -77,7 +78,9 @@ export default function StoryAudio({ userRewind, settings }: RewindStory) {
                   <MusicalNoteIcon />
                 </span>
               ),
-              serverName: settings.general.serverName || 'Plex',
+              serverName:
+                settings.general.serverName ||
+                getMediaServerName(settings.connection.mediaServerType),
               from: (chunks) => (
                 <span className='whitespace-nowrap'>
                   {chunks}

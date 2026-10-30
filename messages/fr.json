@@ -4,11 +4,16 @@
     "setupRequired": "Configuration requise",
     "setupRequiredDescription": "Cette application doit être configurée par un administrateur.",
     "loginWithPlex": "Se connecter avec <plex>Plex</plex>",
+    "loginWithJellyfin": "Se connecter avec Jellyfin",
+    "username": "Nom d'utilisateur",
+    "password": "Mot de passe",
     "loginError": {
       "plexUnavailable": "Impossible de joindre Plex. Réessayez dans un instant.",
       "plexNotConfirmed": "Plex n'a pas confirmé la connexion. Réessayez.",
       "plexAccount": "Impossible de charger votre compte Plex. Réessayez.",
-      "noAccess": "Ce compte Plex n'a pas accès à ce serveur.",
+      "jellyfinUnavailable": "Impossible de joindre Jellyfin. Réessayez dans un instant.",
+      "jellyfinCredentials": "Nom d'utilisateur ou mot de passe incorrect.",
+      "noAccess": "Ce compte n'a pas accès à ce serveur.",
       "unknown": "La connexion a échoué. Réessayez."
     },
     "rewind": "Démarrer Rewind",
@@ -83,7 +88,7 @@
     "title": "Oups... quelque chose s'est mal passé !",
     "cta": "Réessayer",
     "sourceUnreachable": "Impossible de joindre {source}",
-    "sourceUnreachableDescription": "Vérifiez que {source} est démarré et accessible depuis Plex Rewind, puis réessayez",
+    "sourceUnreachableDescription": "Vérifiez que {source} est démarré et accessible depuis Rewindarr, puis réessayez",
     "connectionSettings": "Vérifier les paramètres de connexion",
     "sourceOutage": "Impossible de joindre {source}. Les statistiques ont été mises à jour pour la dernière fois {time} et ne sont peut-être plus à jour.",
     "sourceOutageNoTime": "Impossible de joindre {source}, les statistiques ne sont donc peut-être plus à jour."
@@ -93,9 +98,9 @@
     "syncingDescription": "L'historique de lecture de {source} n'est synchronisé qu'une fois, ce qui peut prendre quelques minutes. {count, plural, =0 {Cela vient de commencer.} one {# lecture pour l'instant, depuis {date}.} other {# lectures pour l'instant, depuis {date}.}} Cette page se met à jour toute seule.",
     "syncingShort": "Synchronisation de l'historique…"
   },
-  "PlexDeeplink": {
+  "MediaServerDeeplink": {
     "available": "Disponible",
-    "availableLabel": "Disponible : ouvrir {title} dans Plex"
+    "availableLabel": "Disponible : ouvrir {title} dans {server}"
   },
   "PeriodSelectContent": {
     "7days": "7 jours",
@@ -134,12 +139,14 @@
     "apiKey": "Clé API",
     "invalidApiKey": "Clé API invalide.",
     "unableToConnect": "Connexion impossible. Vérifiez l'URL et que le serveur est en marche.",
-    "noPlexServer": "Aucun serveur Plex trouvé.",
-    "choosePlexServer": "Choisissez le serveur Plex à utiliser.",
+    "noMediaServer": "Aucun serveur Plex ou Jellyfin trouvé.",
+    "chooseMediaServer": "Choisissez le serveur à utiliser.",
+    "mediaServerUrlRequired": "Saisissez l'URL de Jellyfin, par laquelle les utilisateurs se connectent.",
+    "notMediaServer": "{server} n'a pas répondu à cette URL.",
     "urlNotFound": "Introuvable. Vérifiez l'URL, y compris le chemin de base éventuel.",
     "unexpectedResponse": "Réponse inattendue (HTTP {status}).",
     "certificateError": "Erreur de certificat HTTPS. Vérifiez que l'URL correspond à un certificat valide.",
-    "invalidField": "Vérifiez {field, select, tautulliUrl {l'URL de Tautulli} tautulliApiKey {la clé API de Tautulli} tracearrUrl {l'URL de Tracearr} tracearrApiKey {la clé API de Tracearr} plexUrl {l'URL de Plex} seerrUrl {l'URL de Seerr} seerrApiKey {la clé API de Seerr} googleAnalyticsId {l'ID Google Analytics} other {les paramètres}}.",
+    "invalidField": "Vérifiez {field, select, tautulliUrl {l'URL de Tautulli} tautulliApiKey {la clé API de Tautulli} tracearrUrl {l'URL de Tracearr} tracearrApiKey {la clé API de Tracearr} mediaServerUrl {l'URL du serveur multimédia} seerrUrl {l'URL de Seerr} seerrApiKey {la clé API de Seerr} googleAnalyticsId {l'ID Google Analytics} other {les paramètres}}.",
     "becomeASponsor": "Devenir sponsor",
     "buyMeABeer": "Offrez-moi une bière",
     "reportAnIssue": "Signaler un problème",
@@ -161,6 +168,8 @@
       "server": "Serveur",
       "chooseServer": "Choisissez un serveur",
       "optionalService": "{service} (facultatif)",
+      "plexUrlHelp": "Ajoute des liens qui ouvrent les titres dans Plex",
+      "jellyfinUrlHelp": "Pour la connexion, et les liens qui ouvrent les titres dans Jellyfin. Utilisez l'adresse à laquelle les utilisateurs ouvrent Jellyfin.",
       "history": "Historique de lecture",
       "historyDescription": "Les nouvelles lectures sont ajoutées automatiquement",
       "historySyncing": "Synchronisation de l'historique…",
@@ -201,8 +210,8 @@
       "moveUp": "Déplacer {name} vers le haut",
       "moveDown": "Déplacer {name} vers le bas",
       "movedTo": "{name} déplacé à la position {position} sur {total}",
-      "noLibrariesMessage1": "Veuillez créer une bibliothèque dans Plex pour continuer",
-      "noLibrariesMessage2": "Plex Rewind nécessite au moins une bibliothèque pour fonctionner",
+      "noLibrariesMessage1": "Veuillez créer une bibliothèque dans votre serveur multimédia pour continuer",
+      "noLibrariesMessage2": "Rewindarr nécessite au moins une bibliothèque pour fonctionner",
       "media": "Médias",
       "tmdbOnlyPosters": "Affiches TMDB uniquement",
       "externalLinks": "Liens externes",

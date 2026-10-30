@@ -52,7 +52,8 @@ export type TautulliItemRow = {
   total_plays: number
   total_duration: number
   users_watched: number | undefined
-  rating_key: number
+  // A number from Plex, a string from Jellyfin
+  rating_key: number | string
   thumb: string
   // TMDB's, for when the source can't serve its own
   tmdb_poster?: string | null
@@ -73,13 +74,13 @@ export type TautulliItemRow = {
   audio_plays_count: number
   movies_plays_count: number
   shows_plays_count: number
-  user_id: number
+  user_id: number | string
   rank: number
   // Set when the anonymize setting hides who this user is
   is_anonymous?: boolean
   // ISO 8601 date of the user's first play, set for the users page
   first_played_at?: string
-  grandparent_rating_key?: number
+  grandparent_rating_key?: number | string
   media_id?: string | null
 }
 
@@ -108,7 +109,7 @@ export type TautulliSession = {
   // Plex's IDs for the show of an episode, like `tmdb://61575`. Only
   // Tautulli has them.
   grandparent_guids?: string[]
-  grandparent_rating_key?: number
+  grandparent_rating_key?: number | string
   grandparent_thumb: string
   grandparent_title: string
   // Plex's IDs for the item itself, so an episode's own
@@ -117,13 +118,14 @@ export type TautulliSession = {
   ip_address_public?: string
   location?: string
   media_type: string
-  parent_rating_key?: number
+  parent_rating_key?: number | string
   parent_title?: string
   player: string
   product: string
   progress_percent: string
   quality_profile: string
-  rating_key: number
+  // A number from Plex, a string from Jellyfin
+  rating_key: number | string
   session_key: string
   state: 'playing' | 'paused' | 'buffering'
   stream_audio_atmos?: number | boolean
@@ -145,7 +147,7 @@ export type TautulliSession = {
   thumb: string
   title: string
   transcode_decision: string
-  user_id: number
+  user_id: number | string
   user_thumb: string
   video_codec: string
   video_dynamic_range: string

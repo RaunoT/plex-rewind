@@ -1,5 +1,6 @@
 import { RewindStory } from '@/types/rewind'
 import { hasRewindPlays } from '@/utils/helpers'
+import { getMediaServerName } from '@/utils/mediaServerName'
 import {
   ArrowPathIcon,
   FilmIcon,
@@ -59,7 +60,9 @@ export default function StoryGoodbye({ userRewind, settings }: RewindStory) {
       <RewindStat>
         <p>
           {t.rich('thanks', {
-            serverName: settings.general.serverName || 'Plex',
+            serverName:
+              settings.general.serverName ||
+              getMediaServerName(settings.connection.mediaServerType),
             plex: (chunks) => chunks,
             user: (chunks) => <span className='rewind-cat'>{chunks}</span>,
             userValue: userRewind.user.name,
@@ -114,7 +117,9 @@ export default function StoryGoodbye({ userRewind, settings }: RewindStory) {
       <RewindStat step={3} noScale>
         <p>
           {t.rich('untilThen', {
-            serverName: settings.general.serverName || 'Plex',
+            serverName:
+              settings.general.serverName ||
+              getMediaServerName(settings.connection.mediaServerType),
             plex: (chunks) => chunks,
           })}
         </p>

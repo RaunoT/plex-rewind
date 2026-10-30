@@ -1,11 +1,10 @@
 'use client'
 
-import plexSvg from '@/assets/plex.svg'
 import { MediaIcon } from '@/components/icons'
 import SkeletonLine from '@/components/SkeletonLine'
 import { PublicSettings } from '@/types/settings'
 import { TautulliLibrary } from '@/types/tautulli'
-import { SETTINGS_HREF, STATS_SOURCE_NAMES } from '@/utils/constants'
+import { APP_NAME, SETTINGS_HREF, STATS_SOURCE_NAMES } from '@/utils/constants'
 import { canViewFeature, Viewer } from '@/utils/helpers'
 import {
   ArrowPathIcon,
@@ -18,7 +17,6 @@ import {
 import { kebabCase } from 'lodash'
 import { useSession } from 'next-auth/react'
 import { useTranslations } from 'next-intl'
-import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { ReactNode, Suspense, use, useContext } from 'react'
@@ -64,11 +62,7 @@ export default function Sidebar({ libraries, settings }: Props) {
         {settings.general.serverName ? (
           <span className='truncate'>{settings.general.serverName}</span>
         ) : (
-          <span className='whitespace-nowrap'>
-            <Image src={plexSvg} className='plex-logo' alt='Plex' priority />
-            {/* eslint-disable-next-line react/jsx-no-literals */}
-            <span>rewind</span>
-          </span>
+          <span className='whitespace-nowrap'>{APP_NAME}</span>
         )}
       </Link>
 

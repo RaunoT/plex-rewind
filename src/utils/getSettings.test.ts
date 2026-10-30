@@ -28,7 +28,7 @@ function completeSettings(): Settings {
 
   settings.connection.tautulliUrl = 'http://tautulli:8181'
   settings.connection.tautulliApiKey = 'key'
-  settings.connection.plexUrl = 'http://plex:32400'
+  settings.connection.mediaServerUrl = 'http://plex:32400'
   settings.connection.complete = true
   settings.general.complete = true
   settings.rewind.complete = true
@@ -117,7 +117,9 @@ describe('getSettings', () => {
     const { default: getSettings } = await loadModule()
     const settings = getSettings()
 
-    expect(settings.connection.plexUrl).toBe('http://plex:32400')
+    expect(settings.connection.mediaServerUrl).toBe('http://plex:32400')
+    expect(settings.connection).not.toHaveProperty('plexUrl')
+    expect(settings.connection.mediaServerType).toBe('plex')
     expect(settings.connection.tautulliUrl).toBe('')
     expect(settings.dashboard).toEqual(DEFAULT_SETTINGS.dashboard)
     expect(readSavedSettings()).toEqual(settings)
@@ -254,12 +256,12 @@ describe('getSettings', () => {
     const { default: getSettings } = await loadModule()
     const first = getSettings()
 
-    first.connection.plexUrl = 'http://changed'
+    first.connection.mediaServerUrl = 'http://changed'
     first.general.activeItemStatistics.push('year')
 
     const second = getSettings()
 
-    expect(second.connection.plexUrl).toBe('')
+    expect(second.connection.mediaServerUrl).toBe('')
     expect(second.general.activeItemStatistics).toEqual(
       DEFAULT_SETTINGS.general.activeItemStatistics,
     )

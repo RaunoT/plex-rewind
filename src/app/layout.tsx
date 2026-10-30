@@ -2,6 +2,7 @@ import { authOptions } from '@/lib/auth'
 import '@/styles/globals.css'
 import {
   ACTIVITY_DETAILS_COOKIE_NAME,
+  APP_NAME,
   getSiteUrl,
   META_DESCRIPTION,
 } from '@/utils/constants'
@@ -29,8 +30,8 @@ import SessionProviderWrapper from './_components/SessionProvider'
 export async function generateMetadata(): Promise<Metadata> {
   const settings = getSettings()
   const serverName = settings.general.serverName
-  const baseTitle = serverName ? `${serverName}` : 'Plex Rewind'
-  const titleTemplate = serverName ? `%s | ${serverName}` : '%s | Plex Rewind'
+  const baseTitle = serverName ? `${serverName}` : APP_NAME
+  const titleTemplate = serverName ? `%s | ${serverName}` : `%s | ${APP_NAME}`
 
   return {
     metadataBase: new URL(getSiteUrl()),

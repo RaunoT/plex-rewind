@@ -26,7 +26,7 @@ export default function StoryAudioTop({ userRewind, settings }: RewindStory) {
           <MediaItems
             type='artist'
             items={userRewind.audio.top}
-            serverId={userRewind.server_id}
+            mediaServer={userRewind.media_server}
             rows
             settings={settings}
           />
