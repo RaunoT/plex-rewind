@@ -134,7 +134,7 @@ const LIBRARIES = [
   },
   {
     section_id: '2',
-    section_name: 'TV Shows',
+    section_name: 'Shows',
     section_type: 'show',
     count: '187',
     parent_count: '642',

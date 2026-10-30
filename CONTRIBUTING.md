@@ -104,7 +104,7 @@ The screenshots in `.github/screenshots` use made-up data, so they don't show an
        "complete": true
      },
      "general": {
-       "activeLibraries": ["movies", "tv-shows", "music"],
+       "activeLibraries": ["movies", "shows", "music"],
        "activeExternalLinks": ["imdb", "tvdb", "rottenTomatoes", "letterboxd"],
        "complete": true
      },
