@@ -379,12 +379,12 @@ export default function ActivityItem({
                 {formatValue(subtitleSource || subtitleStream)}
               </Detail>
             )}
-          {/* The profile describes what is streamed, so it goes with that bitrate */}
+          {/* The profile names the bitrate it streams at, and bandwidth shows
+              the real one, so the stream bitrate is only for no profile */}
           <Detail
             label={t('quality')}
             convertedTo={
-              qualityConversion &&
-              formatValue(quality_profile, qualityConversion)
+              qualityConversion && (quality_profile || qualityConversion)
             }
           >
             {formatValue(
