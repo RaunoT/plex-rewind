@@ -31,7 +31,6 @@ Present [Plex](https://plex.tv) and [Jellyfin](https://jellyfin.org) user statis
 - 🚀 PWA support - installable on mobile devices and desktops.
 - 🐳 Easy deployment - run the application in a containerized environment with [Docker](https://www.docker.com).
 - 🌐 Multi-language support - currently supporting English, Estonian, French, German, Italian and Spanish. See [translations](#translations) for more information.
-- ⭐ All of this and more - powered by [Next.js](https://nextjs.org).
 
 Keep an eye on the [issues page](https://github.com/RaunoT/rewindarr/issues) to see what new features have already been requested or to make your own request!
 
