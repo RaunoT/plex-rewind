@@ -8,7 +8,7 @@ Fixes only go into new releases, so please check the latest release before repor
 
 Please do not report security issues in public issues, pull requests or discussions.
 
-Use GitHub's private vulnerability reporting instead: [report a vulnerability](https://github.com/RaunoT/plex-rewind/security/advisories/new). Only the maintainer can see the report.
+Use GitHub's private vulnerability reporting instead: [report a vulnerability](https://github.com/RaunoT/rewindarr/security/advisories/new). Only the maintainer can see the report.
 
 Helpful things to include:
 

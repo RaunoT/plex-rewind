@@ -5,7 +5,7 @@ body:
   - type: markdown
     attributes:
       value: |
-        Thanks for reporting a bug! Most problems depend on how Rewindarr is set up, so the details below help a lot. Please check the [README](https://github.com/RaunoT/plex-rewind#getting-started) and search existing issues first.
+        Thanks for reporting a bug! Most problems depend on how Rewindarr is set up, so the details below help a lot. Please check the [README](https://github.com/RaunoT/rewindarr#getting-started) and search existing issues first.
   - type: input
     id: version
     attributes:

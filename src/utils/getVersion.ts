@@ -56,7 +56,7 @@ export default async function getVersion(): Promise<Version> {
   ) {
     try {
       const res = await fetch(
-        'https://api.github.com/repos/RaunoT/plex-rewind/releases',
+        'https://api.github.com/repos/RaunoT/rewindarr/releases',
         {
           next: {
             revalidate: 600,

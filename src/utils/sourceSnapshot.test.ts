@@ -27,7 +27,7 @@ async function waitForSave() {
 }
 
 beforeEach(() => {
-  directory = fs.mkdtempSync(path.join(os.tmpdir(), 'plex-rewind-snapshot-'))
+  directory = fs.mkdtempSync(path.join(os.tmpdir(), 'rewindarr-snapshot-'))
   fs.mkdirSync(path.join(directory, 'config'))
   vi.spyOn(process, 'cwd').mockReturnValue(directory)
   // The module keeps its state on globalThis, which outlives resetModules

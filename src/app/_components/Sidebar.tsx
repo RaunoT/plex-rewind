@@ -123,7 +123,7 @@ export default function Sidebar({ libraries, settings }: Props) {
             {version.hasUpdate && (
               <li>
                 <a
-                  href='https://github.com/RaunoT/plex-rewind/releases'
+                  href='https://github.com/RaunoT/rewindarr/releases'
                   target='_blank'
                   className='sidebar-link'
                 >
