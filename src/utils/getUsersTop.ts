@@ -139,7 +139,7 @@ function anonymizeUsers(
   loggedInUserId: string,
 ): TautulliItemRow[] {
   return users.map((user) => {
-    const isLoggedIn = user.user_id === Number(loggedInUserId)
+    const isLoggedIn = String(user.user_id) === loggedInUserId
 
     // The UI shows a translated name for anonymous users
     return {

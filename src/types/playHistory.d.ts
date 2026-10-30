@@ -10,6 +10,8 @@ export type Play = {
   orderedAt?: number
   mediaType: PlayMediaType
   durationMs: number
+  // How far into the item the play got, from 0 to 100. Null when unknown.
+  percentComplete: number | null
   title: string
   showTitle: string | null
   artistName: string | null
@@ -26,7 +28,7 @@ export type Play = {
   avatar: string
 }
 
-// How far Plex Rewind has read the play history
+// How far Rewindarr has read the play history
 export type HistoryStatus = {
   playCount: number
   // When the oldest play read so far started

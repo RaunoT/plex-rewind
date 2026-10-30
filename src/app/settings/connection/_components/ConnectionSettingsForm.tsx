@@ -3,11 +3,13 @@
 import { HistoryStatus } from '@/types/playHistory'
 import {
   ConnectionSettings,
+  MediaServerType,
   Settings,
   SettingsFormInitialState,
   StatisticsSource,
 } from '@/types/settings'
-import { TracearrPlexServer } from '@/types/tracearr'
+import { TracearrServerOption } from '@/types/tracearr'
+import { getMediaServerName } from '@/utils/mediaServerName'
 import clsx from 'clsx'
 import { useTranslations } from 'next-intl'
 import { useActionState, useState } from 'react'
@@ -20,13 +22,13 @@ const PLEX_TOKEN_HELP_URL =
 
 type Props = {
   settings: Settings
-  tracearrServers: TracearrPlexServer[]
+  tracearrServers: TracearrServerOption[]
   // Null until the connection is saved
   historyStatus: HistoryStatus | null
 }
 
 type ConnectionFormState = SettingsFormInitialState<ConnectionSettings> & {
-  tracearrServers?: TracearrPlexServer[]
+  tracearrServers?: TracearrServerOption[]
 }
 
 export default function ConnectionSettingsForm({
@@ -64,8 +66,21 @@ export default function ConnectionSettingsForm({
   const hasSavedConnection = isTracearr
     ? !!(savedConnection.tracearrUrl && savedConnection.tracearrApiKey)
     : !!(savedConnection.tautulliUrl && savedConnection.tautulliApiKey)
-  // Saving returns the servers when several Plex servers need a choice.
+  // Saving returns the servers when several need a choice.
   const tracearrServers = formState.tracearrServers ?? initialTracearrServers
+  // Until another is picked, the saved one
+  const [chosenServerId, setChosenServerId] = useState<string | null>(null)
+  const tracearrServerId = chosenServerId ?? connectionSettings.tracearrServerId
+  // The chosen server's, or the only one's. Tautulli only tracks Plex.
+  const mediaServerType: MediaServerType = isTracearr
+    ? ((
+        tracearrServers.find(
+          (server) => server.server_id === tracearrServerId,
+        ) ?? (tracearrServers.length === 1 ? tracearrServers[0] : undefined)
+      )?.server_type ?? connectionSettings.mediaServerType)
+    : 'plex'
+  const isJellyfin = mediaServerType === 'jellyfin'
+  const mediaServerName = getMediaServerName(mediaServerType)
 
   return (
     <SettingsForm
@@ -183,13 +198,14 @@ export default function ConnectionSettingsForm({
                 name='tracearrServerId'
                 required={isTracearr}
                 defaultValue={connectionSettings.tracearrServerId}
+                onChange={(e) => setChosenServerId(e.target.value)}
               >
                 <option value='' disabled>
                   {t('Connection.chooseServer')}
                 </option>
                 {tracearrServers.map((server) => (
                   <option key={server.server_id} value={server.server_id}>
-                    {server.server_name}
+                    {`${server.server_name} (${getMediaServerName(server.server_type)})`}
                   </option>
                 ))}
               </select>
@@ -200,25 +216,46 @@ export default function ConnectionSettingsForm({
           </label>
         )}
       </section>
+      {/* Tautulli finds Plex itself, so its URL is only for the token */}
       <section className='group-settings group'>
-        {/* eslint-disable-next-line react/jsx-no-literals */}
-        <h2 className='heading-settings'>Plex</h2>
-        <label className='input-wrapper'>
+        <h2 className='heading-settings'>
+          {isJellyfin
+            ? mediaServerName
+            : t('Connection.optionalService', { service: mediaServerName })}
+        </h2>
+        {/* Each server keeps its own URL, so switching back keeps it */}
+        <label className={clsx('input-wrapper', { hidden: isJellyfin })}>
           <input
             key={`plex-url-${connectionSettings.plexUrl}`}
             type='url'
             className='input'
             placeholder='https://plex.example.com'
             name='plexUrl'
-            required
             defaultValue={connectionSettings.plexUrl}
           />
           <span className='label'>
             {/* eslint-disable-next-line react/jsx-no-literals */}
             <span className='label-wrapper'>URL</span>
+            {isTracearr && <small>{t('Connection.plexUrlHelp')}</small>}
           </span>
         </label>
-        <label className='input-wrapper'>
+        <label className={clsx('input-wrapper', { hidden: !isJellyfin })}>
+          <input
+            key={`jellyfin-url-${connectionSettings.jellyfinUrl}`}
+            type='url'
+            className='input'
+            placeholder='https://jellyfin.example.com'
+            name='jellyfinUrl'
+            required={isTracearr && isJellyfin}
+            defaultValue={connectionSettings.jellyfinUrl}
+          />
+          <span className='label'>
+            {/* eslint-disable-next-line react/jsx-no-literals */}
+            <span className='label-wrapper'>URL</span>
+            <small>{t('Connection.jellyfinUrlHelp')}</small>
+          </span>
+        </label>
+        <label className={clsx('input-wrapper', { hidden: isJellyfin })}>
           <input
             key={`plex-token-${connectionSettings.plexToken}`}
             type='password'

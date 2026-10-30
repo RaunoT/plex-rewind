@@ -1,11 +1,11 @@
 'use client'
 
-import plexSvg from '@/assets/plex.svg'
+import AppIcon from '@/components/AppIcon'
 import { MediaIcon } from '@/components/icons'
 import SkeletonLine from '@/components/SkeletonLine'
 import { PublicSettings } from '@/types/settings'
 import { TautulliLibrary } from '@/types/tautulli'
-import { SETTINGS_HREF, STATS_SOURCE_NAMES } from '@/utils/constants'
+import { APP_NAME, SETTINGS_HREF, STATS_SOURCE_NAMES } from '@/utils/constants'
 import { canViewFeature, Viewer } from '@/utils/helpers'
 import {
   ArrowPathIcon,
@@ -18,7 +18,6 @@ import {
 import { kebabCase } from 'lodash'
 import { useSession } from 'next-auth/react'
 import { useTranslations } from 'next-intl'
-import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { ReactNode, Suspense, use, useContext } from 'react'
@@ -59,16 +58,13 @@ export default function Sidebar({ libraries, settings }: Props) {
     >
       <Link
         href='/'
-        className='focus-visible:focus-ring mb-2 flex h-10 shrink-0 items-center rounded-xl px-3 text-xl leading-none font-bold tracking-tight'
+        className='focus-visible:focus-ring mb-2 flex h-10 shrink-0 items-center gap-2.5 rounded-xl px-3 text-xl leading-none font-bold tracking-tight'
       >
+        <AppIcon className='size-6' priority />
         {settings.general.serverName ? (
           <span className='truncate'>{settings.general.serverName}</span>
         ) : (
-          <span className='whitespace-nowrap'>
-            <Image src={plexSvg} className='plex-logo' alt='Plex' priority />
-            {/* eslint-disable-next-line react/jsx-no-literals */}
-            <span>rewind</span>
-          </span>
+          <span className='whitespace-nowrap'>{APP_NAME}</span>
         )}
       </Link>
 
@@ -127,7 +123,7 @@ export default function Sidebar({ libraries, settings }: Props) {
             {version.hasUpdate && (
               <li>
                 <a
-                  href='https://github.com/RaunoT/plex-rewind/releases'
+                  href='https://github.com/RaunoT/rewindarr/releases'
                   target='_blank'
                   className='sidebar-link'
                 >

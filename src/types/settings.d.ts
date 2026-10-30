@@ -8,6 +8,9 @@ export type SettingsFormInitialState<T> = {
 
 export type StatisticsSource = 'tautulli' | 'tracearr'
 
+// Tautulli only tracks Plex. With Tracearr, it's the type of the chosen server.
+export type MediaServerType = 'plex' | 'jellyfin'
+
 export type ConnectionSettings = {
   statisticsSource: StatisticsSource
   tautulliUrl: string
@@ -17,7 +20,11 @@ export type ConnectionSettings = {
   tracearrServerId: string
   seerrUrl?: string
   seerrApiKey?: string
+  mediaServerType: MediaServerType
+  // For links that open an item in the server, and Jellyfin's for signing in.
+  // Each server keeps its own, like the statistics sources.
   plexUrl: string
+  jellyfinUrl: string
   // Optional, lets Rewind play theme songs from the Plex library
   plexToken?: string
   complete: boolean
@@ -34,6 +41,8 @@ export type GeneralSettings = {
   activeExternalLinks: ExternalLink[]
   // Shown for each title and user in the dashboard and Rewind lists
   activeItemStatistics: ItemStatistics
+  // How far into an item, in percent, a play has to get to count as one
+  minPlayPercent: number
   googleAnalyticsId: string
   isOutsideAccess: boolean
   isAnonymized: boolean
@@ -104,7 +113,7 @@ export type Settings = {
 // What may be sent to the browser: no API keys or internal service URLs.
 export type PublicConnectionSettings = Pick<
   ConnectionSettings,
-  'statisticsSource' | 'complete'
+  'statisticsSource' | 'mediaServerType' | 'complete'
 > & {
   seerrUrl: string
   isSeerrActive: boolean

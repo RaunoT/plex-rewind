@@ -26,7 +26,7 @@ export default function StoryMoviesTop({ userRewind, settings }: RewindStory) {
           <MediaItems
             type='movie'
             items={userRewind.movies.top}
-            serverId={userRewind.server_id}
+            mediaServer={userRewind.media_server}
             rows
             settings={settings}
           />

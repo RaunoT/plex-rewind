@@ -1,13 +1,14 @@
 'use client'
 
-import plexSvg from '@/assets/plex.svg'
+import AppIcon from '@/components/AppIcon'
 import Avatar from '@/components/Avatar'
 import Loader from '@/components/Loader'
 import usePlexAuth from '@/hooks/usePlexAuth'
 import { PublicSettings } from '@/types/settings'
+import { APP_NAME } from '@/utils/constants'
 import { signOut, useSession } from 'next-auth/react'
 import { useTranslations } from 'next-intl'
-import Image from 'next/image'
+import JellyfinLoginForm from './JellyfinLoginForm'
 import LoginWithPlexLabel from './LoginWithPlexLabel'
 
 type Props = {
@@ -31,6 +32,9 @@ export default function Home({ settings, missingSetting, siteUrl }: Props) {
 
   return (
     <div className='glass-sheet animate-fade-in flex w-full max-w-sm flex-col items-center text-center'>
+      {!session?.user?.image && (
+        <AppIcon className='animate-fade-up mb-5 size-16' priority />
+      )}
       {session?.user?.image && (
         <div className='animate-fade-up relative mb-5 size-20 overflow-hidden rounded-full shadow-xl ring-1 shadow-black/40 ring-white/20'>
           <Avatar
@@ -56,24 +60,22 @@ export default function Home({ settings, missingSetting, siteUrl }: Props) {
         </>
       ) : (
         <h1 className='animate-fade-up animation-delay-300 mb-4 max-w-full text-[2.5rem] leading-none font-bold tracking-tight text-balance wrap-anywhere'>
-          {settings.general.serverName ? (
-            settings.general.serverName
-          ) : (
-            <>
-              <Image src={plexSvg} className='plex-logo' alt='Plex' priority />
-              {/* eslint-disable-next-line react/jsx-no-literals */}
-              <span>rewind</span>
-            </>
-          )}
+          {settings.general.serverName ? settings.general.serverName : APP_NAME}
         </h1>
       )}
 
       <div className='animate-fade-in animation-delay-700 flex w-full flex-col gap-3'>
-        {!isLoggedIn && (
-          <button className='button button--plex w-full' onClick={handleLogin}>
-            <LoginWithPlexLabel />
-          </button>
-        )}
+        {!isLoggedIn &&
+          (settings.connection.mediaServerType === 'jellyfin' ? (
+            <JellyfinLoginForm />
+          ) : (
+            <button
+              className='button button--plex w-full'
+              onClick={handleLogin}
+            >
+              <LoginWithPlexLabel />
+            </button>
+          ))}
         {error && (
           <p role='alert' className='text-danger text-sm'>
             {t(`loginError.${error}`)}

@@ -6,7 +6,7 @@ import { DEFAULT_SETTINGS } from './constants'
 import {
   getTracearrMedia,
   getTracearrPlays,
-  getTracearrPlexUsers,
+  getTracearrServerUsers,
   getTracearrUser,
 } from './fetchTracearr'
 import getSettings from './getSettings'
@@ -16,7 +16,7 @@ vi.mock('./fetchTracearr', async (importOriginal) => ({
   ...(await importOriginal<typeof import('./fetchTracearr')>()),
   getTracearrMedia: vi.fn(),
   getTracearrPlays: vi.fn(),
-  getTracearrPlexUsers: vi.fn(),
+  getTracearrServerUsers: vi.fn(),
   getTracearrUser: vi.fn(),
 }))
 vi.mock('./getSettings', () => ({ default: vi.fn() }))
@@ -48,6 +48,7 @@ function play(overrides: Partial<Play>): Play {
     startedAt: new Date('2026-02-01').getTime(),
     mediaType: 'movie',
     durationMs: 60_000,
+    percentComplete: null,
     title: 'Dune',
     showTitle: null,
     artistName: null,
@@ -68,10 +69,10 @@ function play(overrides: Partial<Play>): Play {
 beforeEach(() => {
   vi.resetAllMocks()
   vi.mocked(getSettings).mockReturnValue(cloneDeep(DEFAULT_SETTINGS))
-  vi.mocked(getTracearrPlexUsers).mockResolvedValue([
+  vi.mocked(getTracearrServerUsers).mockResolvedValue([
     {
       identityId: 'alice',
-      plexId: '1',
+      userId: '1',
       username: 'alice',
       friendlyName: 'Alice',
       email: '',
@@ -332,7 +333,7 @@ describe('getServerUser', () => {
   it('finds a user Tracearr lists for the server', async () => {
     vi.mocked(getTracearrUser).mockResolvedValue({
       identityId: 'alice',
-      plexId: '1',
+      userId: '1',
       username: 'alice',
       friendlyName: 'Alice',
       email: '',

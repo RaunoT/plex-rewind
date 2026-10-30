@@ -1,6 +1,11 @@
 import { authOptions } from '@/lib/auth'
 import { Settings } from '@/types/settings'
-import { FirstPlay, ServerMembership, StatsSource } from '@/types/statsSource'
+import {
+  FirstPlay,
+  MediaServer,
+  ServerMembership,
+  StatsSource,
+} from '@/types/statsSource'
 import {
   TautulliActivity,
   TautulliHistoryRow,
@@ -68,53 +73,35 @@ const USER_FIELDS = [
 ] as const satisfies readonly (keyof TautulliUser)[]
 
 // The saved ID stands in while Tautulli is down
-async function getServerId(): Promise<string> {
+async function getMediaServer(): Promise<MediaServer | null> {
   const key = `${getTautulliKey()}|serverId`
-  const serverId = await fetchServerId()
+  const fetched = await fetchServerId()
 
-  if (!serverId) {
-    return (await getSnapshot(key, isString)) ?? ''
+  if (fetched) {
+    void saveSnapshot(key, fetched)
   }
 
-  void saveSnapshot(key, serverId)
+  const serverId = fetched ?? (await getSnapshot(key, isString))
 
-  return serverId
+  return serverId ? { type: 'plex', id: serverId, url: '' } : null
 }
 
+// The Plex server Tautulli tracks
 async function fetchServerId(): Promise<string | null> {
-  const settings = getSettings()
-
-  let plexUrl: URL
-
-  try {
-    plexUrl = new URL(settings.connection.plexUrl)
-  } catch {
-    console.error('[PLEX] - The Plex URL is not configured correctly!')
-
-    return null
-  }
-
-  const plexHost = plexUrl.hostname
-  const plexPort = plexUrl.port
-  const serverIdPromise = await fetchTautulli<{ identifier: string }>(
-    'get_server_id',
-    {
-      hostname: plexHost,
-      port: plexPort,
-    },
+  const res = await fetchTautulli<{ machine_identifier: string }>(
+    'get_server_identity',
+    undefined,
     true,
   )
-  const serverId = serverIdPromise?.response?.data?.identifier
+  const serverId = res?.response?.data?.machine_identifier
 
-  if (serverId) {
-    return serverId
-  } else {
-    console.error(
-      `[TAUTULLI] - Couldn't find server ID for Plex server with hostname ${plexUrl} and port ${plexPort}`,
-    )
+  if (!serverId) {
+    console.error("[TAUTULLI] - Couldn't get the Plex server's ID!")
 
     return null
   }
+
+  return serverId
 }
 
 // Every library, whoever is signed in, as the histories are read in the
@@ -381,7 +368,7 @@ async function getStatsUsers(): Promise<StatsUser[]> {
 
   return users.map((user) => ({
     identityId: String(user.user_id),
-    plexId: String(user.user_id),
+    userId: String(user.user_id),
     username: user.username,
     friendlyName: user.friendly_name,
   }))
@@ -395,7 +382,7 @@ const playStats = createPlayStats({
 })
 const tautulliSource: StatsSource = {
   ...playStats,
-  getServerId,
+  getMediaServer,
   getLibraries,
   getLibrariesSize,
   getUsers,

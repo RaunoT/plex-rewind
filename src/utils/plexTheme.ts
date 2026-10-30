@@ -22,12 +22,15 @@ const THEME_PATH = /^\/library\/metadata\/\d+\/theme\/\d+$/
 // Browsers ask for parts of the song, each of which would look the item up
 const themePaths = new Map<string, ThemePath>()
 
-// Plex only serves the library with a token
+// Plex only serves the library with a token. Jellyfin's items aren't Plex's.
 export function getPlexThemeUrl(
   { connection }: Settings,
-  ratingKey: number | null | undefined,
+  ratingKey: string | number | null | undefined,
 ): string | null {
-  return connection.plexToken && ratingKey
+  return connection.mediaServerType === 'plex' &&
+    connection.plexUrl &&
+    connection.plexToken &&
+    ratingKey
     ? `${PLEX_THEME_URL}?key=${ratingKey}`
     : null
 }

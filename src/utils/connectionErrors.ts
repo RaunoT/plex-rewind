@@ -2,6 +2,7 @@ export type ConnectionError = {
   key:
     | 'invalidApiKey'
     | 'invalidToken'
+    | 'tokenNeedsUrl'
     | 'urlNotFound'
     | 'unexpectedResponse'
     | 'certificateError'

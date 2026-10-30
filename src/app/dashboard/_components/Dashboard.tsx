@@ -4,6 +4,7 @@ import MediaItems from '@/components/MediaItem/MediaItems'
 import SkeletonSized from '@/components/SkeletonSized'
 import StatusMessage from '@/components/StatusMessage'
 import { PublicSettings } from '@/types/settings'
+import { MediaServer } from '@/types/statsSource'
 import { TautulliItemRow } from '@/types/tautulli'
 import { MoonIcon } from '@heroicons/react/24/outline'
 import { getTranslations } from 'next-intl/server'
@@ -18,7 +19,7 @@ type Props = {
   totalRequests?: number
   totalSize?: string | number
   type: 'movie' | 'show' | 'artist' | 'users'
-  serverId?: string
+  mediaServer?: MediaServer | null
   count?: string
   settings: PublicSettings
   loggedInUserId?: string
@@ -35,7 +36,7 @@ export default async function Dashboard({
   totalRequests,
   totalSize,
   type,
-  serverId = '',
+  mediaServer = null,
   count,
   settings,
   loggedInUserId,
@@ -83,7 +84,7 @@ export default async function Dashboard({
             <MediaItems
               items={items}
               type={type}
-              serverId={serverId}
+              mediaServer={mediaServer}
               settings={settings}
               loggedInUserId={loggedInUserId}
             />

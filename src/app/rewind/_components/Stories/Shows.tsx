@@ -1,6 +1,7 @@
 import { MEDIA_ICONS } from '@/components/icons'
 import MediaItems from '@/components/MediaItem/MediaItems'
 import { RewindStory } from '@/types/rewind'
+import { getMediaServerName } from '@/utils/mediaServerName'
 import { useTranslations } from 'next-intl'
 import PlaytimeShare from '../PlaytimeShare'
 import RewindStat from '../RewindStat'
@@ -25,7 +26,9 @@ export default function StoryShows({ userRewind, settings }: RewindStory) {
                   <span className='rewind-stat'>{chunks}</span>
                 ),
                 durationValue: userRewind.shows.duration,
-                serverName: settings.general.serverName || 'Plex',
+                serverName:
+                  settings.general.serverName ||
+                  getMediaServerName(settings.connection.mediaServerType),
                 plex: (chunks) => chunks,
               })}
             </p>
@@ -33,19 +36,22 @@ export default function StoryShows({ userRewind, settings }: RewindStory) {
 
           <PlaytimeShare percentage={userRewind.shows.percentage} step={1} />
 
-          <RewindStat step={2}>
-            <p>
-              {t.rich('count', {
-                countValue: userRewind.shows.count,
-                count: (chunks) => (
-                  <span className='rewind-stat'>{chunks}</span>
-                ),
-                episodes: (chunks) => (
-                  <span className='rewind-cat'>{chunks}</span>
-                ),
-              })}
-            </p>
-          </RewindStat>
+          {/* The watch time can be from plays that don't count */}
+          {userRewind.shows.count > 0 && (
+            <RewindStat step={2}>
+              <p>
+                {t.rich('count', {
+                  countValue: userRewind.shows.count,
+                  count: (chunks) => (
+                    <span className='rewind-stat'>{chunks}</span>
+                  ),
+                  episodes: (chunks) => (
+                    <span className='rewind-cat'>{chunks}</span>
+                  ),
+                })}
+              </p>
+            </RewindStat>
+          )}
 
           <RewindStat step={3} noScale>
             <p className='mb-2'>
@@ -59,7 +65,7 @@ export default function StoryShows({ userRewind, settings }: RewindStory) {
               <MediaItems
                 type='show'
                 items={Array(userRewind.shows.top[0])}
-                serverId={userRewind.server_id}
+                mediaServer={userRewind.media_server}
                 rows
                 settings={settings}
               />
@@ -76,7 +82,9 @@ export default function StoryShows({ userRewind, settings }: RewindStory) {
                   <MEDIA_ICONS.show />
                 </span>
               ),
-              serverName: settings.general.serverName || 'Plex',
+              serverName:
+                settings.general.serverName ||
+                getMediaServerName(settings.connection.mediaServerType),
               plex: (chunks) => chunks,
               emoji: (chunks) => <span className='not-italic'>{chunks}</span>,
             })}

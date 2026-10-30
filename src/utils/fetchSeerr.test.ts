@@ -260,6 +260,20 @@ describe('fetchSeerrUserId', () => {
     expect(requests.every((url) => url.pathname === '/api/v1/user')).toBe(true)
   })
 
+  it("finds Jellyfin users by Jellyfin's ID", async () => {
+    seerrFetch([
+      {
+        id: 7,
+        plexId: null,
+        jellyfinUserId: 'EECCD0072D56458298FC1EB02F4AC421',
+      },
+    ])
+
+    const { fetchSeerrUserId } = await load()
+
+    expect(await fetchSeerrUserId('eeccd0072d56458298fc1eb02f4ac421')).toBe(7)
+  })
+
   it('skips users without a Seerr account quietly', async () => {
     const error = vi.spyOn(console, 'error').mockImplementation(() => {})
 

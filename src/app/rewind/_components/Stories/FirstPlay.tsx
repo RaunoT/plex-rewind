@@ -1,6 +1,7 @@
 import MediaItems from '@/components/MediaItem/MediaItems'
 import { RewindStory } from '@/types/rewind'
 import { RATING_STATISTICS } from '@/utils/constants'
+import { getMediaServerName } from '@/utils/mediaServerName'
 import { CalendarIcon } from '@heroicons/react/24/outline'
 import { useTranslations } from 'next-intl'
 import RewindStat from '../RewindStat'
@@ -18,7 +19,9 @@ export default function StoryFirstPlay({ userRewind, settings }: RewindStory) {
       <RewindStat>
         <p>
           {t.rich('since', {
-            serverName: settings.general.serverName || 'Plex',
+            serverName:
+              settings.general.serverName ||
+              getMediaServerName(settings.connection.mediaServerType),
             plex: (chunks) => chunks,
             dateValue: firstPlay.date,
             date: (chunks) => (
@@ -58,7 +61,7 @@ export default function StoryFirstPlay({ userRewind, settings }: RewindStory) {
               <MediaItems
                 type={firstPlay.item.type}
                 items={[firstPlay.item.data]}
-                serverId={userRewind.server_id}
+                mediaServer={userRewind.media_server}
                 rows
                 settings={settings}
                 isRanked={false}

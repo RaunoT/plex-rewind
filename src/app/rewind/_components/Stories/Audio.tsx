@@ -1,5 +1,6 @@
 import MediaItems from '@/components/MediaItem/MediaItems'
 import { RewindStory } from '@/types/rewind'
+import { getMediaServerName } from '@/utils/mediaServerName'
 import { MusicalNoteIcon } from '@heroicons/react/24/outline'
 import { useTranslations } from 'next-intl'
 import PlaytimeShare from '../PlaytimeShare'
@@ -31,19 +32,22 @@ export default function StoryAudio({ userRewind, settings }: RewindStory) {
 
           <PlaytimeShare percentage={userRewind.audio.percentage} step={1} />
 
-          <RewindStat step={2}>
-            <p>
-              {t.rich('count', {
-                countValue: userRewind.audio.count,
-                count: (chunks) => (
-                  <span className='rewind-stat'>{chunks}</span>
-                ),
-                tracks: (chunks) => (
-                  <span className='rewind-cat'>{chunks}</span>
-                ),
-              })}
-            </p>
-          </RewindStat>
+          {/* The watch time can be from plays that don't count */}
+          {userRewind.audio.count > 0 && (
+            <RewindStat step={2}>
+              <p>
+                {t.rich('count', {
+                  countValue: userRewind.audio.count,
+                  count: (chunks) => (
+                    <span className='rewind-stat'>{chunks}</span>
+                  ),
+                  tracks: (chunks) => (
+                    <span className='rewind-cat'>{chunks}</span>
+                  ),
+                })}
+              </p>
+            </RewindStat>
+          )}
 
           <RewindStat step={3} noScale>
             <p className='mb-2'>
@@ -57,7 +61,7 @@ export default function StoryAudio({ userRewind, settings }: RewindStory) {
               <MediaItems
                 type='artist'
                 items={Array(userRewind.audio.top[0])}
-                serverId={userRewind.server_id}
+                mediaServer={userRewind.media_server}
                 rows
                 settings={settings}
               />
@@ -74,7 +78,9 @@ export default function StoryAudio({ userRewind, settings }: RewindStory) {
                   <MusicalNoteIcon />
                 </span>
               ),
-              serverName: settings.general.serverName || 'Plex',
+              serverName:
+                settings.general.serverName ||
+                getMediaServerName(settings.connection.mediaServerType),
               from: (chunks) => (
                 <span className='whitespace-nowrap'>
                   {chunks}

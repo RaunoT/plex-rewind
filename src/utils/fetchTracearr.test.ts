@@ -47,6 +47,10 @@ function plexServer(id: string) {
   }
 }
 
+function jellyfinServer(id: string) {
+  return { ...plexServer(id), server_type: 'jellyfin' }
+}
+
 function user(serverId: string, extra = {}) {
   return {
     id: 'u1',
@@ -138,17 +142,17 @@ describe('pagination', () => {
       }),
     )
 
-    const { getTracearrPlexUsers } = await load()
+    const { getTracearrServerUsers } = await load()
 
-    await expect(getTracearrPlexUsers()).resolves.toHaveLength(3)
+    await expect(getTracearrServerUsers()).resolves.toHaveLength(3)
     expect(requestsTo('users')).toHaveLength(3)
   })
 
   it('stops when a cursor repeats', async () => {
     route(pagedUsers(() => 'same'))
 
-    const { getTracearrPlexUsers } = await load()
-    const users = await getTracearrPlexUsers()
+    const { getTracearrServerUsers } = await load()
+    const users = await getTracearrServerUsers()
 
     expect(users.length).toBeGreaterThan(0)
     expect(requestsTo('users')).toHaveLength(2)
@@ -162,9 +166,9 @@ describe('pagination', () => {
 
     route(pagedUsers(() => `cursor-${page++}`))
 
-    const { getTracearrPlexUsers } = await load()
+    const { getTracearrServerUsers } = await load()
 
-    await expect(getTracearrPlexUsers()).resolves.not.toHaveLength(0)
+    await expect(getTracearrServerUsers()).resolves.not.toHaveLength(0)
     expect(requestsTo('users')).toHaveLength(5000)
     expect(console.warn).toHaveBeenCalledWith(
       expect.stringContaining('more than 5000 pages'),
@@ -178,9 +182,9 @@ describe('pagination', () => {
     vi.spyOn(Date, 'now').mockImplementation(() => (now += 60 * 1000))
     route(pagedUsers(() => `cursor-${page++}`))
 
-    const { getTracearrPlexUsers } = await load()
+    const { getTracearrServerUsers } = await load()
 
-    await expect(getTracearrPlexUsers()).resolves.toEqual([])
+    await expect(getTracearrServerUsers()).resolves.toEqual([])
     expect(requestsTo('users').length).toBeLessThan(30)
     expect(console.error).toHaveBeenCalledWith(
       expect.stringContaining('took longer than 20 minutes'),
@@ -193,9 +197,9 @@ describe('pagination', () => {
       users: () => ({ error: 'Something went wrong' }),
     })
 
-    const { getTracearrPlexUsers } = await load()
+    const { getTracearrServerUsers } = await load()
 
-    await expect(getTracearrPlexUsers()).resolves.toEqual([])
+    await expect(getTracearrServerUsers()).resolves.toEqual([])
   })
 })
 
@@ -209,11 +213,11 @@ describe('users', () => {
       }),
     })
 
-    const { getTracearrPlexUsers } = await load()
-    const users = await getTracearrPlexUsers()
+    const { getTracearrServerUsers } = await load()
+    const users = await getTracearrServerUsers()
 
     expect(users).toHaveLength(1)
-    expect(users[0].plexId).toBe('42')
+    expect(users[0].userId).toBe('42')
   })
 })
 
@@ -221,7 +225,7 @@ describe('while Tracearr is down', () => {
   const KEY = 'tracearr|http://tracearr:3000|s1'
   const savedUser = {
     identityId: 'u1',
-    plexId: '42',
+    userId: '42',
     username: 'jane',
     friendlyName: 'Jane',
     email: '',
@@ -229,12 +233,12 @@ describe('while Tracearr is down', () => {
   }
 
   it('skips its requests', async () => {
-    const { getTracearrPlexUsers } = await load('s1')
+    const { getTracearrServerUsers } = await load('s1')
     const { isHostDown } = await import('./hostBackoff')
 
     vi.mocked(isHostDown).mockReturnValue(true)
 
-    await getTracearrPlexUsers()
+    await getTracearrServerUsers()
 
     expect(fetchMock).not.toHaveBeenCalled()
   })
@@ -264,9 +268,9 @@ describe('while Tracearr is down', () => {
       }),
     })
 
-    const { getTracearrPlexUsers } = await load('s1')
+    const { getTracearrServerUsers } = await load('s1')
     const { saveSnapshot } = await import('./sourceSnapshot')
-    const users = await getTracearrPlexUsers()
+    const users = await getTracearrServerUsers()
 
     expect(users[0].email).toBe('jane@example.com')
     expect(saveSnapshot).toHaveBeenCalledWith(`${KEY}|users`, [savedUser])
@@ -275,12 +279,12 @@ describe('while Tracearr is down', () => {
   it('lists the saved users', async () => {
     fetchMock.mockRejectedValue(new TypeError('fetch failed'))
 
-    const { getTracearrPlexUsers } = await load('s1')
+    const { getTracearrServerUsers } = await load('s1')
     const { getSnapshot } = await import('./sourceSnapshot')
 
     vi.mocked(getSnapshot).mockResolvedValue([savedUser])
 
-    await expect(getTracearrPlexUsers()).resolves.toEqual([savedUser])
+    await expect(getTracearrServerUsers()).resolves.toEqual([savedUser])
     expect(getSnapshot).toHaveBeenCalledWith(
       `${KEY}|users`,
       expect.any(Function),
@@ -401,7 +405,7 @@ describe('getTracearrUser', () => {
     const { getTracearrUser } = await load()
 
     await expect(getTracearrUser('42')).resolves.toMatchObject({
-      plexId: '42',
+      userId: '42',
     })
     await expect(getTracearrUser('7')).resolves.toBeUndefined()
   })
@@ -463,12 +467,12 @@ describe('getTracearrUser', () => {
   it('is null for an unlisted user when a cursor repeats', async () => {
     pagedUsersRoute(() => 'same')
 
-    const { getTracearrUser, getTracearrPlexUsers } = await load()
+    const { getTracearrUser, getTracearrServerUsers } = await load()
 
     // The page after the repeat was never read
     await expect(getTracearrUser('2')).resolves.toBeNull()
-    await expect(getTracearrUser('1')).resolves.toMatchObject({ plexId: '1' })
-    await expect(getTracearrPlexUsers()).resolves.toHaveLength(2)
+    await expect(getTracearrUser('1')).resolves.toMatchObject({ userId: '1' })
+    await expect(getTracearrServerUsers()).resolves.toHaveLength(2)
   })
 
   it('is null for an unlisted user at the page limit', async () => {
@@ -478,7 +482,7 @@ describe('getTracearrUser', () => {
 
     await expect(getTracearrUser('999999')).resolves.toBeNull()
     await expect(getTracearrUser('4999')).resolves.toMatchObject({
-      plexId: '4999',
+      userId: '4999',
     })
   })
 
@@ -499,7 +503,7 @@ describe('getTracearrUser', () => {
     const { getTracearrUser } = await load()
 
     await expect(getTracearrUser('7')).resolves.toBeUndefined()
-    await expect(getTracearrUser('2')).resolves.toMatchObject({ plexId: '2' })
+    await expect(getTracearrUser('2')).resolves.toMatchObject({ userId: '2' })
   })
 })
 
@@ -517,28 +521,28 @@ describe('server selection', () => {
   it('uses the saved Plex server', async () => {
     route(usersFor('s2', [plexServer('s1'), plexServer('s2')]))
 
-    const { getTracearrPlexUsers } = await load('s2')
+    const { getTracearrServerUsers } = await load('s2')
 
-    await expect(getTracearrPlexUsers()).resolves.toHaveLength(1)
+    await expect(getTracearrServerUsers()).resolves.toHaveLength(1)
   })
 
   it('falls back to the only Plex server when the saved one is gone', async () => {
     route(usersFor('s1', [plexServer('s1')]))
 
-    const { getTracearrPlexUsers } = await load('gone')
+    const { getTracearrServerUsers } = await load('gone')
 
-    await expect(getTracearrPlexUsers()).resolves.toHaveLength(1)
+    await expect(getTracearrServerUsers()).resolves.toHaveLength(1)
     expect(console.warn).toHaveBeenCalledWith(
-      expect.stringContaining("saved Plex server 'gone' no longer exists"),
+      expect.stringContaining("saved server 'gone' no longer exists"),
     )
   })
 
   it('warns about a missing saved server only once', async () => {
     route(usersFor('s1', [plexServer('s1')]))
 
-    const { getTracearrPlexUsers, getTracearrLibraries } = await load('gone')
+    const { getTracearrServerUsers, getTracearrLibraries } = await load('gone')
 
-    await getTracearrPlexUsers()
+    await getTracearrServerUsers()
     await getTracearrLibraries()
 
     expect(console.warn).toHaveBeenCalledTimes(1)
@@ -547,20 +551,78 @@ describe('server selection', () => {
   it('does not guess between several Plex servers', async () => {
     route(usersFor('s1', [plexServer('s1'), plexServer('s2')]))
 
-    const { getTracearrPlexUsers } = await load('gone')
+    const { getTracearrServerUsers } = await load('gone')
 
-    await expect(getTracearrPlexUsers()).resolves.toEqual([])
+    await expect(getTracearrServerUsers()).resolves.toEqual([])
     expect(console.error).toHaveBeenCalledWith(
-      expect.stringContaining('No Plex server selected'),
+      expect.stringContaining('No server selected'),
     )
+  })
+
+  it('keeps using the only Plex server for settings saved without a choice', async () => {
+    route(usersFor('s1', [plexServer('s1'), jellyfinServer('s2')]))
+
+    const { getTracearrServerUsers } = await load()
+
+    await expect(getTracearrServerUsers()).resolves.toHaveLength(1)
+  })
+
+  it('leaves out Emby servers', async () => {
+    const { selectServer, toServerOptions } = await load()
+    const servers = [
+      plexServer('s1'),
+      { ...plexServer('s2'), server_type: 'emby' },
+    ] as Parameters<typeof selectServer>[0]
+
+    expect(selectServer(servers, '')?.server_id).toBe('s1')
+    expect(selectServer(servers, 's2')).toBeUndefined()
+    expect(toServerOptions(servers)).toEqual([
+      { server_id: 's1', server_name: 'Server s1', server_type: 'plex' },
+    ])
   })
 
   it('ignores a servers response without a list', async () => {
     route({ servers: () => ({ error: 'nope' }) })
 
-    const { getTracearrPlexUsers } = await load()
+    const { getTracearrServerUsers } = await load()
 
-    await expect(getTracearrPlexUsers()).resolves.toEqual([])
+    await expect(getTracearrServerUsers()).resolves.toEqual([])
+  })
+})
+
+describe('Jellyfin', () => {
+  it("lists users by Jellyfin's ID, without telling admins apart", async () => {
+    route({
+      servers: () => ({ data: [plexServer('s1'), jellyfinServer('s2')] }),
+      users: () => ({
+        data: [
+          user('s2', {
+            plex_account_id: null,
+            accounts: [
+              {
+                server_id: 's2',
+                username: 'jane',
+                external_user_id: 'EECCD007-2D56-4582-98FC-1EB02F4AC421',
+                removed_at: null,
+              },
+            ],
+          }),
+        ],
+        meta: { nextCursor: null, pageSize: 100 },
+      }),
+    })
+
+    const { getTracearrServerUsers, getTracearrUser } = await load('s2')
+
+    await expect(getTracearrServerUsers()).resolves.toEqual([
+      expect.objectContaining({
+        userId: 'eeccd0072d56458298fc1eb02f4ac421',
+        isAdmin: null,
+      }),
+    ])
+    await expect(
+      getTracearrUser('eeccd0072d56458298fc1eb02f4ac421'),
+    ).resolves.toMatchObject({ username: 'jane' })
   })
 })
 
@@ -603,11 +665,14 @@ describe('isTracearrReachable', () => {
   it('is unreachable when the libraries request fails, even with the server list cached', async () => {
     route({ servers, users: () => ({ data: [], meta: { nextCursor: null } }) })
 
-    const { getTracearrPlexUsers, getTracearrLibraries, isTracearrReachable } =
-      await load()
+    const {
+      getTracearrServerUsers,
+      getTracearrLibraries,
+      isTracearrReachable,
+    } = await load()
 
     // Something else already loaded and cached the server list
-    await getTracearrPlexUsers()
+    await getTracearrServerUsers()
 
     await expect(isTracearrReachable()).resolves.toBe(false)
     // The libraries on show are the fallback ones, not Tracearr's
@@ -1000,6 +1065,7 @@ describe('getTracearrPlays', () => {
       show_title: null,
       artist_name: null,
       duration_ms: 60_000,
+      percent_complete: 80,
       poster_url: null,
       user: { id: 'u1', avatar_url: null },
     }
@@ -1075,6 +1141,7 @@ describe('getTracearrPlays', () => {
     const yearPlays = await getTracearrPlays(yearAgo)
 
     expect(yearPlays).toHaveLength(1460)
+    expect(yearPlays[0].percentComplete).toBe(80)
     expect(yearPlays.every((play) => play.startedAt >= yearAgo.getTime())).toBe(
       true,
     )
@@ -1498,6 +1565,7 @@ describe('getTracearrPlays', () => {
         startedAt,
         mediaType: 'movie',
         durationMs: 60_000,
+        percentComplete: null,
         title: 'Dune',
         showTitle: null,
         artistName: null,

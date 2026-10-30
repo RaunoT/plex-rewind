@@ -5,11 +5,11 @@ body:
   - type: markdown
     attributes:
       value: |
-        Thanks for reporting a bug! Most problems depend on how Plex Rewind is set up, so the details below help a lot. Please check the [README](https://github.com/RaunoT/plex-rewind#getting-started) and search existing issues first.
+        Thanks for reporting a bug! Most problems depend on how Rewindarr is set up, so the details below help a lot. Please check the [README](https://github.com/RaunoT/rewindarr#getting-started) and search existing issues first.
   - type: input
     id: version
     attributes:
-      label: Plex Rewind version
+      label: Rewindarr version
       description: You can find this at the bottom of the settings page, or at `/api/status`.
       placeholder: v1.2.3
     validations:
@@ -23,6 +23,15 @@ body:
         - Docker (docker run)
         - Unraid
         - Other (describe in additional context)
+    validations:
+      required: true
+  - type: dropdown
+    id: media-server
+    attributes:
+      label: Media server
+      options:
+        - Plex
+        - Jellyfin
     validations:
       required: true
   - type: dropdown
@@ -63,13 +72,14 @@ body:
     validations:
       required: true
   - type: dropdown
-    id: plex-url-scheme
+    id: media-server-url-scheme
     attributes:
-      label: Plex URL scheme
-      description: The scheme of the Plex URL under Settings → Connection.
+      label: Media server URL scheme
+      description: The scheme of the Plex or Jellyfin URL under Settings → Connection, if one is set.
       options:
         - 'http://'
         - 'https://'
+        - Not set
     validations:
       required: true
   - type: textarea
@@ -105,7 +115,7 @@ body:
     id: logs
     attributes:
       label: Logs
-      description: Container logs (`docker logs plex-rewind`) and any browser console errors. Redact secrets first, as noted above.
+      description: Container logs (`docker logs rewindarr`) and any browser console errors. Redact secrets first, as noted above.
       render: shell
   - type: markdown
     attributes:

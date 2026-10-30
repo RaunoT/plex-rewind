@@ -73,6 +73,7 @@ function play(userId: number, mediaType: PlayMediaType, seconds = 60): Play {
     startedAt: Date.parse('2026-03-05T20:00:00Z'),
     mediaType,
     durationMs: seconds * 1000,
+    percentComplete: null,
     title: `Title ${playCount}`,
     showTitle: mediaType === 'episode' ? 'Show' : null,
     artistName: null,

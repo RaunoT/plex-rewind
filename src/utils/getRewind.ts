@@ -1,6 +1,6 @@
 import { TautulliLibrary, TautulliMediaReturnType } from '@/types/tautulli'
 import { getLocale, getTranslations } from 'next-intl/server'
-import { fetchSeerrStats } from './fetchSeerr'
+import { fetchSeerrStats, getMediaUserIds } from './fetchSeerr'
 import { formatPercent, secondsToTime } from './formatting'
 import getSettings from './getSettings'
 import { getAverage, getDifference, getRewindStartDate } from './helpers'
@@ -180,20 +180,20 @@ export async function getRequestsTotals(userId: string) {
   }
 
   const isOwn = (request: (typeof requests)[number]) =>
-    request.requestedBy.plexId === Number(userId)
+    getMediaUserIds(request.requestedBy).includes(userId)
   // Like the server's time, every user's requests leave excluded users out,
   // unless the rewind is one of theirs
   const counted = requests.filter(
     (request) =>
       isOwn(request) ||
-      !settings.general.excludedUsers.includes(
-        String(request.requestedBy.plexId),
+      !getMediaUserIds(request.requestedBy).some((id) =>
+        settings.general.excludedUsers.includes(id),
       ),
   )
   const counts = countRequests(counted)
   const user = countRequests(requests.filter(isOwn))
-  // Seerr users without Plex have no Plex id, so they're told apart by their
-  // Seerr one
+  // Seerr users without Plex or Jellyfin have neither ID, so they're told
+  // apart by their Seerr one
   const requesters = new Set(counted.map((request) => request.requestedBy.id))
   const average = getAverage(counts.total, requesters.size)
   // Compared with the rounded average the story shows, so they agree

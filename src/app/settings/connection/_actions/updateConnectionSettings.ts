@@ -15,9 +15,11 @@ import {
   getTautulliResultError,
 } from '@/utils/connectionErrors'
 import { maskApiKeys, restoreApiKeys } from '@/utils/connectionSecrets'
-import { selectPlexServer } from '@/utils/fetchTracearr'
+import { selectServer, toServerOptions } from '@/utils/fetchTracearr'
 import getSettings from '@/utils/getSettings'
 import { isGatewayError, markHostUp } from '@/utils/hostBackoff'
+import { getIdentityPath, readServerId } from '@/utils/mediaServer'
+import { getMediaServerName, getMediaServerUrl } from '@/utils/mediaServerName'
 import { getReachableLibraries, startHistoryRead } from '@/utils/statsSource'
 import { normalizeUrl } from '@/utils/url'
 import { kebabCase } from 'lodash'
@@ -34,7 +36,9 @@ const baseSchema = z.object({
   tracearrServerId: z.string(),
   seerrUrl: z.string().url().optional().or(z.literal('')),
   seerrApiKey: z.string().optional(),
-  plexUrl: z.string().url(),
+  mediaServerType: z.enum(['plex', 'jellyfin']),
+  plexUrl: z.string().url().or(z.literal('')),
+  jellyfinUrl: z.string().url().or(z.literal('')),
   plexToken: z.string().optional(),
   complete: z.boolean(),
 })
@@ -131,8 +135,11 @@ async function testAndSave(
     tracearrServerId: (formData.get('tracearrServerId') as string | null) ?? '',
     seerrUrl: normalizeUrl(formData.get('seerrUrl') as string),
     seerrApiKey: formData.get('seerrApiKey') as string,
+    // Tautulli only tracks Plex. Tracearr's is set from the chosen server.
+    mediaServerType: getSettings().connection.mediaServerType,
     plexUrl: normalizeUrl(formData.get('plexUrl') as string),
     plexToken: ((formData.get('plexToken') as string | null) ?? '').trim(),
+    jellyfinUrl: normalizeUrl(formData.get('jellyfinUrl') as string),
     complete: true,
   }
   const t = await getTranslations('Settings')
@@ -182,31 +189,33 @@ async function testAndSave(
         return fail('Tracearr', getStatusError(response.status))
       }
 
-      const plexServers = servers.data
-        .filter((server) => server.server_type === 'plex')
-        .map(({ server_id, server_name }) => ({ server_id, server_name }))
+      const serverOptions = toServerOptions(servers.data)
 
-      if (!plexServers.length) {
+      if (!serverOptions.length) {
         return {
-          message: `Tracearr - ${t('noPlexServer')}`,
+          message: `Tracearr - ${t('noMediaServer')}`,
           status: 'error',
           fields: data,
         }
       }
 
-      const server = selectPlexServer(servers.data, data.tracearrServerId)
+      const server = selectServer(servers.data, data.tracearrServerId)
 
       if (!server) {
         return {
-          message: `Tracearr - ${t('choosePlexServer')}`,
+          message: `Tracearr - ${t('chooseMediaServer')}`,
           status: 'error',
           fields: data,
-          tracearrServers: plexServers,
+          tracearrServers: serverOptions,
         }
       }
 
       data.tracearrServerId = server.server_id
+      data.mediaServerType =
+        server.server_type === 'jellyfin' ? 'jellyfin' : 'plex'
     } else {
+      data.mediaServerType = 'plex'
+
       const { response, error } = await testRequest(
         'Tautulli',
         data.tautulliUrl,
@@ -257,37 +266,60 @@ async function testAndSave(
       }
     }
 
-    // Any answer means the server is reachable.
-    try {
-      const response = await fetch(data.plexUrl, {
-        cache: 'no-store',
-      })
+    // Tautulli finds the Plex server itself, so only Tracearr's needs one
+    if (data.statisticsSource === 'tracearr') {
+      const serverName = getMediaServerName(data.mediaServerType)
+      const serverUrl = getMediaServerUrl(data)
 
-      if (!isGatewayError(response.status)) {
-        markHostUp(data.plexUrl)
+      if (data.mediaServerType === 'jellyfin' && !serverUrl) {
+        return {
+          message: `${serverName} - ${t('mediaServerUrlRequired')}`,
+          status: 'error',
+          fields: data,
+        }
       }
-    } catch (error) {
-      const plexError = getFetchError(error)
 
-      // Tautulli only gets the host and port, so an untrusted certificate is
-      // harmless there. Tracearr reads the server identity from this URL,
-      // which needs a verified connection.
-      if (
-        plexError.key === 'certificateError' &&
-        data.statisticsSource === 'tautulli'
-      ) {
-        console.warn(
-          '[CONFIG] - Plex certificate could not be verified! Continuing, as only the hostname and port are used.',
+      if (serverUrl) {
+        const { response, error } = await testRequest(
+          serverName,
+          serverUrl,
+          getIdentityPath(data.mediaServerType),
+          { headers: { Accept: 'application/json' } },
         )
-      } else {
-        console.error('[CONFIG] - Error testing Plex connection!', error)
 
-        return fail('Plex', plexError)
+        if (error) {
+          return fail(serverName, error)
+        }
+
+        const responseError = getResponseError(serverName, response)
+
+        if (responseError) {
+          return fail(serverName, responseError)
+        }
+
+        // Another service at the URL can answer too, but not with an ID
+        if (
+          !readServerId(
+            data.mediaServerType,
+            await response.json().catch(() => null),
+          )
+        ) {
+          return {
+            message: `${serverName} - ${t('notMediaServer', { server: serverName })}`,
+            status: 'error',
+            fields: data,
+          }
+        }
       }
     }
 
-    // A redirect isn't followed, as the token would go with it
-    if (data.plexToken) {
+    // Jellyfin keeps the token for switching back, but has no use for it
+    if (data.mediaServerType === 'plex' && data.plexToken) {
+      if (!data.plexUrl) {
+        return fail('Plex', { key: 'tokenNeedsUrl' })
+      }
+
+      // A redirect isn't followed, as the token would go with it
       const { response, error } = await testRequest(
         'Plex',
         data.plexUrl,

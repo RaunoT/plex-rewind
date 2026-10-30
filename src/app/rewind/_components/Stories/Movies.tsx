@@ -1,5 +1,6 @@
 import MediaItems from '@/components/MediaItem/MediaItems'
 import { RewindStory } from '@/types/rewind'
+import { getMediaServerName } from '@/utils/mediaServerName'
 import { FilmIcon } from '@heroicons/react/24/outline'
 import { useTranslations } from 'next-intl'
 import PlaytimeShare from '../PlaytimeShare'
@@ -31,19 +32,22 @@ export default function StoryMovies({ userRewind, settings }: RewindStory) {
 
           <PlaytimeShare percentage={userRewind.movies.percentage} step={1} />
 
-          <RewindStat step={2}>
-            <p>
-              {t.rich('count', {
-                countValue: userRewind.movies.count,
-                count: (chunks) => (
-                  <span className='rewind-stat'>{chunks}</span>
-                ),
-                movies: (chunks) => (
-                  <span className='rewind-cat'>{chunks}</span>
-                ),
-              })}
-            </p>
-          </RewindStat>
+          {/* The watch time can be from plays that don't count */}
+          {userRewind.movies.count > 0 && (
+            <RewindStat step={2}>
+              <p>
+                {t.rich('count', {
+                  countValue: userRewind.movies.count,
+                  count: (chunks) => (
+                    <span className='rewind-stat'>{chunks}</span>
+                  ),
+                  movies: (chunks) => (
+                    <span className='rewind-cat'>{chunks}</span>
+                  ),
+                })}
+              </p>
+            </RewindStat>
+          )}
 
           <RewindStat step={3} noScale>
             <p className='mb-2'>
@@ -57,7 +61,7 @@ export default function StoryMovies({ userRewind, settings }: RewindStory) {
               <MediaItems
                 type='movie'
                 items={Array(userRewind.movies.top[0])}
-                serverId={userRewind.server_id}
+                mediaServer={userRewind.media_server}
                 rows
                 settings={settings}
               />
@@ -74,7 +78,9 @@ export default function StoryMovies({ userRewind, settings }: RewindStory) {
                   <FilmIcon />
                 </span>
               ),
-              serverName: settings.general.serverName || 'Plex',
+              serverName:
+                settings.general.serverName ||
+                getMediaServerName(settings.connection.mediaServerType),
               plex: (chunks) => chunks,
               emoji: (chunks) => <span className='not-italic'>{chunks}</span>,
             })}
