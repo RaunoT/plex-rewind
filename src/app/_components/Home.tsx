@@ -1,5 +1,6 @@
 'use client'
 
+import AppIcon from '@/components/AppIcon'
 import Avatar from '@/components/Avatar'
 import Loader from '@/components/Loader'
 import usePlexAuth from '@/hooks/usePlexAuth'
@@ -31,6 +32,9 @@ export default function Home({ settings, missingSetting, siteUrl }: Props) {
 
   return (
     <div className='glass-sheet animate-fade-in flex w-full max-w-sm flex-col items-center text-center'>
+      {!session?.user?.image && (
+        <AppIcon className='animate-fade-up mb-5 size-16' priority />
+      )}
       {session?.user?.image && (
         <div className='animate-fade-up relative mb-5 size-20 overflow-hidden rounded-full shadow-xl ring-1 shadow-black/40 ring-white/20'>
           <Avatar

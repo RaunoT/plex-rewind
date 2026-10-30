@@ -21,8 +21,10 @@ export type ConnectionSettings = {
   seerrUrl?: string
   seerrApiKey?: string
   mediaServerType: MediaServerType
-  // For links that open an item in the media server, and Jellyfin's sign-in
-  mediaServerUrl: string
+  // For links that open an item in the server, and Jellyfin's for signing in.
+  // Each server keeps its own, like the statistics sources.
+  plexUrl: string
+  jellyfinUrl: string
   complete: boolean
 }
 

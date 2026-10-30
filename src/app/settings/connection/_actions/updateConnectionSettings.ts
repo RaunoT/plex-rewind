@@ -19,7 +19,7 @@ import { selectServer, toServerOptions } from '@/utils/fetchTracearr'
 import getSettings from '@/utils/getSettings'
 import { isGatewayError, markHostUp } from '@/utils/hostBackoff'
 import { getIdentityPath, readServerId } from '@/utils/mediaServer'
-import { getMediaServerName } from '@/utils/mediaServerName'
+import { getMediaServerName, getMediaServerUrl } from '@/utils/mediaServerName'
 import { getReachableLibraries, startHistoryRead } from '@/utils/statsSource'
 import { normalizeUrl } from '@/utils/url'
 import { kebabCase } from 'lodash'
@@ -37,7 +37,8 @@ const baseSchema = z.object({
   seerrUrl: z.string().url().optional().or(z.literal('')),
   seerrApiKey: z.string().optional(),
   mediaServerType: z.enum(['plex', 'jellyfin']),
-  mediaServerUrl: z.string().url().or(z.literal('')),
+  plexUrl: z.string().url().or(z.literal('')),
+  jellyfinUrl: z.string().url().or(z.literal('')),
   complete: z.boolean(),
 })
 const schema = z.discriminatedUnion('statisticsSource', [
@@ -135,7 +136,8 @@ async function testAndSave(
     seerrApiKey: formData.get('seerrApiKey') as string,
     // Tautulli only tracks Plex. Tracearr's is set from the chosen server.
     mediaServerType: getSettings().connection.mediaServerType,
-    mediaServerUrl: normalizeUrl(formData.get('mediaServerUrl') as string),
+    plexUrl: normalizeUrl(formData.get('plexUrl') as string),
+    jellyfinUrl: normalizeUrl(formData.get('jellyfinUrl') as string),
     complete: true,
   }
   const t = await getTranslations('Settings')
@@ -265,8 +267,9 @@ async function testAndSave(
     // Tautulli finds the Plex server itself, so only Tracearr's needs one
     if (data.statisticsSource === 'tracearr') {
       const serverName = getMediaServerName(data.mediaServerType)
+      const serverUrl = getMediaServerUrl(data)
 
-      if (data.mediaServerType === 'jellyfin' && !data.mediaServerUrl) {
+      if (data.mediaServerType === 'jellyfin' && !serverUrl) {
         return {
           message: `${serverName} - ${t('mediaServerUrlRequired')}`,
           status: 'error',
@@ -274,10 +277,10 @@ async function testAndSave(
         }
       }
 
-      if (data.mediaServerUrl) {
+      if (serverUrl) {
         const { response, error } = await testRequest(
           serverName,
-          data.mediaServerUrl,
+          serverUrl,
           getIdentityPath(data.mediaServerType),
           { headers: { Accept: 'application/json' } },
         )

@@ -137,9 +137,7 @@ function loadSettings(key: string): Settings {
       dropMdblistApiKey(
         migrateRatingStatistic(
           mergeWithDefaults(
-            moveItemStatistics(
-              renamePlexUrl(renameOverseerrSettings(savedSettings)),
-            ),
+            moveItemStatistics(renameOverseerrSettings(savedSettings)),
           ),
         ),
       ),
@@ -256,27 +254,6 @@ function renameOverseerrSettings(saved: Partial<Settings>): Partial<Settings> {
       ...rest,
       seerrUrl: rest.seerrUrl ?? overseerrUrl,
       seerrApiKey: rest.seerrApiKey ?? overseerrApiKey,
-    } as Settings['connection'],
-  }
-}
-
-// The Plex URL became the media server's, as it can be Jellyfin's too.
-// Renamed before merging, so the empty default doesn't replace the saved URL.
-function renamePlexUrl(saved: Partial<Settings>): Partial<Settings> {
-  const connection = saved.connection as
-    (Partial<Settings['connection']> & { plexUrl?: string }) | undefined
-
-  if (!connection || !('plexUrl' in connection)) {
-    return saved
-  }
-
-  const { plexUrl, ...rest } = connection
-
-  return {
-    ...saved,
-    connection: {
-      ...rest,
-      mediaServerUrl: rest.mediaServerUrl ?? plexUrl,
     } as Settings['connection'],
   }
 }

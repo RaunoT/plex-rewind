@@ -1,3 +1,5 @@
+<img src="src/assets/rewindarr.svg" alt="" width="96" height="96">
+
 # Rewindarr
 
 [![Rewindarr release status](https://img.shields.io/github/actions/workflow/status/RaunoT/plex-rewind/release.yml?label=Release)](https://github.com/RaunoT/plex-rewind/actions/workflows/release.yml)

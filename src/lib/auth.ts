@@ -103,14 +103,14 @@ export async function authorizeJellyfinUser(
   username: string,
   password: string,
 ): Promise<User> {
-  const { mediaServerType, mediaServerUrl } = getSettings().connection
+  const { mediaServerType, jellyfinUrl } = getSettings().connection
 
-  if (mediaServerType !== 'jellyfin' || !mediaServerUrl) {
+  if (mediaServerType !== 'jellyfin' || !jellyfinUrl) {
     throw new LoginError('noAccess')
   }
 
   const jellyfinUser = await authenticateJellyfinUser(
-    mediaServerUrl,
+    jellyfinUrl,
     username,
     password,
   )

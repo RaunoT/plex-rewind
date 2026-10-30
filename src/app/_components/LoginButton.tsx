@@ -5,6 +5,7 @@ import { MediaServerType } from '@/types/settings'
 import { useTranslations } from 'next-intl'
 import { useState } from 'react'
 import JellyfinLoginForm from './JellyfinLoginForm'
+import LoginWithJellyfinLabel from './LoginWithJellyfinLabel'
 import LoginWithPlexLabel from './LoginWithPlexLabel'
 
 type Props = {
@@ -25,7 +26,7 @@ export default function LoginButton({ siteUrl, mediaServerType }: Props) {
           onClick={() => setIsFormOpen(!isFormOpen)}
           aria-expanded={isFormOpen}
         >
-          {t('loginWithJellyfin')}
+          <LoginWithJellyfinLabel />
         </button>
         {/* Below the button, so the header keeps its layout */}
         {isFormOpen && (

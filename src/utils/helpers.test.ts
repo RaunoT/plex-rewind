@@ -24,7 +24,7 @@ function completeSettings(): Settings {
 
   settings.connection.tautulliUrl = 'http://tautulli:8181'
   settings.connection.tautulliApiKey = 'key'
-  settings.connection.mediaServerUrl = 'http://plex:32400'
+  settings.connection.plexUrl = 'http://plex:32400'
   settings.connection.complete = true
   settings.general.complete = true
   settings.rewind.complete = true
@@ -68,21 +68,23 @@ describe('checkRequiredSettings', () => {
   it("only requires the media server's URL for Jellyfin", () => {
     const settings = completeSettings()
 
-    settings.connection.mediaServerUrl = ''
+    settings.connection.plexUrl = ''
 
     expect(checkRequiredSettings(settings)).toBeNull()
 
     settings.connection.mediaServerType = 'jellyfin'
 
-    expect(checkRequiredSettings(settings)).toBe('connection.mediaServerUrl')
+    expect(checkRequiredSettings(settings)).toBe('connection.jellyfinUrl')
+
+    settings.connection.jellyfinUrl = 'http://jellyfin:8096'
+
+    expect(checkRequiredSettings(settings)).toBeNull()
   })
 })
 
 describe('getSettingsPage', () => {
   it('maps a missing setting to its settings page', () => {
-    expect(getSettingsPage('connection.mediaServerUrl')).toBe(
-      '/settings/connection',
-    )
+    expect(getSettingsPage('connection.plexUrl')).toBe('/settings/connection')
     expect(getSettingsPage('dashboard.complete')).toBe('/settings/dashboard')
     expect(getSettingsPage('unknown.key')).toBeUndefined()
   })

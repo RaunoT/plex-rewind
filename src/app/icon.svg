@@ -1,29 +1,73 @@
-<svg
-  xmlns="http://www.w3.org/2000/svg"
-  viewBox="0 0 64 64"
-  width="64"
-  height="64"
->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
   <defs>
-    <linearGradient id="polygon1-gradient" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#D4D4D4" />
-      <stop offset="100%" stop-color="#404040" />
+    <linearGradient id="rw-base" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#2b2b2e" />
+      <stop offset="1" stop-color="#0c0c0d" />
     </linearGradient>
-    <linearGradient id="polygon2-gradient" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#404040" />
-      <stop offset="100%" stop-color="#D4D4D4" />
+    <linearGradient id="rw-sheen" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#fff" stop-opacity="0.07" />
+      <stop offset="0.45" stop-color="#fff" stop-opacity="0" />
+    </linearGradient>
+    <linearGradient id="rw-edge" x1="0" y1="0" x2="0.6" y2="1">
+      <stop offset="0" stop-color="#fff" stop-opacity="0.45" />
+      <stop offset="0.3" stop-color="#fff" stop-opacity="0.1" />
+      <stop offset="0.7" stop-color="#fff" stop-opacity="0.05" />
+      <stop offset="1" stop-color="#fff" stop-opacity="0.2" />
+    </linearGradient>
+    <linearGradient id="rw-white" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#fff" />
+      <stop offset="1" stop-color="#d4d4d4" />
+    </linearGradient>
+    <linearGradient id="rw-gold" x1="0" y1="0" x2="0.4" y2="1">
+      <stop offset="0" stop-color="#f8cf5c" />
+      <stop offset="1" stop-color="#e5a00d" />
     </linearGradient>
   </defs>
-  <g transform="translate(8, 8) scale(0.75)">
-    <polygon points="16,32 36,52 36,12" fill="url(#polygon1-gradient)" />
-    <polygon points="48,32 28,52 28,12" fill="url(#polygon2-gradient)" />
-    <circle
-      cx="32"
-      cy="32"
-      r="30"
-      stroke="url(#polygon1-gradient)"
-      stroke-width="4"
-      fill="none"
+  <rect width="512" height="512" rx="112" fill="url(#rw-base)" />
+  <rect width="512" height="512" rx="112" fill="url(#rw-sheen)" />
+  <rect
+    x="2.5"
+    y="2.5"
+    width="507"
+    height="507"
+    rx="109.5"
+    fill="none"
+    stroke="url(#rw-edge)"
+    stroke-width="5"
+  />
+  <g transform="translate(256 256) scale(0.86) translate(-256 -256)">
+    <mask
+      id="rw-cut"
+      maskUnits="userSpaceOnUse"
+      x="0"
+      y="0"
+      width="512"
+      height="512"
+    >
+      <rect width="512" height="512" fill="#fff" />
+      <path
+        d="M229.0 256 L379.0 158.0 L379.0 354.0 Z"
+        fill="#000"
+        stroke="#000"
+        stroke-width="78"
+        stroke-linejoin="round"
+      />
+    </mask>
+    <g mask="url(#rw-cut)">
+      <path
+        d="M109.0 256 L259.0 158.0 L259.0 354.0 Z"
+        fill="url(#rw-white)"
+        stroke="url(#rw-white)"
+        stroke-width="26"
+        stroke-linejoin="round"
+      />
+    </g>
+    <path
+      d="M229.0 256 L379.0 158.0 L379.0 354.0 Z"
+      fill="url(#rw-gold)"
+      stroke="url(#rw-gold)"
+      stroke-width="26"
+      stroke-linejoin="round"
     />
   </g>
 </svg>

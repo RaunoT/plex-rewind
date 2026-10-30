@@ -1,5 +1,6 @@
 'use client'
 
+import AppIcon from '@/components/AppIcon'
 import { MediaIcon } from '@/components/icons'
 import SkeletonLine from '@/components/SkeletonLine'
 import { PublicSettings } from '@/types/settings'
@@ -57,8 +58,9 @@ export default function Sidebar({ libraries, settings }: Props) {
     >
       <Link
         href='/'
-        className='focus-visible:focus-ring mb-2 flex h-10 shrink-0 items-center rounded-xl px-3 text-xl leading-none font-bold tracking-tight'
+        className='focus-visible:focus-ring mb-2 flex h-10 shrink-0 items-center gap-2.5 rounded-xl px-3 text-xl leading-none font-bold tracking-tight'
       >
+        <AppIcon className='size-6' priority />
         {settings.general.serverName ? (
           <span className='truncate'>{settings.general.serverName}</span>
         ) : (

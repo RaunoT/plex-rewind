@@ -91,7 +91,7 @@ export function checkRequiredSettings(settings: Settings): string | null {
   // Plex's URL only adds links, but Jellyfin's is needed to sign in
   const serverRequiredSettings =
     settings.connection.mediaServerType === 'jellyfin'
-      ? ['connection.mediaServerUrl']
+      ? ['connection.jellyfinUrl']
       : []
 
   for (const key of [

@@ -20,7 +20,7 @@ function testSettings(): Settings {
 
   settings.connection.tautulliUrl = 'http://tautulli:8181'
   settings.connection.tautulliApiKey = 'key'
-  settings.connection.mediaServerUrl = 'http://plex:32400'
+  settings.connection.plexUrl = 'http://plex:32400'
   settings.general.activeLibraries = ['movies']
   settings.general.isOutsideAccess = true
   settings.setupComplete = true

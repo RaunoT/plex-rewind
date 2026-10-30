@@ -194,7 +194,7 @@ function jellyfinSettings(): Settings {
   const settings = cloneDeep(DEFAULT_SETTINGS)
 
   settings.connection.mediaServerType = 'jellyfin'
-  settings.connection.mediaServerUrl = 'http://jellyfin:8096'
+  settings.connection.jellyfinUrl = 'http://jellyfin:8096'
 
   return settings
 }

@@ -5,6 +5,7 @@ import clsx from 'clsx'
 import { signIn } from 'next-auth/react'
 import { useTranslations } from 'next-intl'
 import { FormEvent, useState } from 'react'
+import LoginWithJellyfinLabel from './LoginWithJellyfinLabel'
 
 type Props = {
   className?: string
@@ -79,7 +80,7 @@ export default function JellyfinLoginForm({ className }: Props) {
         className='button button--jellyfin mt-1 w-full'
         disabled={isLoading}
       >
-        {t('loginWithJellyfin')}
+        <LoginWithJellyfinLabel />
       </button>
       {error && (
         <p role='alert' className='text-danger text-center text-sm'>

@@ -16,6 +16,7 @@ import {
 import { SourceMediaData } from './getMediaAdditionalData'
 import getSettings from './getSettings'
 import { fetchMediaServerId } from './mediaServer'
+import { getMediaServerUrl } from './mediaServerName'
 import {
   createPlayStats,
   EMPTY_ROW,
@@ -27,8 +28,9 @@ import { getSnapshot, isString, saveSnapshot } from './sourceSnapshot'
 
 // The saved ID stands in while the media server is down
 async function getMediaServer(): Promise<MediaServer | null> {
-  const { mediaServerType: type, mediaServerUrl: url } =
-    getSettings().connection
+  const connection = getSettings().connection
+  const type = connection.mediaServerType
+  const url = getMediaServerUrl(connection)
 
   if (!url) {
     return null

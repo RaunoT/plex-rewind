@@ -47,7 +47,7 @@ function testSettings(): Settings {
 
   settings.connection.tautulliUrl = 'http://tautulli:8181'
   settings.connection.tautulliApiKey = 'key'
-  settings.connection.mediaServerUrl = 'http://plex:32400'
+  settings.connection.plexUrl = 'http://plex:32400'
   settings.general.activeLibraries = ['movies']
   settings.general.isOutsideAccess = true
   settings.setupComplete = true
@@ -414,7 +414,7 @@ describe('getMediaServer', () => {
     const settings = testSettings()
 
     settings.connection.statisticsSource = 'tracearr'
-    settings.connection.mediaServerUrl = ''
+    settings.connection.plexUrl = ''
     vi.mocked(getSettings).mockReturnValue(settings)
 
     await expect(getMediaServer()).resolves.toBeNull()
@@ -441,7 +441,7 @@ describe('getMediaServer', () => {
 
     settings.connection.statisticsSource = 'tracearr'
     settings.connection.mediaServerType = 'jellyfin'
-    settings.connection.mediaServerUrl = 'http://jellyfin:8096'
+    settings.connection.jellyfinUrl = 'http://jellyfin:8096'
     vi.mocked(getSettings).mockReturnValue(settings)
     fetchMock.mockResolvedValue(Response.json({ Id: 'f00d' }))
 

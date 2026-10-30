@@ -221,26 +221,36 @@ export default function ConnectionSettingsForm({
             ? mediaServerName
             : t('Connection.optionalService', { service: mediaServerName })}
         </h2>
-        <label className='input-wrapper'>
+        {/* Each server keeps its own URL, so switching back keeps it */}
+        <label className={clsx('input-wrapper', { hidden: isJellyfin })}>
           <input
-            key={`media-server-url-${connectionSettings.mediaServerUrl}`}
+            key={`plex-url-${connectionSettings.plexUrl}`}
             type='url'
             className='input'
-            placeholder={`https://${mediaServerType}.example.com`}
-            name='mediaServerUrl'
-            required={isTracearr && isJellyfin}
-            defaultValue={connectionSettings.mediaServerUrl}
+            placeholder='https://plex.example.com'
+            name='plexUrl'
+            defaultValue={connectionSettings.plexUrl}
           />
           <span className='label'>
             {/* eslint-disable-next-line react/jsx-no-literals */}
             <span className='label-wrapper'>URL</span>
-            <small>
-              {t(
-                isJellyfin
-                  ? 'Connection.jellyfinUrlHelp'
-                  : 'Connection.plexUrlHelp',
-              )}
-            </small>
+            <small>{t('Connection.plexUrlHelp')}</small>
+          </span>
+        </label>
+        <label className={clsx('input-wrapper', { hidden: !isJellyfin })}>
+          <input
+            key={`jellyfin-url-${connectionSettings.jellyfinUrl}`}
+            type='url'
+            className='input'
+            placeholder='https://jellyfin.example.com'
+            name='jellyfinUrl'
+            required={isTracearr && isJellyfin}
+            defaultValue={connectionSettings.jellyfinUrl}
+          />
+          <span className='label'>
+            {/* eslint-disable-next-line react/jsx-no-literals */}
+            <span className='label-wrapper'>URL</span>
+            <small>{t('Connection.jellyfinUrlHelp')}</small>
           </span>
         </label>
       </section>
