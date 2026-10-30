@@ -70,7 +70,7 @@ function listBackups(): string[] {
 }
 
 beforeEach(() => {
-  directory = fs.mkdtempSync(path.join(os.tmpdir(), 'plex-rewind-settings-'))
+  directory = fs.mkdtempSync(path.join(os.tmpdir(), 'rewindarr-settings-'))
   settingsPath = path.join(directory, 'config/settings.json')
   editCount = 0
 
@@ -118,6 +118,7 @@ describe('getSettings', () => {
     const settings = getSettings()
 
     expect(settings.connection.plexUrl).toBe('http://plex:32400')
+    expect(settings.connection.mediaServerType).toBe('plex')
     expect(settings.connection.tautulliUrl).toBe('')
     expect(settings.dashboard).toEqual(DEFAULT_SETTINGS.dashboard)
     expect(readSavedSettings()).toEqual(settings)

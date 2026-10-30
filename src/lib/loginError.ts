@@ -1,10 +1,12 @@
-// Why a Plex login failed. next-auth passes the message of an error thrown
+// Why a sign-in failed. next-auth passes the message of an error thrown
 // while authorizing back to the browser, so only these codes are thrown and
 // anything else is shown as `unknown`.
 export const LOGIN_ERROR_CODES = [
   'plexUnavailable',
   'plexNotConfirmed',
   'plexAccount',
+  'jellyfinUnavailable',
+  'jellyfinCredentials',
   'noAccess',
   'unknown',
 ] as const

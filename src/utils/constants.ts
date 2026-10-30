@@ -37,10 +37,11 @@ export function getPeriods(now: Date = new Date()) {
 }
 
 export const META_DESCRIPTION: string =
-  "Plex users' statistics and habits in a beautiful and organized manner"
+  "Plex and Jellyfin users' statistics and habits in a beautiful and organized manner"
 
 export const PLEX_API_ENDPOINT = 'https://plex.tv/api/v2'
-export const PLEX_PRODUCT_NAME = 'Plex Rewind'
+export const APP_NAME = 'Rewindarr'
+export const PLEX_PRODUCT_NAME = APP_NAME
 
 // Next.js inlines `process.env.NEXT_PUBLIC_*` into the build, but the Docker
 // image is configured when the container starts, so look variables up by name.
@@ -61,7 +62,9 @@ export const DEFAULT_SETTINGS: Settings = {
     tracearrUrl: '',
     tracearrApiKey: '',
     tracearrServerId: '',
+    mediaServerType: 'plex',
     plexUrl: '',
+    jellyfinUrl: '',
     seerrUrl: '',
     seerrApiKey: '',
     complete: false,

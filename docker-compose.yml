@@ -1,5 +1,5 @@
 services:
-  plex-rewind:
+  rewindarr:
     build:
       context: .
       dockerfile: Dockerfile

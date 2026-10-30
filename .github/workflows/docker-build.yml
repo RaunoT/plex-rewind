@@ -50,7 +50,7 @@ jobs:
           load: true
           push: false
           platforms: ${{ matrix.platform }}
-          tags: plex-rewind:smoke
+          tags: rewindarr:smoke
           build-args: |
             NEXT_PUBLIC_VERSION_TAG=${{ github.sha }}
           cache-from: type=gha,scope=${{ env.PLATFORM_PAIR }}
@@ -58,4 +58,4 @@ jobs:
           sbom: false
 
       - name: Smoke test image
-        run: bash .github/scripts/smoke-test.sh plex-rewind:smoke
+        run: bash .github/scripts/smoke-test.sh rewindarr:smoke

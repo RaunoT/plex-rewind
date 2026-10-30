@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Starts a built Plex Rewind image with an empty config directory and checks
+# Starts a built Rewindarr image with an empty config directory and checks
 # that the server boots and answers requests.
 #
 # Usage: smoke-test.sh <image>
@@ -7,7 +7,7 @@ set -euo pipefail
 
 image="${1:?Usage: smoke-test.sh <image>}"
 port=8383
-name="plex-rewind-smoke-$$"
+name="rewindarr-smoke-$$"
 config_dir="$(mktemp -d)"
 
 cleanup() {

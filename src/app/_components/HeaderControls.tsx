@@ -69,7 +69,7 @@ export default function HeaderControls({ className }: Props) {
     <div className={clsx('icon-button-group', className)}>
       {version.hasUpdate && isAdmin && (
         <a
-          href='https://github.com/RaunoT/plex-rewind/releases'
+          href='https://github.com/RaunoT/rewindarr/releases'
           aria-label={t('updateAvailable')}
           target='_blank'
           className='icon-button'

@@ -1,5 +1,6 @@
 import { RewindStory } from '@/types/rewind'
 import { getRewindBreakdown, hasRewindPlays } from '@/utils/helpers'
+import { getMediaServerName } from '@/utils/mediaServerName'
 import { ClockIcon } from '@heroicons/react/24/outline'
 import { useTranslations } from 'next-intl'
 import { getAverageMessage } from '../averageMessage'
@@ -22,7 +23,9 @@ export default function StoryTotal({ userRewind, settings }: RewindStory) {
             <p>
               {t.rich('duration', {
                 durationValue: userRewind.duration.user,
-                serverName: settings.general.serverName || 'Plex',
+                serverName:
+                  settings.general.serverName ||
+                  getMediaServerName(settings.connection.mediaServerType),
                 total: (chunks) => (
                   <span className='rewind-cat'>
                     {chunks} <ClockIcon />
@@ -66,7 +69,9 @@ export default function StoryTotal({ userRewind, settings }: RewindStory) {
         <RewindStat noScale>
           <p>
             {t.rich('noData', {
-              serverName: settings.general.serverName || 'Plex',
+              serverName:
+                settings.general.serverName ||
+                getMediaServerName(settings.connection.mediaServerType),
               plex: (chunks) => chunks,
               emoji: (chunks) => <span className='not-italic'>{chunks}</span>,
             })}

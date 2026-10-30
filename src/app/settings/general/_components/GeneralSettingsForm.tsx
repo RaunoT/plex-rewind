@@ -8,7 +8,11 @@ import {
   SettingsFormInitialState,
 } from '@/types/settings'
 import { TautulliLibrary, TautulliUser } from '@/types/tautulli'
-import { EXTERNAL_LINK_NAMES, EXTERNAL_LINKS } from '@/utils/constants'
+import {
+  APP_NAME,
+  EXTERNAL_LINK_NAMES,
+  EXTERNAL_LINKS,
+} from '@/utils/constants'
 import { sortByLabel } from '@/utils/helpers'
 import { RectangleStackIcon } from '@heroicons/react/24/outline'
 import { kebabCase } from 'lodash'
@@ -172,7 +176,7 @@ export default function GeneralSettingsForm({
             className='input'
             name='serverName'
             defaultValue={generalSettings.serverName}
-            placeholder='Plex Rewind'
+            placeholder={APP_NAME}
           />
           <span className='label'>
             <span className='label-wrapper'>{t('serverName')}</span>

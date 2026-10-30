@@ -1,5 +1,6 @@
 import MediaItems from '@/components/MediaItem/MediaItems'
 import { RewindStory } from '@/types/rewind'
+import { getMediaServerName } from '@/utils/mediaServerName'
 import { FilmIcon } from '@heroicons/react/24/outline'
 import { useTranslations } from 'next-intl'
 import PlaytimeShare from '../PlaytimeShare'
@@ -60,7 +61,7 @@ export default function StoryMovies({ userRewind, settings }: RewindStory) {
               <MediaItems
                 type='movie'
                 items={Array(userRewind.movies.top[0])}
-                serverId={userRewind.server_id}
+                mediaServer={userRewind.media_server}
                 rows
                 settings={settings}
               />
@@ -77,7 +78,9 @@ export default function StoryMovies({ userRewind, settings }: RewindStory) {
                   <FilmIcon />
                 </span>
               ),
-              serverName: settings.general.serverName || 'Plex',
+              serverName:
+                settings.general.serverName ||
+                getMediaServerName(settings.connection.mediaServerType),
               plex: (chunks) => chunks,
               emoji: (chunks) => <span className='not-italic'>{chunks}</span>,
             })}

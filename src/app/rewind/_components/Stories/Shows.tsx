@@ -1,6 +1,7 @@
 import { MEDIA_ICONS } from '@/components/icons'
 import MediaItems from '@/components/MediaItem/MediaItems'
 import { RewindStory } from '@/types/rewind'
+import { getMediaServerName } from '@/utils/mediaServerName'
 import { useTranslations } from 'next-intl'
 import PlaytimeShare from '../PlaytimeShare'
 import RewindStat from '../RewindStat'
@@ -25,7 +26,9 @@ export default function StoryShows({ userRewind, settings }: RewindStory) {
                   <span className='rewind-stat'>{chunks}</span>
                 ),
                 durationValue: userRewind.shows.duration,
-                serverName: settings.general.serverName || 'Plex',
+                serverName:
+                  settings.general.serverName ||
+                  getMediaServerName(settings.connection.mediaServerType),
                 plex: (chunks) => chunks,
               })}
             </p>
@@ -62,7 +65,7 @@ export default function StoryShows({ userRewind, settings }: RewindStory) {
               <MediaItems
                 type='show'
                 items={Array(userRewind.shows.top[0])}
-                serverId={userRewind.server_id}
+                mediaServer={userRewind.media_server}
                 rows
                 settings={settings}
               />
@@ -79,7 +82,9 @@ export default function StoryShows({ userRewind, settings }: RewindStory) {
                   <MEDIA_ICONS.show />
                 </span>
               ),
-              serverName: settings.general.serverName || 'Plex',
+              serverName:
+                settings.general.serverName ||
+                getMediaServerName(settings.connection.mediaServerType),
               plex: (chunks) => chunks,
               emoji: (chunks) => <span className='not-italic'>{chunks}</span>,
             })}

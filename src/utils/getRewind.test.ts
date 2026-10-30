@@ -11,7 +11,10 @@ vi.mock('next-intl/server', () => ({
   getLocale: vi.fn(),
   getTranslations: vi.fn(),
 }))
-vi.mock('./fetchSeerr', () => ({ fetchSeerrStats: vi.fn() }))
+vi.mock('./fetchSeerr', async (importOriginal) => ({
+  ...(await importOriginal<typeof import('./fetchSeerr')>()),
+  fetchSeerrStats: vi.fn(),
+}))
 vi.mock('./getSettings', () => ({ default: vi.fn() }))
 vi.mock('./statsSource', () => ({ getStatsSource: vi.fn() }))
 
@@ -48,6 +51,24 @@ describe('getRequestsTotals', () => {
       average: { count: 2, difference: 0 },
     })
     expect(fetchSeerrStats).toHaveBeenCalledWith('request', '2026-01-01')
+  })
+
+  it("counts a Jellyfin user's own requests", async () => {
+    vi.mocked(fetchSeerrStats).mockResolvedValue([
+      {
+        ...request('movie', null, 10),
+        requestedBy: {
+          id: 10,
+          plexId: null,
+          jellyfinUserId: 'EECCD007-2D56-4582-98FC-1EB02F4AC421',
+        },
+      },
+      request('tv', 1),
+    ])
+
+    const totals = await getRequestsTotals('eeccd0072d56458298fc1eb02f4ac421')
+
+    expect(totals?.user).toEqual({ total: 1, movies: 1, shows: 0 })
   })
 
   it('tells apart the Seerr users without Plex', async () => {

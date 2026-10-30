@@ -28,7 +28,7 @@ export type Play = {
   avatar: string
 }
 
-// How far Plex Rewind has read the play history
+// How far Rewindarr has read the play history
 export type HistoryStatus = {
   playCount: number
   // When the oldest play read so far started

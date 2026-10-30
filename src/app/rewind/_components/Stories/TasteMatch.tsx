@@ -1,5 +1,6 @@
 import Avatar from '@/components/Avatar'
 import { RewindStory } from '@/types/rewind'
+import { getMediaServerName } from '@/utils/mediaServerName'
 import { UserIcon } from '@heroicons/react/24/outline'
 import { useFormatter, useTranslations } from 'next-intl'
 import RewindStat from '../RewindStat'
@@ -23,7 +24,9 @@ export default function StoryTasteMatch({ userRewind, settings }: RewindStory) {
         </div>
         <p>
           {t.rich('closest', {
-            serverName: settings.general.serverName || 'Plex',
+            serverName:
+              settings.general.serverName ||
+              getMediaServerName(settings.connection.mediaServerType),
             plex: (chunks) => chunks,
             userValue: match.name,
             user: (chunks) => (

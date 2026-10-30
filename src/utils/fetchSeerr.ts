@@ -1,5 +1,6 @@
 import getSettings from './getSettings'
 import { isGatewayError, isHostDown, markHostDown } from './hostBackoff'
+import { normalizeJellyfinId } from './mediaServer'
 
 type SeerrResponse<T> = {
   pageInfo: {
@@ -12,20 +13,18 @@ type SeerrResponse<T> = {
 }
 
 type SeerrUser = {
+  // Seerr's own
   id: number
-  plexId: number
-  plexUsername: string
+  // Null for Seerr users without Plex
+  plexId: number | null
+  // Null for Seerr users without Jellyfin
+  jellyfinUserId?: string | null
 }
 
 type SeerrRequestItem = {
   createdAt: string
   type: string
-  requestedBy: {
-    // Seerr's own
-    id: number
-    // Null for Seerr users without Plex
-    plexId: number | null
-  }
+  requestedBy: SeerrUser
 }
 
 const PAGE_SIZE = 20
@@ -217,8 +216,10 @@ async function loadSeerrUserIds(): Promise<Map<string, number> | null> {
   const userIds = new Map<string, number>()
 
   for (const user of users) {
-    if (!userIds.has(String(user.plexId))) {
-      userIds.set(String(user.plexId), user.id)
+    for (const userId of getMediaUserIds(user)) {
+      if (!userIds.has(userId)) {
+        userIds.set(userId, user.id)
+      }
     }
   }
 
@@ -248,14 +249,22 @@ function getSeerrUserIds(): Promise<Map<string, number> | null> {
   return load
 }
 
-export async function fetchSeerrUserId(plexId: string): Promise<number | null> {
+// The IDs the user signs in with, Plex's and Jellyfin's, which can't clash
+export function getMediaUserIds(user: SeerrUser): string[] {
+  return [
+    user.plexId ? String(user.plexId) : null,
+    user.jellyfinUserId ? normalizeJellyfinId(user.jellyfinUserId) : null,
+  ].filter((id): id is string => !!id)
+}
+
+export async function fetchSeerrUserId(userId: string): Promise<number | null> {
   const userIds = await getSeerrUserIds()
 
   if (!userIds) {
     return null
   }
 
-  // Plex users who never signed in to Seerr have no account there, which
-  // is normal and not worth logging.
-  return userIds.get(plexId) ?? null
+  // Users who never signed in to Seerr have no account there, which is
+  // normal and not worth logging.
+  return userIds.get(userId) ?? null
 }

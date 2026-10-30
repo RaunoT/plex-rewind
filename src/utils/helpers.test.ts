@@ -64,6 +64,22 @@ describe('checkRequiredSettings', () => {
 
     expect(checkRequiredSettings(settings)).toBeNull()
   })
+
+  it("only requires the media server's URL for Jellyfin", () => {
+    const settings = completeSettings()
+
+    settings.connection.plexUrl = ''
+
+    expect(checkRequiredSettings(settings)).toBeNull()
+
+    settings.connection.mediaServerType = 'jellyfin'
+
+    expect(checkRequiredSettings(settings)).toBe('connection.jellyfinUrl')
+
+    settings.connection.jellyfinUrl = 'http://jellyfin:8096'
+
+    expect(checkRequiredSettings(settings)).toBeNull()
+  })
 })
 
 describe('getSettingsPage', () => {
