@@ -1,0 +1,60 @@
+name: Update download badge
+
+# Adds up the downloads of the current and pre-rename images on GHCR and
+# Docker Hub and writes the total to the badges branch, which the README badge
+# reads. GHCR has no API for download counts, so they come from the package
+# pages.
+on:
+  schedule:
+    - cron: '0 3 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: download-badge
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Count downloads
+        run: |
+          set -euo pipefail
+          total=0
+
+          for package in rewindarr plex-rewind; do
+            count=$(curl -fsSL "https://github.com/RaunoT/rewindarr/pkgs/container/$package" \
+              | grep -A2 'Total downloads' | sed -n 's/.*title="\([0-9][0-9]*\)".*/\1/p')
+            : "${count:?No download count found for ghcr.io/raunot/$package}"
+            total=$((total + count))
+          done
+
+          for repo in rewindarr plex-rewind; do
+            count=$(curl -fsSL "https://hub.docker.com/v2/repositories/raunoot/$repo/" | jq -r .pull_count)
+            total=$((total + count))
+          done
+
+          message=$(awk -v n="$total" 'BEGIN { if (n >= 1e6) printf "%.1fM", n / 1e6; else if (n >= 1e3) printf "%dk", n / 1e3; else print n }')
+          echo "Total downloads: $total ($message)"
+
+          mkdir badges
+          jq -n --arg message "$message" \
+            '{schemaVersion: 1, label: "downloads", message: $message, color: "blue"}' > badges/downloads.json
+
+      # The branch holds a single commit with the badge file and is replaced
+      # on every run.
+      - name: Publish badge
+        working-directory: badges
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          git init -q -b badges
+          git add downloads.json
+          git -c user.name='github-actions[bot]' \
+            -c user.email='41898282+github-actions[bot]@users.noreply.github.com' \
+            commit -q -m 'chore: update download count'
+          git push -f "https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" badges
