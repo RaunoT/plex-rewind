@@ -6,6 +6,7 @@
 [<img src="https://img.shields.io/github/v/release/RaunoT/rewindarr?label=latest" alt="Rewindarr latest release">](https://github.com/RaunoT/rewindarr/releases)
 [![Rewindarr pre-release status](https://img.shields.io/github/actions/workflow/status/RaunoT/rewindarr/pre-release.yml?include_prereleases=true&label=Pre-release)](https://github.com/RaunoT/rewindarr/actions/workflows/pre-release.yml)
 [<img src="https://img.shields.io/github/v/release/RaunoT/rewindarr?include_prereleases&label=develop" alt="Rewindarr develop release">](https://github.com/RaunoT/rewindarr/releases)
+[![Rewindarr downloads](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2FRaunoT%2Frewindarr%2Fbadges%2Fdownloads.json)](https://github.com/RaunoT/rewindarr/pkgs/container/rewindarr)
 
 A rewind for your media server, inspired by the likes of [Spotify Wrapped](https://www.spotify.com/us/wrapped) and [Tautulli](https://tautulli.com).
 
