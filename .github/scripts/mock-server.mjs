@@ -352,6 +352,9 @@ function makePlays() {
               stopped: started + seconds,
               duration: seconds,
               play_duration: seconds,
+              percent_complete: Math.round(
+                (seconds / (item.minutes * 60)) * 100,
+              ),
               media_type: PLAY_TYPE[type],
               title:
                 type === 'movie'
@@ -405,6 +408,7 @@ function history(params) {
               started,
               duration: show.minutes * 60,
               play_duration: show.minutes * 60,
+              percent_complete: 100,
               media_type: 'episode',
               title: 'Chapter One: The Vanishing of Will Byers',
               parent_title: 'Season 1',
@@ -738,8 +742,8 @@ function tautulli(params) {
 
       return user ? tautulliUser(user) : {}
     }
-    case 'get_server_id':
-      return { identifier: 'mockserver0000000000000000000000000000000' }
+    case 'get_server_identity':
+      return { machine_identifier: 'mockserver0000000000000000000000000000000' }
     case 'get_activity':
       return { stream_count: SESSIONS.length, sessions: SESSIONS }
     case 'get_home_stats':
