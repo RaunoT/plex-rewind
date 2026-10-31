@@ -10,6 +10,7 @@ const saved: ConnectionSettings = {
   seerrUrl: 'http://seerr:5055',
   seerrApiKey: 'seerr-key',
   plexUrl: 'http://plex:32400',
+  plexToken: 'plex-token',
   complete: true,
 }
 
@@ -19,10 +20,12 @@ describe('maskApiKeys', () => {
 
     expect(masked.tautulliApiKey).toBe(SAVED_API_KEY)
     expect(masked.seerrApiKey).toBe(SAVED_API_KEY)
+    expect(masked.plexToken).toBe(SAVED_API_KEY)
     expect(masked.tracearrApiKey).toBe('')
     expect(masked.tautulliUrl).toBe(saved.tautulliUrl)
     expect(JSON.stringify(masked)).not.toContain('tautulli-key')
     expect(JSON.stringify(masked)).not.toContain('seerr-key')
+    expect(JSON.stringify(masked)).not.toContain('plex-token')
   })
 })
 
@@ -67,6 +70,15 @@ describe('restoreApiKeys', () => {
     )
 
     expect(needsKey).toBe('Tautulli')
+  })
+
+  it('asks for the Plex token again when the Plex URL changed', () => {
+    const { needsKey } = restoreApiKeys(
+      { ...maskApiKeys(saved), plexUrl: 'http://attacker.example' },
+      saved,
+    )
+
+    expect(needsKey).toBe('Plex')
   })
 
   it('matches a URL saved with a trailing slash', () => {

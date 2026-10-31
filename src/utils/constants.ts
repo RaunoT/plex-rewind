@@ -64,6 +64,7 @@ export const DEFAULT_SETTINGS: Settings = {
     tracearrServerId: '',
     mediaServerType: 'plex',
     plexUrl: '',
+    plexToken: '',
     jellyfinUrl: '',
     seerrUrl: '',
     seerrApiKey: '',
@@ -95,6 +96,9 @@ export const DEFAULT_SETTINGS: Settings = {
     isActive: true,
     isAdminOnly: false,
     isLibrariesSizeAndCountActive: true,
+    isThemeMusicActive: false,
+    music: null,
+    isSnowActive: false,
     startDate: '',
     complete: false,
   },
@@ -174,6 +178,19 @@ export const RATING_STATISTICS = [
   'rottenTomatoesRating',
   'rottenTomatoesAudienceRating',
 ] as const
+
+export const REWIND_MUSIC_MAX_BYTES = 10 * 1024 * 1024
+// What a Rewind track may be, by file extension, and the type it's served as
+export const REWIND_MUSIC_TYPES: Record<string, string> = {
+  mp3: 'audio/mpeg',
+  m4a: 'audio/mp4',
+  aac: 'audio/aac',
+  ogg: 'audio/ogg',
+  oga: 'audio/ogg',
+  opus: 'audio/ogg',
+  wav: 'audio/wav',
+  flac: 'audio/flac',
+}
 
 export type Locale = (typeof LOCALES)[number]
 export const LOCALES = ['en', 'et', 'fr', 'de', 'it', 'es']

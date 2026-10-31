@@ -26,7 +26,9 @@ import {
   getRewindStartDate,
   getViewer,
 } from '@/utils/helpers'
+import { getPlexThemeUrl } from '@/utils/plexTheme'
 import { toPublicSettings } from '@/utils/publicSettings'
+import { getMusicUrl, getThemeSongUrl } from '@/utils/rewindMusic'
 import {
   getActiveUsers,
   getHistoryProgress,
@@ -226,10 +228,28 @@ async function RewindContent({ userId }: { userId?: string }) {
     userRewind.requests = requestTotals
   }
 
+  const { isThemeMusicActive } = settings.rewind
+  const topShow = topMediaItems.shows[0]
+  const topMovie = topMediaItems.movies[0]
+
   return (
     <RewindStories
       userRewind={userRewind}
       settings={toPublicSettings(settings)}
+      music={{
+        showThemes: isThemeMusicActive
+          ? [
+              getPlexThemeUrl(settings, topShow?.rating_key),
+              getThemeSongUrl(topShow?.tvdb_id),
+            ].filter((url) => url !== null)
+          : [],
+        movieThemes: isThemeMusicActive
+          ? [getPlexThemeUrl(settings, topMovie?.rating_key)].filter(
+              (url) => url !== null,
+            )
+          : [],
+        track: getMusicUrl(settings),
+      }}
     />
   )
 }

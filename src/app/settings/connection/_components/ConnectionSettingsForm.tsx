@@ -17,6 +17,9 @@ import SettingsForm from '../../_components/SettingsForm'
 import saveConnectionSettings from '../_actions/updateConnectionSettings'
 import PlayHistory from './PlayHistory'
 
+const PLEX_TOKEN_HELP_URL =
+  'https://support.plex.tv/articles/204059436-finding-an-authentication-token-x-plex-token/'
+
 type Props = {
   settings: Settings
   tracearrServers: TracearrServerOption[]
@@ -213,9 +216,8 @@ export default function ConnectionSettingsForm({
           </label>
         )}
       </section>
-      <section
-        className={clsx('group-settings group', { hidden: !isTracearr })}
-      >
+      {/* Tautulli finds Plex itself, so its URL is only for the token */}
+      <section className='group-settings group'>
         <h2 className='heading-settings'>
           {isJellyfin
             ? mediaServerName
@@ -234,7 +236,7 @@ export default function ConnectionSettingsForm({
           <span className='label'>
             {/* eslint-disable-next-line react/jsx-no-literals */}
             <span className='label-wrapper'>URL</span>
-            <small>{t('Connection.plexUrlHelp')}</small>
+            {isTracearr && <small>{t('Connection.plexUrlHelp')}</small>}
           </span>
         </label>
         <label className={clsx('input-wrapper', { hidden: !isJellyfin })}>
@@ -251,6 +253,33 @@ export default function ConnectionSettingsForm({
             {/* eslint-disable-next-line react/jsx-no-literals */}
             <span className='label-wrapper'>URL</span>
             <small>{t('Connection.jellyfinUrlHelp')}</small>
+          </span>
+        </label>
+        <label className={clsx('input-wrapper', { hidden: isJellyfin })}>
+          <input
+            key={`plex-token-${connectionSettings.plexToken}`}
+            type='password'
+            className='input'
+            name='plexToken'
+            autoComplete='off'
+            defaultValue={connectionSettings.plexToken}
+          />
+          <span className='label'>
+            <span className='label-wrapper'>{t('Connection.token')}</span>
+            <small>
+              {t.rich('Connection.tokenDescription', {
+                link: (chunks) => (
+                  <a
+                    href={PLEX_TOKEN_HELP_URL}
+                    className='link underline'
+                    target='_blank'
+                    rel='noopener noreferrer'
+                  >
+                    {chunks}
+                  </a>
+                ),
+              })}
+            </small>
           </span>
         </label>
       </section>

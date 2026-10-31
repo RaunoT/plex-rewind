@@ -1,11 +1,11 @@
 import { ConnectionSettings } from '@/types/settings'
 import { normalizeUrl } from './url'
 
-type Service = 'Tautulli' | 'Tracearr' | 'Seerr'
+type Service = 'Tautulli' | 'Tracearr' | 'Seerr' | 'Plex'
 
 type ApiKey = {
   service: Service
-  key: keyof ConnectionSettings & `${string}ApiKey`
+  key: (keyof ConnectionSettings & `${string}ApiKey`) | 'plexToken'
   url: keyof ConnectionSettings & `${string}Url`
 }
 
@@ -19,6 +19,7 @@ const API_KEYS: ApiKey[] = [
   { service: 'Tautulli', key: 'tautulliApiKey', url: 'tautulliUrl' },
   { service: 'Tracearr', key: 'tracearrApiKey', url: 'tracearrUrl' },
   { service: 'Seerr', key: 'seerrApiKey', url: 'seerrUrl' },
+  { service: 'Plex', key: 'plexToken', url: 'plexUrl' },
 ]
 
 export function maskApiKeys<T extends Partial<ConnectionSettings>>(

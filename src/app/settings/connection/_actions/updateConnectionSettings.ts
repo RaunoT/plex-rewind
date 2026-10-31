@@ -39,6 +39,7 @@ const baseSchema = z.object({
   mediaServerType: z.enum(['plex', 'jellyfin']),
   plexUrl: z.string().url().or(z.literal('')),
   jellyfinUrl: z.string().url().or(z.literal('')),
+  plexToken: z.string().optional(),
   complete: z.boolean(),
 })
 const schema = z.discriminatedUnion('statisticsSource', [
@@ -137,6 +138,7 @@ async function testAndSave(
     // Tautulli only tracks Plex. Tracearr's is set from the chosen server.
     mediaServerType: getSettings().connection.mediaServerType,
     plexUrl: normalizeUrl(formData.get('plexUrl') as string),
+    plexToken: ((formData.get('plexToken') as string | null) ?? '').trim(),
     jellyfinUrl: normalizeUrl(formData.get('jellyfinUrl') as string),
     complete: true,
   }
@@ -148,7 +150,7 @@ async function testAndSave(
 
   if (needsKey) {
     return {
-      message: `${needsKey} - ${t('reenterApiKey')}`,
+      message: `${needsKey} - ${t(needsKey === 'Plex' ? 'reenterToken' : 'reenterApiKey')}`,
       status: 'error',
       fields: data,
     }
@@ -308,6 +310,38 @@ async function testAndSave(
             fields: data,
           }
         }
+      }
+    }
+
+    // Jellyfin keeps the token for switching back, but has no use for it
+    if (data.mediaServerType === 'plex' && data.plexToken) {
+      if (!data.plexUrl) {
+        return fail('Plex', { key: 'tokenNeedsUrl' })
+      }
+
+      // A redirect isn't followed, as the token would go with it
+      const { response, error } = await testRequest(
+        'Plex',
+        data.plexUrl,
+        '/library/sections',
+        {
+          headers: { 'X-Plex-Token': data.plexToken },
+          redirect: 'manual',
+        },
+      )
+
+      if (error) {
+        return fail('Plex', error)
+      }
+
+      if (response.status === 401 || response.status === 403) {
+        return fail('Plex', { key: 'invalidToken' })
+      }
+
+      const responseError = getResponseError('Plex', response)
+
+      if (responseError) {
+        return fail('Plex', responseError)
       }
     }
   } catch (error) {
